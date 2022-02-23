@@ -8,7 +8,8 @@ class DiskUsageWidget extends StatelessWidget {
   final int? usedMemory;
   final int? usagePercent;
 
-  DiskUsageWidget({required this.totalMemory, required this.usedMemory, required this.usagePercent});
+  const DiskUsageWidget({Key? key, required this.totalMemory, required this.usedMemory, required this.usagePercent})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

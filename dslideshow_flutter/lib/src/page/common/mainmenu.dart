@@ -6,20 +6,22 @@ import 'package:flutter/material.dart';
 import 'mainmenu_model.dart';
 
 class MainMenuWidget extends StatefulWidget {
+  const MainMenuWidget({Key? key}) : super(key: key);
+
   @override
   _MenuOptionsScreenState createState() => _MenuOptionsScreenState();
 }
 
 class _MenuOptionsScreenState extends State<MainMenuWidget> {
   int _selectedOption = 0;
-  final Random _rnd = new Random();
+  static final Random _rnd = Random();
   late Timer _demoTimer;
 
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Color.fromARGB(125, 133, 133, 133),
+          color: const Color.fromARGB(125, 133, 133, 133),
           border: Border.all(
             color: Colors.white,
             width: 1,
@@ -30,13 +32,13 @@ class _MenuOptionsScreenState extends State<MainMenuWidget> {
           itemCount: options.length + 2,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {
-              return SizedBox(height: 15.0);
+              return const SizedBox(height: 15.0);
             } else if (index == options.length + 1) {
-              return SizedBox(height: 100.0);
+              return const SizedBox(height: 100.0);
             }
             return Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.all(10.0),
               width: double.infinity,
               height: 80.0,
               decoration: BoxDecoration(

@@ -6,7 +6,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_detail
 
 class NetworkUsageWidget extends StatelessWidget {
   final NetworkInfo? _model;
-  NetworkUsageWidget({required NetworkInfo? model, Key? key})
+  const NetworkUsageWidget({required NetworkInfo? model, Key? key})
       : _model = model,
         super(key: key);
 
@@ -18,11 +18,11 @@ class NetworkUsageWidget extends StatelessWidget {
       iconColor: _model!.hasInternet ? Colors.white : Colors.red,
       child: Column(children: <Widget>[
         Row(children: [
-          MetricsDetails(' network: ${new DateTime.fromMillisecondsSinceEpoch(_model!.lastUpdate)}', value: null)
+          MetricsDetails(' network: ${DateTime.fromMillisecondsSinceEpoch(_model!.lastUpdate)}', value: null)
         ]),
         for (final interface in _model!.interfaces!)
           if (interface.status == NetworkInterfaceStatus.running && interface.name != 'lo')
-            Row(children: [MetricsDetails('${interface.name}', value: interface.ip4)]),
+            Row(children: [MetricsDetails(interface.name, value: interface.ip4)]),
       ]),
     );
   }

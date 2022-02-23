@@ -7,7 +7,7 @@ class TimerProgressBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Rect.fromPoints(Offset(0, 0), Offset(size.width * progress / 100, size.height)), _paint);
+    canvas.drawRect(Rect.fromPoints(const Offset(0, 0), Offset(size.width * progress / 100, size.height)), _paint);
   }
 
   @override

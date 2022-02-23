@@ -7,7 +7,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_detail
 class UptimeInfoWidget extends StatefulWidget {
   final String? uptime;
 
-  UptimeInfoWidget({required String? model, Key? key})
+  const UptimeInfoWidget({required String? model, Key? key})
       : uptime = model,
         super(key: key);
 
@@ -16,7 +16,7 @@ class UptimeInfoWidget extends StatefulWidget {
 }
 
 class _UptimeInfoWidgetState extends State<UptimeInfoWidget> {
-  DateFormat _timeFormatter = DateFormat('Hms');
+  final _timeFormatter = DateFormat('Hms');
 
   @override
   Widget build(BuildContext context) {

@@ -4,25 +4,25 @@ import 'media_slider_item_effect.dart';
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
 class Effect {
-  static const Effect cubeEffect = const Effect._('Cube', _createCubeEffect);
-  static const Effect accordionEffect = const Effect._('Accordion', _createAccordionEffect);
+  static const Effect cubeEffect = Effect._('Cube', _createCubeEffect);
+  static const Effect accordionEffect = Effect._('Accordion', _createAccordionEffect);
   static const Effect backgroundToForegroundEffect =
-  const Effect._('Background To Foreground', _createBackgroundToForegroundEffect);
+      Effect._('Background To Foreground', _createBackgroundToForegroundEffect);
   static const Effect foregroundToBackgroundEffect =
-  const Effect._('Foreground To Background', _createForegroundToBackgroundEffect);
-  static const Effect defaultEffect = const Effect._('Default', _createDefaultEffect);
-  static const Effect depthEffect = const Effect._('Depth', _createDepthEffect);
-  static const Effect flipHorizontalEffect = const Effect._('Flip Horizontal', _createFlipHorizontalEffect);
-  static const Effect flipVerticalEffect = const Effect._('Flip Vertical', _createFlipVerticalEffect);
-  static const Effect parallaxEffect = const Effect._('Parallax', _createParallaxEffect);
-  static const Effect stackEffect = const Effect._('Stack', _createStackEffect);
-  static const Effect tabletEffect = const Effect._('Tablet', _createTabletEffect);
-  static const Effect rotateDownEffect = const Effect._('Rotate Down', _createRotateDownEffect);
-  static const Effect rotateUpEffect = const Effect._('Rotate Up', _createRotateUpEffect);
-  static const Effect zoomOutSlideEffect = const Effect._('Zoom Out', _createZoomOutSlideEffect);
-  static const Effect fadeEffect = const Effect._('Fade', _createFadeEffect);
+      Effect._('Foreground To Background', _createForegroundToBackgroundEffect);
+  static const Effect defaultEffect = Effect._('Default', _createDefaultEffect);
+  static const Effect depthEffect = Effect._('Depth', _createDepthEffect);
+  static const Effect flipHorizontalEffect = Effect._('Flip Horizontal', _createFlipHorizontalEffect);
+  static const Effect flipVerticalEffect = Effect._('Flip Vertical', _createFlipVerticalEffect);
+  static const Effect parallaxEffect = Effect._('Parallax', _createParallaxEffect);
+  static const Effect stackEffect = Effect._('Stack', _createStackEffect);
+  static const Effect tabletEffect = Effect._('Tablet', _createTabletEffect);
+  static const Effect rotateDownEffect = Effect._('Rotate Down', _createRotateDownEffect);
+  static const Effect rotateUpEffect = Effect._('Rotate Up', _createRotateUpEffect);
+  static const Effect zoomOutSlideEffect = Effect._('Zoom Out', _createZoomOutSlideEffect);
+  static const Effect fadeEffect = Effect._('Fade', _createFadeEffect);
 
-  static const Iterable<Effect> values = const [
+  static const Iterable<Effect> values = [
     cubeEffect,
     accordionEffect,
     backgroundToForegroundEffect,
@@ -51,7 +51,7 @@ class Effect {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Effect && runtimeType == other.runtimeType && name == other.name && _implementor == other._implementor;
+      other is Effect && runtimeType == other.runtimeType && name == other.name && _implementor == other._implementor;
 
   MediaSliderItemEffect createEffect() => _implementor();
 
@@ -75,6 +75,6 @@ class Effect {
   static MediaSliderItemEffect _createFadeEffect() => FadeEffect();
 
   static Effect parse(String name) {
-    return values.firstWhere((element) => element.name == name, orElse: ()=>defaultEffect);
+    return values.firstWhere((element) => element.name == name, orElse: () => defaultEffect);
   }
 }

@@ -17,8 +17,7 @@ import 'package:redux/redux.dart';
 ///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
 ///  * [IndexedWidgetBuilder], which is similar but also takes an index.
 ///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
-typedef BlinkTransitionBuilder = Widget Function(
-    BuildContext context, Widget child, Animation<Color> animation);
+typedef BlinkTransitionBuilder = Widget Function(BuildContext context, Widget child, Animation<Color> animation);
 
 class BlinkAnimation extends StatefulWidget {
   final int countBlink;
@@ -27,117 +26,103 @@ class BlinkAnimation extends StatefulWidget {
   final bool hideAfterBlink;
 
   const BlinkAnimation(
-      {Key? key,
-      this.countBlink: 3,
-      this.milliseconds: 1500,
-      required this.child,
-      this.hideAfterBlink: true})
+      {Key? key, this.countBlink = 3, this.milliseconds = 1500, required this.child, this.hideAfterBlink = true})
       : super(key: key);
   @override
-  _BlinkAnimationState createState() =>
-      _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
+  _BlinkAnimationState createState() => _BlinkAnimationState();
 }
 
 class CommonHeaderWidget extends StatelessWidget {
+  const CommonHeaderWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // return Container();
-    return Container(
-      child: StoreConnector<GlobalState, Store<GlobalState>>(
-        converter: (store) => store,
-        builder: (context, Store<GlobalState> store) => Stack(
-          children: <Widget>[
-            if (!isLinuxEmbedded)
-              Positioned(
-                right: 0,
-                top: 0,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () =>
-                      store.dispatch(ChangeDebugAction(!store.state.isDebug)),
-                  child: Container(
-                      color: Colors.transparent, width: 30, height: 30),
-                ),
+    return StoreConnector<GlobalState, Store<GlobalState>>(
+      converter: (store) => store,
+      builder: (context, Store<GlobalState> store) => Stack(
+        children: <Widget>[
+          if (!isLinuxEmbedded)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
+                child: Container(color: Colors.transparent, width: 30, height: 30),
               ),
-            Row(
-              children: <Widget>[
-                if (store.state.storageStatus == StorageStatusEnum.off)
-                  BlinkAnimation(
-                    key: const Key('cloud_off'),
+            ),
+          Row(
+            children: <Widget>[
+              if (store.state.storageStatus == StorageStatusEnum.off)
+                const BlinkAnimation(
+                  key: Key('cloud_off'),
+                  child: Icon(
+                    Icons.cloud_off,
+                    size: 24.0,
+                    color: Colors.red,
+                  ),
+                  hideAfterBlink: false,
+                )
+              else if (store.state.storageStatus == StorageStatusEnum.download)
+                const BlinkAnimation(
+                  key: Key('cloud_download'),
+                  child: Icon(
+                    Icons.cloud_download,
+                    size: 24.0,
+                    color: Colors.white,
+                  ),
+                )
+              else if (store.state.storageStatus == StorageStatusEnum.done)
+                const BlinkAnimation(
+                    key: Key('cloud_done'),
                     child: Icon(
-                      Icons.cloud_off,
-                      size: 24.0,
-                      color: Colors.red,
-                    ),
-                    hideAfterBlink: false,
-                  )
-                else if (store.state.storageStatus ==
-                    StorageStatusEnum.download)
-                  BlinkAnimation(
-                    key: const Key('cloud_download'),
-                    child: Icon(
-                      Icons.cloud_download,
+                      Icons.cloud_done,
                       size: 24.0,
                       color: Colors.white,
-                    ),
-                  )
-                else if (store.state.storageStatus == StorageStatusEnum.done)
-                  BlinkAnimation(
-                      key: const Key('cloud_done'),
-                      child: Icon(
-                        Icons.cloud_done,
-                        size: 24.0,
-                        color: Colors.white,
-                      )),
-                if (store.state.hasInternet)
-                  BlinkAnimation(
-                      key: const Key('hasInternet'),
-                      child: Icon(
-                        Icons.signal_wifi_4_bar,
-                        size: 24.0,
-                        color: Colors.white,
-                      ))
-                else
-                  BlinkAnimation(
-                    key: const Key('noInternet'),
+                    )),
+              if (store.state.hasInternet)
+                const BlinkAnimation(
+                    key: Key('hasInternet'),
                     child: Icon(
-                      Icons.signal_wifi_off,
+                      Icons.signal_wifi_4_bar,
                       size: 24.0,
-                      color: Colors.red,
-                    ),
-                    hideAfterBlink: false,
+                      color: Colors.white,
+                    ))
+              else
+                const BlinkAnimation(
+                  key: Key('noInternet'),
+                  child: Icon(
+                    Icons.signal_wifi_off,
+                    size: 24.0,
+                    color: Colors.red,
                   ),
-                if (store.state.isPaused)
-                  BlinkAnimation(
-                    key: const Key('isPaused'),
-                    child: Icon(
-                      Icons.pause_circle,
-                      size: 24.0,
-                      color: Colors.red,
-                    ),
-                    hideAfterBlink: false,
-                  )
-              ],
-            ),
-          ],
-        ),
+                  hideAfterBlink: false,
+                ),
+              if (store.state.isPaused)
+                const BlinkAnimation(
+                  key: Key('isPaused'),
+                  child: Icon(
+                    Icons.pause_circle,
+                    size: 24.0,
+                    color: Colors.red,
+                  ),
+                  hideAfterBlink: false,
+                )
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-class _BlinkAnimationState extends State<BlinkAnimation>
-    with SingleTickerProviderStateMixin {
+class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
   late Animation<double> animation;
   late AnimationController controller;
-  int countBlink;
-  final int milliseconds;
-  final Widget child;
-  final bool hideAfterBlink;
 
-  _BlinkAnimationState(
-      this.countBlink, this.milliseconds, this.hideAfterBlink, this.child);
+  _BlinkAnimationState();
 
   @override
   Widget build(BuildContext context) {
@@ -146,20 +131,22 @@ class _BlinkAnimationState extends State<BlinkAnimation>
         builder: (BuildContext context, Widget? child) {
           return Opacity(
             opacity: _opacityTween.evaluate(animation),
-            child: this.child,
+            child: widget.child,
           );
         });
   }
 
+  @override
   dispose() {
     controller.dispose();
     super.dispose();
   }
 
+  @override
   initState() {
     super.initState();
-    controller = AnimationController(
-        duration: Duration(milliseconds: this.milliseconds), vsync: this);
+    int countBlink = widget.countBlink;
+    controller = AnimationController(duration: Duration(milliseconds: widget.milliseconds), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -169,7 +156,7 @@ class _BlinkAnimationState extends State<BlinkAnimation>
         if (countBlink != 0) {
           controller.forward();
         } else {
-          controller.value = hideAfterBlink ? 0 : 1;
+          controller.value = widget.hideAfterBlink ? 0 : 1;
           controller.stop(canceled: true);
         }
       }

@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/src/command/hardware_commands.dart';
-import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
@@ -30,15 +29,15 @@ import 'package:redux/redux.dart';
 import 'fade_widget.dart';
 
 class SlideShowPage extends StatefulWidget {
-  SlideShowPage({Key? key}) : super(key: key);
+  const SlideShowPage({Key? key}) : super(key: key);
 
   @override
   _SlideShowPageState createState() => _SlideShowPageState();
 }
 
 final _loaderWidget = Container(
-  key: Key('loader'),
-  child: Center(
+  key: const Key('loader'),
+  child: const Center(
     child: SizedBox(
       child: CircularProgressIndicator(),
       width: 60,
@@ -49,7 +48,7 @@ final _loaderWidget = Container(
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
-  static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
+  static final GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   late AnimationController _mediaItemLoopController;
   late AnimationController _effectController;
@@ -76,7 +75,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   bool get isItemChanging => _currentWidget != _nextWidget;
 
-  Key _fadeWidgetKey = Key('fadeWidget');
+  final Key _fadeWidgetKey = const Key('fadeWidget');
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +96,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
               builder: (context, Store<GlobalState> store) {
                 return store.state.isDebug ? DebugWidget(_frontendService) : Container();
               }),
-        CommonHeaderWidget(),
+        const CommonHeaderWidget(),
       ],
     ));
   }
@@ -107,9 +106,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _effectController.dispose();
     _mediaItemLoopController.dispose();
     _fadeController.dispose();
-    _subs.forEach((element) {
+    for (var element in _subs) {
       element.cancel();
-    });
+    }
     _subs.clear();
     super.dispose();
   }
@@ -123,7 +122,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }));
 
     final allowedETmp = _appConfig.slideshow.allowedEffects;
-    _log.info('Config effects = ${allowedETmp}');
+    _log.info('Config effects = $allowedETmp');
     if (allowedETmp.isNotEmpty) {
       _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
     }
@@ -131,7 +130,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     if (_allowedEffects.isEmpty) {
       _allowedEffects.addAll(Effect.values);
     }
-    _log.info('Allowed effects: ${_allowedEffects}');
+    _log.info('Allowed effects: $_allowedEffects');
 
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
@@ -176,12 +175,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void _fetchNextMediaItem() async {
     _log.info('Change image');
     await _frontendService.storageNext();
-    var mediaItem = await _getCurrentMediaItem();
-    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
+    final mediaItem = await _getCurrentMediaItem();
+    final itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
     if (mediaItem.uri != null) {
       _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
-    _log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
+    //_log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
@@ -189,14 +188,14 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       if (itemWidget is ImageWidget) {
         await itemWidget.precache(context);
       }
-      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+      _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);
     } catch (e, st) {
       _log.warning('Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e, st);
       _nextWidget = _loaderWidget;
     }
 
     _transitionWidget = AnimatedBuilder(
-        key: Key('anim'),
+        key: const Key('anim'),
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
@@ -299,7 +298,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       _mediaItemLoopController.stop();
       _fadeController.forward();
     } else {
-      await Future<void>.delayed(Duration(seconds: 4));
+      await Future<void>.delayed(const Duration(seconds: 4));
       // Double check, after delay
       if (_screenState == enabled) {
         _fadeController.reverse();

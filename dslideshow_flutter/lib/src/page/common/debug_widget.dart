@@ -11,7 +11,7 @@ class DebugWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
-      SystemInfoWidget(),
+      const SystemInfoWidget(),
       Positioned(
         top: 10.0,
         right: 70.0,
@@ -19,23 +19,22 @@ class DebugWidget extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () => _frontendService.pushButton(ButtonType.pause),
-              child: Icon(Icons.pause, size: 40.0),
+              child: const Icon(Icons.pause, size: 40.0),
             ),
             ElevatedButton(
-              onPressed: () =>
-                  _frontendService.pushButton(ButtonType.screentoggle),
-              child: Icon(Icons.screenshot, size: 40.0),
+              onPressed: () => _frontendService.pushButton(ButtonType.screentoggle),
+              child: const Icon(Icons.screenshot, size: 40.0),
             ),
             ElevatedButton(
               onPressed: () => _frontendService.pushButton(ButtonType.menu),
-              child: Icon(Icons.menu, size: 40.0),
+              child: const Icon(Icons.menu, size: 40.0),
             ),
             ElevatedButton(
               onPressed: () => _frontendService.pushButton(ButtonType.select),
-              child: Icon(Icons.select_all_outlined, size: 40.0),
+              child: const Icon(Icons.select_all_outlined, size: 40.0),
             ),
             ElevatedButton(
-              child: Icon(Icons.settings, size: 40.0),
+              child: const Icon(Icons.settings, size: 40.0),
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/config');
               },

@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 
+@immutable
 class MetricsDetails<T> extends StatelessWidget {
   final String title;
   final T? value;
   final TextStyle? style;
 
-  MetricsDetails(this.title, {required this.value, this.style});
+  const MetricsDetails(this.title, {Key? key, required this.value, this.style}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Text(

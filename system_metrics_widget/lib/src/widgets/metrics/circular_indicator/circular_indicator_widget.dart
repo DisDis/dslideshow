@@ -42,7 +42,7 @@ class CircularArcPainter extends CustomPainter {
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width / 2, size.height / 2) - (width / 2);
-    final startAngle = -math.pi / 2;
+    const startAngle = -math.pi / 2;
     final sweepAngle = 2 * math.pi * percent;
 
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, 2 * math.pi, false, backgroundPaint);
@@ -54,40 +54,34 @@ class CircularArcPainter extends CustomPainter {
 }
 
 class CircularIndicatorWidget extends StatefulWidget {
-  final String _title;
+  final String title;
   final double percent;
-  final Color _endColor = Colors.red;
-  final Color _startColor = Colors.lightGreenAccent;
-  final Color _backgroundColor;
+  final Color endColor = Colors.red;
+  final Color startColor = Colors.lightGreenAccent;
+  final Color backgroundColor;
 
   CircularIndicatorWidget({
+    Key? key,
     required this.percent,
-    String? title,
-    Color backgroundColor = Colors.white70,
-  })  : _backgroundColor = backgroundColor,
-        _title = title ?? '${(percent * 100).round()}%';
-
-  Color get backgroundColor => _backgroundColor;
-
-  Color get endColor => _endColor;
-
-  Color get startColor => _startColor;
-
-  String get title => _title;
+    String? titleI,
+    this.backgroundColor = Colors.white70,
+  })  : title = titleI ?? '${(percent * 100).round()}%',
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CircularIndicatorWidgetState();
 }
 
 class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       child: Center(
         child: Text(
-          '${widget.title}',
+          widget.title,
           style: Settings.loadAverageDetailsTextStyle,
         ),
       ),

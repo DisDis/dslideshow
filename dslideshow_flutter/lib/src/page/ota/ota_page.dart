@@ -10,8 +10,8 @@ import 'package:logging/logging.dart';
 import 'package:xterm/flutter.dart';
 import 'package:xterm/terminal/terminal.dart';
 import 'package:xterm/terminal/terminal_backend.dart';
-// import 'package:xterm/theme/terminal_style.dart';
 
+@immutable
 class OTAPage extends StatefulWidget {
   static void processingOTAReady(BuildContext context, bool isReady) {
     if (isReady) {
@@ -21,7 +21,7 @@ class OTAPage extends StatefulWidget {
     }
   }
 
-  OTAPage({Key? key}) : super(key: key);
+  const OTAPage({Key? key}) : super(key: key);
 
   @override
   State<OTAPage> createState() => _OTAPageState();
@@ -107,9 +107,9 @@ class _OTAPageState extends State<OTAPage> {
 
   @override
   void dispose() {
-    _subs.forEach((element) {
+    for (var element in _subs) {
       element.cancel();
-    });
+    }
     _subs.clear();
     super.dispose();
   }
@@ -118,56 +118,54 @@ class _OTAPageState extends State<OTAPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        body: Container(
-          child: Column(
-            children: [
-              Text(
-                "OTA - ${_info.status}",
-                style: TextStyle(color: Colors.white),
+        body: Column(
+          children: [
+            Text(
+              "OTA - ${_info.status}",
+              style: const TextStyle(color: Colors.white),
+            ),
+            const Text(
+              "Version: v${ApplicationInfo.frontendVersion}",
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+            Text(
+              "Code: ${_info.code}",
+              style: const TextStyle(color: Colors.white, fontSize: 60),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: LinearProgressIndicator(
+                value: _info.uploadingPercent / 100,
+                semanticsLabel: 'OTA progress',
+                minHeight: 15,
               ),
-              Text(
-                "Version: v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(color: Colors.white, fontSize: 25),
-              ),
-              Text(
-                "Code: ${_info.code}",
-                style: TextStyle(color: Colors.white, fontSize: 60),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: LinearProgressIndicator(
-                  value: _info.uploadingPercent / 100,
-                  semanticsLabel: 'OTA progress',
-                  minHeight: 15,
-                ),
-              ),
-              // ElevatedButton(
-              //   onPressed: _runTestCommand,
-              //   child: Text('TEST'),
-              // ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/config');
-                },
-                child: Text('Config'),
-              ),
-              Container(
-                  height: 600,
-                  //width: 300,
-                  child: //SingleChildScrollView(
+            ),
+            // ElevatedButton(
+            //   onPressed: _runTestCommand,
+            //   child: Text('TEST'),
+            // ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/config');
+              },
+              child: const Text('Config'),
+            ),
+            SizedBox(
+                height: 600,
+                //width: 300,
+                child: //SingleChildScrollView(
 
-                      // for Vertical scrolling
-                      //scrollDirection: Axis.vertical,
-                      //child:
-                      //SafeArea(
-                      //child:
-                      TerminalView(
-                    terminal: terminal,
-                    // style: TerminalStyle(fontFamily: ['Cascadia Mono']),
-                    //)
-                  )),
-            ],
-          ),
+                    // for Vertical scrolling
+                    //scrollDirection: Axis.vertical,
+                    //child:
+                    //SafeArea(
+                    //child:
+                    TerminalView(
+                  terminal: terminal,
+                  // style: TerminalStyle(fontFamily: ['Cascadia Mono']),
+                  //)
+                )),
+          ],
         ));
   }
 

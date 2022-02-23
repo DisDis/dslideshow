@@ -140,7 +140,9 @@ class OTAService implements RpcService {
   }
 
   Future<RpcResult> _executeOTAGetInfoCommand(OTAGetInfoCommand command) async {
-    return new OTAGetInfoCommandResult((b) => b.id = command.id);
+    return new OTAGetInfoCommandResult((b) => b
+      ..id = command.id
+      ..info = _info.toBuilder());
   }
 
   void _updateInfo(OTAInfo newValue) {

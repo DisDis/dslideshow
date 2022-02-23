@@ -10,12 +10,15 @@ import 'item_widget.dart';
 
 class VideoWidget extends StatefulWidget implements ItemWidget {
   final File mediaFile;
+  @override
   final MediaItem item;
 
-  VideoWidget(this.item) : this.mediaFile = new File(item.uri!.toFilePath());
+  VideoWidget(this.item, {Key? key})
+      : mediaFile = File(item.uri!.toFilePath()),
+        super(key: key);
 
   @override
-  _VideoWidgetState createState() => _VideoWidgetState(mediaFile);
+  _VideoWidgetState createState() => _VideoWidgetState();
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
@@ -24,18 +27,14 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   static final Logger _log = Logger('_VideoWidgetState');
 
-  final File videoFile;
-
   late VideoPlayerController _controller;
 
-  _VideoWidgetState(this.videoFile);
+  _VideoWidgetState();
 
   @override
   Widget build(BuildContext context) {
     if (!isVideoSupport) {
-      return Container(
-        child: Text('Video not supported'),
-      );
+      return const Text('Video not supported');
     }
 
     return Center(
@@ -60,7 +59,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   void initState() {
     super.initState();
     if (isVideoSupport) {
-      _controller = VideoPlayerController.file(videoFile)
+      _controller = VideoPlayerController.file(widget.mediaFile)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           setState(() {});

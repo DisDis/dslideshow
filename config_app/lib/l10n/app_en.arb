@@ -1,0 +1,9 @@
+{
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },
+    "connectButtonText": "Connect",
+    "urlInputText": "Url",
+    "codeInputText": "Code"
+}

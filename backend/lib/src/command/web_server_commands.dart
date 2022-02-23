@@ -1,6 +1,5 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
 
 part 'web_server_commands.g.dart';

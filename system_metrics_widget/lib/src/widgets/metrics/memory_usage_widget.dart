@@ -9,12 +9,13 @@ class MemoryUsageWidget extends StatelessWidget {
   final int? totalSwapMemory;
   final int? usedSwapMemory;
 
-  MemoryUsageWidget({
+  const MemoryUsageWidget({
+    Key? key,
     required this.totalMemory,
     required this.usedMemory,
     required this.totalSwapMemory,
     required this.usedSwapMemory,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

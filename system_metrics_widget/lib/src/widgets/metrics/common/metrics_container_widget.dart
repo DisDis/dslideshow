@@ -6,7 +6,7 @@ class MetricsContainerWidget extends StatelessWidget {
   final Widget child;
   final Color iconColor;
 
-  MetricsContainerWidget(
+  const MetricsContainerWidget(
       {required this.iconData,
       required this.backgroundColor,
       required this.child,
@@ -23,7 +23,7 @@ class MetricsContainerWidget extends StatelessWidget {
             child: Container(
               color: backgroundColor,
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: Icon(
                   iconData,
                   color: iconColor,
@@ -36,7 +36,7 @@ class MetricsContainerWidget extends StatelessWidget {
             flex: 6,
             child: Container(
               color: backgroundColor,
-              child: Padding(padding: EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8), child: child),
+              child: Padding(padding: const EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8), child: child),
             ),
           ),
         ],

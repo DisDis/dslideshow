@@ -13,22 +13,20 @@ import 'package:system_metrics_widget/src/widgets/metrics/uptime_info_widget.dar
 class SystemInfoMetrics extends StatelessWidget {
   final SystemInfo _model;
 
-  SystemInfoMetrics({required SystemInfo model, Key? key})
+  const SystemInfoMetrics({required SystemInfo model, Key? key})
       : _model = model,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final currentOrientation = MediaQuery.of(context).orientation;
+    // final currentOrientation = MediaQuery.of(context).orientation;
 
-    var shortestSide = MediaQuery.of(context).size.shortestSide;
-    var useMobileLayout = shortestSide < 600;
-    print(currentOrientation);
-    print(useMobileLayout);
+    // var shortestSide = MediaQuery.of(context).size.shortestSide;
+    // var useMobileLayout = shortestSide < 600;
 
     return OrientationBuilder(builder: (context, orientation) {
       return StaggeredGridView.count(
-        staggeredTiles: [
+        staggeredTiles: const [
           StaggeredTile.fit(8),
           StaggeredTile.fit(5),
           StaggeredTile.fit(3),
@@ -40,7 +38,7 @@ class SystemInfoMetrics extends StatelessWidget {
         crossAxisCount: 8,
         scrollDirection: Axis.vertical,
         children: <Widget>[
-          CurrentTimeWidget(),
+          const CurrentTimeWidget(),
           UptimeInfoWidget(model: _model.updateInfo!.uptime),
           CpuInfoWidget(
             cpu: _model.cpuInfo,
@@ -57,8 +55,7 @@ class SystemInfoMetrics extends StatelessWidget {
             usedSwapMemory: _model.updateInfo!.swapUsed,
           ),
           DiskUsageWidget(
-            totalMemory: _model.updateInfo!.diskUsed! +
-                _model.updateInfo!.diskAvailable!,
+            totalMemory: _model.updateInfo!.diskUsed! + _model.updateInfo!.diskAvailable!,
             usedMemory: _model.updateInfo!.diskUsed,
             usagePercent: _model.updateInfo!.diskUsedPercent,
           ),

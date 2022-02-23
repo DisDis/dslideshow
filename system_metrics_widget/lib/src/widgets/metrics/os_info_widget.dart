@@ -7,14 +7,14 @@ import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_detail
 
 class OSInfoWidget extends StatelessWidget {
   final OSInfo? _model;
+  final iconData = isLinuxEmbedded ? FlutterIcons.linux_faw : FlutterIcons.logo_android_ion;
 
-  OSInfoWidget({required OSInfo? model, Key? key})
+  const OSInfoWidget({required OSInfo? model, Key? key})
       : _model = model,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final iconData = isLinuxEmbedded ? FlutterIcons.linux_faw : FlutterIcons.logo_android_ion;
     return MetricsContainerWidget(
       iconData: iconData,
       backgroundColor: Colors.deepPurpleAccent,

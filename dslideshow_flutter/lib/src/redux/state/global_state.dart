@@ -7,7 +7,7 @@ import 'package:built_value/serializer.dart';
 part 'global_state.g.dart';
 
 abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
-  static final Duration defaultDelayBetweenItems = new Duration(seconds: 15);
+  static const Duration defaultDelayBetweenItems = Duration(seconds: 15);
 
   static Serializer<GlobalState> get serializer => _$globalStateSerializer;
 
@@ -59,8 +59,7 @@ class StorageStatusEnum extends EnumClass {
   /// Declare a static final [Serializers] field called `serializer`.
   /// The built_value code generator will provide the implementation. You need
   /// to do this for every type you want to serialize.
-  static Serializer<StorageStatusEnum> get serializer =>
-      _$storageStatusEnumSerializer;
+  static Serializer<StorageStatusEnum> get serializer => _$storageStatusEnumSerializer;
 
   static BuiltSet<StorageStatusEnum> get values => _$values;
 

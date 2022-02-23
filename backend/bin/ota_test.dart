@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/fake/fake_remote_service.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_service.dart';
-import 'package:dslideshow_common/rpc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/injector_module.dart';

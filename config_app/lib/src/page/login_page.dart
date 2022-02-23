@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
@@ -8,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class AuthPage extends StatefulWidget {
+  const AuthPage({Key? key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -21,13 +21,13 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  // final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<AuthPage> createState() => _AuthPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AuthPageState extends State<AuthPage> {
   static final Logger _log = Logger('_LoginPageState');
   final codeTextController = TextEditingController(text: '123');
   final urlTextController = TextEditingController(
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(AppLocalizations.of(context)!.helloWorld),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -92,24 +92,24 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextField(
               controller: urlTextController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Url',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: AppLocalizations.of(context)!.urlInputText,
               ),
             ),
             TextField(
               obscureText: true,
               controller: codeTextController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Code',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: AppLocalizations.of(context)!.codeInputText,
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 _clientAuth(urlTextController.text, codeTextController.text);
               },
-              child: const Text('Connect'),
+              child: Text(AppLocalizations.of(context)!.connectButtonText),
             ),
             ElevatedButton(
               onPressed: () {
@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  static final prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
+  static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
   void executeWSConfigContentCommand(WSConfigContentCommand msg) {
     _log.info('Recived config:');
     _log.info(prettyPrintJSONEncode.convert(json.decode(msg.content)));
@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class ClientService {
   static int _id = 0;
-  final _log = new Logger('ClientService [${_id++}]');
+  final _log = Logger('ClientService [${_id++}]');
   WebSocketChannel? channel;
   bool _isAuth = false;
   bool get isAuth => _isAuth;

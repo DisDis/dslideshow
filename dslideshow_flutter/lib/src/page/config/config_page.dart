@@ -12,7 +12,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 
 class ConfigPage extends StatefulWidget {
-  ConfigPage({Key? key}) : super(key: key);
+  const ConfigPage({Key? key}) : super(key: key);
 
   @override
   _ConfigPageState createState() => _ConfigPageState();
@@ -21,7 +21,7 @@ class ConfigPage extends StatefulWidget {
 class _ConfigPageState extends State<ConfigPage> {
   static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
-  static final Random rnd = new Random();
+  static final rnd = Random();
   final AppConfig _appConfig = injector.get<AppConfig>();
   final FrontendService _frontendService = injector.get<FrontendService>();
   static const INIT_CODE = r'_$_$_';
@@ -50,7 +50,7 @@ class _ConfigPageState extends State<ConfigPage> {
     return Center(
       child: Column(
         children: <Widget>[
-          CommonHeaderWidget(),
+          const CommonHeaderWidget(),
           QrImage(
             backgroundColor: Colors.white,
             data: _urlData,
@@ -62,25 +62,25 @@ class _ConfigPageState extends State<ConfigPage> {
                   StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
               builder: (context, callback) => ElevatedButton(
                     onPressed: callback,
-                    child: Text('StorageChange'),
+                    child: const Text('StorageChange'),
                   )),
           ElevatedButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/slideshow');
             },
-            child: Text('SlideShow'),
+            child: const Text('SlideShow'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/ota');
             },
-            child: Text('OTA'),
+            child: const Text('OTA'),
           ),
           ElevatedButton(
             onPressed: () {
               _appConfig.toFile();
             },
-            child: Text('Save config'),
+            child: const Text('Save config'),
           ),
         ],
       ),

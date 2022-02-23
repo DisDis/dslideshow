@@ -18,7 +18,7 @@ class AnimatedLogo extends AnimatedWidget {
   final String text;
   final double size;
 
-  AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation})
+  const AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation})
       : super(key: key, listenable: animation);
 
   // String get welcomeText {
@@ -29,6 +29,7 @@ class AnimatedLogo extends AnimatedWidget {
   //   );
   // }
 
+  @override
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable as Animation<double>;
     return Center(
@@ -43,9 +44,9 @@ class AnimatedLogo extends AnimatedWidget {
               style: TextStyle(color: Colors.white, fontSize: size),
               textAlign: TextAlign.center,
             ))),
-            Text("front: v${ApplicationInfo.frontendVersion}",
+            const Text("front: v${ApplicationInfo.frontendVersion}",
                 style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
-            Text("back: v${ApplicationInfo.backendVersion}",
+            const Text("back: v${ApplicationInfo.backendVersion}",
                 style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic))
           ],
         ),
@@ -55,6 +56,9 @@ class AnimatedLogo extends AnimatedWidget {
 }
 
 class WelcomePage extends StatefulWidget {
+  const WelcomePage({Key? key}) : super(key: key);
+
+  @override
   _WelcomePageState createState() => _WelcomePageState();
 }
 
@@ -80,9 +84,9 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
   @override
   void dispose() {
     controller.dispose();
-    _subs.forEach((element) {
+    for (var element in _subs) {
       element.cancel();
-    });
+    }
     _subs.clear();
     super.dispose();
   }

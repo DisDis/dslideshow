@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class UsageBar extends StatefulWidget {
   final int? usagePercent;
 
-  UsageBar({required this.usagePercent});
+  const UsageBar({Key? key, required this.usagePercent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _UsageBarState();
@@ -24,7 +24,7 @@ class UsageBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final transitionWidth = 8.0;
+    const transitionWidth = 8.0;
     final usageEndPosition = size.width * usagePercent / 100;
     final hasTransition = math.min(usageEndPosition, size.width - usageEndPosition) > 10;
 
@@ -48,7 +48,7 @@ class UsageBarPainter extends CustomPainter {
       ).createShader(freeRect);
 
     final transitionRect = hasTransition
-        ? (usedRect.topRight - Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
+        ? (usedRect.topRight - const Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
         : Rect.zero;
 
     final Paint transitionPaint = Paint()
@@ -70,7 +70,8 @@ class UsageBarPainter extends CustomPainter {
 }
 
 class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
-  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {

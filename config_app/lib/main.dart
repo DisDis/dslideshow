@@ -2,6 +2,7 @@ import 'package:config_app/src/page/login_page.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final Logger _log = Logger('main');
 void main() {
@@ -19,18 +20,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DSlideShow config',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        // backgroundColor: Colors.black,
+        brightness: Brightness.dark,
+        // primaryColor: Colors.lightBlue[800],
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+
+      //AppLocalizations.supportedLocales,
+      home: const AuthPage(),
+      routes: <String, WidgetBuilder>{
+        '/auth': (BuildContext context) => const AuthPage(),
+        //'/config': (BuildContext context) => const ConfigPage(),
+      },
+      //onGenerateRoute: _onGenerateRoute,
     );
   }
 }

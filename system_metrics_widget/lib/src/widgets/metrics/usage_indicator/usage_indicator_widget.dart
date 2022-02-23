@@ -10,13 +10,14 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
   final String used;
   final int? usagePercent;
 
-  UsageIndicatorWidget({
+  const UsageIndicatorWidget({
+    Key? key,
     required this.title,
     required this.total,
     required this.free,
     required this.used,
     required this.usagePercent,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
           style: Settings.metricsDetailsTextStyle,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.only(top: 4),
           child: UsageBar(
             usagePercent: usagePercent,
           ),

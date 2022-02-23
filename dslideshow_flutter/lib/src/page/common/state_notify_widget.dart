@@ -6,26 +6,26 @@ class StateNotify extends StatefulWidget {
   const StateNotify({Key? key, this.isPaused}) : super(key: key);
 
   @override
-  StateNotifyState createState() => StateNotifyState(isPaused);
+  StateNotifyState createState() => StateNotifyState();
 }
 
 class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin {
   late AnimationController _controller;
   bool? _isPaused;
 
-  StateNotifyState(this._isPaused);
+  StateNotifyState();
 
   @override
   void initState() {
     super.initState();
-
+    _isPaused = widget.isPaused;
     _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
     if (_isPaused!) {
       _controller.forward().orCancel.then((value) => _controller.reverse());
     }
   }
 
-  void set isPaused(bool value) {
+  set isPaused(bool value) {
     if (_isPaused == value) {
       return;
     }
@@ -76,7 +76,7 @@ class StaggerAnimation extends StatelessWidget {
         ).animate(
           CurvedAnimation(
             parent: controller,
-            curve: Interval(
+            curve: const Interval(
               0.0,
               0.3,
               curve: Curves.ease,
@@ -89,7 +89,7 @@ class StaggerAnimation extends StatelessWidget {
         ).animate(
           CurvedAnimation(
             parent: controller,
-            curve: Interval(
+            curve: const Interval(
               0.3,
               0.500,
               curve: Curves.ease,
@@ -102,7 +102,7 @@ class StaggerAnimation extends StatelessWidget {
         ).animate(
           CurvedAnimation(
             parent: controller,
-            curve: Interval(
+            curve: const Interval(
               0.4,
               0.70,
               curve: Curves.easeIn,
@@ -123,7 +123,7 @@ class StaggerAnimation extends StatelessWidget {
     return Opacity(
       opacity: opacity.value,
       child: Container(
-        color: Color.fromARGB(125, 133, 133, 133),
+        color: const Color.fromARGB(125, 133, 133, 133),
         child: Opacity(
           opacity: opacityIcon.value,
           child: Center(

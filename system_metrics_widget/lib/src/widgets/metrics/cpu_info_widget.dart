@@ -23,7 +23,7 @@ class CpuInfoWidget extends StatelessWidget {
       iconData: FlutterIcons.cpu_fea,
       backgroundColor: Colors.purple.shade800,
       child: Column(children: <Widget>[
-        Row(children: [MetricsDetails('cpu', value: null)]),
+        Row(children: const [MetricsDetails('cpu', value: null)]),
         Row(children: [MetricsDetails('model', value: cpu!.model)]),
         Row(children: [MetricsDetails('hardware', value: cpu!.hardware)]),
         Row(children: [MetricsDetails('revision', value: cpu!.revision)]),
@@ -31,8 +31,8 @@ class CpuInfoWidget extends StatelessWidget {
         Row(children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.purple.shade200))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,7 +40,7 @@ class CpuInfoWidget extends StatelessWidget {
                   Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(6),
                         child: Text(
                           'LA1 - ${cpuLoad1!.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,
@@ -59,7 +59,7 @@ class CpuInfoWidget extends StatelessWidget {
                   Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(6),
                         child: Text(
                           'LA5 - ${cpuLoad5!.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,
@@ -78,7 +78,7 @@ class CpuInfoWidget extends StatelessWidget {
                   Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(6),
                         child: Text(
                           'LA15 - ${cpuLoad15!.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,

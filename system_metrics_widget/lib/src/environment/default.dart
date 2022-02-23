@@ -7,4 +7,4 @@
 //   throw UnimplementedError();
 // }
 
-final bool isLinuxEmbedded = false;
+const bool isLinuxEmbedded = false;

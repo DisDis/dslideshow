@@ -15,6 +15,7 @@ import 'package:path/path.dart' as path;
 class ImageWidget extends StatelessWidget implements ItemWidget {
   static final Logger _log = Logger('ImageWidget');
   Image? _image;
+  @override
   final MediaItem item;
   final SlideShowConfig _config;
 
@@ -22,7 +23,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
 
   ImageWidget(this.item, this._config) : super(key: Key('img:${item.uri!.toFilePath()}')) {
     if (isGif) {
-      _image = Image.memory(new File(item.uri!.toFilePath()).readAsBytesSync(),
+      _image = Image.memory(File(item.uri!.toFilePath()).readAsBytesSync(),
           errorBuilder: (context, _, __) => Container(), fit: BoxFit.contain, filterQuality: FilterQuality.high);
     }
   }
@@ -31,10 +32,14 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
   Widget build(BuildContext context) => _image != null ? _image! : Container();
 
   Future<void> precache(BuildContext context) async {
-    if (isGif) {
-      return precacheImage(_image!.image, context);
+    if (_image == null) {
+      await _createFullscreenImage(context);
     }
-    ui.Image imageSrc = await loadImageFromFile(new File(item.uri!.toFilePath()));
+    return precacheImage(_image!.image, context);
+  }
+
+  Future<void> _createFullscreenImage(BuildContext context) async {
+    ui.Image imageSrc = await loadImageFromFile(File(item.uri!.toFilePath()));
 
     final recorder = ui.PictureRecorder();
     final paintBlur = Paint();
@@ -76,7 +81,6 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
         await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
     final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
     _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context, _, __) => Container());
-    return precacheImage(_image!.image, context);
   }
 
   /// Paints an image into the given rectangle on the canvas.

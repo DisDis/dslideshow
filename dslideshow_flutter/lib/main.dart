@@ -39,12 +39,12 @@ void main() async {
   }
   try {
     RemoteService? _backendService;
-    RemoteService? _OTAService;
+    RemoteService? _oTAService;
 
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
 
-    _log.info("Config path: '${localPath}'");
+    _log.info("Config path: '$localPath'");
 
     final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
@@ -52,7 +52,7 @@ void main() async {
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();
-      return FrontendService(_config, _backendService!, _OTAService!, store);
+      return FrontendService(_config, _backendService!, _oTAService!, store);
     });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -66,9 +66,9 @@ void main() async {
     await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
     _backendService = RemoteService(_backendServiceIsolate, serializers);
 
-    IsolateRunner _OTAServiceIsolate = await IsolateRunner.spawn();
-    await _OTAServiceIsolate.run(ota.main, <IsolateRunner>[currentIsoRunner]);
-    _OTAService = RemoteService(_OTAServiceIsolate, serializers);
+    IsolateRunner _oTAServiceIsolate = await IsolateRunner.spawn();
+    await _oTAServiceIsolate.run(ota.main, <IsolateRunner>[currentIsoRunner]);
+    _oTAService = RemoteService(_oTAServiceIsolate, serializers);
 
     final _frontendService = injector.get<FrontendService>();
     initRpc(_frontendService, serializers);
@@ -95,7 +95,7 @@ class FlutterReduxApp extends StatelessWidget {
   final Store<GlobalState>? store;
   // static final _frontendService = injector.get<FrontendService>();
   // static StreamSubscription? _otaSubscription;
-  FlutterReduxApp({Key? key, this.store}) : super(key: key);
+  const FlutterReduxApp({Key? key, this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +104,18 @@ class FlutterReduxApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(backgroundColor: Colors.black),
-          localizationsDelegates: [],
-          supportedLocales: [
-            const Locale('en'), // English
+          localizationsDelegates: const [],
+          supportedLocales: const [
+            Locale('en'), // English
             // ... other locales the app supports
           ],
           home: //SlideShowPage(),
-              WelcomePage(),
+              const WelcomePage(),
           routes: <String, WidgetBuilder>{
-            '/welcome': (BuildContext context) => WelcomePage(),
-            '/slideshow': (BuildContext context) => SlideShowPage(),
-            '/config': (BuildContext context) => ConfigPage(),
-            '/ota': (BuildContext context) => OTAPage(),
+            '/welcome': (BuildContext context) => const WelcomePage(),
+            '/slideshow': (BuildContext context) => const SlideShowPage(),
+            '/config': (BuildContext context) => const ConfigPage(),
+            '/ota': (BuildContext context) => const OTAPage(),
           },
         ));
   }

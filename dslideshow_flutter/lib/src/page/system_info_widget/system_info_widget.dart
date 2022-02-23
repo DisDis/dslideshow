@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
+import 'package:dslideshow_backend/system_info.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/system_metrics_widget.dart';
 
+@immutable
 class SystemInfoWidget extends StatefulWidget {
-  SystemInfoWidget({Key? key}) : super(key: key);
+  const SystemInfoWidget({Key? key}) : super(key: key);
 
   @override
   _SystemInfoWidgetState createState() => _SystemInfoWidgetState();
@@ -26,7 +27,7 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
     }
 
     if (_systemInfo!.cpuInfo.cores == 0) {
-      final cores = 4;
+      const cores = 4;
       _systemInfo = _systemInfo!.rebuild((builder) {
         builder.cpuInfo.cores = cores;
         builder.updateInfo.cpuLoad1 = math.Random().nextDouble() * cores;

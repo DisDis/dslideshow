@@ -3,7 +3,7 @@
 // import 'package:permission_handler/permission_handler.dart';
 // import 'package:path_provider/path_provider.dart' as path_prov;
 
-final bool isLinuxEmbedded = false;
+const bool isLinuxEmbedded = false;
 
 // Future<Directory> getApplicationDocumentsDirectory() async{
 //   return path_prov.getApplicationDocumentsDirectory();
