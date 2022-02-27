@@ -117,6 +117,12 @@ class _AuthPageState extends State<AuthPage> {
               },
               child: const Text('GetConfig'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/config');
+              },
+              child: Text('Config - test'),
+            ),
           ],
         ),
       ),

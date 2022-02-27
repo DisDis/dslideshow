@@ -16,14 +16,28 @@ class RemoteService {
   }
 
   // Запрос и ответ не обрабатывается
-  FutureOr<String> transparentSend(String cmdStr) async {
+  FutureOr<String> transparentSendStr(String cmdStr) async {
     // ignore: return_of_invalid_type
-    return _transport.send(_service, cmdStr);
+    return _transport.sendStr(_service, cmdStr);
+  }
+
+  FutureOr<Object> transparentSend(Object cmd) {
+    // ignore: return_of_invalid_type
+    return _transport.send(_service, cmd);
+  }
+
+  FutureOr<RpcResult> sendStr(RpcCommand cmd) async {
+    var jsonO = await transparentSendStr(json.encode(_serializers.serialize(cmd)));
+    RpcResult result = _serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
+    if (result is RpcErrorResult) {
+      throw new RpcErrorResultException(result);
+    }
+    return result;
   }
 
   FutureOr<RpcResult> send(RpcCommand cmd) async {
-    var jsonO = await transparentSend(json.encode(_serializers.serialize(cmd)));
-    RpcResult result = _serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
+    var jsonO = await transparentSend(_serializers.serialize(cmd)!);
+    RpcResult result = _serializers.deserialize(jsonO) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
     }
@@ -32,13 +46,20 @@ class RemoteService {
 }
 
 abstract class RemoteServiceTransport {
-  FutureOr<String> send(IsolateRunner service, String cmdStr);
+  FutureOr<String> sendStr(IsolateRunner service, String cmdStr);
+  FutureOr<Object> send(IsolateRunner service, Object cmd);
 }
 
 class DirectSpawnTransport implements RemoteServiceTransport {
   @override
-  FutureOr<String> send(IsolateRunner service, String cmdStr) {
+  FutureOr<String> sendStr(IsolateRunner service, String cmdStr) {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
     return service.run<String, String>(executeCommandStr, cmdStr);
+  }
+
+  @override
+  FutureOr<Object> send(IsolateRunner service, Object cmd) {
+    // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
+    return service.run<Object, Object>(executeCommand, cmd);
   }
 }

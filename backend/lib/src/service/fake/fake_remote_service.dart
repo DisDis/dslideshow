@@ -10,14 +10,26 @@ class FakeRemoteService implements RemoteService {
   FakeRemoteService({String name: "FakeRemoteService"}) {
     _log = new Logger("FRS-$name");
   }
+
   @override
-  FutureOr<RpcResult> send(RpcCommand command) async {
-    _log.info(command.toString());
-    return new EmptyResult.respond(command);
+  FutureOr<RpcResult> sendStr(RpcCommand cmd) {
+    _log.info(cmd.toString());
+    return new EmptyResult.respond(cmd);
   }
 
   @override
-  FutureOr<String> transparentSend(String cmdStr) async {
+  FutureOr<Object> transparentSend(Object cmd) {
+    return <dynamic>[];
+  }
+
+  @override
+  FutureOr<String> transparentSendStr(String cmdStr) {
     return '';
+  }
+
+  @override
+  FutureOr<RpcResult> send(RpcCommand cmd) {
+    _log.info(cmd.toString());
+    return new EmptyResult.respond(cmd);
   }
 }

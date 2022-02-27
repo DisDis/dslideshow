@@ -16,9 +16,10 @@ class DiskMediaItem extends MediaItem {
 }
 
 class DiskStorage extends Storage {
+  static const String CACHE_FOLDER_NAME = 'images';
   static final Logger _log = new Logger('DiskStorage');
   static const String name = 'DiskStorage';
-  final Directory _folder = new Directory(path.join(externalStorage.path, 'images'));
+  final Directory _folder = new Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
   final DiskStorageConfig _config;
   Directory get folder => _folder;
 

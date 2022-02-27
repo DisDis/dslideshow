@@ -9,7 +9,7 @@ late Serializers _serializers;
 late RpcService _service;
 final Logger _log = new Logger('rpc_service');
 
-void initRpc(RpcService service, Serializers serializers){
+void initRpc(RpcService service, Serializers serializers) {
   _service = service;
   _serializers = serializers;
 }
@@ -22,6 +22,17 @@ FutureOr<String> executeCommandStr(String commandStr) async {
     return str;
   } catch (e, s) {
     _log.severe('executeCommandStr', e, s);
+    rethrow;
+  }
+}
+
+FutureOr<Object> executeCommand(Object command) async {
+  try {
+    RpcCommand cmd = _serializers.deserialize(command) as RpcCommand;
+    var result = await _service.executeCommand(cmd);
+    return _serializers.serialize(result)!;
+  } catch (e, s) {
+    _log.severe('executeCommand', e, s);
     rethrow;
   }
 }

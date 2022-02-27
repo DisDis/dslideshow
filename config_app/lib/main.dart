@@ -1,3 +1,4 @@
+import 'package:config_app/src/page/config/config_page.dart';
 import 'package:config_app/src/page/login_page.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       home: const AuthPage(),
       routes: <String, WidgetBuilder>{
         '/auth': (BuildContext context) => const AuthPage(),
-        //'/config': (BuildContext context) => const ConfigPage(),
+        '/config': (BuildContext context) => const ConfigPage(),
       },
       //onGenerateRoute: _onGenerateRoute,
     );

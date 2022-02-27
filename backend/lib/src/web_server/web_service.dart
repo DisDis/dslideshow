@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
+import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:path/path.dart' as path;
+import 'package:http_parser/http_parser.dart' as hp;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -18,10 +20,13 @@ import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
+import 'package:dslideshow_backend/environment.dart';
+import 'package:mime/mime.dart' as mime;
 
 class WebService {
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
+  final _cacheFolder = new io.Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
   final RemoteService _remoteBackendService;
   String _code = '__';
   String get code => _code;
@@ -66,10 +71,29 @@ class WebService {
     _log.info('New code: $_code');
   }
 
+  Future<Map<String, Object>> _defaultFileheaderParser(io.File file) async {
+    final fileType = mime.lookupMimeType(file.path);
+
+    // collect file data
+    final fileStat = await file.stat();
+
+    // check file permission
+    if (fileStat.modeString()[0] != 'r') return {};
+
+    return {
+      io.HttpHeaders.contentTypeHeader: fileType ?? 'application/octet-stream',
+      io.HttpHeaders.contentLengthHeader: fileStat.size.toString(),
+      io.HttpHeaders.lastModifiedHeader: hp.formatHttpDate(fileStat.modified),
+      io.HttpHeaders.acceptRangesHeader: 'bytes'
+    };
+  }
+
   WebService(this._appConfig, this._config, this._remoteBackendService) {
     updateCode();
     _router.get('/info', _getInfo);
     _router.get("/ws", _webSocketHandler);
+    _router.get("/cache/<code>/list", _getImageList);
+    _router.get("/cache/<code>/get/<imageId>", _getImage);
 
     final fsPath = path.join(io.Directory.current.path, 'web'); // path to server
     final virtualDir = ShelfVirtualDirectory(
@@ -145,6 +169,99 @@ class WebService {
       _server?.close(force: true);
       _server = null;
     }
+  }
+
+  Response _getImageList(Request request, String code) {
+    if (code != _code) {
+      return Response.forbidden('Code is incorrect');
+    }
+    final StringBuffer sb = StringBuffer();
+    sb.writeln('{"ver":"${ApplicationInfo.frontendVersion}", "images":[');
+    var items = _cacheFolder.listSync();
+    bool isFirst = true;
+    items.forEach((imageUri) {
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        sb.write(',');
+      }
+      sb.writeln('"${path.basename(imageUri.path)}"');
+    });
+    sb.writeln(']}');
+    return Response.ok(sb.toString(), headers: {'content-type': 'text/json; charset=utf-8'});
+  }
+
+  FutureOr<Response> _getImage(Request req, String code, String imageId) async {
+    if (code != _code) {
+      return Response.forbidden('Code is incorrect');
+    }
+    imageId = path.absolute(path.join(_cacheFolder.path, imageId));
+    final file = io.File(imageId);
+    if (!file.existsSync() || !imageId.startsWith(_cacheFolder.path)) {
+      return Response.notFound('$imageId');
+    }
+
+    // collect file data
+    final fileStat = file.statSync();
+
+    // check file permission of
+    if (fileStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
+    final length = fileStat.size;
+    final range = req.headers[io.HttpHeaders.rangeHeader];
+    var headerParser = _defaultFileheaderParser;
+    final headers = await headerParser(file);
+
+    if (range != null) {
+      final matches = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
+      if (matches != null) {
+        final startMatch = matches[1] ?? '';
+        final endMatch = matches[2] ?? '';
+        if (startMatch.isNotEmpty || endMatch.isNotEmpty) {
+          int start;
+          int end;
+          if (startMatch.isEmpty) {
+            start = length - int.parse(endMatch);
+            if (start < 0) start = 0;
+            end = length - 1;
+          } else {
+            start = int.parse(startMatch);
+            end = endMatch.isEmpty ? length - 1 : int.parse(endMatch);
+          }
+          // If the range is syntactically invalid the Range header
+          // MUST be ignored (RFC 2616 section 14.35.1).
+          if (start <= end) {
+            if (end >= length) {
+              end = length - 1;
+            }
+            if (start >= length) {
+              return Response(
+                io.HttpStatus.requestedRangeNotSatisfiable,
+                // headers: headers,
+              );
+            }
+
+            // Override Content-Length with the actual bytes sent.
+            headers[io.HttpHeaders.contentLengthHeader] = (end - start + 1).toString();
+
+            // Set 'Partial Content' status code.
+            headers[io.HttpHeaders.contentRangeHeader] = 'bytes $start-$end/$length';
+            // Pipe the 'range' of the file.
+
+            return Response(
+              io.HttpStatus.partialContent,
+              body: req.method == 'HEAD' ? null : file.openRead(start, end + 1),
+              headers: headers,
+            );
+          }
+        }
+      }
+    }
+
+    return Response(
+      200,
+      body: req.method == 'HEAD' ? null : file.openRead(),
+      headers: headers,
+    );
   }
 }
 
