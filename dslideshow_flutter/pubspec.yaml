@@ -33,10 +33,15 @@ dependencies:
 
   system_metrics_widget:
     path: ../system_metrics_widget
-
+  freezed_annotation: ^1.1.0
+  
+  bloc: ^8.0.3
+  flutter_bloc: ^8.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+  freezed: ^1.1.1
   built_value_generator: ^8.0.2
   build_runner: ^2.1.0
   flutter_lints: ^1.0.0

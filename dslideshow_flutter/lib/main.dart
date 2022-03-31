@@ -115,7 +115,7 @@ class FlutterReduxApp extends StatelessWidget {
             '/welcome': (BuildContext context) => const WelcomePage(),
             '/slideshow': (BuildContext context) => const SlideShowPage(),
             '/config': (BuildContext context) => const ConfigPage(),
-            '/ota': (BuildContext context) => const OTAPage(),
+            '/ota': (BuildContext context) => OTAPage(),
           },
         ));
   }

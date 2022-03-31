@@ -3,28 +3,42 @@ import 'dart:async';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_bloc.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 import 'package:xterm/flutter.dart';
 import 'package:xterm/terminal/terminal.dart';
 import 'package:xterm/terminal/terminal_backend.dart';
+import 'package:xterm/theme/terminal_style.dart';
 
-@immutable
-class OTAPage extends StatefulWidget {
-  static void processingOTAReady(BuildContext context, bool isReady) {
-    if (isReady) {
-      Navigator.pushNamed(context, '/ota');
-    } else {
-      Navigator.pushNamed(context, '/welcome');
-    }
+class OTAPage extends StatelessWidget {
+  late Terminal terminal = Terminal(backend: backend, maxLines: 3000);
+  final ProcessTerminalBackend backend = ProcessTerminalBackend();
+  OTAPage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (_) => OtaBloc(frontendService: injector.get<FrontendService>(), backend: backend)
+          ..add(const OtaEvent.initialization()),
+        child: Scaffold(
+            backgroundColor: Colors.black,
+            body: OTAView(
+              terminal: terminal,
+            )));
   }
 
-  const OTAPage({Key? key}) : super(key: key);
-
-  @override
-  State<OTAPage> createState() => _OTAPageState();
+  static void processingOTAReady(BuildContext context, bool isReady) {
+    if (isReady) {
+      Navigator.pushReplacementNamed(context, '/ota');
+    } else {
+      Navigator.pushReplacementNamed(context, '/welcome');
+    }
+  }
 }
 
 class ProcessTerminalBackend extends TerminalBackend {
@@ -41,14 +55,7 @@ class ProcessTerminalBackend extends TerminalBackend {
   }
 
   @override
-  void init() async {
-    // _process = await io.Process.start(command, [],
-    //     environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color'},
-    //     runInShell: true);
-    // _process.exitCode.then((value) => _exitCodeCompleter.complete(value));
-    // _process.stdout.transform(utf8.decoder).listen(onWrite);
-    // _process.stderr.transform(utf8.decoder).listen(onWrite);
-  }
+  void init() async {}
 
   @override
   Stream<String> get out => _outStream.stream;
@@ -57,9 +64,7 @@ class ProcessTerminalBackend extends TerminalBackend {
   void resize(int width, int height, int pixelWidth, int pixelHeight) {}
 
   @override
-  void terminate() {
-    // _process.kill();
-  }
+  void terminate() {}
 
   @override
   void write(String input) {}
@@ -68,119 +73,83 @@ class ProcessTerminalBackend extends TerminalBackend {
   void ackProcessed() {}
 }
 
-class _OTAPageState extends State<OTAPage> {
-  static final Logger _log = Logger('_OTAPageState');
-  late Terminal terminal;
-  late ProcessTerminalBackend backend;
-  final FrontendService _frontendService = injector.get<FrontendService>();
-  final List<StreamSubscription> _subs = <StreamSubscription>[];
+class OTAView extends StatelessWidget {
+  static final Logger _log = Logger('OTAView');
+  final Terminal terminal;
 
-  OTAInfo _info = OTAInfo((b) {
-    b.uploadingPercent = 0;
-    b.status = OTAStatus.disabled;
-    b.code = '-';
-    b.errorText = '';
-    b.exitCode = 0;
-  });
-  @override
-  void initState() {
-    super.initState();
-    _log.info('initState');
-
-    backend = ProcessTerminalBackend();
-    terminal = Terminal(backend: backend, maxLines: 10000);
-    _frontendService.getOTAInfo().then((value) => setState(() {
-          _info = value;
-        }));
-    _subs.add(_frontendService.onOTAInfo.listen((event) {
-      setState(() {
-        _info = event;
-      });
-    }));
-    _subs.add(_frontendService.onOTAOutput.listen((event) {
-      backend.onWrite(event);
-    }));
-    _subs.add(_frontendService.onOTAReady.listen((value) {
-      OTAPage.processingOTAReady(context, value);
-    }));
-  }
-
-  @override
-  void dispose() {
-    for (var element in _subs) {
-      element.cancel();
-    }
-    _subs.clear();
-    super.dispose();
-  }
-
+  const OTAView({Key? key, required this.terminal}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.black,
-        body: Column(
-          children: [
-            Text(
-              "OTA - ${_info.status}",
-              style: const TextStyle(color: Colors.white),
-            ),
-            const Text(
-              "Version: v${ApplicationInfo.frontendVersion}",
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-            Text(
-              "Code: ${_info.code}",
-              style: const TextStyle(color: Colors.white, fontSize: 60),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: LinearProgressIndicator(
-                value: _info.uploadingPercent / 100,
-                semanticsLabel: 'OTA progress',
-                minHeight: 15,
-              ),
-            ),
-            // ElevatedButton(
-            //   onPressed: _runTestCommand,
-            //   child: Text('TEST'),
-            // ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/config');
-              },
-              child: const Text('Config'),
-            ),
-            SizedBox(
-                height: 600,
-                //width: 300,
-                child: //SingleChildScrollView(
-
-                    // for Vertical scrolling
-                    //scrollDirection: Axis.vertical,
-                    //child:
-                    //SafeArea(
-                    //child:
-                    TerminalView(
-                  terminal: terminal,
-                  // style: TerminalStyle(fontFamily: ['Cascadia Mono']),
-                  //)
-                )),
-          ],
+    final state = context.watch<OtaBloc>().state;
+    final header = [
+      // Text(
+      //   "OTA - ${state.info.status}",
+      //   style: const TextStyle(color: Colors.white),
+      // ),
+      const Text(
+        "Version: v${ApplicationInfo.frontendVersion}",
+        style: TextStyle(color: Colors.white, fontSize: 25),
+      ),
+      Text(
+        "Code: ${state.info.code}",
+        style: const TextStyle(color: Colors.white, fontSize: 60),
+      ),
+    ];
+    final terminalView = Expanded(
+        flex: 2,
+        child: TerminalView(
+          terminal: terminal,
+          style: const TerminalStyle(fontFamily: ['Cascadia Mono']),
         ));
+    return state.when(
+      exit: (info) {
+        Future.microtask(() => OTAPage.processingOTAReady(context, false));
+        return const CircularProgressIndicator();
+      },
+      initial: (info) => const CircularProgressIndicator(),
+      failure: (info) => Column(children: [
+        ...header,
+        Text(
+          "Error${state.info.errorText == null ? '' : '$state.info.errorText'}",
+          style: const TextStyle(color: Colors.red, fontSize: 50),
+        ),
+        terminalView
+      ]),
+      progress: (info) => Column(children: [
+        ...header,
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: LinearProgressIndicator(
+            value: state.info.uploadingPercent / 100,
+            semanticsLabel: 'OTA progress',
+            minHeight: 15,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/config');
+          },
+          child: const Text('Config'),
+        ),
+        terminalView
+      ]),
+      ready: (info) => Column(children: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/config');
+          },
+          child: const Text('Config'),
+        ),
+        ...header,
+      ]),
+      success: (info) => Column(children: [
+        ...header,
+        const Text(
+          "Finished",
+          style: TextStyle(color: Colors.green, fontSize: 50),
+        ),
+        terminalView
+      ]),
+    );
   }
-
-  // void _runTestCommand() async {
-  //   _log.info('Test run');
-  //   var result = await io.Process.start('./test_console.sh', [],
-  //       environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
-  //   result.stdout.transform(utf8.decoder).forEach((str) {
-  //     backend.onWrite(str);
-  //     // setState(() {});
-  //   });
-  //   result.stderr.transform(utf8.decoder).forEach((str) {
-  //     backend.onWrite(str);
-  //   });
-  //   var exitCode = await result.exitCode;
-  //   backend.onWrite('Exit code: $exitCode');
-  // }
 }
