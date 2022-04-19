@@ -1,7 +1,9 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DebugWidget extends StatelessWidget {
   final FrontendService _frontendService;
@@ -36,7 +38,7 @@ class DebugWidget extends StatelessWidget {
             ElevatedButton(
               child: const Icon(Icons.settings, size: 40.0),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/config');
+                context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
               },
             ),
           ],

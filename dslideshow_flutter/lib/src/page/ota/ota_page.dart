@@ -6,6 +6,7 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_bloc.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_state.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,9 +35,9 @@ class OTAPage extends StatelessWidget {
 
   static void processingOTAReady(BuildContext context, bool isReady) {
     if (isReady) {
-      Navigator.pushReplacementNamed(context, '/ota');
+      context.read<RouteBloc>().add(ChangePageEvent(RoutePage.ota));
     } else {
-      Navigator.pushReplacementNamed(context, '/welcome');
+      context.read<RouteBloc>().add(ChangePageEvent(RoutePage.welcome));
     }
   }
 }
@@ -127,7 +128,7 @@ class OTAView extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/config');
+            context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
           },
           child: const Text('Config'),
         ),
@@ -136,7 +137,7 @@ class OTAView extends StatelessWidget {
       ready: (info) => Column(children: [
         ElevatedButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/config');
+            context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
           },
           child: const Text('Config'),
         ),

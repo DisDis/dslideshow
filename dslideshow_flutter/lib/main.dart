@@ -7,6 +7,8 @@ import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -88,7 +90,10 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 }
 
 void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
-  runApp(FlutterReduxApp(store: store));
+  runApp(BlocProvider(
+    create: (context) => RouteBloc(),
+    child: FlutterReduxApp(store: store),
+  ));
 }
 
 class FlutterReduxApp extends StatelessWidget {
@@ -109,14 +114,21 @@ class FlutterReduxApp extends StatelessWidget {
             Locale('en'), // English
             // ... other locales the app supports
           ],
-          home: //SlideShowPage(),
-              const WelcomePage(),
-          routes: <String, WidgetBuilder>{
-            '/welcome': (BuildContext context) => const WelcomePage(),
-            '/slideshow': (BuildContext context) => const SlideShowPage(),
-            '/config': (BuildContext context) => const ConfigPage(),
-            '/ota': (BuildContext context) => OTAPage(),
-          },
+          home: BlocBuilder<RouteBloc, RouteState>(
+            builder: (_, state) {
+              switch (state.current) {
+                case RoutePage.slideshow:
+                  return const SlideShowPage();
+                case RoutePage.config:
+                  return const ConfigPage();
+                case RoutePage.ota:
+                  return OTAPage();
+                case RoutePage.welcome:
+                default:
+                  return const WelcomePage();
+              }
+            },
+          ),
         ));
   }
 }

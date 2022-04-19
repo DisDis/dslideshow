@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -107,7 +111,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
         } else if (status == AnimationStatus.dismissed) {
           controller.stop();
           _frontendService.backendIsReady().then((dynamic _) {
-            future.then((dynamic _) => Navigator.pushReplacementNamed(context, '/slideshow'));
+            future.then((dynamic _) => context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow)));
           });
         }
       });

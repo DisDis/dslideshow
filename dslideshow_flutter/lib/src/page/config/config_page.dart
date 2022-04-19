@@ -4,12 +4,14 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ConfigPage extends StatefulWidget {
   const ConfigPage({Key? key}) : super(key: key);
@@ -66,13 +68,13 @@ class _ConfigPageState extends State<ConfigPage> {
                   )),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/slideshow');
+              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
             },
             child: const Text('SlideShow'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/ota');
+              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.ota));
             },
             child: const Text('OTA'),
           ),
