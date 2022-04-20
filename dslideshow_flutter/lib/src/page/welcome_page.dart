@@ -7,7 +7,6 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_common/version.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -99,9 +98,6 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
   void initState() {
     _log.info("initState");
     super.initState();
-    _subs.add(_frontendService.onOTAReady.listen((value) {
-      OTAPage.processingOTAReady(context, value);
-    }));
     var future = environment.checkPermissionReadExternalStorage();
     controller = AnimationController(duration: Duration(milliseconds: _appConfig.welcome.delayMs), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)

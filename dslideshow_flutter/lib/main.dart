@@ -50,6 +50,7 @@ void main() async {
 
     final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
+    injector.registerSingleton<RouteBloc>(RouteBloc());
     injector.registerSingleton<AppConfig>(AppConfig.fromFile(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
@@ -75,6 +76,15 @@ void main() async {
     final _frontendService = injector.get<FrontendService>();
     initRpc(_frontendService, serializers);
 
+    _frontendService.onOTAReady.listen((isReady) {
+      final bloc = injector.get<RouteBloc>();
+      if (isReady) {
+        bloc.add(ChangePageEvent(RoutePage.ota));
+      } else {
+        bloc.add(ChangePageEvent(RoutePage.welcome));
+      }
+    });
+
     _runFlutter(_frontendService, store);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
@@ -91,7 +101,7 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 
 void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
   runApp(BlocProvider(
-    create: (context) => RouteBloc(),
+    create: (context) => injector.get<RouteBloc>(),
     child: FlutterReduxApp(store: store),
   ));
 }

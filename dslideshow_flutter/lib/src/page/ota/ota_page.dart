@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_bloc.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_state.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -31,14 +29,6 @@ class OTAPage extends StatelessWidget {
             body: OTAView(
               terminal: terminal,
             )));
-  }
-
-  static void processingOTAReady(BuildContext context, bool isReady) {
-    if (isReady) {
-      context.read<RouteBloc>().add(ChangePageEvent(RoutePage.ota));
-    } else {
-      context.read<RouteBloc>().add(ChangePageEvent(RoutePage.welcome));
-    }
   }
 }
 
@@ -104,7 +94,6 @@ class OTAView extends StatelessWidget {
         ));
     return state.when(
       exit: (info) {
-        Future.microtask(() => OTAPage.processingOTAReady(context, false));
         return const CircularProgressIndicator();
       },
       initial: (info) => const CircularProgressIndicator(),

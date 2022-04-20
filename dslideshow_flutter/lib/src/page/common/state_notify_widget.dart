@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class StateNotify extends StatefulWidget {
-  final bool? isPaused;
+  final bool isPaused;
 
-  const StateNotify({Key? key, this.isPaused}) : super(key: key);
+  const StateNotify({Key? key, this.isPaused = false}) : super(key: key);
 
   @override
   StateNotifyState createState() => StateNotifyState();
@@ -11,7 +11,7 @@ class StateNotify extends StatefulWidget {
 
 class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin {
   late AnimationController _controller;
-  bool? _isPaused;
+  late bool _isPaused;
 
   StateNotifyState();
 
@@ -20,7 +20,7 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
     super.initState();
     _isPaused = widget.isPaused;
     _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
-    if (_isPaused!) {
+    if (_isPaused) {
       _controller.forward().orCancel.then((value) => _controller.reverse());
     }
   }

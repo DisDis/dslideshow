@@ -117,10 +117,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void initState() {
     super.initState();
 
-    _subs.add(_frontendService.onOTAReady.listen((value) {
-      OTAPage.processingOTAReady(context, value);
-    }));
-
     final allowedETmp = _appConfig.slideshow.allowedEffects;
     _log.info('Config effects = $allowedETmp');
     if (allowedETmp.isNotEmpty) {
@@ -215,7 +211,11 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
     _currentEffect = _effectPool.removeLast().createEffect();
     setState(() {});
-    await _effectController.forward().orCancel;
+    try {
+      await _effectController.forward().orCancel;
+    } catch (e) {
+      _log.info('Skip error', e);
+    }
     _mediaItemLoopController.forward();
   }
 
