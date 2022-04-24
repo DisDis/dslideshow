@@ -11,7 +11,6 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
@@ -68,7 +67,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
-  Duration? _transitionTime;
+  late Duration _transitionTime;
 
   bool _screenState = true;
   bool _isPaused = false;
@@ -161,7 +160,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _mediaItemLoopController.forward();
 
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
-    _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
+    // _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
     if (_currentWidget == _loaderWidget) {
       _fetchNextMediaItem();
@@ -305,9 +304,5 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         _restorePlayPauseState();
       }
     }
-  }
-
-  void _systemInfoChanged(SystemInfo info) {
-    _log.info(info.updateInfo);
   }
 }
