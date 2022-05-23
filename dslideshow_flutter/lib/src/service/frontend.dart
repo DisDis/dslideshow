@@ -4,10 +4,10 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
+import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:logging/logging.dart';
-import 'package:redux/redux.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = Logger('FlutterService');
@@ -28,10 +28,7 @@ class FrontendService implements RpcService {
   Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
   Stream<ButtonType> get onPushButton => _onPushButton.stream;
 
-  final Store<GlobalState> _store;
-  Store<GlobalState> get store => _store;
-
-  FrontendService(AppConfig config, this._backendService, this._otaService, this._store) {
+  FrontendService(AppConfig config, this._backendService, this._otaService) {
     Timer.periodic(const Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
     _updateSystemInfo();
   }
@@ -126,8 +123,9 @@ class FrontendService implements RpcService {
 
   void _updateSystemInfo() async {
     var result = await getSystemInfo();
-    if (_store.state.hasInternet != result.networkInfo.hasInternet) {
-      _store.dispatch(ChangeInternetAction(result.networkInfo.hasInternet));
+    final bloc = injector.get<SlideshowBloc>();
+    if (bloc.state.hasInternet != result.networkInfo.hasInternet) {
+      bloc.add(SlideshowInternetEvent(result.networkInfo.hasInternet));
     }
     _onSystemInfoUpdate.add(result);
   }

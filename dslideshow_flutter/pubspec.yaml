@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 4.1.0+5
+version: 5.0.0
 publish_to: none
 
 environment:
@@ -19,7 +19,6 @@ dependencies:
 
   qr_flutter: ^4.0.0
   logging: ^1.0.0
-  flutter_redux: ^0.8.0
   built_value: ^8.0.0
   video_player: ^2.2.1
   duration: ^3.0.0

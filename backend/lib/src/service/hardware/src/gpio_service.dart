@@ -40,8 +40,7 @@ class GPIOServiceImpl extends GPIOService {
   final StreamController<bool> _scMenu = new StreamController.broadcast();
   Stream<bool> get onMenu => _scMenu.stream;
 
-  final StreamController<bool> _scScreenToggle =
-      new StreamController.broadcast();
+  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
   Stream<bool> get onScreenToggle => _scScreenToggle.stream;
 
   GPIOServiceImpl(this._config) {}
@@ -78,8 +77,8 @@ class GPIOServiceImpl extends GPIOService {
       final chips = _gpio.chips;
       _log.info('chips - OK');
       // old kernel: pinctrl-bcm2835, new kernel: pinctrl-bcm2711
-      _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2711');
-      _log.info('pinctrl-bcm2711 - OK');
+      _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2711' || chip.label == 'pinctrl-bcm2835');
+      _log.info('Found: ${_chip.label} - OK');
       _linePowerLED = _chip.lines[_config.pinPowerLED];
       _log.info('linePowerLED - OK');
       _linePIR = _chip.lines[_config.pinPIRSensor];
@@ -90,22 +89,13 @@ class GPIOServiceImpl extends GPIOService {
 
       _linePowerLED.requestOutput(consumer: "PowerLED", initialValue: true);
 
-      _linePIR.requestInput(
-          consumer: "PIR Sensor",
-          triggers: {SignalEdge.falling, SignalEdge.rising});
+      _linePIR.requestInput(consumer: "PIR Sensor", triggers: {SignalEdge.falling, SignalEdge.rising});
 
-      _linePauseButton.requestInput(
-          consumer: "PauseButton",
-          triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineBackButton.requestInput(
-          consumer: "BackButton",
-          triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineMenuButton.requestInput(
-          consumer: "MenuButton",
-          triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineScreenToggleButton.requestInput(
-          consumer: "ScreenToggleButton",
-          triggers: {SignalEdge.falling, SignalEdge.rising});
+      _linePauseButton.requestInput(consumer: "PauseButton", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineBackButton.requestInput(consumer: "BackButton", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineMenuButton.requestInput(consumer: "MenuButton", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineScreenToggleButton
+          .requestInput(consumer: "ScreenToggleButton", triggers: {SignalEdge.falling, SignalEdge.rising});
 
       _linePIR.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
@@ -116,32 +106,28 @@ class GPIOServiceImpl extends GPIOService {
       });
 
       _linePauseButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds >
-            _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('PauseButton: $event');
           _lastPauseButtonTime = DateTime.now();
           _scPause.add(event.edge == SignalEdge.falling);
         }
       });
       _lineBackButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds >
-            _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('BackButton: $event');
           _lastBackButtonTime = DateTime.now();
           _scBack.add(event.edge == SignalEdge.falling);
         }
       });
       _lineMenuButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastMenuButtonTime).inMilliseconds >
-            _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastMenuButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('MenuButton: $event');
           _lastMenuButtonTime = DateTime.now();
           _scMenu.add(event.edge == SignalEdge.falling);
         }
       });
       _lineScreenToggleButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastScreenButtonTime).inMilliseconds >
-            _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastScreenButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('ScreenToggleButton: $event');
           _lastScreenButtonTime = DateTime.now();
           _scScreenToggle.add(event.edge == SignalEdge.falling);

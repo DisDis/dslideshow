@@ -16,7 +16,6 @@ dependencies:
 
   intl: ^0.17.0
   logging: ^1.0.0
-  flutter_redux: ^0.8.0
   built_value: ^8.0.0
   built_collection: ^5.0.0
   duration: ^3.0.0

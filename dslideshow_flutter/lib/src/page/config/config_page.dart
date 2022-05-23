@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
@@ -59,13 +59,14 @@ class _ConfigPageState extends State<ConfigPage> {
             size: 300.0,
           ),
           Text(_urlData),
-          StoreConnector<GlobalState, VoidCallback>(
-              converter: (store) => () => store.dispatch(ChangeStorageStatusAction(
-                  StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
-              builder: (context, callback) => ElevatedButton(
-                    onPressed: callback,
-                    child: const Text('StorageChange'),
-                  )),
+          ElevatedButton(
+            onPressed: () {
+              final bloc = context.read<SlideshowBloc>();
+              bloc.add(SlideshowChangeStorageStatusEvent(
+                  StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
+            },
+            child: const Text('StorageChange'),
+          ),
           ElevatedButton(
             onPressed: () {
               context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));

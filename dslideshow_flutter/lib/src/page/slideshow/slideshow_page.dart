@@ -12,18 +12,14 @@ import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_menu_action.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_screen_lock_action.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
-import 'package:redux/redux.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'fade_widget.dart';
 
@@ -47,7 +43,7 @@ final _loaderWidget = Container(
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
-  static final GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
+  static final stateKey = GlobalKey<StateNotifyState>();
 
   late AnimationController _mediaItemLoopController;
   late AnimationController _effectController;
@@ -70,9 +66,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   late Duration _transitionTime;
 
   bool _screenState = true;
-  bool _isPaused = false;
 
   bool get isItemChanging => _currentWidget != _nextWidget;
+
+  late SlideshowBloc bloc;
 
   final Key _fadeWidgetKey = const Key('fadeWidget');
 
@@ -87,14 +84,21 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           color: Colors.black,
           child: !isItemChanging ? _currentWidget : _transitionWidget,
         ),
-        StateNotify(key: _stateKey, isPaused: _isPaused),
+        BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
+          return IndicatorState(
+              storageStatus: state.storageStatus,
+              isDebug: state.isDebug,
+              isPaused: state.isPaused,
+              isMenu: state.isMenu,
+              hasInternet: state.hasInternet);
+        }, builder: (context, state) {
+          return StateNotify(key: stateKey, isPaused: state.isPaused);
+        }),
         FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
         if (!isLinuxEmbedded)
-          StoreConnector<GlobalState, Store<GlobalState>>(
-              converter: (store) => store,
-              builder: (context, Store<GlobalState> store) {
-                return store.state.isDebug ? DebugWidget(_frontendService) : Container();
-              }),
+          BlocBuilder<SlideshowBloc, SlideshowState>(builder: (context, state) {
+            return state.isDebug ? DebugWidget(_frontendService) : Container();
+          }),
         const CommonHeaderWidget(),
       ],
     ));
@@ -131,13 +135,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
     _effectController = AnimationController(duration: _transitionTime, vsync: this);
-    //Curves.easeOutQuad;
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
           _currentWidget = _nextWidget;
         });
-        imageCache!.clear();
+        imageCache.clear();
       }
     });
 
@@ -160,11 +163,20 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _mediaItemLoopController.forward();
 
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
-    // _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
-    _subs.add(_frontendService.onPushButton.listen(_pushButton));
     if (_currentWidget == _loaderWidget) {
       _fetchNextMediaItem();
     }
+    bloc = context.read<SlideshowBloc>();
+
+    _subs.add(bloc.onPause.listen((isPausedNewValue) {
+      if (isPausedNewValue) {
+        _mediaItemLoopController.stop();
+      } else {
+        _mediaItemLoopController.reset();
+        _mediaItemLoopController.forward();
+      }
+      stateKey.currentState!.isPaused = isPausedNewValue;
+    }));
   }
 
   void _fetchNextMediaItem() async {
@@ -177,8 +189,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
     //_log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
-    final screenW = MediaQuery.of(context).size.width;
-    final screenH = MediaQuery.of(context).size.height;
+    final size = MediaQuery.of(context).size;
+    final screenW = size.width;
+    final screenH = size.height;
     try {
       if (itemWidget is ImageWidget) {
         await itemWidget.precache(context);
@@ -225,65 +238,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
-  void _pushButton(ButtonType event) {
-    switch (event) {
-      case ButtonType.pause:
-        _pushPauseButton();
-        break;
-      case ButtonType.screentoggle:
-        _pushScreenToggleButton();
-        break;
-      case ButtonType.menu:
-        _pushMenuButton();
-        break;
-      case ButtonType.select:
-        _pushSelectButton();
-        break;
-    }
-  }
-
-  void _pushSelectButton() {
-    final _store = _frontendService.store;
-    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
-  }
-
-  void _pushMenuButton() {
-    final _store = _frontendService.store;
-    _store.dispatch(ChangeMenuAction(!_store.state.isMenu));
-  }
-
-  void _pushPauseButton() {
-    final _store = _frontendService.store;
-    var isPausedNewValue = !_store.state.isPaused;
-    _store.dispatch(ChangePauseAction(isPausedNewValue));
-    if (isPausedNewValue) {
-      _mediaItemLoopController.stop();
-    } else {
-      _mediaItemLoopController.reset();
-      _mediaItemLoopController.forward();
-    }
-    setState(() {
-      _stateKey.currentState!.isPaused = _isPaused = isPausedNewValue;
-    });
-  }
-
-  Future _pushScreenToggleButton() async {
-    final _store = _frontendService.store;
-    var isScreenLockNewValue = !_store.state.isScreenLock;
-    //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
-    //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
-    _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
-    await _frontendService.changeScreenLock(isScreenLockNewValue);
-    if (isScreenLockNewValue) {
-      _frontendService.screenTurn(false);
-    } else {
-      _frontendService.screenTurn(true);
-    }
-  }
-
   void _restorePlayPauseState() {
-    final _store = _frontendService.store;
-    if (_store.state.isPaused) {
+    if (bloc.state.isPaused) {
       _mediaItemLoopController.stop();
     } else {
       _mediaItemLoopController.forward();

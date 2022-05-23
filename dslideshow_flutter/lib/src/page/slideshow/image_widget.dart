@@ -365,7 +365,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
       completer.completeError(e, st);
       stream.removeListener(listener);
       // stream.completer!.reportError(exception: e, stack: st);
-      imageCache!.evict(provider);
+      imageCache.evict(provider);
     });
     stream.addListener(listener);
     return completer.future;

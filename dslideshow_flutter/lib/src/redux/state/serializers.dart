@@ -5,12 +5,9 @@
 library serializers;
 
 import 'package:built_value/serializer.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 
 part 'serializers.g.dart';
 
 /// Collection of generated serializers for the built_value chat example.
-@SerializersFor([
-  GlobalState,
-])
+@SerializersFor([])
 final Serializers serializers = _$serializers;

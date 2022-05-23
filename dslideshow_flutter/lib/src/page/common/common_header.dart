@@ -1,9 +1,10 @@
 import 'package:dslideshow_flutter/environment.dart';
-import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// A builder that builds a widget given a child.
 ///
@@ -37,10 +38,15 @@ class CommonHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Container();
-    return StoreConnector<GlobalState, Store<GlobalState>>(
-      converter: (store) => store,
-      builder: (context, Store<GlobalState> store) => Stack(
+    return BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
+      return IndicatorState(
+          storageStatus: state.storageStatus,
+          isDebug: state.isDebug,
+          isPaused: state.isPaused,
+          isMenu: state.isMenu,
+          hasInternet: state.hasInternet);
+    }, builder: (context, state) {
+      return Stack(
         children: <Widget>[
           if (!isLinuxEmbedded)
             Positioned(
@@ -48,13 +54,16 @@ class CommonHeaderWidget extends StatelessWidget {
               top: 0,
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
+                onTap: () {
+                  final bloc = BlocProvider.of<SlideshowBloc>(context);
+                  bloc.add(SlideshowDebugEvent(!state.isDebug));
+                },
                 child: Container(color: Colors.transparent, width: 30, height: 30),
               ),
             ),
           Row(
             children: <Widget>[
-              if (store.state.storageStatus == StorageStatusEnum.off)
+              if (state.storageStatus == StorageStatusEnum.off)
                 const BlinkAnimation(
                   key: Key('cloud_off'),
                   child: Icon(
@@ -64,7 +73,7 @@ class CommonHeaderWidget extends StatelessWidget {
                   ),
                   hideAfterBlink: false,
                 )
-              else if (store.state.storageStatus == StorageStatusEnum.download)
+              else if (state.storageStatus == StorageStatusEnum.download)
                 const BlinkAnimation(
                   key: Key('cloud_download'),
                   child: Icon(
@@ -73,7 +82,7 @@ class CommonHeaderWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )
-              else if (store.state.storageStatus == StorageStatusEnum.done)
+              else if (state.storageStatus == StorageStatusEnum.done)
                 const BlinkAnimation(
                     key: Key('cloud_done'),
                     child: Icon(
@@ -81,7 +90,7 @@ class CommonHeaderWidget extends StatelessWidget {
                       size: 24.0,
                       color: Colors.white,
                     )),
-              if (store.state.hasInternet)
+              if (state.hasInternet)
                 const BlinkAnimation(
                     key: Key('hasInternet'),
                     child: Icon(
@@ -99,7 +108,7 @@ class CommonHeaderWidget extends StatelessWidget {
                   ),
                   hideAfterBlink: false,
                 ),
-              if (store.state.isPaused)
+              if (state.isPaused)
                 const BlinkAnimation(
                   key: Key('isPaused'),
                   child: Icon(
@@ -112,8 +121,8 @@ class CommonHeaderWidget extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 }
 

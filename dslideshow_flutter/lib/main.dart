@@ -7,6 +7,7 @@ import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'src/injector.dart';
@@ -16,16 +17,12 @@ import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
-import 'package:dslideshow_flutter/src/redux/app_reducer.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
-import 'package:redux/redux.dart';
 
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -48,14 +45,12 @@ void main() async {
 
     _log.info("Config path: '$localPath'");
 
-    final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
-
     injector.registerSingleton<RouteBloc>(RouteBloc());
     injector.registerSingleton<AppConfig>(AppConfig.fromFile(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();
-      return FrontendService(_config, _backendService!, _oTAService!, store);
+      return FrontendService(_config, _backendService!, _oTAService!);
     });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -76,6 +71,10 @@ void main() async {
     final _frontendService = injector.get<FrontendService>();
     initRpc(_frontendService, serializers);
 
+    injector.registerLazySingleton<SlideshowBloc>(() {
+      return SlideshowBloc(frontendService: _frontendService);
+    });
+
     _frontendService.onOTAReady.listen((isReady) {
       final bloc = injector.get<RouteBloc>();
       if (isReady) {
@@ -85,7 +84,7 @@ void main() async {
       }
     });
 
-    _runFlutter(_frontendService, store);
+    _runFlutter(_frontendService);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
@@ -99,46 +98,48 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
   return IsolateRunner(isol.Isolate.current, remote.commandPort);
 }
 
-void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
-  runApp(BlocProvider(
-    create: (context) => injector.get<RouteBloc>(),
-    child: FlutterReduxApp(store: store),
+void _runFlutter(FrontendService frontendService) {
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<RouteBloc>(
+        create: (context) => injector.get<RouteBloc>(),
+      ),
+      BlocProvider<SlideshowBloc>(
+        create: (BuildContext context) => injector.get<SlideshowBloc>(),
+      ),
+    ],
+    child: const MainApp(),
   ));
 }
 
-class FlutterReduxApp extends StatelessWidget {
-  final Store<GlobalState>? store;
-  // static final _frontendService = injector.get<FrontendService>();
-  // static StreamSubscription? _otaSubscription;
-  const FlutterReduxApp({Key? key, this.store}) : super(key: key);
+class MainApp extends StatelessWidget {
+  const MainApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<GlobalState>(
-        store: store!,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(backgroundColor: Colors.black),
-          localizationsDelegates: const [],
-          supportedLocales: const [
-            Locale('en'), // English
-            // ... other locales the app supports
-          ],
-          home: BlocBuilder<RouteBloc, RouteState>(
-            builder: (_, state) {
-              switch (state.current) {
-                case RoutePage.slideshow:
-                  return const SlideShowPage();
-                case RoutePage.config:
-                  return const ConfigPage();
-                case RoutePage.ota:
-                  return OTAPage();
-                case RoutePage.welcome:
-                default:
-                  return const WelcomePage();
-              }
-            },
-          ),
-        ));
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(backgroundColor: Colors.black),
+      localizationsDelegates: const [],
+      supportedLocales: const [
+        Locale('en'), // English
+        // ... other locales the app supports
+      ],
+      home: BlocBuilder<RouteBloc, RouteState>(
+        builder: (_, state) {
+          switch (state.current) {
+            case RoutePage.slideshow:
+              return const SlideShowPage();
+            case RoutePage.config:
+              return const ConfigPage();
+            case RoutePage.ota:
+              return OTAPage();
+            case RoutePage.welcome:
+            default:
+              return const WelcomePage();
+          }
+        },
+      ),
+    );
   }
 }

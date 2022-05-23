@@ -6,47 +6,47 @@ import 'package:built_value/serializer.dart';
 
 part 'global_state.g.dart';
 
-abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
-  static const Duration defaultDelayBetweenItems = Duration(seconds: 15);
+// abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
+//   static const Duration defaultDelayBetweenItems = Duration(seconds: 15);
 
-  static Serializer<GlobalState> get serializer => _$globalStateSerializer;
+//   static Serializer<GlobalState> get serializer => _$globalStateSerializer;
 
-  factory GlobalState([void updates(GlobalStateBuilder b)]) = _$GlobalState;
-  factory GlobalState.initial() {
-    return (GlobalStateBuilder()
-          ..isPaused = false
-          ..storageStatus = StorageStatusEnum.done
-          ..delayBetweenItems = defaultDelayBetweenItems
-          ..beginTimePowerButtonPress = DateTime.now()
-          ..isScreenLock = false
-          ..isDebug = false
-          ..isMenu = false
-          ..hasInternet = true)
-        .build();
-  }
+//   factory GlobalState([void updates(GlobalStateBuilder b)]) = _$GlobalState;
+//   factory GlobalState.initial() {
+//     return (GlobalStateBuilder()
+//           ..isPaused = false
+//           ..storageStatus = StorageStatusEnum.done
+//           ..delayBetweenItems = defaultDelayBetweenItems
+//           ..beginTimePowerButtonPress = DateTime.now()
+//           ..isScreenLock = false
+//           ..isDebug = false
+//           ..isMenu = false
+//           ..hasInternet = true)
+//         .build();
+//   }
 
-  GlobalState._();
+//   GlobalState._();
 
-  DateTime? get beginTimePowerButtonPress;
+//   DateTime? get beginTimePowerButtonPress;
 
-  String? get currentMediaFile;
+//   String? get currentMediaFile;
 
-  Duration? get delayBetweenItems;
+//   Duration? get delayBetweenItems;
 
-  bool get hasInternet;
+//   bool get hasInternet;
 
-  bool get isScreenLock;
+//   bool get isScreenLock;
 
-  bool get isDebug;
+//   bool get isDebug;
 
-  bool get isMenu;
+//   bool get isMenu;
 
-  bool get isPaused;
+//   bool get isPaused;
 
-  String? get nextMediaFile;
+//   String? get nextMediaFile;
 
-  StorageStatusEnum? get storageStatus;
-}
+//   StorageStatusEnum? get storageStatus;
+// }
 
 class StorageStatusEnum extends EnumClass {
   static const StorageStatusEnum download = _$download;
