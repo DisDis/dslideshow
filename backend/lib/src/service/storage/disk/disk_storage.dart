@@ -108,7 +108,7 @@ class DiskStorage extends Storage {
   Timer? _timerFolderUpdate;
   void _onFolderUpdated(FileSystemEvent event) {
     if (_timerFolderUpdate != null) {
-      _log.info('Storage folder changed, wait...');
+      //_log.info('Storage folder changed, wait...');
       return;
     }
     _log.info('Storage folder changed, run timer');
