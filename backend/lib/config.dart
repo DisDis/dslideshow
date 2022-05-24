@@ -368,7 +368,7 @@ class StoragesConfig {
         try {
           var k = key.toString();
           StorageType? targetT = nameToType[k];
-          if (targetT == null || value! is Map) {
+          if (targetT == null || !(value is Map)) {
             return;
           }
           AbstractStorageConfig? valueT;
@@ -377,7 +377,7 @@ class StoragesConfig {
               valueT = DiskStorageConfig.fromJson(value as Map<String, dynamic>);
               break;
             case StorageType.GPhotoStorage:
-              valueT = DiskStorageConfig.fromJson(value as Map<String, dynamic>);
+              valueT = GPhotoStorageConfig.fromJson(value as Map<String, dynamic>);
               break;
             default:
               valueT = null;

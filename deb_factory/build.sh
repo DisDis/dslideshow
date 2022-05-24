@@ -8,13 +8,21 @@ if [ -d "$DIR" ]; then
   rm -r -f ./$DIR
 fi
 
+error_exit()
+{
+    echo "Error: $1"
+    exit 1
+}
+
+
 cp -r ./template_build_$PROFILE_ARC ./$DIR
 
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
-./build_aot.sh
+./build_aot.sh || error_exit "DSlideshow AOT"
 cd ../config_app
-./build_web.sh
+#TODO: Enable Config App!
+#./build_web.sh || error_exit "Config app"
 cd ../deb_factory
 
 cp $SOURCE_BIN/engine-binaries/icudtl.dat $DEST/
@@ -34,9 +42,9 @@ cd ./$DIR
 md5deep -r opt > DEBIAN/md5sums
 cd ..
 
-dpkg-deb -Zxz --build --root-owner-group ./$DIR
+dpkg-deb -Zxz --build --root-owner-group ./$DIR || error_exit "Deb"
 
 VERSION=`cat $DEST/version`
-mv ./$DIR.deb ./dslideshow-$VERSION-$PROFILE_ARC.deb
+mv ./$DIR.deb ./dslideshow-$VERSION-$PROFILE_ARC.deb || error_exit "move"
 echo "Last version dslideshow-$VERSION-$PROFILE_ARC.deb"
 

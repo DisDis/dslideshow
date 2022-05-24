@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
@@ -22,8 +23,7 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
-  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
-  static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
+  static final bool isVideoSupport = isLinuxEmbedded || !(Platform.isLinux || Platform.isWindows);
 
   static final Logger _log = Logger('_VideoWidgetState');
 

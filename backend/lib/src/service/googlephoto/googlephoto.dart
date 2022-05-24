@@ -141,6 +141,7 @@ class GooglePhotoService {
         _run(codeCompleter);
         var code = await codeCompleter.future;
         credentials = await obtainAccessCredentialsViaCodeExchange(client, _clientId, code, redirectUrl: redirectUri);
+        _log.info("New refreshToken: ${credentials.refreshToken}");
       } else {
         var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire!);
         credentials = new AccessCredentials(at, _refreshToken, scopes);
@@ -168,9 +169,10 @@ class GooglePhotoService {
               //TODO: https://issuetracker.google.com/issues/80149160
               /*
              * https://github.com/gilesknap/gphotos-sync
+             * https://github.com/gilesknap/gphotos-sync/blob/main/src/gphotos_sync/GooglePhotosDownload.py#L267
              * Video download transcodes the videos even if you ask for the original file (=vd parameter). My experience is that the result is looks similar to the original but the compression is more clearly visible. It is a smaller file with approximately 60% bitrate (same resolution).
              **/
-              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=vd', item.mimeType));
+              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=dv', item.mimeType));
             } else {
               result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
             }

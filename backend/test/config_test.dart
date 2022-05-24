@@ -1,5 +1,7 @@
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
+import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
+import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
@@ -29,7 +31,7 @@ void main() {
       });
     });
 
-    group('HardwareConfigJ', () {
+    group('HardwareConfig', () {
       test('pinPIRSensor', () {
         final _config = new HardwareConfig.fromJson(<String, dynamic>{});
         expect(_config.pinPIRSensor, equals(15));
@@ -38,7 +40,47 @@ void main() {
     group('AppConfig', () {
       test('log', () {
         final _config = new AppConfig.fromJson(<String, dynamic>{});
-        expect(_config.log.levelMain, equals(Level.ALL));
+        expect(_config.log.levelMain, equals(Level.INFO));
+      });
+    });
+    group('Storages', () {
+      test('GPhotoStorageConfig', () {
+        final _config = new GPhotoStorageConfig.fromJson(<String, dynamic>{
+          "syncPeriod": 60,
+          "albumNames": ["TEST_slide1", "TEST_slide2"],
+          "refreshToken": "123456",
+          "clientId": {"identifier": "id", "secret": "secret123"}
+        });
+        expect(_config.albumNames, equals(["TEST_slide1", "TEST_slide2"]));
+        expect(_config.syncPeriod, equals(Duration(seconds: 60)));
+        expect(_config.refreshToken, equals('123456'));
+        expect(_config.clientId.identifier, equals('id'));
+        expect(_config.clientId.secret, equals('secret123'));
+        expect(_config.name, equals(StorageType.GPhotoStorage));
+      });
+
+      test('DiskStorageConfig', () {
+        final _config = new DiskStorageConfig.fromJson(<String, dynamic>{});
+        expect(_config.name, equals(StorageType.DiskStorage));
+      });
+
+      test('StoragesConfig', () {
+        final _config = new StoragesConfig.fromJson(<String, dynamic>{
+          "selected": "GPhotoStorage",
+          "storages": {
+            "GPhotoStorage": {
+              "syncPeriod": 60,
+              "albumNames": ["TEST_slide"],
+              "refreshToken": "123456",
+              "clientId": {"identifier": "id", "secret": "secret123"}
+            }
+          }
+        });
+        expect(_config.selected, equals(StorageType.GPhotoStorage));
+        final storage = _config.getOrCreateEmpty(_config.selected);
+        expect(storage.runtimeType, equals(GPhotoStorageConfig));
+        final gstorage = storage as GPhotoStorageConfig;
+        expect(gstorage.refreshToken, equals("123456"));
       });
     });
   });

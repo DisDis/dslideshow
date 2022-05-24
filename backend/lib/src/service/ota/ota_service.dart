@@ -72,7 +72,7 @@ class OTAService implements RpcService {
 
   static String _generateCode() {
     var sb = new StringBuffer();
-    var count = 8;
+    var count = 5;
     while (count > 0) {
       sb.write(_rnd.nextInt(10));
       count--;

@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 5.0.0
+version: 5.0.0+11
 description: A sample command-line application
 publish_to: none
 environment:
@@ -16,7 +16,7 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
-    gpiod: ^3.0.0
+    gpiod: ^3.0.1
     shelf: ^1.2.0
     shelf_router: ^1.1.2
     mqtt_client: ^9.0.0

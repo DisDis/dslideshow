@@ -7,6 +7,13 @@ APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
 BUILD_PROFILE=release_64
 ENGINE_BINARIES=../deb_factory/source_arm64/engine-binaries
 
+
+error_exit()
+{
+    echo "Error: $1"
+    exit 1
+}
+
 echo "----------- README -----------"
 echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"
 echo "git clone --depth 1 --branch engine-binaries https://github.com/ardera/flutter-pi.git flutter_engine_binaries"
@@ -28,7 +35,7 @@ CMD="$FLUTTER_PATH/bin/cache/dart-sdk/bin/dart \
 
 echo "------------------------"
 echo "$CMD"
-eval $CMD
+eval $CMD || error_exit "snapshot"
 
 #  --lazy-async-stacks \
 # 32bit
@@ -49,6 +56,6 @@ CMD="$ENGINE_BINARIES/gen_snapshot_linux_x64_$BUILD_PROFILE \
   $OUTPUT_KERNEL_DILL"
 
 echo "$CMD"
-eval $CMD
+eval $CMD || error_exit "gen_snapshot_linux"
 
 echo "Output: $OUTPUT_SO"
