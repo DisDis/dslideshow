@@ -37,8 +37,8 @@ dependencies:
   dslideshow_flutter:
     path: ../dslideshow_flutter
 
-  # dslideshow_backend:
-  #   path: ../backend
+  dslideshow_backend:
+    path: ../backend
 
   get_it: ^7.0.0
   path_provider: ^2.0.1

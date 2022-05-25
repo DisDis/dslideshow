@@ -18,7 +18,11 @@ import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/log.dart';
+
 import 'src/service/hardware/src/gpio_service.dart';
+import 'src/service/hardware/src/gpio_service_instance_stub.dart'
+    if (dart.library.io) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_hw.dart'
+    if (dart.library.js) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_web.dart';
 import 'web_server.dart' as web_server;
 
 final Logger _log = new Logger('main');
@@ -53,7 +57,7 @@ void main(List<dynamic> args) async {
     });
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
-      return new GPIOServiceImpl(_config.hardware);
+      return getGPIOService(_config.hardware);
     });
     injector.registerLazySingleton<ScreenService>(() {
       final _config = injector.get<AppConfig>();
