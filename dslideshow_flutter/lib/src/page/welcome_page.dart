@@ -40,6 +40,10 @@ class AnimatedLogo extends AnimatedWidget {
         opacity: _opacityTween.evaluate(animation),
         child: Column(
           children: <Widget>[
+            const Text("front: v${ApplicationInfo.frontendVersion}",
+                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
+            const Text("back: v${ApplicationInfo.backendVersion}",
+                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
             Expanded(
                 child: Center(
                     child: Text(
@@ -47,10 +51,6 @@ class AnimatedLogo extends AnimatedWidget {
               style: TextStyle(color: Colors.white, fontSize: size),
               textAlign: TextAlign.center,
             ))),
-            const Text("front: v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
-            const Text("back: v${ApplicationInfo.backendVersion}",
-                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic))
           ],
         ),
       ),

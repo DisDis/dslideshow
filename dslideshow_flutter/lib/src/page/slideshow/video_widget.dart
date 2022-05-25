@@ -66,7 +66,7 @@ class _VideoWidgetState extends State<VideoWidget> {
         }).catchError((dynamic message, StackTrace s) {
           _log.severe('VideoPlayerController.initialize: $message', s);
         });
-      //_controller.setLooping(true);
+      _controller.setLooping(true);
       _controller.play().catchError((dynamic message, StackTrace s) {
         _log.severe('VideoPlayerController.play: $message', s);
       });
