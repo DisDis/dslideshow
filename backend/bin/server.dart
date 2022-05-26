@@ -11,6 +11,7 @@ import 'package:dslideshow_backend/src/command/wifi_commands.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/gpio_service_impl.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';

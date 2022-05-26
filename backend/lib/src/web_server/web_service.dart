@@ -55,12 +55,12 @@ class WebService {
 
   String _generateCode() {
     var sb = new StringBuffer();
-    var count = 8;
+    var count = 5;
     while (count > 0) {
       sb.write(_rnd.nextInt(10));
       count--;
     }
-    if (_config.permanentCode != null) {
+    if (_config.permanentCode != null || _config.permanentCode != '') {
       return _config.permanentCode.toString();
     }
     return sb.toString();
@@ -75,7 +75,7 @@ class WebService {
     final fileType = mime.lookupMimeType(file.path);
 
     // collect file data
-    final fileStat = await file.stat();
+    final fileStat = file.statSync();
 
     // check file permission
     if (fileStat.modeString()[0] != 'r') return {};
@@ -107,7 +107,7 @@ class WebService {
     if (_config.alwaysEnabled) {
       _log.warning('Web server always on');
     }
-    if (_config.permanentCode != null) {
+    if (_config.permanentCode != null || _config.permanentCode != '') {
       _log.severe('Permanent code enabled = "$_code"');
     }
   }

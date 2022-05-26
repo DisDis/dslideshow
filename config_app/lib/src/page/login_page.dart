@@ -31,7 +31,7 @@ class _AuthPageState extends State<AuthPage> {
   static final Logger _log = Logger('_LoginPageState');
   final codeTextController = TextEditingController(text: '123');
   final urlTextController = TextEditingController(
-    text: 'ws://localhost:8080/ws',
+    text: 'ws://${Uri.base.host}:8080/ws',
   );
 
   final _client = ClientService();
