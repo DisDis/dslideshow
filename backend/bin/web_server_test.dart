@@ -34,4 +34,8 @@ void main(List<String> args) async {
     _log.fine('Fatal error: $e, $s');
     exit(1);
   }
+  ProcessSignal.sigint.watch().listen((ProcessSignal signal) {
+    print("exiting");
+    exit(0);
+  });
 }

@@ -11,12 +11,12 @@ Serializer<WebServerControlCommand> _$webServerControlCommandSerializer =
 Serializer<WebServerControlCommandResult>
     _$webServerControlCommandResultSerializer =
     new _$WebServerControlCommandResultSerializer();
+Serializer<WSErrorResult> _$wSErrorResultSerializer =
+    new _$WSErrorResultSerializer();
 Serializer<WSHelloCommand> _$wSHelloCommandSerializer =
     new _$WSHelloCommandSerializer();
 Serializer<WSAuthCommand> _$wSAuthCommandSerializer =
     new _$WSAuthCommandSerializer();
-Serializer<WSAuthReqCommand> _$wSAuthReqCommandSerializer =
-    new _$WSAuthReqCommandSerializer();
 Serializer<WSSendRpcCommand> _$wSSendRpcCommandSerializer =
     new _$WSSendRpcCommandSerializer();
 Serializer<WSRpcResult> _$wSRpcResultSerializer = new _$WSRpcResultSerializer();
@@ -24,12 +24,16 @@ Serializer<WSConfigDownloadCommand> _$wSConfigDownloadCommandSerializer =
     new _$WSConfigDownloadCommandSerializer();
 Serializer<WSConfigUploadCommand> _$wSConfigUploadCommandSerializer =
     new _$WSConfigUploadCommandSerializer();
-Serializer<WSConfigContentCommand> _$wSConfigContentCommandSerializer =
-    new _$WSConfigContentCommandSerializer();
+Serializer<WSConfigDownloadResult> _$wSConfigDownloadResultSerializer =
+    new _$WSConfigDownloadResultSerializer();
 Serializer<WSRestartApplicationCommand>
     _$wSRestartApplicationCommandSerializer =
     new _$WSRestartApplicationCommandSerializer();
 Serializer<WSResultOk> _$wSResultOkSerializer = new _$WSResultOkSerializer();
+Serializer<WSEchoResult> _$wSEchoResultSerializer =
+    new _$WSEchoResultSerializer();
+Serializer<WSEchoCommand> _$wSEchoCommandSerializer =
+    new _$WSEchoCommandSerializer();
 
 class _$WebServerControlCommandSerializer
     implements StructuredSerializer<WebServerControlCommand> {
@@ -139,6 +143,53 @@ class _$WebServerControlCommandResultSerializer
   }
 }
 
+class _$WSErrorResultSerializer implements StructuredSerializer<WSErrorResult> {
+  @override
+  final Iterable<Type> types = const [WSErrorResult, _$WSErrorResult];
+  @override
+  final String wireName = 'WSErrorResult';
+
+  @override
+  Iterable<Object?> serialize(Serializers serializers, WSErrorResult object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'error',
+      serializers.serialize(object.error,
+          specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
+  }
+
+  @override
+  WSErrorResult deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new WSErrorResultBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'error':
+          result.error = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$WSHelloCommandSerializer
     implements StructuredSerializer<WSHelloCommand> {
   @override
@@ -149,14 +200,34 @@ class _$WSHelloCommandSerializer
   @override
   Iterable<Object?> serialize(Serializers serializers, WSHelloCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    return <Object?>[];
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
   }
 
   @override
   WSHelloCommand deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return new WSHelloCommandBuilder().build();
+    final result = new WSHelloCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
   }
 }
 
@@ -170,8 +241,13 @@ class _$WSAuthCommandSerializer implements StructuredSerializer<WSAuthCommand> {
   Iterable<Object?> serialize(Serializers serializers, WSAuthCommand object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
+      'userName',
+      serializers.serialize(object.userName,
+          specifiedType: const FullType(String)),
       'code',
       serializers.serialize(object.code, specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
 
     return result;
@@ -189,35 +265,22 @@ class _$WSAuthCommandSerializer implements StructuredSerializer<WSAuthCommand> {
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
+        case 'userName':
+          result.userName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'code':
           result.code = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
       }
     }
 
     return result.build();
-  }
-}
-
-class _$WSAuthReqCommandSerializer
-    implements StructuredSerializer<WSAuthReqCommand> {
-  @override
-  final Iterable<Type> types = const [WSAuthReqCommand, _$WSAuthReqCommand];
-  @override
-  final String wireName = 'WSAuthReqCommand';
-
-  @override
-  Iterable<Object?> serialize(Serializers serializers, WSAuthReqCommand object,
-      {FullType specifiedType = FullType.unspecified}) {
-    return <Object?>[];
-  }
-
-  @override
-  WSAuthReqCommand deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    return new WSAuthReqCommandBuilder().build();
   }
 }
 
@@ -235,6 +298,8 @@ class _$WSSendRpcCommandSerializer
       'command',
       serializers.serialize(object.command,
           specifiedType: const FullType(RpcCommand)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
 
     return result;
@@ -256,6 +321,10 @@ class _$WSSendRpcCommandSerializer
           result.command = serializers.deserialize(value,
               specifiedType: const FullType(RpcCommand)) as RpcCommand;
           break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
       }
     }
 
@@ -273,6 +342,8 @@ class _$WSRpcResultSerializer implements StructuredSerializer<WSRpcResult> {
   Iterable<Object?> serialize(Serializers serializers, WSRpcResult object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
       'result',
       serializers.serialize(object.result,
           specifiedType: const FullType(RpcResult)),
@@ -292,6 +363,10 @@ class _$WSRpcResultSerializer implements StructuredSerializer<WSRpcResult> {
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
         case 'result':
           result.result = serializers.deserialize(value,
               specifiedType: const FullType(RpcResult)) as RpcResult;
@@ -317,14 +392,34 @@ class _$WSConfigDownloadCommandSerializer
   Iterable<Object?> serialize(
       Serializers serializers, WSConfigDownloadCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    return <Object?>[];
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
   }
 
   @override
   WSConfigDownloadCommand deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return new WSConfigDownloadCommandBuilder().build();
+    final result = new WSConfigDownloadCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
   }
 }
 
@@ -346,6 +441,8 @@ class _$WSConfigUploadCommandSerializer
       'content',
       serializers.serialize(object.content,
           specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
 
     return result;
@@ -367,6 +464,10 @@ class _$WSConfigUploadCommandSerializer
           result.content = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
       }
     }
 
@@ -374,34 +475,36 @@ class _$WSConfigUploadCommandSerializer
   }
 }
 
-class _$WSConfigContentCommandSerializer
-    implements StructuredSerializer<WSConfigContentCommand> {
+class _$WSConfigDownloadResultSerializer
+    implements StructuredSerializer<WSConfigDownloadResult> {
   @override
   final Iterable<Type> types = const [
-    WSConfigContentCommand,
-    _$WSConfigContentCommand
+    WSConfigDownloadResult,
+    _$WSConfigDownloadResult
   ];
   @override
-  final String wireName = 'WSConfigContentCommand';
+  final String wireName = 'WSConfigDownloadResult';
 
   @override
   Iterable<Object?> serialize(
-      Serializers serializers, WSConfigContentCommand object,
+      Serializers serializers, WSConfigDownloadResult object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'content',
       serializers.serialize(object.content,
           specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
 
     return result;
   }
 
   @override
-  WSConfigContentCommand deserialize(
+  WSConfigDownloadResult deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new WSConfigContentCommandBuilder();
+    final result = new WSConfigDownloadResultBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -412,6 +515,10 @@ class _$WSConfigContentCommandSerializer
         case 'content':
           result.content = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
       }
     }
@@ -434,14 +541,34 @@ class _$WSRestartApplicationCommandSerializer
   Iterable<Object?> serialize(
       Serializers serializers, WSRestartApplicationCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    return <Object?>[];
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
   }
 
   @override
   WSRestartApplicationCommand deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return new WSRestartApplicationCommandBuilder().build();
+    final result = new WSRestartApplicationCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
   }
 }
 
@@ -454,13 +581,125 @@ class _$WSResultOkSerializer implements StructuredSerializer<WSResultOk> {
   @override
   Iterable<Object?> serialize(Serializers serializers, WSResultOk object,
       {FullType specifiedType = FullType.unspecified}) {
-    return <Object?>[];
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
   }
 
   @override
   WSResultOk deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return new WSResultOkBuilder().build();
+    final result = new WSResultOkBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$WSEchoResultSerializer implements StructuredSerializer<WSEchoResult> {
+  @override
+  final Iterable<Type> types = const [WSEchoResult, _$WSEchoResult];
+  @override
+  final String wireName = 'WSEchoResult';
+
+  @override
+  Iterable<Object?> serialize(Serializers serializers, WSEchoResult object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+      'msg',
+      serializers.serialize(object.msg, specifiedType: const FullType(String)),
+    ];
+
+    return result;
+  }
+
+  @override
+  WSEchoResult deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new WSEchoResultBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'msg':
+          result.msg = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$WSEchoCommandSerializer implements StructuredSerializer<WSEchoCommand> {
+  @override
+  final Iterable<Type> types = const [WSEchoCommand, _$WSEchoCommand];
+  @override
+  final String wireName = 'WSEchoCommand';
+
+  @override
+  Iterable<Object?> serialize(Serializers serializers, WSEchoCommand object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+      'msg',
+      serializers.serialize(object.msg, specifiedType: const FullType(String)),
+    ];
+
+    return result;
+  }
+
+  @override
+  WSEchoCommand deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new WSEchoCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'msg':
+          result.msg = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
   }
 }
 
@@ -676,11 +915,105 @@ class WebServerControlCommandResultBuilder
   }
 }
 
+class _$WSErrorResult extends WSErrorResult {
+  @override
+  final String error;
+  @override
+  final int id;
+
+  factory _$WSErrorResult([void Function(WSErrorResultBuilder)? updates]) =>
+      (new WSErrorResultBuilder()..update(updates)).build();
+
+  _$WSErrorResult._({required this.error, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(error, 'WSErrorResult', 'error');
+    BuiltValueNullFieldError.checkNotNull(id, 'WSErrorResult', 'id');
+  }
+
+  @override
+  WSErrorResult rebuild(void Function(WSErrorResultBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WSErrorResultBuilder toBuilder() => new WSErrorResultBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WSErrorResult && error == other.error && id == other.id;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, error.hashCode), id.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('WSErrorResult')
+          ..add('error', error)
+          ..add('id', id))
+        .toString();
+  }
+}
+
+class WSErrorResultBuilder
+    implements Builder<WSErrorResult, WSErrorResultBuilder> {
+  _$WSErrorResult? _$v;
+
+  String? _error;
+  String? get error => _$this._error;
+  set error(String? error) => _$this._error = error;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSErrorResultBuilder();
+
+  WSErrorResultBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _error = $v.error;
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(WSErrorResult other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$WSErrorResult;
+  }
+
+  @override
+  void update(void Function(WSErrorResultBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WSErrorResult build() {
+    final _$result = _$v ??
+        new _$WSErrorResult._(
+            error: BuiltValueNullFieldError.checkNotNull(
+                error, 'WSErrorResult', 'error'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSErrorResult', 'id'));
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$WSHelloCommand extends WSHelloCommand {
+  @override
+  final int id;
+
   factory _$WSHelloCommand([void Function(WSHelloCommandBuilder)? updates]) =>
       (new WSHelloCommandBuilder()..update(updates)).build();
 
-  _$WSHelloCommand._() : super._();
+  _$WSHelloCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSHelloCommand', 'id');
+  }
 
   @override
   WSHelloCommand rebuild(void Function(WSHelloCommandBuilder) updates) =>
@@ -693,17 +1026,18 @@ class _$WSHelloCommand extends WSHelloCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSHelloCommand;
+    return other is WSHelloCommand && id == other.id;
   }
 
   @override
   int get hashCode {
-    return 9781298;
+    return $jf($jc(0, id.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('WSHelloCommand').toString();
+    return (newBuiltValueToStringHelper('WSHelloCommand')..add('id', id))
+        .toString();
   }
 }
 
@@ -711,7 +1045,22 @@ class WSHelloCommandBuilder
     implements Builder<WSHelloCommand, WSHelloCommandBuilder> {
   _$WSHelloCommand? _$v;
 
-  WSHelloCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSHelloCommandBuilder() {
+    WSHelloCommand._setDefaults(this);
+  }
+
+  WSHelloCommandBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(WSHelloCommand other) {
@@ -726,7 +1075,10 @@ class WSHelloCommandBuilder
 
   @override
   _$WSHelloCommand build() {
-    final _$result = _$v ?? new _$WSHelloCommand._();
+    final _$result = _$v ??
+        new _$WSHelloCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSHelloCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -734,13 +1086,22 @@ class WSHelloCommandBuilder
 
 class _$WSAuthCommand extends WSAuthCommand {
   @override
+  final String userName;
+  @override
   final String code;
+  @override
+  final int id;
 
   factory _$WSAuthCommand([void Function(WSAuthCommandBuilder)? updates]) =>
       (new WSAuthCommandBuilder()..update(updates)).build();
 
-  _$WSAuthCommand._({required this.code}) : super._() {
+  _$WSAuthCommand._(
+      {required this.userName, required this.code, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        userName, 'WSAuthCommand', 'userName');
     BuiltValueNullFieldError.checkNotNull(code, 'WSAuthCommand', 'code');
+    BuiltValueNullFieldError.checkNotNull(id, 'WSAuthCommand', 'id');
   }
 
   @override
@@ -753,17 +1114,23 @@ class _$WSAuthCommand extends WSAuthCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSAuthCommand && code == other.code;
+    return other is WSAuthCommand &&
+        userName == other.userName &&
+        code == other.code &&
+        id == other.id;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, code.hashCode));
+    return $jf($jc($jc($jc(0, userName.hashCode), code.hashCode), id.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('WSAuthCommand')..add('code', code))
+    return (newBuiltValueToStringHelper('WSAuthCommand')
+          ..add('userName', userName)
+          ..add('code', code)
+          ..add('id', id))
         .toString();
   }
 }
@@ -772,16 +1139,28 @@ class WSAuthCommandBuilder
     implements Builder<WSAuthCommand, WSAuthCommandBuilder> {
   _$WSAuthCommand? _$v;
 
+  String? _userName;
+  String? get userName => _$this._userName;
+  set userName(String? userName) => _$this._userName = userName;
+
   String? _code;
   String? get code => _$this._code;
   set code(String? code) => _$this._code = code;
 
-  WSAuthCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSAuthCommandBuilder() {
+    WSAuthCommand._setDefaults(this);
+  }
 
   WSAuthCommandBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _userName = $v.userName;
       _code = $v.code;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -802,65 +1181,12 @@ class WSAuthCommandBuilder
   _$WSAuthCommand build() {
     final _$result = _$v ??
         new _$WSAuthCommand._(
+            userName: BuiltValueNullFieldError.checkNotNull(
+                userName, 'WSAuthCommand', 'userName'),
             code: BuiltValueNullFieldError.checkNotNull(
-                code, 'WSAuthCommand', 'code'));
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$WSAuthReqCommand extends WSAuthReqCommand {
-  factory _$WSAuthReqCommand(
-          [void Function(WSAuthReqCommandBuilder)? updates]) =>
-      (new WSAuthReqCommandBuilder()..update(updates)).build();
-
-  _$WSAuthReqCommand._() : super._();
-
-  @override
-  WSAuthReqCommand rebuild(void Function(WSAuthReqCommandBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  WSAuthReqCommandBuilder toBuilder() =>
-      new WSAuthReqCommandBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is WSAuthReqCommand;
-  }
-
-  @override
-  int get hashCode {
-    return 852222057;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('WSAuthReqCommand').toString();
-  }
-}
-
-class WSAuthReqCommandBuilder
-    implements Builder<WSAuthReqCommand, WSAuthReqCommandBuilder> {
-  _$WSAuthReqCommand? _$v;
-
-  WSAuthReqCommandBuilder();
-
-  @override
-  void replace(WSAuthReqCommand other) {
-    ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$WSAuthReqCommand;
-  }
-
-  @override
-  void update(void Function(WSAuthReqCommandBuilder)? updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$WSAuthReqCommand build() {
-    final _$result = _$v ?? new _$WSAuthReqCommand._();
+                code, 'WSAuthCommand', 'code'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSAuthCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -869,14 +1195,17 @@ class WSAuthReqCommandBuilder
 class _$WSSendRpcCommand extends WSSendRpcCommand {
   @override
   final RpcCommand command;
+  @override
+  final int id;
 
   factory _$WSSendRpcCommand(
           [void Function(WSSendRpcCommandBuilder)? updates]) =>
       (new WSSendRpcCommandBuilder()..update(updates)).build();
 
-  _$WSSendRpcCommand._({required this.command}) : super._() {
+  _$WSSendRpcCommand._({required this.command, required this.id}) : super._() {
     BuiltValueNullFieldError.checkNotNull(
         command, 'WSSendRpcCommand', 'command');
+    BuiltValueNullFieldError.checkNotNull(id, 'WSSendRpcCommand', 'id');
   }
 
   @override
@@ -890,18 +1219,21 @@ class _$WSSendRpcCommand extends WSSendRpcCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSSendRpcCommand && command == other.command;
+    return other is WSSendRpcCommand &&
+        command == other.command &&
+        id == other.id;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, command.hashCode));
+    return $jf($jc($jc(0, command.hashCode), id.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('WSSendRpcCommand')
-          ..add('command', command))
+          ..add('command', command)
+          ..add('id', id))
         .toString();
   }
 }
@@ -914,12 +1246,19 @@ class WSSendRpcCommandBuilder
   RpcCommand? get command => _$this._command;
   set command(RpcCommand? command) => _$this._command = command;
 
-  WSSendRpcCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSSendRpcCommandBuilder() {
+    WSSendRpcCommand._setDefaults(this);
+  }
 
   WSSendRpcCommandBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _command = $v.command;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -941,7 +1280,9 @@ class WSSendRpcCommandBuilder
     final _$result = _$v ??
         new _$WSSendRpcCommand._(
             command: BuiltValueNullFieldError.checkNotNull(
-                command, 'WSSendRpcCommand', 'command'));
+                command, 'WSSendRpcCommand', 'command'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSSendRpcCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -949,12 +1290,15 @@ class WSSendRpcCommandBuilder
 
 class _$WSRpcResult extends WSRpcResult {
   @override
+  final int id;
+  @override
   final RpcResult result;
 
   factory _$WSRpcResult([void Function(WSRpcResultBuilder)? updates]) =>
       (new WSRpcResultBuilder()..update(updates)).build();
 
-  _$WSRpcResult._({required this.result}) : super._() {
+  _$WSRpcResult._({required this.id, required this.result}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSRpcResult', 'id');
     BuiltValueNullFieldError.checkNotNull(result, 'WSRpcResult', 'result');
   }
 
@@ -968,23 +1312,29 @@ class _$WSRpcResult extends WSRpcResult {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSRpcResult && result == other.result;
+    return other is WSRpcResult && id == other.id && result == other.result;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, result.hashCode));
+    return $jf($jc($jc(0, id.hashCode), result.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('WSRpcResult')..add('result', result))
+    return (newBuiltValueToStringHelper('WSRpcResult')
+          ..add('id', id)
+          ..add('result', result))
         .toString();
   }
 }
 
 class WSRpcResultBuilder implements Builder<WSRpcResult, WSRpcResultBuilder> {
   _$WSRpcResult? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   RpcResult? _result;
   RpcResult? get result => _$this._result;
@@ -995,6 +1345,7 @@ class WSRpcResultBuilder implements Builder<WSRpcResult, WSRpcResultBuilder> {
   WSRpcResultBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _id = $v.id;
       _result = $v.result;
       _$v = null;
     }
@@ -1016,6 +1367,7 @@ class WSRpcResultBuilder implements Builder<WSRpcResult, WSRpcResultBuilder> {
   _$WSRpcResult build() {
     final _$result = _$v ??
         new _$WSRpcResult._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'WSRpcResult', 'id'),
             result: BuiltValueNullFieldError.checkNotNull(
                 result, 'WSRpcResult', 'result'));
     replace(_$result);
@@ -1024,11 +1376,16 @@ class WSRpcResultBuilder implements Builder<WSRpcResult, WSRpcResultBuilder> {
 }
 
 class _$WSConfigDownloadCommand extends WSConfigDownloadCommand {
+  @override
+  final int id;
+
   factory _$WSConfigDownloadCommand(
           [void Function(WSConfigDownloadCommandBuilder)? updates]) =>
       (new WSConfigDownloadCommandBuilder()..update(updates)).build();
 
-  _$WSConfigDownloadCommand._() : super._();
+  _$WSConfigDownloadCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSConfigDownloadCommand', 'id');
+  }
 
   @override
   WSConfigDownloadCommand rebuild(
@@ -1042,17 +1399,19 @@ class _$WSConfigDownloadCommand extends WSConfigDownloadCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSConfigDownloadCommand;
+    return other is WSConfigDownloadCommand && id == other.id;
   }
 
   @override
   int get hashCode {
-    return 750502900;
+    return $jf($jc(0, id.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('WSConfigDownloadCommand').toString();
+    return (newBuiltValueToStringHelper('WSConfigDownloadCommand')
+          ..add('id', id))
+        .toString();
   }
 }
 
@@ -1061,7 +1420,22 @@ class WSConfigDownloadCommandBuilder
         Builder<WSConfigDownloadCommand, WSConfigDownloadCommandBuilder> {
   _$WSConfigDownloadCommand? _$v;
 
-  WSConfigDownloadCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSConfigDownloadCommandBuilder() {
+    WSConfigDownloadCommand._setDefaults(this);
+  }
+
+  WSConfigDownloadCommandBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(WSConfigDownloadCommand other) {
@@ -1076,7 +1450,10 @@ class WSConfigDownloadCommandBuilder
 
   @override
   _$WSConfigDownloadCommand build() {
-    final _$result = _$v ?? new _$WSConfigDownloadCommand._();
+    final _$result = _$v ??
+        new _$WSConfigDownloadCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSConfigDownloadCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -1085,14 +1462,18 @@ class WSConfigDownloadCommandBuilder
 class _$WSConfigUploadCommand extends WSConfigUploadCommand {
   @override
   final String content;
+  @override
+  final int id;
 
   factory _$WSConfigUploadCommand(
           [void Function(WSConfigUploadCommandBuilder)? updates]) =>
       (new WSConfigUploadCommandBuilder()..update(updates)).build();
 
-  _$WSConfigUploadCommand._({required this.content}) : super._() {
+  _$WSConfigUploadCommand._({required this.content, required this.id})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(
         content, 'WSConfigUploadCommand', 'content');
+    BuiltValueNullFieldError.checkNotNull(id, 'WSConfigUploadCommand', 'id');
   }
 
   @override
@@ -1107,18 +1488,21 @@ class _$WSConfigUploadCommand extends WSConfigUploadCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSConfigUploadCommand && content == other.content;
+    return other is WSConfigUploadCommand &&
+        content == other.content &&
+        id == other.id;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, content.hashCode));
+    return $jf($jc($jc(0, content.hashCode), id.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('WSConfigUploadCommand')
-          ..add('content', content))
+          ..add('content', content)
+          ..add('id', id))
         .toString();
   }
 }
@@ -1131,12 +1515,19 @@ class WSConfigUploadCommandBuilder
   String? get content => _$this._content;
   set content(String? content) => _$this._content = content;
 
-  WSConfigUploadCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSConfigUploadCommandBuilder() {
+    WSConfigUploadCommand._setDefaults(this);
+  }
 
   WSConfigUploadCommandBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _content = $v.content;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -1158,100 +1549,122 @@ class WSConfigUploadCommandBuilder
     final _$result = _$v ??
         new _$WSConfigUploadCommand._(
             content: BuiltValueNullFieldError.checkNotNull(
-                content, 'WSConfigUploadCommand', 'content'));
+                content, 'WSConfigUploadCommand', 'content'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSConfigUploadCommand', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
-class _$WSConfigContentCommand extends WSConfigContentCommand {
+class _$WSConfigDownloadResult extends WSConfigDownloadResult {
   @override
   final String content;
+  @override
+  final int id;
 
-  factory _$WSConfigContentCommand(
-          [void Function(WSConfigContentCommandBuilder)? updates]) =>
-      (new WSConfigContentCommandBuilder()..update(updates)).build();
+  factory _$WSConfigDownloadResult(
+          [void Function(WSConfigDownloadResultBuilder)? updates]) =>
+      (new WSConfigDownloadResultBuilder()..update(updates)).build();
 
-  _$WSConfigContentCommand._({required this.content}) : super._() {
+  _$WSConfigDownloadResult._({required this.content, required this.id})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        content, 'WSConfigContentCommand', 'content');
+        content, 'WSConfigDownloadResult', 'content');
+    BuiltValueNullFieldError.checkNotNull(id, 'WSConfigDownloadResult', 'id');
   }
 
   @override
-  WSConfigContentCommand rebuild(
-          void Function(WSConfigContentCommandBuilder) updates) =>
+  WSConfigDownloadResult rebuild(
+          void Function(WSConfigDownloadResultBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  WSConfigContentCommandBuilder toBuilder() =>
-      new WSConfigContentCommandBuilder()..replace(this);
+  WSConfigDownloadResultBuilder toBuilder() =>
+      new WSConfigDownloadResultBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSConfigContentCommand && content == other.content;
+    return other is WSConfigDownloadResult &&
+        content == other.content &&
+        id == other.id;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, content.hashCode));
+    return $jf($jc($jc(0, content.hashCode), id.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('WSConfigContentCommand')
-          ..add('content', content))
+    return (newBuiltValueToStringHelper('WSConfigDownloadResult')
+          ..add('content', content)
+          ..add('id', id))
         .toString();
   }
 }
 
-class WSConfigContentCommandBuilder
-    implements Builder<WSConfigContentCommand, WSConfigContentCommandBuilder> {
-  _$WSConfigContentCommand? _$v;
+class WSConfigDownloadResultBuilder
+    implements Builder<WSConfigDownloadResult, WSConfigDownloadResultBuilder> {
+  _$WSConfigDownloadResult? _$v;
 
   String? _content;
   String? get content => _$this._content;
   set content(String? content) => _$this._content = content;
 
-  WSConfigContentCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
-  WSConfigContentCommandBuilder get _$this {
+  WSConfigDownloadResultBuilder();
+
+  WSConfigDownloadResultBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _content = $v.content;
+      _id = $v.id;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(WSConfigContentCommand other) {
+  void replace(WSConfigDownloadResult other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$WSConfigContentCommand;
+    _$v = other as _$WSConfigDownloadResult;
   }
 
   @override
-  void update(void Function(WSConfigContentCommandBuilder)? updates) {
+  void update(void Function(WSConfigDownloadResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$WSConfigContentCommand build() {
+  _$WSConfigDownloadResult build() {
     final _$result = _$v ??
-        new _$WSConfigContentCommand._(
+        new _$WSConfigDownloadResult._(
             content: BuiltValueNullFieldError.checkNotNull(
-                content, 'WSConfigContentCommand', 'content'));
+                content, 'WSConfigDownloadResult', 'content'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSConfigDownloadResult', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
 class _$WSRestartApplicationCommand extends WSRestartApplicationCommand {
+  @override
+  final int id;
+
   factory _$WSRestartApplicationCommand(
           [void Function(WSRestartApplicationCommandBuilder)? updates]) =>
       (new WSRestartApplicationCommandBuilder()..update(updates)).build();
 
-  _$WSRestartApplicationCommand._() : super._();
+  _$WSRestartApplicationCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        id, 'WSRestartApplicationCommand', 'id');
+  }
 
   @override
   WSRestartApplicationCommand rebuild(
@@ -1265,17 +1678,18 @@ class _$WSRestartApplicationCommand extends WSRestartApplicationCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSRestartApplicationCommand;
+    return other is WSRestartApplicationCommand && id == other.id;
   }
 
   @override
   int get hashCode {
-    return 388135512;
+    return $jf($jc(0, id.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('WSRestartApplicationCommand')
+    return (newBuiltValueToStringHelper('WSRestartApplicationCommand')
+          ..add('id', id))
         .toString();
   }
 }
@@ -1286,7 +1700,22 @@ class WSRestartApplicationCommandBuilder
             WSRestartApplicationCommandBuilder> {
   _$WSRestartApplicationCommand? _$v;
 
-  WSRestartApplicationCommandBuilder();
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WSRestartApplicationCommandBuilder() {
+    WSRestartApplicationCommand._setDefaults(this);
+  }
+
+  WSRestartApplicationCommandBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(WSRestartApplicationCommand other) {
@@ -1301,17 +1730,25 @@ class WSRestartApplicationCommandBuilder
 
   @override
   _$WSRestartApplicationCommand build() {
-    final _$result = _$v ?? new _$WSRestartApplicationCommand._();
+    final _$result = _$v ??
+        new _$WSRestartApplicationCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSRestartApplicationCommand', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
 class _$WSResultOk extends WSResultOk {
+  @override
+  final int id;
+
   factory _$WSResultOk([void Function(WSResultOkBuilder)? updates]) =>
       (new WSResultOkBuilder()..update(updates)).build();
 
-  _$WSResultOk._() : super._();
+  _$WSResultOk._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSResultOk', 'id');
+  }
 
   @override
   WSResultOk rebuild(void Function(WSResultOkBuilder) updates) =>
@@ -1323,24 +1760,38 @@ class _$WSResultOk extends WSResultOk {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WSResultOk;
+    return other is WSResultOk && id == other.id;
   }
 
   @override
   int get hashCode {
-    return 309338272;
+    return $jf($jc(0, id.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('WSResultOk').toString();
+    return (newBuiltValueToStringHelper('WSResultOk')..add('id', id))
+        .toString();
   }
 }
 
 class WSResultOkBuilder implements Builder<WSResultOk, WSResultOkBuilder> {
   _$WSResultOk? _$v;
 
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
   WSResultOkBuilder();
+
+  WSResultOkBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(WSResultOk other) {
@@ -1355,7 +1806,188 @@ class WSResultOkBuilder implements Builder<WSResultOk, WSResultOkBuilder> {
 
   @override
   _$WSResultOk build() {
-    final _$result = _$v ?? new _$WSResultOk._();
+    final _$result = _$v ??
+        new _$WSResultOk._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'WSResultOk', 'id'));
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WSEchoResult extends WSEchoResult {
+  @override
+  final int id;
+  @override
+  final String msg;
+
+  factory _$WSEchoResult([void Function(WSEchoResultBuilder)? updates]) =>
+      (new WSEchoResultBuilder()..update(updates)).build();
+
+  _$WSEchoResult._({required this.id, required this.msg}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSEchoResult', 'id');
+    BuiltValueNullFieldError.checkNotNull(msg, 'WSEchoResult', 'msg');
+  }
+
+  @override
+  WSEchoResult rebuild(void Function(WSEchoResultBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WSEchoResultBuilder toBuilder() => new WSEchoResultBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WSEchoResult && id == other.id && msg == other.msg;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, id.hashCode), msg.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('WSEchoResult')
+          ..add('id', id)
+          ..add('msg', msg))
+        .toString();
+  }
+}
+
+class WSEchoResultBuilder
+    implements Builder<WSEchoResult, WSEchoResultBuilder> {
+  _$WSEchoResult? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  String? _msg;
+  String? get msg => _$this._msg;
+  set msg(String? msg) => _$this._msg = msg;
+
+  WSEchoResultBuilder();
+
+  WSEchoResultBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _msg = $v.msg;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(WSEchoResult other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$WSEchoResult;
+  }
+
+  @override
+  void update(void Function(WSEchoResultBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WSEchoResult build() {
+    final _$result = _$v ??
+        new _$WSEchoResult._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'WSEchoResult', 'id'),
+            msg: BuiltValueNullFieldError.checkNotNull(
+                msg, 'WSEchoResult', 'msg'));
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WSEchoCommand extends WSEchoCommand {
+  @override
+  final int id;
+  @override
+  final String msg;
+
+  factory _$WSEchoCommand([void Function(WSEchoCommandBuilder)? updates]) =>
+      (new WSEchoCommandBuilder()..update(updates)).build();
+
+  _$WSEchoCommand._({required this.id, required this.msg}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'WSEchoCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(msg, 'WSEchoCommand', 'msg');
+  }
+
+  @override
+  WSEchoCommand rebuild(void Function(WSEchoCommandBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WSEchoCommandBuilder toBuilder() => new WSEchoCommandBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WSEchoCommand && id == other.id && msg == other.msg;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, id.hashCode), msg.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('WSEchoCommand')
+          ..add('id', id)
+          ..add('msg', msg))
+        .toString();
+  }
+}
+
+class WSEchoCommandBuilder
+    implements Builder<WSEchoCommand, WSEchoCommandBuilder> {
+  _$WSEchoCommand? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  String? _msg;
+  String? get msg => _$this._msg;
+  set msg(String? msg) => _$this._msg = msg;
+
+  WSEchoCommandBuilder() {
+    WSEchoCommand._setDefaults(this);
+  }
+
+  WSEchoCommandBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _msg = $v.msg;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(WSEchoCommand other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$WSEchoCommand;
+  }
+
+  @override
+  void update(void Function(WSEchoCommandBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WSEchoCommand build() {
+    final _$result = _$v ??
+        new _$WSEchoCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WSEchoCommand', 'id'),
+            msg: BuiltValueNullFieldError.checkNotNull(
+                msg, 'WSEchoCommand', 'msg'));
     replace(_$result);
     return _$result;
   }

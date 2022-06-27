@@ -45,13 +45,15 @@ part 'serializers.g.dart';
   WiFiGetStoredResult,
   WSHelloCommand,
   WSAuthCommand,
-  WSAuthReqCommand,
-  WSConfigContentCommand,
+  WSErrorResult,
+  WSConfigDownloadResult,
   WSConfigDownloadCommand,
   WSConfigUploadCommand,
   WSSendRpcCommand,
   WSRpcResult,
   WSRestartApplicationCommand,
-  WSResultOk
+  WSResultOk,
+  WSEchoCommand,
+  WSEchoResult
 ])
 Serializers serializers = _$serializers;
