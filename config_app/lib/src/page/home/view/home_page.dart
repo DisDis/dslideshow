@@ -3,7 +3,10 @@ import 'package:config_app/src/bloc/authentication_event.dart';
 import 'package:config_app/src/bloc/photoframe_repository.dart';
 import 'package:config_app/src/page/home/bloc/home_cubit.dart';
 import 'package:config_app/src/page/home/bloc/home_state.dart';
+import 'package:config_app/src/page/home/bloc/wifi_tab_bloc.dart';
+import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
 import 'package:config_app/src/page/home/view/web_tab.dart';
+import 'package:config_app/src/page/home/view/wifi_tab.dart';
 import 'package:config_app/src/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +18,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(userRepository: RepositoryProvider.of<UserRepository>(context)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(
+            create: (BuildContext context) => HomeCubit(
+                  userRepository: RepositoryProvider.of<UserRepository>(context),
+                )),
+        BlocProvider<WifiTabBloc>(
+          create: (BuildContext context) => WifiTabBloc(
+              initialState: UnWifiTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+        ), /*
+    BlocProvider<BlocC>(
+      create: (BuildContext context) => BlocC(),
+    ),*/
+      ],
       child: const HomeView(),
     );
   }
@@ -109,6 +124,10 @@ class HomeView extends StatelessWidget {
           Container(
             child: Text('6'),
           ),
+          Container(
+            child: Text('7'),
+          ),
+          WiFiConfigTab(wifiTabBloc: context.read<WifiTabBloc>()),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -131,6 +150,11 @@ class HomeView extends StatelessWidget {
               groupValue: selectedTab,
               value: HomeTab.slideshow,
               icon: const Icon(Icons.picture_in_picture),
+            ),
+            _HomeTabButton(
+              groupValue: selectedTab,
+              value: HomeTab.wifi,
+              icon: const Icon(Icons.wifi),
             ),
           ],
         ),

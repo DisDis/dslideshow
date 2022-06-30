@@ -370,7 +370,7 @@ class WebSocketUser {
 
   Future<WebSocketResult> _executeWSAuthCommand(WSAuthCommand msg) async {
     _status = WebSocketUserStatus.authorization;
-    await Future<void>.delayed(const Duration(seconds: 3));
+    await Future<void>.delayed(const Duration(seconds: 1));
     if (msg.code != _code) {
       _status = WebSocketUserStatus.anonymous;
       _log.warning('Incorrect user="${msg.userName}" or code="${msg.code}"');
