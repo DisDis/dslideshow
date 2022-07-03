@@ -3,6 +3,8 @@ import 'package:config_app/src/bloc/authentication_event.dart';
 import 'package:config_app/src/bloc/photoframe_repository.dart';
 import 'package:config_app/src/page/home/bloc/home_cubit.dart';
 import 'package:config_app/src/page/home/bloc/home_state.dart';
+import 'package:config_app/src/page/home/bloc/web_tab_bloc.dart';
+import 'package:config_app/src/page/home/bloc/web_tab_state.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
 import 'package:config_app/src/page/home/view/web_tab.dart';
@@ -27,6 +29,10 @@ class HomePage extends StatelessWidget {
         BlocProvider<WifiTabBloc>(
           create: (BuildContext context) => WifiTabBloc(
               initialState: UnWifiTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+        ),
+        BlocProvider<WebTabBloc>(
+          create: (BuildContext context) =>
+              WebTabBloc(initialState: UnWebTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
         ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),
@@ -120,7 +126,7 @@ class HomeView extends StatelessWidget {
           Container(
             child: Text('4'),
           ),
-          WebConfigTab(),
+          WebConfigTab(tabBloc: context.read<WebTabBloc>()),
           Container(
             child: Text('6'),
           ),

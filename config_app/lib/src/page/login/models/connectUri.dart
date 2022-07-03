@@ -3,7 +3,8 @@ import 'package:formz/formz.dart';
 enum ConnectUriValidationError { empty, invalid }
 
 class ConnectUri extends FormzInput<String, ConnectUriValidationError> {
-  const ConnectUri.pure({String defaultValue = 'ws://127.0.0.1:8080/ws'}) : super.pure(defaultValue);
+  const ConnectUri.pure({String defaultValue = /*'ws://127.0.0.1:8080/ws'*/ 'ws://dslideshow4.local:8080/ws'})
+      : super.pure(defaultValue);
   const ConnectUri.dirty([String value = '']) : super.dirty(value);
 
   @override
