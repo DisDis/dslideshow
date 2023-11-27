@@ -53,7 +53,7 @@ class _ConfigPageState extends State<ConfigPage> {
       child: Column(
         children: <Widget>[
           const CommonHeaderWidget(),
-          QrImage(
+          QrImageView(
             backgroundColor: Colors.white,
             data: _urlData,
             size: 300.0,
@@ -62,8 +62,7 @@ class _ConfigPageState extends State<ConfigPage> {
           ElevatedButton(
             onPressed: () {
               final bloc = context.read<SlideshowBloc>();
-              bloc.add(SlideshowChangeStorageStatusEvent(
-                  StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
+              bloc.add(SlideshowChangeStorageStatusEvent(StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
             },
             child: const Text('StorageChange'),
           ),

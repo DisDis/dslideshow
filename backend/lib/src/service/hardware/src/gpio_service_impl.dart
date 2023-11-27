@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
-import 'package:gpiod/proxy_gpiod.dart';
+import 'package:flutter_gpiod/flutter_gpiod.dart';
+// import 'package:gpiod/proxy_gpiod.dart';
 import 'package:logging/logging.dart';
 
 class GPIOServiceImpl extends GPIOService {
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;
-  static final ProxyGpiod _gpio = ProxyGpiod.getInstance();
+  static final FlutterGpiod _gpio = FlutterGpiod.instance;
   late GpioChip _chip;
   late GpioLine _linePowerLED;
   late GpioLine _linePIR;
@@ -84,8 +85,7 @@ class GPIOServiceImpl extends GPIOService {
       _linePauseButton.requestInput(consumer: "PauseButton", triggers: {SignalEdge.falling, SignalEdge.rising});
       _lineBackButton.requestInput(consumer: "BackButton", triggers: {SignalEdge.falling, SignalEdge.rising});
       _lineMenuButton.requestInput(consumer: "MenuButton", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineScreenToggleButton
-          .requestInput(consumer: "ScreenToggleButton", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineScreenToggleButton.requestInput(consumer: "ScreenToggleButton", triggers: {SignalEdge.falling, SignalEdge.rising});
 
       _linePIR.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {

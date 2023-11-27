@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
@@ -24,18 +24,13 @@ class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
     final now = DateTime.now();
 
     return MetricsContainerWidget(
-      iconData: FlutterIcons.activity_fea,
+      iconData: FeatherIcons.activity,
       backgroundColor: Colors.black,
       child: Container(
         color: Colors.black,
         child: Column(children: <Widget>[
-          Row(children: [
-            MetricsDetails(_timeFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle)
-          ]),
-          Row(children: [
-            MetricsDetails(_dateFormatter.format(now),
-                value: null, style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))
-          ]),
+          Row(children: [MetricsDetails(_timeFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle)]),
+          Row(children: [MetricsDetails(_dateFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))]),
         ]),
       ),
     );

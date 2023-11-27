@@ -12,10 +12,13 @@ dependencies:
     get_it: ^7.6.4
     dslideshow_common:
         path: ../common
-    googleapis:
-        path: ../third_party/googleapis
-    googleapis_auth: any
-    gpiod: ^3.0.1
+    # googleapis:
+    #     path: ../third_party/googleapis
+    # googleapis_auth: any
+    googleapis: ^11.4.0
+    googleapis_auth: ^1.4.1
+    #gpiod: ^3.0.1
+    flutter_gpiod: ^0.5.1+5
     shelf: ^1.4.1
     shelf_router: ^1.1.4
     mqtt_client: ^10.0.0

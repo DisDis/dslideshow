@@ -36,8 +36,8 @@ void main() async {
     ]);
   }
   try {
-    RemoteService? _backendService;
-    RemoteService? _oTAService;
+    late RemoteService _backendService;
+    late RemoteService _OTAService;
 
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
@@ -49,7 +49,7 @@ void main() async {
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();
-      return FrontendService(_config, _backendService!, _oTAService!);
+      return FrontendService(_config, _backendService, _OTAService);
     });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -57,18 +57,21 @@ void main() async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
-    final currentIsoRunner = await _createCurrentIsolateRunner();
+    final _backendServiceReceivePort = isol.ReceivePort();
+    await isol.Isolate.spawn(hw_frame.serviceMain, _backendServiceReceivePort.sendPort);
+    isol.SendPort _backendServiceSendPort = await _backendServiceReceivePort.first;
+    final _backendServiceProcessing = Service(sendPort: _backendServiceSendPort, receivePortI: _backendServiceReceivePort);
+    _backendService = RemoteService(_backendServiceProcessing, serializers);
 
-    IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
-    await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
-    _backendService = RemoteService(_backendServiceIsolate, serializers);
-
-    IsolateRunner _oTAServiceIsolate = await IsolateRunner.spawn();
-    await _oTAServiceIsolate.run(ota.main, <IsolateRunner>[currentIsoRunner]);
-    _oTAService = RemoteService(_oTAServiceIsolate, serializers);
+    final _otaServiceReceivePort = isol.ReceivePort();
+    await isol.Isolate.spawn(ota.serviceMain, _otaServiceReceivePort.sendPort);
+    isol.SendPort _otaServiceSendPort = await _otaServiceReceivePort.first;
+    final _OTAServiceProcessing = Service(sendPort: _otaServiceSendPort, receivePortI: _otaServiceReceivePort);
+    _OTAService = RemoteService(_OTAServiceProcessing, serializers);
 
     final _frontendService = injector.get<FrontendService>();
-    initRpc(_frontendService, serializers);
+    initRpc(_frontendService, serializers, _backendServiceProcessing);
+    initRpc(_frontendService, serializers, _OTAServiceProcessing);
 
     injector.registerLazySingleton<SlideshowBloc>(() {
       return SlideshowBloc(frontendService: _frontendService);
@@ -91,11 +94,6 @@ void main() async {
 }
 
 final Logger _log = Logger('main');
-
-Future<IsolateRunner> _createCurrentIsolateRunner() async {
-  var remote = IsolateRunnerRemote();
-  return IsolateRunner(isol.Isolate.current, remote.commandPort);
-}
 
 void _runFlutter(FrontendService frontendService) {
   runApp(MultiBlocProvider(

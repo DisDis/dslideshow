@@ -1,6 +1,6 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/circular_indicator/circular_indicator_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
@@ -14,13 +14,12 @@ class CpuInfoWidget extends StatelessWidget {
   final double cpuUsedSize = 50;
   final Color backgroundBarColor = Colors.purple.shade300.withAlpha(100);
 
-  CpuInfoWidget({required this.cpu, required this.cpuLoad1, required this.cpuLoad5, required this.cpuLoad15, Key? key})
-      : super(key: key);
+  CpuInfoWidget({required this.cpu, required this.cpuLoad1, required this.cpuLoad5, required this.cpuLoad15, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
-      iconData: FlutterIcons.cpu_fea,
+      iconData: FeatherIcons.cpu,
       backgroundColor: Colors.purple.shade800,
       child: Column(children: <Widget>[
         Row(children: const [MetricsDetails('cpu', value: null)]),

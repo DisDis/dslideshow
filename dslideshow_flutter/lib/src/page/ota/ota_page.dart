@@ -10,28 +10,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
-import 'package:xterm/flutter.dart';
-import 'package:xterm/terminal/terminal.dart';
-import 'package:xterm/terminal/terminal_backend.dart';
-import 'package:xterm/theme/terminal_style.dart';
+import 'package:xterm/xterm.dart';
+// import 'package:xterm/terminal/terminal.dart';
+// import 'package:xterm/src/terminal/terminal_backend.dart';
+// import 'package:xterm/theme/terminal_style.dart';
 
 class OTAPage extends StatelessWidget {
-  late Terminal terminal = Terminal(backend: backend, maxLines: 3000);
-  final ProcessTerminalBackend backend = ProcessTerminalBackend();
+  // late Terminal terminal = Terminal(backend: backend, maxLines: 3000);
+  // final ProcessTerminalBackend backend = ProcessTerminalBackend();
   OTAPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => OtaBloc(frontendService: injector.get<FrontendService>(), backend: backend)
-          ..add(const OtaEvent.initialization()),
-        child: Scaffold(
-            backgroundColor: Colors.black,
-            body: OTAView(
-              terminal: terminal,
-            )));
+    return Placeholder();
+    // return BlocProvider(
+    //     create: (_) => OtaBloc(frontendService: injector.get<FrontendService>(), backend: backend)..add(const OtaEvent.initialization()),
+    //     child: Scaffold(
+    //         backgroundColor: Colors.black,
+    //         body: OTAView(
+    //           terminal: terminal,
+    //         )));
   }
 }
-
+/*
 class ProcessTerminalBackend extends TerminalBackend {
   final _exitCodeCompleter = Completer<int>();
   final _outStream = StreamController<String>();
@@ -143,3 +143,4 @@ class OTAView extends StatelessWidget {
     );
   }
 }
+*/

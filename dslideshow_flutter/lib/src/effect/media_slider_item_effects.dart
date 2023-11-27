@@ -3,18 +3,19 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'media_slider_item_effect.dart';
 
-class TranslateEffect {
-  Matrix4 translateCurrent(Matrix4 transform,double pageDelta, double screenW, double screenH){
-    transform.translate( -pageDelta * screenW);
+mixin class TranslateEffect {
+  Matrix4 translateCurrent(Matrix4 transform, double pageDelta, double screenW, double screenH) {
+    transform.translate(-pageDelta * screenW);
     return transform;
   }
-  Matrix4 translateNext(Matrix4 transform,double pageDelta, double screenW, double screenH){
+
+  Matrix4 translateNext(Matrix4 transform, double pageDelta, double screenW, double screenH) {
     transform.translate(screenW - pageDelta * screenW);
     return transform;
   }
 }
 
-class AccordionEffect with TranslateEffect implements MediaSliderItemEffect  {
+class AccordionEffect with TranslateEffect implements MediaSliderItemEffect {
   final bool transformRight;
   final bool transformLeft;
 
@@ -24,9 +25,9 @@ class AccordionEffect with TranslateEffect implements MediaSliderItemEffect  {
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
-    if (isCurrentPage/*index == currentPage*/ && transformLeft) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
+    if (isCurrentPage /*index == currentPage*/ && transformLeft) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.centerRight,
@@ -34,7 +35,7 @@ class AccordionEffect with TranslateEffect implements MediaSliderItemEffect  {
         child: page,
       );
     }
-    if (!isCurrentPage/*index == currentPage + 1*/ && transformRight) {
+    if (!isCurrentPage /*index == currentPage + 1*/ && transformRight) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.centerLeft,
@@ -44,9 +45,10 @@ class AccordionEffect with TranslateEffect implements MediaSliderItemEffect  {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:page);
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: page);
     }
   }
 }
@@ -59,22 +61,18 @@ class BackgroundToForegroundEffect with TranslateEffect implements MediaSliderIt
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
-    if (!isCurrentPage/*index == currentPage + 1 || currentPage == itemCount - 1 && index == 0*/) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
+    if (!isCurrentPage /*index == currentPage + 1 || currentPage == itemCount - 1 && index == 0*/) {
       final double scale = startScale + (1 - startScale) * pageDelta;
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         transform: translateNext(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
         child: page,
       );
     } else {
-      return
-        Transform(
-          transformHitTests: false,
-            transform: translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH),
-            child:page);
+      return Transform(transformHitTests: false, transform: translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH), child: page);
     }
   }
 }
@@ -93,25 +91,33 @@ class CubeEffect with TranslateEffect implements MediaSliderItemEffect {
   }) : this.rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: leftPageAlignment,
-        transform: translateCurrent(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateY(rotationAngle * pageDelta), pageDelta, screenW, screenH),
+        transform: translateCurrent(
+            Matrix4.identity()
+              ..setEntry(3, 2, perspectiveScale)
+              ..rotateY(rotationAngle * pageDelta),
+            pageDelta,
+            screenW,
+            screenH),
         child: page,
       );
     } else //if (!isCurrentPage /*index == currentPage + 1*/)
     {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: rightPageAlignment,
-        transform: translateNext(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateY(-rotationAngle * (1 - pageDelta)), pageDelta, screenW, screenH),
+        transform: translateNext(
+            Matrix4.identity()
+              ..setEntry(3, 2, perspectiveScale)
+              ..rotateY(-rotationAngle * (1 - pageDelta)),
+            pageDelta,
+            screenW,
+            screenH),
         child: page,
       );
     } /*else if (index == 0 && currentPage == itemCount - 1) {
@@ -132,13 +138,13 @@ class CubeEffect with TranslateEffect implements MediaSliderItemEffect {
 
 class DefaultEffect with TranslateEffect implements MediaSliderItemEffect {
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     return Transform(
-          transformHitTests: false,
-        transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-            translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-        child:page);
+        transformHitTests: false,
+        transform:
+            isCurrentPage ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH) : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+        child: page);
   }
 }
 
@@ -150,17 +156,21 @@ class DepthEffect with TranslateEffect implements MediaSliderItemEffect {
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       final double scale = startScale + (1 - startScale) * (1 - pageDelta);
       double width = MediaQuery.of(context).size.width;
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
-        transform: translateCurrent(Matrix4.identity()
-          ..translate(width * pageDelta)
-          ..scale(scale, scale), pageDelta, screenW, screenH),
+        transform: translateCurrent(
+            Matrix4.identity()
+              ..translate(width * pageDelta)
+              ..scale(scale, scale),
+            pageDelta,
+            screenW,
+            screenH),
         child: Opacity(
           opacity: (1 - pageDelta),
           child: page,
@@ -169,9 +179,10 @@ class DepthEffect with TranslateEffect implements MediaSliderItemEffect {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:page);
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: page);
     }
   }
 }
@@ -184,36 +195,43 @@ class FlipHorizontalEffect with TranslateEffect implements MediaSliderItemEffect
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     final double width = MediaQuery.of(context).size.width;
     if ((!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) && pageDelta > 0.5) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: page,
-        transform: translateNext(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateY(math.pi * (pageDelta - 1))
-          ..leftTranslate(-width * (1 - pageDelta)), pageDelta, screenW, screenH),
+        transform: translateNext(
+            Matrix4.identity()
+              ..setEntry(3, 2, perspectiveScale)
+              ..rotateY(math.pi * (pageDelta - 1))
+              ..leftTranslate(-width * (1 - pageDelta)),
+            pageDelta,
+            screenW,
+            screenH),
       );
-    } else if (isCurrentPage/*index == currentPage*/ && pageDelta <= 0.5) {
+    } else if (isCurrentPage /*index == currentPage*/ && pageDelta <= 0.5) {
       return Transform(
           transformHitTests: false,
-        alignment: Alignment.center,
-        child: page,
-        transform: translateCurrent(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateY(math.pi * pageDelta)
-          ..leftTranslate(width * pageDelta), pageDelta, screenW, screenH)
-      );
+          alignment: Alignment.center,
+          child: page,
+          transform: translateCurrent(
+              Matrix4.identity()
+                ..setEntry(3, 2, perspectiveScale)
+                ..rotateY(math.pi * pageDelta)
+                ..leftTranslate(width * pageDelta),
+              pageDelta,
+              screenW,
+              screenH));
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
-
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
@@ -226,35 +244,44 @@ class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     final double width = MediaQuery.of(context).size.width;
-    if ((!isCurrentPage/*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) && pageDelta > 0.5) {
+    if ((!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) && pageDelta > 0.5) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: page,
-        transform: translateNext(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateX(math.pi * (pageDelta - 1))
-          ..leftTranslate(-width * (1 - pageDelta)), pageDelta, screenW, screenH),
+        transform: translateNext(
+            Matrix4.identity()
+              ..setEntry(3, 2, perspectiveScale)
+              ..rotateX(math.pi * (pageDelta - 1))
+              ..leftTranslate(-width * (1 - pageDelta)),
+            pageDelta,
+            screenW,
+            screenH),
       );
-    } else if (isCurrentPage/*index == currentPage*/ && pageDelta <= 0.5) {
+    } else if (isCurrentPage /*index == currentPage*/ && pageDelta <= 0.5) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: page,
-        transform: translateCurrent(Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateX(math.pi * pageDelta)
-          ..leftTranslate(width * pageDelta), pageDelta, screenW, screenH),
+        transform: translateCurrent(
+            Matrix4.identity()
+              ..setEntry(3, 2, perspectiveScale)
+              ..rotateX(math.pi * pageDelta)
+              ..leftTranslate(width * pageDelta),
+            pageDelta,
+            screenW,
+            screenH),
       );
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
@@ -268,12 +295,12 @@ class ForegroundToBackgroundEffect with TranslateEffect implements MediaSliderIt
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       final double scale = endScale + (1 - endScale) * (1 - pageDelta);
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         transform: translateCurrent(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
         child: page,
@@ -281,9 +308,10 @@ class ForegroundToBackgroundEffect with TranslateEffect implements MediaSliderIt
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:page);
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: page);
     }
   }
 }
@@ -296,11 +324,11 @@ class ParallaxEffect with TranslateEffect implements MediaSliderItemEffect {
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
-    if (!isCurrentPage/*index == currentPage + 1|| index == 0 && currentPage == itemCount - 1*/) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
+    if (!isCurrentPage /*index == currentPage + 1|| index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         transform: translateNext(Matrix4.identity()..translate(-clipAmount * (1 - pageDelta)), pageDelta, screenW, screenH),
         // offset: Offset(-clipAmount * (1 - pageDelta), 0),
         child: ClipRect(
@@ -311,9 +339,10 @@ class ParallaxEffect with TranslateEffect implements MediaSliderItemEffect {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:page);
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: page);
     }
   }
 }
@@ -342,18 +371,18 @@ class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
   }) : this.rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.bottomCenter,
         child: page,
         transform: translateCurrent(Matrix4.identity()..rotateZ(-rotationAngle * pageDelta), pageDelta, screenW, screenH),
       );
-    } else if (!isCurrentPage/*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
+    } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.bottomCenter,
         child: page,
         transform: translateNext(Matrix4.identity()..rotateZ(rotationAngle * (1 - pageDelta)), pageDelta, screenW, screenH),
@@ -361,9 +390,10 @@ class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
@@ -376,18 +406,18 @@ class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
   }) : this.rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.topCenter,
         child: page,
         transform: translateCurrent(Matrix4.identity()..rotateZ(rotationAngle * pageDelta), pageDelta, screenW, screenH),
       );
-    } else if (!isCurrentPage/*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
+    } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.topCenter,
         child: page,
         transform: translateNext(Matrix4.identity()..rotateZ(-rotationAngle * (1 - pageDelta)), pageDelta, screenW, screenH),
@@ -395,62 +425,73 @@ class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
 
 class StackEffect with TranslateEffect implements MediaSliderItemEffect {
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       double width = MediaQuery.of(context).size.width;
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         transform: translateCurrent(Matrix4.identity()..translate(width * pageDelta), pageDelta, screenW, screenH),
         child: page,
       );
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:page);
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: page);
     }
   }
 }
 
 class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: page,
-        transform: translateCurrent(Matrix4.identity()
-          ..setEntry(3, 2, 0.002)
-          ..rotateY(-math.pi / 4 * pageDelta), pageDelta, screenW, screenH),
+        transform: translateCurrent(
+            Matrix4.identity()
+              ..setEntry(3, 2, 0.002)
+              ..rotateY(-math.pi / 4 * pageDelta),
+            pageDelta,
+            screenW,
+            screenH),
       );
-    } else if (!isCurrentPage/*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
+    } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: page,
-        transform: translateNext(Matrix4.identity()
-          ..setEntry(3, 2, 0.002)
-          ..rotateY(math.pi / 4 * (1 - pageDelta)), pageDelta, screenW, screenH),
+        transform: translateNext(
+            Matrix4.identity()
+              ..setEntry(3, 2, 0.002)
+              ..rotateY(math.pi / 4 * (1 - pageDelta)),
+            pageDelta,
+            screenW,
+            screenH),
       );
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
@@ -465,20 +506,20 @@ class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
   });
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta/*, int itemCount*/,
-      double screenW, double screenH) {
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
+      double screenH) {
     if (isCurrentPage) {
       double scale = 1 - pageDelta < zoomOutScale ? zoomOutScale : zoomOutScale + ((1 - pageDelta) - zoomOutScale);
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
         transform: translateCurrent(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
       );
-    } else if (!isCurrentPage/*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
+    } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       double scale = pageDelta < zoomOutScale ? zoomOutScale : zoomOutScale + (pageDelta - zoomOutScale);
       return Transform(
-          transformHitTests: false,
+        transformHitTests: false,
         alignment: Alignment.center,
         child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
         transform: translateNext(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
@@ -486,17 +527,17 @@ class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
     } else {
       return Transform(
           transformHitTests: false,
-          transform: isCurrentPage? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH):
-          translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
-          child:Container());
+          transform: isCurrentPage
+              ? translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
+              : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
+          child: Container());
     }
   }
 }
 
 class FadeEffect implements MediaSliderItemEffect {
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage, double pageDelta,
-      double screenW, double screenH) {
-    return isCurrentPage? Opacity(opacity: 1 - pageDelta, child: page):  Opacity(opacity: pageDelta, child: page);
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage, double pageDelta, double screenW, double screenH) {
+    return isCurrentPage ? Opacity(opacity: 1 - pageDelta, child: page) : Opacity(opacity: pageDelta, child: page);
   }
 }

@@ -25,18 +25,21 @@ class SystemInfoMetrics extends StatelessWidget {
     // var useMobileLayout = shortestSide < 600;
 
     return OrientationBuilder(builder: (context, orientation) {
-      return StaggeredGridView.count(
-        staggeredTiles: const [
-          StaggeredTile.fit(8),
-          StaggeredTile.fit(5),
-          StaggeredTile.fit(3),
-          StaggeredTile.fit(5),
-          StaggeredTile.fit(8),
-          StaggeredTile.fit(4),
-          StaggeredTile.fit(4),
-        ],
+      return StaggeredGrid.count(
+        //TODO: FIXME!
+        // staggeredTiles: const [
+        //   StaggeredTile.fit(8),
+        //   StaggeredTile.fit(5),
+        //   StaggeredTile.fit(3),
+        //   StaggeredTile.fit(5),
+        //   StaggeredTile.fit(8),
+        //   StaggeredTile.fit(4),
+        //   StaggeredTile.fit(4),
+        // ],
         crossAxisCount: 8,
-        scrollDirection: Axis.vertical,
+        // scrollDirection: Axis.vertical,
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 8.0,
         children: <Widget>[
           const CurrentTimeWidget(),
           UptimeInfoWidget(model: _model.updateInfo!.uptime),
@@ -60,8 +63,6 @@ class SystemInfoMetrics extends StatelessWidget {
             usagePercent: _model.updateInfo!.diskUsedPercent,
           ),
         ],
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 8.0,
       );
     });
   }

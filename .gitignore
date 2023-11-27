@@ -30,6 +30,9 @@ pubspec.lock
 **/.dart_tool/
 /build/
 
+system_metrics_widget/ios/
+system_metrics_widget/android/
+
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle

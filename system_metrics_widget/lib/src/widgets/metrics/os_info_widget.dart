@@ -1,13 +1,14 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:system_metrics_widget/src/environment/android.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class OSInfoWidget extends StatelessWidget {
   final OSInfo? _model;
-  final iconData = isLinuxEmbedded ? FlutterIcons.linux_faw : FlutterIcons.logo_android_ion;
+  final iconData = isLinuxEmbedded ? FontAwesomeIcons.linux : Ionicons.logo_android;
 
   const OSInfoWidget({required OSInfo? model, Key? key})
       : _model = model,
