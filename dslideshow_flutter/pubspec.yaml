@@ -4,7 +4,7 @@ version: 5.0.0+24
 publish_to: none
 
 environment:
-  sdk: '>=2.16.0 <3.0.0'
+  sdk: '^3.2.0'
 
 dependencies:
   flutter:
@@ -19,7 +19,7 @@ dependencies:
 
   qr_flutter: ^4.0.0
   logging: ^1.0.0
-  built_value: ^8.0.0
+  built_value: ^8.8.0
   video_player: ^2.2.1
   duration: ^3.0.0
 
@@ -41,8 +41,8 @@ dev_dependencies:
     sdk: flutter
   
   freezed: ^1.1.1
-  built_value_generator: ^8.0.2
-  build_runner: ^2.1.0
+  built_value_generator: ^8.8.0
+  build_runner: ^2.4.6
   flutter_lints: ^1.0.0
 
 flutter:

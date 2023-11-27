@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dslideshow_backend/serializers.dart';
@@ -14,7 +12,6 @@ import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/log.dart';
@@ -28,17 +25,17 @@ import 'web_server.dart' as web_server;
 final Logger _log = new Logger('main');
 late HardwareService _service;
 
-void main(List<dynamic> args) async {
+void serviceMain(SendPort remoteIsolateSendPort) async {
   initLog("hw_frame");
-  _log.info("Run");
+  _log.info("Run. Spawned isolate started.");
   try {
-    IsolateRunner remoteIsolateService = args[0] as IsolateRunner;
-    final RemoteService _remoteFrontendService = new RemoteService(remoteIsolateService, serializers);
+    final _serviceIso = Service(sendPort: remoteIsolateSendPort);
+    final RemoteService _remoteFrontendService = new RemoteService(_serviceIso, serializers);
 
-    IsolateRunner _webServer = await IsolateRunner.spawn();
-    final currentIsoRunner = await _createCurrentIsolateRunner();
-    _webServer.run(web_server.main, <IsolateRunner>[currentIsoRunner]);
-    final _remoteWebServer = new RemoteService(_webServer, serializers);
+    final _webServerReceivePort = ReceivePort();
+    /*final _webServer = */ await Isolate.spawn(web_server.serviceMain, _webServerReceivePort.sendPort);
+    SendPort _webServerSendPort = await _webServerReceivePort.first;
+    final _remoteWebServer = new RemoteService(Service(sendPort: _webServerSendPort, receivePortI: _webServerReceivePort), serializers);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -77,29 +74,20 @@ void main(List<dynamic> args) async {
     });
     injector.registerLazySingleton<HardwareService>(() {
       final _config = injector.get<AppConfig>();
-      return new HardwareService(
-          _config,
-          _remoteFrontendService,
-          injector.get<Storage>(),
-          injector.get<GPIOService>(),
-          injector.get<ScreenService>(),
-          injector.get<SystemInfoService>(),
-          _remoteWebServer,
-          injector.get<MqttService>(),
-          injector.get<WiFiService>());
+      return new HardwareService(_config, _remoteFrontendService, injector.get<Storage>(), injector.get<GPIOService>(), injector.get<ScreenService>(),
+          injector.get<SystemInfoService>(), _remoteWebServer, injector.get<MqttService>(), injector.get<WiFiService>());
     });
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;
 
     _service = injector.get<HardwareService>();
-    initRpc(_service, serializers);
+    await initRpc(_service, serializers, _serviceIso);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
-    exit(1);
+    _log.info("Spawned isolate finished with error.");
+    // exit(1);
+    Isolate.exit();
   }
-}
-
-Future<IsolateRunner> _createCurrentIsolateRunner() async {
-  var remote = IsolateRunnerRemote();
-  return IsolateRunner(Isolate.current, remote.commandPort);
+  _log.info("Spawned isolate finished.");
+  Isolate.exit();
 }

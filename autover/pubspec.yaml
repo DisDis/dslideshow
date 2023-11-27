@@ -5,14 +5,14 @@ homepage: https://github.com/DisDis/dslideshow/tree/master/autover
 
 
 environment:
-  sdk: '>=2.5.0 <3.0.0'
+  sdk: '^3.0.0'
 
 dependencies:
-  logging: ^0.11.0
-  yaml: ^2.2.1
-  pub_semver: ^1.4.4
-  args: ^1.6.0
-  path: ^1.7.0
+  logging: ^1.2.0
+  yaml: ^3.1.2
+  pub_semver: ^2.1.4
+  args: ^2.4.2
+  path: ^1.8.3
 
-dev_dependencies:
-    pedantic: ^1.9.0
+# dev_dependencies:
+#     pedantic: ^1.9.0

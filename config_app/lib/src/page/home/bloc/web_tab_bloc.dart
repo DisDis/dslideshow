@@ -8,6 +8,7 @@ import 'package:config_app/src/page/home/bloc/web_tab_state.dart';
 import 'package:config_app/src/service/client_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:logging/logging.dart';
 
 class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
@@ -28,5 +29,57 @@ class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
       _log.info(prettyPrintJSONEncode.convert(jsonMsg));
       emit(InWebTabState(_config));
     });
+  }
+}
+
+class LoadingFormBloc extends FormBloc<String, String> {
+  final text = TextFieldBloc();
+
+  final select = SelectFieldBloc<String, dynamic>();
+
+  LoadingFormBloc() : super(isLoading: true) {
+    addFieldBlocs(
+      fieldBlocs: [text, select],
+    );
+  }
+
+  var _throwException = true;
+
+  @override
+  void onLoading() async {
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
+
+      if (_throwException) {
+        // Simulate network error
+        throw Exception('Network request failed. Please try again later.');
+      }
+
+      text.updateInitialValue('I am prefilled');
+
+      select
+        ..updateItems(['Option A', 'Option B', 'Option C'])
+        ..updateInitialValue('Option B');
+
+      emitLoaded();
+    } catch (e) {
+      _throwException = false;
+
+      emitLoadFailed();
+    }
+  }
+
+  @override
+  void onSubmitting() async {
+    print(text.value);
+    print(select.value);
+
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      emitSuccess();
+    } catch (e) {
+      emitFailure();
+    }
   }
 }

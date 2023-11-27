@@ -7,7 +7,7 @@ import 'package:logging/logging.dart';
 class FakeRemoteService implements RemoteService {
   late Logger _log;
 
-  FakeRemoteService({String name: "FakeRemoteService"}) {
+  FakeRemoteService({String name = "FakeRemoteService"}) {
     _log = new Logger("FRS-$name");
   }
 

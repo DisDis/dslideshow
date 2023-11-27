@@ -1,11 +1,9 @@
-
-
 import 'dart:isolate';
 
 import 'package:autover/autover.dart';
 import 'package:logging/logging.dart';
 
-void initLog([String isolateMarker]) {
+void initLog([String? isolateMarker]) {
   isolateMarker ??= 'I${Isolate.current.hashCode}';
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
@@ -22,8 +20,8 @@ Logger _log = Logger('main');
 void main(List<String> args) {
   try {
     initLog('autover');
-    AutoVer().execute(args);
-  } on Exception catch (e,st){
+    AutoVer(args);
+  } on Exception catch (e, st) {
     _log.severe('FATAL', e, st);
   }
 }

@@ -1,13 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/exception.dart';
-import 'package:isolate/isolate.dart';
-import 'package:dslideshow_common/src/rpc/init_rpc.dart';
+
+class Service {
+  final SendPort sendPort;
+  final ReceivePort receivePort;
+
+  Service({required this.sendPort, ReceivePort? receivePortI}) : this.receivePort = receivePortI ?? ReceivePort() {
+    //Auto send receivePort;
+    sendPort.send(receivePort);
+  }
+}
 
 class RemoteService {
-  final IsolateRunner _service;
+  final Service _service;
   late RemoteServiceTransport _transport;
   final Serializers _serializers;
 
@@ -46,20 +55,22 @@ class RemoteService {
 }
 
 abstract class RemoteServiceTransport {
-  FutureOr<String> sendStr(IsolateRunner service, String cmdStr);
-  FutureOr<Object> send(IsolateRunner service, Object cmd);
+  FutureOr<String> sendStr(Service service, String cmdStr);
+  FutureOr<Object> send(Service service, Object cmd);
 }
 
 class DirectSpawnTransport implements RemoteServiceTransport {
   @override
-  FutureOr<String> sendStr(IsolateRunner service, String cmdStr) {
+  Future<String> sendStr(Service service, String cmdStr) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    return service.run<String, String>(executeCommandStr, cmdStr);
+    service.sendPort.send(cmdStr);
+    return await service.receivePort.first;
   }
 
   @override
-  FutureOr<Object> send(IsolateRunner service, Object cmd) {
+  Future<Object> send(Service service, Object cmd) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    return service.run<Object, Object>(executeCommand, cmd);
+    service.sendPort.send(cmd);
+    return await service.receivePort.first;
   }
 }

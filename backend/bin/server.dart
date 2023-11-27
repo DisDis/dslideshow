@@ -23,7 +23,6 @@ import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
-import 'package:isolate/isolate.dart';
 
 Logger _log = new Logger('main');
 final injector = GetIt.instance;
