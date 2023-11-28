@@ -17,7 +17,8 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
   initLog("web");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteBackendService = new RemoteServiceImpl(serializers: serializers)..connect(remoteIsolateSendPort);
+    final _remoteBackendService = new RemoteServiceImpl(serializers: serializers);
+    _remoteBackendService.connect(remoteIsolateSendPort);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -35,7 +36,7 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     _webServer = injector.get<WebServer>();
     await initRpc(_webServer, serializers, _remoteBackendService.service);
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");
     // exit(1);
     Isolate.exit();

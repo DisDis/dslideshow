@@ -16,7 +16,8 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
   initLog("ota");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers)..connect(remoteIsolateSendPort);
+    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
+    _remoteFrontendService.connect(remoteIsolateSendPort);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -32,7 +33,7 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     _service = injector.get<OTAService>();
     await initRpc(_service, serializers, _remoteFrontendService.service);
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");
     // exit(1);
     Isolate.exit();

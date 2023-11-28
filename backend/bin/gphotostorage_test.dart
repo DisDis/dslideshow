@@ -64,7 +64,7 @@ void main(List<String> args) async {
       _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
     });
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     exit(1);
   }
 }

@@ -29,9 +29,11 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
   initLog("hw_frame");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers)..connect(remoteIsolateSendPort);
+    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
+    _remoteFrontendService.connect(remoteIsolateSendPort);
 
-    final _remoteWebServer = RemoteServiceImpl(serializers: serializers)..spawn(web_server.serviceMain);
+    final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
+    await _remoteWebServer.spawn(web_server.serviceMain);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -77,10 +79,12 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
 
     _service = injector.get<HardwareService>();
 
-    initRpc(_service, serializers, _remoteWebServer.service);
-    await initRpc(_service, serializers, _remoteFrontendService.service);
+    await Future.wait([
+      initRpc(_service, serializers, _remoteWebServer.service),
+      initRpc(_service, serializers, _remoteFrontendService.service),
+    ]);
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");
     // exit(1);
     Isolate.exit();

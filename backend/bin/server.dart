@@ -18,6 +18,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
+import 'package:dslideshow_common/rpc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/injector_module.dart';
@@ -59,8 +60,7 @@ void main(List<String> args) async {
 //    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
 //     _gphoto.run();
 
-//    IsolateRunner _hw_FrameService = await IsolateRunner.spawn();
-//    await _hw_FrameService.run(hw_frame.main,<dynamic>[]);
+    // final backendService = RemoteServiceImpl(serializers: serializers)..spawn(hw_frame.serviceMain);
 
 //    IsolateRunner _rService = await IsolateRunner.spawn();
 //    await _rService.run(result_service.main,<dynamic>[]);
@@ -72,7 +72,7 @@ void main(List<String> args) async {
 
 //    await Future.wait<dynamic>([_hw_FrameService.onExit]);
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     exit(1);
   }
 }

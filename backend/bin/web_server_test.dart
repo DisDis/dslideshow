@@ -31,7 +31,7 @@ void main(List<String> args) async {
       service.enabled = true;
     });
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     exit(1);
   }
   ProcessSignal.sigint.watch().listen((ProcessSignal signal) {

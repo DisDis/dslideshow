@@ -54,8 +54,10 @@ void main() async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
-    backendService = RemoteServiceImpl(serializers: serializers)..spawn(hw_frame.serviceMain);
-    otaService = RemoteServiceImpl(serializers: serializers)..spawn(ota.serviceMain);
+    backendService = RemoteServiceImpl(serializers: serializers);
+    await backendService.spawn(hw_frame.serviceMain);
+    otaService = RemoteServiceImpl(serializers: serializers);
+    await otaService.spawn(ota.serviceMain);
 
     final frontendService = injector.get<FrontendService>();
     initRpc(frontendService, serializers, backendService.service);
@@ -76,7 +78,7 @@ void main() async {
 
     _runFlutter(frontendService);
   } catch (e, s) {
-    _log.fine('Fatal error: $e, $s');
+    _log.severe('Fatal error: $e, $s', e, s);
     exit(1);
   }
 }
