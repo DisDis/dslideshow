@@ -59,7 +59,7 @@ class OTAView extends StatelessWidget {
       ),
       Text(
         "Code: ${state.info.code}",
-        style: const TextStyle(color: Colors.white, fontSize: 60),
+        style: const TextStyle(color: Colors.white, fontSize: 65),
       ),
     ];
     final terminalView = Expanded(
@@ -93,22 +93,11 @@ class OTAView extends StatelessWidget {
             minHeight: 15,
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
-          },
-          child: const Text('Config'),
-        ),
+        if (!environment.isLinuxEmbedded) const TestConfigButton(),
         terminalView
       ]),
       ready: (info) => Column(children: [
-        if (!environment.isLinuxEmbedded)
-          ElevatedButton(
-            onPressed: () {
-              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
-            },
-            child: const Text('Config'),
-          ),
+        if (!environment.isLinuxEmbedded) const TestConfigButton(),
         // ElevatedButton(
         //   onPressed: () {
         //     _runTestCommand(terminal);
@@ -151,4 +140,20 @@ class OTAView extends StatelessWidget {
   //     terminal.write('\r');
   //   });
   // }
+}
+
+class TestConfigButton extends StatelessWidget {
+  const TestConfigButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
+      },
+      child: const Text('Config'),
+    );
+  }
 }
