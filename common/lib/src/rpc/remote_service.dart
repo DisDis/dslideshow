@@ -9,19 +9,42 @@ class Service {
   final SendPort sendPort;
   final ReceivePort receivePort;
 
-  Service({required this.sendPort, ReceivePort? receivePortI}) : this.receivePort = receivePortI ?? ReceivePort() {
-    //Auto send receivePort;
-    sendPort.send(receivePort);
-  }
+  Service({required this.sendPort, ReceivePort? receivePortI}) : this.receivePort = receivePortI ?? ReceivePort();
 }
 
-class RemoteService {
-  final Service _service;
-  late RemoteServiceTransport _transport;
-  final Serializers _serializers;
+abstract class RemoteService {
+  FutureOr<RpcResult> sendStr(RpcCommand cmd);
 
-  RemoteService(this._service, this._serializers, [RemoteServiceTransport? transport]) {
+  FutureOr<Object> transparentSend(Object cmd);
+
+  FutureOr<String> transparentSendStr(String cmdStr);
+
+  FutureOr<RpcResult> send(RpcCommand cmd);
+}
+
+class RemoteServiceImpl implements RemoteService {
+  late Service _service;
+  late RemoteServiceTransport _transport;
+  final Serializers serializers;
+  Service get service => _service;
+
+  RemoteServiceImpl({
+    required this.serializers,
+    RemoteServiceTransport? transport,
+  }) {
     _transport = transport ?? new DirectSpawnTransport();
+  }
+
+  void connect(SendPort remoteIsolateSendPort) {
+    _service = Service(sendPort: remoteIsolateSendPort);
+    _service.sendPort.send(_service.receivePort.sendPort);
+  }
+
+  Future<void> spawn(void entryPoint(SendPort message)) async {
+    final receivePort = ReceivePort();
+    await Isolate.spawn(entryPoint, receivePort.sendPort);
+    final sendPort = await receivePort.first;
+    _service = Service(sendPort: sendPort, receivePortI: receivePort);
   }
 
   // Запрос и ответ не обрабатывается
@@ -36,8 +59,8 @@ class RemoteService {
   }
 
   FutureOr<RpcResult> sendStr(RpcCommand cmd) async {
-    var jsonO = await transparentSendStr(json.encode(_serializers.serialize(cmd)));
-    RpcResult result = _serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
+    var jsonO = await transparentSendStr(json.encode(serializers.serialize(cmd)));
+    RpcResult result = serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
     }
@@ -45,8 +68,8 @@ class RemoteService {
   }
 
   FutureOr<RpcResult> send(RpcCommand cmd) async {
-    var jsonO = await transparentSend(_serializers.serialize(cmd)!);
-    RpcResult result = _serializers.deserialize(jsonO) as RpcResult;
+    var jsonO = await transparentSend(serializers.serialize(cmd)!);
+    RpcResult result = serializers.deserialize(jsonO) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
     }

@@ -9,7 +9,7 @@ import 'package:logging/logging.dart';
 class GPIOServiceImpl extends GPIOService {
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;
-  static final FlutterGpiod _gpio = FlutterGpiod.instance;
+  FlutterGpiod get _gpio => FlutterGpiod.instance;
   late GpioChip _chip;
   late GpioLine _linePowerLED;
   late GpioLine _linePIR;
@@ -38,21 +38,25 @@ class GPIOServiceImpl extends GPIOService {
 
   void _status() async {
     _log.info('GPIO Status:');
-    final chips = _gpio.chips;
+    try {
+      final chips = _gpio.chips;
 
-    /// Print out all GPIO chips and all lines
-    /// for all GPIO chips.
-    for (var chip in chips) {
-      _log.info('chip: "$chip"');
+      /// Print out all GPIO chips and all lines
+      /// for all GPIO chips.
+      for (var chip in chips) {
+        _log.info('chip: "$chip"');
 
-      var index = 0;
-      for (var line in chip.lines) {
-        final info = await line.info;
-        if (info.consumer != null) {
-          _log.info('$index:  ${info}');
+        var index = 0;
+        for (var line in chip.lines) {
+          final info = await line.info;
+          if (info.consumer != null) {
+            _log.info('$index:  ${info}');
+          }
+          index++;
         }
-        index++;
       }
+    } catch (e, s) {
+      _log.severe('GPIO error: ', e, s);
     }
   }
 

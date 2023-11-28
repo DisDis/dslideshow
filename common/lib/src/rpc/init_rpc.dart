@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:isolate';
 import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:dslideshow_common/src/rpc/command.dart';
-import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:logging/logging.dart';
 
 Future<void> initRpc(RpcService service, Serializers serializers, Service mainService) async {
@@ -13,10 +10,14 @@ Future<void> initRpc(RpcService service, Serializers serializers, Service mainSe
   final RpcService _service = service;
   final Serializers _serializers = serializers;
 
+  late StreamSubscription sub;
+  final result = Completer();
   // Wait for messages from the main isolate.
-  await for (final command in mainService.receivePort) {
+  sub = mainService.receivePort.listen((command) async {
     if (command == null) {
-      break;
+      sub.cancel();
+      result.complete();
+      // break;
     } else if (command is String) {
       try {
         RpcCommand cmd = _serializers.deserialize(json.decode(command) as Object) as RpcCommand;
@@ -37,5 +38,6 @@ Future<void> initRpc(RpcService service, Serializers serializers, Service mainSe
         rethrow;
       }
     }
-  }
+  });
+  return result.future;
 }

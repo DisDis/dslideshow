@@ -29,13 +29,9 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
   initLog("hw_frame");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _serviceIso = Service(sendPort: remoteIsolateSendPort);
-    final RemoteService _remoteFrontendService = new RemoteService(_serviceIso, serializers);
+    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers)..connect(remoteIsolateSendPort);
 
-    final _webServerReceivePort = ReceivePort();
-    /*final _webServer = */ await Isolate.spawn(web_server.serviceMain, _webServerReceivePort.sendPort);
-    SendPort _webServerSendPort = await _webServerReceivePort.first;
-    final _remoteWebServer = new RemoteService(Service(sendPort: _webServerSendPort, receivePortI: _webServerReceivePort), serializers);
+    final _remoteWebServer = RemoteServiceImpl(serializers: serializers)..spawn(web_server.serviceMain);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -45,11 +41,11 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
       switch (_config.storages.selected) {
         case StorageType.GPhotoStorage:
           final appStorage = injector.get<AppStorage>();
-          return new GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
+          return GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
 
         case StorageType.DiskStorage:
         default:
-          return new DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
+          return DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
       }
     });
     injector.registerLazySingleton<GPIOService>(() {
@@ -58,30 +54,31 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     });
     injector.registerLazySingleton<ScreenService>(() {
       final _config = injector.get<AppConfig>();
-      return new ScreenService(_config.hardware);
+      return ScreenService(_config.hardware);
     });
     injector.registerLazySingleton<WiFiService>(() {
       final _config = injector.get<AppConfig>();
-      return new WiFiService(_config.wifi);
+      return WiFiService(_config.wifi);
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return new MqttService(_config.mqtt);
+      return MqttService(_config.mqtt);
     });
     injector.registerLazySingleton<SystemInfoService>(() {
       final _config = injector.get<AppConfig>();
-      return new SystemInfoService(_config.hardware);
+      return SystemInfoService(_config.hardware);
     });
     injector.registerLazySingleton<HardwareService>(() {
       final _config = injector.get<AppConfig>();
-      return new HardwareService(_config, _remoteFrontendService, injector.get<Storage>(), injector.get<GPIOService>(), injector.get<ScreenService>(),
-          injector.get<SystemInfoService>(), _remoteWebServer, injector.get<MqttService>(), injector.get<WiFiService>());
+      return HardwareService(_config, _remoteFrontendService, injector(), injector(), injector(), injector(), _remoteWebServer, injector(), injector());
     });
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;
 
     _service = injector.get<HardwareService>();
-    await initRpc(_service, serializers, _serviceIso);
+
+    initRpc(_service, serializers, _remoteWebServer.service);
+    await initRpc(_service, serializers, _remoteFrontendService.service);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     _log.info("Spawned isolate finished with error.");

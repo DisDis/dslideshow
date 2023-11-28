@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:io';
-import 'dart:isolate' as isol;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
@@ -36,8 +34,8 @@ void main() async {
     ]);
   }
   try {
-    late RemoteService _backendService;
-    late RemoteService _OTAService;
+    late RemoteServiceImpl backendService;
+    late RemoteServiceImpl otaService;
 
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
@@ -48,8 +46,7 @@ void main() async {
     injector.registerSingleton<AppConfig>(AppConfig.fromFile(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
-      final _config = injector.get<AppConfig>();
-      return FrontendService(_config, _backendService, _OTAService);
+      return FrontendService(injector(), backendService, otaService);
     });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -57,27 +54,18 @@ void main() async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
-    final _backendServiceReceivePort = isol.ReceivePort();
-    await isol.Isolate.spawn(hw_frame.serviceMain, _backendServiceReceivePort.sendPort);
-    isol.SendPort _backendServiceSendPort = await _backendServiceReceivePort.first;
-    final _backendServiceProcessing = Service(sendPort: _backendServiceSendPort, receivePortI: _backendServiceReceivePort);
-    _backendService = RemoteService(_backendServiceProcessing, serializers);
+    backendService = RemoteServiceImpl(serializers: serializers)..spawn(hw_frame.serviceMain);
+    otaService = RemoteServiceImpl(serializers: serializers)..spawn(ota.serviceMain);
 
-    final _otaServiceReceivePort = isol.ReceivePort();
-    await isol.Isolate.spawn(ota.serviceMain, _otaServiceReceivePort.sendPort);
-    isol.SendPort _otaServiceSendPort = await _otaServiceReceivePort.first;
-    final _OTAServiceProcessing = Service(sendPort: _otaServiceSendPort, receivePortI: _otaServiceReceivePort);
-    _OTAService = RemoteService(_OTAServiceProcessing, serializers);
-
-    final _frontendService = injector.get<FrontendService>();
-    initRpc(_frontendService, serializers, _backendServiceProcessing);
-    initRpc(_frontendService, serializers, _OTAServiceProcessing);
+    final frontendService = injector.get<FrontendService>();
+    initRpc(frontendService, serializers, backendService.service);
+    initRpc(frontendService, serializers, otaService.service);
 
     injector.registerLazySingleton<SlideshowBloc>(() {
-      return SlideshowBloc(frontendService: _frontendService);
+      return SlideshowBloc(frontendService: frontendService);
     });
 
-    _frontendService.onOTAReady.listen((isReady) {
+    frontendService.onOTAReady.listen((isReady) {
       final bloc = injector.get<RouteBloc>();
       if (isReady) {
         bloc.add(ChangePageEvent(RoutePage.ota));
@@ -86,7 +74,7 @@ void main() async {
       }
     });
 
-    _runFlutter(_frontendService);
+    _runFlutter(frontendService);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
@@ -110,7 +98,7 @@ void _runFlutter(FrontendService frontendService) {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({Key? key}) : super(key: key);
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {

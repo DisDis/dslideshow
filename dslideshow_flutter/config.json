@@ -37,7 +37,7 @@
     "delayMs": 2000
   },
   "web":{
-    "port":8080,
+    "port":8081,
     "addr":"0.0.0.0",
     "permanentCode":"123",
     "alwaysEnabled":true
