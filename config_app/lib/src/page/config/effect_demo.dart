@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_backend/storage.dart';
@@ -7,7 +9,7 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 
 class EffectDemoWidget extends StatefulWidget {
   final Effect currentEffect;
-  EffectDemoWidget({Key? key, required this.currentEffect}) : super(key: key);
+  const EffectDemoWidget({Key? key, required this.currentEffect}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -26,9 +28,9 @@ final _loaderWidget = Container(
   key: const Key('loader'),
   child: const Center(
     child: SizedBox(
-      child: CircularProgressIndicator(),
       width: 60,
       height: 60,
+      child: CircularProgressIndicator(),
     ),
   ),
 );
@@ -120,10 +122,8 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            _currentEffect.transform(
-                context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
-            _currentEffect.transform(
-                context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
+            _currentEffect.transform(context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
+            _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
         child: _loaderWidget);

@@ -21,15 +21,16 @@ cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
 ./build_aot.sh || error_exit "DSlideshow AOT"
 cd ../config_app
-./build_web.sh || error_exit "Config app"
+echo "SKIP CONFIG APP !!!!!"
+#./build_web.sh || error_exit "Config app"
 cd ../deb_factory
 
-cp $SOURCE_BIN/engine-binaries/icudtl.dat $DEST/ || error_exit "copy"
-cp $SOURCE_BIN/engine-binaries/libflutter_engine.so.release $DEST/ || error_exit "copy"
-cp $SOURCE_BIN/engine-binaries/engine.version $DEST/ || error_exit "copy"
-cp $SOURCE_BIN/engine-binaries/dart-sdk.version $DEST/ || error_exit "copy"
+#cp $SOURCE_BIN/engine-binaries/icudtl.dat $DEST/ || error_exit "copy"
+#cp $SOURCE_BIN/engine-binaries/libflutter_engine.so.release $DEST/ || error_exit "copy"
+#cp $SOURCE_BIN/engine-binaries/engine.version $DEST/ || error_exit "copy"
+#cp $SOURCE_BIN/engine-binaries/dart-sdk.version $DEST/ || error_exit "copy"
 
-cp $SOURCE_BIN/proxy_gpiod/libproxy_gpiod.so $DEST/ || error_exit "copy"
+#cp $SOURCE_BIN/proxy_gpiod/libproxy_gpiod.so $DEST/ || error_exit "copy"
 cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy"
 cp -r ../dslideshow_flutter/build/flutter_assets $DEST/ || error_exit "copy"
 cp -r ../config_app/build/web $DEST/ || error_exit "copy"

@@ -51,7 +51,7 @@ class _ConfigPageState extends State<ConfigPage> {
         appBar: AppBar(
           title: const Text('Config'),
         ),
-        body: Column(
+        body: const Column(
           children: [
             MediaGalleryWidget(),
             /*FormBuilder(

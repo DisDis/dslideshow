@@ -30,7 +30,7 @@ then
 # если файл существует, добавить в него данные
   sudo rm /usr/lib/icudtl.dat
 fi
-sudo ln -s /opt/dslideshow/icudtl.dat /usr/lib/icudtl.dat
+sudo ln -s /opt/dslideshow/flutter_assets/icudtl.dat /usr/lib/icudtl.dat
 
 # https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet
 #sudo systemctl unmask hostapd
