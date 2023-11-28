@@ -3,11 +3,15 @@ import 'package:config_app/src/bloc/authentication_repository.dart';
 import 'package:config_app/src/page/login/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
+part 'login_bloc.freezed.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final _log = Logger('LoginBloc');
   static final defaultConnectUri = 'ws://${Uri.base.host}:8080/ws';
 
   LoginBloc({
@@ -30,7 +34,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final username = Username.dirty(event.username);
     emit(state.copyWith(
       username: username,
-      status: Formz.validate([state.password, username, state.connectUri]),
+      isValid: Formz.validate([state.password, username, state.connectUri]),
     ));
   }
 
@@ -41,7 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final connectUri = ConnectUri.dirty(event.connectUri);
     emit(state.copyWith(
       connectUri: connectUri,
-      status: Formz.validate([state.password, state.username, connectUri]),
+      isValid: Formz.validate([state.password, state.username, connectUri]),
     ));
   }
 
@@ -55,7 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final connectUri = ConnectUri.dirty(defaultConnectUri);
     emit(state.copyWith(
       connectUri: connectUri,
-      status: Formz.validate([state.password, state.username, connectUri]),
+      isValid: Formz.validate([state.password, state.username, connectUri]),
     ));
   }
 
@@ -66,7 +70,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final password = Password.dirty(event.password);
     emit(state.copyWith(
       password: password,
-      status: Formz.validate([password, state.username, state.connectUri]),
+      isValid: Formz.validate([password, state.username, state.connectUri]),
     ));
   }
 
@@ -74,17 +78,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    if (state.status.isValidated) {
-      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+    if (state.isValid) {
+      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await _authenticationRepository.logIn(
           connectUrl: Uri.parse(state.connectUri.value),
           username: state.username.value,
           password: state.password.value,
         );
-        emit(state.copyWith(status: FormzStatus.submissionSuccess));
-      } catch (_) {
-        emit(state.copyWith(status: FormzStatus.submissionFailure));
+        emit(state.copyWith(status: FormzSubmissionStatus.success));
+      } catch (e, st) {
+        _log.info("Error", e, st);
+        emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }
     }
   }

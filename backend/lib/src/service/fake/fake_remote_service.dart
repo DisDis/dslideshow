@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:isolate';
 
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
@@ -14,23 +12,23 @@ class FakeRemoteService implements RemoteService {
   }
 
   @override
-  FutureOr<RpcResult> sendStr(RpcCommand cmd) {
+  Future<RpcResult> sendStr(RpcCommand cmd) async {
     _log.info(cmd.toString());
     return new EmptyResult.respond(cmd);
   }
 
   @override
-  FutureOr<Object> transparentSend(Object cmd) {
+  Future<Object> transparentSend(Object cmd) async {
     return <dynamic>[];
   }
 
   @override
-  FutureOr<String> transparentSendStr(String cmdStr) {
+  Future<String> transparentSendStr(String cmdStr) async {
     return '';
   }
 
   @override
-  FutureOr<RpcResult> send(RpcCommand cmd) {
+  Future<RpcResult> send(RpcCommand cmd) async {
     _log.info(cmd.toString());
     return new EmptyResult.respond(cmd);
   }
