@@ -1,74 +1,50 @@
-import 'dart:async';
-
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_bloc.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
-import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+// import 'dart:io' as io;
+// import 'dart:convert';
+import 'package:dslideshow_flutter/environment.dart' as environment;
 
 import 'package:xterm/xterm.dart';
-// import 'package:xterm/terminal/terminal.dart';
-// import 'package:xterm/src/terminal/terminal_backend.dart';
-// import 'package:xterm/theme/terminal_style.dart';
 
 class OTAPage extends StatelessWidget {
-  // late Terminal terminal = Terminal(backend: backend, maxLines: 3000);
-  // final ProcessTerminalBackend backend = ProcessTerminalBackend();
-  OTAPage({Key? key}) : super(key: key);
+  final Terminal terminal = Terminal(maxLines: 3000);
+  late ProcessTerminalBackend backend = ProcessTerminalBackend(terminal);
+  OTAPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
-    // return BlocProvider(
-    //     create: (_) => OtaBloc(frontendService: injector.get<FrontendService>(), backend: backend)..add(const OtaEvent.initialization()),
-    //     child: Scaffold(
-    //         backgroundColor: Colors.black,
-    //         body: OTAView(
-    //           terminal: terminal,
-    //         )));
+    return BlocProvider(
+        create: (_) => OtaBloc(frontendService: injector(), backend: backend)..add(const OtaEvent.initialization()),
+        child: Scaffold(
+            backgroundColor: Colors.black,
+            body: OTAView(
+              terminal: terminal,
+            )));
   }
 }
-/*
-class ProcessTerminalBackend extends TerminalBackend {
-  final _exitCodeCompleter = Completer<int>();
-  final _outStream = StreamController<String>();
 
-  ProcessTerminalBackend();
-
-  @override
-  Future<int> get exitCode => _exitCodeCompleter.future;
-
-  void onWrite(String data) {
-    _outStream.sink.add(data);
+class ProcessTerminalBackend {
+  final Terminal terminal;
+  ProcessTerminalBackend(this.terminal) {
+    terminal.resize(120, terminal.viewHeight);
+    terminal.setAutoWrapMode(true);
   }
 
-  @override
-  void init() async {}
-
-  @override
-  Stream<String> get out => _outStream.stream;
-
-  @override
-  void resize(int width, int height, int pixelWidth, int pixelHeight) {}
-
-  @override
-  void terminate() {}
-
-  @override
-  void write(String input) {}
-
-  @override
-  void ackProcessed() {}
+  void onWrite(String data) {
+    terminal.write(data);
+  }
 }
 
 class OTAView extends StatelessWidget {
   static final Logger _log = Logger('OTAView');
   final Terminal terminal;
 
-  const OTAView({Key? key, required this.terminal}) : super(key: key);
+  const OTAView({super.key, required this.terminal});
   @override
   Widget build(BuildContext context) {
     final state = context.watch<OtaBloc>().state;
@@ -89,8 +65,10 @@ class OTAView extends StatelessWidget {
     final terminalView = Expanded(
         flex: 2,
         child: TerminalView(
-          terminal: terminal,
-          style: const TerminalStyle(fontFamily: ['Cascadia Mono']),
+          terminal,
+          readOnly: true,
+          autofocus: true,
+          // textStyle: const TerminalStyle(fontFamily: ['Cascadia Mono']),
         ));
     return state.when(
       exit: (info) {
@@ -124,13 +102,21 @@ class OTAView extends StatelessWidget {
         terminalView
       ]),
       ready: (info) => Column(children: [
-        ElevatedButton(
-          onPressed: () {
-            context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
-          },
-          child: const Text('Config'),
-        ),
+        if (!environment.isLinuxEmbedded)
+          ElevatedButton(
+            onPressed: () {
+              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
+            },
+            child: const Text('Config'),
+          ),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     _runTestCommand(terminal);
+        //   },
+        //   child: const Text('echo'),
+        // ),
         ...header,
+        terminalView
       ]),
       success: (info) => Column(children: [
         ...header,
@@ -142,5 +128,27 @@ class OTAView extends StatelessWidget {
       ]),
     );
   }
+
+  // _runTestCommand(Terminal terminal) async {
+  //   var process = await io.Process.start(
+  //     'htop',
+  //     [],
+  //     // 'tput', ['cols'],
+  //     // 'sudo',
+  //     // ['apt-get', '-f', '-y', 'install', 'test'],
+  //     environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
+  //     // runInShell: true,
+  //   );
+  //   // process.stdout.transform(utf8.decoder).forEach((str) {
+  //   //   terminal.write(str);
+  //   // });
+  //   process.stdout.transform(utf8.decoder).listen((str) {
+  //     terminal.write(str);
+  //     terminal.write('\r');
+  //   });
+  //   process.stderr.transform(utf8.decoder).listen((str) {
+  //     terminal.write(str);
+  //     terminal.write('\r');
+  //   });
+  // }
 }
-*/

@@ -275,8 +275,11 @@ class OTAService implements RpcService {
       ..uploadingPercent = 100
       ..status = OTAStatus.instaling));
 
-    var process = await io.Process.start('sudo', ['apt-get', '-f', '-y', 'install', '$fullFilename'],
-        environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
+    var process = await io.Process.start(
+      'sudo',
+      ['apt-get', '-f', '-y', 'install', '$fullFilename'],
+      environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
+    );
     process.stdout.transform(utf8.decoder).forEach((str) {
       _frontendService.send(new OTAOutputCommand((b) => b.output = str));
     });
@@ -333,8 +336,7 @@ class OTAService implements RpcService {
     if (queryParams['code'] != _code) {
       return Response.forbidden('Incorrect code');
     }
-    return Response.ok(io.File(config.fullConfigFilename).readAsStringSync(),
-        headers: {'Content-Type': 'text/plain; charset=utf-8'});
+    return Response.ok(io.File(config.fullConfigFilename).readAsStringSync(), headers: {'Content-Type': 'text/plain; charset=utf-8'});
   }
 
   static const _uploadConfigForm = """

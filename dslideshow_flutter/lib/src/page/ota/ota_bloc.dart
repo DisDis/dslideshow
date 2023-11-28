@@ -6,7 +6,7 @@ import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
-/*
+
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   final FrontendService frontendService;
   final ProcessTerminalBackend backend;
@@ -104,4 +104,3 @@ class OtaRepository {
 
   Stream<OTAInfo> get onOTAInfo => _frontendService.onOTAInfo;
 }
-*/
