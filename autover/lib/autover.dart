@@ -108,7 +108,7 @@ class AutoVer {
       case 'patch':
         return current.nextPatch;
       case 'build':
-        var buildNumber = int.tryParse((current.build == null || current.build.isEmpty) ? '0' : current.build[0].toString()) ?? 0;
+        var buildNumber = int.tryParse(current.build.isEmpty ? '0' : current.build.first.toString()) ?? 0;
         buildNumber++;
         return Version(current.major, current.minor, current.patch, build: buildNumber.toString());
       default:

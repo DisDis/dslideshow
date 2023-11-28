@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Migrate Dart 3
+
 ## 1.0.2
 
 * Added example
