@@ -13,12 +13,12 @@ import 'package:get_it/get_it.dart';
 
 final Logger _log = new Logger('main');
 late WebServer _webServer;
-void serviceMain(SendPort remoteIsolateSendPort) async {
+void serviceMain(List<SendPort> ports) async {
   initLog("web");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteBackendService = new RemoteServiceImpl(serializers: serializers);
-    _remoteBackendService.connect(remoteIsolateSendPort);
+    _remoteBackendService.connect(ports);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -34,7 +34,7 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;
     _webServer = injector.get<WebServer>();
-    await initRpc(_webServer, serializers, _remoteBackendService.service);
+    await _remoteBackendService.service.processing(_webServer, serializers);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");

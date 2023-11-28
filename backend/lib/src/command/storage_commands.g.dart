@@ -46,17 +46,17 @@ class _$GetMediaItemCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'isCurrent':
           result.isCurrent = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -108,7 +108,7 @@ class _$GetMediaItemCommandResultSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -122,7 +122,7 @@ class _$GetMediaItemCommandResultSerializer
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -158,13 +158,13 @@ class _$StorageNextCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -181,13 +181,13 @@ class _$GetMediaItemCommand extends GetMediaItemCommand {
 
   factory _$GetMediaItemCommand(
           [void Function(GetMediaItemCommandBuilder)? updates]) =>
-      (new GetMediaItemCommandBuilder()..update(updates)).build();
+      (new GetMediaItemCommandBuilder()..update(updates))._build();
 
   _$GetMediaItemCommand._({required this.isCurrent, required this.id})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        isCurrent, 'GetMediaItemCommand', 'isCurrent');
-    BuiltValueNullFieldError.checkNotNull(id, 'GetMediaItemCommand', 'id');
+        isCurrent, r'GetMediaItemCommand', 'isCurrent');
+    BuiltValueNullFieldError.checkNotNull(id, r'GetMediaItemCommand', 'id');
   }
 
   @override
@@ -209,12 +209,16 @@ class _$GetMediaItemCommand extends GetMediaItemCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, isCurrent.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, isCurrent.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('GetMediaItemCommand')
+    return (newBuiltValueToStringHelper(r'GetMediaItemCommand')
           ..add('isCurrent', isCurrent)
           ..add('id', id))
         .toString();
@@ -259,13 +263,15 @@ class GetMediaItemCommandBuilder
   }
 
   @override
-  _$GetMediaItemCommand build() {
+  GetMediaItemCommand build() => _build();
+
+  _$GetMediaItemCommand _build() {
     final _$result = _$v ??
         new _$GetMediaItemCommand._(
             isCurrent: BuiltValueNullFieldError.checkNotNull(
-                isCurrent, 'GetMediaItemCommand', 'isCurrent'),
+                isCurrent, r'GetMediaItemCommand', 'isCurrent'),
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'GetMediaItemCommand', 'id'));
+                id, r'GetMediaItemCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -281,12 +287,12 @@ class _$GetMediaItemCommandResult extends GetMediaItemCommandResult {
 
   factory _$GetMediaItemCommandResult(
           [void Function(GetMediaItemCommandResultBuilder)? updates]) =>
-      (new GetMediaItemCommandResultBuilder()..update(updates)).build();
+      (new GetMediaItemCommandResultBuilder()..update(updates))._build();
 
   _$GetMediaItemCommandResult._({this.mediaId, this.mediaUri, required this.id})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        id, 'GetMediaItemCommandResult', 'id');
+        id, r'GetMediaItemCommandResult', 'id');
   }
 
   @override
@@ -309,13 +315,17 @@ class _$GetMediaItemCommandResult extends GetMediaItemCommandResult {
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, mediaId.hashCode), mediaUri.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, mediaId.hashCode);
+    _$hash = $jc(_$hash, mediaUri.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('GetMediaItemCommandResult')
+    return (newBuiltValueToStringHelper(r'GetMediaItemCommandResult')
           ..add('mediaId', mediaId)
           ..add('mediaUri', mediaUri)
           ..add('id', id))
@@ -365,13 +375,15 @@ class GetMediaItemCommandResultBuilder
   }
 
   @override
-  _$GetMediaItemCommandResult build() {
+  GetMediaItemCommandResult build() => _build();
+
+  _$GetMediaItemCommandResult _build() {
     final _$result = _$v ??
         new _$GetMediaItemCommandResult._(
             mediaId: mediaId,
             mediaUri: mediaUri,
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'GetMediaItemCommandResult', 'id'));
+                id, r'GetMediaItemCommandResult', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -383,10 +395,10 @@ class _$StorageNextCommand extends StorageNextCommand {
 
   factory _$StorageNextCommand(
           [void Function(StorageNextCommandBuilder)? updates]) =>
-      (new StorageNextCommandBuilder()..update(updates)).build();
+      (new StorageNextCommandBuilder()..update(updates))._build();
 
   _$StorageNextCommand._({required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'StorageNextCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'StorageNextCommand', 'id');
   }
 
   @override
@@ -406,12 +418,15 @@ class _$StorageNextCommand extends StorageNextCommand {
 
   @override
   int get hashCode {
-    return $jf($jc(0, id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('StorageNextCommand')..add('id', id))
+    return (newBuiltValueToStringHelper(r'StorageNextCommand')..add('id', id))
         .toString();
   }
 }
@@ -449,14 +464,16 @@ class StorageNextCommandBuilder
   }
 
   @override
-  _$StorageNextCommand build() {
+  StorageNextCommand build() => _build();
+
+  _$StorageNextCommand _build() {
     final _$result = _$v ??
         new _$StorageNextCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'StorageNextCommand', 'id'));
+                id, r'StorageNextCommand', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

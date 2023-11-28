@@ -41,7 +41,7 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -51,7 +51,7 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -93,7 +93,7 @@ class _$EchoCommandResultSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -103,7 +103,7 @@ class _$EchoCommandResultSerializer
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -119,10 +119,10 @@ class _$EchoCommand extends EchoCommand {
   final int id;
 
   factory _$EchoCommand([void Function(EchoCommandBuilder)? updates]) =>
-      (new EchoCommandBuilder()..update(updates)).build();
+      (new EchoCommandBuilder()..update(updates))._build();
 
   _$EchoCommand._({this.text, required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'EchoCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'EchoCommand', 'id');
   }
 
   @override
@@ -140,12 +140,16 @@ class _$EchoCommand extends EchoCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, text.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, text.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('EchoCommand')
+    return (newBuiltValueToStringHelper(r'EchoCommand')
           ..add('text', text)
           ..add('id', id))
         .toString();
@@ -189,11 +193,14 @@ class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
   }
 
   @override
-  _$EchoCommand build() {
+  EchoCommand build() => _build();
+
+  _$EchoCommand _build() {
     final _$result = _$v ??
         new _$EchoCommand._(
             text: text,
-            id: BuiltValueNullFieldError.checkNotNull(id, 'EchoCommand', 'id'));
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, r'EchoCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -207,10 +214,10 @@ class _$EchoCommandResult extends EchoCommandResult {
 
   factory _$EchoCommandResult(
           [void Function(EchoCommandResultBuilder)? updates]) =>
-      (new EchoCommandResultBuilder()..update(updates)).build();
+      (new EchoCommandResultBuilder()..update(updates))._build();
 
   _$EchoCommandResult._({this.resultText, required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'EchoCommandResult', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'EchoCommandResult', 'id');
   }
 
   @override
@@ -231,12 +238,16 @@ class _$EchoCommandResult extends EchoCommandResult {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, resultText.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, resultText.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('EchoCommandResult')
+    return (newBuiltValueToStringHelper(r'EchoCommandResult')
           ..add('resultText', resultText)
           ..add('id', id))
         .toString();
@@ -279,15 +290,17 @@ class EchoCommandResultBuilder
   }
 
   @override
-  _$EchoCommandResult build() {
+  EchoCommandResult build() => _build();
+
+  _$EchoCommandResult _build() {
     final _$result = _$v ??
         new _$EchoCommandResult._(
             resultText: resultText,
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'EchoCommandResult', 'id'));
+                id, r'EchoCommandResult', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

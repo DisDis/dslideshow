@@ -41,13 +41,13 @@ class _$GetSystemInfoCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -89,7 +89,7 @@ class _$GetSystemInfoCommandResultSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -99,7 +99,7 @@ class _$GetSystemInfoCommandResultSerializer
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -114,10 +114,10 @@ class _$GetSystemInfoCommand extends GetSystemInfoCommand {
 
   factory _$GetSystemInfoCommand(
           [void Function(GetSystemInfoCommandBuilder)? updates]) =>
-      (new GetSystemInfoCommandBuilder()..update(updates)).build();
+      (new GetSystemInfoCommandBuilder()..update(updates))._build();
 
   _$GetSystemInfoCommand._({required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'GetSystemInfoCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'GetSystemInfoCommand', 'id');
   }
 
   @override
@@ -137,12 +137,15 @@ class _$GetSystemInfoCommand extends GetSystemInfoCommand {
 
   @override
   int get hashCode {
-    return $jf($jc(0, id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('GetSystemInfoCommand')..add('id', id))
+    return (newBuiltValueToStringHelper(r'GetSystemInfoCommand')..add('id', id))
         .toString();
   }
 }
@@ -180,11 +183,13 @@ class GetSystemInfoCommandBuilder
   }
 
   @override
-  _$GetSystemInfoCommand build() {
+  GetSystemInfoCommand build() => _build();
+
+  _$GetSystemInfoCommand _build() {
     final _$result = _$v ??
         new _$GetSystemInfoCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'GetSystemInfoCommand', 'id'));
+                id, r'GetSystemInfoCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -198,14 +203,14 @@ class _$GetSystemInfoCommandResult extends GetSystemInfoCommandResult {
 
   factory _$GetSystemInfoCommandResult(
           [void Function(GetSystemInfoCommandResultBuilder)? updates]) =>
-      (new GetSystemInfoCommandResultBuilder()..update(updates)).build();
+      (new GetSystemInfoCommandResultBuilder()..update(updates))._build();
 
   _$GetSystemInfoCommandResult._({required this.systemInfo, required this.id})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        systemInfo, 'GetSystemInfoCommandResult', 'systemInfo');
+        systemInfo, r'GetSystemInfoCommandResult', 'systemInfo');
     BuiltValueNullFieldError.checkNotNull(
-        id, 'GetSystemInfoCommandResult', 'id');
+        id, r'GetSystemInfoCommandResult', 'id');
   }
 
   @override
@@ -227,12 +232,16 @@ class _$GetSystemInfoCommandResult extends GetSystemInfoCommandResult {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, systemInfo.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, systemInfo.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('GetSystemInfoCommandResult')
+    return (newBuiltValueToStringHelper(r'GetSystemInfoCommandResult')
           ..add('systemInfo', systemInfo)
           ..add('id', id))
         .toString();
@@ -278,14 +287,16 @@ class GetSystemInfoCommandResultBuilder
   }
 
   @override
-  _$GetSystemInfoCommandResult build() {
+  GetSystemInfoCommandResult build() => _build();
+
+  _$GetSystemInfoCommandResult _build() {
     _$GetSystemInfoCommandResult _$result;
     try {
       _$result = _$v ??
           new _$GetSystemInfoCommandResult._(
               systemInfo: systemInfo.build(),
               id: BuiltValueNullFieldError.checkNotNull(
-                  id, 'GetSystemInfoCommandResult', 'id'));
+                  id, r'GetSystemInfoCommandResult', 'id'));
     } catch (_) {
       late String _$failedField;
       try {
@@ -293,7 +304,7 @@ class GetSystemInfoCommandResultBuilder
         systemInfo.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'GetSystemInfoCommandResult', _$failedField, e.toString());
+            r'GetSystemInfoCommandResult', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -302,4 +313,4 @@ class GetSystemInfoCommandResultBuilder
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

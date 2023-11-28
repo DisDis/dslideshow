@@ -113,7 +113,7 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -207,7 +207,7 @@ class _$UpdateInfo extends UpdateInfo {
   final String? uptime;
 
   factory _$UpdateInfo([void Function(UpdateInfoBuilder)? updates]) =>
-      (new UpdateInfoBuilder()..update(updates)).build();
+      (new UpdateInfoBuilder()..update(updates))._build();
 
   _$UpdateInfo._(
       {this.cpuLoad1,
@@ -253,35 +253,27 @@ class _$UpdateInfo extends UpdateInfo {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc(
-            $jc(
-                $jc(
-                    $jc(
-                        $jc(
-                            $jc(
-                                $jc(
-                                    $jc(
-                                        $jc(
-                                            $jc(
-                                                $jc($jc(0, cpuLoad1.hashCode),
-                                                    cpuLoad15.hashCode),
-                                                cpuLoad5.hashCode),
-                                            diskAvailable.hashCode),
-                                        diskUsed.hashCode),
-                                    diskUsedPercent.hashCode),
-                                lastUpdate.hashCode),
-                            memTotal.hashCode),
-                        memUsed.hashCode),
-                    sensors.hashCode),
-                swapTotal.hashCode),
-            swapUsed.hashCode),
-        uptime.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, cpuLoad1.hashCode);
+    _$hash = $jc(_$hash, cpuLoad15.hashCode);
+    _$hash = $jc(_$hash, cpuLoad5.hashCode);
+    _$hash = $jc(_$hash, diskAvailable.hashCode);
+    _$hash = $jc(_$hash, diskUsed.hashCode);
+    _$hash = $jc(_$hash, diskUsedPercent.hashCode);
+    _$hash = $jc(_$hash, lastUpdate.hashCode);
+    _$hash = $jc(_$hash, memTotal.hashCode);
+    _$hash = $jc(_$hash, memUsed.hashCode);
+    _$hash = $jc(_$hash, sensors.hashCode);
+    _$hash = $jc(_$hash, swapTotal.hashCode);
+    _$hash = $jc(_$hash, swapUsed.hashCode);
+    _$hash = $jc(_$hash, uptime.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UpdateInfo')
+    return (newBuiltValueToStringHelper(r'UpdateInfo')
           ..add('cpuLoad1', cpuLoad1)
           ..add('cpuLoad15', cpuLoad15)
           ..add('cpuLoad5', cpuLoad5)
@@ -392,7 +384,9 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
   }
 
   @override
-  _$UpdateInfo build() {
+  UpdateInfo build() => _build();
+
+  _$UpdateInfo _build() {
     _$UpdateInfo _$result;
     try {
       _$result = _$v ??
@@ -417,7 +411,7 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
         _sensors?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'UpdateInfo', _$failedField, e.toString());
+            r'UpdateInfo', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -426,4 +420,4 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

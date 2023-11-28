@@ -41,25 +41,25 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'cores':
           result.cores = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'hardware':
           result.hardware = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'model':
           result.model = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'revision':
           result.revision = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -79,7 +79,7 @@ class _$CpuInfo extends CpuInfo {
   final String revision;
 
   factory _$CpuInfo([void Function(CpuInfoBuilder)? updates]) =>
-      (new CpuInfoBuilder()..update(updates)).build();
+      (new CpuInfoBuilder()..update(updates))._build();
 
   _$CpuInfo._(
       {required this.cores,
@@ -87,10 +87,10 @@ class _$CpuInfo extends CpuInfo {
       required this.model,
       required this.revision})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(cores, 'CpuInfo', 'cores');
-    BuiltValueNullFieldError.checkNotNull(hardware, 'CpuInfo', 'hardware');
-    BuiltValueNullFieldError.checkNotNull(model, 'CpuInfo', 'model');
-    BuiltValueNullFieldError.checkNotNull(revision, 'CpuInfo', 'revision');
+    BuiltValueNullFieldError.checkNotNull(cores, r'CpuInfo', 'cores');
+    BuiltValueNullFieldError.checkNotNull(hardware, r'CpuInfo', 'hardware');
+    BuiltValueNullFieldError.checkNotNull(model, r'CpuInfo', 'model');
+    BuiltValueNullFieldError.checkNotNull(revision, r'CpuInfo', 'revision');
   }
 
   @override
@@ -112,14 +112,18 @@ class _$CpuInfo extends CpuInfo {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, cores.hashCode), hardware.hashCode), model.hashCode),
-        revision.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, cores.hashCode);
+    _$hash = $jc(_$hash, hardware.hashCode);
+    _$hash = $jc(_$hash, model.hashCode);
+    _$hash = $jc(_$hash, revision.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('CpuInfo')
+    return (newBuiltValueToStringHelper(r'CpuInfo')
           ..add('cores', cores)
           ..add('hardware', hardware)
           ..add('model', model)
@@ -173,20 +177,22 @@ class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
   }
 
   @override
-  _$CpuInfo build() {
+  CpuInfo build() => _build();
+
+  _$CpuInfo _build() {
     final _$result = _$v ??
         new _$CpuInfo._(
             cores: BuiltValueNullFieldError.checkNotNull(
-                cores, 'CpuInfo', 'cores'),
+                cores, r'CpuInfo', 'cores'),
             hardware: BuiltValueNullFieldError.checkNotNull(
-                hardware, 'CpuInfo', 'hardware'),
+                hardware, r'CpuInfo', 'hardware'),
             model: BuiltValueNullFieldError.checkNotNull(
-                model, 'CpuInfo', 'model'),
+                model, r'CpuInfo', 'model'),
             revision: BuiltValueNullFieldError.checkNotNull(
-                revision, 'CpuInfo', 'revision'));
+                revision, r'CpuInfo', 'revision'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

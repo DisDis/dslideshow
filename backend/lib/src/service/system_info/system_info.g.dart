@@ -46,7 +46,7 @@ class _$SystemInfoSerializer implements StructuredSerializer<SystemInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -84,7 +84,7 @@ class _$SystemInfo extends SystemInfo {
   final UpdateInfo? updateInfo;
 
   factory _$SystemInfo([void Function(SystemInfoBuilder)? updates]) =>
-      (new SystemInfoBuilder()..update(updates)).build();
+      (new SystemInfoBuilder()..update(updates))._build();
 
   _$SystemInfo._(
       {required this.cpuInfo,
@@ -92,10 +92,10 @@ class _$SystemInfo extends SystemInfo {
       required this.osInfo,
       this.updateInfo})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(cpuInfo, 'SystemInfo', 'cpuInfo');
+    BuiltValueNullFieldError.checkNotNull(cpuInfo, r'SystemInfo', 'cpuInfo');
     BuiltValueNullFieldError.checkNotNull(
-        networkInfo, 'SystemInfo', 'networkInfo');
-    BuiltValueNullFieldError.checkNotNull(osInfo, 'SystemInfo', 'osInfo');
+        networkInfo, r'SystemInfo', 'networkInfo');
+    BuiltValueNullFieldError.checkNotNull(osInfo, r'SystemInfo', 'osInfo');
   }
 
   @override
@@ -117,15 +117,18 @@ class _$SystemInfo extends SystemInfo {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, cpuInfo.hashCode), networkInfo.hashCode),
-            osInfo.hashCode),
-        updateInfo.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, cpuInfo.hashCode);
+    _$hash = $jc(_$hash, networkInfo.hashCode);
+    _$hash = $jc(_$hash, osInfo.hashCode);
+    _$hash = $jc(_$hash, updateInfo.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SystemInfo')
+    return (newBuiltValueToStringHelper(r'SystemInfo')
           ..add('cpuInfo', cpuInfo)
           ..add('networkInfo', networkInfo)
           ..add('osInfo', osInfo)
@@ -183,7 +186,9 @@ class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
   }
 
   @override
-  _$SystemInfo build() {
+  SystemInfo build() => _build();
+
+  _$SystemInfo _build() {
     _$SystemInfo _$result;
     try {
       _$result = _$v ??
@@ -205,7 +210,7 @@ class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
         _updateInfo?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'SystemInfo', _$failedField, e.toString());
+            r'SystemInfo', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -214,4 +219,4 @@ class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

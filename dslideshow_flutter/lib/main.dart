@@ -60,8 +60,8 @@ void main() async {
     await otaService.spawn(ota.serviceMain);
 
     final frontendService = injector.get<FrontendService>();
-    initRpc(frontendService, serializers, backendService.service);
-    initRpc(frontendService, serializers, otaService.service);
+    backendService.service.processing(frontendService, serializers);
+    otaService.service.processing(frontendService, serializers);
 
     injector.registerLazySingleton<SlideshowBloc>(() {
       return SlideshowBloc(frontendService: frontendService);

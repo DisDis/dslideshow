@@ -25,12 +25,12 @@ import 'web_server.dart' as web_server;
 final Logger _log = new Logger('main');
 late HardwareService _service;
 
-void serviceMain(SendPort remoteIsolateSendPort) async {
+void serviceMain(List<SendPort> ports) async {
   initLog("hw_frame");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
-    _remoteFrontendService.connect(remoteIsolateSendPort);
+    _remoteFrontendService.connect(ports);
 
     final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
     await _remoteWebServer.spawn(web_server.serviceMain);
@@ -80,8 +80,8 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     _service = injector.get<HardwareService>();
 
     await Future.wait([
-      initRpc(_service, serializers, _remoteWebServer.service),
-      initRpc(_service, serializers, _remoteFrontendService.service),
+      _remoteWebServer.service.processing(_service, serializers),
+      _remoteFrontendService.service.processing(_service, serializers),
     ]);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);

@@ -12,12 +12,12 @@ import 'package:logging/logging.dart';
 
 final Logger _log = new Logger('main');
 late OTAService _service;
-void serviceMain(SendPort remoteIsolateSendPort) async {
+void serviceMain(List<SendPort> ports) async {
   initLog("ota");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
-    _remoteFrontendService.connect(remoteIsolateSendPort);
+    _remoteFrontendService.connect(ports);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -31,7 +31,7 @@ void serviceMain(SendPort remoteIsolateSendPort) async {
     Logger.root.level = config.log.levelOTA;
 
     _service = injector.get<OTAService>();
-    await initRpc(_service, serializers, _remoteFrontendService.service);
+    await _remoteFrontendService.service.processing(_service, serializers);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");

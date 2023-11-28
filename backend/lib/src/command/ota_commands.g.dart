@@ -85,17 +85,17 @@ class _$OTAReadyCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'ready':
           result.ready = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
       }
     }
@@ -137,13 +137,13 @@ class _$OTAGetInfoCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'info':
           result.info.replace(serializers.deserialize(value,
@@ -189,7 +189,7 @@ class _$OTAGetInfoCommandResultSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -199,7 +199,7 @@ class _$OTAGetInfoCommandResultSerializer
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -237,17 +237,17 @@ class _$OTAOutputCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'output':
           result.output = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -299,21 +299,21 @@ class _$OTAInfoSerializer implements StructuredSerializer<OTAInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'status':
           result.status = serializers.deserialize(value,
-              specifiedType: const FullType(OTAStatus)) as OTAStatus;
+              specifiedType: const FullType(OTAStatus))! as OTAStatus;
           break;
         case 'uploadingPercent':
           result.uploadingPercent = serializers.deserialize(value,
-              specifiedType: const FullType(double)) as double;
+              specifiedType: const FullType(double))! as double;
           break;
         case 'code':
           result.code = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'exitCode':
           result.exitCode = serializers.deserialize(value,
@@ -354,11 +354,11 @@ class _$OTAReadyCommand extends OTAReadyCommand {
   final bool ready;
 
   factory _$OTAReadyCommand([void Function(OTAReadyCommandBuilder)? updates]) =>
-      (new OTAReadyCommandBuilder()..update(updates)).build();
+      (new OTAReadyCommandBuilder()..update(updates))._build();
 
   _$OTAReadyCommand._({required this.id, required this.ready}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'OTAReadyCommand', 'id');
-    BuiltValueNullFieldError.checkNotNull(ready, 'OTAReadyCommand', 'ready');
+    BuiltValueNullFieldError.checkNotNull(id, r'OTAReadyCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(ready, r'OTAReadyCommand', 'ready');
   }
 
   @override
@@ -377,12 +377,16 @@ class _$OTAReadyCommand extends OTAReadyCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, id.hashCode), ready.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, ready.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAReadyCommand')
+    return (newBuiltValueToStringHelper(r'OTAReadyCommand')
           ..add('id', id)
           ..add('ready', ready))
         .toString();
@@ -427,13 +431,15 @@ class OTAReadyCommandBuilder
   }
 
   @override
-  _$OTAReadyCommand build() {
+  OTAReadyCommand build() => _build();
+
+  _$OTAReadyCommand _build() {
     final _$result = _$v ??
         new _$OTAReadyCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'OTAReadyCommand', 'id'),
+                id, r'OTAReadyCommand', 'id'),
             ready: BuiltValueNullFieldError.checkNotNull(
-                ready, 'OTAReadyCommand', 'ready'));
+                ready, r'OTAReadyCommand', 'ready'));
     replace(_$result);
     return _$result;
   }
@@ -447,10 +453,10 @@ class _$OTAGetInfoCommand extends OTAGetInfoCommand {
 
   factory _$OTAGetInfoCommand(
           [void Function(OTAGetInfoCommandBuilder)? updates]) =>
-      (new OTAGetInfoCommandBuilder()..update(updates)).build();
+      (new OTAGetInfoCommandBuilder()..update(updates))._build();
 
   _$OTAGetInfoCommand._({required this.id, this.info}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'OTAGetInfoCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'OTAGetInfoCommand', 'id');
   }
 
   @override
@@ -469,12 +475,16 @@ class _$OTAGetInfoCommand extends OTAGetInfoCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, id.hashCode), info.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, info.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAGetInfoCommand')
+    return (newBuiltValueToStringHelper(r'OTAGetInfoCommand')
           ..add('id', id)
           ..add('info', info))
         .toString();
@@ -519,13 +529,15 @@ class OTAGetInfoCommandBuilder
   }
 
   @override
-  _$OTAGetInfoCommand build() {
+  OTAGetInfoCommand build() => _build();
+
+  _$OTAGetInfoCommand _build() {
     _$OTAGetInfoCommand _$result;
     try {
       _$result = _$v ??
           new _$OTAGetInfoCommand._(
               id: BuiltValueNullFieldError.checkNotNull(
-                  id, 'OTAGetInfoCommand', 'id'),
+                  id, r'OTAGetInfoCommand', 'id'),
               info: _info?.build());
     } catch (_) {
       late String _$failedField;
@@ -534,7 +546,7 @@ class OTAGetInfoCommandBuilder
         _info?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'OTAGetInfoCommand', _$failedField, e.toString());
+            r'OTAGetInfoCommand', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -551,13 +563,13 @@ class _$OTAGetInfoCommandResult extends OTAGetInfoCommandResult {
 
   factory _$OTAGetInfoCommandResult(
           [void Function(OTAGetInfoCommandResultBuilder)? updates]) =>
-      (new OTAGetInfoCommandResultBuilder()..update(updates)).build();
+      (new OTAGetInfoCommandResultBuilder()..update(updates))._build();
 
   _$OTAGetInfoCommandResult._({required this.info, required this.id})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        info, 'OTAGetInfoCommandResult', 'info');
-    BuiltValueNullFieldError.checkNotNull(id, 'OTAGetInfoCommandResult', 'id');
+        info, r'OTAGetInfoCommandResult', 'info');
+    BuiltValueNullFieldError.checkNotNull(id, r'OTAGetInfoCommandResult', 'id');
   }
 
   @override
@@ -579,12 +591,16 @@ class _$OTAGetInfoCommandResult extends OTAGetInfoCommandResult {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, info.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, info.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAGetInfoCommandResult')
+    return (newBuiltValueToStringHelper(r'OTAGetInfoCommandResult')
           ..add('info', info)
           ..add('id', id))
         .toString();
@@ -628,14 +644,16 @@ class OTAGetInfoCommandResultBuilder
   }
 
   @override
-  _$OTAGetInfoCommandResult build() {
+  OTAGetInfoCommandResult build() => _build();
+
+  _$OTAGetInfoCommandResult _build() {
     _$OTAGetInfoCommandResult _$result;
     try {
       _$result = _$v ??
           new _$OTAGetInfoCommandResult._(
               info: info.build(),
               id: BuiltValueNullFieldError.checkNotNull(
-                  id, 'OTAGetInfoCommandResult', 'id'));
+                  id, r'OTAGetInfoCommandResult', 'id'));
     } catch (_) {
       late String _$failedField;
       try {
@@ -643,7 +661,7 @@ class OTAGetInfoCommandResultBuilder
         info.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'OTAGetInfoCommandResult', _$failedField, e.toString());
+            r'OTAGetInfoCommandResult', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -660,11 +678,12 @@ class _$OTAOutputCommand extends OTAOutputCommand {
 
   factory _$OTAOutputCommand(
           [void Function(OTAOutputCommandBuilder)? updates]) =>
-      (new OTAOutputCommandBuilder()..update(updates)).build();
+      (new OTAOutputCommandBuilder()..update(updates))._build();
 
   _$OTAOutputCommand._({required this.id, required this.output}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'OTAOutputCommand', 'id');
-    BuiltValueNullFieldError.checkNotNull(output, 'OTAOutputCommand', 'output');
+    BuiltValueNullFieldError.checkNotNull(id, r'OTAOutputCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(
+        output, r'OTAOutputCommand', 'output');
   }
 
   @override
@@ -685,12 +704,16 @@ class _$OTAOutputCommand extends OTAOutputCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, id.hashCode), output.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, output.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAOutputCommand')
+    return (newBuiltValueToStringHelper(r'OTAOutputCommand')
           ..add('id', id)
           ..add('output', output))
         .toString();
@@ -735,13 +758,15 @@ class OTAOutputCommandBuilder
   }
 
   @override
-  _$OTAOutputCommand build() {
+  OTAOutputCommand build() => _build();
+
+  _$OTAOutputCommand _build() {
     final _$result = _$v ??
         new _$OTAOutputCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'OTAOutputCommand', 'id'),
+                id, r'OTAOutputCommand', 'id'),
             output: BuiltValueNullFieldError.checkNotNull(
-                output, 'OTAOutputCommand', 'output'));
+                output, r'OTAOutputCommand', 'output'));
     replace(_$result);
     return _$result;
   }
@@ -760,7 +785,7 @@ class _$OTAInfo extends OTAInfo {
   final String? errorText;
 
   factory _$OTAInfo([void Function(OTAInfoBuilder)? updates]) =>
-      (new OTAInfoBuilder()..update(updates)).build();
+      (new OTAInfoBuilder()..update(updates))._build();
 
   _$OTAInfo._(
       {required this.status,
@@ -769,10 +794,10 @@ class _$OTAInfo extends OTAInfo {
       this.exitCode,
       this.errorText})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(status, 'OTAInfo', 'status');
+    BuiltValueNullFieldError.checkNotNull(status, r'OTAInfo', 'status');
     BuiltValueNullFieldError.checkNotNull(
-        uploadingPercent, 'OTAInfo', 'uploadingPercent');
-    BuiltValueNullFieldError.checkNotNull(code, 'OTAInfo', 'code');
+        uploadingPercent, r'OTAInfo', 'uploadingPercent');
+    BuiltValueNullFieldError.checkNotNull(code, r'OTAInfo', 'code');
   }
 
   @override
@@ -795,17 +820,19 @@ class _$OTAInfo extends OTAInfo {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc(
-            $jc($jc($jc(0, status.hashCode), uploadingPercent.hashCode),
-                code.hashCode),
-            exitCode.hashCode),
-        errorText.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, status.hashCode);
+    _$hash = $jc(_$hash, uploadingPercent.hashCode);
+    _$hash = $jc(_$hash, code.hashCode);
+    _$hash = $jc(_$hash, exitCode.hashCode);
+    _$hash = $jc(_$hash, errorText.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAInfo')
+    return (newBuiltValueToStringHelper(r'OTAInfo')
           ..add('status', status)
           ..add('uploadingPercent', uploadingPercent)
           ..add('code', code)
@@ -866,15 +893,17 @@ class OTAInfoBuilder implements Builder<OTAInfo, OTAInfoBuilder> {
   }
 
   @override
-  _$OTAInfo build() {
+  OTAInfo build() => _build();
+
+  _$OTAInfo _build() {
     final _$result = _$v ??
         new _$OTAInfo._(
             status: BuiltValueNullFieldError.checkNotNull(
-                status, 'OTAInfo', 'status'),
+                status, r'OTAInfo', 'status'),
             uploadingPercent: BuiltValueNullFieldError.checkNotNull(
-                uploadingPercent, 'OTAInfo', 'uploadingPercent'),
+                uploadingPercent, r'OTAInfo', 'uploadingPercent'),
             code:
-                BuiltValueNullFieldError.checkNotNull(code, 'OTAInfo', 'code'),
+                BuiltValueNullFieldError.checkNotNull(code, r'OTAInfo', 'code'),
             exitCode: exitCode,
             errorText: errorText);
     replace(_$result);
@@ -882,4 +911,4 @@ class OTAInfoBuilder implements Builder<OTAInfo, OTAInfoBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

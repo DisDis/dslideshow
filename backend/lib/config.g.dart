@@ -92,7 +92,7 @@ StoragesConfig _$StoragesConfigFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$StoragesConfigToJson(StoragesConfig instance) =>
     <String, dynamic>{
-      'selected': _$StorageTypeEnumMap[instance.selected],
+      'selected': _$StorageTypeEnumMap[instance.selected]!,
       'storages': StoragesConfig._storagesToJson(instance.storages),
     };
 

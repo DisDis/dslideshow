@@ -40,17 +40,17 @@ class _$ScreenTurnCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'enabled':
           result.enabled = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -87,17 +87,17 @@ class _$ScreenLockCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'isLock':
           result.isLock = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -114,12 +114,12 @@ class _$ScreenTurnCommand extends ScreenTurnCommand {
 
   factory _$ScreenTurnCommand(
           [void Function(ScreenTurnCommandBuilder)? updates]) =>
-      (new ScreenTurnCommandBuilder()..update(updates)).build();
+      (new ScreenTurnCommandBuilder()..update(updates))._build();
 
   _$ScreenTurnCommand._({required this.enabled, required this.id}) : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        enabled, 'ScreenTurnCommand', 'enabled');
-    BuiltValueNullFieldError.checkNotNull(id, 'ScreenTurnCommand', 'id');
+        enabled, r'ScreenTurnCommand', 'enabled');
+    BuiltValueNullFieldError.checkNotNull(id, r'ScreenTurnCommand', 'id');
   }
 
   @override
@@ -140,12 +140,16 @@ class _$ScreenTurnCommand extends ScreenTurnCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, enabled.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, enabled.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ScreenTurnCommand')
+    return (newBuiltValueToStringHelper(r'ScreenTurnCommand')
           ..add('enabled', enabled)
           ..add('id', id))
         .toString();
@@ -190,13 +194,15 @@ class ScreenTurnCommandBuilder
   }
 
   @override
-  _$ScreenTurnCommand build() {
+  ScreenTurnCommand build() => _build();
+
+  _$ScreenTurnCommand _build() {
     final _$result = _$v ??
         new _$ScreenTurnCommand._(
             enabled: BuiltValueNullFieldError.checkNotNull(
-                enabled, 'ScreenTurnCommand', 'enabled'),
+                enabled, r'ScreenTurnCommand', 'enabled'),
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'ScreenTurnCommand', 'id'));
+                id, r'ScreenTurnCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -210,12 +216,12 @@ class _$ScreenLockCommand extends ScreenLockCommand {
 
   factory _$ScreenLockCommand(
           [void Function(ScreenLockCommandBuilder)? updates]) =>
-      (new ScreenLockCommandBuilder()..update(updates)).build();
+      (new ScreenLockCommandBuilder()..update(updates))._build();
 
   _$ScreenLockCommand._({required this.isLock, required this.id}) : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        isLock, 'ScreenLockCommand', 'isLock');
-    BuiltValueNullFieldError.checkNotNull(id, 'ScreenLockCommand', 'id');
+        isLock, r'ScreenLockCommand', 'isLock');
+    BuiltValueNullFieldError.checkNotNull(id, r'ScreenLockCommand', 'id');
   }
 
   @override
@@ -236,12 +242,16 @@ class _$ScreenLockCommand extends ScreenLockCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, isLock.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, isLock.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ScreenLockCommand')
+    return (newBuiltValueToStringHelper(r'ScreenLockCommand')
           ..add('isLock', isLock)
           ..add('id', id))
         .toString();
@@ -286,16 +296,18 @@ class ScreenLockCommandBuilder
   }
 
   @override
-  _$ScreenLockCommand build() {
+  ScreenLockCommand build() => _build();
+
+  _$ScreenLockCommand _build() {
     final _$result = _$v ??
         new _$ScreenLockCommand._(
             isLock: BuiltValueNullFieldError.checkNotNull(
-                isLock, 'ScreenLockCommand', 'isLock'),
+                isLock, r'ScreenLockCommand', 'isLock'),
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'ScreenLockCommand', 'id'));
+                id, r'ScreenLockCommand', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

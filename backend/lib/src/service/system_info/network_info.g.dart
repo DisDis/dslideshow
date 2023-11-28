@@ -70,17 +70,17 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'lastUpdate':
           result.lastUpdate = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'hasInternet':
           result.hasInternet = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
         case 'interfaces':
           result.interfaces.replace(serializers.deserialize(value,
@@ -142,17 +142,17 @@ class _$NetworkInterfaceInfoSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'name':
           result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'status':
           result.status = serializers.deserialize(value,
-                  specifiedType: const FullType(NetworkInterfaceStatus))
+                  specifiedType: const FullType(NetworkInterfaceStatus))!
               as NetworkInterfaceStatus;
           break;
         case 'ip4':
@@ -197,15 +197,15 @@ class _$NetworkInfo extends NetworkInfo {
   final BuiltList<NetworkInterfaceInfo>? interfaces;
 
   factory _$NetworkInfo([void Function(NetworkInfoBuilder)? updates]) =>
-      (new NetworkInfoBuilder()..update(updates)).build();
+      (new NetworkInfoBuilder()..update(updates))._build();
 
   _$NetworkInfo._(
       {required this.lastUpdate, required this.hasInternet, this.interfaces})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        lastUpdate, 'NetworkInfo', 'lastUpdate');
+        lastUpdate, r'NetworkInfo', 'lastUpdate');
     BuiltValueNullFieldError.checkNotNull(
-        hasInternet, 'NetworkInfo', 'hasInternet');
+        hasInternet, r'NetworkInfo', 'hasInternet');
   }
 
   @override
@@ -226,13 +226,17 @@ class _$NetworkInfo extends NetworkInfo {
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, lastUpdate.hashCode), hasInternet.hashCode),
-        interfaces.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, lastUpdate.hashCode);
+    _$hash = $jc(_$hash, hasInternet.hashCode);
+    _$hash = $jc(_$hash, interfaces.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NetworkInfo')
+    return (newBuiltValueToStringHelper(r'NetworkInfo')
           ..add('lastUpdate', lastUpdate)
           ..add('hasInternet', hasInternet)
           ..add('interfaces', interfaces))
@@ -282,15 +286,17 @@ class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
   }
 
   @override
-  _$NetworkInfo build() {
+  NetworkInfo build() => _build();
+
+  _$NetworkInfo _build() {
     _$NetworkInfo _$result;
     try {
       _$result = _$v ??
           new _$NetworkInfo._(
               lastUpdate: BuiltValueNullFieldError.checkNotNull(
-                  lastUpdate, 'NetworkInfo', 'lastUpdate'),
+                  lastUpdate, r'NetworkInfo', 'lastUpdate'),
               hasInternet: BuiltValueNullFieldError.checkNotNull(
-                  hasInternet, 'NetworkInfo', 'hasInternet'),
+                  hasInternet, r'NetworkInfo', 'hasInternet'),
               interfaces: _interfaces?.build());
     } catch (_) {
       late String _$failedField;
@@ -299,7 +305,7 @@ class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
         _interfaces?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'NetworkInfo', _$failedField, e.toString());
+            r'NetworkInfo', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -320,14 +326,15 @@ class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {
 
   factory _$NetworkInterfaceInfo(
           [void Function(NetworkInterfaceInfoBuilder)? updates]) =>
-      (new NetworkInterfaceInfoBuilder()..update(updates)).build();
+      (new NetworkInterfaceInfoBuilder()..update(updates))._build();
 
   _$NetworkInterfaceInfo._(
       {required this.name, required this.status, this.ip4, this.ip6})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(name, 'NetworkInterfaceInfo', 'name');
     BuiltValueNullFieldError.checkNotNull(
-        status, 'NetworkInterfaceInfo', 'status');
+        name, r'NetworkInterfaceInfo', 'name');
+    BuiltValueNullFieldError.checkNotNull(
+        status, r'NetworkInterfaceInfo', 'status');
   }
 
   @override
@@ -351,14 +358,18 @@ class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, name.hashCode), status.hashCode), ip4.hashCode),
-        ip6.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, name.hashCode);
+    _$hash = $jc(_$hash, status.hashCode);
+    _$hash = $jc(_$hash, ip4.hashCode);
+    _$hash = $jc(_$hash, ip6.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NetworkInterfaceInfo')
+    return (newBuiltValueToStringHelper(r'NetworkInterfaceInfo')
           ..add('name', name)
           ..add('status', status)
           ..add('ip4', ip4)
@@ -413,13 +424,15 @@ class NetworkInterfaceInfoBuilder
   }
 
   @override
-  _$NetworkInterfaceInfo build() {
+  NetworkInterfaceInfo build() => _build();
+
+  _$NetworkInterfaceInfo _build() {
     final _$result = _$v ??
         new _$NetworkInterfaceInfo._(
             name: BuiltValueNullFieldError.checkNotNull(
-                name, 'NetworkInterfaceInfo', 'name'),
+                name, r'NetworkInterfaceInfo', 'name'),
             status: BuiltValueNullFieldError.checkNotNull(
-                status, 'NetworkInterfaceInfo', 'status'),
+                status, r'NetworkInterfaceInfo', 'status'),
             ip4: ip4,
             ip6: ip6);
     replace(_$result);
@@ -427,4 +440,4 @@ class NetworkInterfaceInfoBuilder
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

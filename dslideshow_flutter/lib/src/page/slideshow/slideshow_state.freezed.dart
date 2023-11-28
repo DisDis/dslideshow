@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'slideshow_state.dart';
 
@@ -12,36 +12,7 @@ part of 'slideshow_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$SlideshowStateTearOff {
-  const _$SlideshowStateTearOff();
-
-  _SlideshowWorkState call(
-      {required bool hasInternet,
-      required bool isScreenLock,
-      StorageStatusEnum storageStatus = StorageStatusEnum.done,
-      required bool isDebug,
-      required bool isMenu,
-      required bool isPaused,
-      required MediaItem item,
-      required MediaSliderItemEffect effect}) {
-    return _SlideshowWorkState(
-      hasInternet: hasInternet,
-      isScreenLock: isScreenLock,
-      storageStatus: storageStatus,
-      isDebug: isDebug,
-      isMenu: isMenu,
-      isPaused: isPaused,
-      item: item,
-      effect: effect,
-    );
-  }
-}
-
-/// @nodoc
-const $SlideshowState = _$SlideshowStateTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$SlideshowState {
@@ -63,7 +34,8 @@ mixin _$SlideshowState {
 abstract class $SlideshowStateCopyWith<$Res> {
   factory $SlideshowStateCopyWith(
           SlideshowState value, $Res Function(SlideshowState) then) =
-      _$SlideshowStateCopyWithImpl<$Res>;
+      _$SlideshowStateCopyWithImpl<$Res, SlideshowState>;
+  @useResult
   $Res call(
       {bool hasInternet,
       bool isScreenLock,
@@ -76,69 +48,72 @@ abstract class $SlideshowStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SlideshowStateCopyWithImpl<$Res>
+class _$SlideshowStateCopyWithImpl<$Res, $Val extends SlideshowState>
     implements $SlideshowStateCopyWith<$Res> {
   _$SlideshowStateCopyWithImpl(this._value, this._then);
 
-  final SlideshowState _value;
   // ignore: unused_field
-  final $Res Function(SlideshowState) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = freezed,
-    Object? isScreenLock = freezed,
-    Object? storageStatus = freezed,
-    Object? isDebug = freezed,
-    Object? isMenu = freezed,
-    Object? isPaused = freezed,
-    Object? item = freezed,
-    Object? effect = freezed,
+    Object? hasInternet = null,
+    Object? isScreenLock = null,
+    Object? storageStatus = null,
+    Object? isDebug = null,
+    Object? isMenu = null,
+    Object? isPaused = null,
+    Object? item = null,
+    Object? effect = null,
   }) {
     return _then(_value.copyWith(
-      hasInternet: hasInternet == freezed
+      hasInternet: null == hasInternet
           ? _value.hasInternet
           : hasInternet // ignore: cast_nullable_to_non_nullable
               as bool,
-      isScreenLock: isScreenLock == freezed
+      isScreenLock: null == isScreenLock
           ? _value.isScreenLock
           : isScreenLock // ignore: cast_nullable_to_non_nullable
               as bool,
-      storageStatus: storageStatus == freezed
+      storageStatus: null == storageStatus
           ? _value.storageStatus
           : storageStatus // ignore: cast_nullable_to_non_nullable
               as StorageStatusEnum,
-      isDebug: isDebug == freezed
+      isDebug: null == isDebug
           ? _value.isDebug
           : isDebug // ignore: cast_nullable_to_non_nullable
               as bool,
-      isMenu: isMenu == freezed
+      isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPaused: isPaused == freezed
+      isPaused: null == isPaused
           ? _value.isPaused
           : isPaused // ignore: cast_nullable_to_non_nullable
               as bool,
-      item: item == freezed
+      item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as MediaItem,
-      effect: effect == freezed
+      effect: null == effect
           ? _value.effect
           : effect // ignore: cast_nullable_to_non_nullable
               as MediaSliderItemEffect,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$SlideshowWorkStateCopyWith<$Res>
+abstract class _$$SlideshowWorkStateImplCopyWith<$Res>
     implements $SlideshowStateCopyWith<$Res> {
-  factory _$SlideshowWorkStateCopyWith(
-          _SlideshowWorkState value, $Res Function(_SlideshowWorkState) then) =
-      __$SlideshowWorkStateCopyWithImpl<$Res>;
+  factory _$$SlideshowWorkStateImplCopyWith(_$SlideshowWorkStateImpl value,
+          $Res Function(_$SlideshowWorkStateImpl) then) =
+      __$$SlideshowWorkStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {bool hasInternet,
       bool isScreenLock,
@@ -151,57 +126,55 @@ abstract class _$SlideshowWorkStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$SlideshowWorkStateCopyWithImpl<$Res>
-    extends _$SlideshowStateCopyWithImpl<$Res>
-    implements _$SlideshowWorkStateCopyWith<$Res> {
-  __$SlideshowWorkStateCopyWithImpl(
-      _SlideshowWorkState _value, $Res Function(_SlideshowWorkState) _then)
-      : super(_value, (v) => _then(v as _SlideshowWorkState));
+class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
+    extends _$SlideshowStateCopyWithImpl<$Res, _$SlideshowWorkStateImpl>
+    implements _$$SlideshowWorkStateImplCopyWith<$Res> {
+  __$$SlideshowWorkStateImplCopyWithImpl(_$SlideshowWorkStateImpl _value,
+      $Res Function(_$SlideshowWorkStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _SlideshowWorkState get _value => super._value as _SlideshowWorkState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = freezed,
-    Object? isScreenLock = freezed,
-    Object? storageStatus = freezed,
-    Object? isDebug = freezed,
-    Object? isMenu = freezed,
-    Object? isPaused = freezed,
-    Object? item = freezed,
-    Object? effect = freezed,
+    Object? hasInternet = null,
+    Object? isScreenLock = null,
+    Object? storageStatus = null,
+    Object? isDebug = null,
+    Object? isMenu = null,
+    Object? isPaused = null,
+    Object? item = null,
+    Object? effect = null,
   }) {
-    return _then(_SlideshowWorkState(
-      hasInternet: hasInternet == freezed
+    return _then(_$SlideshowWorkStateImpl(
+      hasInternet: null == hasInternet
           ? _value.hasInternet
           : hasInternet // ignore: cast_nullable_to_non_nullable
               as bool,
-      isScreenLock: isScreenLock == freezed
+      isScreenLock: null == isScreenLock
           ? _value.isScreenLock
           : isScreenLock // ignore: cast_nullable_to_non_nullable
               as bool,
-      storageStatus: storageStatus == freezed
+      storageStatus: null == storageStatus
           ? _value.storageStatus
           : storageStatus // ignore: cast_nullable_to_non_nullable
               as StorageStatusEnum,
-      isDebug: isDebug == freezed
+      isDebug: null == isDebug
           ? _value.isDebug
           : isDebug // ignore: cast_nullable_to_non_nullable
               as bool,
-      isMenu: isMenu == freezed
+      isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPaused: isPaused == freezed
+      isPaused: null == isPaused
           ? _value.isPaused
           : isPaused // ignore: cast_nullable_to_non_nullable
               as bool,
-      item: item == freezed
+      item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as MediaItem,
-      effect: effect == freezed
+      effect: null == effect
           ? _value.effect
           : effect // ignore: cast_nullable_to_non_nullable
               as MediaSliderItemEffect,
@@ -211,8 +184,8 @@ class __$SlideshowWorkStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_SlideshowWorkState implements _SlideshowWorkState {
-  const _$_SlideshowWorkState(
+class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
+  const _$SlideshowWorkStateImpl(
       {required this.hasInternet,
       required this.isScreenLock,
       this.storageStatus = StorageStatusEnum.done,
@@ -226,8 +199,8 @@ class _$_SlideshowWorkState implements _SlideshowWorkState {
   final bool hasInternet;
   @override
   final bool isScreenLock;
-  @JsonKey()
   @override
+  @JsonKey()
   final StorageStatusEnum storageStatus;
   @override
   final bool isDebug;
@@ -249,48 +222,43 @@ class _$_SlideshowWorkState implements _SlideshowWorkState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SlideshowWorkState &&
-            const DeepCollectionEquality()
-                .equals(other.hasInternet, hasInternet) &&
-            const DeepCollectionEquality()
-                .equals(other.isScreenLock, isScreenLock) &&
-            const DeepCollectionEquality()
-                .equals(other.storageStatus, storageStatus) &&
-            const DeepCollectionEquality().equals(other.isDebug, isDebug) &&
-            const DeepCollectionEquality().equals(other.isMenu, isMenu) &&
-            const DeepCollectionEquality().equals(other.isPaused, isPaused) &&
-            const DeepCollectionEquality().equals(other.item, item) &&
-            const DeepCollectionEquality().equals(other.effect, effect));
+            other is _$SlideshowWorkStateImpl &&
+            (identical(other.hasInternet, hasInternet) ||
+                other.hasInternet == hasInternet) &&
+            (identical(other.isScreenLock, isScreenLock) ||
+                other.isScreenLock == isScreenLock) &&
+            (identical(other.storageStatus, storageStatus) ||
+                other.storageStatus == storageStatus) &&
+            (identical(other.isDebug, isDebug) || other.isDebug == isDebug) &&
+            (identical(other.isMenu, isMenu) || other.isMenu == isMenu) &&
+            (identical(other.isPaused, isPaused) ||
+                other.isPaused == isPaused) &&
+            (identical(other.item, item) || other.item == item) &&
+            (identical(other.effect, effect) || other.effect == effect));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(hasInternet),
-      const DeepCollectionEquality().hash(isScreenLock),
-      const DeepCollectionEquality().hash(storageStatus),
-      const DeepCollectionEquality().hash(isDebug),
-      const DeepCollectionEquality().hash(isMenu),
-      const DeepCollectionEquality().hash(isPaused),
-      const DeepCollectionEquality().hash(item),
-      const DeepCollectionEquality().hash(effect));
+  int get hashCode => Object.hash(runtimeType, hasInternet, isScreenLock,
+      storageStatus, isDebug, isMenu, isPaused, item, effect);
 
   @JsonKey(ignore: true)
   @override
-  _$SlideshowWorkStateCopyWith<_SlideshowWorkState> get copyWith =>
-      __$SlideshowWorkStateCopyWithImpl<_SlideshowWorkState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$SlideshowWorkStateImplCopyWith<_$SlideshowWorkStateImpl> get copyWith =>
+      __$$SlideshowWorkStateImplCopyWithImpl<_$SlideshowWorkStateImpl>(
+          this, _$identity);
 }
 
 abstract class _SlideshowWorkState implements SlideshowState {
   const factory _SlideshowWorkState(
-      {required bool hasInternet,
-      required bool isScreenLock,
-      StorageStatusEnum storageStatus,
-      required bool isDebug,
-      required bool isMenu,
-      required bool isPaused,
-      required MediaItem item,
-      required MediaSliderItemEffect effect}) = _$_SlideshowWorkState;
+      {required final bool hasInternet,
+      required final bool isScreenLock,
+      final StorageStatusEnum storageStatus,
+      required final bool isDebug,
+      required final bool isMenu,
+      required final bool isPaused,
+      required final MediaItem item,
+      required final MediaSliderItemEffect effect}) = _$SlideshowWorkStateImpl;
 
   @override
   bool get hasInternet;
@@ -310,32 +278,9 @@ abstract class _SlideshowWorkState implements SlideshowState {
   MediaSliderItemEffect get effect;
   @override
   @JsonKey(ignore: true)
-  _$SlideshowWorkStateCopyWith<_SlideshowWorkState> get copyWith =>
+  _$$SlideshowWorkStateImplCopyWith<_$SlideshowWorkStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$IndicatorStateTearOff {
-  const _$IndicatorStateTearOff();
-
-  _IndicatorState call(
-      {required bool hasInternet,
-      required StorageStatusEnum storageStatus,
-      required bool isDebug,
-      required bool isMenu,
-      required bool isPaused}) {
-    return _IndicatorState(
-      hasInternet: hasInternet,
-      storageStatus: storageStatus,
-      isDebug: isDebug,
-      isMenu: isMenu,
-      isPaused: isPaused,
-    );
-  }
-}
-
-/// @nodoc
-const $IndicatorState = _$IndicatorStateTearOff();
 
 /// @nodoc
 mixin _$IndicatorState {
@@ -354,7 +299,8 @@ mixin _$IndicatorState {
 abstract class $IndicatorStateCopyWith<$Res> {
   factory $IndicatorStateCopyWith(
           IndicatorState value, $Res Function(IndicatorState) then) =
-      _$IndicatorStateCopyWithImpl<$Res>;
+      _$IndicatorStateCopyWithImpl<$Res, IndicatorState>;
+  @useResult
   $Res call(
       {bool hasInternet,
       StorageStatusEnum storageStatus,
@@ -364,54 +310,57 @@ abstract class $IndicatorStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$IndicatorStateCopyWithImpl<$Res>
+class _$IndicatorStateCopyWithImpl<$Res, $Val extends IndicatorState>
     implements $IndicatorStateCopyWith<$Res> {
   _$IndicatorStateCopyWithImpl(this._value, this._then);
 
-  final IndicatorState _value;
   // ignore: unused_field
-  final $Res Function(IndicatorState) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = freezed,
-    Object? storageStatus = freezed,
-    Object? isDebug = freezed,
-    Object? isMenu = freezed,
-    Object? isPaused = freezed,
+    Object? hasInternet = null,
+    Object? storageStatus = null,
+    Object? isDebug = null,
+    Object? isMenu = null,
+    Object? isPaused = null,
   }) {
     return _then(_value.copyWith(
-      hasInternet: hasInternet == freezed
+      hasInternet: null == hasInternet
           ? _value.hasInternet
           : hasInternet // ignore: cast_nullable_to_non_nullable
               as bool,
-      storageStatus: storageStatus == freezed
+      storageStatus: null == storageStatus
           ? _value.storageStatus
           : storageStatus // ignore: cast_nullable_to_non_nullable
               as StorageStatusEnum,
-      isDebug: isDebug == freezed
+      isDebug: null == isDebug
           ? _value.isDebug
           : isDebug // ignore: cast_nullable_to_non_nullable
               as bool,
-      isMenu: isMenu == freezed
+      isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPaused: isPaused == freezed
+      isPaused: null == isPaused
           ? _value.isPaused
           : isPaused // ignore: cast_nullable_to_non_nullable
               as bool,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$IndicatorStateCopyWith<$Res>
+abstract class _$$IndicatorStateImplCopyWith<$Res>
     implements $IndicatorStateCopyWith<$Res> {
-  factory _$IndicatorStateCopyWith(
-          _IndicatorState value, $Res Function(_IndicatorState) then) =
-      __$IndicatorStateCopyWithImpl<$Res>;
+  factory _$$IndicatorStateImplCopyWith(_$IndicatorStateImpl value,
+          $Res Function(_$IndicatorStateImpl) then) =
+      __$$IndicatorStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {bool hasInternet,
       StorageStatusEnum storageStatus,
@@ -421,42 +370,40 @@ abstract class _$IndicatorStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$IndicatorStateCopyWithImpl<$Res>
-    extends _$IndicatorStateCopyWithImpl<$Res>
-    implements _$IndicatorStateCopyWith<$Res> {
-  __$IndicatorStateCopyWithImpl(
-      _IndicatorState _value, $Res Function(_IndicatorState) _then)
-      : super(_value, (v) => _then(v as _IndicatorState));
+class __$$IndicatorStateImplCopyWithImpl<$Res>
+    extends _$IndicatorStateCopyWithImpl<$Res, _$IndicatorStateImpl>
+    implements _$$IndicatorStateImplCopyWith<$Res> {
+  __$$IndicatorStateImplCopyWithImpl(
+      _$IndicatorStateImpl _value, $Res Function(_$IndicatorStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _IndicatorState get _value => super._value as _IndicatorState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = freezed,
-    Object? storageStatus = freezed,
-    Object? isDebug = freezed,
-    Object? isMenu = freezed,
-    Object? isPaused = freezed,
+    Object? hasInternet = null,
+    Object? storageStatus = null,
+    Object? isDebug = null,
+    Object? isMenu = null,
+    Object? isPaused = null,
   }) {
-    return _then(_IndicatorState(
-      hasInternet: hasInternet == freezed
+    return _then(_$IndicatorStateImpl(
+      hasInternet: null == hasInternet
           ? _value.hasInternet
           : hasInternet // ignore: cast_nullable_to_non_nullable
               as bool,
-      storageStatus: storageStatus == freezed
+      storageStatus: null == storageStatus
           ? _value.storageStatus
           : storageStatus // ignore: cast_nullable_to_non_nullable
               as StorageStatusEnum,
-      isDebug: isDebug == freezed
+      isDebug: null == isDebug
           ? _value.isDebug
           : isDebug // ignore: cast_nullable_to_non_nullable
               as bool,
-      isMenu: isMenu == freezed
+      isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPaused: isPaused == freezed
+      isPaused: null == isPaused
           ? _value.isPaused
           : isPaused // ignore: cast_nullable_to_non_nullable
               as bool,
@@ -466,8 +413,8 @@ class __$IndicatorStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_IndicatorState implements _IndicatorState {
-  const _$_IndicatorState(
+class _$IndicatorStateImpl implements _IndicatorState {
+  const _$IndicatorStateImpl(
       {required this.hasInternet,
       required this.storageStatus,
       required this.isDebug,
@@ -494,38 +441,36 @@ class _$_IndicatorState implements _IndicatorState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _IndicatorState &&
-            const DeepCollectionEquality()
-                .equals(other.hasInternet, hasInternet) &&
-            const DeepCollectionEquality()
-                .equals(other.storageStatus, storageStatus) &&
-            const DeepCollectionEquality().equals(other.isDebug, isDebug) &&
-            const DeepCollectionEquality().equals(other.isMenu, isMenu) &&
-            const DeepCollectionEquality().equals(other.isPaused, isPaused));
+            other is _$IndicatorStateImpl &&
+            (identical(other.hasInternet, hasInternet) ||
+                other.hasInternet == hasInternet) &&
+            (identical(other.storageStatus, storageStatus) ||
+                other.storageStatus == storageStatus) &&
+            (identical(other.isDebug, isDebug) || other.isDebug == isDebug) &&
+            (identical(other.isMenu, isMenu) || other.isMenu == isMenu) &&
+            (identical(other.isPaused, isPaused) ||
+                other.isPaused == isPaused));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(hasInternet),
-      const DeepCollectionEquality().hash(storageStatus),
-      const DeepCollectionEquality().hash(isDebug),
-      const DeepCollectionEquality().hash(isMenu),
-      const DeepCollectionEquality().hash(isPaused));
+      runtimeType, hasInternet, storageStatus, isDebug, isMenu, isPaused);
 
   @JsonKey(ignore: true)
   @override
-  _$IndicatorStateCopyWith<_IndicatorState> get copyWith =>
-      __$IndicatorStateCopyWithImpl<_IndicatorState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$IndicatorStateImplCopyWith<_$IndicatorStateImpl> get copyWith =>
+      __$$IndicatorStateImplCopyWithImpl<_$IndicatorStateImpl>(
+          this, _$identity);
 }
 
 abstract class _IndicatorState implements IndicatorState {
   const factory _IndicatorState(
-      {required bool hasInternet,
-      required StorageStatusEnum storageStatus,
-      required bool isDebug,
-      required bool isMenu,
-      required bool isPaused}) = _$_IndicatorState;
+      {required final bool hasInternet,
+      required final StorageStatusEnum storageStatus,
+      required final bool isDebug,
+      required final bool isMenu,
+      required final bool isPaused}) = _$IndicatorStateImpl;
 
   @override
   bool get hasInternet;
@@ -539,6 +484,6 @@ abstract class _IndicatorState implements IndicatorState {
   bool get isPaused;
   @override
   @JsonKey(ignore: true)
-  _$IndicatorStateCopyWith<_IndicatorState> get copyWith =>
+  _$$IndicatorStateImplCopyWith<_$IndicatorStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

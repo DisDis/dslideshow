@@ -39,13 +39,13 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'name':
           result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'osType':
           result.osType = serializers.deserialize(value,
@@ -65,10 +65,10 @@ class _$OSInfo extends OSInfo {
   final OSType? osType;
 
   factory _$OSInfo([void Function(OSInfoBuilder)? updates]) =>
-      (new OSInfoBuilder()..update(updates)).build();
+      (new OSInfoBuilder()..update(updates))._build();
 
   _$OSInfo._({required this.name, this.osType}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(name, 'OSInfo', 'name');
+    BuiltValueNullFieldError.checkNotNull(name, r'OSInfo', 'name');
   }
 
   @override
@@ -86,12 +86,16 @@ class _$OSInfo extends OSInfo {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, name.hashCode), osType.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, name.hashCode);
+    _$hash = $jc(_$hash, osType.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OSInfo')
+    return (newBuiltValueToStringHelper(r'OSInfo')
           ..add('name', name)
           ..add('osType', osType))
         .toString();
@@ -133,14 +137,17 @@ class OSInfoBuilder implements Builder<OSInfo, OSInfoBuilder> {
   }
 
   @override
-  _$OSInfo build() {
+  OSInfo build() => _build();
+
+  _$OSInfo _build() {
     final _$result = _$v ??
         new _$OSInfo._(
-            name: BuiltValueNullFieldError.checkNotNull(name, 'OSInfo', 'name'),
+            name:
+                BuiltValueNullFieldError.checkNotNull(name, r'OSInfo', 'name'),
             osType: osType);
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

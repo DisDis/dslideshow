@@ -2,30 +2,74 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'package:built_value/serializer.dart';
+import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/exception.dart';
+import 'package:async/async.dart';
+import 'package:logging/logging.dart';
 
 class Service {
-  final SendPort sendPort;
-  final ReceivePort receivePort;
+  static final _log = new Logger('Service');
+  final SendPort commanOPort;
+  final SendPort resultOPort;
+  final ReceivePort commandIPort;
+  final ReceivePort resultIPort;
+  // final messages = Map<int, Future<RpcResult>>();
 
-  Service({required this.sendPort, ReceivePort? receivePortI}) : this.receivePort = receivePortI ?? ReceivePort();
+  // late StreamQueue<dynamic> events;
+
+  Service({required this.commandIPort, required this.commanOPort, required this.resultIPort, required this.resultOPort}) {
+    // events = StreamQueue<dynamic>(receivePort);
+  }
+
+  Future processing(final RpcService service, final Serializers serializers) async {
+    late StreamSubscription sub;
+    final result = Completer();
+    // Wait for messages from the main isolate.
+    sub = commandIPort.listen((command) async {
+      if (command == null) {
+        sub.cancel();
+        result.complete();
+        // break;
+      } else {
+        try {
+          if (command is String) {
+            RpcCommand cmd = serializers.deserialize(json.decode(command) as Object) as RpcCommand;
+            var result = await service.executeCommand(cmd);
+            var str = json.encode(serializers.serialize(result));
+            resultOPort.send(str);
+          } else {
+            RpcCommand cmd = serializers.deserialize(command) as RpcCommand;
+            var result = await service.executeCommand(cmd);
+            resultOPort.send(serializers.serialize(result));
+          }
+        } catch (e, s) {
+          _log.severe('executeCommandStr', e, s);
+          rethrow;
+        }
+      }
+    });
+    return result.future;
+  }
 }
 
 abstract class RemoteService {
-  FutureOr<RpcResult> sendStr(RpcCommand cmd);
+  Future<RpcResult> sendStr(RpcCommand cmd);
 
-  FutureOr<Object> transparentSend(Object cmd);
+  Future<Object> transparentSend(Object cmd);
 
-  FutureOr<String> transparentSendStr(String cmdStr);
+  Future<String> transparentSendStr(String cmdStr);
 
-  FutureOr<RpcResult> send(RpcCommand cmd);
+  Future<RpcResult> send(RpcCommand cmd);
 }
 
 class RemoteServiceImpl implements RemoteService {
   late Service _service;
   late RemoteServiceTransport _transport;
   final Serializers serializers;
+  // StreamQueue<dynamic>? commands;
+  StreamQueue<dynamic>? results;
+
   Service get service => _service;
 
   RemoteServiceImpl({
@@ -35,31 +79,50 @@ class RemoteServiceImpl implements RemoteService {
     _transport = transport ?? new DirectSpawnTransport();
   }
 
-  void connect(SendPort remoteIsolateSendPort) {
-    _service = Service(sendPort: remoteIsolateSendPort);
-    _service.sendPort.send(_service.receivePort.sendPort);
+  void connect(List<SendPort> ports) {
+    SendPort commanOPort = ports[0];
+    SendPort resultOPort = ports[1];
+    final commandIPort = ReceivePort();
+    final resultIPort = ReceivePort();
+    _service = Service(
+      commanOPort: commanOPort,
+      resultOPort: resultOPort,
+      commandIPort: commandIPort,
+      resultIPort: resultIPort,
+    );
+    _service.resultOPort.send(
+      [_service.commandIPort.sendPort, _service.resultIPort.sendPort],
+    );
   }
 
-  Future<void> spawn(void entryPoint(SendPort message)) async {
-    final receivePort = ReceivePort();
-    await Isolate.spawn(entryPoint, receivePort.sendPort);
-    final sendPort = await receivePort.first;
-    _service = Service(sendPort: sendPort, receivePortI: receivePort);
+  Future<void> spawn(void entryPoint(List<SendPort> messages)) async {
+    final commandIPort = ReceivePort();
+    final resultIPort = ReceivePort();
+    // final _commands = commands = StreamQueue<dynamic>(commandIPort);
+    final _results = results = StreamQueue<dynamic>(resultIPort);
+    await Isolate.spawn(entryPoint, [commandIPort.sendPort, resultIPort.sendPort]);
+    final List<SendPort> ports = await _results.next;
+    _service = Service(
+      commanOPort: ports[0],
+      resultOPort: ports[1],
+      commandIPort: commandIPort,
+      resultIPort: resultIPort,
+    );
   }
 
   // Запрос и ответ не обрабатывается
-  FutureOr<String> transparentSendStr(String cmdStr) async {
+  Future<String> transparentSendStr(String cmdStr) async {
     // ignore: return_of_invalid_type
-    return _transport.sendStr(_service, cmdStr);
+    return _transport.sendStr(this, cmdStr);
   }
 
-  FutureOr<Object> transparentSend(Object cmd) {
+  Future<Object> transparentSend(Object cmd) {
     // ignore: return_of_invalid_type
-    return _transport.send(_service, cmd);
+    return _transport.send(this, cmd);
   }
 
-  FutureOr<RpcResult> sendStr(RpcCommand cmd) async {
-    var jsonO = await transparentSendStr(json.encode(serializers.serialize(cmd)));
+  Future<RpcResult> sendStr(RpcCommand cmd) async {
+    final jsonO = await transparentSendStr(json.encode(serializers.serialize(cmd)));
     RpcResult result = serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
@@ -67,8 +130,8 @@ class RemoteServiceImpl implements RemoteService {
     return result;
   }
 
-  FutureOr<RpcResult> send(RpcCommand cmd) async {
-    var jsonO = await transparentSend(serializers.serialize(cmd)!);
+  Future<RpcResult> send(RpcCommand cmd) async {
+    final jsonO = await transparentSend(serializers.serialize(cmd)!);
     RpcResult result = serializers.deserialize(jsonO) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
@@ -78,22 +141,22 @@ class RemoteServiceImpl implements RemoteService {
 }
 
 abstract class RemoteServiceTransport {
-  FutureOr<String> sendStr(Service service, String cmdStr);
-  FutureOr<Object> send(Service service, Object cmd);
+  Future<String> sendStr(RemoteServiceImpl service, String cmdStr);
+  Future<Object> send(RemoteServiceImpl service, Object cmd);
 }
 
 class DirectSpawnTransport implements RemoteServiceTransport {
   @override
-  Future<String> sendStr(Service service, String cmdStr) async {
+  Future<String> sendStr(RemoteServiceImpl service, String cmdStr) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    service.sendPort.send(cmdStr);
-    return await service.receivePort.first;
+    service.service.commanOPort.send(cmdStr);
+    return await (service.results!.next);
   }
 
   @override
-  Future<Object> send(Service service, Object cmd) async {
+  Future<Object> send(RemoteServiceImpl service, Object cmd) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    service.sendPort.send(cmd);
-    return await service.receivePort.first;
+    service.service.commanOPort.send(cmd);
+    return await (service.results!.next);
   }
 }

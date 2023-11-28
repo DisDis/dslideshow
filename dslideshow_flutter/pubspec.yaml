@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 5.0.0+24
+version: 6.0.0
 publish_to: none
 
 environment:

@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_state.dart';
 
@@ -12,56 +12,11 @@ part of 'ota_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$OtaStateTearOff {
-  const _$OtaStateTearOff();
-
-  _OtaInitialState initial({required OTAInfo info}) {
-    return _OtaInitialState(
-      info: info,
-    );
-  }
-
-  _OtaReadyState ready({required OTAInfo info}) {
-    return _OtaReadyState(
-      info: info,
-    );
-  }
-
-  _OtaProgressState progress({required OTAInfo info}) {
-    return _OtaProgressState(
-      info: info,
-    );
-  }
-
-  _OtaSuccessState success({required OTAInfo info}) {
-    return _OtaSuccessState(
-      info: info,
-    );
-  }
-
-  _OtaFailureState failure({required OTAInfo info}) {
-    return _OtaFailureState(
-      info: info,
-    );
-  }
-
-  _OtaExitState exit({required OTAInfo info}) {
-    return _OtaExitState(
-      info: info,
-    );
-  }
-}
-
-/// @nodoc
-const $OtaState = _$OtaStateTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$OtaState {
   OTAInfo get info => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(OTAInfo info) initial,
@@ -74,12 +29,12 @@ mixin _$OtaState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -105,12 +60,12 @@ mixin _$OtaState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -133,57 +88,61 @@ mixin _$OtaState {
 /// @nodoc
 abstract class $OtaStateCopyWith<$Res> {
   factory $OtaStateCopyWith(OtaState value, $Res Function(OtaState) then) =
-      _$OtaStateCopyWithImpl<$Res>;
+      _$OtaStateCopyWithImpl<$Res, OtaState>;
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class _$OtaStateCopyWithImpl<$Res> implements $OtaStateCopyWith<$Res> {
+class _$OtaStateCopyWithImpl<$Res, $Val extends OtaState>
+    implements $OtaStateCopyWith<$Res> {
   _$OtaStateCopyWithImpl(this._value, this._then);
 
-  final OtaState _value;
   // ignore: unused_field
-  final $Res Function(OtaState) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
     return _then(_value.copyWith(
-      info: info == freezed
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$OtaInitialStateCopyWith<$Res>
+abstract class _$$OtaInitialStateImplCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory _$OtaInitialStateCopyWith(
-          _OtaInitialState value, $Res Function(_OtaInitialState) then) =
-      __$OtaInitialStateCopyWithImpl<$Res>;
+  factory _$$OtaInitialStateImplCopyWith(_$OtaInitialStateImpl value,
+          $Res Function(_$OtaInitialStateImpl) then) =
+      __$$OtaInitialStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaInitialStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaInitialStateCopyWith<$Res> {
-  __$OtaInitialStateCopyWithImpl(
-      _OtaInitialState _value, $Res Function(_OtaInitialState) _then)
-      : super(_value, (v) => _then(v as _OtaInitialState));
+class __$$OtaInitialStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaInitialStateImpl>
+    implements _$$OtaInitialStateImplCopyWith<$Res> {
+  __$$OtaInitialStateImplCopyWithImpl(
+      _$OtaInitialStateImpl _value, $Res Function(_$OtaInitialStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaInitialState get _value => super._value as _OtaInitialState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaInitialState(
-      info: info == freezed
+    return _then(_$OtaInitialStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -193,8 +152,8 @@ class __$OtaInitialStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaInitialState implements _OtaInitialState {
-  const _$_OtaInitialState({required this.info});
+class _$OtaInitialStateImpl implements _OtaInitialState {
+  const _$OtaInitialStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -208,18 +167,19 @@ class _$_OtaInitialState implements _OtaInitialState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaInitialState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaInitialStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaInitialStateCopyWith<_OtaInitialState> get copyWith =>
-      __$OtaInitialStateCopyWithImpl<_OtaInitialState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaInitialStateImplCopyWith<_$OtaInitialStateImpl> get copyWith =>
+      __$$OtaInitialStateImplCopyWithImpl<_$OtaInitialStateImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -237,12 +197,12 @@ class _$_OtaInitialState implements _OtaInitialState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return initial?.call(info);
   }
@@ -280,12 +240,12 @@ class _$_OtaInitialState implements _OtaInitialState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return initial?.call(this);
   }
@@ -309,42 +269,43 @@ class _$_OtaInitialState implements _OtaInitialState {
 }
 
 abstract class _OtaInitialState implements OtaState {
-  const factory _OtaInitialState({required OTAInfo info}) = _$_OtaInitialState;
+  const factory _OtaInitialState({required final OTAInfo info}) =
+      _$OtaInitialStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaInitialStateCopyWith<_OtaInitialState> get copyWith =>
+  _$$OtaInitialStateImplCopyWith<_$OtaInitialStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$OtaReadyStateCopyWith<$Res>
+abstract class _$$OtaReadyStateImplCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory _$OtaReadyStateCopyWith(
-          _OtaReadyState value, $Res Function(_OtaReadyState) then) =
-      __$OtaReadyStateCopyWithImpl<$Res>;
+  factory _$$OtaReadyStateImplCopyWith(
+          _$OtaReadyStateImpl value, $Res Function(_$OtaReadyStateImpl) then) =
+      __$$OtaReadyStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaReadyStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaReadyStateCopyWith<$Res> {
-  __$OtaReadyStateCopyWithImpl(
-      _OtaReadyState _value, $Res Function(_OtaReadyState) _then)
-      : super(_value, (v) => _then(v as _OtaReadyState));
+class __$$OtaReadyStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaReadyStateImpl>
+    implements _$$OtaReadyStateImplCopyWith<$Res> {
+  __$$OtaReadyStateImplCopyWithImpl(
+      _$OtaReadyStateImpl _value, $Res Function(_$OtaReadyStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaReadyState get _value => super._value as _OtaReadyState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaReadyState(
-      info: info == freezed
+    return _then(_$OtaReadyStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -354,8 +315,8 @@ class __$OtaReadyStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaReadyState implements _OtaReadyState {
-  const _$_OtaReadyState({required this.info});
+class _$OtaReadyStateImpl implements _OtaReadyState {
+  const _$OtaReadyStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -369,18 +330,18 @@ class _$_OtaReadyState implements _OtaReadyState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaReadyState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaReadyStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaReadyStateCopyWith<_OtaReadyState> get copyWith =>
-      __$OtaReadyStateCopyWithImpl<_OtaReadyState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaReadyStateImplCopyWith<_$OtaReadyStateImpl> get copyWith =>
+      __$$OtaReadyStateImplCopyWithImpl<_$OtaReadyStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -398,12 +359,12 @@ class _$_OtaReadyState implements _OtaReadyState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return ready?.call(info);
   }
@@ -441,12 +402,12 @@ class _$_OtaReadyState implements _OtaReadyState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return ready?.call(this);
   }
@@ -470,42 +431,43 @@ class _$_OtaReadyState implements _OtaReadyState {
 }
 
 abstract class _OtaReadyState implements OtaState {
-  const factory _OtaReadyState({required OTAInfo info}) = _$_OtaReadyState;
+  const factory _OtaReadyState({required final OTAInfo info}) =
+      _$OtaReadyStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaReadyStateCopyWith<_OtaReadyState> get copyWith =>
+  _$$OtaReadyStateImplCopyWith<_$OtaReadyStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$OtaProgressStateCopyWith<$Res>
+abstract class _$$OtaProgressStateImplCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory _$OtaProgressStateCopyWith(
-          _OtaProgressState value, $Res Function(_OtaProgressState) then) =
-      __$OtaProgressStateCopyWithImpl<$Res>;
+  factory _$$OtaProgressStateImplCopyWith(_$OtaProgressStateImpl value,
+          $Res Function(_$OtaProgressStateImpl) then) =
+      __$$OtaProgressStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaProgressStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaProgressStateCopyWith<$Res> {
-  __$OtaProgressStateCopyWithImpl(
-      _OtaProgressState _value, $Res Function(_OtaProgressState) _then)
-      : super(_value, (v) => _then(v as _OtaProgressState));
+class __$$OtaProgressStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaProgressStateImpl>
+    implements _$$OtaProgressStateImplCopyWith<$Res> {
+  __$$OtaProgressStateImplCopyWithImpl(_$OtaProgressStateImpl _value,
+      $Res Function(_$OtaProgressStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaProgressState get _value => super._value as _OtaProgressState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaProgressState(
-      info: info == freezed
+    return _then(_$OtaProgressStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -515,8 +477,8 @@ class __$OtaProgressStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaProgressState implements _OtaProgressState {
-  const _$_OtaProgressState({required this.info});
+class _$OtaProgressStateImpl implements _OtaProgressState {
+  const _$OtaProgressStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -530,18 +492,19 @@ class _$_OtaProgressState implements _OtaProgressState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaProgressState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaProgressStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaProgressStateCopyWith<_OtaProgressState> get copyWith =>
-      __$OtaProgressStateCopyWithImpl<_OtaProgressState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaProgressStateImplCopyWith<_$OtaProgressStateImpl> get copyWith =>
+      __$$OtaProgressStateImplCopyWithImpl<_$OtaProgressStateImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -559,12 +522,12 @@ class _$_OtaProgressState implements _OtaProgressState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return progress?.call(info);
   }
@@ -602,12 +565,12 @@ class _$_OtaProgressState implements _OtaProgressState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return progress?.call(this);
   }
@@ -631,43 +594,43 @@ class _$_OtaProgressState implements _OtaProgressState {
 }
 
 abstract class _OtaProgressState implements OtaState {
-  const factory _OtaProgressState({required OTAInfo info}) =
-      _$_OtaProgressState;
+  const factory _OtaProgressState({required final OTAInfo info}) =
+      _$OtaProgressStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaProgressStateCopyWith<_OtaProgressState> get copyWith =>
+  _$$OtaProgressStateImplCopyWith<_$OtaProgressStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$OtaSuccessStateCopyWith<$Res>
+abstract class _$$OtaSuccessStateImplCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory _$OtaSuccessStateCopyWith(
-          _OtaSuccessState value, $Res Function(_OtaSuccessState) then) =
-      __$OtaSuccessStateCopyWithImpl<$Res>;
+  factory _$$OtaSuccessStateImplCopyWith(_$OtaSuccessStateImpl value,
+          $Res Function(_$OtaSuccessStateImpl) then) =
+      __$$OtaSuccessStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaSuccessStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaSuccessStateCopyWith<$Res> {
-  __$OtaSuccessStateCopyWithImpl(
-      _OtaSuccessState _value, $Res Function(_OtaSuccessState) _then)
-      : super(_value, (v) => _then(v as _OtaSuccessState));
+class __$$OtaSuccessStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaSuccessStateImpl>
+    implements _$$OtaSuccessStateImplCopyWith<$Res> {
+  __$$OtaSuccessStateImplCopyWithImpl(
+      _$OtaSuccessStateImpl _value, $Res Function(_$OtaSuccessStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaSuccessState get _value => super._value as _OtaSuccessState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaSuccessState(
-      info: info == freezed
+    return _then(_$OtaSuccessStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -677,8 +640,8 @@ class __$OtaSuccessStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaSuccessState implements _OtaSuccessState {
-  const _$_OtaSuccessState({required this.info});
+class _$OtaSuccessStateImpl implements _OtaSuccessState {
+  const _$OtaSuccessStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -692,18 +655,19 @@ class _$_OtaSuccessState implements _OtaSuccessState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaSuccessState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaSuccessStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaSuccessStateCopyWith<_OtaSuccessState> get copyWith =>
-      __$OtaSuccessStateCopyWithImpl<_OtaSuccessState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaSuccessStateImplCopyWith<_$OtaSuccessStateImpl> get copyWith =>
+      __$$OtaSuccessStateImplCopyWithImpl<_$OtaSuccessStateImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -721,12 +685,12 @@ class _$_OtaSuccessState implements _OtaSuccessState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return success?.call(info);
   }
@@ -764,12 +728,12 @@ class _$_OtaSuccessState implements _OtaSuccessState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return success?.call(this);
   }
@@ -793,42 +757,43 @@ class _$_OtaSuccessState implements _OtaSuccessState {
 }
 
 abstract class _OtaSuccessState implements OtaState {
-  const factory _OtaSuccessState({required OTAInfo info}) = _$_OtaSuccessState;
+  const factory _OtaSuccessState({required final OTAInfo info}) =
+      _$OtaSuccessStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaSuccessStateCopyWith<_OtaSuccessState> get copyWith =>
+  _$$OtaSuccessStateImplCopyWith<_$OtaSuccessStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$OtaFailureStateCopyWith<$Res>
+abstract class _$$OtaFailureStateImplCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory _$OtaFailureStateCopyWith(
-          _OtaFailureState value, $Res Function(_OtaFailureState) then) =
-      __$OtaFailureStateCopyWithImpl<$Res>;
+  factory _$$OtaFailureStateImplCopyWith(_$OtaFailureStateImpl value,
+          $Res Function(_$OtaFailureStateImpl) then) =
+      __$$OtaFailureStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaFailureStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaFailureStateCopyWith<$Res> {
-  __$OtaFailureStateCopyWithImpl(
-      _OtaFailureState _value, $Res Function(_OtaFailureState) _then)
-      : super(_value, (v) => _then(v as _OtaFailureState));
+class __$$OtaFailureStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaFailureStateImpl>
+    implements _$$OtaFailureStateImplCopyWith<$Res> {
+  __$$OtaFailureStateImplCopyWithImpl(
+      _$OtaFailureStateImpl _value, $Res Function(_$OtaFailureStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaFailureState get _value => super._value as _OtaFailureState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaFailureState(
-      info: info == freezed
+    return _then(_$OtaFailureStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -838,8 +803,8 @@ class __$OtaFailureStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaFailureState implements _OtaFailureState {
-  const _$_OtaFailureState({required this.info});
+class _$OtaFailureStateImpl implements _OtaFailureState {
+  const _$OtaFailureStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -853,18 +818,19 @@ class _$_OtaFailureState implements _OtaFailureState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaFailureState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaFailureStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaFailureStateCopyWith<_OtaFailureState> get copyWith =>
-      __$OtaFailureStateCopyWithImpl<_OtaFailureState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaFailureStateImplCopyWith<_$OtaFailureStateImpl> get copyWith =>
+      __$$OtaFailureStateImplCopyWithImpl<_$OtaFailureStateImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -882,12 +848,12 @@ class _$_OtaFailureState implements _OtaFailureState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return failure?.call(info);
   }
@@ -925,12 +891,12 @@ class _$_OtaFailureState implements _OtaFailureState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return failure?.call(this);
   }
@@ -954,41 +920,43 @@ class _$_OtaFailureState implements _OtaFailureState {
 }
 
 abstract class _OtaFailureState implements OtaState {
-  const factory _OtaFailureState({required OTAInfo info}) = _$_OtaFailureState;
+  const factory _OtaFailureState({required final OTAInfo info}) =
+      _$OtaFailureStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaFailureStateCopyWith<_OtaFailureState> get copyWith =>
+  _$$OtaFailureStateImplCopyWith<_$OtaFailureStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$OtaExitStateCopyWith<$Res> implements $OtaStateCopyWith<$Res> {
-  factory _$OtaExitStateCopyWith(
-          _OtaExitState value, $Res Function(_OtaExitState) then) =
-      __$OtaExitStateCopyWithImpl<$Res>;
+abstract class _$$OtaExitStateImplCopyWith<$Res>
+    implements $OtaStateCopyWith<$Res> {
+  factory _$$OtaExitStateImplCopyWith(
+          _$OtaExitStateImpl value, $Res Function(_$OtaExitStateImpl) then) =
+      __$$OtaExitStateImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class __$OtaExitStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
-    implements _$OtaExitStateCopyWith<$Res> {
-  __$OtaExitStateCopyWithImpl(
-      _OtaExitState _value, $Res Function(_OtaExitState) _then)
-      : super(_value, (v) => _then(v as _OtaExitState));
+class __$$OtaExitStateImplCopyWithImpl<$Res>
+    extends _$OtaStateCopyWithImpl<$Res, _$OtaExitStateImpl>
+    implements _$$OtaExitStateImplCopyWith<$Res> {
+  __$$OtaExitStateImplCopyWithImpl(
+      _$OtaExitStateImpl _value, $Res Function(_$OtaExitStateImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _OtaExitState get _value => super._value as _OtaExitState;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(_OtaExitState(
-      info: info == freezed
+    return _then(_$OtaExitStateImpl(
+      info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -998,8 +966,8 @@ class __$OtaExitStateCopyWithImpl<$Res> extends _$OtaStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_OtaExitState implements _OtaExitState {
-  const _$_OtaExitState({required this.info});
+class _$OtaExitStateImpl implements _OtaExitState {
+  const _$OtaExitStateImpl({required this.info});
 
   @override
   final OTAInfo info;
@@ -1013,18 +981,18 @@ class _$_OtaExitState implements _OtaExitState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OtaExitState &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaExitStateImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  _$OtaExitStateCopyWith<_OtaExitState> get copyWith =>
-      __$OtaExitStateCopyWithImpl<_OtaExitState>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaExitStateImplCopyWith<_$OtaExitStateImpl> get copyWith =>
+      __$$OtaExitStateImplCopyWithImpl<_$OtaExitStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1042,12 +1010,12 @@ class _$_OtaExitState implements _OtaExitState {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(OTAInfo info)? initial,
-    TResult Function(OTAInfo info)? ready,
-    TResult Function(OTAInfo info)? progress,
-    TResult Function(OTAInfo info)? success,
-    TResult Function(OTAInfo info)? failure,
-    TResult Function(OTAInfo info)? exit,
+    TResult? Function(OTAInfo info)? initial,
+    TResult? Function(OTAInfo info)? ready,
+    TResult? Function(OTAInfo info)? progress,
+    TResult? Function(OTAInfo info)? success,
+    TResult? Function(OTAInfo info)? failure,
+    TResult? Function(OTAInfo info)? exit,
   }) {
     return exit?.call(info);
   }
@@ -1085,12 +1053,12 @@ class _$_OtaExitState implements _OtaExitState {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_OtaInitialState value)? initial,
-    TResult Function(_OtaReadyState value)? ready,
-    TResult Function(_OtaProgressState value)? progress,
-    TResult Function(_OtaSuccessState value)? success,
-    TResult Function(_OtaFailureState value)? failure,
-    TResult Function(_OtaExitState value)? exit,
+    TResult? Function(_OtaInitialState value)? initial,
+    TResult? Function(_OtaReadyState value)? ready,
+    TResult? Function(_OtaProgressState value)? progress,
+    TResult? Function(_OtaSuccessState value)? success,
+    TResult? Function(_OtaFailureState value)? failure,
+    TResult? Function(_OtaExitState value)? exit,
   }) {
     return exit?.call(this);
   }
@@ -1114,12 +1082,13 @@ class _$_OtaExitState implements _OtaExitState {
 }
 
 abstract class _OtaExitState implements OtaState {
-  const factory _OtaExitState({required OTAInfo info}) = _$_OtaExitState;
+  const factory _OtaExitState({required final OTAInfo info}) =
+      _$OtaExitStateImpl;
 
   @override
   OTAInfo get info;
   @override
   @JsonKey(ignore: true)
-  _$OtaExitStateCopyWith<_OtaExitState> get copyWith =>
+  _$$OtaExitStateImplCopyWith<_$OtaExitStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

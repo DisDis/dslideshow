@@ -85,13 +85,13 @@ class _$AreYouReadyCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -129,17 +129,17 @@ class _$PushButtonCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'button':
           result.button = serializers.deserialize(value,
-              specifiedType: const FullType(ButtonType)) as ButtonType;
+              specifiedType: const FullType(ButtonType))! as ButtonType;
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -178,21 +178,21 @@ class _$LEDControlCommandSerializer
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'led':
           result.led = serializers.deserialize(value,
-              specifiedType: const FullType(LEDType)) as LEDType;
+              specifiedType: const FullType(LEDType))! as LEDType;
           break;
         case 'value':
           result.value = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool))! as bool;
           break;
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
       }
     }
@@ -241,10 +241,10 @@ class _$AreYouReadyCommand extends AreYouReadyCommand {
 
   factory _$AreYouReadyCommand(
           [void Function(AreYouReadyCommandBuilder)? updates]) =>
-      (new AreYouReadyCommandBuilder()..update(updates)).build();
+      (new AreYouReadyCommandBuilder()..update(updates))._build();
 
   _$AreYouReadyCommand._({required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'AreYouReadyCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(id, r'AreYouReadyCommand', 'id');
   }
 
   @override
@@ -264,12 +264,15 @@ class _$AreYouReadyCommand extends AreYouReadyCommand {
 
   @override
   int get hashCode {
-    return $jf($jc(0, id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AreYouReadyCommand')..add('id', id))
+    return (newBuiltValueToStringHelper(r'AreYouReadyCommand')..add('id', id))
         .toString();
   }
 }
@@ -307,11 +310,13 @@ class AreYouReadyCommandBuilder
   }
 
   @override
-  _$AreYouReadyCommand build() {
+  AreYouReadyCommand build() => _build();
+
+  _$AreYouReadyCommand _build() {
     final _$result = _$v ??
         new _$AreYouReadyCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'AreYouReadyCommand', 'id'));
+                id, r'AreYouReadyCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -325,12 +330,12 @@ class _$PushButtonCommand extends PushButtonCommand {
 
   factory _$PushButtonCommand(
           [void Function(PushButtonCommandBuilder)? updates]) =>
-      (new PushButtonCommandBuilder()..update(updates)).build();
+      (new PushButtonCommandBuilder()..update(updates))._build();
 
   _$PushButtonCommand._({required this.button, required this.id}) : super._() {
     BuiltValueNullFieldError.checkNotNull(
-        button, 'PushButtonCommand', 'button');
-    BuiltValueNullFieldError.checkNotNull(id, 'PushButtonCommand', 'id');
+        button, r'PushButtonCommand', 'button');
+    BuiltValueNullFieldError.checkNotNull(id, r'PushButtonCommand', 'id');
   }
 
   @override
@@ -351,12 +356,16 @@ class _$PushButtonCommand extends PushButtonCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, button.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, button.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('PushButtonCommand')
+    return (newBuiltValueToStringHelper(r'PushButtonCommand')
           ..add('button', button)
           ..add('id', id))
         .toString();
@@ -401,13 +410,15 @@ class PushButtonCommandBuilder
   }
 
   @override
-  _$PushButtonCommand build() {
+  PushButtonCommand build() => _build();
+
+  _$PushButtonCommand _build() {
     final _$result = _$v ??
         new _$PushButtonCommand._(
             button: BuiltValueNullFieldError.checkNotNull(
-                button, 'PushButtonCommand', 'button'),
+                button, r'PushButtonCommand', 'button'),
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'PushButtonCommand', 'id'));
+                id, r'PushButtonCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -423,14 +434,14 @@ class _$LEDControlCommand extends LEDControlCommand {
 
   factory _$LEDControlCommand(
           [void Function(LEDControlCommandBuilder)? updates]) =>
-      (new LEDControlCommandBuilder()..update(updates)).build();
+      (new LEDControlCommandBuilder()..update(updates))._build();
 
   _$LEDControlCommand._(
       {required this.led, required this.value, required this.id})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(led, 'LEDControlCommand', 'led');
-    BuiltValueNullFieldError.checkNotNull(value, 'LEDControlCommand', 'value');
-    BuiltValueNullFieldError.checkNotNull(id, 'LEDControlCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(led, r'LEDControlCommand', 'led');
+    BuiltValueNullFieldError.checkNotNull(value, r'LEDControlCommand', 'value');
+    BuiltValueNullFieldError.checkNotNull(id, r'LEDControlCommand', 'id');
   }
 
   @override
@@ -452,12 +463,17 @@ class _$LEDControlCommand extends LEDControlCommand {
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, led.hashCode), value.hashCode), id.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, led.hashCode);
+    _$hash = $jc(_$hash, value.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('LEDControlCommand')
+    return (newBuiltValueToStringHelper(r'LEDControlCommand')
           ..add('led', led)
           ..add('value', value)
           ..add('id', id))
@@ -508,18 +524,20 @@ class LEDControlCommandBuilder
   }
 
   @override
-  _$LEDControlCommand build() {
+  LEDControlCommand build() => _build();
+
+  _$LEDControlCommand _build() {
     final _$result = _$v ??
         new _$LEDControlCommand._(
             led: BuiltValueNullFieldError.checkNotNull(
-                led, 'LEDControlCommand', 'led'),
+                led, r'LEDControlCommand', 'led'),
             value: BuiltValueNullFieldError.checkNotNull(
-                value, 'LEDControlCommand', 'value'),
+                value, r'LEDControlCommand', 'value'),
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'LEDControlCommand', 'id'));
+                id, r'LEDControlCommand', 'id'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_event.dart';
 
@@ -12,37 +12,7 @@ part of 'ota_event.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$OtaEventTearOff {
-  const _$OtaEventTearOff();
-
-  OtaInitializationEvent initialization() {
-    return const OtaInitializationEvent();
-  }
-
-  OtaUpdateInfoEvent updateInfo(OTAInfo info) {
-    return OtaUpdateInfoEvent(
-      info,
-    );
-  }
-
-  OtaReadyEvent ready() {
-    return const OtaReadyEvent();
-  }
-
-  OtaExitEvent exit() {
-    return const OtaExitEvent();
-  }
-
-  OtaTerminalUpdateEvent terminalUpdate() {
-    return const OtaTerminalUpdateEvent();
-  }
-}
-
-/// @nodoc
-const $OtaEvent = _$OtaEventTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$OtaEvent {
@@ -57,11 +27,11 @@ mixin _$OtaEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -85,11 +55,11 @@ mixin _$OtaEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -107,41 +77,42 @@ mixin _$OtaEvent {
 /// @nodoc
 abstract class $OtaEventCopyWith<$Res> {
   factory $OtaEventCopyWith(OtaEvent value, $Res Function(OtaEvent) then) =
-      _$OtaEventCopyWithImpl<$Res>;
+      _$OtaEventCopyWithImpl<$Res, OtaEvent>;
 }
 
 /// @nodoc
-class _$OtaEventCopyWithImpl<$Res> implements $OtaEventCopyWith<$Res> {
+class _$OtaEventCopyWithImpl<$Res, $Val extends OtaEvent>
+    implements $OtaEventCopyWith<$Res> {
   _$OtaEventCopyWithImpl(this._value, this._then);
 
-  final OtaEvent _value;
   // ignore: unused_field
-  final $Res Function(OtaEvent) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 }
 
 /// @nodoc
-abstract class $OtaInitializationEventCopyWith<$Res> {
-  factory $OtaInitializationEventCopyWith(OtaInitializationEvent value,
-          $Res Function(OtaInitializationEvent) then) =
-      _$OtaInitializationEventCopyWithImpl<$Res>;
+abstract class _$$OtaInitializationEventImplCopyWith<$Res> {
+  factory _$$OtaInitializationEventImplCopyWith(
+          _$OtaInitializationEventImpl value,
+          $Res Function(_$OtaInitializationEventImpl) then) =
+      __$$OtaInitializationEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$OtaInitializationEventCopyWithImpl<$Res>
-    extends _$OtaEventCopyWithImpl<$Res>
-    implements $OtaInitializationEventCopyWith<$Res> {
-  _$OtaInitializationEventCopyWithImpl(OtaInitializationEvent _value,
-      $Res Function(OtaInitializationEvent) _then)
-      : super(_value, (v) => _then(v as OtaInitializationEvent));
-
-  @override
-  OtaInitializationEvent get _value => super._value as OtaInitializationEvent;
+class __$$OtaInitializationEventImplCopyWithImpl<$Res>
+    extends _$OtaEventCopyWithImpl<$Res, _$OtaInitializationEventImpl>
+    implements _$$OtaInitializationEventImplCopyWith<$Res> {
+  __$$OtaInitializationEventImplCopyWithImpl(
+      _$OtaInitializationEventImpl _value,
+      $Res Function(_$OtaInitializationEventImpl) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$OtaInitializationEvent implements OtaInitializationEvent {
-  const _$OtaInitializationEvent();
+class _$OtaInitializationEventImpl implements OtaInitializationEvent {
+  const _$OtaInitializationEventImpl();
 
   @override
   String toString() {
@@ -151,7 +122,8 @@ class _$OtaInitializationEvent implements OtaInitializationEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is OtaInitializationEvent);
+        (other.runtimeType == runtimeType &&
+            other is _$OtaInitializationEventImpl);
   }
 
   @override
@@ -172,11 +144,11 @@ class _$OtaInitializationEvent implements OtaInitializationEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) {
     return initialization?.call();
   }
@@ -212,11 +184,11 @@ class _$OtaInitializationEvent implements OtaInitializationEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) {
     return initialization?.call(this);
   }
@@ -239,34 +211,33 @@ class _$OtaInitializationEvent implements OtaInitializationEvent {
 }
 
 abstract class OtaInitializationEvent implements OtaEvent {
-  const factory OtaInitializationEvent() = _$OtaInitializationEvent;
+  const factory OtaInitializationEvent() = _$OtaInitializationEventImpl;
 }
 
 /// @nodoc
-abstract class $OtaUpdateInfoEventCopyWith<$Res> {
-  factory $OtaUpdateInfoEventCopyWith(
-          OtaUpdateInfoEvent value, $Res Function(OtaUpdateInfoEvent) then) =
-      _$OtaUpdateInfoEventCopyWithImpl<$Res>;
+abstract class _$$OtaUpdateInfoEventImplCopyWith<$Res> {
+  factory _$$OtaUpdateInfoEventImplCopyWith(_$OtaUpdateInfoEventImpl value,
+          $Res Function(_$OtaUpdateInfoEventImpl) then) =
+      __$$OtaUpdateInfoEventImplCopyWithImpl<$Res>;
+  @useResult
   $Res call({OTAInfo info});
 }
 
 /// @nodoc
-class _$OtaUpdateInfoEventCopyWithImpl<$Res>
-    extends _$OtaEventCopyWithImpl<$Res>
-    implements $OtaUpdateInfoEventCopyWith<$Res> {
-  _$OtaUpdateInfoEventCopyWithImpl(
-      OtaUpdateInfoEvent _value, $Res Function(OtaUpdateInfoEvent) _then)
-      : super(_value, (v) => _then(v as OtaUpdateInfoEvent));
+class __$$OtaUpdateInfoEventImplCopyWithImpl<$Res>
+    extends _$OtaEventCopyWithImpl<$Res, _$OtaUpdateInfoEventImpl>
+    implements _$$OtaUpdateInfoEventImplCopyWith<$Res> {
+  __$$OtaUpdateInfoEventImplCopyWithImpl(_$OtaUpdateInfoEventImpl _value,
+      $Res Function(_$OtaUpdateInfoEventImpl) _then)
+      : super(_value, _then);
 
-  @override
-  OtaUpdateInfoEvent get _value => super._value as OtaUpdateInfoEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? info = freezed,
+    Object? info = null,
   }) {
-    return _then(OtaUpdateInfoEvent(
-      info == freezed
+    return _then(_$OtaUpdateInfoEventImpl(
+      null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
@@ -276,8 +247,8 @@ class _$OtaUpdateInfoEventCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$OtaUpdateInfoEvent implements OtaUpdateInfoEvent {
-  const _$OtaUpdateInfoEvent(this.info);
+class _$OtaUpdateInfoEventImpl implements OtaUpdateInfoEvent {
+  const _$OtaUpdateInfoEventImpl(this.info);
 
   @override
   final OTAInfo info;
@@ -291,18 +262,19 @@ class _$OtaUpdateInfoEvent implements OtaUpdateInfoEvent {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is OtaUpdateInfoEvent &&
-            const DeepCollectionEquality().equals(other.info, info));
+            other is _$OtaUpdateInfoEventImpl &&
+            (identical(other.info, info) || other.info == info));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(info));
+  int get hashCode => Object.hash(runtimeType, info);
 
   @JsonKey(ignore: true)
   @override
-  $OtaUpdateInfoEventCopyWith<OtaUpdateInfoEvent> get copyWith =>
-      _$OtaUpdateInfoEventCopyWithImpl<OtaUpdateInfoEvent>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$OtaUpdateInfoEventImplCopyWith<_$OtaUpdateInfoEventImpl> get copyWith =>
+      __$$OtaUpdateInfoEventImplCopyWithImpl<_$OtaUpdateInfoEventImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -319,11 +291,11 @@ class _$OtaUpdateInfoEvent implements OtaUpdateInfoEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) {
     return updateInfo?.call(info);
   }
@@ -359,11 +331,11 @@ class _$OtaUpdateInfoEvent implements OtaUpdateInfoEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) {
     return updateInfo?.call(this);
   }
@@ -386,36 +358,35 @@ class _$OtaUpdateInfoEvent implements OtaUpdateInfoEvent {
 }
 
 abstract class OtaUpdateInfoEvent implements OtaEvent {
-  const factory OtaUpdateInfoEvent(OTAInfo info) = _$OtaUpdateInfoEvent;
+  const factory OtaUpdateInfoEvent(final OTAInfo info) =
+      _$OtaUpdateInfoEventImpl;
 
   OTAInfo get info;
   @JsonKey(ignore: true)
-  $OtaUpdateInfoEventCopyWith<OtaUpdateInfoEvent> get copyWith =>
+  _$$OtaUpdateInfoEventImplCopyWith<_$OtaUpdateInfoEventImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $OtaReadyEventCopyWith<$Res> {
-  factory $OtaReadyEventCopyWith(
-          OtaReadyEvent value, $Res Function(OtaReadyEvent) then) =
-      _$OtaReadyEventCopyWithImpl<$Res>;
+abstract class _$$OtaReadyEventImplCopyWith<$Res> {
+  factory _$$OtaReadyEventImplCopyWith(
+          _$OtaReadyEventImpl value, $Res Function(_$OtaReadyEventImpl) then) =
+      __$$OtaReadyEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$OtaReadyEventCopyWithImpl<$Res> extends _$OtaEventCopyWithImpl<$Res>
-    implements $OtaReadyEventCopyWith<$Res> {
-  _$OtaReadyEventCopyWithImpl(
-      OtaReadyEvent _value, $Res Function(OtaReadyEvent) _then)
-      : super(_value, (v) => _then(v as OtaReadyEvent));
-
-  @override
-  OtaReadyEvent get _value => super._value as OtaReadyEvent;
+class __$$OtaReadyEventImplCopyWithImpl<$Res>
+    extends _$OtaEventCopyWithImpl<$Res, _$OtaReadyEventImpl>
+    implements _$$OtaReadyEventImplCopyWith<$Res> {
+  __$$OtaReadyEventImplCopyWithImpl(
+      _$OtaReadyEventImpl _value, $Res Function(_$OtaReadyEventImpl) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$OtaReadyEvent implements OtaReadyEvent {
-  const _$OtaReadyEvent();
+class _$OtaReadyEventImpl implements OtaReadyEvent {
+  const _$OtaReadyEventImpl();
 
   @override
   String toString() {
@@ -425,7 +396,7 @@ class _$OtaReadyEvent implements OtaReadyEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is OtaReadyEvent);
+        (other.runtimeType == runtimeType && other is _$OtaReadyEventImpl);
   }
 
   @override
@@ -446,11 +417,11 @@ class _$OtaReadyEvent implements OtaReadyEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) {
     return ready?.call();
   }
@@ -486,11 +457,11 @@ class _$OtaReadyEvent implements OtaReadyEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) {
     return ready?.call(this);
   }
@@ -513,31 +484,29 @@ class _$OtaReadyEvent implements OtaReadyEvent {
 }
 
 abstract class OtaReadyEvent implements OtaEvent {
-  const factory OtaReadyEvent() = _$OtaReadyEvent;
+  const factory OtaReadyEvent() = _$OtaReadyEventImpl;
 }
 
 /// @nodoc
-abstract class $OtaExitEventCopyWith<$Res> {
-  factory $OtaExitEventCopyWith(
-          OtaExitEvent value, $Res Function(OtaExitEvent) then) =
-      _$OtaExitEventCopyWithImpl<$Res>;
+abstract class _$$OtaExitEventImplCopyWith<$Res> {
+  factory _$$OtaExitEventImplCopyWith(
+          _$OtaExitEventImpl value, $Res Function(_$OtaExitEventImpl) then) =
+      __$$OtaExitEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$OtaExitEventCopyWithImpl<$Res> extends _$OtaEventCopyWithImpl<$Res>
-    implements $OtaExitEventCopyWith<$Res> {
-  _$OtaExitEventCopyWithImpl(
-      OtaExitEvent _value, $Res Function(OtaExitEvent) _then)
-      : super(_value, (v) => _then(v as OtaExitEvent));
-
-  @override
-  OtaExitEvent get _value => super._value as OtaExitEvent;
+class __$$OtaExitEventImplCopyWithImpl<$Res>
+    extends _$OtaEventCopyWithImpl<$Res, _$OtaExitEventImpl>
+    implements _$$OtaExitEventImplCopyWith<$Res> {
+  __$$OtaExitEventImplCopyWithImpl(
+      _$OtaExitEventImpl _value, $Res Function(_$OtaExitEventImpl) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$OtaExitEvent implements OtaExitEvent {
-  const _$OtaExitEvent();
+class _$OtaExitEventImpl implements OtaExitEvent {
+  const _$OtaExitEventImpl();
 
   @override
   String toString() {
@@ -547,7 +516,7 @@ class _$OtaExitEvent implements OtaExitEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is OtaExitEvent);
+        (other.runtimeType == runtimeType && other is _$OtaExitEventImpl);
   }
 
   @override
@@ -568,11 +537,11 @@ class _$OtaExitEvent implements OtaExitEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) {
     return exit?.call();
   }
@@ -608,11 +577,11 @@ class _$OtaExitEvent implements OtaExitEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) {
     return exit?.call(this);
   }
@@ -635,32 +604,31 @@ class _$OtaExitEvent implements OtaExitEvent {
 }
 
 abstract class OtaExitEvent implements OtaEvent {
-  const factory OtaExitEvent() = _$OtaExitEvent;
+  const factory OtaExitEvent() = _$OtaExitEventImpl;
 }
 
 /// @nodoc
-abstract class $OtaTerminalUpdateEventCopyWith<$Res> {
-  factory $OtaTerminalUpdateEventCopyWith(OtaTerminalUpdateEvent value,
-          $Res Function(OtaTerminalUpdateEvent) then) =
-      _$OtaTerminalUpdateEventCopyWithImpl<$Res>;
+abstract class _$$OtaTerminalUpdateEventImplCopyWith<$Res> {
+  factory _$$OtaTerminalUpdateEventImplCopyWith(
+          _$OtaTerminalUpdateEventImpl value,
+          $Res Function(_$OtaTerminalUpdateEventImpl) then) =
+      __$$OtaTerminalUpdateEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$OtaTerminalUpdateEventCopyWithImpl<$Res>
-    extends _$OtaEventCopyWithImpl<$Res>
-    implements $OtaTerminalUpdateEventCopyWith<$Res> {
-  _$OtaTerminalUpdateEventCopyWithImpl(OtaTerminalUpdateEvent _value,
-      $Res Function(OtaTerminalUpdateEvent) _then)
-      : super(_value, (v) => _then(v as OtaTerminalUpdateEvent));
-
-  @override
-  OtaTerminalUpdateEvent get _value => super._value as OtaTerminalUpdateEvent;
+class __$$OtaTerminalUpdateEventImplCopyWithImpl<$Res>
+    extends _$OtaEventCopyWithImpl<$Res, _$OtaTerminalUpdateEventImpl>
+    implements _$$OtaTerminalUpdateEventImplCopyWith<$Res> {
+  __$$OtaTerminalUpdateEventImplCopyWithImpl(
+      _$OtaTerminalUpdateEventImpl _value,
+      $Res Function(_$OtaTerminalUpdateEventImpl) _then)
+      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$OtaTerminalUpdateEvent implements OtaTerminalUpdateEvent {
-  const _$OtaTerminalUpdateEvent();
+class _$OtaTerminalUpdateEventImpl implements OtaTerminalUpdateEvent {
+  const _$OtaTerminalUpdateEventImpl();
 
   @override
   String toString() {
@@ -670,7 +638,8 @@ class _$OtaTerminalUpdateEvent implements OtaTerminalUpdateEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is OtaTerminalUpdateEvent);
+        (other.runtimeType == runtimeType &&
+            other is _$OtaTerminalUpdateEventImpl);
   }
 
   @override
@@ -691,11 +660,11 @@ class _$OtaTerminalUpdateEvent implements OtaTerminalUpdateEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? initialization,
-    TResult Function(OTAInfo info)? updateInfo,
-    TResult Function()? ready,
-    TResult Function()? exit,
-    TResult Function()? terminalUpdate,
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? ready,
+    TResult? Function()? exit,
+    TResult? Function()? terminalUpdate,
   }) {
     return terminalUpdate?.call();
   }
@@ -731,11 +700,11 @@ class _$OtaTerminalUpdateEvent implements OtaTerminalUpdateEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(OtaInitializationEvent value)? initialization,
-    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
-    TResult Function(OtaReadyEvent value)? ready,
-    TResult Function(OtaExitEvent value)? exit,
-    TResult Function(OtaTerminalUpdateEvent value)? terminalUpdate,
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaReadyEvent value)? ready,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaTerminalUpdateEvent value)? terminalUpdate,
   }) {
     return terminalUpdate?.call(this);
   }
@@ -758,5 +727,5 @@ class _$OtaTerminalUpdateEvent implements OtaTerminalUpdateEvent {
 }
 
 abstract class OtaTerminalUpdateEvent implements OtaEvent {
-  const factory OtaTerminalUpdateEvent() = _$OtaTerminalUpdateEvent;
+  const factory OtaTerminalUpdateEvent() = _$OtaTerminalUpdateEventImpl;
 }
