@@ -26,8 +26,8 @@ class HardwareService implements RpcService {
   final MqttService _mqttService;
   final WiFiService _wifiService;
 
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService,
-      this._systemInfoService, this._webServer, this._mqttService, this._wifiService) {
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer,
+      this._mqttService, this._wifiService) {
     _init();
   }
 
@@ -91,8 +91,7 @@ class HardwareService implements RpcService {
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info(
-          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -122,6 +121,8 @@ class HardwareService implements RpcService {
         return _executeWiFiAddCommand(command as WiFiAddCommand);
       case WiFiRemoveCommand.TYPE:
         return _executeWiFiRemoveCommand(command as WiFiRemoveCommand);
+      case WiFiSaveConfigCommand.TYPE:
+        return _executeWiFiSaveConfigCommand(command as WiFiSaveConfigCommand);
       case WiFiGetStoredCommand.TYPE:
         return _executeWiFiGetStoredCommand(command as WiFiGetStoredCommand);
       case EchoCommand.TYPE:
@@ -223,6 +224,11 @@ class HardwareService implements RpcService {
 
   Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {
     _wifiService.addNetwork(command.SSID, command.psk);
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executeWiFiSaveConfigCommand(WiFiSaveConfigCommand command) async {
+    _wifiService.saveConfig();
     return EmptyResult.respond(command);
   }
 

@@ -150,7 +150,8 @@ class _$LoginStateImpl implements _LoginState {
       {this.status = FormzSubmissionStatus.initial,
       this.username = const Username.pure(defaultValue: 'admin'),
       this.password = const Password.pure(defaultValue: '123'),
-      this.connectUri = const ConnectUri.pure(),
+      this.connectUri =
+          const ConnectUri.pure(defaultValue: 'ws://192.168.50.175/ws'),
       this.isValid = false});
 
   @override

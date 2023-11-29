@@ -79,6 +79,20 @@ abstract class WiFiRemoveCommand implements RpcCommand, Built<WiFiRemoveCommand,
   WiFiRemoveCommand._();
 }
 
+abstract class WiFiSaveConfigCommand implements RpcCommand, Built<WiFiSaveConfigCommand, WiFiSaveConfigCommandBuilder> {
+  static const String TYPE = 'wifi_savecfg';
+  @override
+  String get type => TYPE;
+  @override
+  int get id;
+
+  static Serializer<WiFiSaveConfigCommand> get serializer => _$wiFiSaveConfigCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(WiFiSaveConfigCommandBuilder b) => b.id = RpcCommand.generateId();
+  factory WiFiSaveConfigCommand([void updates(WiFiSaveConfigCommandBuilder b)?]) = _$WiFiSaveConfigCommand;
+  WiFiSaveConfigCommand._();
+}
+
 abstract class WiFiAddCommand implements RpcCommand, Built<WiFiAddCommand, WiFiAddCommandBuilder> {
   static const String TYPE = 'wifi_add';
   @override

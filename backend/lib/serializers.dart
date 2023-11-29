@@ -39,6 +39,7 @@ part 'serializers.g.dart';
   WiFiAddCommand,
   WiFiGetStoredCommand,
   WiFiRemoveCommand,
+  WiFiSaveConfigCommand,
   WiFiScanCommand,
   WiFiNetworkInfo,
   WiFiScanResult,

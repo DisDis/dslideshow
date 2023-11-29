@@ -46,7 +46,7 @@ wpa_cli enable_network <id>
       final outputWPA = result.stdout.toString();
       _log.info("wpa_cli add_network -> '$outputWPA'");
       var newNetworkOutput = outputWPA.split('\n');
-      final networkId = int.parse(newNetworkOutput.last);
+      final networkId = int.parse(newNetworkOutput[1]);
       result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'ssid', '"$SSID"'], environment: {'LC_ALL': 'C'});
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli set_network $networkId ssid "$SSID" -> exitCode: ${result.exitCode}');

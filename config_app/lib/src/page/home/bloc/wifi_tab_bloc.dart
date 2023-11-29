@@ -31,6 +31,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
         await _client.send(WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
           ..SSID = event.SSID
           ..psk = event.psk)));
+        await _client.send(WSSendRpcCommand((b) => b.command = WiFiSaveConfigCommand()));
         await _updateData(emit);
       } catch (e, st) {
         _log.severe('FATAL', e, st);

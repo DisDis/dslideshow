@@ -16,6 +16,8 @@ Serializer<WiFiStoredNetworkInfo> _$wiFiStoredNetworkInfoSerializer =
     new _$WiFiStoredNetworkInfoSerializer();
 Serializer<WiFiRemoveCommand> _$wiFiRemoveCommandSerializer =
     new _$WiFiRemoveCommandSerializer();
+Serializer<WiFiSaveConfigCommand> _$wiFiSaveConfigCommandSerializer =
+    new _$WiFiSaveConfigCommandSerializer();
 Serializer<WiFiAddCommand> _$wiFiAddCommandSerializer =
     new _$WiFiAddCommandSerializer();
 Serializer<WiFiGetStoredCommand> _$wiFiGetStoredCommandSerializer =
@@ -275,6 +277,51 @@ class _$WiFiRemoveCommandSerializer
           break;
         case 'wifiId':
           result.wifiId = serializers.deserialize(value,
+              specifiedType: const FullType(int))! as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$WiFiSaveConfigCommandSerializer
+    implements StructuredSerializer<WiFiSaveConfigCommand> {
+  @override
+  final Iterable<Type> types = const [
+    WiFiSaveConfigCommand,
+    _$WiFiSaveConfigCommand
+  ];
+  @override
+  final String wireName = 'WiFiSaveConfigCommand';
+
+  @override
+  Iterable<Object?> serialize(
+      Serializers serializers, WiFiSaveConfigCommand object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
+    return result;
+  }
+
+  @override
+  WiFiSaveConfigCommand deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new WiFiSaveConfigCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current! as String;
+      iterator.moveNext();
+      final Object? value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
               specifiedType: const FullType(int))! as int;
           break;
       }
@@ -983,6 +1030,94 @@ class WiFiRemoveCommandBuilder
                 id, r'WiFiRemoveCommand', 'id'),
             wifiId: BuiltValueNullFieldError.checkNotNull(
                 wifiId, r'WiFiRemoveCommand', 'wifiId'));
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WiFiSaveConfigCommand extends WiFiSaveConfigCommand {
+  @override
+  final int id;
+
+  factory _$WiFiSaveConfigCommand(
+          [void Function(WiFiSaveConfigCommandBuilder)? updates]) =>
+      (new WiFiSaveConfigCommandBuilder()..update(updates))._build();
+
+  _$WiFiSaveConfigCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, r'WiFiSaveConfigCommand', 'id');
+  }
+
+  @override
+  WiFiSaveConfigCommand rebuild(
+          void Function(WiFiSaveConfigCommandBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WiFiSaveConfigCommandBuilder toBuilder() =>
+      new WiFiSaveConfigCommandBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WiFiSaveConfigCommand && id == other.id;
+  }
+
+  @override
+  int get hashCode {
+    var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper(r'WiFiSaveConfigCommand')
+          ..add('id', id))
+        .toString();
+  }
+}
+
+class WiFiSaveConfigCommandBuilder
+    implements Builder<WiFiSaveConfigCommand, WiFiSaveConfigCommandBuilder> {
+  _$WiFiSaveConfigCommand? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
+
+  WiFiSaveConfigCommandBuilder() {
+    WiFiSaveConfigCommand._setDefaults(this);
+  }
+
+  WiFiSaveConfigCommandBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(WiFiSaveConfigCommand other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$WiFiSaveConfigCommand;
+  }
+
+  @override
+  void update(void Function(WiFiSaveConfigCommandBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  WiFiSaveConfigCommand build() => _build();
+
+  _$WiFiSaveConfigCommand _build() {
+    final _$result = _$v ??
+        new _$WiFiSaveConfigCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, r'WiFiSaveConfigCommand', 'id'));
     replace(_$result);
     return _$result;
   }
