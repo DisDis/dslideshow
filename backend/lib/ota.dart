@@ -12,12 +12,12 @@ import 'package:logging/logging.dart';
 
 final Logger _log = new Logger('main');
 late OTAService _service;
-void serviceMain(List<SendPort> ports) async {
+void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("ota");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
-    _remoteFrontendService.connect(ports);
+    _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     // Use this static instance
     final injector = GetIt.instance;

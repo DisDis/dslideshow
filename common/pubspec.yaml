@@ -9,6 +9,7 @@ dependencies:
   built_value: ^8.8.0
   logging: ^1.0.0
   uuid: ^3.0.4
+  pool: ^1.5.1
 
 dev_dependencies:
   built_value_generator: ^8.8.0

@@ -6,52 +6,9 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/exception.dart';
 import 'package:async/async.dart';
+import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:logging/logging.dart';
-
-class Service {
-  static final _log = new Logger('Service');
-  final SendPort commanOPort;
-  final SendPort resultOPort;
-  final ReceivePort commandIPort;
-  final ReceivePort resultIPort;
-  // final messages = Map<int, Future<RpcResult>>();
-
-  // late StreamQueue<dynamic> events;
-
-  Service({required this.commandIPort, required this.commanOPort, required this.resultIPort, required this.resultOPort}) {
-    // events = StreamQueue<dynamic>(receivePort);
-  }
-
-  Future processing(final RpcService service, final Serializers serializers) async {
-    late StreamSubscription sub;
-    final result = Completer();
-    // Wait for messages from the main isolate.
-    sub = commandIPort.listen((command) async {
-      if (command == null) {
-        sub.cancel();
-        result.complete();
-        // break;
-      } else {
-        try {
-          if (command is String) {
-            RpcCommand cmd = serializers.deserialize(json.decode(command) as Object) as RpcCommand;
-            var result = await service.executeCommand(cmd);
-            var str = json.encode(serializers.serialize(result));
-            resultOPort.send(str);
-          } else {
-            RpcCommand cmd = serializers.deserialize(command) as RpcCommand;
-            var result = await service.executeCommand(cmd);
-            resultOPort.send(serializers.serialize(result));
-          }
-        } catch (e, s) {
-          _log.severe('executeCommandStr', e, s);
-          rethrow;
-        }
-      }
-    });
-    return result.future;
-  }
-}
+import 'package:pool/pool.dart';
 
 abstract class RemoteService {
   Future<RpcResult> sendStr(RpcCommand cmd);
@@ -67,8 +24,29 @@ class RemoteServiceImpl implements RemoteService {
   late Service service;
   late RemoteServiceTransport _transport;
   final Serializers serializers;
-  // StreamQueue<dynamic>? commands;
-  late StreamQueue<dynamic> results;
+  final results = <StreamQueue<dynamic>>[];
+  late Pool _pool;
+  final _freeResultStream = <bool>[];
+
+  Future<T> getFreeResultPort<T>(Future<T> Function(int portIndex, StreamQueue<dynamic> resultStream) callback) {
+    return _pool.withResource(() async {
+      var i = 0;
+      for (i = 0; i < _freeResultStream.length; i++) {
+        if (_freeResultStream[i]) {
+          break;
+        }
+      }
+      if (_freeResultStream[i]) {
+        _freeResultStream[i] = false;
+        try {
+          return await callback(i, results[i]);
+        } finally {
+          _freeResultStream[i] = true;
+        }
+      }
+      throw Exception('No free resources');
+    });
+  }
 
   RemoteServiceImpl({
     required this.serializers,
@@ -77,34 +55,49 @@ class RemoteServiceImpl implements RemoteService {
     _transport = transport ?? new DirectSpawnTransport();
   }
 
-  void connect(List<SendPort> ports) {
-    SendPort commanOPort = ports[0];
-    SendPort resultOPort = ports[1];
+  void connect(HandshakeMessage message, [int resultIPortCount = 5]) {
     final commandIPort = ReceivePort();
-    final resultIPort = ReceivePort();
+    final resultIPorts = <ReceivePort>[];
+
+    for (var i = 0; i < resultIPortCount; i++) {
+      final port = ReceivePort();
+      resultIPorts.add(port);
+      _freeResultStream.add(true);
+      results.add(StreamQueue<dynamic>(port));
+    }
+    _pool = Pool(resultIPortCount);
+
+    final SendPort commanOPort = message.commanOPort;
+    final List<SendPort> resultOPorts = message.resultOPorts;
     service = Service(
       commanOPort: commanOPort,
-      resultOPort: resultOPort,
+      resultOPorts: resultOPorts,
       commandIPort: commandIPort,
-      resultIPort: resultIPort,
+      resultIPorts: resultIPorts,
     );
-    results = StreamQueue<dynamic>(resultIPort);
-    service.resultOPort.send(
-      [service.commandIPort.sendPort, service.resultIPort.sendPort],
-    );
+    service.resultOPorts.first.send(HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap());
   }
 
-  Future<void> spawn(void entryPoint(List<SendPort> ports)) async {
+  Future<void> spawn(void entryPoint(Map<String, dynamic> handshakeMessage), [int resultIPortCount = 5]) async {
+    if (resultIPortCount <= 0) {
+      resultIPortCount = 1;
+    }
+    _pool = Pool(resultIPortCount);
     final commandIPort = ReceivePort();
-    final resultIPort = ReceivePort();
-    results = StreamQueue<dynamic>(resultIPort);
-    await Isolate.spawn(entryPoint, [commandIPort.sendPort, resultIPort.sendPort]);
-    final List<SendPort> ports = await results.next;
+    final resultIPorts = <ReceivePort>[];
+    for (var i = 0; i < resultIPortCount; i++) {
+      final port = ReceivePort();
+      resultIPorts.add(port);
+      _freeResultStream.add(true);
+      results.add(StreamQueue<dynamic>(port));
+    }
+    await Isolate.spawn(entryPoint, HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap());
+    final handshakeMessageO = HandshakeMessage.fromMap(await results.first.next);
     service = Service(
-      commanOPort: ports[0],
-      resultOPort: ports[1],
+      commanOPort: handshakeMessageO.commanOPort,
+      resultOPorts: handshakeMessageO.resultOPorts,
       commandIPort: commandIPort,
-      resultIPort: resultIPort,
+      resultIPorts: resultIPorts,
     );
   }
 
@@ -146,15 +139,17 @@ abstract class RemoteServiceTransport {
 class DirectSpawnTransport implements RemoteServiceTransport {
   @override
   Future<String> sendStr(RemoteServiceImpl service, String cmdStr) async {
-    // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    service.service.commanOPort.send(cmdStr);
-    return await (service.results.next);
+    return service.getFreeResultPort((index, result) async {
+      service.service.commanOPort.send([index, cmdStr]);
+      return await result.next;
+    });
   }
 
   @override
   Future<Object> send(RemoteServiceImpl service, Object cmd) async {
-    // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
-    service.service.commanOPort.send(cmd);
-    return await (service.results.next);
+    return service.getFreeResultPort((index, result) async {
+      service.service.commanOPort.send([index, cmd]);
+      return await result.next;
+    });
   }
 }

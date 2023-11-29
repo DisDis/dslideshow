@@ -25,12 +25,12 @@ import 'web_server.dart' as web_server;
 final Logger _log = new Logger('main');
 late HardwareService _service;
 
-void serviceMain(List<SendPort> ports) async {
+void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("hw_frame");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
-    _remoteFrontendService.connect(ports);
+    _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
     await _remoteWebServer.spawn(web_server.serviceMain);

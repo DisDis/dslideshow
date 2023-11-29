@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dslideshow_backend/config.dart';
@@ -13,12 +12,12 @@ import 'package:get_it/get_it.dart';
 
 final Logger _log = new Logger('main');
 late WebServer _webServer;
-void serviceMain(List<SendPort> ports) async {
+void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("web");
   _log.info("Run. Spawned isolate started.");
   try {
     final _remoteBackendService = new RemoteServiceImpl(serializers: serializers);
-    _remoteBackendService.connect(ports);
+    _remoteBackendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     // Use this static instance
     final injector = GetIt.instance;
