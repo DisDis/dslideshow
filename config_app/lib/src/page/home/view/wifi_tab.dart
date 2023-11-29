@@ -57,8 +57,8 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
                 Padding(
                   padding: const EdgeInsets.only(top: 32.0),
                   child: ElevatedButton(
-                    child: const Text('reload'),
                     onPressed: _load,
+                    child: const Text('reload'),
                   ),
                 ),
               ],

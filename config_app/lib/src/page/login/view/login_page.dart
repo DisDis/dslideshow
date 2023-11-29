@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => LoginPage());
+    return MaterialPageRoute<void>(builder: (_) => const LoginPage());
   }
 
   @override
@@ -21,7 +23,7 @@ class LoginPage extends StatelessWidget {
               authenticationRepository: RepositoryProvider.of<AuthenticationRepository>(context),
             )..add(const LoginConnectUriAutoChanged());
           },
-          child: LoginForm(),
+          child: const LoginForm(),
         ),
       ),
     );

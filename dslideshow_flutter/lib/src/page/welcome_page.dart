@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc/bloc.dart';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
@@ -21,8 +20,7 @@ class AnimatedLogo extends AnimatedWidget {
   final String text;
   final double size;
 
-  const AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation})
-      : super(key: key, listenable: animation);
+  const AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation}) : super(key: key, listenable: animation);
 
   // String get welcomeText {
   //   return intl.Intl.message(
@@ -41,9 +39,17 @@ class AnimatedLogo extends AnimatedWidget {
         child: Column(
           children: <Widget>[
             const Text("front: v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                )),
             const Text("back: v${ApplicationInfo.backendVersion}",
-                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                )),
             Expanded(
                 child: Center(
                     child: Text(

@@ -8,7 +8,7 @@ import 'package:config_app/src/page/home/bloc/web_tab_state.dart';
 import 'package:config_app/src/service/client_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+// import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:logging/logging.dart';
 
 class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
@@ -31,7 +31,7 @@ class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
     });
   }
 }
-
+/*
 class LoadingFormBloc extends FormBloc<String, String> {
   final text = TextFieldBloc();
 
@@ -82,4 +82,4 @@ class LoadingFormBloc extends FormBloc<String, String> {
       emitFailure();
     }
   }
-}
+}*/

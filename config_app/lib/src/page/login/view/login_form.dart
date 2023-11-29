@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 class LoginForm extends StatelessWidget {
+  const LoginForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
@@ -43,7 +45,7 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
-          //controller: state.username.pure ? TextEditingController(text: state.username.value) : null,
+          controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
           onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: 'username',
@@ -63,7 +65,7 @@ class _ConnectUriInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_connectUriInput_textField'),
-          //controller: state.connectUri.pure ? TextEditingController(text: state.connectUri.value) : null,
+          controller: state.connectUri.isPure ? TextEditingController(text: state.connectUri.value) : null,
           onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
           decoration: InputDecoration(
             labelText: 'connectUri',
@@ -83,7 +85,7 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          //controller: state.password.pure ? TextEditingController(text: state.password.value) : null,
+          controller: state.password.isPure ? TextEditingController(text: state.password.value) : null,
           onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true,
           decoration: InputDecoration(
@@ -100,18 +102,18 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
+      buildWhen: (previous, current) => (previous.status != current.status) || (previous.isValid != current.isValid),
       builder: (context, state) {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
-                child: const Text('Login'),
                 onPressed: state.isValid
                     ? () {
                         context.read<LoginBloc>().add(const LoginSubmitted());
                       }
                     : null,
+                child: const Text('Login'),
               );
       },
     );

@@ -21,8 +21,7 @@ cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
 ./build_aot.sh || error_exit "DSlideshow AOT"
 cd ../config_app
-echo "SKIP CONFIG APP !!!!!"
-#./build_web.sh || error_exit "Config app"
+./build_web.sh || error_exit "Config app"
 cd ../deb_factory
 
 #cp $SOURCE_BIN/engine-binaries/icudtl.dat $DEST/ || error_exit "copy"

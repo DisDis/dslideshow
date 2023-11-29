@@ -4,10 +4,13 @@ enum PasswordValidationError { empty }
 
 class Password extends FormzInput<String, PasswordValidationError> {
   const Password.pure({String defaultValue = ''}) : super.pure(defaultValue);
-  const Password.dirty([String value = '']) : super.dirty(value);
+  const Password.dirty([super.value = '']) : super.dirty();
 
   @override
-  PasswordValidationError? validator(String? value) {
-    return value?.isNotEmpty == true ? null : PasswordValidationError.empty;
+  PasswordValidationError? validator(String value) {
+    if (value.isEmpty) {
+      return PasswordValidationError.empty;
+    }
+    return null;
   }
 }

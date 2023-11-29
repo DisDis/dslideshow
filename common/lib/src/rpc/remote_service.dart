@@ -148,13 +148,13 @@ class DirectSpawnTransport implements RemoteServiceTransport {
   Future<String> sendStr(RemoteServiceImpl service, String cmdStr) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
     service.service.commanOPort.send(cmdStr);
-    return await (service.results!.next);
+    return await (service.results.next);
   }
 
   @override
   Future<Object> send(RemoteServiceImpl service, Object cmd) async {
     // ignore: argument_type_not_assignable, strong_mode_invalid_cast_function
     service.service.commanOPort.send(cmd);
-    return await (service.results!.next);
+    return await (service.results.next);
   }
 }

@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_event.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
 import 'package:config_app/src/service/client_service.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:logging/logging.dart';
 
 class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
+  static final _log = Logger('WifiTabBloc');
   final ClientService _client;
   WifiTabBloc({required WifiTabState initialState, required ClientService client})
       : _client = client,
@@ -22,14 +23,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     //     },
     //   );
     // });
-    on<LoadWifiTabEvent>((WifiTabEvent event, emit) async {
-      emit(UnWifiTabState());
-      try {
-        await _updateData(emit);
-      } catch (e) {
-        emit(ErrorWifiTabState(e.toString()));
-      }
-    });
+    on<LoadWifiTabEvent>(_onLoadWifi);
 
     on<AddWifiTabEvent>((AddWifiTabEvent event, emit) async {
       emit(UnWifiTabState());
@@ -83,5 +77,15 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     final storedNetworks = storedResult.networks!.toList(growable: false);
 
     emit(InWifiTabState(availableNetworks: availableNetworks, storedNetworks: storedNetworks));
+  }
+
+  Future _onLoadWifi(WifiTabEvent event, emit) async {
+    emit(UnWifiTabState());
+    try {
+      await _updateData(emit);
+    } catch (e, st) {
+      _log.severe('FATAL', e, st);
+      emit(ErrorWifiTabState(e.toString()));
+    }
   }
 }
