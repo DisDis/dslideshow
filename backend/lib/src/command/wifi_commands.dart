@@ -36,14 +36,14 @@ abstract class WiFiScanResult implements RpcResult, Built<WiFiScanResult, WiFiSc
 
 abstract class WiFiNetworkInfo implements Built<WiFiNetworkInfo, WiFiNetworkInfoBuilder> {
   String get SSID;
-  String get signal;
+  int get signal;
   String get capability;
   int get freq;
 
   @BuiltValueHook(initializeBuilder: true)
   static void _setDefaults(WiFiNetworkInfoBuilder b) => b
     ..SSID = ''
-    ..signal = ''
+    ..signal = -99
     ..capability = ''
     ..freq = -1;
 

@@ -26,17 +26,17 @@ void main() {
           equals(<WiFiNetworkInfo>[
             WiFiNetworkInfo((b) => b
               ..SSID = 'Tenda_7BF3B0'
-              ..signal = '-88.00 dBm'
+              ..signal = -88
               ..capability = 'ESS Privacy ShortSlotTime (0x0411)'
               ..freq = 2437),
             WiFiNetworkInfo((b) => b
               ..SSID = 'Jazzir_2G'
-              ..signal = '-67.00 dBm'
+              ..signal = -67
               ..capability = 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)'
               ..freq = 2437),
             WiFiNetworkInfo((b) => b
               ..SSID = 'Jazzir_5G'
-              ..signal = '-57.00 dBm'
+              ..signal = -57
               ..capability = 'ESS Privacy SpectrumMgmt RadioMeasure (0x1111)'
               ..freq = 5500)
           ]));
@@ -56,7 +56,7 @@ void main() {
           equals(<WiFiNetworkInfo>[
             WiFiNetworkInfo((b) => b
               ..SSID = 'Jazzir_2G'
-              ..signal = '-67.00 dBm'
+              ..signal = -67
               ..capability = 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)'
               ..freq = 2437)
           ]));

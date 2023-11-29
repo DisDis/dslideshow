@@ -27,10 +27,15 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
 
     on<AddWifiTabEvent>((AddWifiTabEvent event, emit) async {
       emit(UnWifiTabState());
-      await _client.send(WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
-        ..SSID = event.SSID
-        ..psk = event.psk)));
-      await _updateData(emit);
+      try {
+        await _client.send(WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
+          ..SSID = event.SSID
+          ..psk = event.psk)));
+        await _updateData(emit);
+      } catch (e, st) {
+        _log.severe('FATAL', e, st);
+        emit(ErrorWifiTabState(e.toString()));
+      }
     });
 
     on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
@@ -52,9 +57,10 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     final scanResult = (await fScan as WSRpcResult).result as WiFiScanResult;
     final storedResult = (await fStored as WSRpcResult).result as WiFiGetStoredResult;
     //FIX: Remove delay
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
     //FIX: Remove stub data
-    final availableNetworks = scanResult.networks!.isEmpty
+    final availableNetworks =
+        /*scanResult.networks!.isEmpty
         ? <WiFiNetworkInfo>[
             WiFiNetworkInfo((b) => b
               ..SSID = 'Tenda_7BF3B0'
@@ -72,7 +78,9 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
               ..capability = 'ESS Privacy SpectrumMgmt RadioMeasure (0x1111)'
               ..freq = 5500)
           ]
-        : scanResult.networks!.toList(growable: false);
+        : 
+        */
+        scanResult.networks!.toList(growable: false);
 
     final storedNetworks = storedResult.networks!.toList(growable: false);
 

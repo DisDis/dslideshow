@@ -133,8 +133,7 @@ class _$WiFiNetworkInfoSerializer
       'SSID',
       serializers.serialize(object.SSID, specifiedType: const FullType(String)),
       'signal',
-      serializers.serialize(object.signal,
-          specifiedType: const FullType(String)),
+      serializers.serialize(object.signal, specifiedType: const FullType(int)),
       'capability',
       serializers.serialize(object.capability,
           specifiedType: const FullType(String)),
@@ -163,7 +162,7 @@ class _$WiFiNetworkInfoSerializer
           break;
         case 'signal':
           result.signal = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'capability':
           result.capability = serializers.deserialize(value,
@@ -642,7 +641,7 @@ class _$WiFiNetworkInfo extends WiFiNetworkInfo {
   @override
   final String SSID;
   @override
-  final String signal;
+  final int signal;
   @override
   final String capability;
   @override
@@ -712,9 +711,9 @@ class WiFiNetworkInfoBuilder
   String? get SSID => _$this._SSID;
   set SSID(String? SSID) => _$this._SSID = SSID;
 
-  String? _signal;
-  String? get signal => _$this._signal;
-  set signal(String? signal) => _$this._signal = signal;
+  int? _signal;
+  int? get signal => _$this._signal;
+  set signal(int? signal) => _$this._signal = signal;
 
   String? _capability;
   String? get capability => _$this._capability;

@@ -43,15 +43,15 @@ wpa_cli enable_network <id>
       if (result.exitCode != 0) {
         throw Exception('wpa_cli add_network -> exitCode: ${result.exitCode}');
       }
-      var newNetworkOutput = result.stdout.toString().split('\n\n');
+      final outputWPA = result.stdout.toString();
+      _log.info("wpa_cli add_network -> '$outputWPA'");
+      var newNetworkOutput = outputWPA.split('\n');
       final networkId = int.parse(newNetworkOutput.last);
-      result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'ssid', '"$SSID"'],
-          environment: {'LC_ALL': 'C'});
+      result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'ssid', '"$SSID"'], environment: {'LC_ALL': 'C'});
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli set_network $networkId ssid "$SSID" -> exitCode: ${result.exitCode}');
       }
-      result =
-          await io.Process.run('wpa_cli', ['set_network', '$networkId', 'psk', '"$psk"'], environment: {'LC_ALL': 'C'});
+      result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'psk', '"$psk"'], environment: {'LC_ALL': 'C'});
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli set_network $networkId psk "**....**" -> exitCode: ${result.exitCode}');
       }
@@ -146,7 +146,9 @@ wpa_cli disable_network <id>
           }
           current.SSID = element.substring(tmpI + KEY_SSID.length);
         } else if ((tmpI = element.indexOf(KEY_SIGNAL)) != -1) {
-          current.signal = element.substring(tmpI + KEY_SIGNAL.length);
+          final signalStr = element.substring(tmpI + KEY_SIGNAL.length);
+          final signalInt = int.tryParse(signalStr.substring(0, signalStr.indexOf('.')));
+          current.signal = signalInt ?? -99;
         } else if ((tmpI = element.indexOf(KEY_CAPABILITY)) != -1) {
           current.capability = element.substring(tmpI + KEY_CAPABILITY.length);
         } else if ((tmpI = element.indexOf(KEY_FREQ)) != -1) {
