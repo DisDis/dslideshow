@@ -134,7 +134,7 @@ class WebService {
 """;
 
   final _activeUsers = <WebSocketUser>[];
-  FutureOr<Response> _webSocketHandler(Request request) {
+  Future<Response> _webSocketHandler(Request request) async {
     return webSocketHandler((WebSocketChannel webSocket) {
       final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
       _activeUsers.add(newUser);
@@ -191,7 +191,7 @@ class WebService {
     return Response.ok(sb.toString(), headers: {'content-type': 'text/json; charset=utf-8'});
   }
 
-  FutureOr<Response> _getImage(Request req, String code, String imageId) async {
+  Future<Response> _getImage(Request req, String code, String imageId) async {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }

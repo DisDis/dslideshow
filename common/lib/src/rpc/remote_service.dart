@@ -64,13 +64,11 @@ abstract class RemoteService {
 }
 
 class RemoteServiceImpl implements RemoteService {
-  late Service _service;
+  late Service service;
   late RemoteServiceTransport _transport;
   final Serializers serializers;
   // StreamQueue<dynamic>? commands;
-  StreamQueue<dynamic>? results;
-
-  Service get service => _service;
+  late StreamQueue<dynamic> results;
 
   RemoteServiceImpl({
     required this.serializers,
@@ -84,25 +82,25 @@ class RemoteServiceImpl implements RemoteService {
     SendPort resultOPort = ports[1];
     final commandIPort = ReceivePort();
     final resultIPort = ReceivePort();
-    _service = Service(
+    service = Service(
       commanOPort: commanOPort,
       resultOPort: resultOPort,
       commandIPort: commandIPort,
       resultIPort: resultIPort,
     );
-    _service.resultOPort.send(
-      [_service.commandIPort.sendPort, _service.resultIPort.sendPort],
+    results = StreamQueue<dynamic>(resultIPort);
+    service.resultOPort.send(
+      [service.commandIPort.sendPort, service.resultIPort.sendPort],
     );
   }
 
-  Future<void> spawn(void entryPoint(List<SendPort> messages)) async {
+  Future<void> spawn(void entryPoint(List<SendPort> ports)) async {
     final commandIPort = ReceivePort();
     final resultIPort = ReceivePort();
-    // final _commands = commands = StreamQueue<dynamic>(commandIPort);
-    final _results = results = StreamQueue<dynamic>(resultIPort);
+    results = StreamQueue<dynamic>(resultIPort);
     await Isolate.spawn(entryPoint, [commandIPort.sendPort, resultIPort.sendPort]);
-    final List<SendPort> ports = await _results.next;
-    _service = Service(
+    final List<SendPort> ports = await results.next;
+    service = Service(
       commanOPort: ports[0],
       resultOPort: ports[1],
       commandIPort: commandIPort,

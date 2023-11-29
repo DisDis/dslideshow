@@ -61,7 +61,7 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     // });
   }
 
-  FutureOr<void> _initialization(OtaEvent event, Emitter<OtaState> emit) async {
+  Future<void> _initialization(OtaEvent event, Emitter<OtaState> emit) async {
     _onOTAInfoSubscription?.cancel();
     _onOTAInfoSubscription = frontendService.onOTAInfo.listen((info) {
       add(OtaEvent.updateInfo(info));

@@ -10,7 +10,7 @@ import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
-  static final Logger _log = Logger('FlutterService');
+  static final Logger _log = Logger('FrontendService');
   late final RemoteService _backendService;
   late final RemoteService _otaService;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
@@ -41,8 +41,7 @@ class FrontendService implements RpcService {
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info(
-          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -79,22 +78,22 @@ class FrontendService implements RpcService {
       case PushButtonCommand.TYPE:
         return _executePushButtonCommand(command as PushButtonCommand);
       case ScreenTurnCommand.TYPE:
-        return Future.value(_executeScreenTurnCommand(command as ScreenTurnCommand));
+        return _executeScreenTurnCommand(command as ScreenTurnCommand);
       case EchoCommand.TYPE:
-        return Future.value(_executeEchoCommand(command as EchoCommand));
+        return _executeEchoCommand(command as EchoCommand);
       case OTAReadyCommand.TYPE:
-        return Future.value(_executeOTAReadyCommand(command as OTAReadyCommand));
+        return _executeOTAReadyCommand(command as OTAReadyCommand);
       case OTAGetInfoCommand.TYPE:
-        return Future.value(_executeOTAGetInfoCommand(command as OTAGetInfoCommand));
+        return _executeOTAGetInfoCommand(command as OTAGetInfoCommand);
       case OTAOutputCommand.TYPE:
-        return Future.value(_executeOTAOutputCommand(command as OTAOutputCommand));
+        return _executeOTAOutputCommand(command as OTAOutputCommand);
 
       default:
         return Future.value(_generateErrorResult(Exception("Unknown command: ${command.type}"), command));
     }
   }
 
-  RpcResult _executeEchoCommand(EchoCommand command) {
+  Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
     if (command.text == 'error') {
       return _generateErrorResult(Exception("Echo error"), command);
     }
@@ -104,7 +103,7 @@ class FrontendService implements RpcService {
     });
   }
 
-  FutureOr<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) {
+  Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
     _screenStateChangePreparation.add(command.enabled);
     return EmptyResult.respond(command);
   }
@@ -156,8 +155,7 @@ class FrontendService implements RpcService {
   }
 
   Future<String> startWebServer() async {
-    var codeMsg =
-        await _backendService.send(WebServerControlCommand((b) => b.enable = true)) as WebServerControlCommandResult;
+    var codeMsg = await _backendService.send(WebServerControlCommand((b) => b.enable = true)) as WebServerControlCommandResult;
     return codeMsg.code;
   }
 
@@ -166,7 +164,7 @@ class FrontendService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  FutureOr<RpcResult>? _executeOTAGetInfoCommand(OTAGetInfoCommand command) async {
+  Future<RpcResult> _executeOTAGetInfoCommand(OTAGetInfoCommand command) async {
     _onOTAInfo.add(command.info!);
     return EmptyResult.respond(command);
   }
@@ -176,7 +174,7 @@ class FrontendService implements RpcService {
     return (result as OTAGetInfoCommandResult).info;
   }
 
-  FutureOr<RpcResult>? _executeOTAOutputCommand(OTAOutputCommand command) async {
+  Future<RpcResult> _executeOTAOutputCommand(OTAOutputCommand command) async {
     _onOTAOutput.add(command.output);
     return EmptyResult.respond(command);
   }
