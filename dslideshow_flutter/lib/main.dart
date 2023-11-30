@@ -4,6 +4,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
@@ -24,7 +25,8 @@ import 'package:logging/logging.dart';
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   initLog('flutter');
-  _log.info("Run, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
+  _log.info(
+      "Run f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
