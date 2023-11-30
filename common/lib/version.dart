@@ -1,4 +1,4 @@
 abstract class ApplicationInfo{
-  static const String frontendVersion = '6.1.0+9';
-  static const String backendVersion = '6.1.0+9';
+  static const String frontendVersion = '6.3.0+1';
+  static const String backendVersion = '6.3.0+1';
 }

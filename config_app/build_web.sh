@@ -1,3 +1,4 @@
 #!/bin/sh
 flutter pub get
-flutter build web
+#--pwa-strategy none
+flutter build web --release 

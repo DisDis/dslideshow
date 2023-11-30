@@ -135,6 +135,7 @@ class WebService {
 
   final _activeUsers = <WebSocketUser>[];
   Future<Response> _webSocketHandler(Request request) async {
+    _log.info('_webSocketHandler');
     return webSocketHandler((WebSocketChannel webSocket) {
       final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
       _activeUsers.add(newUser);
@@ -150,7 +151,8 @@ class WebService {
       _log.info('Is the server running?');
       _stopWebServer();
     }
-    io.HttpServer server = await io.serve(_router, '0.0.0.0', _config.port);
+    //HTTPS? securityContext: io.SecurityContext()
+    io.HttpServer server = await io.serve(_router, io.InternetAddress.anyIPv4, _config.port);
     _server = server;
     // Enable content compression
     server.autoCompress = true;

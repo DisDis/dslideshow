@@ -10,7 +10,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 class ClientService {
-  final _log = Logger('ClientService');
+  static final _log = Logger('ClientService');
   WebSocketChannel? channel;
   bool _isAuth = false;
   bool get isAuth => _isAuth;
@@ -38,7 +38,7 @@ class ClientService {
       _log.info('onError: $error');
       // _result.completeError(error);
     }).onDone(disconnect);
-    _log.info('User connected');
+    _log.info('User is connecting');
 
     return send(WSAuthCommand((b) {
       b.code = _authCode;

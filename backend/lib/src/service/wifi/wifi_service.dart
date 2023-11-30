@@ -48,12 +48,14 @@ wpa_cli enable_network <id>
       var newNetworkOutput = outputWPA.split('\n');
       final networkId = int.parse(newNetworkOutput[1]);
       result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'ssid', '"$SSID"'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli set_network, ssid -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli set_network $networkId ssid "$SSID" -> exitCode: ${result.exitCode}');
       }
-      result = await io.Process.run('wpa_cli', ['set_network', '$networkId', 'psk', '"$psk"'], environment: {'LC_ALL': 'C'});
+      result = await io.Process.run('wpa_cli', ['password', '$networkId', '"$psk"'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli password -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli set_network $networkId psk "**....**" -> exitCode: ${result.exitCode}');
+        throw Exception('wpa_cli password $networkId "**....**" -> exitCode: ${result.exitCode}');
       }
       enableNetwork(networkId);
     } catch (e, s) {
@@ -70,6 +72,7 @@ wpa_cli enable_network <id>
  */
 
       var result = await io.Process.run('wpa_cli', ['enable_network', '$networkId'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli enable_network -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli enable_network $networkId -> exitCode: ${result.exitCode}');
       }
@@ -87,6 +90,7 @@ wpa_cli disable_network <id>
  */
 
       var result = await io.Process.run('wpa_cli', ['disable_network', '$networkId'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli disable_network -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli disable_network $networkId -> exitCode: ${result.exitCode}');
       }
@@ -100,6 +104,7 @@ wpa_cli disable_network <id>
     _log.info('saveConfig');
     try {
       var result = await io.Process.run('wpa_cli', ['save_config'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli save_config -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli save_config -> exitCode: ${result.exitCode}');
       }
@@ -113,6 +118,7 @@ wpa_cli disable_network <id>
     _log.info('removeNetwork "$networkId"');
     try {
       var result = await io.Process.run('wpa_cli', ['remove_network', '$networkId'], environment: {'LC_ALL': 'C'});
+      _log.info("wpa_cli remove_network -> '${result.stdout.toString()}'");
       if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
         throw Exception('wpa_cli remove_network $networkId -> exitCode: ${result.exitCode}');
       }

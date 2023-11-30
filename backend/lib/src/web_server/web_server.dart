@@ -19,8 +19,7 @@ class WebServer implements RpcService {
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info(
-          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -29,19 +28,19 @@ class WebServer implements RpcService {
       case WebServerControlCommand.TYPE:
         return _executeWebServerControlCommand(command as WebServerControlCommand);
       case EchoCommand.TYPE:
-        return new Future.value(_executeEchoCommand(command as EchoCommand));
+        return _executeEchoCommand(command as EchoCommand);
       default:
-        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return new ErrorResult((b) => b
       ..id = command.id
       ..error = '$e');
   }
 
-  RpcResult _executeEchoCommand(EchoCommand command) {
+  Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }

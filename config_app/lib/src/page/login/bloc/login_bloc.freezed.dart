@@ -23,27 +23,18 @@ mixin _$LoginState {
   bool get isValid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $LoginStateCopyWith<LoginState> get copyWith =>
-      throw _privateConstructorUsedError;
+  $LoginStateCopyWith<LoginState> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $LoginStateCopyWith<$Res> {
-  factory $LoginStateCopyWith(
-          LoginState value, $Res Function(LoginState) then) =
-      _$LoginStateCopyWithImpl<$Res, LoginState>;
+  factory $LoginStateCopyWith(LoginState value, $Res Function(LoginState) then) = _$LoginStateCopyWithImpl<$Res, LoginState>;
   @useResult
-  $Res call(
-      {FormzSubmissionStatus status,
-      Username username,
-      Password password,
-      ConnectUri connectUri,
-      bool isValid});
+  $Res call({FormzSubmissionStatus status, Username username, Password password, ConnectUri connectUri, bool isValid});
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
-    implements $LoginStateCopyWith<$Res> {
+class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState> implements $LoginStateCopyWith<$Res> {
   _$LoginStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -86,28 +77,16 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
 }
 
 /// @nodoc
-abstract class _$$LoginStateImplCopyWith<$Res>
-    implements $LoginStateCopyWith<$Res> {
-  factory _$$LoginStateImplCopyWith(
-          _$LoginStateImpl value, $Res Function(_$LoginStateImpl) then) =
-      __$$LoginStateImplCopyWithImpl<$Res>;
+abstract class _$$LoginStateImplCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
+  factory _$$LoginStateImplCopyWith(_$LoginStateImpl value, $Res Function(_$LoginStateImpl) then) = __$$LoginStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {FormzSubmissionStatus status,
-      Username username,
-      Password password,
-      ConnectUri connectUri,
-      bool isValid});
+  $Res call({FormzSubmissionStatus status, Username username, Password password, ConnectUri connectUri, bool isValid});
 }
 
 /// @nodoc
-class __$$LoginStateImplCopyWithImpl<$Res>
-    extends _$LoginStateCopyWithImpl<$Res, _$LoginStateImpl>
-    implements _$$LoginStateImplCopyWith<$Res> {
-  __$$LoginStateImplCopyWithImpl(
-      _$LoginStateImpl _value, $Res Function(_$LoginStateImpl) _then)
-      : super(_value, _then);
+class __$$LoginStateImplCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res, _$LoginStateImpl> implements _$$LoginStateImplCopyWith<$Res> {
+  __$$LoginStateImplCopyWithImpl(_$LoginStateImpl _value, $Res Function(_$LoginStateImpl) _then) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -150,8 +129,7 @@ class _$LoginStateImpl implements _LoginState {
       {this.status = FormzSubmissionStatus.initial,
       this.username = const Username.pure(defaultValue: 'admin'),
       this.password = const Password.pure(defaultValue: '123'),
-      this.connectUri =
-          const ConnectUri.pure(defaultValue: 'ws://192.168.50.175/ws'),
+      this.connectUri = const ConnectUri.pure(defaultValue: 'ws://192.168.50.175:8080/ws'),
       this.isValid = false});
 
   @override
@@ -181,24 +159,19 @@ class _$LoginStateImpl implements _LoginState {
         (other.runtimeType == runtimeType &&
             other is _$LoginStateImpl &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
-            (identical(other.connectUri, connectUri) ||
-                other.connectUri == connectUri) &&
+            (identical(other.username, username) || other.username == username) &&
+            (identical(other.password, password) || other.password == password) &&
+            (identical(other.connectUri, connectUri) || other.connectUri == connectUri) &&
             (identical(other.isValid, isValid) || other.isValid == isValid));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, username, password, connectUri, isValid);
+  int get hashCode => Object.hash(runtimeType, status, username, password, connectUri, isValid);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
-      __$$LoginStateImplCopyWithImpl<_$LoginStateImpl>(this, _$identity);
+  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith => __$$LoginStateImplCopyWithImpl<_$LoginStateImpl>(this, _$identity);
 }
 
 abstract class _LoginState implements LoginState {
@@ -221,6 +194,5 @@ abstract class _LoginState implements LoginState {
   bool get isValid;
   @override
   @JsonKey(ignore: true)
-  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith => throw _privateConstructorUsedError;
 }

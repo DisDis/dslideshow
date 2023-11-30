@@ -40,10 +40,7 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
   Widget build(BuildContext context) {
     return BlocBuilder<WifiTabBloc, WifiTabState>(
         bloc: widget._wifiTabBloc,
-        builder: (
-          BuildContext context,
-          WifiTabState currentState,
-        ) {
+        builder: (BuildContext context, WifiTabState currentState) {
           if (currentState is UnWifiTabState) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -78,7 +75,12 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const Text('Available:'),
+        Row(
+          children: [
+            const Text('Available:'),
+            _buttonAddNetworkConnection(context),
+          ],
+        ),
         Expanded(
           flex: 2,
           child: ListView(
@@ -88,13 +90,84 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
           ),
         ),
         const Text('Stored:'),
-        for (var network in currentState.storedNetworks) Text(network.SSID),
+        for (var network in currentState.storedNetworks)
+          Row(
+            children: [
+              Text(network.SSID),
+              if (network.disabled)
+                const Icon(
+                  Icons.disabled_by_default_rounded,
+                  color: Colors.red,
+                )
+            ],
+          ),
       ],
     );
   }
 
   void _load() {
     widget._wifiTabBloc.add(LoadWifiTabEvent());
+  }
+
+  Widget _buttonAddNetworkConnection(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        showNewAddNetworkDialog(context, '');
+      },
+      icon: const Icon(Icons.plus_one),
+    );
+  }
+
+  static void showNewAddNetworkDialog(BuildContext context, [String SSID = '']) {
+    final TextEditingController controllerSSID = TextEditingController(text: SSID);
+    final TextEditingController controllerPassword = TextEditingController(text: "");
+    final bloc = context.read<WifiTabBloc>();
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add network'),
+        content: Column(
+          children: [
+            TextField(
+              controller: controllerSSID,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.wifi),
+                // suffixIcon: _ClearButton(controller: _controllerOutlined),
+                labelText: 'SSID',
+                hintText: 'Network name',
+                helperText: 'Network name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              controller: controllerPassword,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.password),
+                // suffixIcon: _ClearButton(controller: _controllerOutlined),
+                labelText: 'Password',
+                hintText: 'Password',
+                helperText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          FilledButton(
+            child: const Text('Add'),
+            onPressed: () {
+              bloc.add(AddWifiTabEvent(controllerSSID.text, controllerPassword.text));
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -138,7 +211,6 @@ SIGNAL STRENGTH (dBm)	Remarks
   }
 
   _onTap(BuildContext context, WiFiNetworkInfo network) {
-    context.read<WifiTabBloc>().add(AddWifiTabEvent("TestSSID123", "12456Test"));
-    print("$network");
+    WifiTabScreenState.showNewAddNetworkDialog(context, network.SSID);
   }
 }
