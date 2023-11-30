@@ -32,32 +32,18 @@ class WiFiService {
     _log.info('addNetwork "$SSID"');
     try {
 /*
-wpa_cli add_network 
-wpa_cli set_network <id> ssid "Jazzir_2G"
-wpa_cli set_network <id> psk "password"
-wpa_cli enable_network <id>
-
+wpa_cli doesn't work
  */
 
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'add_network'], environment: {'LC_ALL': 'C'});
-      if (result.exitCode != 0) {
-        throw Exception('wpa_cli add_network -> exitCode: ${result.exitCode}');
-      }
-      final outputWPA = result.stdout.toString();
-      _log.info("wpa_cli add_network -> '$outputWPA'");
-      var newNetworkOutput = outputWPA.split('\n');
-      final networkId = int.parse(newNetworkOutput[1]);
-      result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'set_network', '$networkId', 'ssid', '"$SSID"'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli set_network, ssid -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli set_network $networkId ssid "$SSID" -> exitCode: ${result.exitCode}');
-      }
-      result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'password', '$networkId', '"$psk"'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli password -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli password $networkId "**....**" -> exitCode: ${result.exitCode}');
-      }
-      enableNetwork(networkId);
+      final newNetworkData = """
+network={
+	ssid="${SSID}"
+	psk="${psk}"
+}
+""";
+      final wpaData = io.File('/etc/wpa_supplicant/wpa_supplicant.conf').readAsStringSync() + newNetworkData;
+
+      io.File('/etc/wpa_supplicant/wpa_supplicant.conf').writeAsStringSync(wpaData);
     } catch (e, s) {
       _log.severe('addNetwork "$SSID"', e, s);
       throw e;
