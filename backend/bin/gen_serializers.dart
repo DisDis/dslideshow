@@ -97,7 +97,7 @@ final String fileTemplate = r"""
 library dslideshow.serializers;
 
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_common/rpc.dart';
+//import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/serializers.dart';
 
 
@@ -113,8 +113,7 @@ class _SerializersImpl implements Serializers {
 
   Object? deserialize(Object? object) {
     if (object is List) {
-      final arrData = object as List;
-      return _deserializeByType(arrData[0], arrData[1]);
+      return _deserializeByType(object[0], object[1]);
     }
     throw ArgumentError('Not found deserialize for "$object"');
   }

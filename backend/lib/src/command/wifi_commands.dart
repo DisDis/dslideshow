@@ -1,5 +1,4 @@
 import 'package:dslideshow_common/rpc.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'wifi_commands.g.dart';

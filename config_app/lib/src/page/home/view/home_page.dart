@@ -1,6 +1,7 @@
 import 'package:config_app/src/bloc/authentication_bloc.dart';
 import 'package:config_app/src/bloc/authentication_event.dart';
 import 'package:config_app/src/bloc/photoframe_repository.dart';
+import 'package:config_app/src/page/config/gallery.dart';
 import 'package:config_app/src/page/home/bloc/home_cubit.dart';
 import 'package:config_app/src/page/home/bloc/home_state.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_bloc.dart';
@@ -27,12 +28,10 @@ class HomePage extends StatelessWidget {
                   userRepository: RepositoryProvider.of<UserRepository>(context),
                 )),
         BlocProvider<WifiTabBloc>(
-          create: (BuildContext context) => WifiTabBloc(
-              initialState: UnWifiTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+          create: (BuildContext context) => WifiTabBloc(initialState: UnWifiTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
         ),
         BlocProvider<WebTabBloc>(
-          create: (BuildContext context) =>
-              WebTabBloc(initialState: UnWebTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+          create: (BuildContext context) => WebTabBloc(initialState: UnWebTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
         ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),
@@ -115,23 +114,24 @@ class HomeView extends StatelessWidget {
         index: selectedTab.index,
         children: [
           Container(
-            child: Text('1'),
+            child: const Text('1'),
           ),
           Container(
-            child: Text('2'),
+            child: const Text('2'),
           ),
           Container(
-            child: Text('3'),
+            child: const Text('3'),
+            //const MediaGalleryWidget(),
           ),
           Container(
-            child: Text('4'),
+            child: const Text('4'),
           ),
           WebConfigTab(tabBloc: context.read<WebTabBloc>()),
           Container(
-            child: Text('6'),
+            child: const Text('6'),
           ),
           Container(
-            child: Text('7'),
+            child: const Text('7'),
           ),
           WiFiConfigTab(wifiTabBloc: context.read<WifiTabBloc>()),
         ],

@@ -13,7 +13,7 @@ import 'package:dslideshow_flutter/src/effect/effect.dart';
 class ConfigPage extends StatefulWidget {
   static const String routeName = '/config';
 
-  const ConfigPage({Key? key}) : super(key: key);
+  const ConfigPage({super.key});
 
   @override
   _ConfigPageState createState() => _ConfigPageState();

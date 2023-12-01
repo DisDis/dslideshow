@@ -14,7 +14,7 @@ class SystemInfo with _$SystemInfo {
     required CpuInfo cpuInfo,
     required NetworkInfo networkInfo,
     required OSInfo osInfo,
-    @JsonKey(includeToJson: true) required UpdateInfo updateInfo,
+    required UpdateInfo updateInfo,
   }) = _SystemInfo;
 
   factory SystemInfo.fromJson(Map<String, dynamic> json) => _$SystemInfoFromJson(json);
