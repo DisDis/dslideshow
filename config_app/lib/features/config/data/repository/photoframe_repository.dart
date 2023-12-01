@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:config_app/features/realtime/data/services/client_service.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';

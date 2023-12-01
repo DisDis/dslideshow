@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
-import 'package:config_app/src/page/home/bloc/wifi_tab_event.dart';
-import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
-import 'package:config_app/features/realtime/data/services/client_service.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';

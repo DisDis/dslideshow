@@ -1,5 +1,6 @@
 // ignore_for_file: implementation_imports
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_backend/storage.dart';
@@ -93,18 +94,31 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
 
   Future<MediaItem> _getNextItem() async {
     if (_mediaItems.isEmpty) {
-      final items = [Uri.file('/home/dis/1/1.png'), Uri.file('/home/dis/1/2.png'), Uri.file('/home/dis/1/3.png')];
+      final items = [
+        Uri.parse('http://192.168.50.175:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'),
+        Uri.parse('http://192.168.50.175:8080/cache/123/get/AIwhur2NgCqrUIjqXOzX1FjCNTeIs4GqGX9kifFSbhvi9vSJiND3SAqTbXQqTs15oC_cqj2Z-8Oi_2560x1600.jpeg'),
+        Uri.parse(
+            'http://192.168.50.175:8080/cache/123/get/AIwhur23zNAQK1bHNZGzQv6CIEHUX_VxDW3P0RS4MPGycT8x2pE25sa57-RBG-74P76mecaE6OQk13-kaHBKNpEt6OeoyhX8Jw_2560x1600.jpeg')
+      ];
       _mediaItems.addAll(items.map((e) => MediaItem(e.path, e)));
     }
     return _mediaItems.removeLast(); //removeAt(_rnd.nextInt(_mediaItems.length));
   }
 
+//
   void _fetchNextMediaItem() async {
     print('Change image');
     var mediaItem = await _getNextItem();
     Widget itemWidget;
     if (mediaItem != null) {
-      itemWidget = ImageWidget(mediaItem, _appConfig.slideshow);
+      itemWidget = CachedNetworkImage(
+        imageUrl: mediaItem.uri.toString(),
+        errorWidget: (BuildContext context, String url, error) {
+          return Row(
+            children: [Text('Not found "${mediaItem.id}'), const Icon(Icons.error)],
+          );
+        },
+      ); //ImageWidget(mediaItem, _appConfig.slideshow);
     } else {
       itemWidget = _loaderWidget;
     }

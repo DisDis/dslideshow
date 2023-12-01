@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:config_app/src/page/config/gallery.dart';
+import 'package:config_app/features/gallery/presentation/widgets/gallery.dart';
 import 'package:dslideshow_backend/config.dart';
 
 import 'package:flutter/material.dart';
 // import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
-import './effect_demo.dart';
+import '../../../features/slideshow_config/presentation/widgets/effect_demo.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 
 class ConfigPage extends StatefulWidget {

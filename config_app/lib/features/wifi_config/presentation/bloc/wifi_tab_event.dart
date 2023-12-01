@@ -1,11 +1,3 @@
-import 'dart:async';
-import 'dart:developer' as developer;
-
-import 'package:config_app/src/page/home/bloc/wifi_tab_bloc.dart';
-import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
-import 'package:meta/meta.dart';
-
-@immutable
 abstract class WifiTabEvent {
   // Stream<WifiTabState> applyAsync({WifiTabState currentState, WifiTabBloc bloc});
 }
@@ -37,15 +29,13 @@ class AddWifiTabEvent extends WifiTabEvent {
   AddWifiTabEvent(this.SSID, this.psk);
 }
 
-
 class RemoveWifiTabEvent extends WifiTabEvent {
   final int wifiId;
   RemoveWifiTabEvent(this.wifiId);
 }
 
-
 class EnableWifiTabEvent extends WifiTabEvent {
   final int wifiId;
-  final bool value; 
+  final bool value;
   EnableWifiTabEvent(this.wifiId, this.value);
 }

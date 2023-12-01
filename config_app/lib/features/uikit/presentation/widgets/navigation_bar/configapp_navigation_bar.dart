@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 // final _leftDrawerProvider = sl<LeftDrawerProvider>();
 
+enum HomeTab { log, hardware, slideshow, welcome, web, mqtt, storage, wifi }
+
 class ConfigAppNavigationBar extends StatelessWidget {
   static const Key _navKey = Key("#WANavigationBar");
   const ConfigAppNavigationBar() : super(key: _navKey);
@@ -78,13 +80,19 @@ class ConfigAppNavigationBar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.web),
             title: const Text('Web'),
-            onTap: () => context.go('/web'),
+            onTap: () => context.go("/web_config"),
           ),
           ListTile(
             leading: const Icon(Icons.wifi),
             title: const Text('Wifi'),
-            onTap: () => context.go('/wifi'),
+            onTap: () => context.go('/wifi_config'),
           ),
+          ListTile(
+            leading: const Icon(Icons.wifi),
+            title: const Text('Slideshow'),
+            onTap: () => context.go('/slideshow_config'),
+          ),
+
           const Divider(),
           ListTile(
             leading: const Icon(Icons.work),

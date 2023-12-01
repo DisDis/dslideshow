@@ -1,6 +1,6 @@
-import 'package:config_app/src/page/home/bloc/wifi_tab_bloc.dart';
-import 'package:config_app/src/page/home/bloc/wifi_tab_event.dart';
-import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
 import 'package:dslideshow_backend/src/command/wifi_commands.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

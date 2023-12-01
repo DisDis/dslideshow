@@ -10,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// import 'package:wa_chat/config/routes/router.dart' as chat;
+import 'package:config_app/features/web_server_config/config/router.dart' as web_config;
+import 'package:config_app/features/wifi_config/config/router.dart' as wifi_config;
+import 'package:config_app/features/slideshow_config/config/router.dart' as slideshow_config;
+import 'package:config_app/features/gallery/config/router.dart' as gallery;
 
 const _defaultPath = '/splash';
 const _loginPath = '/login';
@@ -32,7 +35,10 @@ GoRouter createAppRouter(BuildContext context) {
         path: '/home',
         builder: (context, state) => const HomePage(),
       ),
-      // chat.createRoute(context),
+      web_config.createRoute(context),
+      wifi_config.createRoute(context),
+      gallery.createRoute(context),
+      slideshow_config.createRoute(context),
       GoRoute(
         path: _defaultPath,
         builder: (context, state) => const SplashPage(),
