@@ -1,7 +1,6 @@
 import 'package:config_app/app.dart';
-import 'package:config_app/src/page/config/config_page.dart';
-import 'package:config_app/src/bloc/authentication_repository.dart';
-import 'package:config_app/src/repository/user_repository.dart';
+import 'package:config_app/environment.dart';
+import 'package:config_app/injection_container.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -9,38 +8,21 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final Logger _log = Logger('main');
 
-void main() {
-  initLog('f_config');
-  _log.info("Run");
-
-  runApp(App(
-    authenticationRepository: AuthenticationRepository(),
-    userRepository: UserRepository(),
-  ));
+Future _setup() async {
+  _log.info("Url: '${Uri.base}'");
+  final currentUrl = Uri.parse(Uri.base.toString());
+  final apiUrl = currentUrl.scheme == 'file' ? null : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
+  _log.info("currentUrl: '${Uri.base}' , apiUrl: '$apiUrl'");
+  await initializeAllDependencies(apiUrl: apiUrl);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DSlideShow config',
-      theme: ThemeData(
-        // backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        // primaryColor: Colors.lightBlue[800],
-      ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-
-      //AppLocalizations.supportedLocales,
-      home: Container(),
-      routes: <String, WidgetBuilder>{
-        '/config': (BuildContext context) => const ConfigPage(),
-      },
-      //onGenerateRoute: _onGenerateRoute,
-    );
-  }
+void main() async {
+  initLog('f_config');
+  _log.info("Run");
+  WidgetsFlutterBinding.ensureInitialized();
+  initEnvironment();
+  await _setup();
+  runApp(
+    const App(),
+  );
 }

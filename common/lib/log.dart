@@ -2,7 +2,7 @@ import 'package:logging/logging.dart' show Logger, Level, LogRecord;
 import 'dart:isolate';
 
 void initLog([String? isolateMarker]) {
-  if (isolateMarker == null){
+  if (isolateMarker == null) {
     isolateMarker = "I${Isolate.current.hashCode}";
   }
   Logger.root.level = Level.ALL;

@@ -1,5 +1,3 @@
-import 'package:config_app/src/bloc/authentication_bloc.dart';
-import 'package:config_app/src/page/home/bloc/home_cubit.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_bloc.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_event.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_state.dart';
@@ -58,8 +56,8 @@ class WebConfigTabState extends State<WebConfigTab> {
                 Padding(
                   padding: const EdgeInsets.only(top: 32.0),
                   child: ElevatedButton(
-                    child: const Text('reload'),
                     onPressed: _load,
+                    child: const Text('reload'),
                   ),
                 ),
               ],
@@ -70,23 +68,19 @@ class WebConfigTabState extends State<WebConfigTab> {
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                new TextField(
+                TextField(
                   controller: TextEditingController(text: currentState.config.webServer.port.toString()),
                   decoration: const InputDecoration(labelText: 'Port'),
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ], // Only numbers can be entered
+                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly], // Only numbers can be entered
                 ),
-                new TextField(
+                TextField(
                   controller: TextEditingController(text: currentState.config.webServer.permanentCode),
                   decoration: const InputDecoration(labelText: 'Permanent Code'),
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ], // Only numbers can be entered
+                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly], // Only numbers can be entered
                 ),
-                new CheckboxListTile(
+                CheckboxListTile(
                   value: currentState.config.webServer.alwaysEnabled,
                   onChanged: (newValue) {},
                   title: const Text('Always Enabled'),

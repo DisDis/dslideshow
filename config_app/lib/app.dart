@@ -1,95 +1,41 @@
-import 'package:config_app/src/bloc/authentication_bloc.dart';
-import 'package:config_app/src/bloc/authentication_repository.dart';
-import 'package:config_app/src/bloc/authentication_state.dart';
-import 'package:config_app/src/page/home/view/home_page.dart';
-import 'package:config_app/src/page/login/view/login_page.dart';
-import 'package:config_app/src/page/splash/splash.dart';
-import 'package:config_app/src/repository/user_repository.dart';
+import 'package:config_app/config/routes/app_router.dart';
+import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
+import 'package:config_app/features/theme/presentation/l10n/l10n.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
+import 'package:config_app/injection_container.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
   const App({
-    Key? key,
-    required this.authenticationRepository,
-    required this.userRepository,
-  }) : super(key: key);
-
-  final AuthenticationRepository authenticationRepository;
-  final UserRepository userRepository;
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-        providers: [
-          RepositoryProvider<AuthenticationRepository>(
-            create: (context) => authenticationRepository,
-          ),
-          RepositoryProvider<UserRepository>(
-            create: (context) => userRepository,
-          ),
-        ],
-        child: BlocProvider(
-          create: (_) => AuthenticationBloc(
-            authenticationRepository: authenticationRepository,
-            userRepository: userRepository,
-          ),
-          child: const AppView(),
-        ));
-
-    /*return RepositoryProvider.value(
-      value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
-          userRepository: userRepository,
-        ),
-        child: const AppView(),
-      ),
-    );*/
-  }
-}
-
-class AppView extends StatefulWidget {
-  const AppView({Key? key}) : super(key: key);
-
-  @override
-  _AppViewState createState() => _AppViewState();
-}
-
-class _AppViewState extends State<AppView> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
-
-  NavigatorState get _navigator => _navigatorKey.currentState!;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: _navigatorKey,
-      builder: (context, child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  HomePage.route(),
-                  (route) => false,
-                );
-                break;
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  LoginPage.route(),
-                  (route) => false,
-                );
-                break;
-              default:
-                break;
-            }
-          },
-          child: child,
+    return BlocProvider<AuthenticationBloc>(
+      create: (_) => sl() /*..add(const AuthenticationRestoreAuthRequested())*/,
+      child: Builder(builder: (context) {
+        final appRouter = createAppRouter(context);
+        return MaterialApp.router(
+          supportedLocales: L10n.all,
+          locale: const Locale('en'),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          theme: createLightTheme(),
+          darkTheme: createDarkTheme(),
+          themeMode: ThemeMode.light,
+          routeInformationParser: appRouter.routeInformationParser,
+          routerDelegate: appRouter.routerDelegate,
+          routeInformationProvider: appRouter.routeInformationProvider,
         );
-      },
-      onGenerateRoute: (_) => SplashPage.route(),
+      }),
     );
   }
 }

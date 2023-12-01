@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_event.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_state.dart';
-import 'package:config_app/src/service/client_service.dart';
+import 'package:config_app/features/realtime/data/services/client_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 // import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -11,9 +12,9 @@ import 'package:logging/logging.dart';
 
 class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
   static final Logger _log = Logger('WebTabBloc');
-  final ClientService _client;
+  final RealtimeService _client;
   static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
-  WebTabBloc({required WebTabState initialState, required ClientService client})
+  WebTabBloc({required WebTabState initialState, required RealtimeService client})
       : _client = client,
         super(initialState) {
     on<ReloadAppWebTabEvent>((event, emit) {

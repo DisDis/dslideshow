@@ -1,7 +1,7 @@
-import 'package:config_app/src/bloc/authentication_bloc.dart';
-import 'package:config_app/src/bloc/authentication_event.dart';
-import 'package:config_app/src/bloc/photoframe_repository.dart';
-import 'package:config_app/src/page/config/gallery.dart';
+import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
+import 'package:config_app/features/user/domain/repository/user_repository.dart';
+import 'package:config_app/injection_container.dart';
+
 import 'package:config_app/src/page/home/bloc/home_cubit.dart';
 import 'package:config_app/src/page/home/bloc/home_state.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_bloc.dart';
@@ -10,7 +10,7 @@ import 'package:config_app/src/page/home/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
 import 'package:config_app/src/page/home/view/web_tab.dart';
 import 'package:config_app/src/page/home/view/wifi_tab.dart';
-import 'package:config_app/src/repository/user_repository.dart';
+import 'package:config_app/features/user/data/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,13 +25,13 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider<HomeCubit>(
             create: (BuildContext context) => HomeCubit(
-                  userRepository: RepositoryProvider.of<UserRepository>(context),
+                  realtimeService: sl(),
                 )),
         BlocProvider<WifiTabBloc>(
-          create: (BuildContext context) => WifiTabBloc(initialState: UnWifiTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+          create: (BuildContext context) => WifiTabBloc(initialState: UnWifiTabState(), client: sl()),
         ),
         BlocProvider<WebTabBloc>(
-          create: (BuildContext context) => WebTabBloc(initialState: UnWebTabState(), client: RepositoryProvider.of<UserRepository>(context).client!),
+          create: (BuildContext context) => WebTabBloc(initialState: UnWebTabState(), client: sl()),
         ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),

@@ -1,0 +1,41 @@
+{
+      "connectButtonText": "Connect",
+    "urlInputText": "Url",
+    "codeInputText": "Code",
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },
+    "username":"Username",
+    "password": "Password",
+    "english": "English",
+    "russian": "Russian",
+    "feature_scope_user_permission": "Permissions",
+    "feature_scope_users": "Users",
+    "feature_scope_agreement": "Agreement",
+    "feature_scope_goal": "Goal", 
+    "feature_scope_chat": "Chat",
+    "feature_scope_work": "Work",
+    "home_userid" : "UserId: '{userId}'",
+ "@home_userid":{
+ "placeholders": {
+ "userId": {
+         "type":"String"
+         }
+       }
+    }, 
+    "home_page_name":"Home",
+    "home_page_logout_button":"Logout",
+    "login_page_name": "Login",
+    "chat_message_datetime_format": "hh:mm",
+    "admin_nav_account_name" : "Account",
+    "admin_roles_scope": "Scope",
+    "admin_account_info_title": "Title: {title}",
+     "@admin_account_info_title":{
+ "placeholders": {
+ "title": {
+         "type":"String"
+         }
+       }
+    }
+}
