@@ -1,77 +1,52 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:built_collection/built_collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'hardware_commands.g.dart';
+part 'hardware_commands.freezed.dart';
 
-abstract class AreYouReadyCommand implements RpcCommand, Built<AreYouReadyCommand, AreYouReadyCommandBuilder> {
+@freezed
+class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand {
   static const String TYPE = 'are_you_ready?';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
+  const factory AreYouReadyCommand({
+    required int id,
+    @Default(AreYouReadyCommand.TYPE) String type,
+  }) = _AreYouReadyCommand;
 
-  static Serializer<AreYouReadyCommand> get serializer => _$areYouReadyCommandSerializer;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(AreYouReadyCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)?]) = _$AreYouReadyCommand;
-  AreYouReadyCommand._();
+  factory AreYouReadyCommand.fromJson(Map<String, dynamic> json) => _$AreYouReadyCommandFromJson(json);
 }
 
-abstract class PushButtonCommand implements RpcCommand, Built<PushButtonCommand, PushButtonCommandBuilder> {
+@freezed
+class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
   static const String TYPE = 'push_button';
-  @override
-  String get type => TYPE;
-  ButtonType get button;
-  @override
-  int get id;
+  const factory PushButtonCommand({
+    required ButtonType button,
+    required int id,
+    @Default(PushButtonCommand.TYPE) String type,
+  }) = _PushButtonCommand;
 
-  static Serializer<PushButtonCommand> get serializer => _$pushButtonCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(PushButtonCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory PushButtonCommand([void updates(PushButtonCommandBuilder b)?]) = _$PushButtonCommand;
-  PushButtonCommand._();
+  factory PushButtonCommand.fromJson(Map<String, dynamic> json) => _$PushButtonCommandFromJson(json);
 }
 
-abstract class LEDControlCommand implements RpcCommand, Built<LEDControlCommand, LEDControlCommandBuilder> {
+@freezed
+class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
   static const String TYPE = 'led_control';
-  @override
-  String get type => TYPE;
-  LEDType get led;
-  bool get value;
-  @override
-  int get id;
+  const factory LEDControlCommand({
+    required LEDType led,
+    required bool value,
+    required int id,
+    @Default(LEDControlCommand.TYPE) String type,
+  }) = _LEDControlCommand;
 
-  static Serializer<LEDControlCommand> get serializer => _$lEDControlCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(LEDControlCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory LEDControlCommand([void updates(LEDControlCommandBuilder b)?]) = _$LEDControlCommand;
-  LEDControlCommand._();
+  factory LEDControlCommand.fromJson(Map<String, dynamic> json) => _$LEDControlCommandFromJson(json);
 }
 
-class LEDType extends EnumClass {
-  static Serializer<LEDType> get serializer => _$lEDTypeSerializer;
-
-  static const LEDType power = _$powerLed;
-
-  const LEDType._(String name) : super(name);
-
-  static BuiltSet<LEDType> get values => _$valuesLEDType;
-  static LEDType valueOf(String name) => _$valueLEDTypeOf(name);
+enum LEDType {
+  power;
 }
 
-class ButtonType extends EnumClass {
-  static Serializer<ButtonType> get serializer => _$buttonTypeSerializer;
-
-  static const ButtonType menu = _$menu;
-  static const ButtonType screentoggle = _$screentoggle;
-  static const ButtonType pause = _$pause;
-  static const ButtonType select = _$select;
-
-  const ButtonType._(String name) : super(name);
-
-  static BuiltSet<ButtonType> get values => _$valuesButtonType;
-  static ButtonType valueOf(String name) => _$valueButtonTypeOf(name);
+enum ButtonType {
+  menu,
+  screentoggle,
+  pause,
+  select;
 }

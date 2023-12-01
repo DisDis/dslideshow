@@ -3,304 +3,33 @@
 part of 'echo.dart';
 
 // **************************************************************************
-// BuiltValueGenerator
+// JsonSerializableGenerator
 // **************************************************************************
 
-Serializer<EchoCommand> _$echoCommandSerializer = new _$EchoCommandSerializer();
-Serializer<EchoCommandResult> _$echoCommandResultSerializer =
-    new _$EchoCommandResultSerializer();
+_$EchoCommandImpl _$$EchoCommandImplFromJson(Map<String, dynamic> json) =>
+    _$EchoCommandImpl(
+      id: json['id'] as int,
+      text: json['text'] as String?,
+      type: json['type'] as String? ?? EchoCommand.TYPE,
+    );
 
-class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
-  @override
-  final Iterable<Type> types = const [EchoCommand, _$EchoCommand];
-  @override
-  final String wireName = 'EchoCommand';
+Map<String, dynamic> _$$EchoCommandImplToJson(_$EchoCommandImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'text': instance.text,
+      'type': instance.type,
+    };
 
-  @override
-  Iterable<Object?> serialize(Serializers serializers, EchoCommand object,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
-      'id',
-      serializers.serialize(object.id, specifiedType: const FullType(int)),
-    ];
-    Object? value;
-    value = object.text;
-    if (value != null) {
-      result
-        ..add('text')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
-    return result;
-  }
+_$EchoCommandResultImpl _$$EchoCommandResultImplFromJson(
+        Map<String, dynamic> json) =>
+    _$EchoCommandResultImpl(
+      id: json['id'] as int,
+      resultText: json['resultText'] as String?,
+    );
 
-  @override
-  EchoCommand deserialize(Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new EchoCommandBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current! as String;
-      iterator.moveNext();
-      final Object? value = iterator.current;
-      switch (key) {
-        case 'text':
-          result.text = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
-        case 'id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int))! as int;
-          break;
-      }
-    }
-
-    return result.build();
-  }
-}
-
-class _$EchoCommandResultSerializer
-    implements StructuredSerializer<EchoCommandResult> {
-  @override
-  final Iterable<Type> types = const [EchoCommandResult, _$EchoCommandResult];
-  @override
-  final String wireName = 'EchoCommandResult';
-
-  @override
-  Iterable<Object?> serialize(Serializers serializers, EchoCommandResult object,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
-      'id',
-      serializers.serialize(object.id, specifiedType: const FullType(int)),
-    ];
-    Object? value;
-    value = object.resultText;
-    if (value != null) {
-      result
-        ..add('resultText')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
-    return result;
-  }
-
-  @override
-  EchoCommandResult deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new EchoCommandResultBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current! as String;
-      iterator.moveNext();
-      final Object? value = iterator.current;
-      switch (key) {
-        case 'resultText':
-          result.resultText = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
-        case 'id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int))! as int;
-          break;
-      }
-    }
-
-    return result.build();
-  }
-}
-
-class _$EchoCommand extends EchoCommand {
-  @override
-  final String? text;
-  @override
-  final int id;
-
-  factory _$EchoCommand([void Function(EchoCommandBuilder)? updates]) =>
-      (new EchoCommandBuilder()..update(updates))._build();
-
-  _$EchoCommand._({this.text, required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, r'EchoCommand', 'id');
-  }
-
-  @override
-  EchoCommand rebuild(void Function(EchoCommandBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  EchoCommandBuilder toBuilder() => new EchoCommandBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is EchoCommand && text == other.text && id == other.id;
-  }
-
-  @override
-  int get hashCode {
-    var _$hash = 0;
-    _$hash = $jc(_$hash, text.hashCode);
-    _$hash = $jc(_$hash, id.hashCode);
-    _$hash = $jf(_$hash);
-    return _$hash;
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper(r'EchoCommand')
-          ..add('text', text)
-          ..add('id', id))
-        .toString();
-  }
-}
-
-class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
-  _$EchoCommand? _$v;
-
-  String? _text;
-  String? get text => _$this._text;
-  set text(String? text) => _$this._text = text;
-
-  int? _id;
-  int? get id => _$this._id;
-  set id(int? id) => _$this._id = id;
-
-  EchoCommandBuilder() {
-    EchoCommand._setDefaults(this);
-  }
-
-  EchoCommandBuilder get _$this {
-    final $v = _$v;
-    if ($v != null) {
-      _text = $v.text;
-      _id = $v.id;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(EchoCommand other) {
-    ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$EchoCommand;
-  }
-
-  @override
-  void update(void Function(EchoCommandBuilder)? updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  EchoCommand build() => _build();
-
-  _$EchoCommand _build() {
-    final _$result = _$v ??
-        new _$EchoCommand._(
-            text: text,
-            id: BuiltValueNullFieldError.checkNotNull(
-                id, r'EchoCommand', 'id'));
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$EchoCommandResult extends EchoCommandResult {
-  @override
-  final String? resultText;
-  @override
-  final int id;
-
-  factory _$EchoCommandResult(
-          [void Function(EchoCommandResultBuilder)? updates]) =>
-      (new EchoCommandResultBuilder()..update(updates))._build();
-
-  _$EchoCommandResult._({this.resultText, required this.id}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, r'EchoCommandResult', 'id');
-  }
-
-  @override
-  EchoCommandResult rebuild(void Function(EchoCommandResultBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  EchoCommandResultBuilder toBuilder() =>
-      new EchoCommandResultBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is EchoCommandResult &&
-        resultText == other.resultText &&
-        id == other.id;
-  }
-
-  @override
-  int get hashCode {
-    var _$hash = 0;
-    _$hash = $jc(_$hash, resultText.hashCode);
-    _$hash = $jc(_$hash, id.hashCode);
-    _$hash = $jf(_$hash);
-    return _$hash;
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper(r'EchoCommandResult')
-          ..add('resultText', resultText)
-          ..add('id', id))
-        .toString();
-  }
-}
-
-class EchoCommandResultBuilder
-    implements Builder<EchoCommandResult, EchoCommandResultBuilder> {
-  _$EchoCommandResult? _$v;
-
-  String? _resultText;
-  String? get resultText => _$this._resultText;
-  set resultText(String? resultText) => _$this._resultText = resultText;
-
-  int? _id;
-  int? get id => _$this._id;
-  set id(int? id) => _$this._id = id;
-
-  EchoCommandResultBuilder();
-
-  EchoCommandResultBuilder get _$this {
-    final $v = _$v;
-    if ($v != null) {
-      _resultText = $v.resultText;
-      _id = $v.id;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(EchoCommandResult other) {
-    ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$EchoCommandResult;
-  }
-
-  @override
-  void update(void Function(EchoCommandResultBuilder)? updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  EchoCommandResult build() => _build();
-
-  _$EchoCommandResult _build() {
-    final _$result = _$v ??
-        new _$EchoCommandResult._(
-            resultText: resultText,
-            id: BuiltValueNullFieldError.checkNotNull(
-                id, r'EchoCommandResult', 'id'));
-    replace(_$result);
-    return _$result;
-  }
-}
-
-// ignore_for_file: deprecated_member_use_from_same_package,type=lint
+Map<String, dynamic> _$$EchoCommandResultImplToJson(
+        _$EchoCommandResultImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'resultText': instance.resultText,
+    };

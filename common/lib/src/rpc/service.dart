@@ -1,12 +1,8 @@
 import 'dart:async';
-
 import 'dart:convert';
-
 import 'dart:isolate';
-
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
-
+import 'package:dslideshow_common/serializers.dart';
 import 'package:logging/logging.dart';
 
 class Service {

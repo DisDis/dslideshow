@@ -12,9 +12,9 @@ class FakeRemoteService implements RemoteService {
   }
 
   @override
-  Future<RpcResult> sendStr(RpcCommand cmd) async {
+  Future<RpcResult> sendStr<T extends RpcCommand>(T cmd) async {
     _log.info(cmd.toString());
-    return new EmptyResult.respond(cmd);
+    return EmptyResult.respond(cmd);
   }
 
   @override
@@ -28,8 +28,8 @@ class FakeRemoteService implements RemoteService {
   }
 
   @override
-  Future<RpcResult> send(RpcCommand cmd) async {
+  Future<RpcResult> send<T extends RpcCommand>(T cmd) async {
     _log.info(cmd.toString());
-    return new EmptyResult.respond(cmd);
+    return EmptyResult.respond(cmd);
   }
 }

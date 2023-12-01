@@ -1,50 +1,40 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'storage_commands.g.dart';
+part 'storage_commands.freezed.dart';
 
-abstract class GetMediaItemCommand implements RpcCommand, Built<GetMediaItemCommand, GetMediaItemCommandBuilder> {
+@freezed
+class GetMediaItemCommand with _$GetMediaItemCommand implements RpcCommand {
   static const String TYPE = 'get_media_item';
-  @override
-  String get type => TYPE;
+  const factory GetMediaItemCommand({
+    required bool isCurrent,
+    required int id,
+    @Default(GetMediaItemCommand.TYPE) String type,
+  }) = _GetMediaItemCommand;
 
-  bool get isCurrent;
-  @override
-  int get id;
-
-  static Serializer<GetMediaItemCommand> get serializer => _$getMediaItemCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(GetMediaItemCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory GetMediaItemCommand([void updates(GetMediaItemCommandBuilder b)?]) = _$GetMediaItemCommand;
-  GetMediaItemCommand._();
+  factory GetMediaItemCommand.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandFromJson(json);
 }
 
-abstract class GetMediaItemCommandResult
-    implements RpcResult, Built<GetMediaItemCommandResult, GetMediaItemCommandResultBuilder> {
-  String? get mediaId;
-  Uri? get mediaUri;
-  @override
-  int get id;
+@freezed
+class GetMediaItemCommandResult with _$GetMediaItemCommandResult implements RpcResult {
+  const factory GetMediaItemCommandResult({
+    String? mediaId,
+    Uri? mediaUri,
+    required int id,
+  }) = _GetMediaItemCommandResult;
 
-  static Serializer<GetMediaItemCommandResult> get serializer => _$getMediaItemCommandResultSerializer;
-
-  factory GetMediaItemCommandResult([void updates(GetMediaItemCommandResultBuilder b)?]) = _$GetMediaItemCommandResult;
-  GetMediaItemCommandResult._();
+  factory GetMediaItemCommandResult.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandResultFromJson(json);
 }
 
-abstract class StorageNextCommand implements RpcCommand, Built<StorageNextCommand, StorageNextCommandBuilder> {
+@freezed
+class StorageNextCommand with _$StorageNextCommand implements RpcCommand {
   static const String TYPE = 'storage_next';
-  @override
-  String get type => TYPE;
 
-  @override
-  int get id;
+  const factory StorageNextCommand({
+    required int id,
+    @Default(StorageNextCommand.TYPE) String type,
+  }) = _StorageNextCommand;
 
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(StorageNextCommandBuilder b) => b.id = RpcCommand.generateId();
-  static Serializer<StorageNextCommand> get serializer => _$storageNextCommandSerializer;
-
-  factory StorageNextCommand([void updates(StorageNextCommandBuilder b)?]) = _$StorageNextCommand;
-  StorageNextCommand._();
+  factory StorageNextCommand.fromJson(Map<String, dynamic> json) => _$StorageNextCommandFromJson(json);
 }

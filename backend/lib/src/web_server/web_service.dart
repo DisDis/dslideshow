@@ -287,7 +287,7 @@ class WebSocketUser {
   void disconnect() {
     _webSocket.sink.close();
     _resultQueue.forEach((key, value) {
-      value.completeError(WSErrorResult.id('disconnect', key));
+      value.completeError(WSErrorResult.byId('disconnect', key));
     });
     _resultQueue.clear();
   }
@@ -360,13 +360,13 @@ class WebSocketUser {
           result = await _executeWSEchoCommand(command as WSEchoCommand);
           break;
         default:
-          result = WSErrorResult('Unknown command', command);
+          result = WSErrorResult.byCommand('Unknown command', command);
           break;
       }
       response(result);
     } catch (e, st) {
       _log.severe(e.toString(), e, st);
-      response(WSErrorResult(e.toString(), command));
+      response(WSErrorResult.byCommand(e.toString(), command));
     }
   }
 
@@ -377,12 +377,12 @@ class WebSocketUser {
       _status = WebSocketUserStatus.anonymous;
       _log.warning('Incorrect user="${msg.userName}" or code="${msg.code}"');
       disconnect();
-      return WSErrorResult("Incorrect user or code", msg);
+      return WSErrorResult.byCommand("Incorrect user or code", msg);
     } else {
       _log.info('User auth!');
       _status = WebSocketUserStatus.authorized;
-      sendOneWay(new WSHelloCommand());
-      return WSResultOk(msg);
+      sendOneWay(WSHelloCommand(id: WebSocketCommand.generateId()));
+      return WSResultOk.byCommand(msg);
     }
   }
 
@@ -403,27 +403,27 @@ class WebSocketUser {
   }
 
   WSConfigDownloadResult _executeWSConfigDownloadCommand(WSConfigDownloadCommand msg) {
-    return new WSConfigDownloadResult((b) {
-      b.content = json.encode(_appConfig.toJson());
-      b.id = msg.id;
-    });
+    return WSConfigDownloadResult(
+      content: json.encode(_appConfig.toJson()),
+      id: msg.id,
+    );
   }
 
   WebSocketResult _executeWSConfigUploadCommand(WSConfigUploadCommand msg) {
     var _newAppConfig = AppConfig.fromJson(json.decode(msg.content) as Map<String, dynamic>);
     _newAppConfig.toFile(_appConfig.fullConfigFilename);
-    return new WSResultOk(msg);
+    return WSResultOk.byCommand(msg);
   }
 
   WebSocketResult _executeWSRestartApplicationCommand(WSRestartApplicationCommand msg) {
     _log.info('Restart application');
     io.Process.run('sudo', ['systemctl', 'restart', 'dslideshow'], environment: {'LC_ALL': 'C'});
-    return WSResultOk(msg);
+    return WSResultOk.byCommand(msg);
   }
 
   Future<WSRpcResult> _executeWSSendRpcCommand(WSSendRpcCommand msg) async {
-    final result = await _remoteBackendService.send(msg.command);
-    return new WSRpcResult(result, msg);
+    final result = await _remoteBackendService.send(serializers.deserialize(msg.commandData)! as RpcCommand);
+    return WSRpcResult.byCommand(result, msg);
   }
 
   Future<WebSocketResult> _addMessageToQueue(int id) {
@@ -446,6 +446,6 @@ class WebSocketUser {
     if (command.msg.toUpperCase() == 'ERROR') {
       throw command.msg;
     }
-    return WSEchoResult(command);
+    return WSEchoResult(id: command.id, msg: command.msg);
   }
 }

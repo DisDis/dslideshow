@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:config_app/src/page/home/bloc/web_tab_event.dart';
@@ -19,10 +17,10 @@ class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
       : _client = client,
         super(initialState) {
     on<ReloadAppWebTabEvent>((event, emit) {
-      _client.sendOneWay(WSRestartApplicationCommand());
+      _client.sendOneWay(WSRestartApplicationCommand(id: WebSocketCommand.generateId()));
     });
     on<LoadWebTabEvent>((event, emit) async {
-      final result = await _client.send(WSConfigDownloadCommand()) as WSConfigDownloadResult;
+      final result = await _client.send(WSConfigDownloadCommand(id: WebSocketCommand.generateId())) as WSConfigDownloadResult;
       _log.info('Recived config:');
       var jsonMsg = json.decode(result.content);
       final _config = AppConfig.fromJson(jsonMsg);

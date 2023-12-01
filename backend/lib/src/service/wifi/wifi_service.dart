@@ -9,7 +9,7 @@ class WiFiService {
   final WiFiConfig _config;
   WiFiService(this._config);
 
-  Future<Iterable<WiFiNetworkInfo>> scan() async {
+  Future<List<WiFiNetworkInfo>> scan() async {
     _log.info('scan');
     try {
       var result = await io.Process.run(_config.scanWiFiScript, [_config.devId], environment: {'LC_ALL': 'C'});
@@ -121,7 +121,12 @@ wpa_cli disable_network <id>
     }
     output.removeWhere((element) => element.isEmpty);
     var result = <WiFiNetworkInfo>[];
-    var current = WiFiNetworkInfoBuilder()..SSID = EMPTY_SSID;
+    var current = WiFiNetworkInfo(
+      SSID: EMPTY_SSID,
+      signal: -99,
+      capability: '',
+      freq: -1,
+    );
 
 // SSID: Koti783
 // signal: -82.00 dBm
@@ -133,30 +138,35 @@ wpa_cli disable_network <id>
         int tmpI;
         if ((tmpI = element.indexOf(KEY_SSID)) != -1) {
           if (current.SSID != EMPTY_SSID) {
-            result.add(current.build());
-            current = WiFiNetworkInfoBuilder()..SSID = EMPTY_SSID;
+            result.add(current);
+            current = WiFiNetworkInfo(
+              SSID: EMPTY_SSID,
+              signal: -99,
+              capability: '',
+              freq: -1,
+            );
           }
-          current.SSID = element.substring(tmpI + KEY_SSID.length);
+          current = current.copyWith(SSID: element.substring(tmpI + KEY_SSID.length));
         } else if ((tmpI = element.indexOf(KEY_SIGNAL)) != -1) {
           final signalStr = element.substring(tmpI + KEY_SIGNAL.length);
           final signalInt = int.tryParse(signalStr.substring(0, signalStr.indexOf('.')));
-          current.signal = signalInt ?? -99;
+          current = current.copyWith(signal: signalInt ?? -99);
         } else if ((tmpI = element.indexOf(KEY_CAPABILITY)) != -1) {
-          current.capability = element.substring(tmpI + KEY_CAPABILITY.length);
+          current = current.copyWith(capability: element.substring(tmpI + KEY_CAPABILITY.length));
         } else if ((tmpI = element.indexOf(KEY_FREQ)) != -1) {
-          current.freq = int.tryParse(element.substring(tmpI + KEY_FREQ.length)) ?? -1;
+          current = current.copyWith(freq: int.tryParse(element.substring(tmpI + KEY_FREQ.length)) ?? -1);
         }
       } catch (e, st) {
         _log.severe('_parseScanOutput', e, st);
       }
     });
     if (current.SSID != EMPTY_SSID) {
-      result.add(current.build());
+      result.add(current);
     }
     return result;
   }
 
-  Future<Iterable<WiFiStoredNetworkInfo>> getStored() async {
+  Future<List<WiFiStoredNetworkInfo>> getStored() async {
     _log.info('getStored');
     try {
       var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'list_networks'], environment: {'LC_ALL': 'C'});
@@ -192,10 +202,11 @@ network id / ssid / bssid / flags
         }
         var args = element.split('\t');
         if (args.length > 3) {
-          result.add(WiFiStoredNetworkInfo((b) => b
-            ..id = int.tryParse(args[0]) ?? -1
-            ..SSID = args[1]
-            ..disabled = args[3].contains('DISABLED')));
+          result.add(WiFiStoredNetworkInfo(
+            id: int.tryParse(args[0]) ?? -1,
+            SSID: args[1],
+            disabled: args[3].contains('DISABLED'),
+          ));
         }
       } catch (e, st) {
         _log.severe('_parseStoredOutput', e, st);

@@ -221,6 +221,8 @@ abstract class _$$OtaUpdateInfoEventImplCopyWith<$Res> {
       __$$OtaUpdateInfoEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({OTAInfo info});
+
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -242,6 +244,14 @@ class __$$OtaUpdateInfoEventImplCopyWithImpl<$Res>
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res> get info {
+    return $OTAInfoCopyWith<$Res>(_value.info, (value) {
+      return _then(_value.copyWith(info: value));
+    });
   }
 }
 

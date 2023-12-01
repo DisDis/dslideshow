@@ -1,18 +1,12 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'empty_result.freezed.dart';
 part 'empty_result.g.dart';
 
-abstract class EmptyResult implements RpcResult, Built<EmptyResult, EmptyResultBuilder> {
-  @override
-  int get id;
-
-  static Serializer<EmptyResult> get serializer => _$emptyResultSerializer;
-
-  factory EmptyResult([void updates(EmptyResultBuilder b)?]) = _$EmptyResult;
-  factory EmptyResult.respond(RpcCommand command) {
-    return _$EmptyResult((b) => b.id = command.id);
-  }
-  EmptyResult._();
+@freezed
+class EmptyResult with _$EmptyResult implements RpcResult {
+  static EmptyResult respond(RpcCommand command) => EmptyResult(id: command.id);
+  const factory EmptyResult({required int id}) = _EmptyResult;
+  factory EmptyResult.fromJson(Map<String, dynamic> json) => _$EmptyResultFromJson(json);
 }

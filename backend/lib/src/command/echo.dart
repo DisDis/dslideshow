@@ -1,32 +1,20 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'echo.freezed.dart';
 part 'echo.g.dart';
 
-abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommandBuilder> {
+@freezed
+class EchoCommand with _$EchoCommand implements RpcCommand {
   static const String TYPE = 'echo';
-  @override
-  String get type => TYPE;
-  String? get text;
-  @override
-  int get id;
 
-  static Serializer<EchoCommand> get serializer => _$echoCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(EchoCommandBuilder b) => b.id = RpcCommand.generateId();
-
-  factory EchoCommand([void updates(EchoCommandBuilder b)]) = _$EchoCommand;
-  EchoCommand._();
+  const factory EchoCommand({required int id, String? text, @Default(EchoCommand.TYPE) String type}) = _EchoCommand;
+  factory EchoCommand.fromJson(Map<String, dynamic> json) => _$EchoCommandFromJson(json);
 }
 
-abstract class EchoCommandResult implements RpcResult, Built<EchoCommandResult, EchoCommandResultBuilder> {
-  String? get resultText;
-  @override
-  int get id;
-
-  static Serializer<EchoCommandResult> get serializer => _$echoCommandResultSerializer;
-
-  factory EchoCommandResult([void updates(EchoCommandResultBuilder b)]) = _$EchoCommandResult;
-  EchoCommandResult._();
+@freezed
+abstract class EchoCommandResult with _$EchoCommandResult implements RpcResult {
+  const factory EchoCommandResult({required int id, String? resultText}) = _EchoCommandResult;
+  factory EchoCommandResult.fromJson(Map<String, dynamic> json) => _$EchoCommandResultFromJson(json);
 }

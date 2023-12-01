@@ -1,139 +1,107 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'wifi_commands.g.dart';
+part 'wifi_commands.freezed.dart';
 
-abstract class WiFiScanCommand implements RpcCommand, Built<WiFiScanCommand, WiFiScanCommandBuilder> {
+@freezed
+class WiFiScanCommand with _$WiFiScanCommand implements RpcCommand {
   static const String TYPE = 'wifi_scan';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
+  const factory WiFiScanCommand({
+    required int id,
+    @Default(WiFiScanCommand.TYPE) String type,
+  }) = _WiFiScanCommand;
 
-  static Serializer<WiFiScanCommand> get serializer => _$wiFiScanCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiScanCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WiFiScanCommand([void updates(WiFiScanCommandBuilder b)?]) = _$WiFiScanCommand;
-  WiFiScanCommand._();
+  factory WiFiScanCommand.fromJson(Map<String, dynamic> json) => _$WiFiScanCommandFromJson(json);
 }
 
-abstract class WiFiScanResult implements RpcResult, Built<WiFiScanResult, WiFiScanResultBuilder> {
-  @override
-  int get id;
+@freezed
+class WiFiScanResult with _$WiFiScanResult implements RpcResult {
+  const factory WiFiScanResult({
+    required List<WiFiNetworkInfo> networks,
+    required int id,
+  }) = _WiFiScanResult;
 
-  BuiltList<WiFiNetworkInfo>? get networks;
-
-  static Serializer<WiFiScanResult> get serializer => _$wiFiScanResultSerializer;
-
-  factory WiFiScanResult([void updates(WiFiScanResultBuilder b)?]) = _$WiFiScanResult;
-  factory WiFiScanResult.respond(RpcCommand command) {
-    return _$WiFiScanResult((b) => b.id = command.id);
-  }
-  WiFiScanResult._();
+  factory WiFiScanResult.fromJson(Map<String, dynamic> json) => _$WiFiScanResultFromJson(json);
 }
 
-abstract class WiFiNetworkInfo implements Built<WiFiNetworkInfo, WiFiNetworkInfoBuilder> {
-  String get SSID;
-  int get signal;
-  String get capability;
-  int get freq;
+@freezed
+class WiFiNetworkInfo with _$WiFiNetworkInfo {
+  const factory WiFiNetworkInfo({
+    required String SSID,
+    required int signal,
+    required String capability,
+    required int freq,
+  }) = _WiFiNetworkInfo;
 
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiNetworkInfoBuilder b) => b
-    ..SSID = ''
-    ..signal = -99
-    ..capability = ''
-    ..freq = -1;
-
-  static Serializer<WiFiNetworkInfo> get serializer => _$wiFiNetworkInfoSerializer;
-
-  factory WiFiNetworkInfo([void updates(WiFiNetworkInfoBuilder b)]) = _$WiFiNetworkInfo;
-  WiFiNetworkInfo._();
+  factory WiFiNetworkInfo.fromJson(Map<String, dynamic> json) => _$WiFiNetworkInfoFromJson(json);
 }
 
-abstract class WiFiStoredNetworkInfo implements Built<WiFiStoredNetworkInfo, WiFiStoredNetworkInfoBuilder> {
-  int get id;
-  String get SSID;
-  bool get disabled;
+@freezed
+class WiFiStoredNetworkInfo with _$WiFiStoredNetworkInfo {
+  const factory WiFiStoredNetworkInfo({
+    required int id,
+    required String SSID,
+    required bool disabled,
+  }) = _WiFiStoredNetworkInfo;
 
-  static Serializer<WiFiStoredNetworkInfo> get serializer => _$wiFiStoredNetworkInfoSerializer;
-
-  factory WiFiStoredNetworkInfo([void updates(WiFiStoredNetworkInfoBuilder b)]) = _$WiFiStoredNetworkInfo;
-  WiFiStoredNetworkInfo._();
+  factory WiFiStoredNetworkInfo.fromJson(Map<String, dynamic> json) => _$WiFiStoredNetworkInfoFromJson(json);
 }
 
-abstract class WiFiRemoveCommand implements RpcCommand, Built<WiFiRemoveCommand, WiFiRemoveCommandBuilder> {
+@freezed
+class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
   static const String TYPE = 'wifi_remove';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
-  int get wifiId;
+  const factory WiFiRemoveCommand({
+    required int wifiId,
+    required int id,
+    @Default(WiFiRemoveCommand.TYPE) String type,
+  }) = _WiFiRemoveCommand;
 
-  static Serializer<WiFiRemoveCommand> get serializer => _$wiFiRemoveCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiRemoveCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WiFiRemoveCommand([void updates(WiFiRemoveCommandBuilder b)?]) = _$WiFiRemoveCommand;
-  WiFiRemoveCommand._();
+  factory WiFiRemoveCommand.fromJson(Map<String, dynamic> json) => _$WiFiRemoveCommandFromJson(json);
 }
 
-abstract class WiFiSaveConfigCommand implements RpcCommand, Built<WiFiSaveConfigCommand, WiFiSaveConfigCommandBuilder> {
+@freezed
+class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
   static const String TYPE = 'wifi_savecfg';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
+  const factory WiFiSaveConfigCommand({
+    required int id,
+    @Default(WiFiSaveConfigCommand.TYPE) String type,
+  }) = _WiFiSaveConfigCommand;
 
-  static Serializer<WiFiSaveConfigCommand> get serializer => _$wiFiSaveConfigCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiSaveConfigCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WiFiSaveConfigCommand([void updates(WiFiSaveConfigCommandBuilder b)?]) = _$WiFiSaveConfigCommand;
-  WiFiSaveConfigCommand._();
+  factory WiFiSaveConfigCommand.fromJson(Map<String, dynamic> json) => _$WiFiSaveConfigCommandFromJson(json);
 }
 
-abstract class WiFiAddCommand implements RpcCommand, Built<WiFiAddCommand, WiFiAddCommandBuilder> {
+@freezed
+class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
   static const String TYPE = 'wifi_add';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
-  String get SSID;
-  String get psk;
+  const factory WiFiAddCommand({
+    required String SSID,
+    required String psk,
+    required int id,
+    @Default(WiFiAddCommand.TYPE) String type,
+  }) = _WiFiAddCommand;
 
-  static Serializer<WiFiAddCommand> get serializer => _$wiFiAddCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiAddCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WiFiAddCommand([void updates(WiFiAddCommandBuilder b)?]) = _$WiFiAddCommand;
-  WiFiAddCommand._();
+  factory WiFiAddCommand.fromJson(Map<String, dynamic> json) => _$WiFiAddCommandFromJson(json);
 }
 
-abstract class WiFiGetStoredCommand implements RpcCommand, Built<WiFiGetStoredCommand, WiFiGetStoredCommandBuilder> {
+@freezed
+class WiFiGetStoredCommand with _$WiFiGetStoredCommand implements RpcCommand {
   static const String TYPE = 'wifi_get_stored';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
+  const factory WiFiGetStoredCommand({
+    required int id,
+    @Default(WiFiGetStoredCommand.TYPE) String type,
+  }) = _WiFiGetStoredCommand;
 
-  static Serializer<WiFiGetStoredCommand> get serializer => _$wiFiGetStoredCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WiFiGetStoredCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WiFiGetStoredCommand([void updates(WiFiGetStoredCommandBuilder b)?]) = _$WiFiGetStoredCommand;
-  WiFiGetStoredCommand._();
+  factory WiFiGetStoredCommand.fromJson(Map<String, dynamic> json) => _$WiFiGetStoredCommandFromJson(json);
 }
 
-abstract class WiFiGetStoredResult implements RpcResult, Built<WiFiGetStoredResult, WiFiGetStoredResultBuilder> {
-  @override
-  int get id;
+@freezed
+class WiFiGetStoredResult with _$WiFiGetStoredResult implements RpcResult {
+  const factory WiFiGetStoredResult({
+    required List<WiFiStoredNetworkInfo> networks,
+    required int id,
+  }) = _WiFiGetStoredResult;
 
-  BuiltList<WiFiStoredNetworkInfo>? get networks;
-
-  static Serializer<WiFiGetStoredResult> get serializer => _$wiFiGetStoredResultSerializer;
-
-  factory WiFiGetStoredResult([void updates(WiFiGetStoredResultBuilder b)?]) = _$WiFiGetStoredResult;
-  factory WiFiGetStoredResult.respond(RpcCommand command) {
-    return _$WiFiGetStoredResult((b) => b.id = command.id);
-  }
-  WiFiGetStoredResult._();
+  factory WiFiGetStoredResult.fromJson(Map<String, dynamic> json) => _$WiFiGetStoredResultFromJson(json);
 }

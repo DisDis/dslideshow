@@ -1,15 +1,16 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'sensor_info.g.dart';
+part 'sensor_info.freezed.dart';
 
-abstract class SensorInfo implements Built<SensorInfo, SensorInfoBuilder> {
-  String get name;
+@freezed
+class SensorInfo with _$SensorInfo {
   //String sensorTemp = '62.0\'C';
-  String get value;
 
-  static Serializer<SensorInfo> get serializer => _$sensorInfoSerializer;
+  const factory SensorInfo({
+    required String name,
+    required String value,
+  }) = _SensorInfo;
 
-  factory SensorInfo([void updates(SensorInfoBuilder b)?]) = _$SensorInfo;
-  SensorInfo._();
+  factory SensorInfo.fromJson(Map<String, dynamic> json) => _$SensorInfoFromJson(json);
 }

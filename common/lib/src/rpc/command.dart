@@ -7,8 +7,6 @@ abstract class RpcCommand implements RpcResult {
   static int generateId() => _id++;
 
   String get type;
-
-  int get id;
 }
 
 abstract class RpcResult {

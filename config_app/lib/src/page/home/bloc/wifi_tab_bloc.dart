@@ -5,6 +5,8 @@ import 'package:config_app/src/page/home/bloc/wifi_tab_event.dart';
 import 'package:config_app/src/page/home/bloc/wifi_tab_state.dart';
 import 'package:config_app/src/service/client_service.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
 class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
@@ -28,10 +30,12 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     on<AddWifiTabEvent>((AddWifiTabEvent event, emit) async {
       emit(UnWifiTabState());
       try {
-        await _client.send(WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
-          ..SSID = event.SSID
-          ..psk = event.psk)));
-        await _client.send(WSSendRpcCommand((b) => b.command = WiFiSaveConfigCommand()));
+        await _client.send(WSSendRpcCommand.byCommand(WiFiAddCommand(
+          id: RpcCommand.generateId(),
+          SSID: event.SSID,
+          psk: event.psk,
+        )));
+        await _client.send(WSSendRpcCommand.byCommand(WiFiSaveConfigCommand(id: RpcCommand.generateId())));
         await _updateData(emit);
       } catch (e, st) {
         _log.severe('FATAL', e, st);
@@ -41,7 +45,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
 
     on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
       emit(UnWifiTabState());
-      await _client.send(WSSendRpcCommand((b) => b.command = WiFiRemoveCommand((b) => b..wifiId = event.wifiId)));
+      await _client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(id: RpcCommand.generateId(), wifiId: event.wifiId)));
       await _updateData(emit);
     });
 
@@ -53,10 +57,10 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
   }
 
   Future<void> _updateData(Emitter<WifiTabState> emit) async {
-    final fScan = _client.send(WSSendRpcCommand((b) => b.command = WiFiScanCommand()));
-    final fStored = _client.send(WSSendRpcCommand((b) => b.command = WiFiGetStoredCommand()));
-    final scanResult = (await fScan as WSRpcResult).result as WiFiScanResult;
-    final storedResult = (await fStored as WSRpcResult).result as WiFiGetStoredResult;
+    final fScan = _client.send(WSSendRpcCommand.byCommand(WiFiScanCommand(id: RpcCommand.generateId())));
+    final fStored = _client.send(WSSendRpcCommand.byCommand(WiFiGetStoredCommand(id: RpcCommand.generateId())));
+    final scanResult = serializers.deserialize((await fScan as WSRpcResult).resultData) as WiFiScanResult;
+    final storedResult = serializers.deserialize((await fStored as WSRpcResult).resultData) as WiFiGetStoredResult;
     //FIX: Remove delay
     // await Future.delayed(const Duration(seconds: 1));
     //FIX: Remove stub data

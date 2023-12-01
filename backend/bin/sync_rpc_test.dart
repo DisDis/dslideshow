@@ -25,7 +25,7 @@ main() async {
 
 checkMessage(int i, RemoteServiceImpl backendService) async {
   final text = "_${i}_";
-  final result = (await backendService.send(EchoCommand((b) => b.text = text))) as EchoCommandResult;
+  final result = (await backendService.send(EchoCommand(text: text, id: RpcCommand.generateId()))) as EchoCommandResult;
   if (result.resultText!.startsWith(text)) {
     print('OK: $i->${result.resultText}');
   } else {
@@ -52,26 +52,27 @@ class LocalService implements RpcService {
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
       case EchoCommand.TYPE:
-        return new Future.value(_executeEchoCommand(command as EchoCommand));
+        return _executeEchoCommand(command as EchoCommand);
       default:
-        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return new ErrorResult((b) => b
-      ..id = command.id
-      ..error = "$e");
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
+    return ErrorResult(
+      id: command.id,
+      error: "$e",
+    );
   }
 
-  RpcResult _executeEchoCommand(EchoCommand command) {
+  Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult((b) {
-      b.id = command.id;
-      b.resultText = "${command.text} Service ${new DateTime.now()}";
-    });
+    return EchoCommandResult(
+      id: command.id,
+      resultText: "${command.text} LS ${new DateTime.now().microsecond}",
+    );
   }
 }
 
@@ -115,14 +116,15 @@ class RemoteService implements RpcService {
       case EchoCommand.TYPE:
         return _executeEchoCommand(command as EchoCommand);
       default:
-        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return new ErrorResult((b) => b
-      ..id = command.id
-      ..error = "$e");
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
+    return ErrorResult(
+      id: command.id,
+      error: "$e",
+    );
   }
 
   Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
@@ -130,9 +132,9 @@ class RemoteService implements RpcService {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
     await Future.delayed(Duration(milliseconds: 100 + rnd.nextInt(2000)));
-    return new EchoCommandResult((b) {
-      b.id = command.id;
-      b.resultText = "${command.text} S ${new DateTime.now().microsecond}";
-    });
+    return EchoCommandResult(
+      id: command.id,
+      resultText: "${command.text} S ${new DateTime.now().microsecond}",
+    );
   }
 }

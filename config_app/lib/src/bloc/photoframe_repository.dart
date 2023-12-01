@@ -15,7 +15,7 @@ class PhotoframeRepository {
   static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
 
   Future<AppConfig> getConfig() async {
-    final result = await _client.send(WSConfigDownloadCommand()) as WSConfigDownloadResult;
+    final result = await _client.send(WSConfigDownloadCommand(id: WebSocketCommand.generateId())) as WSConfigDownloadResult;
     _log.info('Recived config:');
     var jsonMsg = json.decode(result.content);
     final _config = AppConfig.fromJson(jsonMsg);
@@ -24,7 +24,7 @@ class PhotoframeRepository {
   }
 
   Future<WebSocketResult> saveConfig(AppConfig config) {
-    return _client.send(WSConfigUploadCommand((b) => b.content = prettyPrintJSONEncode.convert(config.toJson())));
+    return _client.send(WSConfigUploadCommand(id: WebSocketCommand.generateId(), content: prettyPrintJSONEncode.convert(config.toJson())));
   }
 
   void dispose() {

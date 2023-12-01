@@ -24,21 +24,24 @@ void main() {
       expect(
           _wifiService.parseScanOutput(testData),
           equals(<WiFiNetworkInfo>[
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Tenda_7BF3B0'
-              ..signal = -88
-              ..capability = 'ESS Privacy ShortSlotTime (0x0411)'
-              ..freq = 2437),
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Jazzir_2G'
-              ..signal = -67
-              ..capability = 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)'
-              ..freq = 2437),
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Jazzir_5G'
-              ..signal = -57
-              ..capability = 'ESS Privacy SpectrumMgmt RadioMeasure (0x1111)'
-              ..freq = 5500)
+            WiFiNetworkInfo(
+              SSID: 'Tenda_7BF3B0',
+              signal: -88,
+              capability: 'ESS Privacy ShortSlotTime (0x0411)',
+              freq: 2437,
+            ),
+            WiFiNetworkInfo(
+              SSID: 'Jazzir_2G',
+              signal: -67,
+              capability: 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)',
+              freq: 2437,
+            ),
+            WiFiNetworkInfo(
+              SSID: 'Jazzir_5G',
+              signal: -57,
+              capability: 'ESS Privacy SpectrumMgmt RadioMeasure (0x1111)',
+              freq: 5500,
+            )
           ]));
     });
 
@@ -54,11 +57,12 @@ void main() {
       expect(
           _wifiService.parseScanOutput(testData),
           equals(<WiFiNetworkInfo>[
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Jazzir_2G'
-              ..signal = -67
-              ..capability = 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)'
-              ..freq = 2437)
+            WiFiNetworkInfo(
+              SSID: 'Jazzir_2G',
+              signal: -67,
+              capability: 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)',
+              freq: 2437,
+            )
           ]));
     });
 
@@ -93,36 +97,31 @@ network id / ssid / bssid / flags
       expect(
           _wifiService.parseStoredOutput(testData),
           equals(<WiFiStoredNetworkInfo>[
-            WiFiStoredNetworkInfo((b) {
-              b
-                ..id = 0
-                ..SSID = 'Jazzir_5G'
-                ..disabled = false;
-            }),
-            WiFiStoredNetworkInfo((b) {
-              b
-                ..id = 1
-                ..SSID = 'Jazzir_2G'
-                ..disabled = false;
-            }),
-            WiFiStoredNetworkInfo((b) {
-              b
-                ..id = 2
-                ..SSID = 'tutu'
-                ..disabled = false;
-            }),
-            WiFiStoredNetworkInfo((b) {
-              b
-                ..id = 3
-                ..SSID = ''
-                ..disabled = true;
-            }),
-            WiFiStoredNetworkInfo((b) {
-              b
-                ..id = 4
-                ..SSID = ''
-                ..disabled = true;
-            })
+            WiFiStoredNetworkInfo(
+              id: 0,
+              SSID: 'Jazzir_5G',
+              disabled: false,
+            ),
+            WiFiStoredNetworkInfo(
+              id: 1,
+              SSID: 'Jazzir_2G',
+              disabled: false,
+            ),
+            WiFiStoredNetworkInfo(
+              id: 2,
+              SSID: 'tutu',
+              disabled: false,
+            ),
+            WiFiStoredNetworkInfo(
+              id: 3,
+              SSID: '',
+              disabled: true,
+            ),
+            WiFiStoredNetworkInfo(
+              id: 4,
+              SSID: '',
+              disabled: true,
+            )
           ]));
     });
   });

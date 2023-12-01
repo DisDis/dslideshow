@@ -1,36 +1,28 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'system_info_commands.g.dart';
+part 'system_info_commands.freezed.dart';
 
-abstract class GetSystemInfoCommand implements RpcCommand, Built<GetSystemInfoCommand, GetSystemInfoCommandBuilder> {
+@freezed
+class GetSystemInfoCommand with _$GetSystemInfoCommand implements RpcCommand {
   static const String TYPE = 'get_system_info_command';
-  @override
-  String get type => TYPE;
 
-  @override
-  int get id;
+  const factory GetSystemInfoCommand({
+    required int id,
+    @Default(GetSystemInfoCommand.TYPE) String type,
+  }) = _GetSystemInfoCommand;
 
-  static Serializer<GetSystemInfoCommand> get serializer => _$getSystemInfoCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(GetSystemInfoCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory GetSystemInfoCommand([void updates(GetSystemInfoCommandBuilder b)?]) = _$GetSystemInfoCommand;
-  GetSystemInfoCommand._();
+  factory GetSystemInfoCommand.fromJson(Map<String, dynamic> json) => _$GetSystemInfoCommandFromJson(json);
 }
 
-abstract class GetSystemInfoCommandResult
-    implements RpcResult, Built<GetSystemInfoCommandResult, GetSystemInfoCommandResultBuilder> {
-  SystemInfo get systemInfo;
+@freezed
+class GetSystemInfoCommandResult with _$GetSystemInfoCommandResult implements RpcResult {
+  const factory GetSystemInfoCommandResult({
+    required SystemInfo systemInfo,
+    required int id,
+  }) = _GetSystemInfoCommandResult;
 
-  @override
-  int get id;
-
-  static Serializer<GetSystemInfoCommandResult> get serializer => _$getSystemInfoCommandResultSerializer;
-
-  factory GetSystemInfoCommandResult([void updates(GetSystemInfoCommandResultBuilder b)?]) =
-      _$GetSystemInfoCommandResult;
-
-  GetSystemInfoCommandResult._();
+  factory GetSystemInfoCommandResult.fromJson(Map<String, dynamic> json) => _$GetSystemInfoCommandResultFromJson(json);
 }

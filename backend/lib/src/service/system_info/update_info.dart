@@ -1,9 +1,8 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/src/service/system_info/sensor_info.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'update_info.g.dart';
+part 'update_info.freezed.dart';
 
 //String cpuLoad = '30%';
 //int memTotal = 3817056;
@@ -15,36 +14,23 @@ part 'update_info.g.dart';
 //String diskAvail = '9.0G';
 //String uptime = printDuration( new Duration(days: 1, hours: 13, minutes: 46, seconds: 30));
 
-abstract class UpdateInfo implements Built<UpdateInfo, UpdateInfoBuilder> {
-  static Serializer<UpdateInfo> get serializer => _$updateInfoSerializer;
+@freezed
+class UpdateInfo with _$UpdateInfo {
+  const factory UpdateInfo({
+    required double cpuLoad1,
+    required double cpuLoad15,
+    required double cpuLoad5,
+    required int diskAvailable,
+    required int diskUsed,
+    required int diskUsedPercent,
+    required int lastUpdate,
+    required int memTotal,
+    required int memUsed,
+    required List<SensorInfo> sensors,
+    required int swapTotal,
+    required int swapUsed,
+    required String uptime,
+  }) = _UpdateInfo;
 
-  factory UpdateInfo([void updates(UpdateInfoBuilder b)?]) = _$UpdateInfo;
-
-  UpdateInfo._();
-
-  double? get cpuLoad1;
-
-  double? get cpuLoad15;
-
-  double? get cpuLoad5;
-
-  int? get diskAvailable;
-
-  int? get diskUsed;
-
-  int? get diskUsedPercent;
-
-  int? get lastUpdate;
-
-  int? get memTotal;
-
-  int? get memUsed;
-
-  BuiltList<SensorInfo>? get sensors;
-
-  int? get swapTotal;
-
-  int? get swapUsed;
-
-  String? get uptime;
+  factory UpdateInfo.fromJson(Map<String, dynamic> json) => _$UpdateInfoFromJson(json);
 }

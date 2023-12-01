@@ -13,9 +13,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/uptime_info_widget.dar
 class SystemInfoMetrics extends StatelessWidget {
   final SystemInfo _model;
 
-  const SystemInfoMetrics({required SystemInfo model, Key? key})
-      : _model = model,
-        super(key: key);
+  const SystemInfoMetrics({required SystemInfo model, super.key}) : _model = model;
 
   @override
   Widget build(BuildContext context) {
@@ -42,25 +40,25 @@ class SystemInfoMetrics extends StatelessWidget {
         crossAxisSpacing: 8.0,
         children: <Widget>[
           const CurrentTimeWidget(),
-          UptimeInfoWidget(model: _model.updateInfo!.uptime),
+          UptimeInfoWidget(model: _model.updateInfo.uptime),
           CpuInfoWidget(
             cpu: _model.cpuInfo,
-            cpuLoad1: _model.updateInfo!.cpuLoad1,
-            cpuLoad5: _model.updateInfo!.cpuLoad5,
-            cpuLoad15: _model.updateInfo!.cpuLoad15,
+            cpuLoad1: _model.updateInfo.cpuLoad1,
+            cpuLoad5: _model.updateInfo.cpuLoad5,
+            cpuLoad15: _model.updateInfo.cpuLoad15,
           ),
           OSInfoWidget(model: _model.osInfo),
           NetworkUsageWidget(model: _model.networkInfo),
           MemoryUsageWidget(
-            totalMemory: _model.updateInfo!.memTotal,
-            usedMemory: _model.updateInfo!.memUsed,
-            totalSwapMemory: _model.updateInfo!.swapTotal,
-            usedSwapMemory: _model.updateInfo!.swapUsed,
+            totalMemory: _model.updateInfo.memTotal,
+            usedMemory: _model.updateInfo.memUsed,
+            totalSwapMemory: _model.updateInfo.swapTotal,
+            usedSwapMemory: _model.updateInfo.swapUsed,
           ),
           DiskUsageWidget(
-            totalMemory: _model.updateInfo!.diskUsed! + _model.updateInfo!.diskAvailable!,
-            usedMemory: _model.updateInfo!.diskUsed,
-            usagePercent: _model.updateInfo!.diskUsedPercent,
+            totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
+            usedMemory: _model.updateInfo.diskUsed,
+            usagePercent: _model.updateInfo.diskUsedPercent,
           ),
         ],
       );

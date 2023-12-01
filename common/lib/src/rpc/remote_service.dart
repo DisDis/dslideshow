@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
-import 'package:built_value/serializer.dart';
+
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/serializers.dart';
 import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/exception.dart';
 import 'package:async/async.dart';
@@ -10,13 +11,13 @@ import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:pool/pool.dart';
 
 abstract class RemoteService {
-  Future<RpcResult> sendStr(RpcCommand cmd);
+  Future<RpcResult> sendStr<T extends RpcCommand>(T cmd);
 
   Future<Object> transparentSend(Object cmd);
 
   Future<String> transparentSendStr(String cmdStr);
 
-  Future<RpcResult> send(RpcCommand cmd);
+  Future<RpcResult> send<T extends RpcCommand>(T cmd);
 }
 
 class RemoteServiceImpl implements RemoteService {
@@ -111,7 +112,7 @@ class RemoteServiceImpl implements RemoteService {
     return _transport.send(this, cmd);
   }
 
-  Future<RpcResult> sendStr(RpcCommand cmd) async {
+  Future<RpcResult> sendStr<T extends RpcCommand>(T cmd) async {
     final jsonO = await transparentSendStr(json.encode(serializers.serialize(cmd)));
     RpcResult result = serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
     if (result is RpcErrorResult) {
@@ -120,7 +121,7 @@ class RemoteServiceImpl implements RemoteService {
     return result;
   }
 
-  Future<RpcResult> send(RpcCommand cmd) async {
+  Future<RpcResult> send<T extends RpcCommand>(T cmd) async {
     final jsonO = await transparentSend(serializers.serialize(cmd)!);
     RpcResult result = serializers.deserialize(jsonO) as RpcResult;
     if (result is RpcErrorResult) {

@@ -13,10 +13,10 @@ class HomeCubit extends Cubit<HomeState> {
   void setTab(HomeTab tab) => emit(HomeState(tab: tab));
 
   Future<WebSocketResult> echo() async {
-    return userRepository.client!.send(WSEchoCommand((b) => b.msg = 'Message - ${DateTime.now().toString()}'));
+    return userRepository.client!.send(WSEchoCommand(id: WebSocketCommand.generateId(), msg: 'Message - ${DateTime.now().toString()}'));
   }
 
   Future<WebSocketResult> echoError() async {
-    return userRepository.client!.send(WSEchoCommand((b) => b.msg = 'ERROR'));
+    return userRepository.client!.send(WSEchoCommand(id: WebSocketCommand.generateId(), msg: 'ERROR'));
   }
 }

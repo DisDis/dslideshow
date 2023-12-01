@@ -1,37 +1,30 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'screen_commands.g.dart';
+part 'screen_commands.freezed.dart';
 
-abstract class ScreenTurnCommand implements RpcCommand, Built<ScreenTurnCommand, ScreenTurnCommandBuilder> {
+@freezed
+class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
   static const String TYPE = 'screen_turn';
-  @override
-  String get type => TYPE;
-  bool get enabled;
-  @override
-  int get id;
+  const factory ScreenTurnCommand({
+    required bool enabled,
+    required int id,
+    @Default(ScreenTurnCommand.TYPE) String type,
+  }) = _ScreenTurnCommand;
 
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(ScreenTurnCommandBuilder b) => b.id = RpcCommand.generateId();
-
-  static Serializer<ScreenTurnCommand> get serializer => _$screenTurnCommandSerializer;
-
-  factory ScreenTurnCommand([void updates(ScreenTurnCommandBuilder b)?]) = _$ScreenTurnCommand;
-  ScreenTurnCommand._();
+  factory ScreenTurnCommand.fromJson(Map<String, dynamic> json) => _$ScreenTurnCommandFromJson(json);
 }
 
-abstract class ScreenLockCommand implements RpcCommand, Built<ScreenLockCommand, ScreenLockCommandBuilder> {
+@freezed
+class ScreenLockCommand with _$ScreenLockCommand implements RpcCommand {
   static const String TYPE = 'screen_lock';
-  @override
-  String get type => TYPE;
-  bool get isLock;
-  @override
-  int get id;
 
-  static Serializer<ScreenLockCommand> get serializer => _$screenLockCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(ScreenLockCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory ScreenLockCommand([void updates(ScreenLockCommandBuilder b)?]) = _$ScreenLockCommand;
-  ScreenLockCommand._();
+  const factory ScreenLockCommand({
+    required bool isLock,
+    required int id,
+    @Default(ScreenLockCommand.TYPE) String type,
+  }) = _ScreenLockCommand;
+
+  factory ScreenLockCommand.fromJson(Map<String, dynamic> json) => _$ScreenLockCommandFromJson(json);
 }

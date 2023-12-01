@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_common/rpc.dart';
 import 'package:flutter/rendering.dart';
 import 'package:logging/logging.dart';
 
@@ -40,9 +41,11 @@ class ClientService {
     }).onDone(disconnect);
     _log.info('User is connecting');
 
-    return send(WSAuthCommand((b) {
-      b.code = _authCode;
-    }));
+    return send(WSAuthCommand(
+      userName: "admin",
+      id: RpcCommand.generateId(),
+      code: _authCode,
+    ));
     //return _result.future;
   }
 
@@ -55,7 +58,7 @@ class ClientService {
     channel = null;
     _onDisconnect.add(null);
     _resultQueue.forEach((key, value) {
-      value.completeError(WSErrorResult.id('disconnect', key));
+      value.completeError(WSErrorResult.byId('disconnect', key));
     });
     _resultQueue.clear();
     _log.info('User disconnected');
@@ -111,13 +114,13 @@ class ClientService {
           result = _executeWSHelloCommand(command as WSHelloCommand);
           break;
         default:
-          result = WSErrorResult('Unknown command', command);
+          result = WSErrorResult.byCommand('Unknown command', command);
           break;
       }
       response(result);
     } catch (e, st) {
       _log.severe(e.toString(), e, st);
-      response(WSErrorResult(e.toString(), command));
+      response(WSErrorResult.byCommand(e.toString(), command));
     }
   }
 
@@ -135,6 +138,6 @@ class ClientService {
   WebSocketResult _executeWSHelloCommand(WSHelloCommand msg) {
     _isAuth = true;
     // _onAuth.add(true);
-    return WSResultOk(msg);
+    return WSResultOk.byCommand(msg);
   }
 }

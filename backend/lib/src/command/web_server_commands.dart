@@ -1,44 +1,35 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'web_server_commands.g.dart';
+part 'web_server_commands.freezed.dart';
 
-abstract class WebServerControlCommand
-    implements RpcCommand, Built<WebServerControlCommand, WebServerControlCommandBuilder> {
+@freezed
+class WebServerControlCommand with _$WebServerControlCommand implements RpcCommand {
   static const String TYPE = 'web_server_control';
-  @override
-  String get type => TYPE;
-  bool get enable;
-  @override
-  int get id;
+  const factory WebServerControlCommand({
+    required bool enable,
+    required int id,
+    @Default(WebServerControlCommand.TYPE) String type,
+  }) = _WebServerControlCommand;
 
-  static Serializer<WebServerControlCommand> get serializer => _$webServerControlCommandSerializer;
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WebServerControlCommandBuilder b) => b.id = RpcCommand.generateId();
-  factory WebServerControlCommand([void updates(WebServerControlCommandBuilder b)?]) = _$WebServerControlCommand;
-  WebServerControlCommand._();
+  factory WebServerControlCommand.fromJson(Map<String, dynamic> json) => _$WebServerControlCommandFromJson(json);
 }
 
-abstract class WebServerControlCommandResult
-    implements RpcResult, Built<WebServerControlCommandResult, WebServerControlCommandResultBuilder> {
-  @override
-  int get id;
-
-  String get code;
-  bool get enable;
-
-  static Serializer<WebServerControlCommandResult> get serializer => _$webServerControlCommandResultSerializer;
-
-  factory WebServerControlCommandResult([void updates(WebServerControlCommandResultBuilder b)?]) =
-      _$WebServerControlCommandResult;
-  factory WebServerControlCommandResult.respond(RpcCommand command, String code, bool enable) {
-    return _$WebServerControlCommandResult((b) => b
-      ..id = command.id
-      ..enable = enable
-      ..code = code);
+@freezed
+class WebServerControlCommandResult with _$WebServerControlCommandResult implements RpcResult {
+  static WebServerControlCommandResult respond(RpcCommand command, String code, bool enable) {
+    return WebServerControlCommandResult(id: command.id, enable: enable, code: code);
   }
-  WebServerControlCommandResult._();
+
+  const factory WebServerControlCommandResult({
+    required String code,
+    required bool enable,
+    required int id,
+  }) = _WebServerControlCommandResult;
+
+  factory WebServerControlCommandResult.fromJson(Map<String, dynamic> json) => _$WebServerControlCommandResultFromJson(json);
 }
 
 abstract class WebSocketResult {
@@ -57,214 +48,168 @@ abstract class WebSocketErrorResult extends WebSocketResult {
   String get error;
 }
 
-abstract class WSErrorResult implements WebSocketErrorResult, Built<WSErrorResult, WSErrorResultBuilder> {
-  String get error;
-  int get id;
+@freezed
+class WSErrorResult with _$WSErrorResult implements WebSocketErrorResult {
+  const factory WSErrorResult({
+    required String error,
+    required int id,
+  }) = _WSErrorResult;
 
-  static Serializer<WSErrorResult> get serializer => _$wSErrorResultSerializer;
+  static WSErrorResult byId(String error, int commandId) {
+    return WSErrorResult(
+      id: commandId,
+      error: error,
+    );
+  }
 
-  factory WSErrorResult.id(String error, int commandId) {
-    return _$WSErrorResult((b) {
-      b.id = commandId;
-      b.error = error;
-    });
+  static WSErrorResult byCommand(String error, WebSocketCommand command) {
+    return WSErrorResult(
+      id: command.id,
+      error: error,
+    );
   }
-  factory WSErrorResult(String error, WebSocketCommand command) {
-    return _$WSErrorResult((b) {
-      b.id = command.id;
-      b.error = error;
-    });
-  }
-  WSErrorResult._();
+
+  factory WSErrorResult.fromJson(Map<String, dynamic> json) => _$WSErrorResultFromJson(json);
 }
 
-abstract class WSHelloCommand implements WebSocketCommand, Built<WSHelloCommand, WSHelloCommandBuilder> {
+@freezed
+class WSHelloCommand with _$WSHelloCommand implements WebSocketCommand {
   static const String TYPE = 'ws_hello';
-  @override
-  String get type => TYPE;
+  const factory WSHelloCommand({
+    required int id,
+    @Default(WSHelloCommand.TYPE) String type,
+  }) = _WSHelloCommand;
 
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSHelloCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSHelloCommand> get serializer => _$wSHelloCommandSerializer;
-  factory WSHelloCommand([void updates(WSHelloCommandBuilder b)?]) = _$WSHelloCommand;
-  WSHelloCommand._();
+  factory WSHelloCommand.fromJson(Map<String, dynamic> json) => _$WSHelloCommandFromJson(json);
 }
 
-abstract class WSAuthCommand implements WebSocketCommand, Built<WSAuthCommand, WSAuthCommandBuilder> {
+@freezed
+class WSAuthCommand with _$WSAuthCommand implements WebSocketCommand {
   static const String TYPE = 'ws_auth';
-  @override
-  String get type => TYPE;
+  const factory WSAuthCommand({
+    required String userName,
+    required String code,
+    required int id,
+    @Default(WSAuthCommand.TYPE) String type,
+  }) = _WSAuthCommand;
 
-  String get userName;
-  String get code;
-
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSAuthCommandBuilder b) {
-    b.id = WebSocketCommand.generateId();
-    b.userName = 'admin';
-  }
-
-  static Serializer<WSAuthCommand> get serializer => _$wSAuthCommandSerializer;
-  factory WSAuthCommand([void updates(WSAuthCommandBuilder b)?]) = _$WSAuthCommand;
-  WSAuthCommand._();
+  factory WSAuthCommand.fromJson(Map<String, dynamic> json) => _$WSAuthCommandFromJson(json);
 }
 
-// abstract class WSAuthReqCommand implements WebSocketCommand, Built<WSAuthReqCommand, WSAuthReqCommandBuilder> {
-//   static const String TYPE = 'ws_auth_req';
-//   @override
-//   String get type => TYPE;
-
-//   static Serializer<WSAuthReqCommand> get serializer => _$wSAuthReqCommandSerializer;
-//   factory WSAuthReqCommand([void updates(WSAuthReqCommandBuilder b)?]) = _$WSAuthReqCommand;
-//   WSAuthReqCommand._();
-// }
-
-abstract class WSSendRpcCommand implements WebSocketCommand, Built<WSSendRpcCommand, WSSendRpcCommandBuilder> {
+@freezed
+class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketCommand {
   static const String TYPE = 'ws_rpc';
-  @override
-  String get type => TYPE;
+  const factory WSSendRpcCommand({
+    ///TODO: FIX it
+    //required RpcCommand command,
+    required Object commandData,
+    //WebSocketCommand.generateId()
+    required int id,
+    @Default(WSSendRpcCommand.TYPE) String type,
+  }) = _WSSendRpcCommand;
 
-  RpcCommand get command;
-
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSSendRpcCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSSendRpcCommand> get serializer => _$wSSendRpcCommandSerializer;
-  factory WSSendRpcCommand([void updates(WSSendRpcCommandBuilder b)?]) = _$WSSendRpcCommand;
-  WSSendRpcCommand._();
-}
-
-abstract class WSRpcResult implements WebSocketResult, Built<WSRpcResult, WSRpcResultBuilder> {
-  @override
-  int get id;
-
-  RpcResult get result;
-
-  static Serializer<WSRpcResult> get serializer => _$wSRpcResultSerializer;
-  factory WSRpcResult(RpcResult result, WebSocketCommand command) {
-    return _$WSRpcResult((b) {
-      b.id = command.id;
-      b.result = result;
-    });
+  static WSSendRpcCommand byCommand<T extends RpcCommand>(T command) {
+    return WSSendRpcCommand(
+      id: WebSocketCommand.generateId(),
+      commandData: serializers.serialize(command)!,
+    );
   }
-  WSRpcResult._();
+
+  factory WSSendRpcCommand.fromJson(Map<String, dynamic> json) => _$WSSendRpcCommandFromJson(json);
 }
 
-abstract class WSConfigDownloadCommand
-    implements WebSocketCommand, Built<WSConfigDownloadCommand, WSConfigDownloadCommandBuilder> {
+@freezed
+class WSRpcResult with _$WSRpcResult implements WebSocketResult {
+  const factory WSRpcResult({
+    ///TODO: FIX it
+    //required RpcResult result,
+    required Object resultData,
+    required int id,
+  }) = _WSRpcResult;
+
+  factory WSRpcResult.fromJson(Map<String, dynamic> json) => _$WSRpcResultFromJson(json);
+  static WSRpcResult byCommand<T extends RpcResult>(T result, WebSocketCommand command) {
+    return WSRpcResult(
+      id: command.id,
+      resultData: serializers.serialize(result)!,
+    );
+  }
+}
+
+@freezed
+class WSConfigDownloadCommand with _$WSConfigDownloadCommand implements WebSocketCommand {
   static const String TYPE = 'ws_config_download';
-  @override
-  String get type => TYPE;
+  const factory WSConfigDownloadCommand({
+    required int id,
+    @Default(WSConfigDownloadCommand.TYPE) String type,
+  }) = _WSConfigDownloadCommand;
 
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSConfigDownloadCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSConfigDownloadCommand> get serializer => _$wSConfigDownloadCommandSerializer;
-  factory WSConfigDownloadCommand([void updates(WSConfigDownloadCommandBuilder b)?]) = _$WSConfigDownloadCommand;
-  WSConfigDownloadCommand._();
+  factory WSConfigDownloadCommand.fromJson(Map<String, dynamic> json) => _$WSConfigDownloadCommandFromJson(json);
 }
 
-abstract class WSConfigUploadCommand
-    implements WebSocketCommand, Built<WSConfigUploadCommand, WSConfigUploadCommandBuilder> {
+@freezed
+class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSocketCommand {
   static const String TYPE = 'ws_config_upload';
-  @override
-  String get type => TYPE;
+  const factory WSConfigUploadCommand({
+    required String content,
+    required int id,
+    @Default(WSConfigUploadCommand.TYPE) String type,
+  }) = _WSConfigUploadCommand;
 
-  String get content;
-
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSConfigUploadCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSConfigUploadCommand> get serializer => _$wSConfigUploadCommandSerializer;
-  factory WSConfigUploadCommand([void updates(WSConfigUploadCommandBuilder b)?]) = _$WSConfigUploadCommand;
-  WSConfigUploadCommand._();
+  factory WSConfigUploadCommand.fromJson(Map<String, dynamic> json) => _$WSConfigUploadCommandFromJson(json);
 }
 
-abstract class WSConfigDownloadResult
-    implements WebSocketResult, Built<WSConfigDownloadResult, WSConfigDownloadResultBuilder> {
-  String get content;
-  @override
-  int get id;
+@freezed
+class WSConfigDownloadResult with _$WSConfigDownloadResult implements WebSocketResult {
+  const factory WSConfigDownloadResult({
+    required String content,
+    required int id,
+  }) = _WSConfigDownloadResult;
 
-  static Serializer<WSConfigDownloadResult> get serializer => _$wSConfigDownloadResultSerializer;
-  factory WSConfigDownloadResult([void updates(WSConfigDownloadResultBuilder b)?]) = _$WSConfigDownloadResult;
-  WSConfigDownloadResult._();
+  factory WSConfigDownloadResult.fromJson(Map<String, dynamic> json) => _$WSConfigDownloadResultFromJson(json);
 }
 
-abstract class WSRestartApplicationCommand
-    implements WebSocketCommand, Built<WSRestartApplicationCommand, WSRestartApplicationCommandBuilder> {
+@freezed
+class WSRestartApplicationCommand with _$WSRestartApplicationCommand implements WebSocketCommand {
   static const String TYPE = 'ws_restart_application';
-  @override
-  String get type => TYPE;
+  const factory WSRestartApplicationCommand({
+    required int id,
+    @Default(WSRestartApplicationCommand.TYPE) String type,
+  }) = _WSRestartApplicationCommand;
 
-  @override
-  int get id;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSRestartApplicationCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSRestartApplicationCommand> get serializer => _$wSRestartApplicationCommandSerializer;
-  factory WSRestartApplicationCommand([void updates(WSRestartApplicationCommandBuilder b)?]) =
-      _$WSRestartApplicationCommand;
-  WSRestartApplicationCommand._();
+  factory WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) => _$WSRestartApplicationCommandFromJson(json);
 }
 
-abstract class WSResultOk implements WebSocketResult, Built<WSResultOk, WSResultOkBuilder> {
-  @override
-  int get id;
-
-  static Serializer<WSResultOk> get serializer => _$wSResultOkSerializer;
-  factory WSResultOk(WebSocketCommand command) {
-    return _$WSResultOk((b) => b.id = command.id);
+@freezed
+class WSResultOk with _$WSResultOk implements WebSocketResult {
+  const factory WSResultOk({
+    required int id,
+  }) = _WSResultOk;
+  static WSResultOk byCommand(WebSocketCommand command) {
+    return WSResultOk(id: command.id);
   }
-  WSResultOk._();
+
+  factory WSResultOk.fromJson(Map<String, dynamic> json) => _$WSResultOkFromJson(json);
 }
 
-abstract class WSEchoResult implements WebSocketResult, Built<WSEchoResult, WSEchoResultBuilder> {
-  @override
-  int get id;
-  String get msg;
+@freezed
+class WSEchoResult with _$WSEchoResult implements WebSocketResult {
+  const factory WSEchoResult({
+    required String msg,
+    required int id,
+  }) = _WSEchoResult;
 
-  static Serializer<WSEchoResult> get serializer => _$wSEchoResultSerializer;
-  factory WSEchoResult(WSEchoCommand command) {
-    return _$WSEchoResult((b) {
-      b.id = command.id;
-      b.msg = command.msg;
-    });
-  }
-  WSEchoResult._();
+  factory WSEchoResult.fromJson(Map<String, dynamic> json) => _$WSEchoResultFromJson(json);
 }
 
-abstract class WSEchoCommand implements WebSocketCommand, Built<WSEchoCommand, WSEchoCommandBuilder> {
+@freezed
+class WSEchoCommand with _$WSEchoCommand implements WebSocketCommand {
   static const String TYPE = 'ws_echo';
-  @override
-  String get type => TYPE;
+  const factory WSEchoCommand({
+    required String msg,
+    required int id,
+    @Default(WSEchoCommand.TYPE) String type,
+  }) = _WSEchoCommand;
 
-  @override
-  int get id;
-
-  String get msg;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(WSEchoCommandBuilder b) => b.id = WebSocketCommand.generateId();
-
-  static Serializer<WSEchoCommand> get serializer => _$wSEchoCommandSerializer;
-  factory WSEchoCommand([void updates(WSEchoCommandBuilder b)?]) = _$WSEchoCommand;
-  WSEchoCommand._();
+  factory WSEchoCommand.fromJson(Map<String, dynamic> json) => _$WSEchoCommandFromJson(json);
 }

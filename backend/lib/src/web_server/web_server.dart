@@ -35,23 +35,24 @@ class WebServer implements RpcService {
   }
 
   Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
-    return new ErrorResult((b) => b
-      ..id = command.id
-      ..error = '$e');
+    return ErrorResult(
+      id: command.id,
+      error: '$e',
+    );
   }
 
   Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult((b) {
-      b.id = command.id;
-      b.resultText = "${command.text} Service ${new DateTime.now()}";
-    });
+    return EchoCommandResult(
+      id: command.id,
+      resultText: "${command.text} Service ${new DateTime.now()}",
+    );
   }
 
   Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
     _webService.enabled = command.enable;
-    return new WebServerControlCommandResult.respond(command, _webService.code, command.enable);
+    return WebServerControlCommandResult.respond(command, _webService.code, command.enable);
   }
 }

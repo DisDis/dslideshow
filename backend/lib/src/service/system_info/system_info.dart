@@ -1,25 +1,21 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/src/service/system_info/update_info.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'cpu_info.dart';
 import 'network_info.dart';
 import 'os_info.dart';
 
 part 'system_info.g.dart';
+part 'system_info.freezed.dart';
 
-abstract class SystemInfo implements Built<SystemInfo, SystemInfoBuilder> {
-  static Serializer<SystemInfo> get serializer => _$systemInfoSerializer;
+@freezed
+class SystemInfo with _$SystemInfo {
+  const factory SystemInfo({
+    required CpuInfo cpuInfo,
+    required NetworkInfo networkInfo,
+    required OSInfo osInfo,
+    @JsonKey(includeToJson: true) required UpdateInfo updateInfo,
+  }) = _SystemInfo;
 
-  factory SystemInfo([void updates(SystemInfoBuilder b)?]) = _$SystemInfo;
-
-  SystemInfo._();
-
-  CpuInfo get cpuInfo;
-
-  NetworkInfo get networkInfo;
-
-  OSInfo get osInfo;
-
-  UpdateInfo? get updateInfo;
+  factory SystemInfo.fromJson(Map<String, dynamic> json) => _$SystemInfoFromJson(json);
 }

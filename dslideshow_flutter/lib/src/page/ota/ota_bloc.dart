@@ -11,13 +11,14 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
   final FrontendService frontendService;
   final ProcessTerminalBackend backend;
   OtaBloc({required this.frontendService, required this.backend})
-      : super(OtaState.initial(info: OTAInfo((b) {
-          b.uploadingPercent = 0;
-          b.status = OTAStatus.disabled;
-          b.code = '-';
-          b.errorText = '';
-          b.exitCode = 0;
-        }))) {
+      : super(const OtaState.initial(
+            info: OTAInfo(
+          uploadingPercent: 0,
+          status: OTAStatus.disabled,
+          code: '-',
+          errorText: '',
+          exitCode: 0,
+        ))) {
     on<OtaInitializationEvent>(_initialization);
     on<OtaExitEvent>((event, emit) {
       emit(OtaState.exit(info: state.info));

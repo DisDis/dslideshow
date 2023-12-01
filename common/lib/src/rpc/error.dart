@@ -1,17 +1,17 @@
 library rpc.error;
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+
 import 'package:dslideshow_common/rpc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'error.g.dart';
+part 'error.freezed.dart';
 
-abstract class ErrorResult implements RpcErrorResult, Built<ErrorResult, ErrorResultBuilder> {
-  String get error;
-  int get id;
+@freezed
+class ErrorResult with _$ErrorResult implements RpcErrorResult {
+  const factory ErrorResult({
+    required String error,
+    required int id,
+  }) = _ErrorResult;
 
-  static Serializer<ErrorResult> get serializer =>
-      _$errorResultSerializer;
-
-  factory ErrorResult([void updates(ErrorResultBuilder b)?]) = _$ErrorResult;
-  ErrorResult._();
+  factory ErrorResult.fromJson(Map<String, dynamic> json) => _$ErrorResultFromJson(json);
 }

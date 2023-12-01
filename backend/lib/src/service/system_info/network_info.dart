@@ -1,44 +1,32 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:built_collection/built_collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'network_info.g.dart';
+part 'network_info.freezed.dart';
 
-abstract class NetworkInfo implements Built<NetworkInfo, NetworkInfoBuilder> {
-  int get lastUpdate;
-  bool get hasInternet;
-  BuiltList<NetworkInterfaceInfo>? get interfaces;
+@freezed
+class NetworkInfo with _$NetworkInfo {
+  const factory NetworkInfo({
+    required int lastUpdate,
+    required bool hasInternet,
+    required List<NetworkInterfaceInfo>? interfaces,
+  }) = _NetworkInfo;
 
-  static Serializer<NetworkInfo> get serializer =>
-      _$networkInfoSerializer;
-
-  factory NetworkInfo([void updates(NetworkInfoBuilder b)?]) = _$NetworkInfo;
-  NetworkInfo._();
+  factory NetworkInfo.fromJson(Map<String, dynamic> json) => _$NetworkInfoFromJson(json);
 }
 
-abstract class NetworkInterfaceInfo implements Built<NetworkInterfaceInfo, NetworkInterfaceInfoBuilder> {
-  String get name;
-  NetworkInterfaceStatus get status;
+@freezed
+class NetworkInterfaceInfo with _$NetworkInterfaceInfo {
+  const factory NetworkInterfaceInfo({
+    required String name,
+    required NetworkInterfaceStatus status,
+    required String ip4,
+    required String ip6,
+  }) = _NetworkInterfaceInfo;
 
-  String? get ip4;
-  String? get ip6;
-
-  static Serializer<NetworkInterfaceInfo> get serializer =>
-      _$networkInterfaceInfoSerializer;
-
-  factory NetworkInterfaceInfo([void updates(NetworkInterfaceInfoBuilder b)]) = _$NetworkInterfaceInfo;
-  NetworkInterfaceInfo._();
+  factory NetworkInterfaceInfo.fromJson(Map<String, dynamic> json) => _$NetworkInterfaceInfoFromJson(json);
 }
 
-class NetworkInterfaceStatus extends EnumClass {
-  static Serializer<NetworkInterfaceStatus> get serializer => _$networkInterfaceStatusSerializer;
-
-  static const NetworkInterfaceStatus running = _$running;
-  static const NetworkInterfaceStatus offline = _$offline;
-
-
-  const NetworkInterfaceStatus._(String name) : super(name);
-
-  static BuiltSet<NetworkInterfaceStatus> get values => _$valuesNetStatus;
-  static NetworkInterfaceStatus valueOf(String name) => _$valueNetStatusOf(name);
+enum NetworkInterfaceStatus {
+  running,
+  offline;
 }

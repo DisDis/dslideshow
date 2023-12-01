@@ -1,18 +1,17 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/src/service/system_info/os_type.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'os_info.g.dart';
+part 'os_info.freezed.dart';
 
-abstract class OSInfo implements Built<OSInfo, OSInfoBuilder> {
+@freezed
+class OSInfo with _$OSInfo {
   //String kernelVersion = "Linux raspberrypi 4.19.97-v7l+ #1294 SMP Thu Jan 30 13:21:14 GMT 2020 armv7l GNU/Linux";
-  static Serializer<OSInfo> get serializer => _$oSInfoSerializer;
 
-  factory OSInfo([void updates(OSInfoBuilder b)?]) => _$OSInfo((b) => b.osType = OSType.unknown);
+  const factory OSInfo({
+    required String name,
+    required OSType osType,
+  }) = _OSInfo;
 
-  OSInfo._();
-
-  String get name;
-
-  OSType? get osType;
+  factory OSInfo.fromJson(Map<String, dynamic> json) => _$OSInfoFromJson(json);
 }

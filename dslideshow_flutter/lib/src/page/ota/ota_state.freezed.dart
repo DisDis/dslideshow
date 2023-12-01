@@ -91,6 +91,8 @@ abstract class $OtaStateCopyWith<$Res> {
       _$OtaStateCopyWithImpl<$Res, OtaState>;
   @useResult
   $Res call({OTAInfo info});
+
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -115,6 +117,14 @@ class _$OtaStateCopyWithImpl<$Res, $Val extends OtaState>
               as OTAInfo,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res> get info {
+    return $OTAInfoCopyWith<$Res>(_value.info, (value) {
+      return _then(_value.copyWith(info: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -126,6 +136,9 @@ abstract class _$$OtaInitialStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -289,6 +302,9 @@ abstract class _$$OtaReadyStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -451,6 +467,9 @@ abstract class _$$OtaProgressStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -614,6 +633,9 @@ abstract class _$$OtaSuccessStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -777,6 +799,9 @@ abstract class _$$OtaFailureStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
@@ -940,6 +965,9 @@ abstract class _$$OtaExitStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({OTAInfo info});
+
+  @override
+  $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc

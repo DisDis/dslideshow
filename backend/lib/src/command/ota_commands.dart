@@ -1,102 +1,66 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:built_collection/built_collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'ota_commands.freezed.dart';
 part 'ota_commands.g.dart';
 
-abstract class OTAReadyCommand implements RpcCommand, Built<OTAReadyCommand, OTAReadyCommandBuilder> {
+@freezed
+class OTAReadyCommand with _$OTAReadyCommand implements RpcCommand {
   static const String TYPE = 'ota_ready';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
-  bool get ready;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(OTAReadyCommandBuilder b) => b.id = RpcCommand.generateId();
-
-  static Serializer<OTAReadyCommand> get serializer => _$oTAReadyCommandSerializer;
-
-  factory OTAReadyCommand([void updates(OTAReadyCommandBuilder b)?]) = _$OTAReadyCommand;
-  OTAReadyCommand._();
+//
+//RpcCommand.generateId
+  const factory OTAReadyCommand({
+    required bool ready,
+    required int id,
+    @Default(OTAReadyCommand.TYPE) String type,
+  }) = _OTAReadyCommand;
+  factory OTAReadyCommand.fromJson(Map<String, dynamic> json) => _$OTAReadyCommandFromJson(json);
 }
 
-abstract class OTAGetInfoCommand implements RpcCommand, Built<OTAGetInfoCommand, OTAGetInfoCommandBuilder> {
+@freezed
+class OTAGetInfoCommand with _$OTAGetInfoCommand implements RpcCommand {
   static const String TYPE = 'ota_getinfo';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
 
-  OTAInfo? get info;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(OTAGetInfoCommandBuilder b) => b.id = RpcCommand.generateId();
-
-  static Serializer<OTAGetInfoCommand> get serializer => _$oTAGetInfoCommandSerializer;
-
-  factory OTAGetInfoCommand([void updates(OTAGetInfoCommandBuilder b)?]) = _$OTAGetInfoCommand;
-  OTAGetInfoCommand._();
+  const factory OTAGetInfoCommand({
+    OTAInfo? info,
+    required int id,
+    @Default(OTAGetInfoCommand.TYPE) String type,
+  }) = _OTAGetInfoCommand;
+  factory OTAGetInfoCommand.fromJson(Map<String, dynamic> json) => _$OTAGetInfoCommandFromJson(json);
 }
 
-abstract class OTAGetInfoCommandResult
-    implements RpcResult, Built<OTAGetInfoCommandResult, OTAGetInfoCommandResultBuilder> {
-  OTAInfo get info;
-  @override
-  int get id;
-
-  static Serializer<OTAGetInfoCommandResult> get serializer => _$oTAGetInfoCommandResultSerializer;
-
-  factory OTAGetInfoCommandResult([void updates(OTAGetInfoCommandResultBuilder b)]) = _$OTAGetInfoCommandResult;
-  OTAGetInfoCommandResult._();
+@freezed
+class OTAGetInfoCommandResult with _$OTAGetInfoCommandResult implements RpcResult {
+  const factory OTAGetInfoCommandResult({required OTAInfo info, required int id}) = _OTAGetInfoCommandResult;
+  factory OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) => _$OTAGetInfoCommandResultFromJson(json);
 }
 
-abstract class OTAOutputCommand implements RpcCommand, Built<OTAOutputCommand, OTAOutputCommandBuilder> {
+@freezed
+class OTAOutputCommand with _$OTAOutputCommand implements RpcCommand {
   static const String TYPE = 'ota_output';
-  @override
-  String get type => TYPE;
-  @override
-  int get id;
 
-  String get output;
-
-  @BuiltValueHook(initializeBuilder: true)
-  static void _setDefaults(OTAOutputCommandBuilder b) => b.id = RpcCommand.generateId();
-  static Serializer<OTAOutputCommand> get serializer => _$oTAOutputCommandSerializer;
-
-  factory OTAOutputCommand([void updates(OTAOutputCommandBuilder b)?]) = _$OTAOutputCommand;
-  OTAOutputCommand._();
+  const factory OTAOutputCommand({required int id, required String output, @Default(OTAOutputCommand.TYPE) String type}) = _OTAOutputCommand;
+  factory OTAOutputCommand.fromJson(Map<String, dynamic> json) => _$OTAOutputCommandFromJson(json);
 }
 
-abstract class OTAInfo implements Built<OTAInfo, OTAInfoBuilder> {
-  static Serializer<OTAInfo> get serializer => _$oTAInfoSerializer;
-
-  OTAStatus get status;
-  double get uploadingPercent;
-  String get code;
-
-  int? get exitCode;
-
-  String? get errorText;
-
-  factory OTAInfo([void updates(OTAInfoBuilder b)?]) = _$OTAInfo;
-  OTAInfo._();
+@freezed
+abstract class OTAInfo with _$OTAInfo {
+  const factory OTAInfo({
+    required OTAStatus status,
+    required double uploadingPercent,
+    required String code,
+    int? exitCode,
+    String? errorText,
+  }) = _OTAInfo;
+  factory OTAInfo.fromJson(Map<String, dynamic> json) => _$OTAInfoFromJson(json);
 }
 
-class OTAStatus extends EnumClass {
-  static Serializer<OTAStatus> get serializer => _$oTAStatusSerializer;
-
-  static const OTAStatus disabled = _$disabled;
-  static const OTAStatus ready = _$ready;
-  static const OTAStatus uploading = _$uploading;
-  static const OTAStatus instaling = _$instaling;
-  static const OTAStatus finished = _$finished;
-  static const OTAStatus issue = _$issue;
-  static const OTAStatus preReboot = _$preReboot;
-
-  const OTAStatus._(String name) : super(name);
-
-  static BuiltSet<OTAStatus> get values => _$valuesOTAStatus;
-  static OTAStatus valueOf(String name) => _$valueOTAStatusOf(name);
+enum OTAStatus {
+  disabled,
+  ready,
+  uploading,
+  instaling,
+  finished,
+  issue,
+  preReboot;
 }

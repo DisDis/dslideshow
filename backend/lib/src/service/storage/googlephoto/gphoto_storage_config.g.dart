@@ -26,7 +26,7 @@ Map<String, dynamic> _$GPhotoStorageConfigToJson(
       'imageHeight': instance.imageHeight,
       'syncPeriod': GPhotoStorageConfig._durationToJson(instance.syncPeriod),
       'albumNames': instance.albumNames,
-      'clientId': instance.clientId,
+      'clientId': instance.clientId.toJson(),
       'refreshToken': instance.refreshToken,
     };
 

@@ -18,14 +18,14 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
     );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
-      'log': instance.log,
-      'hardware': instance.hardware,
-      'slideshow': instance.slideshow,
-      'welcome': instance.welcome,
-      'web': instance.webServer,
-      'mqtt': instance.mqtt,
-      'storages': instance.storages,
-      'wifi': instance.wifi,
+      'log': instance.log.toJson(),
+      'hardware': instance.hardware.toJson(),
+      'slideshow': instance.slideshow.toJson(),
+      'welcome': instance.welcome.toJson(),
+      'web': instance.webServer.toJson(),
+      'mqtt': instance.mqtt.toJson(),
+      'storages': instance.storages.toJson(),
+      'wifi': instance.wifi.toJson(),
     };
 
 SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>

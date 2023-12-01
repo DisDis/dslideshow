@@ -28,11 +28,11 @@ class OTAService implements RpcService {
   bool _enabled = false;
   bool get enabled => _enabled;
 
-  OTAInfo _info = OTAInfo((b) {
-    b.status = OTAStatus.disabled;
-    b.code = "-";
-    b.uploadingPercent = 0;
-  });
+  OTAInfo _info = OTAInfo(
+    status: OTAStatus.disabled,
+    code: "-",
+    uploadingPercent: 0,
+  );
 
   void set enabled(bool newvalue) {
     if (_autostop != null && _autostop!.isActive) {
@@ -67,7 +67,7 @@ class OTAService implements RpcService {
     _autostop = new Timer(const Duration(seconds: 60 * 5), () {
       enabled = false;
     });
-    _info = _info.rebuild((p0) => p0.code = code);
+    _info = _info.copyWith(code: code);
   }
 
   static String _generateCode() {
@@ -82,7 +82,7 @@ class OTAService implements RpcService {
 
   void updateCode() {
     _code = _generateCode();
-    _updateInfo(_info.rebuild((b) => b.code = code));
+    _updateInfo(_info.copyWith(code: code));
     _log.info('New code: $_code');
   }
 
@@ -98,7 +98,7 @@ class OTAService implements RpcService {
     _server = server;
     // Enable content compression
     server.autoCompress = true;
-    _info = _info.rebuild((b) => b.status = OTAStatus.ready);
+    _info = _info.copyWith(status: OTAStatus.ready);
 
     _log.info('Serving at http://${server.address.host}:${server.port} authCode:$_code');
   }
@@ -115,50 +115,53 @@ class OTAService implements RpcService {
   Future<RpcResult> executeCommand(RpcCommand command) {
     switch (command.type) {
       case EchoCommand.TYPE:
-        return new Future.value(_executeEchoCommand(command as EchoCommand));
+        return _executeEchoCommand(command as EchoCommand);
       case OTAGetInfoCommand.TYPE:
-        return new Future.value(_executeOTAGetInfoCommand(command as OTAGetInfoCommand));
+        return _executeOTAGetInfoCommand(command as OTAGetInfoCommand);
       default:
-        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  RpcResult _executeEchoCommand(EchoCommand command) {
+  Future<RpcResult> _executeEchoCommand(EchoCommand command) async {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult((b) {
-      b.id = command.id;
-      b.resultText = "${command.text} Service ${new DateTime.now()}";
-    });
+    return new EchoCommandResult(
+      id: command.id,
+      resultText: "${command.text} Service ${new DateTime.now()}",
+    );
   }
 
-  RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return new ErrorResult((b) => b
-      ..id = command.id
-      ..error = "$e");
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
+    return ErrorResult(
+      id: command.id,
+      error: "$e",
+    );
   }
 
   Future<RpcResult> _executeOTAGetInfoCommand(OTAGetInfoCommand command) async {
-    return new OTAGetInfoCommandResult((b) => b
-      ..id = command.id
-      ..info = _info.toBuilder());
+    return OTAGetInfoCommandResult(
+      id: command.id,
+      info: _info,
+    );
   }
 
   void _updateInfo(OTAInfo newValue) {
     _info = newValue;
-    _frontendService.send(new OTAGetInfoCommand((b) => b.info = _info.toBuilder()));
+    _frontendService.send(OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info));
   }
 
   Future<Response> _postOTAUploadPackage(Request request) async {
     String filename = '';
     int uploadedSize = 0;
     String code = '';
-    final io.BytesBuilder firmwareData = new io.BytesBuilder();
+    final firmwareData = new io.BytesBuilder();
     if (!request.isMultipart) {
-      _updateInfo(_info.rebuild((b) => b
-        ..uploadingPercent = 0
-        ..status = OTAStatus.ready));
+      _updateInfo(_info.copyWith(
+        uploadingPercent: 0,
+        status: OTAStatus.ready,
+      ));
       return Response.ok('Not a multipart request');
     } else if (!request.isMultipartForm) {
       return Response.forbidden('Need multipart request');
@@ -169,9 +172,10 @@ class OTAService implements RpcService {
     if (fullSize > 200 * 1024 * 1024) {
       return Response.ok('Too big size');
     }
-    _updateInfo(_info.rebuild((b) => b
-      ..uploadingPercent = 0
-      ..status = OTAStatus.uploading));
+    _updateInfo(_info.copyWith(
+      uploadingPercent: 0,
+      status: OTAStatus.uploading,
+    ));
     await for (final formData in request.multipartFormData) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
@@ -183,26 +187,20 @@ class OTAService implements RpcService {
         await formData.part.forEach((bytes) {
           firmwareData.add(bytes);
           uploadedSize += bytes.length;
-          _updateInfo(_info.rebuild((b) => b..uploadingPercent = (uploadedSize / fullSize * 100)));
+          _updateInfo(_info.copyWith(uploadingPercent: (uploadedSize / fullSize * 100)));
         });
       }
     }
     _log.info('file size: ${firmwareData.length}');
     if (code != _code) {
-      _updateInfo(_info.rebuild((b) => b
-        ..uploadingPercent = 0
-        ..status = OTAStatus.ready));
+      _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
       return Response.forbidden('Code error');
     }
     if (path.extension(filename) != '.deb') {
-      _updateInfo(_info.rebuild((b) => b
-        ..uploadingPercent = 0
-        ..status = OTAStatus.ready));
+      _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
       return Response.forbidden('Support only deb package');
     }
-    _updateInfo(_info.rebuild((b) => b
-      ..uploadingPercent = 100
-      ..status = OTAStatus.uploading));
+    _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.uploading));
     _processFirmware(filename, firmwareData);
     return Response.ok('Firmware uploaded');
 
@@ -248,7 +246,7 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAStop(Request request) {
-    _frontendService.send(new OTAReadyCommand((b) => b.ready = false));
+    _frontendService.send(OTAReadyCommand(id: RpcCommand.generateId(), ready: false));
     return Response.ok('Return to normal mode');
   }
 
@@ -256,7 +254,7 @@ class OTAService implements RpcService {
     if (_autostop != null && _autostop!.isActive) {
       _autostop!.cancel();
     }
-    _frontendService.send(new OTAReadyCommand((b) => b.ready = true));
+    _frontendService.send(new OTAReadyCommand(id: RpcCommand.generateId(), ready: true));
     return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
@@ -270,10 +268,8 @@ class OTAService implements RpcService {
       ..add(firmwareData.toBytes())
       ..close();
 
-    _frontendService.send(new OTAOutputCommand((b) => b.output = '\n\rSave firmware to "$fullFilename"\n\r'));
-    _updateInfo(_info.rebuild((b) => b
-      ..uploadingPercent = 100
-      ..status = OTAStatus.instaling));
+    _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: '\n\rSave firmware to "$fullFilename"\n\r'));
+    _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling));
 
     var process = await io.Process.start(
       'sudo',
@@ -281,23 +277,25 @@ class OTAService implements RpcService {
       environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
     );
     process.stdout.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(new OTAOutputCommand((b) => b.output = str));
+      _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: str));
     });
     process.stderr.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(new OTAOutputCommand((b) => b.output = str));
+      _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: str));
     });
     var exitCode = await process.exitCode;
-    _frontendService.send(new OTAOutputCommand((b) => b.output = '\n\rExit code: $exitCode'));
-    _updateInfo(_info.rebuild((b) => b
-      ..uploadingPercent = 100
-      ..exitCode = exitCode
-      ..status = exitCode == 0 ? OTAStatus.finished : OTAStatus.issue));
+    _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: '\n\rExit code: $exitCode'));
+    _updateInfo(_info.copyWith(
+      uploadingPercent: 100,
+      exitCode: exitCode,
+      status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue,
+    ));
     if (exitCode == 0) {
       Timer(const Duration(seconds: 5), () {
-        _updateInfo(_info.rebuild((b) => b
-          ..uploadingPercent = 100
-          ..exitCode = 0
-          ..status = OTAStatus.preReboot));
+        _updateInfo(_info.copyWith(
+          uploadingPercent: 100,
+          exitCode: 0,
+          status: OTAStatus.preReboot,
+        ));
         Timer(const Duration(seconds: 5), () {
           io.Process.start('sudo', ['systemctl', 'restart', 'dslideshow']);
         });
