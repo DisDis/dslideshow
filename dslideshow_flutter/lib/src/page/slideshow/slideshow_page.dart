@@ -11,7 +11,7 @@ import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/fixed_ticker_provider.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/fixed_animation_controller.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
