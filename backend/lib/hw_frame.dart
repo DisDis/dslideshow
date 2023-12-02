@@ -33,7 +33,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
-    await _remoteWebServer.spawn(web_server.serviceMain);
+    await _remoteWebServer.spawn(web_server.serviceMain, debugName: "webServer");
 
     // Use this static instance
     final injector = GetIt.instance;

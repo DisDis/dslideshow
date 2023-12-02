@@ -19,17 +19,18 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
         super(key: Key('mp4:${item.uri!.toFilePath()}'));
 
   @override
-  VideoWidgetState createState() => VideoWidgetState();
+  // ignore: library_private_types_in_public_api
+  _VideoWidgetState createState() => _VideoWidgetState();
 }
 
-class VideoWidgetState extends State<VideoWidget> {
+class _VideoWidgetState extends State<VideoWidget> {
   static final bool isVideoSupport = isLinuxEmbedded || !(Platform.isLinux || Platform.isWindows);
 
   static final Logger _log = Logger('_VideoWidgetState');
 
   late VideoPlayerController _controller;
 
-  VideoWidgetState();
+  _VideoWidgetState();
 
   @override
   Widget build(BuildContext context) {

@@ -20,10 +20,11 @@
     "screenPowerOnTimerSec": 120
   },
   "slideshow": {
-    "displayTimeMs": 5000,
+    "displayTimeMs": 2000,
     "fadeTimeMs": 2000,
     "transitionTimeMs": 1000,
-    "allowedEffects": [
+    "allowedEffects": [],
+    "allowedEffects_": [
       "Fade"
     ],
     "isBlurredBackground": true,

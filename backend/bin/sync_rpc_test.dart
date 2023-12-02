@@ -13,7 +13,7 @@ main() async {
   initLog("local");
   _log.info("Run.");
   final backendService = RemoteServiceImpl(serializers: serializers);
-  await backendService.spawn(serviceMain1, 3);
+  await backendService.spawn(serviceMain1, resultIPortCount: 3, debugName: "remote");
   backendService.service.processing(LocalService(), serializers);
 
   final futures = <Future>[];

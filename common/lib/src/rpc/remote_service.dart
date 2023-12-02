@@ -75,7 +75,7 @@ class RemoteServiceImpl implements RemoteService {
     service.resultOPorts.first.send(HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap());
   }
 
-  Future<void> spawn(void entryPoint(Map<String, dynamic> handshakeMessage), [int resultIPortCount = 5]) async {
+  Future<void> spawn(void entryPoint(Map<String, dynamic> handshakeMessage), {String? debugName, int resultIPortCount = 5}) async {
     if (resultIPortCount <= 0) {
       resultIPortCount = 1;
     }
@@ -88,7 +88,8 @@ class RemoteServiceImpl implements RemoteService {
       _freeResultStream.add(true);
       results.add(StreamQueue<dynamic>(port));
     }
-    await Isolate.spawn(entryPoint, HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap());
+    await Isolate.spawn(entryPoint, HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap(),
+        debugName: debugName);
     final handshakeMessageO = HandshakeMessage.fromMap(await results.first.next);
     service = Service(
       commanOPort: handshakeMessageO.commanOPort,

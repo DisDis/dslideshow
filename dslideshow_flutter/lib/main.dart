@@ -9,6 +9,7 @@ import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
 import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -57,9 +58,9 @@ void main() async {
     Logger.root.level = config.log.levelMain;
 
     backendService = RemoteServiceImpl(serializers: serializers);
-    await backendService.spawn(hw_frame.serviceMain);
+    await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
     otaService = RemoteServiceImpl(serializers: serializers);
-    await otaService.spawn(ota.serviceMain);
+    await otaService.spawn(ota.serviceMain, debugName: "ota");
 
     final frontendService = injector.get<FrontendService>();
     backendService.service.processing(frontendService, serializers);
@@ -77,6 +78,15 @@ void main() async {
         bloc.add(ChangePageEvent(RoutePage.welcome));
       }
     });
+
+    if (environment.isLinuxEmbedded) {
+      try {
+        _log.info("FlutterpiVideoPlayer initing");
+        FlutterpiVideoPlayer.registerWith();
+      } catch (e, s) {
+        _log.severe('FlutterpiVideoPlayer: $e, $s', e, s);
+      }
+    }
 
     _runFlutter(frontendService);
   } catch (e, s) {

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
@@ -12,6 +11,7 @@ import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/fixed_ticker_provider.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
@@ -142,7 +142,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
-    _effectController = AnimationController(duration: _transitionTime, vsync: this);
+    _effectController = FixedAnimationController(duration: _transitionTime, vsync: this, animationBehavior: AnimationBehavior.preserve);
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
