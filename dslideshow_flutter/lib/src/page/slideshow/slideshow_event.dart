@@ -1,4 +1,4 @@
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -24,6 +24,12 @@ class SlideshowMenuEvent extends SlideshowEvent {
   final bool value;
 
   SlideshowMenuEvent(this.value);
+}
+
+class SlideshowSystemInfoEvent extends SlideshowEvent {
+  final bool value;
+
+  SlideshowSystemInfoEvent(this.value);
 }
 
 class SlideshowInternetEvent extends SlideshowEvent {

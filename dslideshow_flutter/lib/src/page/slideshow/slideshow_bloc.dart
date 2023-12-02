@@ -6,7 +6,6 @@ import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
@@ -23,6 +22,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
             isDebug: false,
             isMenu: false,
             isPaused: false,
+            isInfo: false,
             item: MediaItem.empty,
             effect: Effect.cubeEffect.createEffect())) {
     // on<SlideshowInitialEvent>((event, emit) {
@@ -47,6 +47,12 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     on<SlideshowDebugEvent>((event, emit) {
       emit(state.copyWith(isDebug: event.value));
     });
+    on<SlideshowMenuEvent>((event, emit) {
+      emit(state.copyWith(isMenu: event.value));
+    });
+    on<SlideshowSystemInfoEvent>((event, emit) {
+      emit(state.copyWith(isInfo: event.value));
+    });
   }
 
   void _pushButton(ButtonType event) {
@@ -67,7 +73,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   }
 
   void _pushSelectButton() {
-    add(SlideshowDebugEvent(!state.isDebug));
+    add(SlideshowSystemInfoEvent(!state.isInfo));
   }
 
   void _pushMenuButton() {

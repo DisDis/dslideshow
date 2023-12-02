@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
@@ -9,11 +10,13 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
+import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -90,6 +93,16 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
           return StateNotify(key: stateKey, isPaused: state.isPaused);
         }),
         FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
+        BlocBuilder<SlideshowBloc, SlideshowState>(
+            buildWhen: (prev, current) => prev.isInfo != current.isInfo,
+            builder: (context, state) {
+              return state.isInfo ? const SystemInfoWidget() : Container();
+            }),
+        BlocBuilder<SlideshowBloc, SlideshowState>(
+            buildWhen: (prev, current) => prev.isMenu != current.isMenu,
+            builder: (context, state) {
+              return state.isMenu ? const MainMenuWidget() : Container();
+            }),
         if (!isLinuxEmbedded)
           BlocBuilder<SlideshowBloc, SlideshowState>(builder: (context, state) {
             return state.isDebug ? DebugWidget(_frontendService) : Container();

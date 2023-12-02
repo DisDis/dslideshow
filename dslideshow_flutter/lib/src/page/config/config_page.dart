@@ -4,7 +4,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,4 @@
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ class DebugWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
-      const SystemInfoWidget(),
       Positioned(
         top: 10.0,
         right: 70.0,

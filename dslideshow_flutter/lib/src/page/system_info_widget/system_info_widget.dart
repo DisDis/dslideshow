@@ -15,7 +15,7 @@ class SystemInfoWidget extends StatefulWidget {
 }
 
 class SystemInfoWidgetState extends State<SystemInfoWidget> {
-  final FrontendService _frontendService = injector.get<FrontendService>();
+  final FrontendService _frontendService = injector();
   SystemInfo? _systemInfo;
 
   StreamSubscription<SystemInfo>? _streamSubscription;

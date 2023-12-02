@@ -2,7 +2,6 @@ import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
-import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

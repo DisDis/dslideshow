@@ -21,6 +21,7 @@ mixin _$SlideshowState {
   StorageStatusEnum get storageStatus => throw _privateConstructorUsedError;
   bool get isDebug => throw _privateConstructorUsedError;
   bool get isMenu => throw _privateConstructorUsedError;
+  bool get isInfo => throw _privateConstructorUsedError;
   bool get isPaused => throw _privateConstructorUsedError;
   MediaItem get item => throw _privateConstructorUsedError;
   MediaSliderItemEffect get effect => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $SlideshowStateCopyWith<$Res> {
       StorageStatusEnum storageStatus,
       bool isDebug,
       bool isMenu,
+      bool isInfo,
       bool isPaused,
       MediaItem item,
       MediaSliderItemEffect effect});
@@ -65,6 +67,7 @@ class _$SlideshowStateCopyWithImpl<$Res, $Val extends SlideshowState>
     Object? storageStatus = null,
     Object? isDebug = null,
     Object? isMenu = null,
+    Object? isInfo = null,
     Object? isPaused = null,
     Object? item = null,
     Object? effect = null,
@@ -89,6 +92,10 @@ class _$SlideshowStateCopyWithImpl<$Res, $Val extends SlideshowState>
       isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isInfo: null == isInfo
+          ? _value.isInfo
+          : isInfo // ignore: cast_nullable_to_non_nullable
               as bool,
       isPaused: null == isPaused
           ? _value.isPaused
@@ -120,6 +127,7 @@ abstract class _$$SlideshowWorkStateImplCopyWith<$Res>
       StorageStatusEnum storageStatus,
       bool isDebug,
       bool isMenu,
+      bool isInfo,
       bool isPaused,
       MediaItem item,
       MediaSliderItemEffect effect});
@@ -141,6 +149,7 @@ class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
     Object? storageStatus = null,
     Object? isDebug = null,
     Object? isMenu = null,
+    Object? isInfo = null,
     Object? isPaused = null,
     Object? item = null,
     Object? effect = null,
@@ -165,6 +174,10 @@ class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
       isMenu: null == isMenu
           ? _value.isMenu
           : isMenu // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isInfo: null == isInfo
+          ? _value.isInfo
+          : isInfo // ignore: cast_nullable_to_non_nullable
               as bool,
       isPaused: null == isPaused
           ? _value.isPaused
@@ -191,6 +204,7 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
       this.storageStatus = StorageStatusEnum.done,
       required this.isDebug,
       required this.isMenu,
+      required this.isInfo,
       required this.isPaused,
       required this.item,
       required this.effect});
@@ -207,6 +221,8 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
   @override
   final bool isMenu;
   @override
+  final bool isInfo;
+  @override
   final bool isPaused;
   @override
   final MediaItem item;
@@ -215,7 +231,7 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
 
   @override
   String toString() {
-    return 'SlideshowState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isPaused: $isPaused, item: $item, effect: $effect)';
+    return 'SlideshowState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isInfo: $isInfo, isPaused: $isPaused, item: $item, effect: $effect)';
   }
 
   @override
@@ -231,6 +247,7 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
                 other.storageStatus == storageStatus) &&
             (identical(other.isDebug, isDebug) || other.isDebug == isDebug) &&
             (identical(other.isMenu, isMenu) || other.isMenu == isMenu) &&
+            (identical(other.isInfo, isInfo) || other.isInfo == isInfo) &&
             (identical(other.isPaused, isPaused) ||
                 other.isPaused == isPaused) &&
             (identical(other.item, item) || other.item == item) &&
@@ -239,7 +256,7 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
 
   @override
   int get hashCode => Object.hash(runtimeType, hasInternet, isScreenLock,
-      storageStatus, isDebug, isMenu, isPaused, item, effect);
+      storageStatus, isDebug, isMenu, isInfo, isPaused, item, effect);
 
   @JsonKey(ignore: true)
   @override
@@ -256,6 +273,7 @@ abstract class _SlideshowWorkState implements SlideshowState {
       final StorageStatusEnum storageStatus,
       required final bool isDebug,
       required final bool isMenu,
+      required final bool isInfo,
       required final bool isPaused,
       required final MediaItem item,
       required final MediaSliderItemEffect effect}) = _$SlideshowWorkStateImpl;
@@ -270,6 +288,8 @@ abstract class _SlideshowWorkState implements SlideshowState {
   bool get isDebug;
   @override
   bool get isMenu;
+  @override
+  bool get isInfo;
   @override
   bool get isPaused;
   @override
