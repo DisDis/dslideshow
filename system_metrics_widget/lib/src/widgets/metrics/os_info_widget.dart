@@ -18,7 +18,7 @@ class OSInfoWidget extends StatelessWidget {
       iconData: iconData,
       backgroundColor: Colors.deepPurpleAccent,
       child: Column(children: <Widget>[
-        model.osType == OSType.unknown ? MetricsDetails('os info', value: model.name) : MetricsDetails('os info', value: '${model.name} (${model.osType})'),
+        model.osType == OSType.unknown ? MetricsDetails('Os info', value: model.name) : MetricsDetails('Os info', value: '${model.name} (${model.osType})'),
         const Icon(
           iconData,
           color: Colors.white,

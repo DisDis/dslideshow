@@ -25,7 +25,7 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$title: $total, used: $used, free: $free, usage $usagePercent %',
+          '$title: $total, used: $used, free: $free - $usagePercent%',
           style: Settings.metricsDetailsTextStyle,
         ),
         Padding(

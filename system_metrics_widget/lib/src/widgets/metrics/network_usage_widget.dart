@@ -5,6 +5,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class NetworkUsageWidget extends StatelessWidget {
+  // static final _timeFormatter = DateFormat('yMMMMEEEEd Hms');
   final NetworkInfo model;
   const NetworkUsageWidget({required this.model, super.key});
 
@@ -15,7 +16,7 @@ class NetworkUsageWidget extends StatelessWidget {
       backgroundColor: Colors.lightBlueAccent,
       iconColor: model.hasInternet ? Colors.white : Colors.red,
       child: Column(children: <Widget>[
-        Row(children: [MetricsDetails(' network: ${DateTime.fromMillisecondsSinceEpoch(model.lastUpdate)}', value: null)]),
+        const Row(children: [MetricsDetails('Network:', value: null)]),
         for (final interface in model.interfaces!)
           if (interface.status == NetworkInterfaceStatus.running && interface.name != 'lo')
             Row(children: [MetricsDetails(interface.name, value: interface.ip4)]),

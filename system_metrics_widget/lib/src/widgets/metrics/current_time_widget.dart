@@ -16,8 +16,8 @@ class CurrentTimeWidget extends StatefulWidget {
 
 class CurrentTimeWidgetState extends State<CurrentTimeWidget> {
   late Timer _timer;
-  final _dateFormatter = DateFormat('yMMMMEEEEd');
-  final _timeFormatter = DateFormat('Hms');
+  static final _dateFormatter = DateFormat('yMMMMEEEEd');
+  static final _timeFormatter = DateFormat('Hms');
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class CurrentTimeWidgetState extends State<CurrentTimeWidget> {
         color: Colors.black,
         child: Column(children: <Widget>[
           Row(children: [MetricsDetails(_timeFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle)]),
-          Row(children: [MetricsDetails(_dateFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))]),
+          Row(children: [MetricsDetails(_dateFormatter.format(now), value: null, style: Settings.metricsClockDateTextDigitalStyle)]),
         ]),
       ),
     );
