@@ -162,13 +162,16 @@ class FixedAnimationController extends Animation<double>
   }
 
   /// The value at which this animation is deemed to be dismissed.
+  @override
   final double lowerBound;
 
   /// The value at which this animation is deemed to be completed.
+  @override
   final double upperBound;
 
   /// A label that is used in the [toString] output. Intended to aid with
   /// identifying animation controller instances in debug output.
+  @override
   final String? debugLabel;
 
   /// The behavior of the controller when [AccessibilityFeatures.disableAnimations]
@@ -177,28 +180,33 @@ class FixedAnimationController extends Animation<double>
   /// Defaults to [AnimationBehavior.normal] for the [AnimationController.new]
   /// constructor, and [AnimationBehavior.preserve] for the
   /// [AnimationController.unbounded] constructor.
+  @override
   final AnimationBehavior animationBehavior;
 
   /// Returns an [Animation<double>] for this animation controller, so that a
   /// pointer to this object can be passed around without allowing users of that
   /// pointer to mutate the [AnimationController] state.
+  @override
   Animation<double> get view => this;
 
   /// The length of time this animation should last.
   ///
   /// If [reverseDuration] is specified, then [duration] is only used when going
   /// [forward]. Otherwise, it specifies the duration going in both directions.
+  @override
   Duration? duration;
 
   /// The length of time this animation should last when going in [reverse].
   ///
   /// The value of [duration] is used if [reverseDuration] is not specified or
   /// set to null.
+  @override
   Duration? reverseDuration;
 
   Ticker? _ticker;
 
   /// Recreates the [Ticker] with the new [TickerProvider].
+  @override
   void resync(TickerProvider vsync) {
     final Ticker oldTicker = _ticker!;
     _ticker = vsync.createTicker(_tick);
@@ -240,6 +248,7 @@ class FixedAnimationController extends Animation<double>
   ///    canceling the [TickerFuture].
   ///  * [forward], [reverse], [animateTo], [animateWith], [fling], and [repeat],
   ///    which start the animation controller.
+  @override
   set value(double newValue) {
     stop();
     _internalSetValue(newValue);
@@ -261,6 +270,7 @@ class FixedAnimationController extends Animation<double>
   ///  * [stop], which aborts the animation without changing its value or status
   ///    and without dispatching any notifications other than completing or
   ///    canceling the [TickerFuture].
+  @override
   void reset() {
     value = lowerBound;
   }
@@ -269,6 +279,7 @@ class FixedAnimationController extends Animation<double>
   ///
   /// If [isAnimating] is false, then [value] is not changing and the rate of
   /// change is zero.
+  @override
   double get velocity {
     if (!isAnimating) {
       return 0.0;
@@ -291,6 +302,7 @@ class FixedAnimationController extends Animation<double>
   /// and the most recent tick of the animation.
   ///
   /// If the controller is not animating, the last elapsed duration is null.
+  @override
   Duration? get lastElapsedDuration => _lastElapsedDuration;
   Duration? _lastElapsedDuration;
 
@@ -300,6 +312,7 @@ class FixedAnimationController extends Animation<double>
   /// controller's ticker might get muted, in which case the animation
   /// controller's callbacks will no longer fire even though time is continuing
   /// to pass. See [Ticker.muted] and [TickerMode].
+  @override
   bool get isAnimating => _ticker != null && _ticker!.isActive;
 
   _AnimationDirection _direction;
@@ -319,6 +332,7 @@ class FixedAnimationController extends Animation<double>
   /// During the animation, [status] is reported as [AnimationStatus.forward],
   /// which switches to [AnimationStatus.completed] when [upperBound] is
   /// reached at the end of the animation.
+  @override
   TickerFuture forward({double? from}) {
     assert(() {
       if (duration == null) {
@@ -353,6 +367,7 @@ class FixedAnimationController extends Animation<double>
   /// During the animation, [status] is reported as [AnimationStatus.reverse],
   /// which switches to [AnimationStatus.dismissed] when [lowerBound] is
   /// reached at the end of the animation.
+  @override
   TickerFuture reverse({double? from}) {
     assert(() {
       if (duration == null && reverseDuration == null) {
@@ -392,6 +407,7 @@ class FixedAnimationController extends Animation<double>
   /// If the `target` argument is the same as the current [value] of the
   /// animation, then this won't animate, and the returned [TickerFuture] will
   /// be already complete.
+  @override
   TickerFuture animateTo(double target, {Duration? duration, Curve curve = Curves.linear}) {
     assert(() {
       if (this.duration == null && duration == null) {
@@ -425,6 +441,7 @@ class FixedAnimationController extends Animation<double>
   /// regardless of whether `target` < [value] or not. At the end of the
   /// animation, when `target` is reached, [status] is reported as
   /// [AnimationStatus.dismissed].
+  @override
   TickerFuture animateBack(double target, {Duration? duration, Curve curve = Curves.linear}) {
     assert(() {
       if (this.duration == null && reverseDuration == null && duration == null) {
@@ -509,6 +526,7 @@ class FixedAnimationController extends Animation<double>
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
+  @override
   TickerFuture repeat({double? min, double? max, bool reverse = false, Duration? period}) {
     min ??= lowerBound;
     max ??= upperBound;
@@ -558,6 +576,7 @@ class FixedAnimationController extends Animation<double>
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
+  @override
   TickerFuture fling({double velocity = 1.0, SpringDescription? springDescription, AnimationBehavior? animationBehavior}) {
     springDescription ??= _kFlingSpringDescription;
     _direction = velocity < 0.0 ? _AnimationDirection.reverse : _AnimationDirection.forward;
@@ -598,6 +617,7 @@ class FixedAnimationController extends Animation<double>
   ///
   /// The [status] is always [AnimationStatus.forward] for the entire duration
   /// of the simulation.
+  @override
   TickerFuture animateWith(Simulation simulation) {
     assert(
       _ticker != null,
@@ -637,6 +657,7 @@ class FixedAnimationController extends Animation<double>
   ///    and which does send notifications.
   ///  * [forward], [reverse], [animateTo], [animateWith], [fling], and [repeat],
   ///    which restart the animation controller.
+  @override
   void stop({bool canceled = true}) {
     assert(
       _ticker != null,
