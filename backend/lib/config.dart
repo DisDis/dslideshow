@@ -44,7 +44,7 @@ class AppConfig {
       required this.storages,
       required this.wifi});
 
-  @JsonKey(includeToJson: false)
+  @JsonKey(includeToJson: false, includeFromJson: false)
   String fullConfigFilename = '';
 
   factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
