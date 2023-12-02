@@ -8,16 +8,16 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
   final String total;
   final String free;
   final String used;
-  final int? usagePercent;
+  final int usagePercent;
 
   const UsageIndicatorWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.total,
     required this.free,
     required this.used,
     required this.usagePercent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

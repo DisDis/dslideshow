@@ -40,7 +40,7 @@ class SystemInfoMetrics extends StatelessWidget {
         crossAxisSpacing: 8.0,
         children: <Widget>[
           const CurrentTimeWidget(),
-          UptimeInfoWidget(model: _model.updateInfo.uptime),
+          UptimeInfoWidget(uptime: _model.updateInfo.uptime),
           CpuInfoWidget(
             cpu: _model.cpuInfo,
             cpuLoad1: _model.updateInfo.cpuLoad1,

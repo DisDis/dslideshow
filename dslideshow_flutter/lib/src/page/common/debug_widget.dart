@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DebugWidget extends StatelessWidget {
   final FrontendService _frontendService;
 
-  const DebugWidget(this._frontendService, {Key? key}) : super(key: key);
+  const DebugWidget(this._frontendService, {super.key});
 
   @override
   Widget build(BuildContext context) {

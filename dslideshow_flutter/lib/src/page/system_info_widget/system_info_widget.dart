@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:dslideshow_backend/system_info.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
@@ -9,13 +8,13 @@ import 'package:system_metrics_widget/system_metrics_widget.dart';
 
 @immutable
 class SystemInfoWidget extends StatefulWidget {
-  const SystemInfoWidget({Key? key}) : super(key: key);
+  const SystemInfoWidget({super.key});
 
   @override
-  _SystemInfoWidgetState createState() => _SystemInfoWidgetState();
+  SystemInfoWidgetState createState() => SystemInfoWidgetState();
 }
 
-class _SystemInfoWidgetState extends State<SystemInfoWidget> {
+class SystemInfoWidgetState extends State<SystemInfoWidget> {
   final FrontendService _frontendService = injector.get<FrontendService>();
   SystemInfo? _systemInfo;
 

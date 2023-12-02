@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StateNotify extends StatefulWidget {
   final bool isPaused;
 
-  const StateNotify({Key? key, this.isPaused = false}) : super(key: key);
+  const StateNotify({super.key, this.isPaused = false});
 
   @override
   StateNotifyState createState() => StateNotifyState();
@@ -62,7 +62,7 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
 
 class StaggerAnimation extends StatelessWidget {
   final bool? isPaused;
-  StaggerAnimation({Key? key, required this.controller, this.isPaused})
+  StaggerAnimation({super.key, required this.controller, this.isPaused})
       :
 
         // Each animation defined here transforms its value during the subset
@@ -108,8 +108,7 @@ class StaggerAnimation extends StatelessWidget {
               curve: Curves.easeIn,
             ),
           ),
-        ),
-        super(key: key);
+        );
 
   final Animation<double> controller;
   final Animation<double> opacity;

@@ -8,9 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class WebConfigTab extends StatefulWidget {
   const WebConfigTab({
     required WebTabBloc tabBloc,
-    Key? key,
-  })  : _tabBloc = tabBloc,
-        super(key: key);
+    super.key,
+  }) : _tabBloc = tabBloc;
 
   final WebTabBloc _tabBloc;
 

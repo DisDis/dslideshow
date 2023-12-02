@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class UsageBar extends StatefulWidget {
-  final int? usagePercent;
+  final int usagePercent;
 
-  const UsageBar({Key? key, required this.usagePercent}) : super(key: key);
+  const UsageBar({super.key, required this.usagePercent});
 
   @override
   State<StatefulWidget> createState() => _UsageBarState();
@@ -47,9 +47,7 @@ class UsageBarPainter extends CustomPainter {
         ],
       ).createShader(freeRect);
 
-    final transitionRect = hasTransition
-        ? (usedRect.topRight - const Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
-        : Rect.zero;
+    final transitionRect = hasTransition ? (usedRect.topRight - const Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height)) : Rect.zero;
 
     final Paint transitionPaint = Paint()
       ..shader = LinearGradient(
@@ -70,8 +68,7 @@ class UsageBarPainter extends CustomPainter {
 }
 
 class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +76,7 @@ class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin
 
     return CustomPaint(
       size: Size(size.width, 8),
-      painter: UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
+      painter: UsageBarPainter((widget.usagePercent * _controller.value).toInt()),
     );
   }
 

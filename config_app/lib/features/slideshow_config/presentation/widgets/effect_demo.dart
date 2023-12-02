@@ -10,7 +10,7 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 
 class EffectDemoWidget extends StatefulWidget {
   final Effect currentEffect;
-  const EffectDemoWidget({Key? key, required this.currentEffect}) : super(key: key);
+  const EffectDemoWidget({super.key, required this.currentEffect});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -107,22 +107,16 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
 
 //
   void _fetchNextMediaItem() async {
-    print('Change image');
     var mediaItem = await _getNextItem();
     Widget itemWidget;
-    if (mediaItem != null) {
-      itemWidget = CachedNetworkImage(
-        imageUrl: mediaItem.uri.toString(),
-        errorWidget: (BuildContext context, String url, error) {
-          return Row(
-            children: [Text('Not found "${mediaItem.id}'), const Icon(Icons.error)],
-          );
-        },
-      ); //ImageWidget(mediaItem, _appConfig.slideshow);
-    } else {
-      itemWidget = _loaderWidget;
-    }
-    // print('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
+    itemWidget = CachedNetworkImage(
+      imageUrl: mediaItem.uri.toString(),
+      errorWidget: (BuildContext context, String url, error) {
+        return Row(
+          children: [Text('Not found "${mediaItem.id}'), const Icon(Icons.error)],
+        );
+      },
+    );
 
     if (itemWidget is ImageWidget) {
       await itemWidget.precache(context);

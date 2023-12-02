@@ -21,12 +21,13 @@ class ClientServiceImpl implements RealtimeService {
   // final _onCommand = StreamController<WebSocketCommand>.broadcast();
   // final _onAuth = StreamController<bool>.broadcast();
   // Stream<WebSocketCommand> get onCommand => _onCommand.stream;
+  @override
   Stream get onDisconnect => _onDisconnect.stream;
   // Stream get onConnect => _onConnect.stream;
   // Stream<bool> get onAuth => _onAuth.stream;
   String _authCode = '';
   String get authCode => _authCode;
-  final _resultQueue = Map<int, Completer<WebSocketResult>>();
+  final _resultQueue = <int, Completer<WebSocketResult>>{};
   ClientServiceImpl();
   @override
   Future<WebSocketResult> connect(Uri uri, String code) {

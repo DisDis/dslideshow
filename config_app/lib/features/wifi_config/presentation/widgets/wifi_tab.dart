@@ -1,16 +1,16 @@
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
-import 'package:dslideshow_backend/src/command/wifi_commands.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:dslideshow_backend/src/command/wifi_commands.dart';
 
 class WiFiConfigTab extends StatefulWidget {
   const WiFiConfigTab({
     required WifiTabBloc wifiTabBloc,
-    Key? key,
-  })  : _wifiTabBloc = wifiTabBloc,
-        super(key: key);
+    super.key,
+  }) : _wifiTabBloc = wifiTabBloc;
 
   final WifiTabBloc _wifiTabBloc;
 
@@ -116,6 +116,7 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   static void showNewAddNetworkDialog(BuildContext context, [String SSID = '']) {
     final TextEditingController controllerSSID = TextEditingController(text: SSID);
     final TextEditingController controllerPassword = TextEditingController(text: "");

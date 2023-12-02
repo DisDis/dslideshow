@@ -6,13 +6,13 @@ class MetricsContainerWidget extends StatelessWidget {
   final Widget child;
   final Color iconColor;
 
-  const MetricsContainerWidget(
-      {required this.iconData,
-      required this.backgroundColor,
-      required this.child,
-      Key? key,
-      this.iconColor = Colors.white})
-      : super(key: key);
+  const MetricsContainerWidget({
+    required this.iconData,
+    required this.backgroundColor,
+    required this.child,
+    super.key,
+    this.iconColor = Colors.white,
+  });
 
   @override
   Widget build(BuildContext context) => Row(

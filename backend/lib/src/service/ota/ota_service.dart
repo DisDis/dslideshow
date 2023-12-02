@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
 import 'dart:math' as math;
+import 'dart:typed_data' as io;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -156,6 +157,7 @@ class OTAService implements RpcService {
     String filename = '';
     int uploadedSize = 0;
     String code = '';
+
     final firmwareData = new io.BytesBuilder();
     if (!request.isMultipart) {
       _updateInfo(_info.copyWith(

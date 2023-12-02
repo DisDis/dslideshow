@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
@@ -24,24 +23,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'fade_widget.dart';
 
 class SlideShowPage extends StatefulWidget {
-  const SlideShowPage({Key? key}) : super(key: key);
+  const SlideShowPage({super.key});
 
   @override
-  _SlideShowPageState createState() => _SlideShowPageState();
+  SlideShowPageState createState() => SlideShowPageState();
 }
 
 final _loaderWidget = Container(
   key: const Key('loader'),
   child: const Center(
     child: SizedBox(
-      child: CircularProgressIndicator(),
       width: 60,
       height: 60,
+      child: CircularProgressIndicator(),
     ),
   ),
 );
 
-class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
+class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
   static final stateKey = GlobalKey<StateNotifyState>();
 
@@ -86,11 +85,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         ),
         BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
           return IndicatorState(
-              storageStatus: state.storageStatus,
-              isDebug: state.isDebug,
-              isPaused: state.isPaused,
-              isMenu: state.isMenu,
-              hasInternet: state.hasInternet);
+              storageStatus: state.storageStatus, isDebug: state.isDebug, isPaused: state.isPaused, isMenu: state.isMenu, hasInternet: state.hasInternet);
         }, builder: (context, state) {
           return StateNotify(key: stateKey, isPaused: state.isPaused);
         }),
@@ -181,15 +176,16 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _fetchNextMediaItem() async {
     _log.info('Change image');
+
     await _frontendService.storageNext();
     final mediaItem = await _getCurrentMediaItem();
-    final itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
+    final size = MediaQuery.of(context).size;
+    final itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow, size);
     if (mediaItem.uri != null) {
       _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
     //_log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
-    final size = MediaQuery.of(context).size;
     final screenW = size.width;
     final screenH = size.height;
     try {
@@ -207,10 +203,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            _currentEffect.transform(
-                context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
-            _currentEffect.transform(
-                context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
+            _currentEffect.transform(context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
+            _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
         child: _loaderWidget);

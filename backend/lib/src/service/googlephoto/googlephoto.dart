@@ -22,8 +22,7 @@ class GooglePhotoService {
   String _refreshToken;
   String _tokenAccess;
   DateTime? _tokenAExpire;
-  GooglePhotoService(final String identifier, final String secret, this._refreshToken,
-      [this._tokenAccess = "", this._tokenAExpire])
+  GooglePhotoService(final String identifier, final String secret, this._refreshToken, [this._tokenAccess = "", this._tokenAExpire])
       : this._clientId = new ClientId(identifier, secret) {
     if (_tokenAExpire == null) {
       _tokenAExpire = new DateTime.now().toUtc();
@@ -51,9 +50,9 @@ class GooglePhotoService {
       'scope=${Uri.encodeQueryComponent(scopes.join(' '))}',
       'prompt=consent'
     ];
-    if (state != null) {
-      queryValues.add('state=${Uri.encodeQueryComponent(state)}');
-    }
+    // if (state != null) {
+    queryValues.add('state=${Uri.encodeQueryComponent(state)}');
+    // }
     return Uri.parse('https://accounts.google.com/o/oauth2/auth'
             '?${queryValues.join('&')}')
         .toString();
@@ -241,5 +240,4 @@ class GooglePhotoService {
 //    _log.severe("Unable to create Google photo service: $err");
 //    }
 //  }
-
 }

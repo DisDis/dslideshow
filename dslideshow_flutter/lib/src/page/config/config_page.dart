@@ -14,7 +14,7 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ConfigPage extends StatefulWidget {
-  const ConfigPage({Key? key}) : super(key: key);
+  const ConfigPage({super.key});
 
   @override
   _ConfigPageState createState() => _ConfigPageState();
@@ -22,7 +22,7 @@ class ConfigPage extends StatefulWidget {
 
 class _ConfigPageState extends State<ConfigPage> {
   static final Logger _log = Logger('_ConfigPageState');
-  static final String _urlData = "http://localhost:8181/test";
+  static const String _urlData = "http://localhost:8181/test";
   static final rnd = Random();
   final AppConfig _appConfig = injector.get<AppConfig>();
   final FrontendService _frontendService = injector.get<FrontendService>();

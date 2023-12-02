@@ -7,12 +7,10 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class OSInfoWidget extends StatelessWidget {
-  final OSInfo? _model;
-  final iconData = isLinuxEmbedded ? FontAwesomeIcons.linux : Ionicons.logo_android;
+  final OSInfo model;
+  static const iconData = isLinuxEmbedded ? FontAwesomeIcons.linux : Ionicons.logo_android;
 
-  const OSInfoWidget({required OSInfo? model, Key? key})
-      : _model = model,
-        super(key: key);
+  const OSInfoWidget({required this.model, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,8 @@ class OSInfoWidget extends StatelessWidget {
       iconData: iconData,
       backgroundColor: Colors.deepPurpleAccent,
       child: Column(children: <Widget>[
-        _model!.osType == OSType.unknown
-            ? MetricsDetails('os info', value: _model!.name)
-            : MetricsDetails('os info', value: '${_model!.name} (${_model!.osType})'),
-        Icon(
+        model.osType == OSType.unknown ? MetricsDetails('os info', value: model.name) : MetricsDetails('os info', value: '${model.name} (${model.osType})'),
+        const Icon(
           iconData,
           color: Colors.white,
           size: 50.0,

@@ -98,7 +98,7 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
 }
 
 class OtaRepository {
-  FrontendService _frontendService;
+  final FrontendService _frontendService;
   OtaRepository({
     required FrontendService frontendService,
   }) : _frontendService = frontendService;

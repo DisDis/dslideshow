@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'mainmenu_model.dart';
 
 class MainMenuWidget extends StatefulWidget {
-  const MainMenuWidget({Key? key}) : super(key: key);
+  const MainMenuWidget({super.key});
 
   @override
-  _MenuOptionsScreenState createState() => _MenuOptionsScreenState();
+  MenuOptionsScreenState createState() => MenuOptionsScreenState();
 }
 
-class _MenuOptionsScreenState extends State<MainMenuWidget> {
+class MenuOptionsScreenState extends State<MainMenuWidget> {
   int _selectedOption = 0;
   static final Random _rnd = Random();
   late Timer _demoTimer;
@@ -44,8 +44,7 @@ class _MenuOptionsScreenState extends State<MainMenuWidget> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0),
-                border:
-                    _selectedOption == index - 1 ? Border.all(color: Colors.blue) : Border.all(color: Colors.black26),
+                border: _selectedOption == index - 1 ? Border.all(color: Colors.blue) : Border.all(color: Colors.black26),
               ),
               child: ListTile(
                 leading: options[index - 1].icon,

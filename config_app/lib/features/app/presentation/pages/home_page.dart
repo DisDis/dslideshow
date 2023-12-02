@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               child: Text(context.localizations.home_page_logout_button),
               onPressed: () {
-                context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested());
+                context.read<AuthenticationBloc>().add(const AuthenticationLogoutRequested());
               },
             ),
             ElevatedButton(

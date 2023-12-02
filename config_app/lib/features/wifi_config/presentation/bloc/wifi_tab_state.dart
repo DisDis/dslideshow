@@ -2,8 +2,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WifiTabState extends Equatable {
-  WifiTabState();
-
+  const WifiTabState();
 
   @override
   List<Object> get props => [];
@@ -11,7 +10,7 @@ abstract class WifiTabState extends Equatable {
 
 /// UnInitialized
 class UnWifiTabState extends WifiTabState {
-  UnWifiTabState();
+  const UnWifiTabState();
 
   @override
   String toString() => 'UnWifiTabState';
@@ -19,21 +18,20 @@ class UnWifiTabState extends WifiTabState {
 
 /// Initialized
 class InWifiTabState extends WifiTabState {
-  InWifiTabState({required this.availableNetworks,required this.storedNetworks});
+  const InWifiTabState({required this.availableNetworks, required this.storedNetworks});
 
   final Iterable<WiFiNetworkInfo> availableNetworks;
   final Iterable<WiFiStoredNetworkInfo> storedNetworks;
-
 
   @override
   String toString() => 'InWifiTabState $availableNetworks, $storedNetworks';
 
   @override
-  List<Object> get props => [availableNetworks,storedNetworks];
+  List<Object> get props => [availableNetworks, storedNetworks];
 }
 
 class ErrorWifiTabState extends WifiTabState {
-  ErrorWifiTabState(this.errorMessage);
+  const ErrorWifiTabState(this.errorMessage);
 
   final String errorMessage;
 

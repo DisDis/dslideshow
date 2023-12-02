@@ -61,36 +61,34 @@ class CircularIndicatorWidget extends StatefulWidget {
   final Color backgroundColor;
 
   CircularIndicatorWidget({
-    Key? key,
+    super.key,
     required this.percent,
     String? titleI,
     this.backgroundColor = Colors.white70,
-  })  : title = titleI ?? '${(percent * 100).round()}%',
-        super(key: key);
+  }) : title = titleI ?? '${(percent * 100).round()}%';
 
   @override
   State<StatefulWidget> createState() => _CircularIndicatorWidgetState();
 }
 
 class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      child: Center(
-        child: Text(
-          widget.title,
-          style: Settings.loadAverageDetailsTextStyle,
-        ),
-      ),
       painter: CircularArcPainter(
         percent: widget.percent * _controller.value,
         width: 10,
         endColor: widget.endColor,
         startColor: widget.startColor,
         backgroundColor: widget.backgroundColor,
+      ),
+      child: Center(
+        child: Text(
+          widget.title,
+          style: Settings.loadAverageDetailsTextStyle,
+        ),
       ),
     );
   }

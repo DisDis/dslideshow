@@ -24,7 +24,7 @@ GoRoute createRoute(BuildContext context) {
     builder: (context, state) => permissionService.check(Permission.NONE)
         ? const WebConfigMainPage()
         : const NoAccessPage(
-            drawerWidget: const ConfigAppNavigationBar(),
+            drawerWidget: ConfigAppNavigationBar(),
           ),
 
     //Sub routes

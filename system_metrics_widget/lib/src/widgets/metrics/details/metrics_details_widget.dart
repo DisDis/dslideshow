@@ -7,7 +7,12 @@ class MetricsDetails<T> extends StatelessWidget {
   final T? value;
   final TextStyle? style;
 
-  const MetricsDetails(this.title, {Key? key, required this.value, this.style}) : super(key: key);
+  const MetricsDetails(
+    this.title, {
+    super.key,
+    required this.value,
+    this.style,
+  });
 
   @override
   Widget build(BuildContext context) => Text(

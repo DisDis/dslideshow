@@ -108,7 +108,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(backgroundColor: Colors.black),
+      theme: ThemeData(colorScheme: const ColorScheme.dark(background: Colors.black)),
       localizationsDelegates: const [],
       supportedLocales: const [
         Locale('en'), // English

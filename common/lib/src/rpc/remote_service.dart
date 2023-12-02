@@ -4,10 +4,7 @@ import 'dart:isolate';
 
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/serializers.dart';
-import 'package:dslideshow_common/src/rpc/command.dart';
-import 'package:dslideshow_common/src/rpc/exception.dart';
 import 'package:async/async.dart';
-import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:pool/pool.dart';
 
 abstract class RemoteService {

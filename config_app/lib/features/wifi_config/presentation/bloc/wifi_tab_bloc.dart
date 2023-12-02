@@ -26,7 +26,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     on<LoadWifiTabEvent>(_onLoadWifi);
 
     on<AddWifiTabEvent>((AddWifiTabEvent event, emit) async {
-      emit(UnWifiTabState());
+      emit(const UnWifiTabState());
       try {
         await client.send(WSSendRpcCommand.byCommand(WiFiAddCommand(
           id: RpcCommand.generateId(),
@@ -42,13 +42,13 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     });
 
     on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
-      emit(UnWifiTabState());
+      emit(const UnWifiTabState());
       await client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(id: RpcCommand.generateId(), wifiId: event.wifiId)));
       await _updateData(emit);
     });
 
     on<EnableWifiTabEvent>((EnableWifiTabEvent event, emit) async {
-      emit(UnWifiTabState());
+      emit(const UnWifiTabState());
       // await _client.send(WSSendRpcCommand((b) => b.command = WiFiEnableCommand((b)=>b..wifiId=event.wifiId..value=event.value)));
       await _updateData(emit);
     });
@@ -83,15 +83,15 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
           ]
         : 
         */
-        scanResult.networks!.toList(growable: false);
+        scanResult.networks.toList(growable: false);
 
-    final storedNetworks = storedResult.networks!.toList(growable: false);
+    final storedNetworks = storedResult.networks.toList(growable: false);
 
     emit(InWifiTabState(availableNetworks: availableNetworks, storedNetworks: storedNetworks));
   }
 
   Future _onLoadWifi(WifiTabEvent event, emit) async {
-    emit(UnWifiTabState());
+    emit(const UnWifiTabState());
     try {
       await _updateData(emit);
     } catch (e, st) {

@@ -46,8 +46,7 @@ class _SerializersImpl implements Serializers {
 
   Object? deserialize(Object? object) {
     if (object is List) {
-      final arrData = object as List;
-      return _deserializeByType(arrData[0], arrData[1]);
+      return _deserializeByType(object[0], object[1]);
     }
     throw ArgumentError('Not found deserialize for "$object"');
   }

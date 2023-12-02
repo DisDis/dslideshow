@@ -19,22 +19,22 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
         super(key: Key('mp4:${item.uri!.toFilePath()}'));
 
   @override
-  _VideoWidgetState createState() => _VideoWidgetState();
+  VideoWidgetState createState() => VideoWidgetState();
 }
 
-class _VideoWidgetState extends State<VideoWidget> {
+class VideoWidgetState extends State<VideoWidget> {
   static final bool isVideoSupport = isLinuxEmbedded || !(Platform.isLinux || Platform.isWindows);
 
   static final Logger _log = Logger('_VideoWidgetState');
 
   late VideoPlayerController _controller;
 
-  _VideoWidgetState();
+  VideoWidgetState();
 
   @override
   Widget build(BuildContext context) {
     if (!isVideoSupport) {
-      return const Text('Video not supported');
+      return const Center(child: Text('Video not supported'));
     }
 
     return Center(

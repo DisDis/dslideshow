@@ -88,7 +88,7 @@ class CubeEffect with TranslateEffect implements MediaSliderItemEffect {
     this.rightPageAlignment = Alignment.centerLeft,
     this.leftPageAlignment = Alignment.centerRight,
     double rotationAngle = 90,
-  }) : this.rotationAngle = math.pi / 180 * rotationAngle;
+  }) : rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
   Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
@@ -202,7 +202,6 @@ class FlipHorizontalEffect with TranslateEffect implements MediaSliderItemEffect
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: page,
         transform: translateNext(
             Matrix4.identity()
               ..setEntry(3, 2, perspectiveScale)
@@ -211,12 +210,12 @@ class FlipHorizontalEffect with TranslateEffect implements MediaSliderItemEffect
             pageDelta,
             screenW,
             screenH),
+        child: page,
       );
     } else if (isCurrentPage /*index == currentPage*/ && pageDelta <= 0.5) {
       return Transform(
           transformHitTests: false,
           alignment: Alignment.center,
-          child: page,
           transform: translateCurrent(
               Matrix4.identity()
                 ..setEntry(3, 2, perspectiveScale)
@@ -224,7 +223,8 @@ class FlipHorizontalEffect with TranslateEffect implements MediaSliderItemEffect
                 ..leftTranslate(width * pageDelta),
               pageDelta,
               screenW,
-              screenH));
+              screenH),
+          child: page);
     } else {
       return Transform(
           transformHitTests: false,
@@ -251,7 +251,6 @@ class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: page,
         transform: translateNext(
             Matrix4.identity()
               ..setEntry(3, 2, perspectiveScale)
@@ -260,12 +259,12 @@ class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
             pageDelta,
             screenW,
             screenH),
+        child: page,
       );
     } else if (isCurrentPage /*index == currentPage*/ && pageDelta <= 0.5) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: page,
         transform: translateCurrent(
             Matrix4.identity()
               ..setEntry(3, 2, perspectiveScale)
@@ -274,6 +273,7 @@ class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
             pageDelta,
             screenW,
             screenH),
+        child: page,
       );
     } else {
       return Transform(
@@ -332,8 +332,8 @@ class ParallaxEffect with TranslateEffect implements MediaSliderItemEffect {
         transform: translateNext(Matrix4.identity()..translate(-clipAmount * (1 - pageDelta)), pageDelta, screenW, screenH),
         // offset: Offset(-clipAmount * (1 - pageDelta), 0),
         child: ClipRect(
-          child: page,
           clipper: RectClipper(clipAmount * (1 - pageDelta)),
+          child: page,
         ),
       );
     } else {
@@ -368,7 +368,7 @@ class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
 
   RotateDownEffect({
     double rotationAngle = 45,
-  }) : this.rotationAngle = math.pi / 180 * rotationAngle;
+  }) : rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
   Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
@@ -377,15 +377,15 @@ class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.bottomCenter,
-        child: page,
         transform: translateCurrent(Matrix4.identity()..rotateZ(-rotationAngle * pageDelta), pageDelta, screenW, screenH),
+        child: page,
       );
     } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.bottomCenter,
-        child: page,
         transform: translateNext(Matrix4.identity()..rotateZ(rotationAngle * (1 - pageDelta)), pageDelta, screenW, screenH),
+        child: page,
       );
     } else {
       return Transform(
@@ -403,7 +403,7 @@ class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
 
   RotateUpEffect({
     double rotationAngle = 45,
-  }) : this.rotationAngle = math.pi / 180 * rotationAngle;
+  }) : rotationAngle = math.pi / 180 * rotationAngle;
 
   @override
   Widget transform(BuildContext context, Widget page, bool isCurrentPage /*int index, int currentPage*/, double pageDelta /*, int itemCount*/, double screenW,
@@ -412,15 +412,15 @@ class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.topCenter,
-        child: page,
         transform: translateCurrent(Matrix4.identity()..rotateZ(rotationAngle * pageDelta), pageDelta, screenW, screenH),
+        child: page,
       );
     } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.topCenter,
-        child: page,
         transform: translateNext(Matrix4.identity()..rotateZ(-rotationAngle * (1 - pageDelta)), pageDelta, screenW, screenH),
+        child: page,
       );
     } else {
       return Transform(
@@ -463,7 +463,6 @@ class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: page,
         transform: translateCurrent(
             Matrix4.identity()
               ..setEntry(3, 2, 0.002)
@@ -471,12 +470,12 @@ class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
             pageDelta,
             screenW,
             screenH),
+        child: page,
       );
     } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: page,
         transform: translateNext(
             Matrix4.identity()
               ..setEntry(3, 2, 0.002)
@@ -484,6 +483,7 @@ class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
             pageDelta,
             screenW,
             screenH),
+        child: page,
       );
     } else {
       return Transform(
@@ -513,16 +513,16 @@ class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
         transform: translateCurrent(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
+        child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
       );
     } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/) {
       double scale = pageDelta < zoomOutScale ? zoomOutScale : zoomOutScale + (pageDelta - zoomOutScale);
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
-        child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
         transform: translateNext(Matrix4.identity()..scale(scale, scale), pageDelta, screenW, screenH),
+        child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
       );
     } else {
       return Transform(

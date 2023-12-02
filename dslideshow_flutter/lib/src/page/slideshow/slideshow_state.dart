@@ -1,5 +1,4 @@
 import 'package:dslideshow_backend/storage.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

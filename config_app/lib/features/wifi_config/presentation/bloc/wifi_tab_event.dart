@@ -24,6 +24,7 @@ class LoadWifiTabEvent extends WifiTabEvent {
 }
 
 class AddWifiTabEvent extends WifiTabEvent {
+  // ignore: non_constant_identifier_names
   final String SSID;
   final String psk;
   AddWifiTabEvent(this.SSID, this.psk);

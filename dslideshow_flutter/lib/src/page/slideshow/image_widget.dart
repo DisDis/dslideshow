@@ -11,17 +11,17 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
-@immutable
 class ImageWidget extends StatelessWidget implements ItemWidget {
   static final Logger _log = Logger('ImageWidget');
   Image? _image;
   @override
   final MediaItem item;
   final SlideShowConfig _config;
+  final Size size;
 
   bool get isGif => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.gif';
 
-  ImageWidget(this.item, this._config) : super(key: Key('img:${item.uri!.toFilePath()}')) {
+  ImageWidget(this.item, this._config, this.size) : super(key: Key('img:${item.uri!.toFilePath()}')) {
     if (isGif) {
       _image = Image.memory(File(item.uri!.toFilePath()).readAsBytesSync(),
           errorBuilder: (context, _, __) => Container(), fit: BoxFit.contain, filterQuality: FilterQuality.high);
@@ -33,19 +33,19 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
 
   Future<void> precache(BuildContext context) async {
     if (_image == null) {
-      await _createFullscreenImage(context);
+      await _createFullscreenImage();
+    } else {
+      return precacheImage(_image!.image, context);
     }
-    return precacheImage(_image!.image, context);
   }
 
-  Future<void> _createFullscreenImage(BuildContext context) async {
+  Future<void> _createFullscreenImage() async {
     ui.Image imageSrc = await loadImageFromFile(File(item.uri!.toFilePath()));
 
     final recorder = ui.PictureRecorder();
     final paintBlur = Paint();
     if (_config.isBlurredBackground && _config.backgroundBlurSigma > 0) {
-      paintBlur.imageFilter = ui.ImageFilter.blur(
-          sigmaX: _config.backgroundBlurSigma.toDouble(), sigmaY: _config.backgroundBlurSigma.toDouble());
+      paintBlur.imageFilter = ui.ImageFilter.blur(sigmaX: _config.backgroundBlurSigma.toDouble(), sigmaY: _config.backgroundBlurSigma.toDouble());
     }
     paintBlur.color = Color.fromRGBO(0, 0, 0, _config.backgroundOpacity);
 
@@ -54,7 +54,6 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
         Color(_config.backgroundColor),
         //Color.fromRGBO(_config.backgroundColorR, _config.backgroundColorG, _config.backgroundColorB, 1.0),
         BlendMode.color);
-    final outputSize = MediaQuery.of(context).size;
 
     // Cover
     if (_config.isBlurredBackground) {
@@ -62,7 +61,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
           canvas: canvas,
           inputPaint: paintBlur,
           image: imageSrc,
-          rect: ui.Rect.fromLTWH(0, 0, outputSize.width, outputSize.height),
+          rect: ui.Rect.fromLTWH(0, 0, size.width, size.height),
           fit: BoxFit.cover,
           filterQuality: FilterQuality.high,
           isAntiAlias: true);
@@ -72,13 +71,12 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
     paintImage(
         canvas: canvas,
         image: imageSrc,
-        rect: ui.Rect.fromLTWH(0, 0, outputSize.width, outputSize.height),
+        rect: ui.Rect.fromLTWH(0, 0, size.width, size.height),
         fit: BoxFit.contain,
         filterQuality: FilterQuality.high,
         isAntiAlias: true);
 
-    final outputImage =
-        await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
+    final outputImage = await recorder.endRecording().toImage(size.width.truncate(), size.height.truncate());
     final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
     _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context, _, __) => Container());
   }
@@ -192,8 +190,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
       destinationSize += sliceBorder;
       // We don't have the ability to draw a subset of the image at the same time
       // as we apply a nine-patch stretch.
-      assert(sourceSize == inputSize,
-          'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.');
+      assert(sourceSize == inputSize, 'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.');
     }
 
     /*if (repeat != ImageRepeat.noRepeat && destinationSize == outputSize) {
@@ -201,7 +198,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
       // output rect with the image.
       repeat = ImageRepeat.noRepeat;
     }*/
-    final Paint paint = inputPaint == null ? (Paint()..isAntiAlias = isAntiAlias) : inputPaint
+    final Paint paint = inputPaint ?? (Paint()..isAntiAlias = isAntiAlias)
       ..isAntiAlias = isAntiAlias;
     if (colorFilter != null) paint.colorFilter = colorFilter;
     if (sourceSize != destinationSize) {
@@ -216,7 +213,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
     final Rect destinationRect = destinationPosition & destinationSize;
 
     // Set to true if we added a saveLayer to the canvas to invert/flip the image.
-    bool invertedCanvas = false;
+    // bool invertedCanvas = false;
     // Output size and destination rect are fully calculated.
     /*if (!kReleaseMode) {
       final ImageSizeInfo sizeInfo = ImageSizeInfo(
@@ -319,9 +316,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
     }
     if (needSave) canvas.restore();
 
-    if (invertedCanvas) {
-      canvas.restore();
-    }
+    // if (invertedCanvas) {
+    //   canvas.restore();
+    // }
   }
 
   ///load ui.Image from File

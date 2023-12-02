@@ -2,7 +2,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WebTabState extends Equatable {
-  WebTabState();
+  const WebTabState();
 
   @override
   List<Object> get props => [];
@@ -10,14 +10,14 @@ abstract class WebTabState extends Equatable {
 
 /// UnInitialized
 class UnWebTabState extends WebTabState {
-  UnWebTabState();
+  const UnWebTabState();
 
   @override
   String toString() => 'UnWebTabState';
 }
 
 class ErrorWebTabState extends WebTabState {
-  ErrorWebTabState(this.errorMessage);
+  const ErrorWebTabState(this.errorMessage);
 
   final String errorMessage;
 
@@ -31,7 +31,7 @@ class ErrorWebTabState extends WebTabState {
 /// Initialized
 class InWebTabState extends WebTabState {
   final AppConfig config;
-  InWebTabState(this.config);
+  const InWebTabState(this.config);
 
   @override
   String toString() => 'InWebTabState';

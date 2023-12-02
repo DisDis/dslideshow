@@ -20,7 +20,7 @@ class AnimatedLogo extends AnimatedWidget {
   final String text;
   final double size;
 
-  const AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation}) : super(key: key, listenable: animation);
+  const AnimatedLogo(this.text, this.size, {super.key, required Animation<double> animation}) : super(listenable: animation);
 
   // String get welcomeText {
   //   return intl.Intl.message(
@@ -65,14 +65,14 @@ class AnimatedLogo extends AnimatedWidget {
 }
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   @override
-  _WelcomePageState createState() => _WelcomePageState();
+  WelcomePageState createState() => WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
-  static final Logger _log = Logger('_WelcomePageState');
+class WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
+  static final Logger _log = Logger('WelcomePageState');
   late Animation<double> animation;
   late AnimationController controller;
   final FrontendService _frontendService = injector.get<FrontendService>();

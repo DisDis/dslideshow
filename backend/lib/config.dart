@@ -44,7 +44,7 @@ class AppConfig {
       required this.storages,
       required this.wifi});
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeToJson: false)
   String fullConfigFilename = '';
 
   factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
@@ -219,9 +219,7 @@ class AppStorage {
   final File _storageFile;
   Timer? _saveTimer;
 
-  AppStorage([String? rootPath])
-      : this._storageFile =
-            new File(rootPath != null ? path.join(rootPath, AppStorage.STORAGE_FILE) : AppStorage.STORAGE_FILE) {
+  AppStorage([String? rootPath]) : this._storageFile = new File(rootPath != null ? path.join(rootPath, AppStorage.STORAGE_FILE) : AppStorage.STORAGE_FILE) {
     load();
   }
 

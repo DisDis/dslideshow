@@ -8,13 +8,13 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class CurrentTimeWidget extends StatefulWidget {
-  const CurrentTimeWidget({Key? key}) : super(key: key);
+  const CurrentTimeWidget({super.key});
 
   @override
-  _CurrentTimeWidgetState createState() => _CurrentTimeWidgetState();
+  CurrentTimeWidgetState createState() => CurrentTimeWidgetState();
 }
 
-class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
+class CurrentTimeWidgetState extends State<CurrentTimeWidget> {
   late Timer _timer;
   final _dateFormatter = DateFormat('yMMMMEEEEd');
   final _timeFormatter = DateFormat('Hms');

@@ -4,7 +4,6 @@ import 'package:config_app/injection_container.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final Logger _log = Logger('main');
 

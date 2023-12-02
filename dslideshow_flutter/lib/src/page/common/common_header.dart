@@ -26,25 +26,25 @@ class BlinkAnimation extends StatefulWidget {
   final Widget child;
   final bool hideAfterBlink;
 
-  const BlinkAnimation(
-      {Key? key, this.countBlink = 3, this.milliseconds = 1500, required this.child, this.hideAfterBlink = true})
-      : super(key: key);
+  const BlinkAnimation({
+    super.key,
+    this.countBlink = 3,
+    this.milliseconds = 1500,
+    required this.child,
+    this.hideAfterBlink = true,
+  });
   @override
-  _BlinkAnimationState createState() => _BlinkAnimationState();
+  BlinkAnimationState createState() => BlinkAnimationState();
 }
 
 class CommonHeaderWidget extends StatelessWidget {
-  const CommonHeaderWidget({Key? key}) : super(key: key);
+  const CommonHeaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
       return IndicatorState(
-          storageStatus: state.storageStatus,
-          isDebug: state.isDebug,
-          isPaused: state.isPaused,
-          isMenu: state.isMenu,
-          hasInternet: state.hasInternet);
+          storageStatus: state.storageStatus, isDebug: state.isDebug, isPaused: state.isPaused, isMenu: state.isMenu, hasInternet: state.hasInternet);
     }, builder: (context, state) {
       return Stack(
         children: <Widget>[
@@ -66,12 +66,12 @@ class CommonHeaderWidget extends StatelessWidget {
               if (state.storageStatus == StorageStatusEnum.off)
                 const BlinkAnimation(
                   key: Key('cloud_off'),
+                  hideAfterBlink: false,
                   child: Icon(
                     Icons.cloud_off,
                     size: 24.0,
                     color: Colors.red,
                   ),
-                  hideAfterBlink: false,
                 )
               else if (state.storageStatus == StorageStatusEnum.download)
                 const BlinkAnimation(
@@ -101,22 +101,22 @@ class CommonHeaderWidget extends StatelessWidget {
               else
                 const BlinkAnimation(
                   key: Key('noInternet'),
+                  hideAfterBlink: false,
                   child: Icon(
                     Icons.signal_wifi_off,
                     size: 24.0,
                     color: Colors.red,
                   ),
-                  hideAfterBlink: false,
                 ),
               if (state.isPaused)
                 const BlinkAnimation(
                   key: Key('isPaused'),
+                  hideAfterBlink: false,
                   child: Icon(
                     Icons.pause_circle,
                     size: 24.0,
                     color: Colors.red,
                   ),
-                  hideAfterBlink: false,
                 )
             ],
           ),
@@ -126,12 +126,12 @@ class CommonHeaderWidget extends StatelessWidget {
   }
 }
 
-class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
+class BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
   late Animation<double> animation;
   late AnimationController controller;
 
-  _BlinkAnimationState();
+  BlinkAnimationState();
 
   @override
   Widget build(BuildContext context) {

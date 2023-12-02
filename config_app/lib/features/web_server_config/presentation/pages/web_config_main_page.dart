@@ -4,7 +4,6 @@ import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_
 import 'package:config_app/features/web_server_config/presentation/widgets/web_tab.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WebConfigMainPage extends StatelessWidget {
@@ -13,12 +12,12 @@ class WebConfigMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Web config")),
+      appBar: AppBar(title: const Text("Web config")),
       drawer: const ConfigAppNavigationBar(),
       body: MultiBlocProvider(
         providers: [
           BlocProvider<WebTabBloc>(
-            create: (BuildContext context) => WebTabBloc(initialState: UnWebTabState(), client: sl()),
+            create: (BuildContext context) => WebTabBloc(initialState: const UnWebTabState(), client: sl()),
           ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),

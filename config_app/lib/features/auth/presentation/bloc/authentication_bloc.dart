@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:config_app/features/auth/domain/repository/authentication_repository.dart';
 import 'package:config_app/features/permission/domain/entities/permission.dart';
 import 'package:config_app/features/permission/domain/services/permission_service.dart';
-import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:config_app/features/user/domain/entities/user.dart';
 import 'package:config_app/features/user/domain/repository/user_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

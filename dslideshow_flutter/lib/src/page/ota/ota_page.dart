@@ -5,13 +5,11 @@ import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logging/logging.dart';
-// import 'dart:io' as io;
-// import 'dart:convert';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 
 import 'package:xterm/xterm.dart';
 
+@immutable
 class OTAPage extends StatelessWidget {
   final Terminal terminal = Terminal(maxLines: 3000);
   late ProcessTerminalBackend backend = ProcessTerminalBackend(terminal);
@@ -41,7 +39,6 @@ class ProcessTerminalBackend {
 }
 
 class OTAView extends StatelessWidget {
-  static final Logger _log = Logger('OTAView');
   final Terminal terminal;
 
   const OTAView({super.key, required this.terminal});
