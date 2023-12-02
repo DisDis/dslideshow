@@ -23,9 +23,9 @@ class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
       final result = await _client.send(WSConfigDownloadCommand(id: WebSocketCommand.generateId())) as WSConfigDownloadResult;
       _log.info('Recived config:');
       var jsonMsg = json.decode(result.content);
-      final _config = AppConfig.fromJson(jsonMsg);
+      final config = AppConfig.fromJson(jsonMsg);
       _log.info(prettyPrintJSONEncode.convert(jsonMsg));
-      emit(InWebTabState(_config));
+      emit(InWebTabState(config));
     });
   }
 }
