@@ -24,41 +24,51 @@ class SystemInfoMetrics extends StatelessWidget {
 
     return OrientationBuilder(builder: (context, orientation) {
       return StaggeredGrid.count(
-        //TODO: FIXME!
-        // staggeredTiles: const [
-        //   StaggeredTile.fit(8),
-        //   StaggeredTile.fit(5),
-        //   StaggeredTile.fit(3),
-        //   StaggeredTile.fit(5),
-        //   StaggeredTile.fit(8),
-        //   StaggeredTile.fit(4),
-        //   StaggeredTile.fit(4),
-        // ],
         crossAxisCount: 8,
-        // scrollDirection: Axis.vertical,
         mainAxisSpacing: 4.0,
         crossAxisSpacing: 8.0,
         children: <Widget>[
-          const CurrentTimeWidget(),
-          UptimeInfoWidget(uptime: _model.updateInfo.uptime),
-          CpuInfoWidget(
-            cpu: _model.cpuInfo,
-            cpuLoad1: _model.updateInfo.cpuLoad1,
-            cpuLoad5: _model.updateInfo.cpuLoad5,
-            cpuLoad15: _model.updateInfo.cpuLoad15,
+          const StaggeredGridTile.fit(
+            crossAxisCellCount: 8,
+            child: CurrentTimeWidget(),
           ),
-          OSInfoWidget(model: _model.osInfo),
-          NetworkUsageWidget(model: _model.networkInfo),
-          MemoryUsageWidget(
-            totalMemory: _model.updateInfo.memTotal,
-            usedMemory: _model.updateInfo.memUsed,
-            totalSwapMemory: _model.updateInfo.swapTotal,
-            usedSwapMemory: _model.updateInfo.swapUsed,
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 5,
+            child: UptimeInfoWidget(uptime: _model.updateInfo.uptime),
           ),
-          DiskUsageWidget(
-            totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
-            usedMemory: _model.updateInfo.diskUsed,
-            usagePercent: _model.updateInfo.diskUsedPercent,
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 3,
+            child: CpuInfoWidget(
+              cpu: _model.cpuInfo,
+              cpuLoad1: _model.updateInfo.cpuLoad1,
+              cpuLoad5: _model.updateInfo.cpuLoad5,
+              cpuLoad15: _model.updateInfo.cpuLoad15,
+            ),
+          ),
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 5,
+            child: OSInfoWidget(model: _model.osInfo),
+          ),
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 8,
+            child: NetworkUsageWidget(model: _model.networkInfo),
+          ),
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 4,
+            child: MemoryUsageWidget(
+              totalMemory: _model.updateInfo.memTotal,
+              usedMemory: _model.updateInfo.memUsed,
+              totalSwapMemory: _model.updateInfo.swapTotal,
+              usedSwapMemory: _model.updateInfo.swapUsed,
+            ),
+          ),
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 4,
+            child: DiskUsageWidget(
+              totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
+              usedMemory: _model.updateInfo.diskUsed,
+              usagePercent: _model.updateInfo.diskUsedPercent,
+            ),
           ),
         ],
       );
