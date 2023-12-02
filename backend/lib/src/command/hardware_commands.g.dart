@@ -40,7 +40,7 @@ const _$ButtonTypeEnumMap = {
   ButtonType.menu: 'menu',
   ButtonType.screentoggle: 'screentoggle',
   ButtonType.pause: 'pause',
-  ButtonType.select: 'select',
+  ButtonType.back: 'back',
 };
 
 _$LEDControlCommandImpl _$$LEDControlCommandImplFromJson(

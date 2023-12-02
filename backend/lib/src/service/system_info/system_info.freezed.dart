@@ -23,7 +23,6 @@ mixin _$SystemInfo {
   CpuInfo get cpuInfo => throw _privateConstructorUsedError;
   NetworkInfo get networkInfo => throw _privateConstructorUsedError;
   OSInfo get osInfo => throw _privateConstructorUsedError;
-  @JsonKey(includeToJson: true)
   UpdateInfo get updateInfo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,7 +41,7 @@ abstract class $SystemInfoCopyWith<$Res> {
       {CpuInfo cpuInfo,
       NetworkInfo networkInfo,
       OSInfo osInfo,
-      @JsonKey(includeToJson: true) UpdateInfo updateInfo});
+      UpdateInfo updateInfo});
 
   $CpuInfoCopyWith<$Res> get cpuInfo;
   $NetworkInfoCopyWith<$Res> get networkInfo;
@@ -133,7 +132,7 @@ abstract class _$$SystemInfoImplCopyWith<$Res>
       {CpuInfo cpuInfo,
       NetworkInfo networkInfo,
       OSInfo osInfo,
-      @JsonKey(includeToJson: true) UpdateInfo updateInfo});
+      UpdateInfo updateInfo});
 
   @override
   $CpuInfoCopyWith<$Res> get cpuInfo;
@@ -189,7 +188,7 @@ class _$SystemInfoImpl implements _SystemInfo {
       {required this.cpuInfo,
       required this.networkInfo,
       required this.osInfo,
-      @JsonKey(includeToJson: true) required this.updateInfo});
+      required this.updateInfo});
 
   factory _$SystemInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$SystemInfoImplFromJson(json);
@@ -201,7 +200,6 @@ class _$SystemInfoImpl implements _SystemInfo {
   @override
   final OSInfo osInfo;
   @override
-  @JsonKey(includeToJson: true)
   final UpdateInfo updateInfo;
 
   @override
@@ -243,11 +241,10 @@ class _$SystemInfoImpl implements _SystemInfo {
 
 abstract class _SystemInfo implements SystemInfo {
   const factory _SystemInfo(
-          {required final CpuInfo cpuInfo,
-          required final NetworkInfo networkInfo,
-          required final OSInfo osInfo,
-          @JsonKey(includeToJson: true) required final UpdateInfo updateInfo}) =
-      _$SystemInfoImpl;
+      {required final CpuInfo cpuInfo,
+      required final NetworkInfo networkInfo,
+      required final OSInfo osInfo,
+      required final UpdateInfo updateInfo}) = _$SystemInfoImpl;
 
   factory _SystemInfo.fromJson(Map<String, dynamic> json) =
       _$SystemInfoImpl.fromJson;
@@ -259,7 +256,6 @@ abstract class _SystemInfo implements SystemInfo {
   @override
   OSInfo get osInfo;
   @override
-  @JsonKey(includeToJson: true)
   UpdateInfo get updateInfo;
   @override
   @JsonKey(ignore: true)

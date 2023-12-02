@@ -66,13 +66,13 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
       case ButtonType.menu:
         _pushMenuButton();
         break;
-      case ButtonType.select:
-        _pushSelectButton();
+      case ButtonType.back:
+        _pushBackButton();
         break;
     }
   }
 
-  void _pushSelectButton() {
+  void _pushBackButton() {
     add(SlideshowSystemInfoEvent(!state.isInfo));
   }
 

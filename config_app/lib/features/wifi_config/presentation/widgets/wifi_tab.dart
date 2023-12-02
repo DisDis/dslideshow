@@ -4,7 +4,7 @@ import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:dslideshow_backend/src/command/wifi_commands.dart';
+import 'package:dslideshow_backend/command.dart';
 
 class WiFiConfigTab extends StatefulWidget {
   const WiFiConfigTab({

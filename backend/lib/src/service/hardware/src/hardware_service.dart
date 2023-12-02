@@ -51,6 +51,10 @@ class HardwareService implements RpcService {
       _log.info('onPause button = $event');
       if (event) _pushButton(ButtonType.pause);
     });
+    _gpioService.onBack.listen((event) {
+      _log.info('onBack button = $event');
+      if (event) _pushButton(ButtonType.back);
+    });
     _screenService.onStateChangePreparation.listen((newState) {
       screenConfigure(newState);
     });

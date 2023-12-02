@@ -48,5 +48,5 @@ enum ButtonType {
   menu,
   screentoggle,
   pause,
-  select;
+  back;
 }

@@ -15,7 +15,7 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       mqtt: AppConfig._parseMQTT(json['mqtt']),
       storages: AppConfig._parseStorages(json['storages']),
       wifi: AppConfig._parseWifi(json['wifi']),
-    );
+    )..fullConfigFilename = json['fullConfigFilename'] as String;
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'log': instance.log.toJson(),
