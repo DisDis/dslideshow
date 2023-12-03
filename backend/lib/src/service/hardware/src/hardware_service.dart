@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/command/button_type.dart';
+import 'package:dslideshow_backend/src/command/led_type.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -39,21 +41,21 @@ class HardwareService implements RpcService {
     } else {
       _log.warning('GPIO does not support except Linux');
     }
-    _gpioService.onMenu.listen((event) {
-      _log.info('onMenu button = $event');
-      if (event) _pushButton(ButtonType.menu);
+    _gpioService.onButton0.listen((event) {
+      _log.info('onButton0 button = $event');
+      if (event) _pushButton(ButtonType.button0);
     });
-    _gpioService.onScreenToggle.listen((event) {
-      _log.info('onScreenToggle button = $event');
-      if (event) _pushButton(ButtonType.screentoggle);
+    _gpioService.onButton1.listen((event) {
+      _log.info('onButton1 button = $event');
+      if (event) _pushButton(ButtonType.button1);
     });
-    _gpioService.onPause.listen((event) {
-      _log.info('onPause button = $event');
-      if (event) _pushButton(ButtonType.pause);
+    _gpioService.onButton2.listen((event) {
+      _log.info('onButton2 button = $event');
+      if (event) _pushButton(ButtonType.button2);
     });
-    _gpioService.onBack.listen((event) {
-      _log.info('onBack button = $event');
-      if (event) _pushButton(ButtonType.back);
+    _gpioService.onButton3.listen((event) {
+      _log.info('onButton3 button = $event');
+      if (event) _pushButton(ButtonType.button3);
     });
     _screenService.onStateChangePreparation.listen((newState) {
       screenConfigure(newState);
@@ -67,13 +69,16 @@ class HardwareService implements RpcService {
       }
     });
     _mqttService.onPause.listen((event) {
-      _pushButton(ButtonType.pause);
+      _log.info("MQTT: onPause!");
+      //_pushButton(ButtonType.button0);
     });
     _mqttService.onScreenToggle.listen((event) {
-      _pushButton(ButtonType.screentoggle);
+      _log.info("MQTT: onScreenToggle!");
+      //_pushButton(ButtonType.screentoggle);
     });
     _mqttService.onMenu.listen((event) {
-      _pushButton(ButtonType.menu);
+      _log.info("MQTT: onMenu!");
+      //_pushButton(ButtonType.menu);
     });
     _initFutures.add(_systemInfoService.init());
   }

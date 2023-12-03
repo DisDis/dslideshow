@@ -1,11 +1,16 @@
 import 'dart:async';
 
 abstract class GPIOService {
-  Stream<bool> get onBack;
+  //Pause
+  Stream<bool> get onButton0;
+  //Menu
+  Stream<bool> get onButton1;
+  //ScreenToggle
+  Stream<bool> get onButton2;
+  //Back
+  Stream<bool> get onButton3;
+
   Stream<bool> get onMotion;
-  Stream<bool> get onPause;
-  Stream<bool> get onMenu;
-  Stream<bool> get onScreenToggle;
   Future init();
   Future release();
   set powerLED(bool? value);
