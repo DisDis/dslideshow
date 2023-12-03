@@ -16,15 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SlideshowState {
-  bool get hasInternet => throw _privateConstructorUsedError;
-  bool get isScreenLock => throw _privateConstructorUsedError;
-  StorageStatusEnum get storageStatus => throw _privateConstructorUsedError;
-  bool get isDebug => throw _privateConstructorUsedError;
-  bool get isMenu => throw _privateConstructorUsedError;
-  bool get isInfo => throw _privateConstructorUsedError;
-  bool get isPaused => throw _privateConstructorUsedError;
   MediaItem get item => throw _privateConstructorUsedError;
-  MediaSliderItemEffect get effect => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SlideshowStateCopyWith<SlideshowState> get copyWith =>
@@ -37,16 +29,7 @@ abstract class $SlideshowStateCopyWith<$Res> {
           SlideshowState value, $Res Function(SlideshowState) then) =
       _$SlideshowStateCopyWithImpl<$Res, SlideshowState>;
   @useResult
-  $Res call(
-      {bool hasInternet,
-      bool isScreenLock,
-      StorageStatusEnum storageStatus,
-      bool isDebug,
-      bool isMenu,
-      bool isInfo,
-      bool isPaused,
-      MediaItem item,
-      MediaSliderItemEffect effect});
+  $Res call({MediaItem item});
 }
 
 /// @nodoc
@@ -62,53 +45,13 @@ class _$SlideshowStateCopyWithImpl<$Res, $Val extends SlideshowState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = null,
-    Object? isScreenLock = null,
-    Object? storageStatus = null,
-    Object? isDebug = null,
-    Object? isMenu = null,
-    Object? isInfo = null,
-    Object? isPaused = null,
     Object? item = null,
-    Object? effect = null,
   }) {
     return _then(_value.copyWith(
-      hasInternet: null == hasInternet
-          ? _value.hasInternet
-          : hasInternet // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isScreenLock: null == isScreenLock
-          ? _value.isScreenLock
-          : isScreenLock // ignore: cast_nullable_to_non_nullable
-              as bool,
-      storageStatus: null == storageStatus
-          ? _value.storageStatus
-          : storageStatus // ignore: cast_nullable_to_non_nullable
-              as StorageStatusEnum,
-      isDebug: null == isDebug
-          ? _value.isDebug
-          : isDebug // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isMenu: null == isMenu
-          ? _value.isMenu
-          : isMenu // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isInfo: null == isInfo
-          ? _value.isInfo
-          : isInfo // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPaused: null == isPaused
-          ? _value.isPaused
-          : isPaused // ignore: cast_nullable_to_non_nullable
-              as bool,
       item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as MediaItem,
-      effect: null == effect
-          ? _value.effect
-          : effect // ignore: cast_nullable_to_non_nullable
-              as MediaSliderItemEffect,
     ) as $Val);
   }
 }
@@ -121,16 +64,7 @@ abstract class _$$SlideshowWorkStateImplCopyWith<$Res>
       __$$SlideshowWorkStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool hasInternet,
-      bool isScreenLock,
-      StorageStatusEnum storageStatus,
-      bool isDebug,
-      bool isMenu,
-      bool isInfo,
-      bool isPaused,
-      MediaItem item,
-      MediaSliderItemEffect effect});
+  $Res call({MediaItem item});
 }
 
 /// @nodoc
@@ -144,53 +78,13 @@ class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? hasInternet = null,
-    Object? isScreenLock = null,
-    Object? storageStatus = null,
-    Object? isDebug = null,
-    Object? isMenu = null,
-    Object? isInfo = null,
-    Object? isPaused = null,
     Object? item = null,
-    Object? effect = null,
   }) {
     return _then(_$SlideshowWorkStateImpl(
-      hasInternet: null == hasInternet
-          ? _value.hasInternet
-          : hasInternet // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isScreenLock: null == isScreenLock
-          ? _value.isScreenLock
-          : isScreenLock // ignore: cast_nullable_to_non_nullable
-              as bool,
-      storageStatus: null == storageStatus
-          ? _value.storageStatus
-          : storageStatus // ignore: cast_nullable_to_non_nullable
-              as StorageStatusEnum,
-      isDebug: null == isDebug
-          ? _value.isDebug
-          : isDebug // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isMenu: null == isMenu
-          ? _value.isMenu
-          : isMenu // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isInfo: null == isInfo
-          ? _value.isInfo
-          : isInfo // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPaused: null == isPaused
-          ? _value.isPaused
-          : isPaused // ignore: cast_nullable_to_non_nullable
-              as bool,
       item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as MediaItem,
-      effect: null == effect
-          ? _value.effect
-          : effect // ignore: cast_nullable_to_non_nullable
-              as MediaSliderItemEffect,
     ));
   }
 }
@@ -198,40 +92,14 @@ class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
-  const _$SlideshowWorkStateImpl(
-      {required this.hasInternet,
-      required this.isScreenLock,
-      this.storageStatus = StorageStatusEnum.done,
-      required this.isDebug,
-      required this.isMenu,
-      required this.isInfo,
-      required this.isPaused,
-      required this.item,
-      required this.effect});
+  const _$SlideshowWorkStateImpl({required this.item});
 
   @override
-  final bool hasInternet;
-  @override
-  final bool isScreenLock;
-  @override
-  @JsonKey()
-  final StorageStatusEnum storageStatus;
-  @override
-  final bool isDebug;
-  @override
-  final bool isMenu;
-  @override
-  final bool isInfo;
-  @override
-  final bool isPaused;
-  @override
   final MediaItem item;
-  @override
-  final MediaSliderItemEffect effect;
 
   @override
   String toString() {
-    return 'SlideshowState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isInfo: $isInfo, isPaused: $isPaused, item: $item, effect: $effect)';
+    return 'SlideshowState(item: $item)';
   }
 
   @override
@@ -239,24 +107,11 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SlideshowWorkStateImpl &&
-            (identical(other.hasInternet, hasInternet) ||
-                other.hasInternet == hasInternet) &&
-            (identical(other.isScreenLock, isScreenLock) ||
-                other.isScreenLock == isScreenLock) &&
-            (identical(other.storageStatus, storageStatus) ||
-                other.storageStatus == storageStatus) &&
-            (identical(other.isDebug, isDebug) || other.isDebug == isDebug) &&
-            (identical(other.isMenu, isMenu) || other.isMenu == isMenu) &&
-            (identical(other.isInfo, isInfo) || other.isInfo == isInfo) &&
-            (identical(other.isPaused, isPaused) ||
-                other.isPaused == isPaused) &&
-            (identical(other.item, item) || other.item == item) &&
-            (identical(other.effect, effect) || other.effect == effect));
+            (identical(other.item, item) || other.item == item));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, hasInternet, isScreenLock,
-      storageStatus, isDebug, isMenu, isInfo, isPaused, item, effect);
+  int get hashCode => Object.hash(runtimeType, item);
 
   @JsonKey(ignore: true)
   @override
@@ -267,243 +122,13 @@ class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
 }
 
 abstract class _SlideshowWorkState implements SlideshowState {
-  const factory _SlideshowWorkState(
-      {required final bool hasInternet,
-      required final bool isScreenLock,
-      final StorageStatusEnum storageStatus,
-      required final bool isDebug,
-      required final bool isMenu,
-      required final bool isInfo,
-      required final bool isPaused,
-      required final MediaItem item,
-      required final MediaSliderItemEffect effect}) = _$SlideshowWorkStateImpl;
+  const factory _SlideshowWorkState({required final MediaItem item}) =
+      _$SlideshowWorkStateImpl;
 
-  @override
-  bool get hasInternet;
-  @override
-  bool get isScreenLock;
-  @override
-  StorageStatusEnum get storageStatus;
-  @override
-  bool get isDebug;
-  @override
-  bool get isMenu;
-  @override
-  bool get isInfo;
-  @override
-  bool get isPaused;
   @override
   MediaItem get item;
   @override
-  MediaSliderItemEffect get effect;
-  @override
   @JsonKey(ignore: true)
   _$$SlideshowWorkStateImplCopyWith<_$SlideshowWorkStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$IndicatorState {
-  bool get hasInternet => throw _privateConstructorUsedError;
-  StorageStatusEnum get storageStatus => throw _privateConstructorUsedError;
-  bool get isDebug => throw _privateConstructorUsedError;
-  bool get isMenu => throw _privateConstructorUsedError;
-  bool get isPaused => throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $IndicatorStateCopyWith<IndicatorState> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $IndicatorStateCopyWith<$Res> {
-  factory $IndicatorStateCopyWith(
-          IndicatorState value, $Res Function(IndicatorState) then) =
-      _$IndicatorStateCopyWithImpl<$Res, IndicatorState>;
-  @useResult
-  $Res call(
-      {bool hasInternet,
-      StorageStatusEnum storageStatus,
-      bool isDebug,
-      bool isMenu,
-      bool isPaused});
-}
-
-/// @nodoc
-class _$IndicatorStateCopyWithImpl<$Res, $Val extends IndicatorState>
-    implements $IndicatorStateCopyWith<$Res> {
-  _$IndicatorStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? hasInternet = null,
-    Object? storageStatus = null,
-    Object? isDebug = null,
-    Object? isMenu = null,
-    Object? isPaused = null,
-  }) {
-    return _then(_value.copyWith(
-      hasInternet: null == hasInternet
-          ? _value.hasInternet
-          : hasInternet // ignore: cast_nullable_to_non_nullable
-              as bool,
-      storageStatus: null == storageStatus
-          ? _value.storageStatus
-          : storageStatus // ignore: cast_nullable_to_non_nullable
-              as StorageStatusEnum,
-      isDebug: null == isDebug
-          ? _value.isDebug
-          : isDebug // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isMenu: null == isMenu
-          ? _value.isMenu
-          : isMenu // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPaused: null == isPaused
-          ? _value.isPaused
-          : isPaused // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$IndicatorStateImplCopyWith<$Res>
-    implements $IndicatorStateCopyWith<$Res> {
-  factory _$$IndicatorStateImplCopyWith(_$IndicatorStateImpl value,
-          $Res Function(_$IndicatorStateImpl) then) =
-      __$$IndicatorStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {bool hasInternet,
-      StorageStatusEnum storageStatus,
-      bool isDebug,
-      bool isMenu,
-      bool isPaused});
-}
-
-/// @nodoc
-class __$$IndicatorStateImplCopyWithImpl<$Res>
-    extends _$IndicatorStateCopyWithImpl<$Res, _$IndicatorStateImpl>
-    implements _$$IndicatorStateImplCopyWith<$Res> {
-  __$$IndicatorStateImplCopyWithImpl(
-      _$IndicatorStateImpl _value, $Res Function(_$IndicatorStateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? hasInternet = null,
-    Object? storageStatus = null,
-    Object? isDebug = null,
-    Object? isMenu = null,
-    Object? isPaused = null,
-  }) {
-    return _then(_$IndicatorStateImpl(
-      hasInternet: null == hasInternet
-          ? _value.hasInternet
-          : hasInternet // ignore: cast_nullable_to_non_nullable
-              as bool,
-      storageStatus: null == storageStatus
-          ? _value.storageStatus
-          : storageStatus // ignore: cast_nullable_to_non_nullable
-              as StorageStatusEnum,
-      isDebug: null == isDebug
-          ? _value.isDebug
-          : isDebug // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isMenu: null == isMenu
-          ? _value.isMenu
-          : isMenu // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPaused: null == isPaused
-          ? _value.isPaused
-          : isPaused // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$IndicatorStateImpl implements _IndicatorState {
-  const _$IndicatorStateImpl(
-      {required this.hasInternet,
-      required this.storageStatus,
-      required this.isDebug,
-      required this.isMenu,
-      required this.isPaused});
-
-  @override
-  final bool hasInternet;
-  @override
-  final StorageStatusEnum storageStatus;
-  @override
-  final bool isDebug;
-  @override
-  final bool isMenu;
-  @override
-  final bool isPaused;
-
-  @override
-  String toString() {
-    return 'IndicatorState(hasInternet: $hasInternet, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isPaused: $isPaused)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$IndicatorStateImpl &&
-            (identical(other.hasInternet, hasInternet) ||
-                other.hasInternet == hasInternet) &&
-            (identical(other.storageStatus, storageStatus) ||
-                other.storageStatus == storageStatus) &&
-            (identical(other.isDebug, isDebug) || other.isDebug == isDebug) &&
-            (identical(other.isMenu, isMenu) || other.isMenu == isMenu) &&
-            (identical(other.isPaused, isPaused) ||
-                other.isPaused == isPaused));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, hasInternet, storageStatus, isDebug, isMenu, isPaused);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$IndicatorStateImplCopyWith<_$IndicatorStateImpl> get copyWith =>
-      __$$IndicatorStateImplCopyWithImpl<_$IndicatorStateImpl>(
-          this, _$identity);
-}
-
-abstract class _IndicatorState implements IndicatorState {
-  const factory _IndicatorState(
-      {required final bool hasInternet,
-      required final StorageStatusEnum storageStatus,
-      required final bool isDebug,
-      required final bool isMenu,
-      required final bool isPaused}) = _$IndicatorStateImpl;
-
-  @override
-  bool get hasInternet;
-  @override
-  StorageStatusEnum get storageStatus;
-  @override
-  bool get isDebug;
-  @override
-  bool get isMenu;
-  @override
-  bool get isPaused;
-  @override
-  @JsonKey(ignore: true)
-  _$$IndicatorStateImplCopyWith<_$IndicatorStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

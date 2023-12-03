@@ -7,6 +7,7 @@ import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/menu/presentation/widgets/mainmenu.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
@@ -61,8 +62,6 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
 
   bool get isItemChanging => _currentWidget != _nextWidget;
 
-  late SlideshowBloc bloc;
-
   final Key _fadeWidgetKey = const Key('fadeWidget');
 
   @override
@@ -76,25 +75,24 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
           color: Colors.black,
           child: !isItemChanging ? _currentWidget : _transitionWidget,
         ),
-        BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
-          return IndicatorState(
-              storageStatus: state.storageStatus, isDebug: state.isDebug, isPaused: state.isPaused, isMenu: state.isMenu, hasInternet: state.hasInternet);
-        }, builder: (context, state) {
-          return StateNotify(key: _stateKey, isPaused: state.isPaused);
-        }),
+        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
+            buildWhen: (prev, current) => prev.isPaused != current.isPaused,
+            builder: (context, state) {
+              return StateNotify(key: _stateKey, isPaused: state.isPaused);
+            }),
         FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
-        BlocBuilder<SlideshowBloc, SlideshowState>(
+        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
             buildWhen: (prev, current) => prev.isInfo != current.isInfo,
             builder: (context, state) {
               return state.isInfo ? const SystemInfoWidget() : Container();
             }),
-        BlocBuilder<SlideshowBloc, SlideshowState>(
+        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
             buildWhen: (prev, current) => prev.isMenu != current.isMenu,
             builder: (context, state) {
               return state.isMenu ? const MainMenuWidget() : Container();
             }),
         if (!isLinuxEmbedded)
-          BlocBuilder<SlideshowBloc, SlideshowState>(builder: (context, state) {
+          BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
             return state.isDebug ? DebugWidget(_frontendService) : Container();
           }),
         const CommonHeaderWidget(),
@@ -164,7 +162,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     if (_currentWidget == slideShowLoaderWidget) {
       _fetchNextMediaItem();
     }
-    bloc = context.read<SlideshowBloc>();
+    final SlideshowStatusBloc bloc = injector();
 
     _subs.add(bloc.onPause.listen((isPausedNewValue) {
       if (isPausedNewValue) {
@@ -238,6 +236,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
   bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
   void _restorePlayPauseState() {
+    final SlideshowStatusBloc bloc = injector();
     if (bloc.state.isPaused) {
       _mediaItemLoopController.stop();
     } else {

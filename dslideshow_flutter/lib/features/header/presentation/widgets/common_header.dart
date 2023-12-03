@@ -1,8 +1,6 @@
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/blink_animation.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,10 +9,7 @@ class CommonHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SlideshowBloc, SlideshowState, IndicatorState>(selector: (state) {
-      return IndicatorState(
-          storageStatus: state.storageStatus, isDebug: state.isDebug, isPaused: state.isPaused, isMenu: state.isMenu, hasInternet: state.hasInternet);
-    }, builder: (context, state) {
+    return BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
       return Stack(
         children: <Widget>[
           if (!isLinuxEmbedded)
@@ -24,7 +19,7 @@ class CommonHeaderWidget extends StatelessWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  final bloc = BlocProvider.of<SlideshowBloc>(context);
+                  final bloc = BlocProvider.of<SlideshowStatusBloc>(context);
                   bloc.add(SlideshowDebugEvent(!state.isDebug));
                 },
                 child: Container(color: Colors.transparent, width: 30, height: 30),

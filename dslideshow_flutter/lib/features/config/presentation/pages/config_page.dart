@@ -5,6 +5,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slidesho
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _ConfigPageState extends State<ConfigPage> {
           const Text(_urlData),
           ElevatedButton(
             onPressed: () {
-              final bloc = context.read<SlideshowBloc>();
+              final SlideshowStatusBloc bloc = injector();
               bloc.add(SlideshowChangeStorageStatusEvent(StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
             },
             child: const Text('StorageChange'),

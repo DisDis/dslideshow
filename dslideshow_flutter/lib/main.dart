@@ -8,6 +8,7 @@ import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/pages/ota_page.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart';
 import 'package:dslideshow_flutter/features/welcome/presrntation/pages/welcome_page.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
@@ -68,8 +69,12 @@ void main() async {
     backendService.service.processing(frontendService, serializers);
     otaService.service.processing(frontendService, serializers);
 
+    injector.registerLazySingleton<SlideshowStatusBloc>(() {
+      return SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
+    });
+
     injector.registerLazySingleton<SlideshowBloc>(() {
-      return SlideshowBloc(frontendService: frontendService, config: config.slideshow);
+      return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
     });
 
     frontendService.onOTAReady.listen((isReady) {
@@ -104,6 +109,7 @@ void _runFlutter(FrontendService frontendService) {
     providers: [
       BlocProvider<RouteBloc>.value(value: injector()),
       BlocProvider<SlideshowBloc>.value(value: injector()),
+      BlocProvider<SlideshowStatusBloc>.value(value: injector()),
     ],
     child: const MainApp(),
   ));

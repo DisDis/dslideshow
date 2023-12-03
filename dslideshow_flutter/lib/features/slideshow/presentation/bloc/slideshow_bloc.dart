@@ -4,58 +4,28 @@ import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
 
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   final FrontendService frontendService;
   final SlideShowConfig config;
+  final SlideshowStatusBloc statusBloc;
   StreamSubscription? _onPushSubscription;
-  final _scPause = StreamController<bool>.broadcast();
-  Stream<bool> get onPause => _scPause.stream;
 
-  SlideshowBloc({required this.frontendService, required this.config})
-      : super(SlideshowState(
-            storageStatus: StorageStatusEnum.done,
-            hasInternet: true,
-            isScreenLock: false,
-            isDebug: false,
-            isMenu: false,
-            isPaused: false,
-            isInfo: false,
-            item: MediaItem.empty,
-            effect: Effect.cubeEffect.createEffect())) {
+  SlideshowBloc({
+    required this.frontendService,
+    required this.config,
+    required this.statusBloc,
+  }) : super(const SlideshowState(
+          item: MediaItem.empty, /* effect: Effect.cubeEffect.createEffect()*/
+        )) {
     // on<SlideshowInitialEvent>((event, emit) {
     _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
     // });
-    on<SlideshowPauseEvent>((event, emit) {
-      emit(state.copyWith(isPaused: event.value));
-      _scPause.add(event.value);
-    });
-    on<SlideshowScreenLockEvent>((event, emit) async {
-      emit(state.copyWith(isScreenLock: event.value));
-      await frontendService.changeScreenLock(event.value);
-      if (event.value) {
-        frontendService.screenTurn(false);
-      } else {
-        frontendService.screenTurn(true);
-      }
-    });
-    on<SlideshowChangeStorageStatusEvent>((event, emit) {
-      emit(state.copyWith(storageStatus: event.value));
-    });
-    on<SlideshowDebugEvent>((event, emit) {
-      emit(state.copyWith(isDebug: event.value));
-    });
-    on<SlideshowMenuEvent>((event, emit) {
-      emit(state.copyWith(isMenu: event.value));
-    });
-    on<SlideshowSystemInfoEvent>((event, emit) {
-      emit(state.copyWith(isInfo: event.value));
-    });
   }
 
   void _executeAction(SlideshowAction action) {
@@ -93,19 +63,19 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   }
 
   void _showInfo() {
-    add(SlideshowSystemInfoEvent(!state.isInfo));
+    statusBloc.add(SlideshowSystemInfoEvent(!statusBloc.state.isInfo));
   }
 
   void _showMenu() {
-    add(SlideshowMenuEvent(!state.isMenu));
+    statusBloc.add(SlideshowMenuEvent(!statusBloc.state.isMenu));
   }
 
   void _pause() {
-    add(SlideshowPauseEvent(!state.isPaused));
+    statusBloc.add(SlideshowPauseEvent(!statusBloc.state.isPaused));
   }
 
   Future _toggleScreen() async {
-    add(SlideshowScreenLockEvent(!state.isScreenLock));
+    statusBloc.add(SlideshowScreenLockEvent(!statusBloc.state.isScreenLock));
   }
 
   @override
