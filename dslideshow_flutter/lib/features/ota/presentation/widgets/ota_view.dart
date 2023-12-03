@@ -1,42 +1,10 @@
 import 'package:dslideshow_common/version.dart';
-import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_bloc.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
+import 'package:dslideshow_flutter/environment.dart' as environment;
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dslideshow_flutter/environment.dart' as environment;
-
 import 'package:xterm/xterm.dart';
-
-@immutable
-class OTAPage extends StatelessWidget {
-  final Terminal terminal = Terminal(maxLines: 3000);
-  late ProcessTerminalBackend backend = ProcessTerminalBackend(terminal);
-  OTAPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => OtaBloc(frontendService: injector(), backend: backend)..add(const OtaEvent.initialization()),
-        child: Scaffold(
-            backgroundColor: Colors.black,
-            body: OTAView(
-              terminal: terminal,
-            )));
-  }
-}
-
-class ProcessTerminalBackend {
-  final Terminal terminal;
-  ProcessTerminalBackend(this.terminal) {
-    terminal.resize(120, terminal.viewHeight);
-    terminal.setAutoWrapMode(true);
-  }
-
-  void onWrite(String data) {
-    terminal.write(data);
-  }
-}
 
 class OTAView extends StatelessWidget {
   final Terminal terminal;

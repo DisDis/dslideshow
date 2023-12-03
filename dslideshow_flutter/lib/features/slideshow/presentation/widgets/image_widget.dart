@@ -5,12 +5,13 @@ import 'dart:ui' as ui;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/item_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
+// ignore: must_be_immutable
 class ImageWidget extends StatelessWidget implements ItemWidget {
   static final Logger _log = Logger('ImageWidget');
   Image? _image;

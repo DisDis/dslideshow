@@ -4,26 +4,27 @@ import 'dart:math';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
+import 'package:dslideshow_flutter/features/menu/presentation/widgets/mainmenu.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:dslideshow_flutter/src/page/common/common_header.dart';
-import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
-import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
-import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/fixed_animation_controller.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
-import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state_notify_widget.dart';
+
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'fade_widget.dart';
 
 class SlideShowPage extends StatefulWidget {
   const SlideShowPage({super.key});
@@ -32,30 +33,19 @@ class SlideShowPage extends StatefulWidget {
   SlideShowPageState createState() => SlideShowPageState();
 }
 
-final _loaderWidget = Container(
-  key: const Key('loader'),
-  child: const Center(
-    child: SizedBox(
-      width: 60,
-      height: 60,
-      child: CircularProgressIndicator(),
-    ),
-  ),
-);
-
 class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
-  static final stateKey = GlobalKey<StateNotifyState>();
+  static final _stateKey = GlobalKey<StateNotifyState>();
 
   late AnimationController _mediaItemLoopController;
   late AnimationController _effectController;
 
-  Widget _currentWidget = _loaderWidget;
-  Widget _nextWidget = _loaderWidget;
-  Widget _transitionWidget = _loaderWidget;
+  Widget _currentWidget = slideShowLoaderWidget;
+  Widget _nextWidget = slideShowLoaderWidget;
+  Widget _transitionWidget = slideShowLoaderWidget;
 
-  final FrontendService _frontendService = injector.get<FrontendService>();
-  final AppConfig _appConfig = injector.get<AppConfig>();
+  final FrontendService _frontendService = injector();
+  final AppConfig _appConfig = injector();
 
   late AnimationController _fadeController;
   static final Random _rnd = Random();
@@ -90,7 +80,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
           return IndicatorState(
               storageStatus: state.storageStatus, isDebug: state.isDebug, isPaused: state.isPaused, isMenu: state.isMenu, hasInternet: state.hasInternet);
         }, builder: (context, state) {
-          return StateNotify(key: stateKey, isPaused: state.isPaused);
+          return StateNotify(key: _stateKey, isPaused: state.isPaused);
         }),
         FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
         BlocBuilder<SlideshowBloc, SlideshowState>(
@@ -171,7 +161,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     _mediaItemLoopController.forward();
 
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
-    if (_currentWidget == _loaderWidget) {
+    if (_currentWidget == slideShowLoaderWidget) {
       _fetchNextMediaItem();
     }
     bloc = context.read<SlideshowBloc>();
@@ -183,7 +173,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
         _mediaItemLoopController.reset();
         _mediaItemLoopController.forward();
       }
-      stateKey.currentState!.isPaused = isPausedNewValue;
+      _stateKey.currentState!.isPaused = isPausedNewValue;
     }));
   }
 
@@ -208,7 +198,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);
     } catch (e, st) {
       _log.warning('Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e, st);
-      _nextWidget = _loaderWidget;
+      _nextWidget = slideShowLoaderWidget;
     }
 
     _transitionWidget = AnimatedBuilder(
@@ -220,7 +210,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
             _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
-        child: _loaderWidget);
+        child: slideShowLoaderWidget);
 
     _effectController.reset();
     _mediaItemLoopController.reset();

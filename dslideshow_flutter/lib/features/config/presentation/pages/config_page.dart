@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_flutter/src/page/common/common_header.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ class ConfigPage extends StatefulWidget {
   const ConfigPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ConfigPageState createState() => _ConfigPageState();
 }
 

@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_event.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_state.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   final FrontendService frontendService;
-  final ProcessTerminalBackend backend;
+  final TerminalBackend backend;
   OtaBloc({required this.frontendService, required this.backend})
       : super(const OtaState.initial(
             info: OTAInfo(
@@ -95,13 +95,4 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     _onOTAOutputSubscription = null;
     return super.close();
   }
-}
-
-class OtaRepository {
-  final FrontendService _frontendService;
-  OtaRepository({
-    required FrontendService frontendService,
-  }) : _frontendService = frontendService;
-
-  Stream<OTAInfo> get onOTAInfo => _frontendService.onOTAInfo;
 }

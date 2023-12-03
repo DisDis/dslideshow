@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
+
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {

@@ -1,4 +1,4 @@
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:meta/meta.dart';
 
 @immutable
