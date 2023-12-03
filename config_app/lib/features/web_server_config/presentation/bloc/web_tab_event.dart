@@ -1,8 +1,9 @@
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-abstract class WebTabEvent {}
+part 'web_tab_event.freezed.dart';
 
-class ReloadAppWebTabEvent extends WebTabEvent {}
-
-class LoadWebTabEvent extends WebTabEvent {}
+@freezed
+class WebTabEvent with _$WebTabEvent {
+  const factory WebTabEvent.reload() = ReloadAppWebTabEvent;
+  const factory WebTabEvent.load() = LoadWebTabEvent;
+}

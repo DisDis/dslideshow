@@ -27,8 +27,11 @@ class _ConfigPageState extends State<ConfigPage> {
   static final rnd = Random();
   final AppConfig _appConfig = injector.get<AppConfig>();
   final FrontendService _frontendService = injector.get<FrontendService>();
+  // ignore: constant_identifier_names
   static const INIT_CODE = r'_$_$_';
+  // ignore: unused_field
   bool _enabled = false;
+  // ignore: unused_field
   String _accessCode = INIT_CODE;
 
   @override
@@ -59,7 +62,7 @@ class _ConfigPageState extends State<ConfigPage> {
             data: _urlData,
             size: 300.0,
           ),
-          Text(_urlData),
+          const Text(_urlData),
           ElevatedButton(
             onPressed: () {
               final bloc = context.read<SlideshowBloc>();

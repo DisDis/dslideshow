@@ -1,6 +1,6 @@
-import 'package:formz/formz.dart';
+// ignore_for_file: file_names
 
-enum ConnectUriValidationError { empty, invalid }
+import 'package:formz/formz.dart' show FormzInput;
 
 class ConnectUri extends FormzInput<String, ConnectUriValidationError> {
   const ConnectUri.pure({String defaultValue = /*'ws://127.0.0.1:8080/ws'*/ 'ws://dslideshow1.local:8080/ws'}) : super.pure(defaultValue);
@@ -20,3 +20,5 @@ class ConnectUri extends FormzInput<String, ConnectUriValidationError> {
     }
   }
 }
+
+enum ConnectUriValidationError { empty, invalid }

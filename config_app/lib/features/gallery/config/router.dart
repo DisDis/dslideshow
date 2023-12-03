@@ -20,7 +20,6 @@ GoRoute createRoute(BuildContext context) {
   final permissionService = GetIt.instance.get<PermissionService>();
   return GoRoute(
     path: GalleryPages.main.value,
-    //TODO: change permission
     builder: (context, state) => permissionService.check(Permission.NONE)
         ? const GalleryMainPage()
         : const NoAccessPage(

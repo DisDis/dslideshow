@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;

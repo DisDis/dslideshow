@@ -57,7 +57,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       case AuthenticationStatus.authenticated:
         final user = await _tryGetUser(true);
         //_permissionService.loadDataByScopeId(user.permissionIdsByScopeId);
-        //TODO: load permission
         _permissionService.loadData([Permission.NONE.id]);
         //_realtimeService.connect(userId: user.user.id, socketToken: user.socketToken);
         return emit(

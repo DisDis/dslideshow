@@ -133,7 +133,7 @@ class GooglePhotoService {
     var client = new http.Client();
     try {
       AccessCredentials credentials;
-      if (_refreshToken == null || _refreshToken == "") {
+      if (/*_refreshToken == null ||*/ _refreshToken == "") {
         var uri = _authenticationUri(redirectUri);
         _log.info("Uri: $uri");
         var codeCompleter = new Completer<String>();

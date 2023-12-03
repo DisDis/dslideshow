@@ -275,6 +275,7 @@ class WebSocketUser {
   final String _code;
   // final AppConfig _appConfig = injector.get();
   final WebSocketChannel _webSocket;
+  // ignore: unused_field
   final Map<String, String> _headers;
   final AppConfig _appConfig;
   final _onDisconnect = new Completer<void>();

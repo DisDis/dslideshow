@@ -35,6 +35,7 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
   static const int transitionTimeMsValue = 1000;
   static const int displayTimeValue = 200;
   static const int repeatEffect = 2;
+  // ignore: unused_field
   final AppConfig _appConfig = AppConfig.fromJson({});
 
   // final Directory _folder = new Directory(path.join(environment.externalStorage.path, 'images'));
@@ -49,10 +50,10 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
   void initState() {
     super.initState();
 
-    const _transitionTime = Duration(milliseconds: 2000);
+    const transitionTime = Duration(milliseconds: 2000);
     const displayTime = Duration(milliseconds: displayTimeValue);
 
-    _effectController = AnimationController(duration: _transitionTime, vsync: this);
+    _effectController = AnimationController(duration: transitionTime, vsync: this);
 
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -109,12 +110,14 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
     );
 
     if (itemWidget is ImageWidget) {
+      // ignore: use_build_context_synchronously
       await itemWidget.precache(context);
     }
+    // ignore: use_build_context_synchronously
     final size = MediaQuery.of(context).size;
     final screenW = size.width;
     final screenH = size.height;
-    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);
     _transitionWidget = AnimatedBuilder(
         key: const Key('anim'),
         animation: _effectController,

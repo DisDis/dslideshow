@@ -94,6 +94,7 @@ class MqttService {
     });
   }
 
+  // ignore: unused_element
   void _unpublishSwitchConfig(MqttServerClient client, String id) {
     final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
     client.publishMessage(discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, typed.Uint8Buffer());

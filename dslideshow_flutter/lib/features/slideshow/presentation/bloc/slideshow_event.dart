@@ -1,55 +1,17 @@
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-abstract class SlideshowEvent {
-  // Stream<SlideshowState> applyAsync({SlideshowState currentState, SlideshowBloc bloc});
-}
+part 'slideshow_event.freezed.dart';
 
-// class SlideshowInitialEvent extends SlideshowEvent {}
-
-class SlideshowScreenLockEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowScreenLockEvent(this.value);
-}
-
-class SlideshowPauseEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowPauseEvent(this.value);
-}
-
-class SlideshowMenuEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowMenuEvent(this.value);
-}
-
-class SlideshowSystemInfoEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowSystemInfoEvent(this.value);
-}
-
-class SlideshowInternetEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowInternetEvent(this.value);
-}
-
-class SlideshowDebugEvent extends SlideshowEvent {
-  final bool value;
-
-  SlideshowDebugEvent(this.value);
-}
-
-class SlideshowChangeStorageStatusEvent extends SlideshowEvent {
-  final StorageStatusEnum value;
-
-  SlideshowChangeStorageStatusEvent(this.value);
-}
-
-class SlideshowChageItemEvent extends SlideshowEvent {
-  SlideshowChageItemEvent();
+@freezed
+class SlideshowEvent with _$SlideshowEvent {
+  const factory SlideshowEvent() = _SlideshowEvent;
+  const factory SlideshowEvent.toggleScreenLock(bool value) = SlideshowScreenLockEvent;
+  const factory SlideshowEvent.pause(bool value) = SlideshowPauseEvent;
+  const factory SlideshowEvent.showMenu(bool value) = SlideshowMenuEvent;
+  const factory SlideshowEvent.showInfo(bool value) = SlideshowSystemInfoEvent;
+  const factory SlideshowEvent.changeInternetConnection(bool value) = SlideshowInternetEvent;
+  const factory SlideshowEvent.showDebug(bool value) = SlideshowDebugEvent;
+  const factory SlideshowEvent.changeStorageStatus(StorageStatusEnum value) = SlideshowChangeStorageStatusEvent;
+  const factory SlideshowEvent.changeItem() = SlideshowChageItemEvent;
 }

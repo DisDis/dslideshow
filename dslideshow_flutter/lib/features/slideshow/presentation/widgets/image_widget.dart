@@ -166,6 +166,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
       bool invertColors = false,
       FilterQuality filterQuality = FilterQuality.low,
       bool isAntiAlias = false,
+      // ignore: avoid_init_to_null
       Paint? inputPaint = null}) {
     ImageRepeat repeat = ImageRepeat.noRepeat;
 

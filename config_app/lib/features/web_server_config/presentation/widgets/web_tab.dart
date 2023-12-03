@@ -93,7 +93,7 @@ class WebConfigTabState extends State<WebConfigTab> {
                   child: ElevatedButton(
                     child: const Text('Restart application'),
                     onPressed: () {
-                      widget._tabBloc.add(ReloadAppWebTabEvent());
+                      widget._tabBloc.add(const ReloadAppWebTabEvent());
                     },
                   ),
                 ),
@@ -107,6 +107,6 @@ class WebConfigTabState extends State<WebConfigTab> {
   }
 
   void _load() {
-    widget._tabBloc.add(LoadWebTabEvent());
+    widget._tabBloc.add(const LoadWebTabEvent());
   }
 }

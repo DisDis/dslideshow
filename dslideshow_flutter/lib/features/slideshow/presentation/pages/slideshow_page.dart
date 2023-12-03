@@ -182,6 +182,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
 
     await _frontendService.storageNext();
     final mediaItem = await _getCurrentMediaItem();
+    // ignore: use_build_context_synchronously
     final size = MediaQuery.of(context).size;
     final itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow, size);
     if (mediaItem.uri != null) {
@@ -193,6 +194,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     final screenH = size.height;
     try {
       if (itemWidget is ImageWidget) {
+        // ignore: use_build_context_synchronously
         await itemWidget.precache(context);
       }
       _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);

@@ -6,7 +6,9 @@ import 'package:logging/logging.dart';
 
 class WebServer implements RpcService {
   static final Logger _log = new Logger('WebServer');
+  // ignore: unused_field
   final WebServerConfig _config;
+  // ignore: unused_field
   final RemoteService _remoteBackendService;
   final WebService _webService;
 

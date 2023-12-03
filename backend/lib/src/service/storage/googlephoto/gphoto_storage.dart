@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
@@ -43,14 +43,13 @@ class GPhotoStorage extends DiskStorage {
   GPhotoStorage(this._config, this._appStorage) : super(_config) {
     final accessTokenData = _appStorage.getValue<String>(GPhotoStorage_accessTokenData, '');
     final accessTokenExpiryStr = _appStorage.getValue<String>(GPhotoStorage_accessTokenExpiry, '');
-    final accessTokenExpiry =
-        accessTokenExpiryStr == '' ? new DateTime.now().toUtc() : DateTime.parse('$accessTokenExpiryStr');
+    final accessTokenExpiry = accessTokenExpiryStr == '' ? new DateTime.now().toUtc() : DateTime.parse('$accessTokenExpiryStr');
     final lastSyncStr = _appStorage.getValue<String>(GPhotoStorage_lastSync, '');
     if (lastSyncStr.isNotEmpty) {
       lastSync = DateTime.parse(lastSyncStr);
     }
-    _googlePhotoService = new GooglePhotoService(
-        _config.clientId.identifier, _config.clientId.secret, _config.refreshToken, accessTokenData, accessTokenExpiry);
+    _googlePhotoService =
+        new GooglePhotoService(_config.clientId.identifier, _config.clientId.secret, _config.refreshToken, accessTokenData, accessTokenExpiry);
     _googlePhotoService!.onUpdateCredentials.listen((event) {
       _appStorage.setValue(GPhotoStorage_accessTokenData, event.accessToken.data);
       _appStorage.setValue(GPhotoStorage_accessTokenExpiry, event.accessToken.expiry.toIso8601String());

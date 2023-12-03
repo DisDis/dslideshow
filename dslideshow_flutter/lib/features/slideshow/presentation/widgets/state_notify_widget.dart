@@ -1,4 +1,3 @@
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:flutter/material.dart';
 
 class StateNotify extends StatefulWidget {
@@ -20,7 +19,7 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
   void initState() {
     super.initState();
     _isPaused = widget.isPaused;
-    _controller = FixedAnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
     if (_isPaused) {
       _controller.forward().orCancel.then((value) => _controller.reverse());
     }

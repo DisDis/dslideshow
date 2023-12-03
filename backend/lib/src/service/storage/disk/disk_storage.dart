@@ -20,6 +20,7 @@ class DiskStorage extends Storage {
   static final Logger _log = new Logger('DiskStorage');
   static const String name = 'DiskStorage';
   final Directory _folder = new Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
+  // ignore: unused_field
   final DiskStorageConfig _config;
   Directory get folder => _folder;
 

@@ -1,4 +1,4 @@
-import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'disk_storage_config.g.dart';
 

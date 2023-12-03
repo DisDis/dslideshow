@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:dslideshow_flutter/features/welcome/presrntation/widgets/animated_logo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,7 +53,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
     _log.info("initState");
     super.initState();
     var future = environment.checkPermissionReadExternalStorage();
-    controller = FixedAnimationController(duration: Duration(milliseconds: _appConfig.welcome.delayMs), vsync: this);
+    controller = AnimationController(duration: Duration(milliseconds: _appConfig.welcome.delayMs), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {

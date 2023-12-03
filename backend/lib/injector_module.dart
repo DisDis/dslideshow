@@ -1,3 +1,4 @@
+import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/environment.dart' as environment;
 import 'package:get_it/get_it.dart';

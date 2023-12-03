@@ -1,43 +1,15 @@
 import 'package:dslideshow_backend/config.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class WebTabState extends Equatable {
-  const WebTabState();
+part 'web_tab_state.freezed.dart';
 
-  @override
-  List<Object> get props => [];
+@freezed
+class WebTabState with _$WebTabState {
+  const factory WebTabState.uninitialized() = UnWebTabState;
+  const factory WebTabState.error(String errorMessage) = ErrorWebTabState;
+  const factory WebTabState.initialized(AppConfig config) = InWebTabState;
 }
 
-/// UnInitialized
-class UnWebTabState extends WebTabState {
-  const UnWebTabState();
-
-  @override
-  String toString() => 'UnWebTabState';
-}
-
-class ErrorWebTabState extends WebTabState {
-  const ErrorWebTabState(this.errorMessage);
-
-  final String errorMessage;
-
-  @override
-  String toString() => 'ErrorWebTabState';
-
-  @override
-  List<Object> get props => [errorMessage];
-}
-
-/// Initialized
-class InWebTabState extends WebTabState {
-  final AppConfig config;
-  const InWebTabState(this.config);
-
-  @override
-  String toString() => 'InWebTabState';
-  @override
-  List<Object> get props => [config];
-}
 
 /*
 class WebTabState extends Equatable {

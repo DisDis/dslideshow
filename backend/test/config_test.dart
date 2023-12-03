@@ -2,6 +2,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
+import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
