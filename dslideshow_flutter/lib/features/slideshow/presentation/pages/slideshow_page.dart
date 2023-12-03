@@ -73,26 +73,15 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
           color: Colors.black,
           child: !isItemChanging ? _currentWidget : _transitionWidget,
         ),
-        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-            buildWhen: (prev, current) => prev.isPaused != current.isPaused,
-            builder: (context, state) {
-              return StateNotify(key: _stateKey, isPaused: state.isPaused);
-            }),
-        FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
-        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-            buildWhen: (prev, current) => prev.isInfo != current.isInfo,
-            builder: (context, state) {
-              return state.isInfo ? const SystemInfoWidget() : Container();
-            }),
-        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-            buildWhen: (prev, current) => prev.isMenu != current.isMenu,
-            builder: (context, state) {
-              return state.isMenu ? const MainMenuWidget() : Container();
-            }),
-        if (!isLinuxEmbedded)
-          BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
-            return state.isDebug ? DebugWidget(_frontendService) : Container();
-          }),
+        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
+          return Stack(children: <Widget>[
+            StateNotify(key: _stateKey, isPaused: state.isPaused),
+            FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
+            if (state.isInfo) const SystemInfoWidget(),
+            if (state.isMenu) const MainMenuWidget(),
+            if (!isLinuxEmbedded && state.isDebug) DebugWidget(_frontendService),
+          ]);
+        }),
         const CommonHeaderWidget(),
       ],
     ));
@@ -180,7 +169,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     final mediaItem = await _getCurrentMediaItem();
     // ignore: use_build_context_synchronously
     final size = MediaQuery.of(context).size;
-    final itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow, size);
+    final itemWidget = mediaItem.isVideo ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow, size);
     if (mediaItem.uri != null) {
       _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
@@ -202,7 +191,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     _transitionWidget = AnimatedBuilder(
         key: const Key('anim'),
         animation: _effectController,
-        builder: (_, __) {
+        builder: (context, __) {
           return Stack(children: <Widget>[
             _currentEffect.transform(context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
             _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
@@ -230,8 +219,6 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     var item = await _frontendService.getStorageCurrentItem();
     return item;
   }
-
-  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
   void _restorePlayPauseState() {
     final SlideshowStatusBloc bloc = injector();

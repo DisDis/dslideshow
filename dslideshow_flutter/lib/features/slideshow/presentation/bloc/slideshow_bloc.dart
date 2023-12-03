@@ -20,12 +20,8 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     required this.frontendService,
     required this.config,
     required this.statusBloc,
-  }) : super(const SlideshowState(
-          item: MediaItem.empty, /* effect: Effect.cubeEffect.createEffect()*/
-        )) {
-    // on<SlideshowInitialEvent>((event, emit) {
+  }) : super(const SlideshowState(item: MediaItem.empty)) {
     _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
-    // });
   }
 
   void _executeAction(SlideshowAction action) {
