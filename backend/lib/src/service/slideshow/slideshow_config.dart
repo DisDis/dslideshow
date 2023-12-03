@@ -1,9 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'slideshow_config.g.dart';
 
 @JsonSerializable()
 class SlideShowConfig {
+  static final Logger _log = new Logger('SlideShowConfig');
+
+  @JsonKey(fromJson: _parseButtons)
+  SlideShowButtonBind buttons;
+
+  static SlideShowButtonBind _parseButtons(dynamic data) {
+    _log.info("- parsing 'buttons' bind");
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return SlideShowButtonBind.fromJson(dataV);
+  }
+
   @JsonKey(defaultValue: 5000)
   int displayTimeMs;
 
@@ -32,7 +44,11 @@ class SlideShowConfig {
   @JsonKey(defaultValue: 0.9)
   double backgroundOpacity;
   static const int DEFAULT_BACKGROUND_COLOR = 0xFFFFFFFF;
-  @JsonKey(defaultValue: SlideShowConfig.DEFAULT_BACKGROUND_COLOR, fromJson: _parseColor, toJson: _colorToJson)
+  @JsonKey(
+    defaultValue: SlideShowConfig.DEFAULT_BACKGROUND_COLOR,
+    fromJson: _parseColor,
+    toJson: _colorToJson,
+  )
   int backgroundColor;
   static int _parseColor(dynamic value) {
     if (value is int) {
@@ -48,17 +64,60 @@ class SlideShowConfig {
     return color.toRadixString(16);
   }
 
-  SlideShowConfig(
-      {required this.allowedEffects,
-      required this.backgroundBlurSigma,
-      required this.backgroundColor,
-      required this.backgroundOpacity,
-      required this.displayTimeMs,
-      required this.fadeTimeMs,
-      required this.isBlurredBackground,
-      required this.transitionTimeMs});
+  SlideShowConfig({
+    required this.allowedEffects,
+    required this.backgroundBlurSigma,
+    required this.backgroundColor,
+    required this.backgroundOpacity,
+    required this.displayTimeMs,
+    required this.fadeTimeMs,
+    required this.isBlurredBackground,
+    required this.transitionTimeMs,
+    required this.buttons,
+  });
 
   factory SlideShowConfig.fromJson(Map<String, dynamic> json) => _$SlideShowConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
+}
+
+@JsonSerializable()
+class SlideShowButtonBind {
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
+  SlideshowAction button0;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showMenu)
+  SlideshowAction button1;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.toggleScreen)
+  SlideshowAction button2;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showInfo)
+  SlideshowAction button3;
+
+  SlideShowButtonBind({
+    required this.button0,
+    required this.button1,
+    required this.button2,
+    required this.button3,
+  });
+
+  static String _actionToJson(SlideshowAction value) {
+    return value.toString();
+  }
+
+  static SlideshowAction _parseAction(dynamic value) {
+    if (value == null) {
+      return SlideshowAction.pause;
+    }
+    return SlideshowAction.values.firstWhere((item) => item.toString() == value, orElse: () => SlideshowAction.pause);
+  }
+
+  factory SlideShowButtonBind.fromJson(Map<String, dynamic> json) => _$SlideShowButtonBindFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SlideShowButtonBindToJson(this);
+}
+
+enum SlideshowAction {
+  pause,
+  toggleScreen,
+  showMenu,
+  showInfo;
 }

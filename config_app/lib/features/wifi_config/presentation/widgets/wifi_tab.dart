@@ -104,7 +104,7 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
   }
 
   void _load() {
-    widget._wifiTabBloc.add(LoadWifiTabEvent());
+    widget._wifiTabBloc.add(const LoadWifiTabEvent());
   }
 
   Widget _buttonAddNetworkConnection(BuildContext context) {
