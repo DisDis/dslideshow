@@ -6,15 +6,15 @@ part 'hardware_service_config.g.dart';
 class HardwareConfig {
   @JsonKey(defaultValue: 100)
   int smoothingGPIOMs;
-  @JsonKey(defaultValue: 17)
-  int pinPauseButton;
-  @JsonKey(defaultValue: 27)
-  int pinMenuButton;
 
+  @JsonKey(defaultValue: 17)
+  int pinButton0;
+  @JsonKey(defaultValue: 27)
+  int pinButton1;
   @JsonKey(defaultValue: 23)
-  int pinBackButton;
+  int pinButton3;
   @JsonKey(defaultValue: 22)
-  int pinScreenToggleButton;
+  int pinButton2;
 
   @JsonKey(defaultValue: 15)
   int pinPIRSensor;
@@ -43,12 +43,12 @@ class HardwareConfig {
       {required this.screenPowerOnTimerSec,
       required this.screenPowerOnScript,
       required this.screenPowerOffScript,
-      required this.pinBackButton,
       required this.pinPIRSensor,
-      required this.pinMenuButton,
-      required this.pinPauseButton,
+      required this.pinButton0,
+      required this.pinButton1,
+      required this.pinButton2,
+      required this.pinButton3,
       required this.pinPowerLED,
-      required this.pinScreenToggleButton,
       required this.smoothingGPIOMs,
       required this.systemDiskDev,
       required this.systemIfConfigScript,

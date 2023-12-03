@@ -58,16 +58,16 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
 
   void _pushButton(ButtonType event) {
     switch (event) {
-      case ButtonType.pause:
+      case ButtonType.button0:
         _pushPauseButton();
         break;
-      case ButtonType.screentoggle:
+      case ButtonType.button2:
         _pushScreenToggleButton();
         break;
-      case ButtonType.menu:
+      case ButtonType.button1:
         _pushMenuButton();
         break;
-      case ButtonType.back:
+      case ButtonType.button3:
         _pushBackButton();
         break;
     }

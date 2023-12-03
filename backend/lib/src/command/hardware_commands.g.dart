@@ -37,10 +37,10 @@ Map<String, dynamic> _$$PushButtonCommandImplToJson(
     };
 
 const _$ButtonTypeEnumMap = {
-  ButtonType.menu: 'menu',
-  ButtonType.screentoggle: 'screentoggle',
-  ButtonType.pause: 'pause',
-  ButtonType.back: 'back',
+  ButtonType.button0: 'button0',
+  ButtonType.button1: 'button1',
+  ButtonType.button2: 'button2',
+  ButtonType.button3: 'button3',
 };
 
 _$LEDControlCommandImpl _$$LEDControlCommandImplFromJson(

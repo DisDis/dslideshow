@@ -22,7 +22,7 @@ class CpuInfoWidget extends StatelessWidget {
       iconData: FeatherIcons.cpu,
       backgroundColor: Colors.purple.shade800,
       child: Column(children: <Widget>[
-        const Row(children: [MetricsDetails('cpu', value: null)]),
+        const Row(children: [MetricsDetails('CPU', value: null)]),
         Row(children: [MetricsDetails('model', value: cpu.model)]),
         Row(children: [MetricsDetails('hardware', value: cpu.hardware)]),
         Row(children: [MetricsDetails('revision', value: cpu.revision)]),

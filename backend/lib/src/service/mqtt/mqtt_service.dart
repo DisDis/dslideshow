@@ -82,16 +82,13 @@ class MqttService {
 
       _log.info('topic is <${element.topic}>, payload is <-- $pt -->');
       if (element.topic.startsWith(_prefixPauseTopic)) {
-        _client.publishMessage(_prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce,
-            (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(_prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scPause.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixScreenTopic)) {
-        _client.publishMessage(_prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce,
-            (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(_prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scScreenToggle.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixMenuTopic)) {
-        _client.publishMessage(_prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce,
-            (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(_prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scMenu.add(pt == 'ON');
       }
     });
@@ -111,8 +108,8 @@ class MqttService {
         ',"unique_id": "${_config.deviceId}_action_${id}"'
         ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config.deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
         '}';
-    _client.publishMessage(discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
+    _client.publishMessage(
+        discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
   }
 
   /// The unsolicited disconnect callback
@@ -128,12 +125,9 @@ class MqttService {
     _publishSwitchConfig(_client, 'screen', 'Screen turn');
     _publishSwitchConfig(_client, 'menu', 'Menu');
 
-    _client.publishMessage(_prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
-    _client.publishMessage(_prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
-    _client.publishMessage(_prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
+    _client.publishMessage(_prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
+    _client.publishMessage(_prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
+    _client.publishMessage(_prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
   }
 
   void _onAutoReconnected() {

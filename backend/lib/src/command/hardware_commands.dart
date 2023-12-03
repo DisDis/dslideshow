@@ -1,3 +1,5 @@
+import 'package:dslideshow_backend/src/command/button_type.dart';
+import 'package:dslideshow_backend/src/command/led_type.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -38,15 +40,4 @@ class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
   }) = _LEDControlCommand;
 
   factory LEDControlCommand.fromJson(Map<String, dynamic> json) => _$LEDControlCommandFromJson(json);
-}
-
-enum LEDType {
-  power;
-}
-
-enum ButtonType {
-  menu,
-  screentoggle,
-  pause,
-  back;
 }

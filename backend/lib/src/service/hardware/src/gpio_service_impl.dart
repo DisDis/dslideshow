@@ -13,26 +13,33 @@ class GPIOServiceImpl extends GPIOService {
   late GpioChip _chip;
   late GpioLine _linePowerLED;
   late GpioLine _linePIR;
-  late GpioLine _linePauseButton;
-  late GpioLine _lineBackButton;
-  late GpioLine _lineMenuButton;
-  late GpioLine _lineScreenToggleButton;
+  late GpioLine _lineButton0;
+  late GpioLine _lineButton1;
+  late GpioLine _lineButton2;
+  late GpioLine _lineButton3;
+
   // Default ON
   bool? _powerLEDStatus = true;
   final StreamController<bool> _scMotion = new StreamController.broadcast();
   Stream<bool> get onMotion => _scMotion.stream;
 
-  final StreamController<bool> _scPause = new StreamController.broadcast();
-  Stream<bool> get onPause => _scPause.stream;
+  final StreamController<bool> _scButton0 = new StreamController.broadcast();
+  final StreamController<bool> _scButton3 = new StreamController.broadcast();
+  final StreamController<bool> _scButton1 = new StreamController.broadcast();
+  final StreamController<bool> _scButton2 = new StreamController.broadcast();
 
-  final StreamController<bool> _scBack = new StreamController.broadcast();
-  Stream<bool> get onBack => _scBack.stream;
-
-  final StreamController<bool> _scMenu = new StreamController.broadcast();
-  Stream<bool> get onMenu => _scMenu.stream;
-
-  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
-  Stream<bool> get onScreenToggle => _scScreenToggle.stream;
+  @override
+  //Pause
+  Stream<bool> get onButton0 => _scButton0.stream;
+  @override
+  //Menu
+  Stream<bool> get onButton1 => _scButton1.stream;
+  @override
+  //ScreenToggle
+  Stream<bool> get onButton2 => _scButton2.stream;
+  @override
+  //Back
+  Stream<bool> get onButton3 => _scButton3.stream;
 
   GPIOServiceImpl(this._config) {}
 
@@ -77,19 +84,19 @@ class GPIOServiceImpl extends GPIOService {
       _linePowerLED = _chip.lines[_config.pinPowerLED];
       _log.info('linePowerLED - OK');
       _linePIR = _chip.lines[_config.pinPIRSensor];
-      _linePauseButton = _chip.lines[_config.pinPauseButton];
-      _lineBackButton = _chip.lines[_config.pinBackButton];
-      _lineMenuButton = _chip.lines[_config.pinMenuButton];
-      _lineScreenToggleButton = _chip.lines[_config.pinScreenToggleButton];
+      _lineButton0 = _chip.lines[_config.pinButton0];
+      _lineButton1 = _chip.lines[_config.pinButton1];
+      _lineButton2 = _chip.lines[_config.pinButton2];
+      _lineButton3 = _chip.lines[_config.pinButton3];
 
       _linePowerLED.requestOutput(consumer: "PowerLED", initialValue: true);
 
       _linePIR.requestInput(consumer: "PIR Sensor", triggers: {SignalEdge.falling, SignalEdge.rising});
 
-      _linePauseButton.requestInput(consumer: "PauseButton", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineBackButton.requestInput(consumer: "BackButton", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineMenuButton.requestInput(consumer: "MenuButton", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineScreenToggleButton.requestInput(consumer: "ScreenToggleButton", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton0.requestInput(consumer: "Button0", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton1.requestInput(consumer: "Button1", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton2.requestInput(consumer: "Button2", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton3.requestInput(consumer: "Button3", triggers: {SignalEdge.falling, SignalEdge.rising});
 
       _linePIR.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
@@ -99,32 +106,32 @@ class GPIOServiceImpl extends GPIOService {
         }
       });
 
-      _linePauseButton.onEvent.listen((event) {
+      _lineButton0.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('PauseButton: $event');
           _lastPauseButtonTime = DateTime.now();
-          _scPause.add(event.edge == SignalEdge.falling);
+          _scButton0.add(event.edge == SignalEdge.falling);
         }
       });
-      _lineBackButton.onEvent.listen((event) {
+      _lineButton3.onEvent.listen((event) {
         if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('BackButton: $event');
           _lastBackButtonTime = DateTime.now();
-          _scBack.add(event.edge == SignalEdge.falling);
+          _scButton3.add(event.edge == SignalEdge.falling);
         }
       });
-      _lineMenuButton.onEvent.listen((event) {
+      _lineButton1.onEvent.listen((event) {
         if (DateTime.now().difference(_lastMenuButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('MenuButton: $event');
           _lastMenuButtonTime = DateTime.now();
-          _scMenu.add(event.edge == SignalEdge.falling);
+          _scButton1.add(event.edge == SignalEdge.falling);
         }
       });
-      _lineScreenToggleButton.onEvent.listen((event) {
+      _lineButton2.onEvent.listen((event) {
         if (DateTime.now().difference(_lastScreenButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('ScreenToggleButton: $event');
           _lastScreenButtonTime = DateTime.now();
-          _scScreenToggle.add(event.edge == SignalEdge.falling);
+          _scButton2.add(event.edge == SignalEdge.falling);
         }
       });
       _log.info('initialization completed');
@@ -137,10 +144,10 @@ class GPIOServiceImpl extends GPIOService {
   Future release() async {
     _linePowerLED.release();
     _linePIR.release();
-    _linePauseButton.release();
-    _lineBackButton.release();
-    _lineMenuButton.release();
-    _lineScreenToggleButton.release();
+    _lineButton0.release();
+    _lineButton3.release();
+    _lineButton1.release();
+    _lineButton2.release();
   }
 
   set powerLED(bool? value) {
