@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
