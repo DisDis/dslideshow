@@ -69,7 +69,7 @@ void main() async {
     otaService.service.processing(frontendService, serializers);
 
     injector.registerLazySingleton<SlideshowBloc>(() {
-      return SlideshowBloc(frontendService: frontendService);
+      return SlideshowBloc(frontendService: frontendService, config: config.slideshow);
     });
 
     frontendService.onOTAReady.listen((isReady) {
