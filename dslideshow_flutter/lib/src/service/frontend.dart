@@ -4,9 +4,9 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
@@ -125,7 +125,7 @@ class FrontendService implements RpcService {
 
   void _updateSystemInfo() async {
     var result = await getSystemInfo();
-    final bloc = injector.get<SlideshowBloc>();
+    final SlideshowBloc bloc = injector();
     if (bloc.state.hasInternet != result.networkInfo.hasInternet) {
       bloc.add(SlideshowInternetEvent(result.networkInfo.hasInternet));
     }

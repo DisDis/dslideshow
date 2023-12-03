@@ -5,6 +5,7 @@ import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// ignore: implementation_imports
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 
 class SlideshowConfigMainPage extends StatelessWidget {

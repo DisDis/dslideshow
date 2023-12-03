@@ -2,10 +2,11 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 
 class EffectDemoWidget extends StatefulWidget {
@@ -25,17 +26,6 @@ class EffectDemoWidget extends StatefulWidget {
   EffectDemoWidgetState createState() => EffectDemoWidgetState();
 }
 
-final _loaderWidget = Container(
-  key: const Key('loader'),
-  child: const Center(
-    child: SizedBox(
-      width: 60,
-      height: 60,
-      child: CircularProgressIndicator(),
-    ),
-  ),
-);
-
 class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderStateMixin {
   bool get isItemChanging => _currentWidget != _nextWidget;
   late AnimationController _mediaItemLoopController;
@@ -51,9 +41,9 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
 
   // Random _rnd = new Random();
 
-  Widget _currentWidget = _loaderWidget;
-  Widget _nextWidget = _loaderWidget;
-  Widget _transitionWidget = _loaderWidget;
+  Widget _currentWidget = slideShowLoaderWidget;
+  Widget _nextWidget = slideShowLoaderWidget;
+  Widget _transitionWidget = slideShowLoaderWidget;
 
   @override
   void initState() {
@@ -134,7 +124,7 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
             _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
-        child: _loaderWidget);
+        child: slideShowLoaderWidget);
 
     _effectController.reset();
     _mediaItemLoopController.reset();

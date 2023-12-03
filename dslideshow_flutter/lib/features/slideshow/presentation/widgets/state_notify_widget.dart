@@ -56,13 +56,14 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    return StaggerAnimation(controller: _controller.view, isPaused: _isPaused);
+    return _StaggerAnimation(controller: _controller.view, isPaused: _isPaused);
   }
 }
 
-class StaggerAnimation extends StatelessWidget {
+class _StaggerAnimation extends StatelessWidget {
   final bool? isPaused;
-  StaggerAnimation({super.key, required this.controller, this.isPaused})
+  // ignore: unused_element
+  _StaggerAnimation({super.key, required this.controller, this.isPaused})
       :
 
         // Each animation defined here transforms its value during the subset

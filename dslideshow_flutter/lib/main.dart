@@ -5,8 +5,10 @@ import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/version.dart';
-import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/pages/ota_page.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart';
+import 'package:dslideshow_flutter/features/welcome/presrntation/pages/welcome_page.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
@@ -14,9 +16,7 @@ import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
-import 'package:dslideshow_flutter/src/page/config/config_page.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
-import 'package:dslideshow_flutter/src/page/welcome_page.dart';
+import 'package:dslideshow_flutter/features/config/presentation/pages/config_page.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,15 +54,16 @@ void main() async {
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
 
-    var config = injector.get<AppConfig>();
+    final AppConfig config = injector();
     Logger.root.level = config.log.levelMain;
 
-    backendService = RemoteServiceImpl(serializers: serializers);
-    await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
     otaService = RemoteServiceImpl(serializers: serializers);
     await otaService.spawn(ota.serviceMain, debugName: "ota");
 
-    final frontendService = injector.get<FrontendService>();
+    backendService = RemoteServiceImpl(serializers: serializers);
+    await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
+
+    final FrontendService frontendService = injector();
     backendService.service.processing(frontendService, serializers);
     otaService.service.processing(frontendService, serializers);
 
@@ -71,7 +72,7 @@ void main() async {
     });
 
     frontendService.onOTAReady.listen((isReady) {
-      final bloc = injector.get<RouteBloc>();
+      final RouteBloc bloc = injector();
       if (isReady) {
         bloc.add(ChangePageEvent(RoutePage.ota));
       } else {
@@ -100,12 +101,8 @@ final Logger _log = Logger('main');
 void _runFlutter(FrontendService frontendService) {
   runApp(MultiBlocProvider(
     providers: [
-      BlocProvider<RouteBloc>(
-        create: (context) => injector.get<RouteBloc>(),
-      ),
-      BlocProvider<SlideshowBloc>(
-        create: (BuildContext context) => injector.get<SlideshowBloc>(),
-      ),
+      BlocProvider<RouteBloc>.value(value: injector()),
+      BlocProvider<SlideshowBloc>.value(value: injector()),
     ],
     child: const MainApp(),
   ));

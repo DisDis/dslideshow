@@ -1,40 +1,10 @@
 import 'package:dslideshow_flutter/environment.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_bloc.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_event.dart';
-import 'package:dslideshow_flutter/src/page/slideshow/slideshow_state.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/blink_animation.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-/// A builder that builds a widget given a child.
-///
-/// The child should typically be part of the returned widget tree.
-///
-/// Used by [AnimatedBuilder.builder], as well as [WidgetsApp.builder] and
-/// [MaterialApp.builder].
-///
-/// See also:
-///
-///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
-///  * [IndexedWidgetBuilder], which is similar but also takes an index.
-///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
-typedef BlinkTransitionBuilder = Widget Function(BuildContext context, Widget child, Animation<Color> animation);
-
-class BlinkAnimation extends StatefulWidget {
-  final int countBlink;
-  final int milliseconds;
-  final Widget child;
-  final bool hideAfterBlink;
-
-  const BlinkAnimation({
-    super.key,
-    this.countBlink = 3,
-    this.milliseconds = 1500,
-    required this.child,
-    this.hideAfterBlink = true,
-  });
-  @override
-  BlinkAnimationState createState() => BlinkAnimationState();
-}
 
 class CommonHeaderWidget extends StatelessWidget {
   const CommonHeaderWidget({super.key});
