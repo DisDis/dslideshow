@@ -5,7 +5,6 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class NetworkUsageWidget extends StatelessWidget {
-  // static final _timeFormatter = DateFormat('yMMMMEEEEd Hms');
   final NetworkInfo model;
   const NetworkUsageWidget({required this.model, super.key});
 

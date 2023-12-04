@@ -7,26 +7,30 @@
   },
   "hardware": {
     "smoothingGPIOMs": 100,
-    "pinPauseButton": 17,
-    "pinMenuButton": 27,
-    "pinBackButton": 23,
-    "pinScreenToggleButton": 22,
+    "pinButton0": 17,
+    "pinButton1": 27,
+    "pinButton3": 23,
+    "pinButton2": 22,
     "pinPIRSensor": 15,
     "pinPowerLED": 14,
     "systemDiskDev": "/dev/sda3",
     "systemIfConfigScript": "ifconfig",
+    "sensorsScript": "./scripts/sensorsScript.sh",
     "screenPowerOffScript": "./scripts/screenOff.sh",
     "screenPowerOnScript": "./scripts/screenOn.sh",
     "screenPowerOnTimerSec": 120
   },
   "slideshow": {
+    "buttons": {
+      "button0": "SlideshowAction.pause",
+      "button1": "SlideshowAction.showMenu",
+      "button2": "SlideshowAction.toggleScreen",
+      "button3": "SlideshowAction.showInfo"
+    },
     "displayTimeMs": 2000,
     "fadeTimeMs": 2000,
     "transitionTimeMs": 1000,
     "allowedEffects": [],
-    "allowedEffects_": [
-      "Fade"
-    ],
     "isBlurredBackground": true,
     "backgroundBlurSigma": 20,
     "backgroundOpacity": 0.9,
@@ -37,11 +41,10 @@
     "size": 100.0,
     "delayMs": 2000
   },
-  "web":{
-    "port":8081,
-    "addr":"0.0.0.0",
-    "permanentCode":"123",
-    "alwaysEnabled":true
+  "web": {
+    "port": 8081,
+    "alwaysEnabled": true,
+    "permanentCode": "123"
   },
   "mqtt": {
     "port": 1883,
@@ -61,5 +64,9 @@
   "storages": {
     "selected": "DiskStorage",
     "storages": {}
+  },
+  "wifi": {
+    "devId": "wlan0",
+    "scanWiFiScript": "./scripts/scanWiFi.sh"
   }
 }

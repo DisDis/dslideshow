@@ -51,42 +51,62 @@ class _ConfigPageState extends State<ConfigPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          const CommonHeaderWidget(),
-          QrImageView(
-            backgroundColor: Colors.white,
-            data: _urlData,
-            size: 300.0,
-          ),
-          const Text(_urlData),
-          ElevatedButton(
-            onPressed: () {
-              final SlideshowStatusBloc bloc = injector();
-              bloc.add(SlideshowChangeStorageStatusEvent(StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
-            },
-            child: const Text('StorageChange'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
-            },
-            child: const Text('SlideShow'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<RouteBloc>().add(ChangePageEvent(RoutePage.ota));
-            },
-            child: const Text('OTA'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _appConfig.toFile();
-            },
-            child: const Text('Save config'),
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            const CommonHeaderWidget(),
+            QrImageView(
+              backgroundColor: Colors.white,
+              data: _urlData,
+              size: 300.0,
+            ),
+            const Text(_urlData),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    final SlideshowStatusBloc bloc = injector();
+                    bloc.add(SlideshowChangeStorageStatusEvent(StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length))));
+                  },
+                  child: const Text('StorageChange'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final SlideshowStatusBloc bloc = injector();
+                    bloc.add(SlideshowStatusEvent.changeInternetConnection(rnd.nextBool()));
+                  },
+                  child: const Text('Internet'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final SlideshowStatusBloc bloc = injector();
+                    bloc.add(SlideshowStatusEvent.pause(rnd.nextBool()));
+                  },
+                  child: const Text('Pause'),
+                ),
+              ],
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
+              },
+              child: const Text('SlideShow'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<RouteBloc>().add(ChangePageEvent(RoutePage.ota));
+              },
+              child: const Text('OTA'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _appConfig.toFile();
+              },
+              child: const Text('Save config'),
+            ),
+          ],
+        ),
       ),
     );
   }

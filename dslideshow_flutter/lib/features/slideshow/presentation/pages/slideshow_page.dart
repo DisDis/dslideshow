@@ -212,7 +212,9 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     } catch (e) {
       _log.info('Skip error', e);
     }
-    _mediaItemLoopController.forward();
+    if (!_mediaItemLoopController.isDismissed) {
+      _mediaItemLoopController.forward();
+    }
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {

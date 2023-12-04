@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
 import 'package:flutter_gpiod/flutter_gpiod.dart';
-// import 'package:gpiod/proxy_gpiod.dart';
 import 'package:logging/logging.dart';
 
 class GPIOServiceImpl extends GPIOService {

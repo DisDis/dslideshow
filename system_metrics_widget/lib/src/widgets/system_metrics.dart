@@ -8,6 +8,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/disk_usage_widget.dart
 import 'package:system_metrics_widget/src/widgets/metrics/memory_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/network_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/os_info_widget.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/sensors_info_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/uptime_info_widget.dart';
 
 class SystemInfoMetrics extends StatelessWidget {
@@ -70,6 +71,13 @@ class SystemInfoMetrics extends StatelessWidget {
               usagePercent: _model.updateInfo.diskUsedPercent,
             ),
           ),
+          if (_model.updateInfo.sensors.isNotEmpty)
+            StaggeredGridTile.fit(
+              crossAxisCellCount: 4,
+              child: SensorsInfoWidget(
+                model: _model.updateInfo,
+              ),
+            ),
         ],
       );
     });
