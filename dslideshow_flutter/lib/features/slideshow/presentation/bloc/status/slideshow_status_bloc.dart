@@ -34,6 +34,9 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     on<SlideshowSystemInfoEvent>((event, emit) {
       emit(state.copyWith(isInfo: event.value));
     });
+    on<SlideshowInternetEvent>((event, emit) {
+      emit(state.copyWith(hasInternet: event.value));
+    });
 
     on<SlideshowPauseEvent>((event, emit) {
       emit(state.copyWith(isPaused: event.value));
