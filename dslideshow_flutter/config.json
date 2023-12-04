@@ -53,7 +53,7 @@
     "server": "smarthome.local",
     "clientId": "dslideshow",
     "deviceName": "PhotoFrame1",
-    "discovery_prefix": "home/",
+    "discovery_prefix": "homeassistant",
     "configuration_topic": "config",
     "command_topic": "set",
     "state_topic": "state"

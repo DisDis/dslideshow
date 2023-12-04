@@ -12,7 +12,7 @@ MqttConfig _$MqttConfigFromJson(Map<String, dynamic> json) => MqttConfig(
       configuration_topic: json['configuration_topic'] as String? ?? 'config',
       deviceId: json['deviceId'] as String? ?? 'dslideshow',
       deviceName: json['deviceName'] as String? ?? 'PhotoFrame1',
-      discovery_prefix: json['discovery_prefix'] as String? ?? 'home/',
+      discovery_prefix: json['discovery_prefix'] as String? ?? 'homeassistant',
       enabled: json['enabled'] as bool? ?? false,
       keepAlivePeriod: json['keepAlivePeriod'] as int? ?? 600,
       pass: json['pass'] as String? ?? 'pass',

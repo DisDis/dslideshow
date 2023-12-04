@@ -26,7 +26,7 @@ class MqttConfig {
   @JsonKey(defaultValue: 'PhotoFrame1')
   String deviceName;
 
-  @JsonKey(defaultValue: 'home/')
+  @JsonKey(defaultValue: 'homeassistant')
   String discovery_prefix;
   @JsonKey(defaultValue: 'config')
   String configuration_topic;
@@ -35,7 +35,7 @@ class MqttConfig {
   @JsonKey(defaultValue: 'state')
   String state_topic;
 
-  String getDiscoveryPrefix(String type, String actionId) => discovery_prefix + '$type/${deviceId}_${actionId}/';
+  String getDiscoveryPrefix(String type, String actionId) => '$discovery_prefix/$type/${deviceId}_${actionId}/';
 
   MqttConfig(
       {required this.clientId,
