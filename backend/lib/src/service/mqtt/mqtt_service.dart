@@ -39,6 +39,7 @@ class MqttService {
 
   void _init() async {
     _client.logging(on: false);
+    _client.setProtocolV311();
     _client.keepAlivePeriod = _config.keepAlivePeriod;
     _client.onDisconnected = _onDisconnected;
     _client.onConnected = _onConnected;
@@ -46,12 +47,16 @@ class MqttService {
     _client.autoReconnect = true;
     _client.resubscribeOnAutoReconnect = true;
 
+    final discovery_topic = _config.getDiscoveryPrefix('info', "device");
     final connMess = MqttConnectMessage()
         .withClientIdentifier(_config.clientId) // Must agree with the keep alive set above or not set
-        // .withWillTopic(mqttConfig.discovery_prefix+mqttConfig.configuration_topic) // If you set this you must set a will message
+        // .withWillTopic(mqttConfig.discovery_prefix + mqttConfig.configuration_topic) // If you set this you must set a will message
         // .withWillMessage(configPayload)
+        .withWillTopic(discovery_topic) // If you set this you must set a will message
+        .withWillMessage(' ')
         .startClean() // Non persistent session for testing
         .withWillQos(MqttQos.atLeastOnce);
+
     _log.info('Mosquitto client connecting....');
     _client.connectionMessage = connMess;
 
@@ -82,13 +87,13 @@ class MqttService {
 
       _log.info('topic is <${element.topic}>, payload is <-- $pt -->');
       if (element.topic.startsWith(_prefixPauseTopic)) {
-        _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scPause.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixScreenTopic)) {
-        _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scScreenToggle.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixMenuTopic)) {
-        _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scMenu.add(pt == 'ON');
       }
     });
@@ -97,20 +102,20 @@ class MqttService {
   // ignore: unused_element
   void _unpublishSwitchConfig(MqttServerClient client, String id) {
     final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
-    client.publishMessage(discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, typed.Uint8Buffer());
+    client.publishMessage("$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, typed.Uint8Buffer());
   }
 
   void _publishSwitchConfig(MqttServerClient client, String id, String name) {
     final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
     final configPayload = '{'
         '"name": "$name"'
-        ',"command_topic": "${discovery_prefix + _config.command_topic}"'
-        ',"state_topic": "${discovery_prefix + _config.state_topic}"'
+        ',"command_topic": "$discovery_prefix/${_config.command_topic}"'
+        ',"state_topic": "$discovery_prefix/${_config.state_topic}"'
         ',"unique_id": "${_config.deviceId}_action_${id}"'
         ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config.deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
         '}';
     _client.publishMessage(
-        discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
+        "$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
   }
 
   /// The unsolicited disconnect callback
@@ -126,9 +131,10 @@ class MqttService {
     _publishSwitchConfig(_client, 'screen', 'Screen turn');
     _publishSwitchConfig(_client, 'menu', 'Menu');
 
-    _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
-    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
-    _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
+//TODO: send real state
+    _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
+    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
+    _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
   }
 
   void _onAutoReconnected() {
