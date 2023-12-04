@@ -35,7 +35,7 @@ class MqttConfig {
   @JsonKey(defaultValue: 'state')
   String state_topic;
 
-  String getDiscoveryPrefix(String type, String actionId) => '$discovery_prefix/$type/${deviceId}_${actionId}/';
+  String getDiscoveryPrefix(String type, String actionId) => '$discovery_prefix/$type/${deviceId}_${actionId}';
 
   MqttConfig(
       {required this.clientId,
