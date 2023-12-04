@@ -68,15 +68,15 @@ class HardwareService implements RpcService {
     });
     _mqttService.onPause.listen((event) {
       _log.info("MQTT: onPause!");
-      //_pushButton(ButtonType.button0);
+      _executeAction(SlideshowAction.pause, event);
     });
     _mqttService.onScreenToggle.listen((event) {
       _log.info("MQTT: onScreenToggle!");
-      //_pushButton(ButtonType.screentoggle);
+      _executeAction(SlideshowAction.toggleScreen, event);
     });
     _mqttService.onMenu.listen((event) {
       _log.info("MQTT: onMenu!");
-      //_pushButton(ButtonType.menu);
+      _executeAction(SlideshowAction.showMenu, event);
     });
     _initFutures.add(_systemInfoService.init());
   }
@@ -186,6 +186,10 @@ class HardwareService implements RpcService {
 
   Future<RpcResult> _pushButton(ButtonType type) async {
     return _frontendService.send(PushButtonCommand(button: type, id: RpcCommand.generateId()));
+  }
+
+  Future<RpcResult> _executeAction(SlideshowAction action, bool value) async {
+    return _frontendService.send(ExecuteSSActionCommand(action: action, value: value, id: RpcCommand.generateId()));
   }
 
   Future<RpcResult> _executeLEDControlCommand(LEDControlCommand command) async {

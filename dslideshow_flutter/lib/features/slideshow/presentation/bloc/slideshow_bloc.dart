@@ -15,6 +15,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   final SlideShowConfig config;
   final SlideshowStatusBloc statusBloc;
   StreamSubscription? _onPushSubscription;
+  StreamSubscription? _onActionSubscription;
 
   SlideshowBloc({
     required this.frontendService,
@@ -22,21 +23,22 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     required this.statusBloc,
   }) : super(const SlideshowState(item: MediaItem.empty)) {
     _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
+    _onActionSubscription = frontendService.onAction.listen((actionP) => _executeAction(actionP.action, actionP.param));
   }
 
-  void _executeAction(SlideshowAction action) {
+  void _executeAction(SlideshowAction action, [bool? value]) {
     switch (action) {
       case SlideshowAction.pause:
-        _pause();
+        _pause(value);
         break;
       case SlideshowAction.toggleScreen:
-        _toggleScreen();
+        _toggleScreen(value);
         break;
       case SlideshowAction.showMenu:
-        _showMenu();
+        _showMenu(value);
         break;
       case SlideshowAction.showInfo:
-        _showInfo();
+        _showInfo(value);
         break;
     }
   }
@@ -58,25 +60,26 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     }
   }
 
-  void _showInfo() {
-    statusBloc.add(SlideshowSystemInfoEvent(!statusBloc.state.isInfo));
+  void _showInfo([bool? value]) {
+    statusBloc.add(SlideshowSystemInfoEvent(value ?? !statusBloc.state.isInfo));
   }
 
-  void _showMenu() {
-    statusBloc.add(SlideshowMenuEvent(!statusBloc.state.isMenu));
+  void _showMenu([bool? value]) {
+    statusBloc.add(SlideshowMenuEvent(value ?? !statusBloc.state.isMenu));
   }
 
-  void _pause() {
-    statusBloc.add(SlideshowPauseEvent(!statusBloc.state.isPaused));
+  void _pause([bool? value]) {
+    statusBloc.add(SlideshowPauseEvent(value ?? !statusBloc.state.isPaused));
   }
 
-  Future _toggleScreen() async {
-    statusBloc.add(SlideshowScreenLockEvent(!statusBloc.state.isScreenLock));
+  Future _toggleScreen([bool? value]) async {
+    statusBloc.add(SlideshowScreenLockEvent(value ?? !statusBloc.state.isScreenLock));
   }
 
   @override
   Future<void> close() {
     _onPushSubscription?.cancel();
+    _onActionSubscription?.cancel();
     return super.close();
   }
 }

@@ -43,6 +43,31 @@ const _$ButtonTypeEnumMap = {
   ButtonType.button3: 'button3',
 };
 
+_$ExecuteSSActionCommandImpl _$$ExecuteSSActionCommandImplFromJson(
+        Map<String, dynamic> json) =>
+    _$ExecuteSSActionCommandImpl(
+      action: $enumDecode(_$SlideshowActionEnumMap, json['action']),
+      value: json['value'] as bool,
+      id: json['id'] as int,
+      type: json['type'] as String? ?? ExecuteSSActionCommand.TYPE,
+    );
+
+Map<String, dynamic> _$$ExecuteSSActionCommandImplToJson(
+        _$ExecuteSSActionCommandImpl instance) =>
+    <String, dynamic>{
+      'action': _$SlideshowActionEnumMap[instance.action]!,
+      'value': instance.value,
+      'id': instance.id,
+      'type': instance.type,
+    };
+
+const _$SlideshowActionEnumMap = {
+  SlideshowAction.pause: 'pause',
+  SlideshowAction.toggleScreen: 'toggleScreen',
+  SlideshowAction.showMenu: 'showMenu',
+  SlideshowAction.showInfo: 'showInfo',
+};
+
 _$LEDControlCommandImpl _$$LEDControlCommandImplFromJson(
         Map<String, dynamic> json) =>
     _$LEDControlCommandImpl(

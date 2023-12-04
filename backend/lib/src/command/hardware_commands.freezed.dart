@@ -346,6 +346,205 @@ abstract class _PushButtonCommand implements PushButtonCommand {
       throw _privateConstructorUsedError;
 }
 
+ExecuteSSActionCommand _$ExecuteSSActionCommandFromJson(
+    Map<String, dynamic> json) {
+  return _ExecuteSSActionCommand.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ExecuteSSActionCommand {
+  SlideshowAction get action => throw _privateConstructorUsedError;
+  bool get value => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  String get type => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ExecuteSSActionCommandCopyWith<ExecuteSSActionCommand> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ExecuteSSActionCommandCopyWith<$Res> {
+  factory $ExecuteSSActionCommandCopyWith(ExecuteSSActionCommand value,
+          $Res Function(ExecuteSSActionCommand) then) =
+      _$ExecuteSSActionCommandCopyWithImpl<$Res, ExecuteSSActionCommand>;
+  @useResult
+  $Res call({SlideshowAction action, bool value, int id, String type});
+}
+
+/// @nodoc
+class _$ExecuteSSActionCommandCopyWithImpl<$Res,
+        $Val extends ExecuteSSActionCommand>
+    implements $ExecuteSSActionCommandCopyWith<$Res> {
+  _$ExecuteSSActionCommandCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? action = null,
+    Object? value = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_value.copyWith(
+      action: null == action
+          ? _value.action
+          : action // ignore: cast_nullable_to_non_nullable
+              as SlideshowAction,
+      value: null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ExecuteSSActionCommandImplCopyWith<$Res>
+    implements $ExecuteSSActionCommandCopyWith<$Res> {
+  factory _$$ExecuteSSActionCommandImplCopyWith(
+          _$ExecuteSSActionCommandImpl value,
+          $Res Function(_$ExecuteSSActionCommandImpl) then) =
+      __$$ExecuteSSActionCommandImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({SlideshowAction action, bool value, int id, String type});
+}
+
+/// @nodoc
+class __$$ExecuteSSActionCommandImplCopyWithImpl<$Res>
+    extends _$ExecuteSSActionCommandCopyWithImpl<$Res,
+        _$ExecuteSSActionCommandImpl>
+    implements _$$ExecuteSSActionCommandImplCopyWith<$Res> {
+  __$$ExecuteSSActionCommandImplCopyWithImpl(
+      _$ExecuteSSActionCommandImpl _value,
+      $Res Function(_$ExecuteSSActionCommandImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? action = null,
+    Object? value = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_$ExecuteSSActionCommandImpl(
+      action: null == action
+          ? _value.action
+          : action // ignore: cast_nullable_to_non_nullable
+              as SlideshowAction,
+      value: null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExecuteSSActionCommandImpl implements _ExecuteSSActionCommand {
+  const _$ExecuteSSActionCommandImpl(
+      {required this.action,
+      required this.value,
+      required this.id,
+      this.type = ExecuteSSActionCommand.TYPE});
+
+  factory _$ExecuteSSActionCommandImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExecuteSSActionCommandImplFromJson(json);
+
+  @override
+  final SlideshowAction action;
+  @override
+  final bool value;
+  @override
+  final int id;
+  @override
+  @JsonKey()
+  final String type;
+
+  @override
+  String toString() {
+    return 'ExecuteSSActionCommand(action: $action, value: $value, id: $id, type: $type)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExecuteSSActionCommandImpl &&
+            (identical(other.action, action) || other.action == action) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, action, value, id, type);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExecuteSSActionCommandImplCopyWith<_$ExecuteSSActionCommandImpl>
+      get copyWith => __$$ExecuteSSActionCommandImplCopyWithImpl<
+          _$ExecuteSSActionCommandImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExecuteSSActionCommandImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ExecuteSSActionCommand implements ExecuteSSActionCommand {
+  const factory _ExecuteSSActionCommand(
+      {required final SlideshowAction action,
+      required final bool value,
+      required final int id,
+      final String type}) = _$ExecuteSSActionCommandImpl;
+
+  factory _ExecuteSSActionCommand.fromJson(Map<String, dynamic> json) =
+      _$ExecuteSSActionCommandImpl.fromJson;
+
+  @override
+  SlideshowAction get action;
+  @override
+  bool get value;
+  @override
+  int get id;
+  @override
+  String get type;
+  @override
+  @JsonKey(ignore: true)
+  _$$ExecuteSSActionCommandImplCopyWith<_$ExecuteSSActionCommandImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 LEDControlCommand _$LEDControlCommandFromJson(Map<String, dynamic> json) {
   return _LEDControlCommand.fromJson(json);
 }

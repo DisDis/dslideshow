@@ -15,6 +15,8 @@ class FrontendService implements RpcService {
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = StreamController<SystemInfo>.broadcast();
   final _onPushButton = StreamController<ButtonType>.broadcast();
+  final _onAction = StreamController<ActionWithParam<bool>>.broadcast();
+
   final _onOTAReady = StreamController<bool>.broadcast();
   final _onOTAInfo = StreamController<OTAInfo>.broadcast();
   final _onOTAOutput = StreamController<String>.broadcast();
@@ -26,6 +28,7 @@ class FrontendService implements RpcService {
   Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
   Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
   Stream<ButtonType> get onPushButton => _onPushButton.stream;
+  Stream<ActionWithParam> get onAction => _onAction.stream;
 
   FrontendService(AppConfig config, this._backendService, this._otaService) {
     Timer.periodic(const Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
@@ -76,6 +79,8 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case ExecuteSSActionCommand.TYPE:
+        return _executeSSActionCommand(command as ExecuteSSActionCommand);
       case PushButtonCommand.TYPE:
         return _executePushButtonCommand(command as PushButtonCommand);
       case ScreenTurnCommand.TYPE:
@@ -180,4 +185,16 @@ class FrontendService implements RpcService {
     _onOTAOutput.add(command.output);
     return EmptyResult.respond(command);
   }
+
+  Future<RpcResult> _executeSSActionCommand(ExecuteSSActionCommand command) async {
+    _onAction.add(ActionWithParam(action: command.action, param: command.value));
+    return EmptyResult.respond(command);
+  }
+}
+
+class ActionWithParam<T> {
+  final SlideshowAction action;
+  final T param;
+
+  const ActionWithParam({required this.action, required this.param});
 }

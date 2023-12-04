@@ -20,6 +20,7 @@ final serializersFor = SerializersFor(const [
   NetworkInfo,
   LEDControlCommand,
   PushButtonCommand,
+  ExecuteSSActionCommand,
   ScreenLockCommand,
   WebServerControlCommand,
   WebServerControlCommandResult,

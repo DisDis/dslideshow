@@ -45,6 +45,8 @@ class _SerializersImpl implements Serializers {
 
       if (object is PushButtonCommand) return ["PushButtonCommand", object.toJson()];
 
+      if (object is ExecuteSSActionCommand) return ["ExecuteSSActionCommand", object.toJson()];
+
       if (object is ScreenLockCommand) return ["ScreenLockCommand", object.toJson()];
 
       if (object is WebServerControlCommand) return ["WebServerControlCommand", object.toJson()];
@@ -164,6 +166,9 @@ class _SerializersImpl implements Serializers {
 
       case 'PushButtonCommand':
         return PushButtonCommand.fromJson(object);
+
+      case 'ExecuteSSActionCommand':
+        return ExecuteSSActionCommand.fromJson(object);
 
       case 'ScreenLockCommand':
         return ScreenLockCommand.fromJson(object);

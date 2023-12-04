@@ -1,3 +1,4 @@
+import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/button_type.dart';
 import 'package:dslideshow_backend/src/command/led_type.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -27,6 +28,19 @@ class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
   }) = _PushButtonCommand;
 
   factory PushButtonCommand.fromJson(Map<String, dynamic> json) => _$PushButtonCommandFromJson(json);
+}
+
+@freezed
+class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements RpcCommand {
+  static const String TYPE = 'execute_action';
+  const factory ExecuteSSActionCommand({
+    required SlideshowAction action,
+    required bool value,
+    required int id,
+    @Default(ExecuteSSActionCommand.TYPE) String type,
+  }) = _ExecuteSSActionCommand;
+
+  factory ExecuteSSActionCommand.fromJson(Map<String, dynamic> json) => _$ExecuteSSActionCommandFromJson(json);
 }
 
 @freezed
