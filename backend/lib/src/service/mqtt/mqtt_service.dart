@@ -22,8 +22,8 @@ class MqttService {
   final StreamController<bool> _scMenu = new StreamController.broadcast();
   Stream<bool> get onMenu => _scMenu.stream;
 
-  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
-  Stream<bool> get onScreenToggle => _scScreenToggle.stream;
+  final StreamController<bool> _scScreen = new StreamController.broadcast();
+  Stream<bool> get onScreen => _scScreen.stream;
 
   bool get isConnected => _client.connectionStatus?.state == MqttConnectionState.connected;
 
@@ -91,7 +91,7 @@ class MqttService {
         _scPause.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixScreenTopic)) {
         _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
-        _scScreenToggle.add(pt == 'ON');
+        _scScreen.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixMenuTopic)) {
         _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
         _scMenu.add(pt == 'ON');
@@ -128,13 +128,13 @@ class MqttService {
     _client.subscribe("$_prefixScreenTopic/${_config.command_topic}", MqttQos.atMostOnce);
     _client.subscribe("$_prefixMenuTopic/${_config.command_topic}", MqttQos.atMostOnce);
     _publishSwitchConfig(_client, 'pause', 'Pause');
-    _publishSwitchConfig(_client, 'screen', 'Screen turn');
+    _publishSwitchConfig(_client, 'screen', 'Screen');
     _publishSwitchConfig(_client, 'menu', 'Menu');
 
 //TODO: send real state
     _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
-    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
-    _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
+    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
+    _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
   }
 
   void _onAutoReconnected() {

@@ -3,12 +3,12 @@ import 'dart:io' as io;
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
 import 'package:logging/logging.dart';
 
-class ScreenService{
+class ScreenService {
   static final Logger _log = new Logger('ScreenService');
   final HardwareConfig _config;
 
   // Property?
-  bool? isScreenOffLock = false;
+  bool isScreenOffLock = false;
 
   final _stateChangePreparation = new StreamController<bool>.broadcast();
 
@@ -19,13 +19,13 @@ class ScreenService{
   Timer? _timerScreenOff;
   bool _screenOn = true;
 
-  void screenOn() async{
+  void screenOn() async {
     _log.info('screenOn');
-    if (isScreenOffLock!){
+    if (isScreenOffLock) {
       _log.info('"screenOn" is canceled because the screen is lock');
       return;
     }
-    if (_timerScreenOff != null){
+    if (_timerScreenOff != null) {
       _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
@@ -37,25 +37,26 @@ class ScreenService{
       } else {
         _log.info('"screenOn" is skipped because the screen was turned on');
       }
-    } catch(e, s){
+    } catch (e, s) {
       _log.severe('screenOn', e, s);
     }
   }
 
-  void scheduleScreenOff(){
+  void scheduleScreenOff() {
     _log.info('scheduleScreenOff');
-    if (_timerScreenOff != null){
+    if (_timerScreenOff != null) {
       _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
-    _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec),(){
+    _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec), () {
       _timerScreenOff = null;
       screenOff();
     });
   }
+
   void screenOff() async {
     _log.info('screenOff');
-    if (_timerScreenOff != null){
+    if (_timerScreenOff != null) {
       _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
@@ -68,5 +69,4 @@ class ScreenService{
       _log.severe('screenOff', e, s);
     }
   }
-
 }

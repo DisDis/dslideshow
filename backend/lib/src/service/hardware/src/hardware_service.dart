@@ -67,15 +67,16 @@ class HardwareService implements RpcService {
       }
     });
     _mqttService.onPause.listen((event) {
-      _log.info("MQTT: onPause!");
+      _log.info("MQTT: onPause, $event");
       _executeAction(SlideshowAction.pause, event);
     });
-    _mqttService.onScreenToggle.listen((event) {
-      _log.info("MQTT: onScreenToggle!");
-      _executeAction(SlideshowAction.toggleScreen, event);
+    _mqttService.onScreen.listen((event) {
+      _log.info("MQTT: onScreenToggle, $event");
+      // Because toggleScreen has invert logic :(
+      _executeAction(SlideshowAction.toggleScreen, !event);
     });
     _mqttService.onMenu.listen((event) {
-      _log.info("MQTT: onMenu!");
+      _log.info("MQTT: onMenu, $event");
       _executeAction(SlideshowAction.showMenu, event);
     });
     _initFutures.add(_systemInfoService.init());
