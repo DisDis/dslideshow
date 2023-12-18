@@ -127,9 +127,7 @@ class MqttService {
     _client.subscribe("$_prefixPauseTopic/${_config.command_topic}", MqttQos.atMostOnce);
     _client.subscribe("$_prefixScreenTopic/${_config.command_topic}", MqttQos.atMostOnce);
     _client.subscribe("$_prefixMenuTopic/${_config.command_topic}", MqttQos.atMostOnce);
-    _publishSwitchConfig(_client, 'pause', 'Pause');
-    _publishSwitchConfig(_client, 'screen', 'Screen');
-    _publishSwitchConfig(_client, 'menu', 'Menu');
+    _publishAllConfig();
 
 //TODO: send real state
     _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
@@ -137,7 +135,14 @@ class MqttService {
     _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
   }
 
+  void _publishAllConfig() {
+    _publishSwitchConfig(_client, 'pause', 'Pause');
+    _publishSwitchConfig(_client, 'screen', 'Screen');
+    _publishSwitchConfig(_client, 'menu', 'Menu');
+  }
+
   void _onAutoReconnected() {
-    _log.info('Client onAutoReconnected');
+    _log.info('onAutoReconnected');
+    _publishAllConfig();
   }
 }

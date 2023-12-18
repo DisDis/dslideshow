@@ -16,25 +16,34 @@ Backcover prototype:
 
 Hardware:
 
-1 * RaPi4 (2Gb / 4Gb)
+1 * RaPi4 (min 512Mb)
 
-1 * Led
+1 * LED (something like LED Diode 5 mm) [Optional]
 
-1 * 100Ohm resistor
+1 * 100Ohm resistor [Optional]
 
-4 * Button
+4 * Button [Optional]
 
-1 * 10K Ohm resistor
+1 * 10K Ohm resistor [Optional]
 
-4 * 33K Ohm resistor
+4 * 33K Ohm resistor [Optional]
 
-1 * PIR sensor - AM312 (https://aliexpress.com/item/32862878941.html?&sku_id=65345259272)
+1 * PIR sensor - AM312 (https://aliexpress.com/item/32862878941.html?&sku_id=65345259272) [Optional]
 
 1 * 2560*1600 Display (TFTMD089030 + Driver TC358870XBG) (https://aliexpress.com/item/1005002008224190.html)
 
 1 * Power supply 30W (9-30V)
 
-1 * 9-30V -> 5V5A (https://aliexpress.com/item/32763711912.html)
+1 * Power supply port
+
+1 * DC-DC 9-30V -> 5V5A (https://aliexpress.com/item/32763711912.html)
+
+1 * MiniUSB connector male
+
+1 * USB Type-C connector male
+
+1 * HDMI - Micro-HDMI (30cm?)
+
 
 https://easyeda.com/igor.demyanov/dslideshow
 
@@ -78,6 +87,7 @@ TODO:
   * Показывать новый чаще
   * Показывать все изображения равномерно по кол-ву
 * Востанавливать состояние при включении(продолжать с того же места)
+* [+] Support MQTT
 * Конфигурация:
   * [+] Время между изображениями
   * Выводить дату изображения?
