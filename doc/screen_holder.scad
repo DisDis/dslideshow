@@ -1,15 +1,24 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @version 2.2
+ * @version 2.3
  */
 /*
 TODO:
 [ ] Легко ломаются держатели. Может их клеить?
 */
-text_version = "v2.2.1";
+text_version = "v2.3.0";
 frame_inner_width = 200;
 frame_inner_hieght = 150;
+
+human_sensor_width = 35;
+human_sensor_hieght = 7;
+human_sensor_thickness = 5;
+human_sensor_offsetx = 0;
+human_sensor_offsety = -1.5;
+human_sensor_mount_wht = 1;
+human_sensor_mount_t = 3;
+human_sensor_tolerance = 0.5;
 
 display_width = 200.9;
 display_hieght = 132.1;
@@ -41,7 +50,7 @@ projection(cut=true)
 }
 }
 
-module stiffening_rib(sr_start = [0,0,0],sr_end = [0,0,10], sr_points=[[0,0,0], [0,10,0], [0,0,10]], sr_faces = [[0,1,2]]){
+module stiffener(sr_start = [0,0,0],sr_end = [0,0,10], sr_points=[[0,0,0], [0,10,0], [0,0,10]], sr_faces = [[0,1,2]]){
  //polyhedron(points= sr_points, faces=sr_faces);
     hull() {
     translate(sr_start) polyhedron(points= sr_points, faces=sr_faces);
@@ -67,8 +76,15 @@ module 3dmodel_form(){
         color("green") translate([-off_x,-off_y,thickness ]) cube(size=[display_width,display_hieght,display_thickness]);
         color("blue") translate([-off_x + active_area_x,-off_y + active_area_y,thickness - 0.1 ]) cube(size=[active_area_width,active_area_hieght,display_thickness+0.3]);
     }
+    
+    hsensor_x = (frame_inner_width - (human_sensor_width + 2 *human_sensor_tolerance))/2 + human_sensor_offsetx;
+    hsensor_y = frame_inner_hieght - (human_sensor_hieght+ 2 *human_sensor_tolerance) + human_sensor_offsety;
+    
+    difference(){
     // mounts
+    union(){
     mount_offset = 20;
+    // display mount
     color("red"){
         mount_pos_y=[-mount_h-off_y-tolerance ,display_hieght - off_y  + tolerance ];
         for(pos_y = mount_pos_y){
@@ -77,6 +93,24 @@ module 3dmodel_form(){
             translate([frame_inner_width/2-mount_w/2,pos_y,thickness]) cube(size=[mount_w,mount_h,mount_thickness]);
         }            
     }
+    //Sensor mount 
+    translate([ hsensor_x ,hsensor_y,thickness]) {
+        color("red"){
+            translate([-human_sensor_mount_wht/2,-human_sensor_mount_wht/2,0])
+            cube(size=[human_sensor_width+ 2 *human_sensor_tolerance + human_sensor_mount_wht,human_sensor_hieght+ 2 *human_sensor_tolerance+human_sensor_mount_wht,human_sensor_mount_t]);
+            }
+        }
+    }
+    
+    
+    // human_sensor
+    translate([ hsensor_x ,hsensor_y,thickness]) {
+        //Sensor
+        color("pink"){
+          cube(size=[human_sensor_width+ 2 *human_sensor_tolerance,human_sensor_hieght+ 2 *human_sensor_tolerance,human_sensor_thickness]);
+            }
+    }
+        }
     color("Black"){
           translate([55,0.5,thickness]) {
             linear_extrude(height = 0.4, convexity = 20)
