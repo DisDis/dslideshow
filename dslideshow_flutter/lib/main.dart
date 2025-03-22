@@ -26,7 +26,9 @@ import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 
 void main() async {
-  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  if (kDebugMode) {
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  }
   initLog('flutter');
   _log.info(
       "Run f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
