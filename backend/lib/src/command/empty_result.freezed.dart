@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,85 +10,67 @@ part of 'empty_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-EmptyResult _$EmptyResultFromJson(Map<String, dynamic> json) {
-  return _EmptyResult.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EmptyResult {
-  int get id => throw _privateConstructorUsedError;
+  int get id;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $EmptyResultCopyWith<EmptyResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $EmptyResultCopyWith<$Res> {
-  factory $EmptyResultCopyWith(
-          EmptyResult value, $Res Function(EmptyResult) then) =
-      _$EmptyResultCopyWithImpl<$Res, EmptyResult>;
-  @useResult
-  $Res call({int id});
-}
-
-/// @nodoc
-class _$EmptyResultCopyWithImpl<$Res, $Val extends EmptyResult>
-    implements $EmptyResultCopyWith<$Res> {
-  _$EmptyResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of EmptyResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $EmptyResultCopyWith<EmptyResult> get copyWith =>
+      _$EmptyResultCopyWithImpl<EmptyResult>(this as EmptyResult, _$identity);
+
+  /// Serializes this EmptyResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EmptyResult &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
+
+  @override
+  String toString() {
+    return 'EmptyResult(id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$EmptyResultImplCopyWith<$Res>
-    implements $EmptyResultCopyWith<$Res> {
-  factory _$$EmptyResultImplCopyWith(
-          _$EmptyResultImpl value, $Res Function(_$EmptyResultImpl) then) =
-      __$$EmptyResultImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $EmptyResultCopyWith<$Res> {
+  factory $EmptyResultCopyWith(
+          EmptyResult value, $Res Function(EmptyResult) _then) =
+      _$EmptyResultCopyWithImpl;
   @useResult
   $Res call({int id});
 }
 
 /// @nodoc
-class __$$EmptyResultImplCopyWithImpl<$Res>
-    extends _$EmptyResultCopyWithImpl<$Res, _$EmptyResultImpl>
-    implements _$$EmptyResultImplCopyWith<$Res> {
-  __$$EmptyResultImplCopyWithImpl(
-      _$EmptyResultImpl _value, $Res Function(_$EmptyResultImpl) _then)
-      : super(_value, _then);
+class _$EmptyResultCopyWithImpl<$Res> implements $EmptyResultCopyWith<$Res> {
+  _$EmptyResultCopyWithImpl(this._self, this._then);
 
+  final EmptyResult _self;
+  final $Res Function(EmptyResult) _then;
+
+  /// Create a copy of EmptyResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
   }) {
-    return _then(_$EmptyResultImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -96,56 +79,79 @@ class __$$EmptyResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EmptyResultImpl implements _EmptyResult {
-  const _$EmptyResultImpl({required this.id});
-
-  factory _$EmptyResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EmptyResultImplFromJson(json);
+class _EmptyResult implements EmptyResult {
+  const _EmptyResult({required this.id});
+  factory _EmptyResult.fromJson(Map<String, dynamic> json) =>
+      _$EmptyResultFromJson(json);
 
   @override
   final int id;
+
+  /// Create a copy of EmptyResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EmptyResultCopyWith<_EmptyResult> get copyWith =>
+      __$EmptyResultCopyWithImpl<_EmptyResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$EmptyResultToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _EmptyResult &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
 
   @override
   String toString() {
     return 'EmptyResult(id: $id)';
   }
+}
 
+/// @nodoc
+abstract mixin class _$EmptyResultCopyWith<$Res>
+    implements $EmptyResultCopyWith<$Res> {
+  factory _$EmptyResultCopyWith(
+          _EmptyResult value, $Res Function(_EmptyResult) _then) =
+      __$EmptyResultCopyWithImpl;
   @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EmptyResultImpl &&
-            (identical(other.id, id) || other.id == id));
-  }
+  @useResult
+  $Res call({int id});
+}
 
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id);
+/// @nodoc
+class __$EmptyResultCopyWithImpl<$Res> implements _$EmptyResultCopyWith<$Res> {
+  __$EmptyResultCopyWithImpl(this._self, this._then);
 
-  @JsonKey(ignore: true)
+  final _EmptyResult _self;
+  final $Res Function(_EmptyResult) _then;
+
+  /// Create a copy of EmptyResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$EmptyResultImplCopyWith<_$EmptyResultImpl> get copyWith =>
-      __$$EmptyResultImplCopyWithImpl<_$EmptyResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EmptyResultImplToJson(
-      this,
-    );
+  $Res call({
+    Object? id = null,
+  }) {
+    return _then(_EmptyResult(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
   }
 }
 
-abstract class _EmptyResult implements EmptyResult {
-  const factory _EmptyResult({required final int id}) = _$EmptyResultImpl;
-
-  factory _EmptyResult.fromJson(Map<String, dynamic> json) =
-      _$EmptyResultImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$EmptyResultImplCopyWith<_$EmptyResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

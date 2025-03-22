@@ -6,33 +6,32 @@ part of 'network_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$NetworkInfoImpl _$$NetworkInfoImplFromJson(Map<String, dynamic> json) =>
-    _$NetworkInfoImpl(
-      lastUpdate: json['lastUpdate'] as int,
+_NetworkInfo _$NetworkInfoFromJson(Map<String, dynamic> json) => _NetworkInfo(
+      lastUpdate: (json['lastUpdate'] as num).toInt(),
       hasInternet: json['hasInternet'] as bool,
       interfaces: (json['interfaces'] as List<dynamic>?)
           ?.map((e) => NetworkInterfaceInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$NetworkInfoImplToJson(_$NetworkInfoImpl instance) =>
+Map<String, dynamic> _$NetworkInfoToJson(_NetworkInfo instance) =>
     <String, dynamic>{
       'lastUpdate': instance.lastUpdate,
       'hasInternet': instance.hasInternet,
       'interfaces': instance.interfaces?.map((e) => e.toJson()).toList(),
     };
 
-_$NetworkInterfaceInfoImpl _$$NetworkInterfaceInfoImplFromJson(
+_NetworkInterfaceInfo _$NetworkInterfaceInfoFromJson(
         Map<String, dynamic> json) =>
-    _$NetworkInterfaceInfoImpl(
+    _NetworkInterfaceInfo(
       name: json['name'] as String,
       status: $enumDecode(_$NetworkInterfaceStatusEnumMap, json['status']),
       ip4: json['ip4'] as String,
       ip6: json['ip6'] as String,
     );
 
-Map<String, dynamic> _$$NetworkInterfaceInfoImplToJson(
-        _$NetworkInterfaceInfoImpl instance) =>
+Map<String, dynamic> _$NetworkInterfaceInfoToJson(
+        _NetworkInterfaceInfo instance) =>
     <String, dynamic>{
       'name': instance.name,
       'status': _$NetworkInterfaceStatusEnumMap[instance.status]!,

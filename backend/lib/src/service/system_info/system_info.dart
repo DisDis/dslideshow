@@ -9,7 +9,7 @@ part 'system_info.g.dart';
 part 'system_info.freezed.dart';
 
 @freezed
-class SystemInfo with _$SystemInfo {
+sealed class SystemInfo with _$SystemInfo {
   const factory SystemInfo({
     required CpuInfo cpuInfo,
     required NetworkInfo networkInfo,

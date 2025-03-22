@@ -6,7 +6,7 @@ part 'web_server_commands.g.dart';
 part 'web_server_commands.freezed.dart';
 
 @freezed
-class WebServerControlCommand with _$WebServerControlCommand implements RpcCommand {
+sealed class WebServerControlCommand with _$WebServerControlCommand implements RpcCommand {
   static const String TYPE = 'web_server_control';
   const factory WebServerControlCommand({
     required bool enable,
@@ -18,7 +18,7 @@ class WebServerControlCommand with _$WebServerControlCommand implements RpcComma
 }
 
 @freezed
-class WebServerControlCommandResult with _$WebServerControlCommandResult implements RpcResult {
+sealed class WebServerControlCommandResult with _$WebServerControlCommandResult implements RpcResult {
   static WebServerControlCommandResult respond(RpcCommand command, String code, bool enable) {
     return WebServerControlCommandResult(id: command.id, enable: enable, code: code);
   }
@@ -49,7 +49,7 @@ abstract class WebSocketErrorResult extends WebSocketResult {
 }
 
 @freezed
-class WSErrorResult with _$WSErrorResult implements WebSocketErrorResult {
+sealed class WSErrorResult with _$WSErrorResult implements WebSocketErrorResult {
   const factory WSErrorResult({
     required String error,
     required int id,
@@ -73,7 +73,7 @@ class WSErrorResult with _$WSErrorResult implements WebSocketErrorResult {
 }
 
 @freezed
-class WSHelloCommand with _$WSHelloCommand implements WebSocketCommand {
+sealed class WSHelloCommand with _$WSHelloCommand implements WebSocketCommand {
   static const String TYPE = 'ws_hello';
   const factory WSHelloCommand({
     required int id,
@@ -84,7 +84,7 @@ class WSHelloCommand with _$WSHelloCommand implements WebSocketCommand {
 }
 
 @freezed
-class WSAuthCommand with _$WSAuthCommand implements WebSocketCommand {
+sealed class WSAuthCommand with _$WSAuthCommand implements WebSocketCommand {
   static const String TYPE = 'ws_auth';
   const factory WSAuthCommand({
     required String userName,
@@ -97,7 +97,7 @@ class WSAuthCommand with _$WSAuthCommand implements WebSocketCommand {
 }
 
 @freezed
-class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketCommand {
+sealed class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketCommand {
   static const String TYPE = 'ws_rpc';
   const factory WSSendRpcCommand({
     ///TODO: FIX it
@@ -119,7 +119,7 @@ class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketCommand {
 }
 
 @freezed
-class WSRpcResult with _$WSRpcResult implements WebSocketResult {
+sealed class WSRpcResult with _$WSRpcResult implements WebSocketResult {
   const factory WSRpcResult({
     ///TODO: FIX it
     //required RpcResult result,
@@ -137,7 +137,7 @@ class WSRpcResult with _$WSRpcResult implements WebSocketResult {
 }
 
 @freezed
-class WSConfigDownloadCommand with _$WSConfigDownloadCommand implements WebSocketCommand {
+sealed class WSConfigDownloadCommand with _$WSConfigDownloadCommand implements WebSocketCommand {
   static const String TYPE = 'ws_config_download';
   const factory WSConfigDownloadCommand({
     required int id,
@@ -148,7 +148,7 @@ class WSConfigDownloadCommand with _$WSConfigDownloadCommand implements WebSocke
 }
 
 @freezed
-class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSocketCommand {
+sealed class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSocketCommand {
   static const String TYPE = 'ws_config_upload';
   const factory WSConfigUploadCommand({
     required String content,
@@ -160,7 +160,7 @@ class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSocketCom
 }
 
 @freezed
-class WSConfigDownloadResult with _$WSConfigDownloadResult implements WebSocketResult {
+sealed class WSConfigDownloadResult with _$WSConfigDownloadResult implements WebSocketResult {
   const factory WSConfigDownloadResult({
     required String content,
     required int id,
@@ -170,7 +170,7 @@ class WSConfigDownloadResult with _$WSConfigDownloadResult implements WebSocketR
 }
 
 @freezed
-class WSRestartApplicationCommand with _$WSRestartApplicationCommand implements WebSocketCommand {
+sealed class WSRestartApplicationCommand with _$WSRestartApplicationCommand implements WebSocketCommand {
   static const String TYPE = 'ws_restart_application';
   const factory WSRestartApplicationCommand({
     required int id,
@@ -181,7 +181,7 @@ class WSRestartApplicationCommand with _$WSRestartApplicationCommand implements 
 }
 
 @freezed
-class WSResultOk with _$WSResultOk implements WebSocketResult {
+sealed class WSResultOk with _$WSResultOk implements WebSocketResult {
   const factory WSResultOk({
     required int id,
   }) = _WSResultOk;
@@ -193,7 +193,7 @@ class WSResultOk with _$WSResultOk implements WebSocketResult {
 }
 
 @freezed
-class WSEchoResult with _$WSEchoResult implements WebSocketResult {
+sealed class WSEchoResult with _$WSEchoResult implements WebSocketResult {
   const factory WSEchoResult({
     required String msg,
     required int id,
@@ -203,7 +203,7 @@ class WSEchoResult with _$WSEchoResult implements WebSocketResult {
 }
 
 @freezed
-class WSEchoCommand with _$WSEchoCommand implements WebSocketCommand {
+sealed class WSEchoCommand with _$WSEchoCommand implements WebSocketCommand {
   static const String TYPE = 'ws_echo';
   const factory WSEchoCommand({
     required String msg,

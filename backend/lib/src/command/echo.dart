@@ -6,7 +6,7 @@ part 'echo.freezed.dart';
 part 'echo.g.dart';
 
 @freezed
-class EchoCommand with _$EchoCommand implements RpcCommand {
+sealed class EchoCommand with _$EchoCommand implements RpcCommand {
   static const String TYPE = 'echo';
 
   const factory EchoCommand({required int id, String? text, @Default(EchoCommand.TYPE) String type}) = _EchoCommand;

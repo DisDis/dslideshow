@@ -6,30 +6,30 @@ part of 'system_info_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$GetSystemInfoCommandImpl _$$GetSystemInfoCommandImplFromJson(
+_GetSystemInfoCommand _$GetSystemInfoCommandFromJson(
         Map<String, dynamic> json) =>
-    _$GetSystemInfoCommandImpl(
-      id: json['id'] as int,
+    _GetSystemInfoCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? GetSystemInfoCommand.TYPE,
     );
 
-Map<String, dynamic> _$$GetSystemInfoCommandImplToJson(
-        _$GetSystemInfoCommandImpl instance) =>
+Map<String, dynamic> _$GetSystemInfoCommandToJson(
+        _GetSystemInfoCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$GetSystemInfoCommandResultImpl _$$GetSystemInfoCommandResultImplFromJson(
+_GetSystemInfoCommandResult _$GetSystemInfoCommandResultFromJson(
         Map<String, dynamic> json) =>
-    _$GetSystemInfoCommandResultImpl(
+    _GetSystemInfoCommandResult(
       systemInfo:
           SystemInfo.fromJson(json['systemInfo'] as Map<String, dynamic>),
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$GetSystemInfoCommandResultImplToJson(
-        _$GetSystemInfoCommandResultImpl instance) =>
+Map<String, dynamic> _$GetSystemInfoCommandResultToJson(
+        _GetSystemInfoCommandResult instance) =>
     <String, dynamic>{
       'systemInfo': instance.systemInfo.toJson(),
       'id': instance.id,

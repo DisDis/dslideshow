@@ -5,7 +5,7 @@ part 'wifi_commands.g.dart';
 part 'wifi_commands.freezed.dart';
 
 @freezed
-class WiFiScanCommand with _$WiFiScanCommand implements RpcCommand {
+sealed class WiFiScanCommand with _$WiFiScanCommand implements RpcCommand {
   static const String TYPE = 'wifi_scan';
   const factory WiFiScanCommand({
     required int id,
@@ -16,7 +16,7 @@ class WiFiScanCommand with _$WiFiScanCommand implements RpcCommand {
 }
 
 @freezed
-class WiFiScanResult with _$WiFiScanResult implements RpcResult {
+sealed class WiFiScanResult with _$WiFiScanResult implements RpcResult {
   const factory WiFiScanResult({
     required List<WiFiNetworkInfo> networks,
     required int id,
@@ -26,7 +26,7 @@ class WiFiScanResult with _$WiFiScanResult implements RpcResult {
 }
 
 @freezed
-class WiFiNetworkInfo with _$WiFiNetworkInfo {
+sealed class WiFiNetworkInfo with _$WiFiNetworkInfo {
   const factory WiFiNetworkInfo({
     required String SSID,
     required int signal,
@@ -38,7 +38,7 @@ class WiFiNetworkInfo with _$WiFiNetworkInfo {
 }
 
 @freezed
-class WiFiStoredNetworkInfo with _$WiFiStoredNetworkInfo {
+sealed class WiFiStoredNetworkInfo with _$WiFiStoredNetworkInfo {
   const factory WiFiStoredNetworkInfo({
     required int id,
     required String SSID,
@@ -49,7 +49,7 @@ class WiFiStoredNetworkInfo with _$WiFiStoredNetworkInfo {
 }
 
 @freezed
-class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
+sealed class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
   static const String TYPE = 'wifi_remove';
   const factory WiFiRemoveCommand({
     required int wifiId,
@@ -61,7 +61,7 @@ class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
 }
 
 @freezed
-class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
+sealed class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
   static const String TYPE = 'wifi_savecfg';
   const factory WiFiSaveConfigCommand({
     required int id,
@@ -72,7 +72,7 @@ class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
 }
 
 @freezed
-class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
+sealed class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
   static const String TYPE = 'wifi_add';
   const factory WiFiAddCommand({
     required String SSID,
@@ -85,7 +85,7 @@ class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
 }
 
 @freezed
-class WiFiGetStoredCommand with _$WiFiGetStoredCommand implements RpcCommand {
+sealed class WiFiGetStoredCommand with _$WiFiGetStoredCommand implements RpcCommand {
   static const String TYPE = 'wifi_get_stored';
   const factory WiFiGetStoredCommand({
     required int id,
@@ -96,7 +96,7 @@ class WiFiGetStoredCommand with _$WiFiGetStoredCommand implements RpcCommand {
 }
 
 @freezed
-class WiFiGetStoredResult with _$WiFiGetStoredResult implements RpcResult {
+sealed class WiFiGetStoredResult with _$WiFiGetStoredResult implements RpcResult {
   const factory WiFiGetStoredResult({
     required List<WiFiStoredNetworkInfo> networks,
     required int id,

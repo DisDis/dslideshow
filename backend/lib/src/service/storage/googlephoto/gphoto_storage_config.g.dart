@@ -13,8 +13,8 @@ GPhotoStorageConfig _$GPhotoStorageConfigFromJson(Map<String, dynamic> json) =>
               .toList() ??
           ['SlideShow'],
       clientId: GPhotoStorageConfig._parseClientId(json['clientId']),
-      imageHeight: json['imageHeight'] as int? ?? 1600,
-      imageWidth: json['imageWidth'] as int? ?? 2560,
+      imageHeight: (json['imageHeight'] as num?)?.toInt() ?? 1600,
+      imageWidth: (json['imageWidth'] as num?)?.toInt() ?? 2560,
       refreshToken: json['refreshToken'] as String? ?? '',
       syncPeriod: GPhotoStorageConfig._parseDuration(json['syncPeriod']),
     );

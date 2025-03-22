@@ -6,32 +6,28 @@ part of 'screen_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ScreenTurnCommandImpl _$$ScreenTurnCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ScreenTurnCommandImpl(
+_ScreenTurnCommand _$ScreenTurnCommandFromJson(Map<String, dynamic> json) =>
+    _ScreenTurnCommand(
       enabled: json['enabled'] as bool,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? ScreenTurnCommand.TYPE,
     );
 
-Map<String, dynamic> _$$ScreenTurnCommandImplToJson(
-        _$ScreenTurnCommandImpl instance) =>
+Map<String, dynamic> _$ScreenTurnCommandToJson(_ScreenTurnCommand instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$ScreenLockCommandImpl _$$ScreenLockCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ScreenLockCommandImpl(
+_ScreenLockCommand _$ScreenLockCommandFromJson(Map<String, dynamic> json) =>
+    _ScreenLockCommand(
       isLock: json['isLock'] as bool,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? ScreenLockCommand.TYPE,
     );
 
-Map<String, dynamic> _$$ScreenLockCommandImplToJson(
-        _$ScreenLockCommandImpl instance) =>
+Map<String, dynamic> _$ScreenLockCommandToJson(_ScreenLockCommand instance) =>
     <String, dynamic>{
       'isLock': instance.isLock,
       'id': instance.id,

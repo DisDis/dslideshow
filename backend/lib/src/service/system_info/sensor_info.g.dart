@@ -6,13 +6,12 @@ part of 'sensor_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SensorInfoImpl _$$SensorInfoImplFromJson(Map<String, dynamic> json) =>
-    _$SensorInfoImpl(
+_SensorInfo _$SensorInfoFromJson(Map<String, dynamic> json) => _SensorInfo(
       name: json['name'] as String,
       value: json['value'] as String,
     );
 
-Map<String, dynamic> _$$SensorInfoImplToJson(_$SensorInfoImpl instance) =>
+Map<String, dynamic> _$SensorInfoToJson(_SensorInfo instance) =>
     <String, dynamic>{
       'name': instance.name,
       'value': instance.value,

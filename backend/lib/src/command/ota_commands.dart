@@ -5,7 +5,7 @@ part 'ota_commands.freezed.dart';
 part 'ota_commands.g.dart';
 
 @freezed
-class OTAReadyCommand with _$OTAReadyCommand implements RpcCommand {
+sealed class OTAReadyCommand with _$OTAReadyCommand implements RpcCommand {
   static const String TYPE = 'ota_ready';
 //
 //RpcCommand.generateId
@@ -18,7 +18,7 @@ class OTAReadyCommand with _$OTAReadyCommand implements RpcCommand {
 }
 
 @freezed
-class OTAGetInfoCommand with _$OTAGetInfoCommand implements RpcCommand {
+sealed class OTAGetInfoCommand with _$OTAGetInfoCommand implements RpcCommand {
   static const String TYPE = 'ota_getinfo';
 
   const factory OTAGetInfoCommand({
@@ -30,13 +30,13 @@ class OTAGetInfoCommand with _$OTAGetInfoCommand implements RpcCommand {
 }
 
 @freezed
-class OTAGetInfoCommandResult with _$OTAGetInfoCommandResult implements RpcResult {
+sealed class OTAGetInfoCommandResult with _$OTAGetInfoCommandResult implements RpcResult {
   const factory OTAGetInfoCommandResult({required OTAInfo info, required int id}) = _OTAGetInfoCommandResult;
   factory OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) => _$OTAGetInfoCommandResultFromJson(json);
 }
 
 @freezed
-class OTAOutputCommand with _$OTAOutputCommand implements RpcCommand {
+sealed class OTAOutputCommand with _$OTAOutputCommand implements RpcCommand {
   static const String TYPE = 'ota_output';
 
   const factory OTAOutputCommand({required int id, required String output, @Default(OTAOutputCommand.TYPE) String type}) = _OTAOutputCommand;

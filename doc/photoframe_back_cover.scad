@@ -1,10 +1,10 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @version 2.0.0
+ * @version 2.1.0
  */
 
-cover_version = "04.02.2022 v2.0.0";
+cover_version = "20.03.2025 v2.1.0";
 
 width = 220; // Ширина рамки
 height = 170; // Высота рамки
@@ -35,9 +35,11 @@ frame_thickness = 10; // толщина стенок фоторамки
 M3_rad = 3.3;
 
 
+pcbRPi4MountHeightBase = 2;
 pcbRPi4X = width - 67;
 pcbRPi4Y = hasRPiPortOut? 87.9 : 100;
-pcbRPi4Z = back_thickness+4;
+pcbRPi4Z = back_thickness+pcbRPiT+pcbRPi4MountHeightBase;
+ 
 pcbPowerX = (height+pcbPowerW)/2;
 pcbPowerY = height - pcbPowerH - frame_thickness - 7;
 pcbPowerZ = back_thickness + 1.5 + 2;
@@ -46,7 +48,7 @@ pcbDriverY = frame_thickness + 45;
 //pcbDriverZ = ;
 
 cooling_holes_width = 2; // ширина вентиляционных отверстий
-cooling_holes_deep = wall_depth + back_thickness - 4;
+cooling_holes_deep = wall_depth + back_thickness - 3;
 cooling_holes_height = hasRPiPortOut? 8 : 10; // длина вентиляционных отверстий
 cooling_holes_interval = 6;// расстояния между отверстиями
 cooling_holes_startx = frame_thickness + cooling_holes_width;
@@ -85,9 +87,9 @@ pcbMounts = [
   // M_DDRIVER
  [ [pcbDriverX, pcbDriverY, back_thickness] , pcbDisplayHoles, 8.5, 5 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1, false, true],
 // M_RPI4
- [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 5 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, pcbRPi4MountHeightBase, 5 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
  
- [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false],
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], pcbRPi4MountHeightBase, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false],
  // Wires mount
  //[[pcbPowerX, pcbPowerY - 30, back_thickness], [[ pcbPowerW / 2-5, 0, 0],[ pcbPowerW / 2+5, 0, 0]], 2.5, 4.2 , [0,0,0], M3_rad/2 - 0.5, true, true]
 ];

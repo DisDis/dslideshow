@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,81 +10,54 @@ part of 'network_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-NetworkInfo _$NetworkInfoFromJson(Map<String, dynamic> json) {
-  return _NetworkInfo.fromJson(json);
-}
 
 /// @nodoc
 mixin _$NetworkInfo {
-  int get lastUpdate => throw _privateConstructorUsedError;
-  bool get hasInternet => throw _privateConstructorUsedError;
-  List<NetworkInterfaceInfo>? get interfaces =>
-      throw _privateConstructorUsedError;
+  int get lastUpdate;
+  bool get hasInternet;
+  List<NetworkInterfaceInfo>? get interfaces;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $NetworkInfoCopyWith<NetworkInfo> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $NetworkInfoCopyWith<$Res> {
-  factory $NetworkInfoCopyWith(
-          NetworkInfo value, $Res Function(NetworkInfo) then) =
-      _$NetworkInfoCopyWithImpl<$Res, NetworkInfo>;
-  @useResult
-  $Res call(
-      {int lastUpdate,
-      bool hasInternet,
-      List<NetworkInterfaceInfo>? interfaces});
-}
-
-/// @nodoc
-class _$NetworkInfoCopyWithImpl<$Res, $Val extends NetworkInfo>
-    implements $NetworkInfoCopyWith<$Res> {
-  _$NetworkInfoCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of NetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $NetworkInfoCopyWith<NetworkInfo> get copyWith =>
+      _$NetworkInfoCopyWithImpl<NetworkInfo>(this as NetworkInfo, _$identity);
+
+  /// Serializes this NetworkInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? lastUpdate = null,
-    Object? hasInternet = null,
-    Object? interfaces = freezed,
-  }) {
-    return _then(_value.copyWith(
-      lastUpdate: null == lastUpdate
-          ? _value.lastUpdate
-          : lastUpdate // ignore: cast_nullable_to_non_nullable
-              as int,
-      hasInternet: null == hasInternet
-          ? _value.hasInternet
-          : hasInternet // ignore: cast_nullable_to_non_nullable
-              as bool,
-      interfaces: freezed == interfaces
-          ? _value.interfaces
-          : interfaces // ignore: cast_nullable_to_non_nullable
-              as List<NetworkInterfaceInfo>?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NetworkInfo &&
+            (identical(other.lastUpdate, lastUpdate) ||
+                other.lastUpdate == lastUpdate) &&
+            (identical(other.hasInternet, hasInternet) ||
+                other.hasInternet == hasInternet) &&
+            const DeepCollectionEquality()
+                .equals(other.interfaces, interfaces));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, lastUpdate, hasInternet,
+      const DeepCollectionEquality().hash(interfaces));
+
+  @override
+  String toString() {
+    return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
   }
 }
 
 /// @nodoc
-abstract class _$$NetworkInfoImplCopyWith<$Res>
-    implements $NetworkInfoCopyWith<$Res> {
-  factory _$$NetworkInfoImplCopyWith(
-          _$NetworkInfoImpl value, $Res Function(_$NetworkInfoImpl) then) =
-      __$$NetworkInfoImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $NetworkInfoCopyWith<$Res> {
+  factory $NetworkInfoCopyWith(
+          NetworkInfo value, $Res Function(NetworkInfo) _then) =
+      _$NetworkInfoCopyWithImpl;
   @useResult
   $Res call(
       {int lastUpdate,
@@ -92,13 +66,14 @@ abstract class _$$NetworkInfoImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$NetworkInfoImplCopyWithImpl<$Res>
-    extends _$NetworkInfoCopyWithImpl<$Res, _$NetworkInfoImpl>
-    implements _$$NetworkInfoImplCopyWith<$Res> {
-  __$$NetworkInfoImplCopyWithImpl(
-      _$NetworkInfoImpl _value, $Res Function(_$NetworkInfoImpl) _then)
-      : super(_value, _then);
+class _$NetworkInfoCopyWithImpl<$Res> implements $NetworkInfoCopyWith<$Res> {
+  _$NetworkInfoCopyWithImpl(this._self, this._then);
 
+  final NetworkInfo _self;
+  final $Res Function(NetworkInfo) _then;
+
+  /// Create a copy of NetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -106,17 +81,17 @@ class __$$NetworkInfoImplCopyWithImpl<$Res>
     Object? hasInternet = null,
     Object? interfaces = freezed,
   }) {
-    return _then(_$NetworkInfoImpl(
+    return _then(_self.copyWith(
       lastUpdate: null == lastUpdate
-          ? _value.lastUpdate
+          ? _self.lastUpdate
           : lastUpdate // ignore: cast_nullable_to_non_nullable
               as int,
       hasInternet: null == hasInternet
-          ? _value.hasInternet
+          ? _self.hasInternet
           : hasInternet // ignore: cast_nullable_to_non_nullable
               as bool,
       interfaces: freezed == interfaces
-          ? _value._interfaces
+          ? _self.interfaces
           : interfaces // ignore: cast_nullable_to_non_nullable
               as List<NetworkInterfaceInfo>?,
     ));
@@ -125,15 +100,14 @@ class __$$NetworkInfoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$NetworkInfoImpl implements _NetworkInfo {
-  const _$NetworkInfoImpl(
+class _NetworkInfo implements NetworkInfo {
+  const _NetworkInfo(
       {required this.lastUpdate,
       required this.hasInternet,
       required final List<NetworkInterfaceInfo>? interfaces})
       : _interfaces = interfaces;
-
-  factory _$NetworkInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$NetworkInfoImplFromJson(json);
+  factory _NetworkInfo.fromJson(Map<String, dynamic> json) =>
+      _$NetworkInfoFromJson(json);
 
   @override
   final int lastUpdate;
@@ -149,16 +123,26 @@ class _$NetworkInfoImpl implements _NetworkInfo {
     return EqualUnmodifiableListView(value);
   }
 
+  /// Create a copy of NetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NetworkInfoCopyWith<_NetworkInfo> get copyWith =>
+      __$NetworkInfoCopyWithImpl<_NetworkInfo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$NetworkInfoToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NetworkInfoImpl &&
+            other is _NetworkInfo &&
             (identical(other.lastUpdate, lastUpdate) ||
                 other.lastUpdate == lastUpdate) &&
             (identical(other.hasInternet, hasInternet) ||
@@ -167,134 +151,123 @@ class _$NetworkInfoImpl implements _NetworkInfo {
                 .equals(other._interfaces, _interfaces));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, lastUpdate, hasInternet,
       const DeepCollectionEquality().hash(_interfaces));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$NetworkInfoImplCopyWith<_$NetworkInfoImpl> get copyWith =>
-      __$$NetworkInfoImplCopyWithImpl<_$NetworkInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$NetworkInfoImplToJson(
-      this,
-    );
+  String toString() {
+    return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
   }
 }
 
-abstract class _NetworkInfo implements NetworkInfo {
-  const factory _NetworkInfo(
-          {required final int lastUpdate,
-          required final bool hasInternet,
-          required final List<NetworkInterfaceInfo>? interfaces}) =
-      _$NetworkInfoImpl;
-
-  factory _NetworkInfo.fromJson(Map<String, dynamic> json) =
-      _$NetworkInfoImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$NetworkInfoCopyWith<$Res>
+    implements $NetworkInfoCopyWith<$Res> {
+  factory _$NetworkInfoCopyWith(
+          _NetworkInfo value, $Res Function(_NetworkInfo) _then) =
+      __$NetworkInfoCopyWithImpl;
   @override
-  int get lastUpdate;
-  @override
-  bool get hasInternet;
-  @override
-  List<NetworkInterfaceInfo>? get interfaces;
-  @override
-  @JsonKey(ignore: true)
-  _$$NetworkInfoImplCopyWith<_$NetworkInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {int lastUpdate,
+      bool hasInternet,
+      List<NetworkInterfaceInfo>? interfaces});
 }
 
-NetworkInterfaceInfo _$NetworkInterfaceInfoFromJson(Map<String, dynamic> json) {
-  return _NetworkInterfaceInfo.fromJson(json);
+/// @nodoc
+class __$NetworkInfoCopyWithImpl<$Res> implements _$NetworkInfoCopyWith<$Res> {
+  __$NetworkInfoCopyWithImpl(this._self, this._then);
+
+  final _NetworkInfo _self;
+  final $Res Function(_NetworkInfo) _then;
+
+  /// Create a copy of NetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? lastUpdate = null,
+    Object? hasInternet = null,
+    Object? interfaces = freezed,
+  }) {
+    return _then(_NetworkInfo(
+      lastUpdate: null == lastUpdate
+          ? _self.lastUpdate
+          : lastUpdate // ignore: cast_nullable_to_non_nullable
+              as int,
+      hasInternet: null == hasInternet
+          ? _self.hasInternet
+          : hasInternet // ignore: cast_nullable_to_non_nullable
+              as bool,
+      interfaces: freezed == interfaces
+          ? _self._interfaces
+          : interfaces // ignore: cast_nullable_to_non_nullable
+              as List<NetworkInterfaceInfo>?,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$NetworkInterfaceInfo {
-  String get name => throw _privateConstructorUsedError;
-  NetworkInterfaceStatus get status => throw _privateConstructorUsedError;
-  String get ip4 => throw _privateConstructorUsedError;
-  String get ip6 => throw _privateConstructorUsedError;
+  String get name;
+  NetworkInterfaceStatus get status;
+  String get ip4;
+  String get ip6;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $NetworkInterfaceInfoCopyWith<NetworkInterfaceInfo> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $NetworkInterfaceInfoCopyWith<$Res> {
-  factory $NetworkInterfaceInfoCopyWith(NetworkInterfaceInfo value,
-          $Res Function(NetworkInterfaceInfo) then) =
-      _$NetworkInterfaceInfoCopyWithImpl<$Res, NetworkInterfaceInfo>;
-  @useResult
-  $Res call(
-      {String name, NetworkInterfaceStatus status, String ip4, String ip6});
-}
-
-/// @nodoc
-class _$NetworkInterfaceInfoCopyWithImpl<$Res,
-        $Val extends NetworkInterfaceInfo>
-    implements $NetworkInterfaceInfoCopyWith<$Res> {
-  _$NetworkInterfaceInfoCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of NetworkInterfaceInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $NetworkInterfaceInfoCopyWith<NetworkInterfaceInfo> get copyWith =>
+      _$NetworkInterfaceInfoCopyWithImpl<NetworkInterfaceInfo>(
+          this as NetworkInterfaceInfo, _$identity);
+
+  /// Serializes this NetworkInterfaceInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? status = null,
-    Object? ip4 = null,
-    Object? ip6 = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as NetworkInterfaceStatus,
-      ip4: null == ip4
-          ? _value.ip4
-          : ip4 // ignore: cast_nullable_to_non_nullable
-              as String,
-      ip6: null == ip6
-          ? _value.ip6
-          : ip6 // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NetworkInterfaceInfo &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.ip4, ip4) || other.ip4 == ip4) &&
+            (identical(other.ip6, ip6) || other.ip6 == ip6));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, status, ip4, ip6);
+
+  @override
+  String toString() {
+    return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
   }
 }
 
 /// @nodoc
-abstract class _$$NetworkInterfaceInfoImplCopyWith<$Res>
-    implements $NetworkInterfaceInfoCopyWith<$Res> {
-  factory _$$NetworkInterfaceInfoImplCopyWith(_$NetworkInterfaceInfoImpl value,
-          $Res Function(_$NetworkInterfaceInfoImpl) then) =
-      __$$NetworkInterfaceInfoImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $NetworkInterfaceInfoCopyWith<$Res> {
+  factory $NetworkInterfaceInfoCopyWith(NetworkInterfaceInfo value,
+          $Res Function(NetworkInterfaceInfo) _then) =
+      _$NetworkInterfaceInfoCopyWithImpl;
   @useResult
   $Res call(
       {String name, NetworkInterfaceStatus status, String ip4, String ip6});
 }
 
 /// @nodoc
-class __$$NetworkInterfaceInfoImplCopyWithImpl<$Res>
-    extends _$NetworkInterfaceInfoCopyWithImpl<$Res, _$NetworkInterfaceInfoImpl>
-    implements _$$NetworkInterfaceInfoImplCopyWith<$Res> {
-  __$$NetworkInterfaceInfoImplCopyWithImpl(_$NetworkInterfaceInfoImpl _value,
-      $Res Function(_$NetworkInterfaceInfoImpl) _then)
-      : super(_value, _then);
+class _$NetworkInterfaceInfoCopyWithImpl<$Res>
+    implements $NetworkInterfaceInfoCopyWith<$Res> {
+  _$NetworkInterfaceInfoCopyWithImpl(this._self, this._then);
 
+  final NetworkInterfaceInfo _self;
+  final $Res Function(NetworkInterfaceInfo) _then;
+
+  /// Create a copy of NetworkInterfaceInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -303,21 +276,21 @@ class __$$NetworkInterfaceInfoImplCopyWithImpl<$Res>
     Object? ip4 = null,
     Object? ip6 = null,
   }) {
-    return _then(_$NetworkInterfaceInfoImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       status: null == status
-          ? _value.status
+          ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as NetworkInterfaceStatus,
       ip4: null == ip4
-          ? _value.ip4
+          ? _self.ip4
           : ip4 // ignore: cast_nullable_to_non_nullable
               as String,
       ip6: null == ip6
-          ? _value.ip6
+          ? _self.ip6
           : ip6 // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -326,15 +299,14 @@ class __$$NetworkInterfaceInfoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$NetworkInterfaceInfoImpl implements _NetworkInterfaceInfo {
-  const _$NetworkInterfaceInfoImpl(
+class _NetworkInterfaceInfo implements NetworkInterfaceInfo {
+  const _NetworkInterfaceInfo(
       {required this.name,
       required this.status,
       required this.ip4,
       required this.ip6});
-
-  factory _$NetworkInterfaceInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$NetworkInterfaceInfoImplFromJson(json);
+  factory _NetworkInterfaceInfo.fromJson(Map<String, dynamic> json) =>
+      _$NetworkInterfaceInfoFromJson(json);
 
   @override
   final String name;
@@ -345,62 +317,92 @@ class _$NetworkInterfaceInfoImpl implements _NetworkInterfaceInfo {
   @override
   final String ip6;
 
+  /// Create a copy of NetworkInterfaceInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NetworkInterfaceInfoCopyWith<_NetworkInterfaceInfo> get copyWith =>
+      __$NetworkInterfaceInfoCopyWithImpl<_NetworkInterfaceInfo>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$NetworkInterfaceInfoToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NetworkInterfaceInfoImpl &&
+            other is _NetworkInterfaceInfo &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.ip4, ip4) || other.ip4 == ip4) &&
             (identical(other.ip6, ip6) || other.ip6 == ip6));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, status, ip4, ip6);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$NetworkInterfaceInfoImplCopyWith<_$NetworkInterfaceInfoImpl>
-      get copyWith =>
-          __$$NetworkInterfaceInfoImplCopyWithImpl<_$NetworkInterfaceInfoImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$NetworkInterfaceInfoImplToJson(
-      this,
-    );
+  String toString() {
+    return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
   }
 }
 
-abstract class _NetworkInterfaceInfo implements NetworkInterfaceInfo {
-  const factory _NetworkInterfaceInfo(
-      {required final String name,
-      required final NetworkInterfaceStatus status,
-      required final String ip4,
-      required final String ip6}) = _$NetworkInterfaceInfoImpl;
-
-  factory _NetworkInterfaceInfo.fromJson(Map<String, dynamic> json) =
-      _$NetworkInterfaceInfoImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$NetworkInterfaceInfoCopyWith<$Res>
+    implements $NetworkInterfaceInfoCopyWith<$Res> {
+  factory _$NetworkInterfaceInfoCopyWith(_NetworkInterfaceInfo value,
+          $Res Function(_NetworkInterfaceInfo) _then) =
+      __$NetworkInterfaceInfoCopyWithImpl;
   @override
-  String get name;
-  @override
-  NetworkInterfaceStatus get status;
-  @override
-  String get ip4;
-  @override
-  String get ip6;
-  @override
-  @JsonKey(ignore: true)
-  _$$NetworkInterfaceInfoImplCopyWith<_$NetworkInterfaceInfoImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String name, NetworkInterfaceStatus status, String ip4, String ip6});
 }
+
+/// @nodoc
+class __$NetworkInterfaceInfoCopyWithImpl<$Res>
+    implements _$NetworkInterfaceInfoCopyWith<$Res> {
+  __$NetworkInterfaceInfoCopyWithImpl(this._self, this._then);
+
+  final _NetworkInterfaceInfo _self;
+  final $Res Function(_NetworkInterfaceInfo) _then;
+
+  /// Create a copy of NetworkInterfaceInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? status = null,
+    Object? ip4 = null,
+    Object? ip6 = null,
+  }) {
+    return _then(_NetworkInterfaceInfo(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as NetworkInterfaceStatus,
+      ip4: null == ip4
+          ? _self.ip4
+          : ip4 // ignore: cast_nullable_to_non_nullable
+              as String,
+      ip6: null == ip6
+          ? _self.ip6
+          : ip6 // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

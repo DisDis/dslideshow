@@ -6,49 +6,46 @@ part of 'storage_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$GetMediaItemCommandImpl _$$GetMediaItemCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$GetMediaItemCommandImpl(
+_GetMediaItemCommand _$GetMediaItemCommandFromJson(Map<String, dynamic> json) =>
+    _GetMediaItemCommand(
       isCurrent: json['isCurrent'] as bool,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? GetMediaItemCommand.TYPE,
     );
 
-Map<String, dynamic> _$$GetMediaItemCommandImplToJson(
-        _$GetMediaItemCommandImpl instance) =>
+Map<String, dynamic> _$GetMediaItemCommandToJson(
+        _GetMediaItemCommand instance) =>
     <String, dynamic>{
       'isCurrent': instance.isCurrent,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$GetMediaItemCommandResultImpl _$$GetMediaItemCommandResultImplFromJson(
+_GetMediaItemCommandResult _$GetMediaItemCommandResultFromJson(
         Map<String, dynamic> json) =>
-    _$GetMediaItemCommandResultImpl(
+    _GetMediaItemCommandResult(
       mediaId: json['mediaId'] as String?,
       mediaUri: json['mediaUri'] == null
           ? null
           : Uri.parse(json['mediaUri'] as String),
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$GetMediaItemCommandResultImplToJson(
-        _$GetMediaItemCommandResultImpl instance) =>
+Map<String, dynamic> _$GetMediaItemCommandResultToJson(
+        _GetMediaItemCommandResult instance) =>
     <String, dynamic>{
       'mediaId': instance.mediaId,
       'mediaUri': instance.mediaUri?.toString(),
       'id': instance.id,
     };
 
-_$StorageNextCommandImpl _$$StorageNextCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$StorageNextCommandImpl(
-      id: json['id'] as int,
+_StorageNextCommand _$StorageNextCommandFromJson(Map<String, dynamic> json) =>
+    _StorageNextCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? StorageNextCommand.TYPE,
     );
 
-Map<String, dynamic> _$$StorageNextCommandImplToJson(
-        _$StorageNextCommandImpl instance) =>
+Map<String, dynamic> _$StorageNextCommandToJson(_StorageNextCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,

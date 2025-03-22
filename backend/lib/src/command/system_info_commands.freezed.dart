@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,97 +10,76 @@ part of 'system_info_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-GetSystemInfoCommand _$GetSystemInfoCommandFromJson(Map<String, dynamic> json) {
-  return _GetSystemInfoCommand.fromJson(json);
-}
 
 /// @nodoc
 mixin _$GetSystemInfoCommand {
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $GetSystemInfoCommandCopyWith<GetSystemInfoCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $GetSystemInfoCommandCopyWith<$Res> {
-  factory $GetSystemInfoCommandCopyWith(GetSystemInfoCommand value,
-          $Res Function(GetSystemInfoCommand) then) =
-      _$GetSystemInfoCommandCopyWithImpl<$Res, GetSystemInfoCommand>;
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class _$GetSystemInfoCommandCopyWithImpl<$Res,
-        $Val extends GetSystemInfoCommand>
-    implements $GetSystemInfoCommandCopyWith<$Res> {
-  _$GetSystemInfoCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of GetSystemInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $GetSystemInfoCommandCopyWith<GetSystemInfoCommand> get copyWith =>
+      _$GetSystemInfoCommandCopyWithImpl<GetSystemInfoCommand>(
+          this as GetSystemInfoCommand, _$identity);
+
+  /// Serializes this GetSystemInfoCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GetSystemInfoCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, type);
+
+  @override
+  String toString() {
+    return 'GetSystemInfoCommand(id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$GetSystemInfoCommandImplCopyWith<$Res>
-    implements $GetSystemInfoCommandCopyWith<$Res> {
-  factory _$$GetSystemInfoCommandImplCopyWith(_$GetSystemInfoCommandImpl value,
-          $Res Function(_$GetSystemInfoCommandImpl) then) =
-      __$$GetSystemInfoCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $GetSystemInfoCommandCopyWith<$Res> {
+  factory $GetSystemInfoCommandCopyWith(GetSystemInfoCommand value,
+          $Res Function(GetSystemInfoCommand) _then) =
+      _$GetSystemInfoCommandCopyWithImpl;
   @useResult
   $Res call({int id, String type});
 }
 
 /// @nodoc
-class __$$GetSystemInfoCommandImplCopyWithImpl<$Res>
-    extends _$GetSystemInfoCommandCopyWithImpl<$Res, _$GetSystemInfoCommandImpl>
-    implements _$$GetSystemInfoCommandImplCopyWith<$Res> {
-  __$$GetSystemInfoCommandImplCopyWithImpl(_$GetSystemInfoCommandImpl _value,
-      $Res Function(_$GetSystemInfoCommandImpl) _then)
-      : super(_value, _then);
+class _$GetSystemInfoCommandCopyWithImpl<$Res>
+    implements $GetSystemInfoCommandCopyWith<$Res> {
+  _$GetSystemInfoCommandCopyWithImpl(this._self, this._then);
 
+  final GetSystemInfoCommand _self;
+  final $Res Function(GetSystemInfoCommand) _then;
+
+  /// Create a copy of GetSystemInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$GetSystemInfoCommandImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -108,12 +88,11 @@ class __$$GetSystemInfoCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$GetSystemInfoCommandImpl implements _GetSystemInfoCommand {
-  const _$GetSystemInfoCommandImpl(
+class _GetSystemInfoCommand implements GetSystemInfoCommand {
+  const _GetSystemInfoCommand(
       {required this.id, this.type = GetSystemInfoCommand.TYPE});
-
-  factory _$GetSystemInfoCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$GetSystemInfoCommandImplFromJson(json);
+  factory _GetSystemInfoCommand.fromJson(Map<String, dynamic> json) =>
+      _$GetSystemInfoCommandFromJson(json);
 
   @override
   final int id;
@@ -121,231 +100,269 @@ class _$GetSystemInfoCommandImpl implements _GetSystemInfoCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of GetSystemInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'GetSystemInfoCommand(id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$GetSystemInfoCommandCopyWith<_GetSystemInfoCommand> get copyWith =>
+      __$GetSystemInfoCommandCopyWithImpl<_GetSystemInfoCommand>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$GetSystemInfoCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetSystemInfoCommandImpl &&
+            other is _GetSystemInfoCommand &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$GetSystemInfoCommandImplCopyWith<_$GetSystemInfoCommandImpl>
-      get copyWith =>
-          __$$GetSystemInfoCommandImplCopyWithImpl<_$GetSystemInfoCommandImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$GetSystemInfoCommandImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _GetSystemInfoCommand implements GetSystemInfoCommand {
-  const factory _GetSystemInfoCommand(
-      {required final int id, final String type}) = _$GetSystemInfoCommandImpl;
-
-  factory _GetSystemInfoCommand.fromJson(Map<String, dynamic> json) =
-      _$GetSystemInfoCommandImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$GetSystemInfoCommandImplCopyWith<_$GetSystemInfoCommandImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-GetSystemInfoCommandResult _$GetSystemInfoCommandResultFromJson(
-    Map<String, dynamic> json) {
-  return _GetSystemInfoCommandResult.fromJson(json);
-}
-
-/// @nodoc
-mixin _$GetSystemInfoCommandResult {
-  SystemInfo get systemInfo => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $GetSystemInfoCommandResultCopyWith<GetSystemInfoCommandResult>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $GetSystemInfoCommandResultCopyWith<$Res> {
-  factory $GetSystemInfoCommandResultCopyWith(GetSystemInfoCommandResult value,
-          $Res Function(GetSystemInfoCommandResult) then) =
-      _$GetSystemInfoCommandResultCopyWithImpl<$Res,
-          GetSystemInfoCommandResult>;
-  @useResult
-  $Res call({SystemInfo systemInfo, int id});
-
-  $SystemInfoCopyWith<$Res> get systemInfo;
-}
-
-/// @nodoc
-class _$GetSystemInfoCommandResultCopyWithImpl<$Res,
-        $Val extends GetSystemInfoCommandResult>
-    implements $GetSystemInfoCommandResultCopyWith<$Res> {
-  _$GetSystemInfoCommandResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? systemInfo = null,
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      systemInfo: null == systemInfo
-          ? _value.systemInfo
-          : systemInfo // ignore: cast_nullable_to_non_nullable
-              as SystemInfo,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $SystemInfoCopyWith<$Res> get systemInfo {
-    return $SystemInfoCopyWith<$Res>(_value.systemInfo, (value) {
-      return _then(_value.copyWith(systemInfo: value) as $Val);
-    });
+  String toString() {
+    return 'GetSystemInfoCommand(id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$GetSystemInfoCommandResultImplCopyWith<$Res>
-    implements $GetSystemInfoCommandResultCopyWith<$Res> {
-  factory _$$GetSystemInfoCommandResultImplCopyWith(
-          _$GetSystemInfoCommandResultImpl value,
-          $Res Function(_$GetSystemInfoCommandResultImpl) then) =
-      __$$GetSystemInfoCommandResultImplCopyWithImpl<$Res>;
+abstract mixin class _$GetSystemInfoCommandCopyWith<$Res>
+    implements $GetSystemInfoCommandCopyWith<$Res> {
+  factory _$GetSystemInfoCommandCopyWith(_GetSystemInfoCommand value,
+          $Res Function(_GetSystemInfoCommand) _then) =
+      __$GetSystemInfoCommandCopyWithImpl;
   @override
   @useResult
-  $Res call({SystemInfo systemInfo, int id});
-
-  @override
-  $SystemInfoCopyWith<$Res> get systemInfo;
+  $Res call({int id, String type});
 }
 
 /// @nodoc
-class __$$GetSystemInfoCommandResultImplCopyWithImpl<$Res>
-    extends _$GetSystemInfoCommandResultCopyWithImpl<$Res,
-        _$GetSystemInfoCommandResultImpl>
-    implements _$$GetSystemInfoCommandResultImplCopyWith<$Res> {
-  __$$GetSystemInfoCommandResultImplCopyWithImpl(
-      _$GetSystemInfoCommandResultImpl _value,
-      $Res Function(_$GetSystemInfoCommandResultImpl) _then)
-      : super(_value, _then);
+class __$GetSystemInfoCommandCopyWithImpl<$Res>
+    implements _$GetSystemInfoCommandCopyWith<$Res> {
+  __$GetSystemInfoCommandCopyWithImpl(this._self, this._then);
 
-  @pragma('vm:prefer-inline')
+  final _GetSystemInfoCommand _self;
+  final $Res Function(_GetSystemInfoCommand) _then;
+
+  /// Create a copy of GetSystemInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? systemInfo = null,
     Object? id = null,
+    Object? type = null,
   }) {
-    return _then(_$GetSystemInfoCommandResultImpl(
-      systemInfo: null == systemInfo
-          ? _value.systemInfo
-          : systemInfo // ignore: cast_nullable_to_non_nullable
-              as SystemInfo,
+    return _then(_GetSystemInfoCommand(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$GetSystemInfoCommandResultImpl implements _GetSystemInfoCommandResult {
-  const _$GetSystemInfoCommandResultImpl(
-      {required this.systemInfo, required this.id});
+mixin _$GetSystemInfoCommandResult {
+  SystemInfo get systemInfo;
+  int get id;
 
-  factory _$GetSystemInfoCommandResultImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$GetSystemInfoCommandResultImplFromJson(json);
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GetSystemInfoCommandResultCopyWith<GetSystemInfoCommandResult>
+      get copyWith =>
+          _$GetSystemInfoCommandResultCopyWithImpl<GetSystemInfoCommandResult>(
+              this as GetSystemInfoCommandResult, _$identity);
+
+  /// Serializes this GetSystemInfoCommandResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GetSystemInfoCommandResult &&
+            (identical(other.systemInfo, systemInfo) ||
+                other.systemInfo == systemInfo) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, systemInfo, id);
+
+  @override
+  String toString() {
+    return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $GetSystemInfoCommandResultCopyWith<$Res> {
+  factory $GetSystemInfoCommandResultCopyWith(GetSystemInfoCommandResult value,
+          $Res Function(GetSystemInfoCommandResult) _then) =
+      _$GetSystemInfoCommandResultCopyWithImpl;
+  @useResult
+  $Res call({SystemInfo systemInfo, int id});
+
+  $SystemInfoCopyWith<$Res> get systemInfo;
+}
+
+/// @nodoc
+class _$GetSystemInfoCommandResultCopyWithImpl<$Res>
+    implements $GetSystemInfoCommandResultCopyWith<$Res> {
+  _$GetSystemInfoCommandResultCopyWithImpl(this._self, this._then);
+
+  final GetSystemInfoCommandResult _self;
+  final $Res Function(GetSystemInfoCommandResult) _then;
+
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? systemInfo = null,
+    Object? id = null,
+  }) {
+    return _then(_self.copyWith(
+      systemInfo: null == systemInfo
+          ? _self.systemInfo
+          : systemInfo // ignore: cast_nullable_to_non_nullable
+              as SystemInfo,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SystemInfoCopyWith<$Res> get systemInfo {
+    return $SystemInfoCopyWith<$Res>(_self.systemInfo, (value) {
+      return _then(_self.copyWith(systemInfo: value));
+    });
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _GetSystemInfoCommandResult implements GetSystemInfoCommandResult {
+  const _GetSystemInfoCommandResult(
+      {required this.systemInfo, required this.id});
+  factory _GetSystemInfoCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$GetSystemInfoCommandResultFromJson(json);
 
   @override
   final SystemInfo systemInfo;
   @override
   final int id;
 
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$GetSystemInfoCommandResultCopyWith<_GetSystemInfoCommandResult>
+      get copyWith => __$GetSystemInfoCommandResultCopyWithImpl<
+          _GetSystemInfoCommandResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$GetSystemInfoCommandResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetSystemInfoCommandResultImpl &&
+            other is _GetSystemInfoCommandResult &&
             (identical(other.systemInfo, systemInfo) ||
                 other.systemInfo == systemInfo) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, systemInfo, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$GetSystemInfoCommandResultImplCopyWith<_$GetSystemInfoCommandResultImpl>
-      get copyWith => __$$GetSystemInfoCommandResultImplCopyWithImpl<
-          _$GetSystemInfoCommandResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$GetSystemInfoCommandResultImplToJson(
-      this,
-    );
+  String toString() {
+    return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
   }
 }
 
-abstract class _GetSystemInfoCommandResult
-    implements GetSystemInfoCommandResult {
-  const factory _GetSystemInfoCommandResult(
-      {required final SystemInfo systemInfo,
-      required final int id}) = _$GetSystemInfoCommandResultImpl;
+/// @nodoc
+abstract mixin class _$GetSystemInfoCommandResultCopyWith<$Res>
+    implements $GetSystemInfoCommandResultCopyWith<$Res> {
+  factory _$GetSystemInfoCommandResultCopyWith(
+          _GetSystemInfoCommandResult value,
+          $Res Function(_GetSystemInfoCommandResult) _then) =
+      __$GetSystemInfoCommandResultCopyWithImpl;
+  @override
+  @useResult
+  $Res call({SystemInfo systemInfo, int id});
 
-  factory _GetSystemInfoCommandResult.fromJson(Map<String, dynamic> json) =
-      _$GetSystemInfoCommandResultImpl.fromJson;
-
   @override
-  SystemInfo get systemInfo;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$GetSystemInfoCommandResultImplCopyWith<_$GetSystemInfoCommandResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  $SystemInfoCopyWith<$Res> get systemInfo;
 }
+
+/// @nodoc
+class __$GetSystemInfoCommandResultCopyWithImpl<$Res>
+    implements _$GetSystemInfoCommandResultCopyWith<$Res> {
+  __$GetSystemInfoCommandResultCopyWithImpl(this._self, this._then);
+
+  final _GetSystemInfoCommandResult _self;
+  final $Res Function(_GetSystemInfoCommandResult) _then;
+
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? systemInfo = null,
+    Object? id = null,
+  }) {
+    return _then(_GetSystemInfoCommandResult(
+      systemInfo: null == systemInfo
+          ? _self.systemInfo
+          : systemInfo // ignore: cast_nullable_to_non_nullable
+              as SystemInfo,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+
+  /// Create a copy of GetSystemInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SystemInfoCopyWith<$Res> get systemInfo {
+    return $SystemInfoCopyWith<$Res>(_self.systemInfo, (value) {
+      return _then(_self.copyWith(systemInfo: value));
+    });
+  }
+}
+
+// dart format on

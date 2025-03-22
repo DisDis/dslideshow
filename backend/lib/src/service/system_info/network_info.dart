@@ -4,7 +4,7 @@ part 'network_info.g.dart';
 part 'network_info.freezed.dart';
 
 @freezed
-class NetworkInfo with _$NetworkInfo {
+sealed class NetworkInfo with _$NetworkInfo {
   const factory NetworkInfo({
     required int lastUpdate,
     required bool hasInternet,
@@ -15,7 +15,7 @@ class NetworkInfo with _$NetworkInfo {
 }
 
 @freezed
-class NetworkInterfaceInfo with _$NetworkInterfaceInfo {
+sealed class NetworkInterfaceInfo with _$NetworkInterfaceInfo {
   const factory NetworkInterfaceInfo({
     required String name,
     required NetworkInterfaceStatus status,

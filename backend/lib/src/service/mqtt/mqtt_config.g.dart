@@ -14,10 +14,10 @@ MqttConfig _$MqttConfigFromJson(Map<String, dynamic> json) => MqttConfig(
       deviceName: json['deviceName'] as String? ?? 'PhotoFrame1',
       discovery_prefix: json['discovery_prefix'] as String? ?? 'homeassistant',
       enabled: json['enabled'] as bool? ?? false,
-      keepAlivePeriod: json['keepAlivePeriod'] as int? ?? 600,
+      keepAlivePeriod: (json['keepAlivePeriod'] as num?)?.toInt() ?? 600,
       pass: json['pass'] as String? ?? 'pass',
       server: json['server'] as String? ?? 'smarthome.local',
-      serverPort: json['port'] as int? ?? 1883,
+      serverPort: (json['port'] as num?)?.toInt() ?? 1883,
       state_topic: json['state_topic'] as String? ?? 'state',
       user: json['user'] as String? ?? 'user',
     );

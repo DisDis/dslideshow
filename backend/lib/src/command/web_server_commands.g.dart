@@ -6,72 +6,71 @@ part of 'web_server_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$WebServerControlCommandImpl _$$WebServerControlCommandImplFromJson(
+_WebServerControlCommand _$WebServerControlCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WebServerControlCommandImpl(
+    _WebServerControlCommand(
       enable: json['enable'] as bool,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WebServerControlCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WebServerControlCommandImplToJson(
-        _$WebServerControlCommandImpl instance) =>
+Map<String, dynamic> _$WebServerControlCommandToJson(
+        _WebServerControlCommand instance) =>
     <String, dynamic>{
       'enable': instance.enable,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WebServerControlCommandResultImpl
-    _$$WebServerControlCommandResultImplFromJson(Map<String, dynamic> json) =>
-        _$WebServerControlCommandResultImpl(
-          code: json['code'] as String,
-          enable: json['enable'] as bool,
-          id: json['id'] as int,
-        );
+_WebServerControlCommandResult _$WebServerControlCommandResultFromJson(
+        Map<String, dynamic> json) =>
+    _WebServerControlCommandResult(
+      code: json['code'] as String,
+      enable: json['enable'] as bool,
+      id: (json['id'] as num).toInt(),
+    );
 
-Map<String, dynamic> _$$WebServerControlCommandResultImplToJson(
-        _$WebServerControlCommandResultImpl instance) =>
+Map<String, dynamic> _$WebServerControlCommandResultToJson(
+        _WebServerControlCommandResult instance) =>
     <String, dynamic>{
       'code': instance.code,
       'enable': instance.enable,
       'id': instance.id,
     };
 
-_$WSErrorResultImpl _$$WSErrorResultImplFromJson(Map<String, dynamic> json) =>
-    _$WSErrorResultImpl(
+_WSErrorResult _$WSErrorResultFromJson(Map<String, dynamic> json) =>
+    _WSErrorResult(
       error: json['error'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WSErrorResultImplToJson(_$WSErrorResultImpl instance) =>
+Map<String, dynamic> _$WSErrorResultToJson(_WSErrorResult instance) =>
     <String, dynamic>{
       'error': instance.error,
       'id': instance.id,
     };
 
-_$WSHelloCommandImpl _$$WSHelloCommandImplFromJson(Map<String, dynamic> json) =>
-    _$WSHelloCommandImpl(
-      id: json['id'] as int,
+_WSHelloCommand _$WSHelloCommandFromJson(Map<String, dynamic> json) =>
+    _WSHelloCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSHelloCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSHelloCommandImplToJson(
-        _$WSHelloCommandImpl instance) =>
+Map<String, dynamic> _$WSHelloCommandToJson(_WSHelloCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WSAuthCommandImpl _$$WSAuthCommandImplFromJson(Map<String, dynamic> json) =>
-    _$WSAuthCommandImpl(
+_WSAuthCommand _$WSAuthCommandFromJson(Map<String, dynamic> json) =>
+    _WSAuthCommand(
       userName: json['userName'] as String,
       code: json['code'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSAuthCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSAuthCommandImplToJson(_$WSAuthCommandImpl instance) =>
+Map<String, dynamic> _$WSAuthCommandToJson(_WSAuthCommand instance) =>
     <String, dynamic>{
       'userName': instance.userName,
       'code': instance.code,
@@ -79,122 +78,118 @@ Map<String, dynamic> _$$WSAuthCommandImplToJson(_$WSAuthCommandImpl instance) =>
       'type': instance.type,
     };
 
-_$WSSendRpcCommandImpl _$$WSSendRpcCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WSSendRpcCommandImpl(
+_WSSendRpcCommand _$WSSendRpcCommandFromJson(Map<String, dynamic> json) =>
+    _WSSendRpcCommand(
       commandData: json['commandData'] as Object,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSSendRpcCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSSendRpcCommandImplToJson(
-        _$WSSendRpcCommandImpl instance) =>
+Map<String, dynamic> _$WSSendRpcCommandToJson(_WSSendRpcCommand instance) =>
     <String, dynamic>{
       'commandData': instance.commandData,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WSRpcResultImpl _$$WSRpcResultImplFromJson(Map<String, dynamic> json) =>
-    _$WSRpcResultImpl(
+_WSRpcResult _$WSRpcResultFromJson(Map<String, dynamic> json) => _WSRpcResult(
       resultData: json['resultData'] as Object,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WSRpcResultImplToJson(_$WSRpcResultImpl instance) =>
+Map<String, dynamic> _$WSRpcResultToJson(_WSRpcResult instance) =>
     <String, dynamic>{
       'resultData': instance.resultData,
       'id': instance.id,
     };
 
-_$WSConfigDownloadCommandImpl _$$WSConfigDownloadCommandImplFromJson(
+_WSConfigDownloadCommand _$WSConfigDownloadCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WSConfigDownloadCommandImpl(
-      id: json['id'] as int,
+    _WSConfigDownloadCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSConfigDownloadCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSConfigDownloadCommandImplToJson(
-        _$WSConfigDownloadCommandImpl instance) =>
+Map<String, dynamic> _$WSConfigDownloadCommandToJson(
+        _WSConfigDownloadCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WSConfigUploadCommandImpl _$$WSConfigUploadCommandImplFromJson(
+_WSConfigUploadCommand _$WSConfigUploadCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WSConfigUploadCommandImpl(
+    _WSConfigUploadCommand(
       content: json['content'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSConfigUploadCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSConfigUploadCommandImplToJson(
-        _$WSConfigUploadCommandImpl instance) =>
+Map<String, dynamic> _$WSConfigUploadCommandToJson(
+        _WSConfigUploadCommand instance) =>
     <String, dynamic>{
       'content': instance.content,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WSConfigDownloadResultImpl _$$WSConfigDownloadResultImplFromJson(
+_WSConfigDownloadResult _$WSConfigDownloadResultFromJson(
         Map<String, dynamic> json) =>
-    _$WSConfigDownloadResultImpl(
+    _WSConfigDownloadResult(
       content: json['content'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WSConfigDownloadResultImplToJson(
-        _$WSConfigDownloadResultImpl instance) =>
+Map<String, dynamic> _$WSConfigDownloadResultToJson(
+        _WSConfigDownloadResult instance) =>
     <String, dynamic>{
       'content': instance.content,
       'id': instance.id,
     };
 
-_$WSRestartApplicationCommandImpl _$$WSRestartApplicationCommandImplFromJson(
+_WSRestartApplicationCommand _$WSRestartApplicationCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WSRestartApplicationCommandImpl(
-      id: json['id'] as int,
+    _WSRestartApplicationCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSRestartApplicationCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSRestartApplicationCommandImplToJson(
-        _$WSRestartApplicationCommandImpl instance) =>
+Map<String, dynamic> _$WSRestartApplicationCommandToJson(
+        _WSRestartApplicationCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WSResultOkImpl _$$WSResultOkImplFromJson(Map<String, dynamic> json) =>
-    _$WSResultOkImpl(
-      id: json['id'] as int,
+_WSResultOk _$WSResultOkFromJson(Map<String, dynamic> json) => _WSResultOk(
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WSResultOkImplToJson(_$WSResultOkImpl instance) =>
+Map<String, dynamic> _$WSResultOkToJson(_WSResultOk instance) =>
     <String, dynamic>{
       'id': instance.id,
     };
 
-_$WSEchoResultImpl _$$WSEchoResultImplFromJson(Map<String, dynamic> json) =>
-    _$WSEchoResultImpl(
+_WSEchoResult _$WSEchoResultFromJson(Map<String, dynamic> json) =>
+    _WSEchoResult(
       msg: json['msg'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WSEchoResultImplToJson(_$WSEchoResultImpl instance) =>
+Map<String, dynamic> _$WSEchoResultToJson(_WSEchoResult instance) =>
     <String, dynamic>{
       'msg': instance.msg,
       'id': instance.id,
     };
 
-_$WSEchoCommandImpl _$$WSEchoCommandImplFromJson(Map<String, dynamic> json) =>
-    _$WSEchoCommandImpl(
+_WSEchoCommand _$WSEchoCommandFromJson(Map<String, dynamic> json) =>
+    _WSEchoCommand(
       msg: json['msg'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WSEchoCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WSEchoCommandImplToJson(_$WSEchoCommandImpl instance) =>
+Map<String, dynamic> _$WSEchoCommandToJson(_WSEchoCommand instance) =>
     <String, dynamic>{
       'msg': instance.msg,
       'id': instance.id,

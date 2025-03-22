@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,96 +10,74 @@ part of 'sensor_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-SensorInfo _$SensorInfoFromJson(Map<String, dynamic> json) {
-  return _SensorInfo.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SensorInfo {
-  String get name => throw _privateConstructorUsedError;
-  String get value => throw _privateConstructorUsedError;
+  String get name;
+  String get value;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $SensorInfoCopyWith<SensorInfo> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SensorInfoCopyWith<$Res> {
-  factory $SensorInfoCopyWith(
-          SensorInfo value, $Res Function(SensorInfo) then) =
-      _$SensorInfoCopyWithImpl<$Res, SensorInfo>;
-  @useResult
-  $Res call({String name, String value});
-}
-
-/// @nodoc
-class _$SensorInfoCopyWithImpl<$Res, $Val extends SensorInfo>
-    implements $SensorInfoCopyWith<$Res> {
-  _$SensorInfoCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of SensorInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $SensorInfoCopyWith<SensorInfo> get copyWith =>
+      _$SensorInfoCopyWithImpl<SensorInfo>(this as SensorInfo, _$identity);
+
+  /// Serializes this SensorInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SensorInfo &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, value);
+
+  @override
+  String toString() {
+    return 'SensorInfo(name: $name, value: $value)';
   }
 }
 
 /// @nodoc
-abstract class _$$SensorInfoImplCopyWith<$Res>
-    implements $SensorInfoCopyWith<$Res> {
-  factory _$$SensorInfoImplCopyWith(
-          _$SensorInfoImpl value, $Res Function(_$SensorInfoImpl) then) =
-      __$$SensorInfoImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SensorInfoCopyWith<$Res> {
+  factory $SensorInfoCopyWith(
+          SensorInfo value, $Res Function(SensorInfo) _then) =
+      _$SensorInfoCopyWithImpl;
   @useResult
   $Res call({String name, String value});
 }
 
 /// @nodoc
-class __$$SensorInfoImplCopyWithImpl<$Res>
-    extends _$SensorInfoCopyWithImpl<$Res, _$SensorInfoImpl>
-    implements _$$SensorInfoImplCopyWith<$Res> {
-  __$$SensorInfoImplCopyWithImpl(
-      _$SensorInfoImpl _value, $Res Function(_$SensorInfoImpl) _then)
-      : super(_value, _then);
+class _$SensorInfoCopyWithImpl<$Res> implements $SensorInfoCopyWith<$Res> {
+  _$SensorInfoCopyWithImpl(this._self, this._then);
 
+  final SensorInfo _self;
+  final $Res Function(SensorInfo) _then;
+
+  /// Create a copy of SensorInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? name = null,
     Object? value = null,
   }) {
-    return _then(_$SensorInfoImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       value: null == value
-          ? _value.value
+          ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -107,63 +86,87 @@ class __$$SensorInfoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SensorInfoImpl implements _SensorInfo {
-  const _$SensorInfoImpl({required this.name, required this.value});
-
-  factory _$SensorInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SensorInfoImplFromJson(json);
+class _SensorInfo implements SensorInfo {
+  const _SensorInfo({required this.name, required this.value});
+  factory _SensorInfo.fromJson(Map<String, dynamic> json) =>
+      _$SensorInfoFromJson(json);
 
   @override
   final String name;
   @override
   final String value;
 
+  /// Create a copy of SensorInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SensorInfo(name: $name, value: $value)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SensorInfoCopyWith<_SensorInfo> get copyWith =>
+      __$SensorInfoCopyWithImpl<_SensorInfo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SensorInfoToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SensorInfoImpl &&
+            other is _SensorInfo &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.value, value) || other.value == value));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, value);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SensorInfoImplCopyWith<_$SensorInfoImpl> get copyWith =>
-      __$$SensorInfoImplCopyWithImpl<_$SensorInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SensorInfoImplToJson(
-      this,
-    );
+  String toString() {
+    return 'SensorInfo(name: $name, value: $value)';
   }
 }
 
-abstract class _SensorInfo implements SensorInfo {
-  const factory _SensorInfo(
-      {required final String name,
-      required final String value}) = _$SensorInfoImpl;
-
-  factory _SensorInfo.fromJson(Map<String, dynamic> json) =
-      _$SensorInfoImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$SensorInfoCopyWith<$Res>
+    implements $SensorInfoCopyWith<$Res> {
+  factory _$SensorInfoCopyWith(
+          _SensorInfo value, $Res Function(_SensorInfo) _then) =
+      __$SensorInfoCopyWithImpl;
   @override
-  String get name;
-  @override
-  String get value;
-  @override
-  @JsonKey(ignore: true)
-  _$$SensorInfoImplCopyWith<_$SensorInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String name, String value});
 }
+
+/// @nodoc
+class __$SensorInfoCopyWithImpl<$Res> implements _$SensorInfoCopyWith<$Res> {
+  __$SensorInfoCopyWithImpl(this._self, this._then);
+
+  final _SensorInfo _self;
+  final $Res Function(_SensorInfo) _then;
+
+  /// Create a copy of SensorInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? value = null,
+  }) {
+    return _then(_SensorInfo(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

@@ -6,13 +6,12 @@ part of 'os_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$OSInfoImpl _$$OSInfoImplFromJson(Map<String, dynamic> json) => _$OSInfoImpl(
+_OSInfo _$OSInfoFromJson(Map<String, dynamic> json) => _OSInfo(
       name: json['name'] as String,
       osType: $enumDecode(_$OSTypeEnumMap, json['osType']),
     );
 
-Map<String, dynamic> _$$OSInfoImplToJson(_$OSInfoImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$OSInfoToJson(_OSInfo instance) => <String, dynamic>{
       'name': instance.name,
       'osType': _$OSTypeEnumMap[instance.osType]!,
     };

@@ -6,12 +6,11 @@ part of 'empty_result.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EmptyResultImpl _$$EmptyResultImplFromJson(Map<String, dynamic> json) =>
-    _$EmptyResultImpl(
-      id: json['id'] as int,
+_EmptyResult _$EmptyResultFromJson(Map<String, dynamic> json) => _EmptyResult(
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$EmptyResultImplToJson(_$EmptyResultImpl instance) =>
+Map<String, dynamic> _$EmptyResultToJson(_EmptyResult instance) =>
     <String, dynamic>{
       'id': instance.id,
     };

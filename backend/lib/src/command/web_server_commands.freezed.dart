@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,94 +10,65 @@ part of 'web_server_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-WebServerControlCommand _$WebServerControlCommandFromJson(
-    Map<String, dynamic> json) {
-  return _WebServerControlCommand.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WebServerControlCommand {
-  bool get enable => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  bool get enable;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WebServerControlCommandCopyWith<WebServerControlCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WebServerControlCommandCopyWith<$Res> {
-  factory $WebServerControlCommandCopyWith(WebServerControlCommand value,
-          $Res Function(WebServerControlCommand) then) =
-      _$WebServerControlCommandCopyWithImpl<$Res, WebServerControlCommand>;
-  @useResult
-  $Res call({bool enable, int id, String type});
-}
-
-/// @nodoc
-class _$WebServerControlCommandCopyWithImpl<$Res,
-        $Val extends WebServerControlCommand>
-    implements $WebServerControlCommandCopyWith<$Res> {
-  _$WebServerControlCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WebServerControlCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WebServerControlCommandCopyWith<WebServerControlCommand> get copyWith =>
+      _$WebServerControlCommandCopyWithImpl<WebServerControlCommand>(
+          this as WebServerControlCommand, _$identity);
+
+  /// Serializes this WebServerControlCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? enable = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      enable: null == enable
-          ? _value.enable
-          : enable // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WebServerControlCommand &&
+            (identical(other.enable, enable) || other.enable == enable) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, enable, id, type);
+
+  @override
+  String toString() {
+    return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$WebServerControlCommandImplCopyWith<$Res>
-    implements $WebServerControlCommandCopyWith<$Res> {
-  factory _$$WebServerControlCommandImplCopyWith(
-          _$WebServerControlCommandImpl value,
-          $Res Function(_$WebServerControlCommandImpl) then) =
-      __$$WebServerControlCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WebServerControlCommandCopyWith<$Res> {
+  factory $WebServerControlCommandCopyWith(WebServerControlCommand value,
+          $Res Function(WebServerControlCommand) _then) =
+      _$WebServerControlCommandCopyWithImpl;
   @useResult
   $Res call({bool enable, int id, String type});
 }
 
 /// @nodoc
-class __$$WebServerControlCommandImplCopyWithImpl<$Res>
-    extends _$WebServerControlCommandCopyWithImpl<$Res,
-        _$WebServerControlCommandImpl>
-    implements _$$WebServerControlCommandImplCopyWith<$Res> {
-  __$$WebServerControlCommandImplCopyWithImpl(
-      _$WebServerControlCommandImpl _value,
-      $Res Function(_$WebServerControlCommandImpl) _then)
-      : super(_value, _then);
+class _$WebServerControlCommandCopyWithImpl<$Res>
+    implements $WebServerControlCommandCopyWith<$Res> {
+  _$WebServerControlCommandCopyWithImpl(this._self, this._then);
 
+  final WebServerControlCommand _self;
+  final $Res Function(WebServerControlCommand) _then;
+
+  /// Create a copy of WebServerControlCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -104,17 +76,17 @@ class __$$WebServerControlCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$WebServerControlCommandImpl(
+    return _then(_self.copyWith(
       enable: null == enable
-          ? _value.enable
+          ? _self.enable
           : enable // ignore: cast_nullable_to_non_nullable
               as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -123,14 +95,13 @@ class __$$WebServerControlCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WebServerControlCommandImpl implements _WebServerControlCommand {
-  const _$WebServerControlCommandImpl(
+class _WebServerControlCommand implements WebServerControlCommand {
+  const _WebServerControlCommand(
       {required this.enable,
       required this.id,
       this.type = WebServerControlCommand.TYPE});
-
-  factory _$WebServerControlCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WebServerControlCommandImplFromJson(json);
+  factory _WebServerControlCommand.fromJson(Map<String, dynamic> json) =>
+      _$WebServerControlCommandFromJson(json);
 
   @override
   final bool enable;
@@ -140,146 +111,145 @@ class _$WebServerControlCommandImpl implements _WebServerControlCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of WebServerControlCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WebServerControlCommandCopyWith<_WebServerControlCommand> get copyWith =>
+      __$WebServerControlCommandCopyWithImpl<_WebServerControlCommand>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WebServerControlCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WebServerControlCommandImpl &&
+            other is _WebServerControlCommand &&
             (identical(other.enable, enable) || other.enable == enable) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, enable, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WebServerControlCommandImplCopyWith<_$WebServerControlCommandImpl>
-      get copyWith => __$$WebServerControlCommandImplCopyWithImpl<
-          _$WebServerControlCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WebServerControlCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
   }
 }
 
-abstract class _WebServerControlCommand implements WebServerControlCommand {
-  const factory _WebServerControlCommand(
-      {required final bool enable,
-      required final int id,
-      final String type}) = _$WebServerControlCommandImpl;
-
-  factory _WebServerControlCommand.fromJson(Map<String, dynamic> json) =
-      _$WebServerControlCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WebServerControlCommandCopyWith<$Res>
+    implements $WebServerControlCommandCopyWith<$Res> {
+  factory _$WebServerControlCommandCopyWith(_WebServerControlCommand value,
+          $Res Function(_WebServerControlCommand) _then) =
+      __$WebServerControlCommandCopyWithImpl;
   @override
-  bool get enable;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WebServerControlCommandImplCopyWith<_$WebServerControlCommandImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({bool enable, int id, String type});
 }
 
-WebServerControlCommandResult _$WebServerControlCommandResultFromJson(
-    Map<String, dynamic> json) {
-  return _WebServerControlCommandResult.fromJson(json);
+/// @nodoc
+class __$WebServerControlCommandCopyWithImpl<$Res>
+    implements _$WebServerControlCommandCopyWith<$Res> {
+  __$WebServerControlCommandCopyWithImpl(this._self, this._then);
+
+  final _WebServerControlCommand _self;
+  final $Res Function(_WebServerControlCommand) _then;
+
+  /// Create a copy of WebServerControlCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? enable = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WebServerControlCommand(
+      enable: null == enable
+          ? _self.enable
+          : enable // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WebServerControlCommandResult {
-  String get code => throw _privateConstructorUsedError;
-  bool get enable => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
+  String get code;
+  bool get enable;
+  int get id;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WebServerControlCommandResultCopyWith<WebServerControlCommandResult>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WebServerControlCommandResultCopyWith<$Res> {
-  factory $WebServerControlCommandResultCopyWith(
-          WebServerControlCommandResult value,
-          $Res Function(WebServerControlCommandResult) then) =
-      _$WebServerControlCommandResultCopyWithImpl<$Res,
-          WebServerControlCommandResult>;
-  @useResult
-  $Res call({String code, bool enable, int id});
-}
-
-/// @nodoc
-class _$WebServerControlCommandResultCopyWithImpl<$Res,
-        $Val extends WebServerControlCommandResult>
-    implements $WebServerControlCommandResultCopyWith<$Res> {
-  _$WebServerControlCommandResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WebServerControlCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WebServerControlCommandResultCopyWith<WebServerControlCommandResult>
+      get copyWith => _$WebServerControlCommandResultCopyWithImpl<
+              WebServerControlCommandResult>(
+          this as WebServerControlCommandResult, _$identity);
+
+  /// Serializes this WebServerControlCommandResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? code = null,
-    Object? enable = null,
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as String,
-      enable: null == enable
-          ? _value.enable
-          : enable // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WebServerControlCommandResult &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.enable, enable) || other.enable == enable) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, code, enable, id);
+
+  @override
+  String toString() {
+    return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WebServerControlCommandResultImplCopyWith<$Res>
-    implements $WebServerControlCommandResultCopyWith<$Res> {
-  factory _$$WebServerControlCommandResultImplCopyWith(
-          _$WebServerControlCommandResultImpl value,
-          $Res Function(_$WebServerControlCommandResultImpl) then) =
-      __$$WebServerControlCommandResultImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WebServerControlCommandResultCopyWith<$Res> {
+  factory $WebServerControlCommandResultCopyWith(
+          WebServerControlCommandResult value,
+          $Res Function(WebServerControlCommandResult) _then) =
+      _$WebServerControlCommandResultCopyWithImpl;
   @useResult
   $Res call({String code, bool enable, int id});
 }
 
 /// @nodoc
-class __$$WebServerControlCommandResultImplCopyWithImpl<$Res>
-    extends _$WebServerControlCommandResultCopyWithImpl<$Res,
-        _$WebServerControlCommandResultImpl>
-    implements _$$WebServerControlCommandResultImplCopyWith<$Res> {
-  __$$WebServerControlCommandResultImplCopyWithImpl(
-      _$WebServerControlCommandResultImpl _value,
-      $Res Function(_$WebServerControlCommandResultImpl) _then)
-      : super(_value, _then);
+class _$WebServerControlCommandResultCopyWithImpl<$Res>
+    implements $WebServerControlCommandResultCopyWith<$Res> {
+  _$WebServerControlCommandResultCopyWithImpl(this._self, this._then);
 
+  final WebServerControlCommandResult _self;
+  final $Res Function(WebServerControlCommandResult) _then;
+
+  /// Create a copy of WebServerControlCommandResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -287,17 +257,17 @@ class __$$WebServerControlCommandResultImplCopyWithImpl<$Res>
     Object? enable = null,
     Object? id = null,
   }) {
-    return _then(_$WebServerControlCommandResultImpl(
+    return _then(_self.copyWith(
       code: null == code
-          ? _value.code
+          ? _self.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
       enable: null == enable
-          ? _value.enable
+          ? _self.enable
           : enable // ignore: cast_nullable_to_non_nullable
               as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -306,14 +276,11 @@ class __$$WebServerControlCommandResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WebServerControlCommandResultImpl
-    implements _WebServerControlCommandResult {
-  const _$WebServerControlCommandResultImpl(
+class _WebServerControlCommandResult implements WebServerControlCommandResult {
+  const _WebServerControlCommandResult(
       {required this.code, required this.enable, required this.id});
-
-  factory _$WebServerControlCommandResultImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WebServerControlCommandResultImplFromJson(json);
+  factory _WebServerControlCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$WebServerControlCommandResultFromJson(json);
 
   @override
   final String code;
@@ -322,149 +289,155 @@ class _$WebServerControlCommandResultImpl
   @override
   final int id;
 
+  /// Create a copy of WebServerControlCommandResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WebServerControlCommandResultCopyWith<_WebServerControlCommandResult>
+      get copyWith => __$WebServerControlCommandResultCopyWithImpl<
+          _WebServerControlCommandResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WebServerControlCommandResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WebServerControlCommandResultImpl &&
+            other is _WebServerControlCommandResult &&
             (identical(other.code, code) || other.code == code) &&
             (identical(other.enable, enable) || other.enable == enable) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, enable, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WebServerControlCommandResultImplCopyWith<
-          _$WebServerControlCommandResultImpl>
-      get copyWith => __$$WebServerControlCommandResultImplCopyWithImpl<
-          _$WebServerControlCommandResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WebServerControlCommandResultImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
   }
 }
 
-abstract class _WebServerControlCommandResult
-    implements WebServerControlCommandResult {
-  const factory _WebServerControlCommandResult(
-      {required final String code,
-      required final bool enable,
-      required final int id}) = _$WebServerControlCommandResultImpl;
-
-  factory _WebServerControlCommandResult.fromJson(Map<String, dynamic> json) =
-      _$WebServerControlCommandResultImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WebServerControlCommandResultCopyWith<$Res>
+    implements $WebServerControlCommandResultCopyWith<$Res> {
+  factory _$WebServerControlCommandResultCopyWith(
+          _WebServerControlCommandResult value,
+          $Res Function(_WebServerControlCommandResult) _then) =
+      __$WebServerControlCommandResultCopyWithImpl;
   @override
-  String get code;
-  @override
-  bool get enable;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WebServerControlCommandResultImplCopyWith<
-          _$WebServerControlCommandResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String code, bool enable, int id});
 }
 
-WSErrorResult _$WSErrorResultFromJson(Map<String, dynamic> json) {
-  return _WSErrorResult.fromJson(json);
+/// @nodoc
+class __$WebServerControlCommandResultCopyWithImpl<$Res>
+    implements _$WebServerControlCommandResultCopyWith<$Res> {
+  __$WebServerControlCommandResultCopyWithImpl(this._self, this._then);
+
+  final _WebServerControlCommandResult _self;
+  final $Res Function(_WebServerControlCommandResult) _then;
+
+  /// Create a copy of WebServerControlCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? code = null,
+    Object? enable = null,
+    Object? id = null,
+  }) {
+    return _then(_WebServerControlCommandResult(
+      code: null == code
+          ? _self.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+      enable: null == enable
+          ? _self.enable
+          : enable // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSErrorResult {
-  String get error => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
+  String get error;
+  int get id;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSErrorResultCopyWith<WSErrorResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSErrorResultCopyWith<$Res> {
-  factory $WSErrorResultCopyWith(
-          WSErrorResult value, $Res Function(WSErrorResult) then) =
-      _$WSErrorResultCopyWithImpl<$Res, WSErrorResult>;
-  @useResult
-  $Res call({String error, int id});
-}
-
-/// @nodoc
-class _$WSErrorResultCopyWithImpl<$Res, $Val extends WSErrorResult>
-    implements $WSErrorResultCopyWith<$Res> {
-  _$WSErrorResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSErrorResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSErrorResultCopyWith<WSErrorResult> get copyWith =>
+      _$WSErrorResultCopyWithImpl<WSErrorResult>(
+          this as WSErrorResult, _$identity);
+
+  /// Serializes this WSErrorResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? error = null,
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      error: null == error
-          ? _value.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSErrorResult &&
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, error, id);
+
+  @override
+  String toString() {
+    return 'WSErrorResult(error: $error, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSErrorResultImplCopyWith<$Res>
-    implements $WSErrorResultCopyWith<$Res> {
-  factory _$$WSErrorResultImplCopyWith(
-          _$WSErrorResultImpl value, $Res Function(_$WSErrorResultImpl) then) =
-      __$$WSErrorResultImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSErrorResultCopyWith<$Res> {
+  factory $WSErrorResultCopyWith(
+          WSErrorResult value, $Res Function(WSErrorResult) _then) =
+      _$WSErrorResultCopyWithImpl;
   @useResult
   $Res call({String error, int id});
 }
 
 /// @nodoc
-class __$$WSErrorResultImplCopyWithImpl<$Res>
-    extends _$WSErrorResultCopyWithImpl<$Res, _$WSErrorResultImpl>
-    implements _$$WSErrorResultImplCopyWith<$Res> {
-  __$$WSErrorResultImplCopyWithImpl(
-      _$WSErrorResultImpl _value, $Res Function(_$WSErrorResultImpl) _then)
-      : super(_value, _then);
+class _$WSErrorResultCopyWithImpl<$Res>
+    implements $WSErrorResultCopyWith<$Res> {
+  _$WSErrorResultCopyWithImpl(this._self, this._then);
 
+  final WSErrorResult _self;
+  final $Res Function(WSErrorResult) _then;
+
+  /// Create a copy of WSErrorResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? error = null,
     Object? id = null,
   }) {
-    return _then(_$WSErrorResultImpl(
+    return _then(_self.copyWith(
       error: null == error
-          ? _value.error
+          ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -473,152 +446,157 @@ class __$$WSErrorResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSErrorResultImpl implements _WSErrorResult {
-  const _$WSErrorResultImpl({required this.error, required this.id});
-
-  factory _$WSErrorResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSErrorResultImplFromJson(json);
+class _WSErrorResult implements WSErrorResult {
+  const _WSErrorResult({required this.error, required this.id});
+  factory _WSErrorResult.fromJson(Map<String, dynamic> json) =>
+      _$WSErrorResultFromJson(json);
 
   @override
   final String error;
   @override
   final int id;
 
+  /// Create a copy of WSErrorResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSErrorResult(error: $error, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSErrorResultCopyWith<_WSErrorResult> get copyWith =>
+      __$WSErrorResultCopyWithImpl<_WSErrorResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSErrorResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSErrorResultImpl &&
+            other is _WSErrorResult &&
             (identical(other.error, error) || other.error == error) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, error, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSErrorResultImplCopyWith<_$WSErrorResultImpl> get copyWith =>
-      __$$WSErrorResultImplCopyWithImpl<_$WSErrorResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSErrorResultImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSErrorResult(error: $error, id: $id)';
   }
 }
 
-abstract class _WSErrorResult implements WSErrorResult {
-  const factory _WSErrorResult(
-      {required final String error,
-      required final int id}) = _$WSErrorResultImpl;
-
-  factory _WSErrorResult.fromJson(Map<String, dynamic> json) =
-      _$WSErrorResultImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSErrorResultCopyWith<$Res>
+    implements $WSErrorResultCopyWith<$Res> {
+  factory _$WSErrorResultCopyWith(
+          _WSErrorResult value, $Res Function(_WSErrorResult) _then) =
+      __$WSErrorResultCopyWithImpl;
   @override
-  String get error;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSErrorResultImplCopyWith<_$WSErrorResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String error, int id});
 }
 
-WSHelloCommand _$WSHelloCommandFromJson(Map<String, dynamic> json) {
-  return _WSHelloCommand.fromJson(json);
+/// @nodoc
+class __$WSErrorResultCopyWithImpl<$Res>
+    implements _$WSErrorResultCopyWith<$Res> {
+  __$WSErrorResultCopyWithImpl(this._self, this._then);
+
+  final _WSErrorResult _self;
+  final $Res Function(_WSErrorResult) _then;
+
+  /// Create a copy of WSErrorResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? error = null,
+    Object? id = null,
+  }) {
+    return _then(_WSErrorResult(
+      error: null == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSHelloCommand {
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSHelloCommandCopyWith<WSHelloCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSHelloCommandCopyWith<$Res> {
-  factory $WSHelloCommandCopyWith(
-          WSHelloCommand value, $Res Function(WSHelloCommand) then) =
-      _$WSHelloCommandCopyWithImpl<$Res, WSHelloCommand>;
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class _$WSHelloCommandCopyWithImpl<$Res, $Val extends WSHelloCommand>
-    implements $WSHelloCommandCopyWith<$Res> {
-  _$WSHelloCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSHelloCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSHelloCommandCopyWith<WSHelloCommand> get copyWith =>
+      _$WSHelloCommandCopyWithImpl<WSHelloCommand>(
+          this as WSHelloCommand, _$identity);
+
+  /// Serializes this WSHelloCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSHelloCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, type);
+
+  @override
+  String toString() {
+    return 'WSHelloCommand(id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSHelloCommandImplCopyWith<$Res>
-    implements $WSHelloCommandCopyWith<$Res> {
-  factory _$$WSHelloCommandImplCopyWith(_$WSHelloCommandImpl value,
-          $Res Function(_$WSHelloCommandImpl) then) =
-      __$$WSHelloCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSHelloCommandCopyWith<$Res> {
+  factory $WSHelloCommandCopyWith(
+          WSHelloCommand value, $Res Function(WSHelloCommand) _then) =
+      _$WSHelloCommandCopyWithImpl;
   @useResult
   $Res call({int id, String type});
 }
 
 /// @nodoc
-class __$$WSHelloCommandImplCopyWithImpl<$Res>
-    extends _$WSHelloCommandCopyWithImpl<$Res, _$WSHelloCommandImpl>
-    implements _$$WSHelloCommandImplCopyWith<$Res> {
-  __$$WSHelloCommandImplCopyWithImpl(
-      _$WSHelloCommandImpl _value, $Res Function(_$WSHelloCommandImpl) _then)
-      : super(_value, _then);
+class _$WSHelloCommandCopyWithImpl<$Res>
+    implements $WSHelloCommandCopyWith<$Res> {
+  _$WSHelloCommandCopyWithImpl(this._self, this._then);
 
+  final WSHelloCommand _self;
+  final $Res Function(WSHelloCommand) _then;
+
+  /// Create a copy of WSHelloCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$WSHelloCommandImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -627,12 +605,10 @@ class __$$WSHelloCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSHelloCommandImpl implements _WSHelloCommand {
-  const _$WSHelloCommandImpl(
-      {required this.id, this.type = WSHelloCommand.TYPE});
-
-  factory _$WSHelloCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSHelloCommandImplFromJson(json);
+class _WSHelloCommand implements WSHelloCommand {
+  const _WSHelloCommand({required this.id, this.type = WSHelloCommand.TYPE});
+  factory _WSHelloCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSHelloCommandFromJson(json);
 
   @override
   final int id;
@@ -640,140 +616,139 @@ class _$WSHelloCommandImpl implements _WSHelloCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of WSHelloCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSHelloCommand(id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSHelloCommandCopyWith<_WSHelloCommand> get copyWith =>
+      __$WSHelloCommandCopyWithImpl<_WSHelloCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSHelloCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSHelloCommandImpl &&
+            other is _WSHelloCommand &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSHelloCommandImplCopyWith<_$WSHelloCommandImpl> get copyWith =>
-      __$$WSHelloCommandImplCopyWithImpl<_$WSHelloCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSHelloCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSHelloCommand(id: $id, type: $type)';
   }
 }
 
-abstract class _WSHelloCommand implements WSHelloCommand {
-  const factory _WSHelloCommand({required final int id, final String type}) =
-      _$WSHelloCommandImpl;
-
-  factory _WSHelloCommand.fromJson(Map<String, dynamic> json) =
-      _$WSHelloCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSHelloCommandCopyWith<$Res>
+    implements $WSHelloCommandCopyWith<$Res> {
+  factory _$WSHelloCommandCopyWith(
+          _WSHelloCommand value, $Res Function(_WSHelloCommand) _then) =
+      __$WSHelloCommandCopyWithImpl;
   @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSHelloCommandImplCopyWith<_$WSHelloCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({int id, String type});
 }
 
-WSAuthCommand _$WSAuthCommandFromJson(Map<String, dynamic> json) {
-  return _WSAuthCommand.fromJson(json);
+/// @nodoc
+class __$WSHelloCommandCopyWithImpl<$Res>
+    implements _$WSHelloCommandCopyWith<$Res> {
+  __$WSHelloCommandCopyWithImpl(this._self, this._then);
+
+  final _WSHelloCommand _self;
+  final $Res Function(_WSHelloCommand) _then;
+
+  /// Create a copy of WSHelloCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSHelloCommand(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSAuthCommand {
-  String get userName => throw _privateConstructorUsedError;
-  String get code => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  String get userName;
+  String get code;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSAuthCommandCopyWith<WSAuthCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSAuthCommandCopyWith<$Res> {
-  factory $WSAuthCommandCopyWith(
-          WSAuthCommand value, $Res Function(WSAuthCommand) then) =
-      _$WSAuthCommandCopyWithImpl<$Res, WSAuthCommand>;
-  @useResult
-  $Res call({String userName, String code, int id, String type});
-}
-
-/// @nodoc
-class _$WSAuthCommandCopyWithImpl<$Res, $Val extends WSAuthCommand>
-    implements $WSAuthCommandCopyWith<$Res> {
-  _$WSAuthCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSAuthCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSAuthCommandCopyWith<WSAuthCommand> get copyWith =>
+      _$WSAuthCommandCopyWithImpl<WSAuthCommand>(
+          this as WSAuthCommand, _$identity);
+
+  /// Serializes this WSAuthCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? userName = null,
-    Object? code = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      userName: null == userName
-          ? _value.userName
-          : userName // ignore: cast_nullable_to_non_nullable
-              as String,
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSAuthCommand &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, userName, code, id, type);
+
+  @override
+  String toString() {
+    return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSAuthCommandImplCopyWith<$Res>
-    implements $WSAuthCommandCopyWith<$Res> {
-  factory _$$WSAuthCommandImplCopyWith(
-          _$WSAuthCommandImpl value, $Res Function(_$WSAuthCommandImpl) then) =
-      __$$WSAuthCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSAuthCommandCopyWith<$Res> {
+  factory $WSAuthCommandCopyWith(
+          WSAuthCommand value, $Res Function(WSAuthCommand) _then) =
+      _$WSAuthCommandCopyWithImpl;
   @useResult
   $Res call({String userName, String code, int id, String type});
 }
 
 /// @nodoc
-class __$$WSAuthCommandImplCopyWithImpl<$Res>
-    extends _$WSAuthCommandCopyWithImpl<$Res, _$WSAuthCommandImpl>
-    implements _$$WSAuthCommandImplCopyWith<$Res> {
-  __$$WSAuthCommandImplCopyWithImpl(
-      _$WSAuthCommandImpl _value, $Res Function(_$WSAuthCommandImpl) _then)
-      : super(_value, _then);
+class _$WSAuthCommandCopyWithImpl<$Res>
+    implements $WSAuthCommandCopyWith<$Res> {
+  _$WSAuthCommandCopyWithImpl(this._self, this._then);
 
+  final WSAuthCommand _self;
+  final $Res Function(WSAuthCommand) _then;
+
+  /// Create a copy of WSAuthCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -782,21 +757,21 @@ class __$$WSAuthCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$WSAuthCommandImpl(
+    return _then(_self.copyWith(
       userName: null == userName
-          ? _value.userName
+          ? _self.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
       code: null == code
-          ? _value.code
+          ? _self.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -805,15 +780,14 @@ class __$$WSAuthCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSAuthCommandImpl implements _WSAuthCommand {
-  const _$WSAuthCommandImpl(
+class _WSAuthCommand implements WSAuthCommand {
+  const _WSAuthCommand(
       {required this.userName,
       required this.code,
       required this.id,
       this.type = WSAuthCommand.TYPE});
-
-  factory _$WSAuthCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSAuthCommandImplFromJson(json);
+  factory _WSAuthCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSAuthCommandFromJson(json);
 
   @override
   final String userName;
@@ -825,16 +799,26 @@ class _$WSAuthCommandImpl implements _WSAuthCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of WSAuthCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSAuthCommandCopyWith<_WSAuthCommand> get copyWith =>
+      __$WSAuthCommandCopyWithImpl<_WSAuthCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSAuthCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSAuthCommandImpl &&
+            other is _WSAuthCommand &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
             (identical(other.code, code) || other.code == code) &&
@@ -842,126 +826,126 @@ class _$WSAuthCommandImpl implements _WSAuthCommand {
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, userName, code, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSAuthCommandImplCopyWith<_$WSAuthCommandImpl> get copyWith =>
-      __$$WSAuthCommandImplCopyWithImpl<_$WSAuthCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSAuthCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
   }
 }
 
-abstract class _WSAuthCommand implements WSAuthCommand {
-  const factory _WSAuthCommand(
-      {required final String userName,
-      required final String code,
-      required final int id,
-      final String type}) = _$WSAuthCommandImpl;
-
-  factory _WSAuthCommand.fromJson(Map<String, dynamic> json) =
-      _$WSAuthCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSAuthCommandCopyWith<$Res>
+    implements $WSAuthCommandCopyWith<$Res> {
+  factory _$WSAuthCommandCopyWith(
+          _WSAuthCommand value, $Res Function(_WSAuthCommand) _then) =
+      __$WSAuthCommandCopyWithImpl;
   @override
-  String get userName;
-  @override
-  String get code;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSAuthCommandImplCopyWith<_$WSAuthCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String userName, String code, int id, String type});
 }
 
-WSSendRpcCommand _$WSSendRpcCommandFromJson(Map<String, dynamic> json) {
-  return _WSSendRpcCommand.fromJson(json);
+/// @nodoc
+class __$WSAuthCommandCopyWithImpl<$Res>
+    implements _$WSAuthCommandCopyWith<$Res> {
+  __$WSAuthCommandCopyWithImpl(this._self, this._then);
+
+  final _WSAuthCommand _self;
+  final $Res Function(_WSAuthCommand) _then;
+
+  /// Create a copy of WSAuthCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? userName = null,
+    Object? code = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSAuthCommand(
+      userName: null == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _self.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSSendRpcCommand {
   ///TODO: FIX it
 //required RpcCommand command,
-  Object get commandData =>
-      throw _privateConstructorUsedError; //WebSocketCommand.generateId()
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  Object get commandData; //WebSocketCommand.generateId()
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSSendRpcCommandCopyWith<WSSendRpcCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSSendRpcCommandCopyWith<$Res> {
-  factory $WSSendRpcCommandCopyWith(
-          WSSendRpcCommand value, $Res Function(WSSendRpcCommand) then) =
-      _$WSSendRpcCommandCopyWithImpl<$Res, WSSendRpcCommand>;
-  @useResult
-  $Res call({Object commandData, int id, String type});
-}
-
-/// @nodoc
-class _$WSSendRpcCommandCopyWithImpl<$Res, $Val extends WSSendRpcCommand>
-    implements $WSSendRpcCommandCopyWith<$Res> {
-  _$WSSendRpcCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSSendRpcCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSSendRpcCommandCopyWith<WSSendRpcCommand> get copyWith =>
+      _$WSSendRpcCommandCopyWithImpl<WSSendRpcCommand>(
+          this as WSSendRpcCommand, _$identity);
+
+  /// Serializes this WSSendRpcCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? commandData = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      commandData: null == commandData ? _value.commandData : commandData,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSSendRpcCommand &&
+            const DeepCollectionEquality()
+                .equals(other.commandData, commandData) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(commandData), id, type);
+
+  @override
+  String toString() {
+    return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSSendRpcCommandImplCopyWith<$Res>
-    implements $WSSendRpcCommandCopyWith<$Res> {
-  factory _$$WSSendRpcCommandImplCopyWith(_$WSSendRpcCommandImpl value,
-          $Res Function(_$WSSendRpcCommandImpl) then) =
-      __$$WSSendRpcCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSSendRpcCommandCopyWith<$Res> {
+  factory $WSSendRpcCommandCopyWith(
+          WSSendRpcCommand value, $Res Function(WSSendRpcCommand) _then) =
+      _$WSSendRpcCommandCopyWithImpl;
   @useResult
   $Res call({Object commandData, int id, String type});
 }
 
 /// @nodoc
-class __$$WSSendRpcCommandImplCopyWithImpl<$Res>
-    extends _$WSSendRpcCommandCopyWithImpl<$Res, _$WSSendRpcCommandImpl>
-    implements _$$WSSendRpcCommandImplCopyWith<$Res> {
-  __$$WSSendRpcCommandImplCopyWithImpl(_$WSSendRpcCommandImpl _value,
-      $Res Function(_$WSSendRpcCommandImpl) _then)
-      : super(_value, _then);
+class _$WSSendRpcCommandCopyWithImpl<$Res>
+    implements $WSSendRpcCommandCopyWith<$Res> {
+  _$WSSendRpcCommandCopyWithImpl(this._self, this._then);
 
+  final WSSendRpcCommand _self;
+  final $Res Function(WSSendRpcCommand) _then;
+
+  /// Create a copy of WSSendRpcCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -969,14 +953,14 @@ class __$$WSSendRpcCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$WSSendRpcCommandImpl(
-      commandData: null == commandData ? _value.commandData : commandData,
+    return _then(_self.copyWith(
+      commandData: null == commandData ? _self.commandData : commandData,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -985,14 +969,13 @@ class __$$WSSendRpcCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSSendRpcCommandImpl implements _WSSendRpcCommand {
-  const _$WSSendRpcCommandImpl(
+class _WSSendRpcCommand implements WSSendRpcCommand {
+  const _WSSendRpcCommand(
       {required this.commandData,
       required this.id,
       this.type = WSSendRpcCommand.TYPE});
-
-  factory _$WSSendRpcCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSSendRpcCommandImplFromJson(json);
+  factory _WSSendRpcCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSSendRpcCommandFromJson(json);
 
   ///TODO: FIX it
 //required RpcCommand command,
@@ -1005,147 +988,151 @@ class _$WSSendRpcCommandImpl implements _WSSendRpcCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of WSSendRpcCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSSendRpcCommandCopyWith<_WSSendRpcCommand> get copyWith =>
+      __$WSSendRpcCommandCopyWithImpl<_WSSendRpcCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSSendRpcCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSSendRpcCommandImpl &&
+            other is _WSSendRpcCommand &&
             const DeepCollectionEquality()
                 .equals(other.commandData, commandData) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(commandData), id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSSendRpcCommandImplCopyWith<_$WSSendRpcCommandImpl> get copyWith =>
-      __$$WSSendRpcCommandImplCopyWithImpl<_$WSSendRpcCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSSendRpcCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
   }
 }
 
-abstract class _WSSendRpcCommand implements WSSendRpcCommand {
-  const factory _WSSendRpcCommand(
-      {required final Object commandData,
-      required final int id,
-      final String type}) = _$WSSendRpcCommandImpl;
-
-  factory _WSSendRpcCommand.fromJson(Map<String, dynamic> json) =
-      _$WSSendRpcCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSSendRpcCommandCopyWith<$Res>
+    implements $WSSendRpcCommandCopyWith<$Res> {
+  factory _$WSSendRpcCommandCopyWith(
+          _WSSendRpcCommand value, $Res Function(_WSSendRpcCommand) _then) =
+      __$WSSendRpcCommandCopyWithImpl;
   @override
-
-  ///TODO: FIX it
-//required RpcCommand command,
-  Object get commandData;
-  @override //WebSocketCommand.generateId()
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSSendRpcCommandImplCopyWith<_$WSSendRpcCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({Object commandData, int id, String type});
 }
 
-WSRpcResult _$WSRpcResultFromJson(Map<String, dynamic> json) {
-  return _WSRpcResult.fromJson(json);
+/// @nodoc
+class __$WSSendRpcCommandCopyWithImpl<$Res>
+    implements _$WSSendRpcCommandCopyWith<$Res> {
+  __$WSSendRpcCommandCopyWithImpl(this._self, this._then);
+
+  final _WSSendRpcCommand _self;
+  final $Res Function(_WSSendRpcCommand) _then;
+
+  /// Create a copy of WSSendRpcCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? commandData = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSSendRpcCommand(
+      commandData: null == commandData ? _self.commandData : commandData,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSRpcResult {
   ///TODO: FIX it
 //required RpcResult result,
-  Object get resultData => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
+  Object get resultData;
+  int get id;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSRpcResultCopyWith<WSRpcResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSRpcResultCopyWith<$Res> {
-  factory $WSRpcResultCopyWith(
-          WSRpcResult value, $Res Function(WSRpcResult) then) =
-      _$WSRpcResultCopyWithImpl<$Res, WSRpcResult>;
-  @useResult
-  $Res call({Object resultData, int id});
-}
-
-/// @nodoc
-class _$WSRpcResultCopyWithImpl<$Res, $Val extends WSRpcResult>
-    implements $WSRpcResultCopyWith<$Res> {
-  _$WSRpcResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSRpcResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSRpcResultCopyWith<WSRpcResult> get copyWith =>
+      _$WSRpcResultCopyWithImpl<WSRpcResult>(this as WSRpcResult, _$identity);
+
+  /// Serializes this WSRpcResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? resultData = null,
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      resultData: null == resultData ? _value.resultData : resultData,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSRpcResult &&
+            const DeepCollectionEquality()
+                .equals(other.resultData, resultData) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(resultData), id);
+
+  @override
+  String toString() {
+    return 'WSRpcResult(resultData: $resultData, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSRpcResultImplCopyWith<$Res>
-    implements $WSRpcResultCopyWith<$Res> {
-  factory _$$WSRpcResultImplCopyWith(
-          _$WSRpcResultImpl value, $Res Function(_$WSRpcResultImpl) then) =
-      __$$WSRpcResultImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSRpcResultCopyWith<$Res> {
+  factory $WSRpcResultCopyWith(
+          WSRpcResult value, $Res Function(WSRpcResult) _then) =
+      _$WSRpcResultCopyWithImpl;
   @useResult
   $Res call({Object resultData, int id});
 }
 
 /// @nodoc
-class __$$WSRpcResultImplCopyWithImpl<$Res>
-    extends _$WSRpcResultCopyWithImpl<$Res, _$WSRpcResultImpl>
-    implements _$$WSRpcResultImplCopyWith<$Res> {
-  __$$WSRpcResultImplCopyWithImpl(
-      _$WSRpcResultImpl _value, $Res Function(_$WSRpcResultImpl) _then)
-      : super(_value, _then);
+class _$WSRpcResultCopyWithImpl<$Res> implements $WSRpcResultCopyWith<$Res> {
+  _$WSRpcResultCopyWithImpl(this._self, this._then);
 
+  final WSRpcResult _self;
+  final $Res Function(WSRpcResult) _then;
+
+  /// Create a copy of WSRpcResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? resultData = null,
     Object? id = null,
   }) {
-    return _then(_$WSRpcResultImpl(
-      resultData: null == resultData ? _value.resultData : resultData,
+    return _then(_self.copyWith(
+      resultData: null == resultData ? _self.resultData : resultData,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -1154,11 +1141,10 @@ class __$$WSRpcResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSRpcResultImpl implements _WSRpcResult {
-  const _$WSRpcResultImpl({required this.resultData, required this.id});
-
-  factory _$WSRpcResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSRpcResultImplFromJson(json);
+class _WSRpcResult implements WSRpcResult {
+  const _WSRpcResult({required this.resultData, required this.id});
+  factory _WSRpcResult.fromJson(Map<String, dynamic> json) =>
+      _$WSRpcResultFromJson(json);
 
   ///TODO: FIX it
 //required RpcResult result,
@@ -1167,323 +1153,145 @@ class _$WSRpcResultImpl implements _WSRpcResult {
   @override
   final int id;
 
+  /// Create a copy of WSRpcResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSRpcResult(resultData: $resultData, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSRpcResultCopyWith<_WSRpcResult> get copyWith =>
+      __$WSRpcResultCopyWithImpl<_WSRpcResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSRpcResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSRpcResultImpl &&
+            other is _WSRpcResult &&
             const DeepCollectionEquality()
                 .equals(other.resultData, resultData) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(resultData), id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSRpcResultImplCopyWith<_$WSRpcResultImpl> get copyWith =>
-      __$$WSRpcResultImplCopyWithImpl<_$WSRpcResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSRpcResultImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _WSRpcResult implements WSRpcResult {
-  const factory _WSRpcResult(
-      {required final Object resultData,
-      required final int id}) = _$WSRpcResultImpl;
-
-  factory _WSRpcResult.fromJson(Map<String, dynamic> json) =
-      _$WSRpcResultImpl.fromJson;
-
-  @override
-
-  ///TODO: FIX it
-//required RpcResult result,
-  Object get resultData;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSRpcResultImplCopyWith<_$WSRpcResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-WSConfigDownloadCommand _$WSConfigDownloadCommandFromJson(
-    Map<String, dynamic> json) {
-  return _WSConfigDownloadCommand.fromJson(json);
-}
-
-/// @nodoc
-mixin _$WSConfigDownloadCommand {
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSConfigDownloadCommandCopyWith<WSConfigDownloadCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSConfigDownloadCommandCopyWith<$Res> {
-  factory $WSConfigDownloadCommandCopyWith(WSConfigDownloadCommand value,
-          $Res Function(WSConfigDownloadCommand) then) =
-      _$WSConfigDownloadCommandCopyWithImpl<$Res, WSConfigDownloadCommand>;
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class _$WSConfigDownloadCommandCopyWithImpl<$Res,
-        $Val extends WSConfigDownloadCommand>
-    implements $WSConfigDownloadCommandCopyWith<$Res> {
-  _$WSConfigDownloadCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'WSRpcResult(resultData: $resultData, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSConfigDownloadCommandImplCopyWith<$Res>
-    implements $WSConfigDownloadCommandCopyWith<$Res> {
-  factory _$$WSConfigDownloadCommandImplCopyWith(
-          _$WSConfigDownloadCommandImpl value,
-          $Res Function(_$WSConfigDownloadCommandImpl) then) =
-      __$$WSConfigDownloadCommandImplCopyWithImpl<$Res>;
+abstract mixin class _$WSRpcResultCopyWith<$Res>
+    implements $WSRpcResultCopyWith<$Res> {
+  factory _$WSRpcResultCopyWith(
+          _WSRpcResult value, $Res Function(_WSRpcResult) _then) =
+      __$WSRpcResultCopyWithImpl;
   @override
   @useResult
-  $Res call({int id, String type});
+  $Res call({Object resultData, int id});
 }
 
 /// @nodoc
-class __$$WSConfigDownloadCommandImplCopyWithImpl<$Res>
-    extends _$WSConfigDownloadCommandCopyWithImpl<$Res,
-        _$WSConfigDownloadCommandImpl>
-    implements _$$WSConfigDownloadCommandImplCopyWith<$Res> {
-  __$$WSConfigDownloadCommandImplCopyWithImpl(
-      _$WSConfigDownloadCommandImpl _value,
-      $Res Function(_$WSConfigDownloadCommandImpl) _then)
-      : super(_value, _then);
+class __$WSRpcResultCopyWithImpl<$Res> implements _$WSRpcResultCopyWith<$Res> {
+  __$WSRpcResultCopyWithImpl(this._self, this._then);
 
-  @pragma('vm:prefer-inline')
+  final _WSRpcResult _self;
+  final $Res Function(_WSRpcResult) _then;
+
+  /// Create a copy of WSRpcResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
+    Object? resultData = null,
     Object? id = null,
-    Object? type = null,
   }) {
-    return _then(_$WSConfigDownloadCommandImpl(
+    return _then(_WSRpcResult(
+      resultData: null == resultData ? _self.resultData : resultData,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$WSConfigDownloadCommandImpl implements _WSConfigDownloadCommand {
-  const _$WSConfigDownloadCommandImpl(
-      {required this.id, this.type = WSConfigDownloadCommand.TYPE});
+mixin _$WSConfigDownloadCommand {
+  int get id;
+  String get type;
 
-  factory _$WSConfigDownloadCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSConfigDownloadCommandImplFromJson(json);
+  /// Create a copy of WSConfigDownloadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $WSConfigDownloadCommandCopyWith<WSConfigDownloadCommand> get copyWith =>
+      _$WSConfigDownloadCommandCopyWithImpl<WSConfigDownloadCommand>(
+          this as WSConfigDownloadCommand, _$identity);
+
+  /// Serializes this WSConfigDownloadCommand to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
-  final int id;
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSConfigDownloadCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @JsonKey()
-  final String type;
+  int get hashCode => Object.hash(runtimeType, id, type);
 
   @override
   String toString() {
     return 'WSConfigDownloadCommand(id: $id, type: $type)';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WSConfigDownloadCommandImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WSConfigDownloadCommandImplCopyWith<_$WSConfigDownloadCommandImpl>
-      get copyWith => __$$WSConfigDownloadCommandImplCopyWithImpl<
-          _$WSConfigDownloadCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSConfigDownloadCommandImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _WSConfigDownloadCommand implements WSConfigDownloadCommand {
-  const factory _WSConfigDownloadCommand(
-      {required final int id,
-      final String type}) = _$WSConfigDownloadCommandImpl;
-
-  factory _WSConfigDownloadCommand.fromJson(Map<String, dynamic> json) =
-      _$WSConfigDownloadCommandImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSConfigDownloadCommandImplCopyWith<_$WSConfigDownloadCommandImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-WSConfigUploadCommand _$WSConfigUploadCommandFromJson(
-    Map<String, dynamic> json) {
-  return _WSConfigUploadCommand.fromJson(json);
 }
 
 /// @nodoc
-mixin _$WSConfigUploadCommand {
-  String get content => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSConfigUploadCommandCopyWith<WSConfigUploadCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSConfigUploadCommandCopyWith<$Res> {
-  factory $WSConfigUploadCommandCopyWith(WSConfigUploadCommand value,
-          $Res Function(WSConfigUploadCommand) then) =
-      _$WSConfigUploadCommandCopyWithImpl<$Res, WSConfigUploadCommand>;
+abstract mixin class $WSConfigDownloadCommandCopyWith<$Res> {
+  factory $WSConfigDownloadCommandCopyWith(WSConfigDownloadCommand value,
+          $Res Function(WSConfigDownloadCommand) _then) =
+      _$WSConfigDownloadCommandCopyWithImpl;
   @useResult
-  $Res call({String content, int id, String type});
+  $Res call({int id, String type});
 }
 
 /// @nodoc
-class _$WSConfigUploadCommandCopyWithImpl<$Res,
-        $Val extends WSConfigUploadCommand>
-    implements $WSConfigUploadCommandCopyWith<$Res> {
-  _$WSConfigUploadCommandCopyWithImpl(this._value, this._then);
+class _$WSConfigDownloadCommandCopyWithImpl<$Res>
+    implements $WSConfigDownloadCommandCopyWith<$Res> {
+  _$WSConfigDownloadCommandCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WSConfigDownloadCommand _self;
+  final $Res Function(WSConfigDownloadCommand) _then;
 
+  /// Create a copy of WSConfigDownloadCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? content = null,
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_value.copyWith(
-      content: null == content
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$WSConfigUploadCommandImplCopyWith<$Res>
-    implements $WSConfigUploadCommandCopyWith<$Res> {
-  factory _$$WSConfigUploadCommandImplCopyWith(
-          _$WSConfigUploadCommandImpl value,
-          $Res Function(_$WSConfigUploadCommandImpl) then) =
-      __$$WSConfigUploadCommandImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String content, int id, String type});
-}
-
-/// @nodoc
-class __$$WSConfigUploadCommandImplCopyWithImpl<$Res>
-    extends _$WSConfigUploadCommandCopyWithImpl<$Res,
-        _$WSConfigUploadCommandImpl>
-    implements _$$WSConfigUploadCommandImplCopyWith<$Res> {
-  __$$WSConfigUploadCommandImplCopyWithImpl(_$WSConfigUploadCommandImpl _value,
-      $Res Function(_$WSConfigUploadCommandImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? content = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_$WSConfigUploadCommandImpl(
-      content: null == content
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -1492,168 +1300,339 @@ class __$$WSConfigUploadCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSConfigUploadCommandImpl implements _WSConfigUploadCommand {
-  const _$WSConfigUploadCommandImpl(
-      {required this.content,
-      required this.id,
-      this.type = WSConfigUploadCommand.TYPE});
+class _WSConfigDownloadCommand implements WSConfigDownloadCommand {
+  const _WSConfigDownloadCommand(
+      {required this.id, this.type = WSConfigDownloadCommand.TYPE});
+  factory _WSConfigDownloadCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigDownloadCommandFromJson(json);
 
-  factory _$WSConfigUploadCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSConfigUploadCommandImplFromJson(json);
-
-  @override
-  final String content;
   @override
   final int id;
   @override
   @JsonKey()
   final String type;
+
+  /// Create a copy of WSConfigDownloadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSConfigDownloadCommandCopyWith<_WSConfigDownloadCommand> get copyWith =>
+      __$WSConfigDownloadCommandCopyWithImpl<_WSConfigDownloadCommand>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSConfigDownloadCommandToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _WSConfigDownloadCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, type);
+
+  @override
+  String toString() {
+    return 'WSConfigDownloadCommand(id: $id, type: $type)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$WSConfigDownloadCommandCopyWith<$Res>
+    implements $WSConfigDownloadCommandCopyWith<$Res> {
+  factory _$WSConfigDownloadCommandCopyWith(_WSConfigDownloadCommand value,
+          $Res Function(_WSConfigDownloadCommand) _then) =
+      __$WSConfigDownloadCommandCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id, String type});
+}
+
+/// @nodoc
+class __$WSConfigDownloadCommandCopyWithImpl<$Res>
+    implements _$WSConfigDownloadCommandCopyWith<$Res> {
+  __$WSConfigDownloadCommandCopyWithImpl(this._self, this._then);
+
+  final _WSConfigDownloadCommand _self;
+  final $Res Function(_WSConfigDownloadCommand) _then;
+
+  /// Create a copy of WSConfigDownloadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSConfigDownloadCommand(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$WSConfigUploadCommand {
+  String get content;
+  int get id;
+  String get type;
+
+  /// Create a copy of WSConfigUploadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $WSConfigUploadCommandCopyWith<WSConfigUploadCommand> get copyWith =>
+      _$WSConfigUploadCommandCopyWithImpl<WSConfigUploadCommand>(
+          this as WSConfigUploadCommand, _$identity);
+
+  /// Serializes this WSConfigUploadCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSConfigUploadCommand &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, content, id, type);
 
   @override
   String toString() {
     return 'WSConfigUploadCommand(content: $content, id: $id, type: $type)';
   }
+}
+
+/// @nodoc
+abstract mixin class $WSConfigUploadCommandCopyWith<$Res> {
+  factory $WSConfigUploadCommandCopyWith(WSConfigUploadCommand value,
+          $Res Function(WSConfigUploadCommand) _then) =
+      _$WSConfigUploadCommandCopyWithImpl;
+  @useResult
+  $Res call({String content, int id, String type});
+}
+
+/// @nodoc
+class _$WSConfigUploadCommandCopyWithImpl<$Res>
+    implements $WSConfigUploadCommandCopyWith<$Res> {
+  _$WSConfigUploadCommandCopyWithImpl(this._self, this._then);
+
+  final WSConfigUploadCommand _self;
+  final $Res Function(WSConfigUploadCommand) _then;
+
+  /// Create a copy of WSConfigUploadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? content = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_self.copyWith(
+      content: null == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _WSConfigUploadCommand implements WSConfigUploadCommand {
+  const _WSConfigUploadCommand(
+      {required this.content,
+      required this.id,
+      this.type = WSConfigUploadCommand.TYPE});
+  factory _WSConfigUploadCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigUploadCommandFromJson(json);
 
   @override
-  bool operator ==(dynamic other) {
+  final String content;
+  @override
+  final int id;
+  @override
+  @JsonKey()
+  final String type;
+
+  /// Create a copy of WSConfigUploadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSConfigUploadCommandCopyWith<_WSConfigUploadCommand> get copyWith =>
+      __$WSConfigUploadCommandCopyWithImpl<_WSConfigUploadCommand>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSConfigUploadCommandToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSConfigUploadCommandImpl &&
+            other is _WSConfigUploadCommand &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, content, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSConfigUploadCommandImplCopyWith<_$WSConfigUploadCommandImpl>
-      get copyWith => __$$WSConfigUploadCommandImplCopyWithImpl<
-          _$WSConfigUploadCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSConfigUploadCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSConfigUploadCommand(content: $content, id: $id, type: $type)';
   }
 }
 
-abstract class _WSConfigUploadCommand implements WSConfigUploadCommand {
-  const factory _WSConfigUploadCommand(
-      {required final String content,
-      required final int id,
-      final String type}) = _$WSConfigUploadCommandImpl;
-
-  factory _WSConfigUploadCommand.fromJson(Map<String, dynamic> json) =
-      _$WSConfigUploadCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSConfigUploadCommandCopyWith<$Res>
+    implements $WSConfigUploadCommandCopyWith<$Res> {
+  factory _$WSConfigUploadCommandCopyWith(_WSConfigUploadCommand value,
+          $Res Function(_WSConfigUploadCommand) _then) =
+      __$WSConfigUploadCommandCopyWithImpl;
   @override
-  String get content;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSConfigUploadCommandImplCopyWith<_$WSConfigUploadCommandImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String content, int id, String type});
 }
 
-WSConfigDownloadResult _$WSConfigDownloadResultFromJson(
-    Map<String, dynamic> json) {
-  return _WSConfigDownloadResult.fromJson(json);
+/// @nodoc
+class __$WSConfigUploadCommandCopyWithImpl<$Res>
+    implements _$WSConfigUploadCommandCopyWith<$Res> {
+  __$WSConfigUploadCommandCopyWithImpl(this._self, this._then);
+
+  final _WSConfigUploadCommand _self;
+  final $Res Function(_WSConfigUploadCommand) _then;
+
+  /// Create a copy of WSConfigUploadCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? content = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSConfigUploadCommand(
+      content: null == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSConfigDownloadResult {
-  String get content => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
+  String get content;
+  int get id;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSConfigDownloadResultCopyWith<WSConfigDownloadResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSConfigDownloadResultCopyWith<$Res> {
-  factory $WSConfigDownloadResultCopyWith(WSConfigDownloadResult value,
-          $Res Function(WSConfigDownloadResult) then) =
-      _$WSConfigDownloadResultCopyWithImpl<$Res, WSConfigDownloadResult>;
-  @useResult
-  $Res call({String content, int id});
-}
-
-/// @nodoc
-class _$WSConfigDownloadResultCopyWithImpl<$Res,
-        $Val extends WSConfigDownloadResult>
-    implements $WSConfigDownloadResultCopyWith<$Res> {
-  _$WSConfigDownloadResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSConfigDownloadResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSConfigDownloadResultCopyWith<WSConfigDownloadResult> get copyWith =>
+      _$WSConfigDownloadResultCopyWithImpl<WSConfigDownloadResult>(
+          this as WSConfigDownloadResult, _$identity);
+
+  /// Serializes this WSConfigDownloadResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? content = null,
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      content: null == content
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSConfigDownloadResult &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, content, id);
+
+  @override
+  String toString() {
+    return 'WSConfigDownloadResult(content: $content, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSConfigDownloadResultImplCopyWith<$Res>
-    implements $WSConfigDownloadResultCopyWith<$Res> {
-  factory _$$WSConfigDownloadResultImplCopyWith(
-          _$WSConfigDownloadResultImpl value,
-          $Res Function(_$WSConfigDownloadResultImpl) then) =
-      __$$WSConfigDownloadResultImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSConfigDownloadResultCopyWith<$Res> {
+  factory $WSConfigDownloadResultCopyWith(WSConfigDownloadResult value,
+          $Res Function(WSConfigDownloadResult) _then) =
+      _$WSConfigDownloadResultCopyWithImpl;
   @useResult
   $Res call({String content, int id});
 }
 
 /// @nodoc
-class __$$WSConfigDownloadResultImplCopyWithImpl<$Res>
-    extends _$WSConfigDownloadResultCopyWithImpl<$Res,
-        _$WSConfigDownloadResultImpl>
-    implements _$$WSConfigDownloadResultImplCopyWith<$Res> {
-  __$$WSConfigDownloadResultImplCopyWithImpl(
-      _$WSConfigDownloadResultImpl _value,
-      $Res Function(_$WSConfigDownloadResultImpl) _then)
-      : super(_value, _then);
+class _$WSConfigDownloadResultCopyWithImpl<$Res>
+    implements $WSConfigDownloadResultCopyWith<$Res> {
+  _$WSConfigDownloadResultCopyWithImpl(this._self, this._then);
 
+  final WSConfigDownloadResult _self;
+  final $Res Function(WSConfigDownloadResult) _then;
+
+  /// Create a copy of WSConfigDownloadResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? content = null,
     Object? id = null,
   }) {
-    return _then(_$WSConfigDownloadResultImpl(
+    return _then(_self.copyWith(
       content: null == content
-          ? _value.content
+          ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -1662,456 +1641,314 @@ class __$$WSConfigDownloadResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSConfigDownloadResultImpl implements _WSConfigDownloadResult {
-  const _$WSConfigDownloadResultImpl({required this.content, required this.id});
-
-  factory _$WSConfigDownloadResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSConfigDownloadResultImplFromJson(json);
+class _WSConfigDownloadResult implements WSConfigDownloadResult {
+  const _WSConfigDownloadResult({required this.content, required this.id});
+  factory _WSConfigDownloadResult.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigDownloadResultFromJson(json);
 
   @override
   final String content;
   @override
   final int id;
 
+  /// Create a copy of WSConfigDownloadResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSConfigDownloadResult(content: $content, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSConfigDownloadResultCopyWith<_WSConfigDownloadResult> get copyWith =>
+      __$WSConfigDownloadResultCopyWithImpl<_WSConfigDownloadResult>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSConfigDownloadResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSConfigDownloadResultImpl &&
+            other is _WSConfigDownloadResult &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, content, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSConfigDownloadResultImplCopyWith<_$WSConfigDownloadResultImpl>
-      get copyWith => __$$WSConfigDownloadResultImplCopyWithImpl<
-          _$WSConfigDownloadResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSConfigDownloadResultImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _WSConfigDownloadResult implements WSConfigDownloadResult {
-  const factory _WSConfigDownloadResult(
-      {required final String content,
-      required final int id}) = _$WSConfigDownloadResultImpl;
-
-  factory _WSConfigDownloadResult.fromJson(Map<String, dynamic> json) =
-      _$WSConfigDownloadResultImpl.fromJson;
-
-  @override
-  String get content;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSConfigDownloadResultImplCopyWith<_$WSConfigDownloadResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-WSRestartApplicationCommand _$WSRestartApplicationCommandFromJson(
-    Map<String, dynamic> json) {
-  return _WSRestartApplicationCommand.fromJson(json);
-}
-
-/// @nodoc
-mixin _$WSRestartApplicationCommand {
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSRestartApplicationCommandCopyWith<WSRestartApplicationCommand>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSRestartApplicationCommandCopyWith<$Res> {
-  factory $WSRestartApplicationCommandCopyWith(
-          WSRestartApplicationCommand value,
-          $Res Function(WSRestartApplicationCommand) then) =
-      _$WSRestartApplicationCommandCopyWithImpl<$Res,
-          WSRestartApplicationCommand>;
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class _$WSRestartApplicationCommandCopyWithImpl<$Res,
-        $Val extends WSRestartApplicationCommand>
-    implements $WSRestartApplicationCommandCopyWith<$Res> {
-  _$WSRestartApplicationCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'WSConfigDownloadResult(content: $content, id: $id)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSRestartApplicationCommandImplCopyWith<$Res>
-    implements $WSRestartApplicationCommandCopyWith<$Res> {
-  factory _$$WSRestartApplicationCommandImplCopyWith(
-          _$WSRestartApplicationCommandImpl value,
-          $Res Function(_$WSRestartApplicationCommandImpl) then) =
-      __$$WSRestartApplicationCommandImplCopyWithImpl<$Res>;
+abstract mixin class _$WSConfigDownloadResultCopyWith<$Res>
+    implements $WSConfigDownloadResultCopyWith<$Res> {
+  factory _$WSConfigDownloadResultCopyWith(_WSConfigDownloadResult value,
+          $Res Function(_WSConfigDownloadResult) _then) =
+      __$WSConfigDownloadResultCopyWithImpl;
   @override
   @useResult
-  $Res call({int id, String type});
+  $Res call({String content, int id});
 }
 
 /// @nodoc
-class __$$WSRestartApplicationCommandImplCopyWithImpl<$Res>
-    extends _$WSRestartApplicationCommandCopyWithImpl<$Res,
-        _$WSRestartApplicationCommandImpl>
-    implements _$$WSRestartApplicationCommandImplCopyWith<$Res> {
-  __$$WSRestartApplicationCommandImplCopyWithImpl(
-      _$WSRestartApplicationCommandImpl _value,
-      $Res Function(_$WSRestartApplicationCommandImpl) _then)
-      : super(_value, _then);
+class __$WSConfigDownloadResultCopyWithImpl<$Res>
+    implements _$WSConfigDownloadResultCopyWith<$Res> {
+  __$WSConfigDownloadResultCopyWithImpl(this._self, this._then);
 
-  @pragma('vm:prefer-inline')
+  final _WSConfigDownloadResult _self;
+  final $Res Function(_WSConfigDownloadResult) _then;
+
+  /// Create a copy of WSConfigDownloadResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
+    Object? content = null,
     Object? id = null,
-    Object? type = null,
   }) {
-    return _then(_$WSRestartApplicationCommandImpl(
+    return _then(_WSConfigDownloadResult(
+      content: null == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$WSRestartApplicationCommandImpl
-    implements _WSRestartApplicationCommand {
-  const _$WSRestartApplicationCommandImpl(
-      {required this.id, this.type = WSRestartApplicationCommand.TYPE});
+mixin _$WSRestartApplicationCommand {
+  int get id;
+  String get type;
 
-  factory _$WSRestartApplicationCommandImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WSRestartApplicationCommandImplFromJson(json);
+  /// Create a copy of WSRestartApplicationCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $WSRestartApplicationCommandCopyWith<WSRestartApplicationCommand>
+      get copyWith => _$WSRestartApplicationCommandCopyWithImpl<
+              WSRestartApplicationCommand>(
+          this as WSRestartApplicationCommand, _$identity);
+
+  /// Serializes this WSRestartApplicationCommand to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
-  final int id;
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSRestartApplicationCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @JsonKey()
-  final String type;
+  int get hashCode => Object.hash(runtimeType, id, type);
 
   @override
   String toString() {
     return 'WSRestartApplicationCommand(id: $id, type: $type)';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WSRestartApplicationCommandImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WSRestartApplicationCommandImplCopyWith<_$WSRestartApplicationCommandImpl>
-      get copyWith => __$$WSRestartApplicationCommandImplCopyWithImpl<
-          _$WSRestartApplicationCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSRestartApplicationCommandImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _WSRestartApplicationCommand
-    implements WSRestartApplicationCommand {
-  const factory _WSRestartApplicationCommand(
-      {required final int id,
-      final String type}) = _$WSRestartApplicationCommandImpl;
-
-  factory _WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) =
-      _$WSRestartApplicationCommandImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSRestartApplicationCommandImplCopyWith<_$WSRestartApplicationCommandImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-WSResultOk _$WSResultOkFromJson(Map<String, dynamic> json) {
-  return _WSResultOk.fromJson(json);
 }
 
 /// @nodoc
-mixin _$WSResultOk {
-  int get id => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSResultOkCopyWith<WSResultOk> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSResultOkCopyWith<$Res> {
-  factory $WSResultOkCopyWith(
-          WSResultOk value, $Res Function(WSResultOk) then) =
-      _$WSResultOkCopyWithImpl<$Res, WSResultOk>;
+abstract mixin class $WSRestartApplicationCommandCopyWith<$Res> {
+  factory $WSRestartApplicationCommandCopyWith(
+          WSRestartApplicationCommand value,
+          $Res Function(WSRestartApplicationCommand) _then) =
+      _$WSRestartApplicationCommandCopyWithImpl;
   @useResult
-  $Res call({int id});
+  $Res call({int id, String type});
 }
 
 /// @nodoc
-class _$WSResultOkCopyWithImpl<$Res, $Val extends WSResultOk>
-    implements $WSResultOkCopyWith<$Res> {
-  _$WSResultOkCopyWithImpl(this._value, this._then);
+class _$WSRestartApplicationCommandCopyWithImpl<$Res>
+    implements $WSRestartApplicationCommandCopyWith<$Res> {
+  _$WSRestartApplicationCommandCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WSRestartApplicationCommand _self;
+  final $Res Function(WSRestartApplicationCommand) _then;
 
+  /// Create a copy of WSRestartApplicationCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
+    Object? type = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$WSResultOkImplCopyWith<$Res>
-    implements $WSResultOkCopyWith<$Res> {
-  factory _$$WSResultOkImplCopyWith(
-          _$WSResultOkImpl value, $Res Function(_$WSResultOkImpl) then) =
-      __$$WSResultOkImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int id});
-}
-
-/// @nodoc
-class __$$WSResultOkImplCopyWithImpl<$Res>
-    extends _$WSResultOkCopyWithImpl<$Res, _$WSResultOkImpl>
-    implements _$$WSResultOkImplCopyWith<$Res> {
-  __$$WSResultOkImplCopyWithImpl(
-      _$WSResultOkImpl _value, $Res Function(_$WSResultOkImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_$WSResultOkImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$WSResultOkImpl implements _WSResultOk {
-  const _$WSResultOkImpl({required this.id});
-
-  factory _$WSResultOkImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSResultOkImplFromJson(json);
+class _WSRestartApplicationCommand implements WSRestartApplicationCommand {
+  const _WSRestartApplicationCommand(
+      {required this.id, this.type = WSRestartApplicationCommand.TYPE});
+  factory _WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSRestartApplicationCommandFromJson(json);
 
   @override
   final int id;
+  @override
+  @JsonKey()
+  final String type;
+
+  /// Create a copy of WSRestartApplicationCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSRestartApplicationCommandCopyWith<_WSRestartApplicationCommand>
+      get copyWith => __$WSRestartApplicationCommandCopyWithImpl<
+          _WSRestartApplicationCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSRestartApplicationCommandToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _WSRestartApplicationCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, type);
+
+  @override
+  String toString() {
+    return 'WSRestartApplicationCommand(id: $id, type: $type)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$WSRestartApplicationCommandCopyWith<$Res>
+    implements $WSRestartApplicationCommandCopyWith<$Res> {
+  factory _$WSRestartApplicationCommandCopyWith(
+          _WSRestartApplicationCommand value,
+          $Res Function(_WSRestartApplicationCommand) _then) =
+      __$WSRestartApplicationCommandCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id, String type});
+}
+
+/// @nodoc
+class __$WSRestartApplicationCommandCopyWithImpl<$Res>
+    implements _$WSRestartApplicationCommandCopyWith<$Res> {
+  __$WSRestartApplicationCommandCopyWithImpl(this._self, this._then);
+
+  final _WSRestartApplicationCommand _self;
+  final $Res Function(_WSRestartApplicationCommand) _then;
+
+  /// Create a copy of WSRestartApplicationCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSRestartApplicationCommand(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$WSResultOk {
+  int get id;
+
+  /// Create a copy of WSResultOk
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $WSResultOkCopyWith<WSResultOk> get copyWith =>
+      _$WSResultOkCopyWithImpl<WSResultOk>(this as WSResultOk, _$identity);
+
+  /// Serializes this WSResultOk to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSResultOk &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
 
   @override
   String toString() {
     return 'WSResultOk(id: $id)';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WSResultOkImpl &&
-            (identical(other.id, id) || other.id == id));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WSResultOkImplCopyWith<_$WSResultOkImpl> get copyWith =>
-      __$$WSResultOkImplCopyWithImpl<_$WSResultOkImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSResultOkImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _WSResultOk implements WSResultOk {
-  const factory _WSResultOk({required final int id}) = _$WSResultOkImpl;
-
-  factory _WSResultOk.fromJson(Map<String, dynamic> json) =
-      _$WSResultOkImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSResultOkImplCopyWith<_$WSResultOkImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-WSEchoResult _$WSEchoResultFromJson(Map<String, dynamic> json) {
-  return _WSEchoResult.fromJson(json);
 }
 
 /// @nodoc
-mixin _$WSEchoResult {
-  String get msg => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSEchoResultCopyWith<WSEchoResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSEchoResultCopyWith<$Res> {
-  factory $WSEchoResultCopyWith(
-          WSEchoResult value, $Res Function(WSEchoResult) then) =
-      _$WSEchoResultCopyWithImpl<$Res, WSEchoResult>;
+abstract mixin class $WSResultOkCopyWith<$Res> {
+  factory $WSResultOkCopyWith(
+          WSResultOk value, $Res Function(WSResultOk) _then) =
+      _$WSResultOkCopyWithImpl;
   @useResult
-  $Res call({String msg, int id});
+  $Res call({int id});
 }
 
 /// @nodoc
-class _$WSEchoResultCopyWithImpl<$Res, $Val extends WSEchoResult>
-    implements $WSEchoResultCopyWith<$Res> {
-  _$WSEchoResultCopyWithImpl(this._value, this._then);
+class _$WSResultOkCopyWithImpl<$Res> implements $WSResultOkCopyWith<$Res> {
+  _$WSResultOkCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WSResultOk _self;
+  final $Res Function(WSResultOk) _then;
 
+  /// Create a copy of WSResultOk
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? msg = null,
     Object? id = null,
   }) {
-    return _then(_value.copyWith(
-      msg: null == msg
-          ? _value.msg
-          : msg // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$WSEchoResultImplCopyWith<$Res>
-    implements $WSEchoResultCopyWith<$Res> {
-  factory _$$WSEchoResultImplCopyWith(
-          _$WSEchoResultImpl value, $Res Function(_$WSEchoResultImpl) then) =
-      __$$WSEchoResultImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String msg, int id});
-}
-
-/// @nodoc
-class __$$WSEchoResultImplCopyWithImpl<$Res>
-    extends _$WSEchoResultCopyWithImpl<$Res, _$WSEchoResultImpl>
-    implements _$$WSEchoResultImplCopyWith<$Res> {
-  __$$WSEchoResultImplCopyWithImpl(
-      _$WSEchoResultImpl _value, $Res Function(_$WSEchoResultImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? msg = null,
-    Object? id = null,
-  }) {
-    return _then(_$WSEchoResultImpl(
-      msg: null == msg
-          ? _value.msg
-          : msg // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -2120,144 +1957,295 @@ class __$$WSEchoResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSEchoResultImpl implements _WSEchoResult {
-  const _$WSEchoResultImpl({required this.msg, required this.id});
+class _WSResultOk implements WSResultOk {
+  const _WSResultOk({required this.id});
+  factory _WSResultOk.fromJson(Map<String, dynamic> json) =>
+      _$WSResultOkFromJson(json);
 
-  factory _$WSEchoResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSEchoResultImplFromJson(json);
+  @override
+  final int id;
+
+  /// Create a copy of WSResultOk
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSResultOkCopyWith<_WSResultOk> get copyWith =>
+      __$WSResultOkCopyWithImpl<_WSResultOk>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSResultOkToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _WSResultOk &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
+
+  @override
+  String toString() {
+    return 'WSResultOk(id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$WSResultOkCopyWith<$Res>
+    implements $WSResultOkCopyWith<$Res> {
+  factory _$WSResultOkCopyWith(
+          _WSResultOk value, $Res Function(_WSResultOk) _then) =
+      __$WSResultOkCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id});
+}
+
+/// @nodoc
+class __$WSResultOkCopyWithImpl<$Res> implements _$WSResultOkCopyWith<$Res> {
+  __$WSResultOkCopyWithImpl(this._self, this._then);
+
+  final _WSResultOk _self;
+  final $Res Function(_WSResultOk) _then;
+
+  /// Create a copy of WSResultOk
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+  }) {
+    return _then(_WSResultOk(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$WSEchoResult {
+  String get msg;
+  int get id;
+
+  /// Create a copy of WSEchoResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $WSEchoResultCopyWith<WSEchoResult> get copyWith =>
+      _$WSEchoResultCopyWithImpl<WSEchoResult>(
+          this as WSEchoResult, _$identity);
+
+  /// Serializes this WSEchoResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSEchoResult &&
+            (identical(other.msg, msg) || other.msg == msg) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, msg, id);
+
+  @override
+  String toString() {
+    return 'WSEchoResult(msg: $msg, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $WSEchoResultCopyWith<$Res> {
+  factory $WSEchoResultCopyWith(
+          WSEchoResult value, $Res Function(WSEchoResult) _then) =
+      _$WSEchoResultCopyWithImpl;
+  @useResult
+  $Res call({String msg, int id});
+}
+
+/// @nodoc
+class _$WSEchoResultCopyWithImpl<$Res> implements $WSEchoResultCopyWith<$Res> {
+  _$WSEchoResultCopyWithImpl(this._self, this._then);
+
+  final WSEchoResult _self;
+  final $Res Function(WSEchoResult) _then;
+
+  /// Create a copy of WSEchoResult
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? msg = null,
+    Object? id = null,
+  }) {
+    return _then(_self.copyWith(
+      msg: null == msg
+          ? _self.msg
+          : msg // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _WSEchoResult implements WSEchoResult {
+  const _WSEchoResult({required this.msg, required this.id});
+  factory _WSEchoResult.fromJson(Map<String, dynamic> json) =>
+      _$WSEchoResultFromJson(json);
 
   @override
   final String msg;
   @override
   final int id;
 
+  /// Create a copy of WSEchoResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSEchoResult(msg: $msg, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSEchoResultCopyWith<_WSEchoResult> get copyWith =>
+      __$WSEchoResultCopyWithImpl<_WSEchoResult>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSEchoResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSEchoResultImpl &&
+            other is _WSEchoResult &&
             (identical(other.msg, msg) || other.msg == msg) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, msg, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSEchoResultImplCopyWith<_$WSEchoResultImpl> get copyWith =>
-      __$$WSEchoResultImplCopyWithImpl<_$WSEchoResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSEchoResultImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSEchoResult(msg: $msg, id: $id)';
   }
 }
 
-abstract class _WSEchoResult implements WSEchoResult {
-  const factory _WSEchoResult(
-      {required final String msg, required final int id}) = _$WSEchoResultImpl;
-
-  factory _WSEchoResult.fromJson(Map<String, dynamic> json) =
-      _$WSEchoResultImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSEchoResultCopyWith<$Res>
+    implements $WSEchoResultCopyWith<$Res> {
+  factory _$WSEchoResultCopyWith(
+          _WSEchoResult value, $Res Function(_WSEchoResult) _then) =
+      __$WSEchoResultCopyWithImpl;
   @override
-  String get msg;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSEchoResultImplCopyWith<_$WSEchoResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String msg, int id});
 }
 
-WSEchoCommand _$WSEchoCommandFromJson(Map<String, dynamic> json) {
-  return _WSEchoCommand.fromJson(json);
+/// @nodoc
+class __$WSEchoResultCopyWithImpl<$Res>
+    implements _$WSEchoResultCopyWith<$Res> {
+  __$WSEchoResultCopyWithImpl(this._self, this._then);
+
+  final _WSEchoResult _self;
+  final $Res Function(_WSEchoResult) _then;
+
+  /// Create a copy of WSEchoResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? msg = null,
+    Object? id = null,
+  }) {
+    return _then(_WSEchoResult(
+      msg: null == msg
+          ? _self.msg
+          : msg // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$WSEchoCommand {
-  String get msg => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  String get msg;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WSEchoCommandCopyWith<WSEchoCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WSEchoCommandCopyWith<$Res> {
-  factory $WSEchoCommandCopyWith(
-          WSEchoCommand value, $Res Function(WSEchoCommand) then) =
-      _$WSEchoCommandCopyWithImpl<$Res, WSEchoCommand>;
-  @useResult
-  $Res call({String msg, int id, String type});
-}
-
-/// @nodoc
-class _$WSEchoCommandCopyWithImpl<$Res, $Val extends WSEchoCommand>
-    implements $WSEchoCommandCopyWith<$Res> {
-  _$WSEchoCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WSEchoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WSEchoCommandCopyWith<WSEchoCommand> get copyWith =>
+      _$WSEchoCommandCopyWithImpl<WSEchoCommand>(
+          this as WSEchoCommand, _$identity);
+
+  /// Serializes this WSEchoCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? msg = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      msg: null == msg
-          ? _value.msg
-          : msg // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WSEchoCommand &&
+            (identical(other.msg, msg) || other.msg == msg) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, msg, id, type);
+
+  @override
+  String toString() {
+    return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$WSEchoCommandImplCopyWith<$Res>
-    implements $WSEchoCommandCopyWith<$Res> {
-  factory _$$WSEchoCommandImplCopyWith(
-          _$WSEchoCommandImpl value, $Res Function(_$WSEchoCommandImpl) then) =
-      __$$WSEchoCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WSEchoCommandCopyWith<$Res> {
+  factory $WSEchoCommandCopyWith(
+          WSEchoCommand value, $Res Function(WSEchoCommand) _then) =
+      _$WSEchoCommandCopyWithImpl;
   @useResult
   $Res call({String msg, int id, String type});
 }
 
 /// @nodoc
-class __$$WSEchoCommandImplCopyWithImpl<$Res>
-    extends _$WSEchoCommandCopyWithImpl<$Res, _$WSEchoCommandImpl>
-    implements _$$WSEchoCommandImplCopyWith<$Res> {
-  __$$WSEchoCommandImplCopyWithImpl(
-      _$WSEchoCommandImpl _value, $Res Function(_$WSEchoCommandImpl) _then)
-      : super(_value, _then);
+class _$WSEchoCommandCopyWithImpl<$Res>
+    implements $WSEchoCommandCopyWith<$Res> {
+  _$WSEchoCommandCopyWithImpl(this._self, this._then);
 
+  final WSEchoCommand _self;
+  final $Res Function(WSEchoCommand) _then;
+
+  /// Create a copy of WSEchoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2265,17 +2253,17 @@ class __$$WSEchoCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$WSEchoCommandImpl(
+    return _then(_self.copyWith(
       msg: null == msg
-          ? _value.msg
+          ? _self.msg
           : msg // ignore: cast_nullable_to_non_nullable
               as String,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -2284,12 +2272,11 @@ class __$$WSEchoCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WSEchoCommandImpl implements _WSEchoCommand {
-  const _$WSEchoCommandImpl(
+class _WSEchoCommand implements WSEchoCommand {
+  const _WSEchoCommand(
       {required this.msg, required this.id, this.type = WSEchoCommand.TYPE});
-
-  factory _$WSEchoCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WSEchoCommandImplFromJson(json);
+  factory _WSEchoCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSEchoCommandFromJson(json);
 
   @override
   final String msg;
@@ -2299,56 +2286,84 @@ class _$WSEchoCommandImpl implements _WSEchoCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of WSEchoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WSEchoCommandCopyWith<_WSEchoCommand> get copyWith =>
+      __$WSEchoCommandCopyWithImpl<_WSEchoCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WSEchoCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WSEchoCommandImpl &&
+            other is _WSEchoCommand &&
             (identical(other.msg, msg) || other.msg == msg) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, msg, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WSEchoCommandImplCopyWith<_$WSEchoCommandImpl> get copyWith =>
-      __$$WSEchoCommandImplCopyWithImpl<_$WSEchoCommandImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WSEchoCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
   }
 }
 
-abstract class _WSEchoCommand implements WSEchoCommand {
-  const factory _WSEchoCommand(
-      {required final String msg,
-      required final int id,
-      final String type}) = _$WSEchoCommandImpl;
-
-  factory _WSEchoCommand.fromJson(Map<String, dynamic> json) =
-      _$WSEchoCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WSEchoCommandCopyWith<$Res>
+    implements $WSEchoCommandCopyWith<$Res> {
+  factory _$WSEchoCommandCopyWith(
+          _WSEchoCommand value, $Res Function(_WSEchoCommand) _then) =
+      __$WSEchoCommandCopyWithImpl;
   @override
-  String get msg;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$WSEchoCommandImplCopyWith<_$WSEchoCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String msg, int id, String type});
 }
+
+/// @nodoc
+class __$WSEchoCommandCopyWithImpl<$Res>
+    implements _$WSEchoCommandCopyWith<$Res> {
+  __$WSEchoCommandCopyWithImpl(this._self, this._then);
+
+  final _WSEchoCommand _self;
+  final $Res Function(_WSEchoCommand) _then;
+
+  /// Create a copy of WSEchoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? msg = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_WSEchoCommand(
+      msg: null == msg
+          ? _self.msg
+          : msg // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

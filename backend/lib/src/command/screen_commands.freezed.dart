@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,89 +10,65 @@ part of 'screen_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-ScreenTurnCommand _$ScreenTurnCommandFromJson(Map<String, dynamic> json) {
-  return _ScreenTurnCommand.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ScreenTurnCommand {
-  bool get enabled => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  bool get enabled;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ScreenTurnCommandCopyWith<ScreenTurnCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ScreenTurnCommandCopyWith<$Res> {
-  factory $ScreenTurnCommandCopyWith(
-          ScreenTurnCommand value, $Res Function(ScreenTurnCommand) then) =
-      _$ScreenTurnCommandCopyWithImpl<$Res, ScreenTurnCommand>;
-  @useResult
-  $Res call({bool enabled, int id, String type});
-}
-
-/// @nodoc
-class _$ScreenTurnCommandCopyWithImpl<$Res, $Val extends ScreenTurnCommand>
-    implements $ScreenTurnCommandCopyWith<$Res> {
-  _$ScreenTurnCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ScreenTurnCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ScreenTurnCommandCopyWith<ScreenTurnCommand> get copyWith =>
+      _$ScreenTurnCommandCopyWithImpl<ScreenTurnCommand>(
+          this as ScreenTurnCommand, _$identity);
+
+  /// Serializes this ScreenTurnCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? enabled = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      enabled: null == enabled
-          ? _value.enabled
-          : enabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ScreenTurnCommand &&
+            (identical(other.enabled, enabled) || other.enabled == enabled) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, enabled, id, type);
+
+  @override
+  String toString() {
+    return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$ScreenTurnCommandImplCopyWith<$Res>
-    implements $ScreenTurnCommandCopyWith<$Res> {
-  factory _$$ScreenTurnCommandImplCopyWith(_$ScreenTurnCommandImpl value,
-          $Res Function(_$ScreenTurnCommandImpl) then) =
-      __$$ScreenTurnCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ScreenTurnCommandCopyWith<$Res> {
+  factory $ScreenTurnCommandCopyWith(
+          ScreenTurnCommand value, $Res Function(ScreenTurnCommand) _then) =
+      _$ScreenTurnCommandCopyWithImpl;
   @useResult
   $Res call({bool enabled, int id, String type});
 }
 
 /// @nodoc
-class __$$ScreenTurnCommandImplCopyWithImpl<$Res>
-    extends _$ScreenTurnCommandCopyWithImpl<$Res, _$ScreenTurnCommandImpl>
-    implements _$$ScreenTurnCommandImplCopyWith<$Res> {
-  __$$ScreenTurnCommandImplCopyWithImpl(_$ScreenTurnCommandImpl _value,
-      $Res Function(_$ScreenTurnCommandImpl) _then)
-      : super(_value, _then);
+class _$ScreenTurnCommandCopyWithImpl<$Res>
+    implements $ScreenTurnCommandCopyWith<$Res> {
+  _$ScreenTurnCommandCopyWithImpl(this._self, this._then);
 
+  final ScreenTurnCommand _self;
+  final $Res Function(ScreenTurnCommand) _then;
+
+  /// Create a copy of ScreenTurnCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -99,17 +76,17 @@ class __$$ScreenTurnCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$ScreenTurnCommandImpl(
+    return _then(_self.copyWith(
       enabled: null == enabled
-          ? _value.enabled
+          ? _self.enabled
           : enabled // ignore: cast_nullable_to_non_nullable
               as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -118,14 +95,13 @@ class __$$ScreenTurnCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ScreenTurnCommandImpl implements _ScreenTurnCommand {
-  const _$ScreenTurnCommandImpl(
+class _ScreenTurnCommand implements ScreenTurnCommand {
+  const _ScreenTurnCommand(
       {required this.enabled,
       required this.id,
       this.type = ScreenTurnCommand.TYPE});
-
-  factory _$ScreenTurnCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ScreenTurnCommandImplFromJson(json);
+  factory _ScreenTurnCommand.fromJson(Map<String, dynamic> json) =>
+      _$ScreenTurnCommandFromJson(json);
 
   @override
   final bool enabled;
@@ -135,139 +111,142 @@ class _$ScreenTurnCommandImpl implements _ScreenTurnCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of ScreenTurnCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ScreenTurnCommandCopyWith<_ScreenTurnCommand> get copyWith =>
+      __$ScreenTurnCommandCopyWithImpl<_ScreenTurnCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ScreenTurnCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ScreenTurnCommandImpl &&
+            other is _ScreenTurnCommand &&
             (identical(other.enabled, enabled) || other.enabled == enabled) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, enabled, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ScreenTurnCommandImplCopyWith<_$ScreenTurnCommandImpl> get copyWith =>
-      __$$ScreenTurnCommandImplCopyWithImpl<_$ScreenTurnCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ScreenTurnCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
   }
 }
 
-abstract class _ScreenTurnCommand implements ScreenTurnCommand {
-  const factory _ScreenTurnCommand(
-      {required final bool enabled,
-      required final int id,
-      final String type}) = _$ScreenTurnCommandImpl;
-
-  factory _ScreenTurnCommand.fromJson(Map<String, dynamic> json) =
-      _$ScreenTurnCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ScreenTurnCommandCopyWith<$Res>
+    implements $ScreenTurnCommandCopyWith<$Res> {
+  factory _$ScreenTurnCommandCopyWith(
+          _ScreenTurnCommand value, $Res Function(_ScreenTurnCommand) _then) =
+      __$ScreenTurnCommandCopyWithImpl;
   @override
-  bool get enabled;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$ScreenTurnCommandImplCopyWith<_$ScreenTurnCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({bool enabled, int id, String type});
 }
 
-ScreenLockCommand _$ScreenLockCommandFromJson(Map<String, dynamic> json) {
-  return _ScreenLockCommand.fromJson(json);
+/// @nodoc
+class __$ScreenTurnCommandCopyWithImpl<$Res>
+    implements _$ScreenTurnCommandCopyWith<$Res> {
+  __$ScreenTurnCommandCopyWithImpl(this._self, this._then);
+
+  final _ScreenTurnCommand _self;
+  final $Res Function(_ScreenTurnCommand) _then;
+
+  /// Create a copy of ScreenTurnCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? enabled = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_ScreenTurnCommand(
+      enabled: null == enabled
+          ? _self.enabled
+          : enabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$ScreenLockCommand {
-  bool get isLock => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  bool get isLock;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ScreenLockCommandCopyWith<ScreenLockCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ScreenLockCommandCopyWith<$Res> {
-  factory $ScreenLockCommandCopyWith(
-          ScreenLockCommand value, $Res Function(ScreenLockCommand) then) =
-      _$ScreenLockCommandCopyWithImpl<$Res, ScreenLockCommand>;
-  @useResult
-  $Res call({bool isLock, int id, String type});
-}
-
-/// @nodoc
-class _$ScreenLockCommandCopyWithImpl<$Res, $Val extends ScreenLockCommand>
-    implements $ScreenLockCommandCopyWith<$Res> {
-  _$ScreenLockCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ScreenLockCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ScreenLockCommandCopyWith<ScreenLockCommand> get copyWith =>
+      _$ScreenLockCommandCopyWithImpl<ScreenLockCommand>(
+          this as ScreenLockCommand, _$identity);
+
+  /// Serializes this ScreenLockCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? isLock = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      isLock: null == isLock
-          ? _value.isLock
-          : isLock // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ScreenLockCommand &&
+            (identical(other.isLock, isLock) || other.isLock == isLock) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, isLock, id, type);
+
+  @override
+  String toString() {
+    return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$ScreenLockCommandImplCopyWith<$Res>
-    implements $ScreenLockCommandCopyWith<$Res> {
-  factory _$$ScreenLockCommandImplCopyWith(_$ScreenLockCommandImpl value,
-          $Res Function(_$ScreenLockCommandImpl) then) =
-      __$$ScreenLockCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ScreenLockCommandCopyWith<$Res> {
+  factory $ScreenLockCommandCopyWith(
+          ScreenLockCommand value, $Res Function(ScreenLockCommand) _then) =
+      _$ScreenLockCommandCopyWithImpl;
   @useResult
   $Res call({bool isLock, int id, String type});
 }
 
 /// @nodoc
-class __$$ScreenLockCommandImplCopyWithImpl<$Res>
-    extends _$ScreenLockCommandCopyWithImpl<$Res, _$ScreenLockCommandImpl>
-    implements _$$ScreenLockCommandImplCopyWith<$Res> {
-  __$$ScreenLockCommandImplCopyWithImpl(_$ScreenLockCommandImpl _value,
-      $Res Function(_$ScreenLockCommandImpl) _then)
-      : super(_value, _then);
+class _$ScreenLockCommandCopyWithImpl<$Res>
+    implements $ScreenLockCommandCopyWith<$Res> {
+  _$ScreenLockCommandCopyWithImpl(this._self, this._then);
 
+  final ScreenLockCommand _self;
+  final $Res Function(ScreenLockCommand) _then;
+
+  /// Create a copy of ScreenLockCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -275,17 +254,17 @@ class __$$ScreenLockCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$ScreenLockCommandImpl(
+    return _then(_self.copyWith(
       isLock: null == isLock
-          ? _value.isLock
+          ? _self.isLock
           : isLock // ignore: cast_nullable_to_non_nullable
               as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -294,14 +273,13 @@ class __$$ScreenLockCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ScreenLockCommandImpl implements _ScreenLockCommand {
-  const _$ScreenLockCommandImpl(
+class _ScreenLockCommand implements ScreenLockCommand {
+  const _ScreenLockCommand(
       {required this.isLock,
       required this.id,
       this.type = ScreenLockCommand.TYPE});
-
-  factory _$ScreenLockCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ScreenLockCommandImplFromJson(json);
+  factory _ScreenLockCommand.fromJson(Map<String, dynamic> json) =>
+      _$ScreenLockCommandFromJson(json);
 
   @override
   final bool isLock;
@@ -311,57 +289,84 @@ class _$ScreenLockCommandImpl implements _ScreenLockCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of ScreenLockCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ScreenLockCommandCopyWith<_ScreenLockCommand> get copyWith =>
+      __$ScreenLockCommandCopyWithImpl<_ScreenLockCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ScreenLockCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ScreenLockCommandImpl &&
+            other is _ScreenLockCommand &&
             (identical(other.isLock, isLock) || other.isLock == isLock) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, isLock, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ScreenLockCommandImplCopyWith<_$ScreenLockCommandImpl> get copyWith =>
-      __$$ScreenLockCommandImplCopyWithImpl<_$ScreenLockCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ScreenLockCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
   }
 }
 
-abstract class _ScreenLockCommand implements ScreenLockCommand {
-  const factory _ScreenLockCommand(
-      {required final bool isLock,
-      required final int id,
-      final String type}) = _$ScreenLockCommandImpl;
-
-  factory _ScreenLockCommand.fromJson(Map<String, dynamic> json) =
-      _$ScreenLockCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ScreenLockCommandCopyWith<$Res>
+    implements $ScreenLockCommandCopyWith<$Res> {
+  factory _$ScreenLockCommandCopyWith(
+          _ScreenLockCommand value, $Res Function(_ScreenLockCommand) _then) =
+      __$ScreenLockCommandCopyWithImpl;
   @override
-  bool get isLock;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$ScreenLockCommandImplCopyWith<_$ScreenLockCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({bool isLock, int id, String type});
 }
+
+/// @nodoc
+class __$ScreenLockCommandCopyWithImpl<$Res>
+    implements _$ScreenLockCommandCopyWith<$Res> {
+  __$ScreenLockCommandCopyWithImpl(this._self, this._then);
+
+  final _ScreenLockCommand _self;
+  final $Res Function(_ScreenLockCommand) _then;
+
+  /// Create a copy of ScreenLockCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? isLock = null,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_ScreenLockCommand(
+      isLock: null == isLock
+          ? _self.isLock
+          : isLock // ignore: cast_nullable_to_non_nullable
+              as bool,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

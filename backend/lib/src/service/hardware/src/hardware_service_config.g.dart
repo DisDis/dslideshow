@@ -8,18 +8,19 @@ part of 'hardware_service_config.dart';
 
 HardwareConfig _$HardwareConfigFromJson(Map<String, dynamic> json) =>
     HardwareConfig(
-      screenPowerOnTimerSec: json['screenPowerOnTimerSec'] as int? ?? 120,
+      screenPowerOnTimerSec:
+          (json['screenPowerOnTimerSec'] as num?)?.toInt() ?? 120,
       screenPowerOnScript:
           json['screenPowerOnScript'] as String? ?? './scripts/screenOn.sh',
       screenPowerOffScript:
           json['screenPowerOffScript'] as String? ?? './scripts/screenOff.sh',
-      pinPIRSensor: json['pinPIRSensor'] as int? ?? 15,
-      pinButton0: json['pinButton0'] as int? ?? 17,
-      pinButton1: json['pinButton1'] as int? ?? 27,
-      pinButton2: json['pinButton2'] as int? ?? 22,
-      pinButton3: json['pinButton3'] as int? ?? 23,
-      pinPowerLED: json['pinPowerLED'] as int? ?? 14,
-      smoothingGPIOMs: json['smoothingGPIOMs'] as int? ?? 100,
+      pinPIRSensor: (json['pinPIRSensor'] as num?)?.toInt() ?? 15,
+      pinButton0: (json['pinButton0'] as num?)?.toInt() ?? 17,
+      pinButton1: (json['pinButton1'] as num?)?.toInt() ?? 27,
+      pinButton2: (json['pinButton2'] as num?)?.toInt() ?? 22,
+      pinButton3: (json['pinButton3'] as num?)?.toInt() ?? 23,
+      pinPowerLED: (json['pinPowerLED'] as num?)?.toInt() ?? 14,
+      smoothingGPIOMs: (json['smoothingGPIOMs'] as num?)?.toInt() ?? 100,
       systemDiskDev: json['systemDiskDev'] as String? ?? '/dev/root',
       systemIfConfigScript:
           json['systemIfConfigScript'] as String? ?? 'ifconfig',

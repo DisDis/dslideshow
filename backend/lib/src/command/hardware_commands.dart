@@ -8,7 +8,7 @@ part 'hardware_commands.g.dart';
 part 'hardware_commands.freezed.dart';
 
 @freezed
-class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand {
+sealed class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand {
   static const String TYPE = 'are_you_ready?';
   const factory AreYouReadyCommand({
     required int id,
@@ -19,7 +19,7 @@ class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand {
 }
 
 @freezed
-class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
+sealed class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
   static const String TYPE = 'push_button';
   const factory PushButtonCommand({
     required ButtonType button,
@@ -31,7 +31,7 @@ class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
 }
 
 @freezed
-class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements RpcCommand {
+sealed class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements RpcCommand {
   static const String TYPE = 'execute_action';
   const factory ExecuteSSActionCommand({
     required SlideshowAction action,
@@ -44,7 +44,7 @@ class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements RpcCommand
 }
 
 @freezed
-class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
+sealed class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
   static const String TYPE = 'led_control';
   const factory LEDControlCommand({
     required LEDType led,

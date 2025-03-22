@@ -136,7 +136,7 @@ class WebService {
   final _activeUsers = <WebSocketUser>[];
   Future<Response> _webSocketHandler(Request request) async {
     _log.info('_webSocketHandler');
-    return webSocketHandler((WebSocketChannel webSocket) {
+    return webSocketHandler((WebSocketChannel webSocket, _) {
       final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
       _activeUsers.add(newUser);
       newUser.onDisconnect.then((dynamic value) {

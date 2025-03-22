@@ -1,7 +1,7 @@
 part of 'slideshow_status_bloc.dart';
 
 @freezed
-class SlideshowStatusState with _$SlideshowStatusState {
+sealed class SlideshowStatusState with _$SlideshowStatusState {
   const factory SlideshowStatusState({
     @Default(true) bool hasInternet,
     @Default(false) bool isScreenLock,

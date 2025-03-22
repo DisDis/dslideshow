@@ -5,7 +5,7 @@ part 'screen_commands.g.dart';
 part 'screen_commands.freezed.dart';
 
 @freezed
-class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
+sealed class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
   static const String TYPE = 'screen_turn';
   const factory ScreenTurnCommand({
     required bool enabled,
@@ -17,7 +17,7 @@ class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
 }
 
 @freezed
-class ScreenLockCommand with _$ScreenLockCommand implements RpcCommand {
+sealed class ScreenLockCommand with _$ScreenLockCommand implements RpcCommand {
   static const String TYPE = 'screen_lock';
 
   const factory ScreenLockCommand({

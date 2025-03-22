@@ -13,8 +13,7 @@ import 'package:logging/logging.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf/shelf.dart';
-import 'package:shelf_multipart/form_data.dart';
-import 'package:shelf_multipart/multipart.dart';
+import 'package:shelf_multipart/shelf_multipart.dart';
 import 'package:path/path.dart' as path;
 
 class OTAService implements RpcService {
@@ -159,13 +158,17 @@ class OTAService implements RpcService {
     String code = '';
 
     final firmwareData = new io.BytesBuilder();
-    if (!request.isMultipart) {
+    var multiPartR = request.multipart();
+    if (multiPartR == null /*!request.isMultipart*/) {
       _updateInfo(_info.copyWith(
         uploadingPercent: 0,
         status: OTAStatus.ready,
       ));
       return Response.ok('Not a multipart request');
-    } else if (!request.isMultipartForm) {
+    }
+
+    var multipartFormData = request.formData();
+    if (/*!request.isMultipartForm*/ multipartFormData == null) {
       return Response.forbidden('Need multipart request');
     }
     _log.info('Parsed form multipart request');
@@ -178,7 +181,7 @@ class OTAService implements RpcService {
       uploadingPercent: 0,
       status: OTAStatus.uploading,
     ));
-    await for (final formData in request.multipartFormData) {
+    await for (final formData in multipartFormData.formData /*request.multipartFormData*/) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
         code = await formData.part.readString();
@@ -369,10 +372,12 @@ class OTAService implements RpcService {
   Future<Response> _postOTAUploadConfig(Request request) async {
     String code = '';
     String configData = '';
-    if (!request.isMultipart) {
+    var multipart = request.multipart();
+    if (multipart == null /*!request.isMultipart*/) {
       return Response.ok('Not a multipart request');
     }
-    if (!request.isMultipartForm) {
+    var multipartForm = request.formData();
+    if (multipartForm == null /*!request.isMultipartForm*/) {
       return Response.forbidden('Need multipart request');
     }
     _log.info('Parsed form multipart request');
@@ -382,7 +387,7 @@ class OTAService implements RpcService {
       return Response.ok('Too big size');
     }
 
-    await for (final formData in request.multipartFormData) {
+    await for (final formData in multipartForm.formData /*request.multipartFormData*/) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
         code = await formData.part.readString();

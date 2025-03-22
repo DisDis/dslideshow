@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,80 +10,65 @@ part of 'slideshow_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$SlideshowState {
-  MediaItem get item => throw _privateConstructorUsedError;
+  MediaItem get item;
 
-  @JsonKey(ignore: true)
-  $SlideshowStateCopyWith<SlideshowState> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SlideshowStateCopyWith<$Res> {
-  factory $SlideshowStateCopyWith(
-          SlideshowState value, $Res Function(SlideshowState) then) =
-      _$SlideshowStateCopyWithImpl<$Res, SlideshowState>;
-  @useResult
-  $Res call({MediaItem item});
-}
-
-/// @nodoc
-class _$SlideshowStateCopyWithImpl<$Res, $Val extends SlideshowState>
-    implements $SlideshowStateCopyWith<$Res> {
-  _$SlideshowStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of SlideshowState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $SlideshowStateCopyWith<SlideshowState> get copyWith =>
+      _$SlideshowStateCopyWithImpl<SlideshowState>(
+          this as SlideshowState, _$identity);
+
   @override
-  $Res call({
-    Object? item = null,
-  }) {
-    return _then(_value.copyWith(
-      item: null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as MediaItem,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SlideshowState &&
+            (identical(other.item, item) || other.item == item));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, item);
+
+  @override
+  String toString() {
+    return 'SlideshowState(item: $item)';
   }
 }
 
 /// @nodoc
-abstract class _$$SlideshowWorkStateImplCopyWith<$Res>
-    implements $SlideshowStateCopyWith<$Res> {
-  factory _$$SlideshowWorkStateImplCopyWith(_$SlideshowWorkStateImpl value,
-          $Res Function(_$SlideshowWorkStateImpl) then) =
-      __$$SlideshowWorkStateImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SlideshowStateCopyWith<$Res> {
+  factory $SlideshowStateCopyWith(
+          SlideshowState value, $Res Function(SlideshowState) _then) =
+      _$SlideshowStateCopyWithImpl;
   @useResult
   $Res call({MediaItem item});
 }
 
 /// @nodoc
-class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
-    extends _$SlideshowStateCopyWithImpl<$Res, _$SlideshowWorkStateImpl>
-    implements _$$SlideshowWorkStateImplCopyWith<$Res> {
-  __$$SlideshowWorkStateImplCopyWithImpl(_$SlideshowWorkStateImpl _value,
-      $Res Function(_$SlideshowWorkStateImpl) _then)
-      : super(_value, _then);
+class _$SlideshowStateCopyWithImpl<$Res>
+    implements $SlideshowStateCopyWith<$Res> {
+  _$SlideshowStateCopyWithImpl(this._self, this._then);
 
+  final SlideshowState _self;
+  final $Res Function(SlideshowState) _then;
+
+  /// Create a copy of SlideshowState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? item = null,
   }) {
-    return _then(_$SlideshowWorkStateImpl(
+    return _then(_self.copyWith(
       item: null == item
-          ? _value.item
+          ? _self.item
           : item // ignore: cast_nullable_to_non_nullable
               as MediaItem,
     ));
@@ -91,44 +77,70 @@ class __$$SlideshowWorkStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SlideshowWorkStateImpl implements _SlideshowWorkState {
-  const _$SlideshowWorkStateImpl({required this.item});
+class _SlideshowWorkState implements SlideshowState {
+  const _SlideshowWorkState({required this.item});
 
   @override
   final MediaItem item;
 
+  /// Create a copy of SlideshowState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SlideshowState(item: $item)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SlideshowWorkStateCopyWith<_SlideshowWorkState> get copyWith =>
+      __$SlideshowWorkStateCopyWithImpl<_SlideshowWorkState>(this, _$identity);
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SlideshowWorkStateImpl &&
+            other is _SlideshowWorkState &&
             (identical(other.item, item) || other.item == item));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, item);
 
-  @JsonKey(ignore: true)
+  @override
+  String toString() {
+    return 'SlideshowState(item: $item)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SlideshowWorkStateCopyWith<$Res>
+    implements $SlideshowStateCopyWith<$Res> {
+  factory _$SlideshowWorkStateCopyWith(
+          _SlideshowWorkState value, $Res Function(_SlideshowWorkState) _then) =
+      __$SlideshowWorkStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call({MediaItem item});
+}
+
+/// @nodoc
+class __$SlideshowWorkStateCopyWithImpl<$Res>
+    implements _$SlideshowWorkStateCopyWith<$Res> {
+  __$SlideshowWorkStateCopyWithImpl(this._self, this._then);
+
+  final _SlideshowWorkState _self;
+  final $Res Function(_SlideshowWorkState) _then;
+
+  /// Create a copy of SlideshowState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$SlideshowWorkStateImplCopyWith<_$SlideshowWorkStateImpl> get copyWith =>
-      __$$SlideshowWorkStateImplCopyWithImpl<_$SlideshowWorkStateImpl>(
-          this, _$identity);
+  $Res call({
+    Object? item = null,
+  }) {
+    return _then(_SlideshowWorkState(
+      item: null == item
+          ? _self.item
+          : item // ignore: cast_nullable_to_non_nullable
+              as MediaItem,
+    ));
+  }
 }
 
-abstract class _SlideshowWorkState implements SlideshowState {
-  const factory _SlideshowWorkState({required final MediaItem item}) =
-      _$SlideshowWorkStateImpl;
-
-  @override
-  MediaItem get item;
-  @override
-  @JsonKey(ignore: true)
-  _$$SlideshowWorkStateImplCopyWith<_$SlideshowWorkStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

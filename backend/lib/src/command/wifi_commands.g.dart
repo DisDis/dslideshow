@@ -6,46 +6,41 @@ part of 'wifi_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$WiFiScanCommandImpl _$$WiFiScanCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WiFiScanCommandImpl(
-      id: json['id'] as int,
+_WiFiScanCommand _$WiFiScanCommandFromJson(Map<String, dynamic> json) =>
+    _WiFiScanCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiScanCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WiFiScanCommandImplToJson(
-        _$WiFiScanCommandImpl instance) =>
+Map<String, dynamic> _$WiFiScanCommandToJson(_WiFiScanCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WiFiScanResultImpl _$$WiFiScanResultImplFromJson(Map<String, dynamic> json) =>
-    _$WiFiScanResultImpl(
+_WiFiScanResult _$WiFiScanResultFromJson(Map<String, dynamic> json) =>
+    _WiFiScanResult(
       networks: (json['networks'] as List<dynamic>)
           .map((e) => WiFiNetworkInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WiFiScanResultImplToJson(
-        _$WiFiScanResultImpl instance) =>
+Map<String, dynamic> _$WiFiScanResultToJson(_WiFiScanResult instance) =>
     <String, dynamic>{
       'networks': instance.networks.map((e) => e.toJson()).toList(),
       'id': instance.id,
     };
 
-_$WiFiNetworkInfoImpl _$$WiFiNetworkInfoImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WiFiNetworkInfoImpl(
+_WiFiNetworkInfo _$WiFiNetworkInfoFromJson(Map<String, dynamic> json) =>
+    _WiFiNetworkInfo(
       SSID: json['SSID'] as String,
-      signal: json['signal'] as int,
+      signal: (json['signal'] as num).toInt(),
       capability: json['capability'] as String,
-      freq: json['freq'] as int,
+      freq: (json['freq'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WiFiNetworkInfoImplToJson(
-        _$WiFiNetworkInfoImpl instance) =>
+Map<String, dynamic> _$WiFiNetworkInfoToJson(_WiFiNetworkInfo instance) =>
     <String, dynamic>{
       'SSID': instance.SSID,
       'signal': instance.signal,
@@ -53,62 +48,59 @@ Map<String, dynamic> _$$WiFiNetworkInfoImplToJson(
       'freq': instance.freq,
     };
 
-_$WiFiStoredNetworkInfoImpl _$$WiFiStoredNetworkInfoImplFromJson(
+_WiFiStoredNetworkInfo _$WiFiStoredNetworkInfoFromJson(
         Map<String, dynamic> json) =>
-    _$WiFiStoredNetworkInfoImpl(
-      id: json['id'] as int,
+    _WiFiStoredNetworkInfo(
+      id: (json['id'] as num).toInt(),
       SSID: json['SSID'] as String,
       disabled: json['disabled'] as bool,
     );
 
-Map<String, dynamic> _$$WiFiStoredNetworkInfoImplToJson(
-        _$WiFiStoredNetworkInfoImpl instance) =>
+Map<String, dynamic> _$WiFiStoredNetworkInfoToJson(
+        _WiFiStoredNetworkInfo instance) =>
     <String, dynamic>{
       'id': instance.id,
       'SSID': instance.SSID,
       'disabled': instance.disabled,
     };
 
-_$WiFiRemoveCommandImpl _$$WiFiRemoveCommandImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WiFiRemoveCommandImpl(
-      wifiId: json['wifiId'] as int,
-      id: json['id'] as int,
+_WiFiRemoveCommand _$WiFiRemoveCommandFromJson(Map<String, dynamic> json) =>
+    _WiFiRemoveCommand(
+      wifiId: (json['wifiId'] as num).toInt(),
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiRemoveCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WiFiRemoveCommandImplToJson(
-        _$WiFiRemoveCommandImpl instance) =>
+Map<String, dynamic> _$WiFiRemoveCommandToJson(_WiFiRemoveCommand instance) =>
     <String, dynamic>{
       'wifiId': instance.wifiId,
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WiFiSaveConfigCommandImpl _$$WiFiSaveConfigCommandImplFromJson(
+_WiFiSaveConfigCommand _$WiFiSaveConfigCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WiFiSaveConfigCommandImpl(
-      id: json['id'] as int,
+    _WiFiSaveConfigCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiSaveConfigCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WiFiSaveConfigCommandImplToJson(
-        _$WiFiSaveConfigCommandImpl instance) =>
+Map<String, dynamic> _$WiFiSaveConfigCommandToJson(
+        _WiFiSaveConfigCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WiFiAddCommandImpl _$$WiFiAddCommandImplFromJson(Map<String, dynamic> json) =>
-    _$WiFiAddCommandImpl(
+_WiFiAddCommand _$WiFiAddCommandFromJson(Map<String, dynamic> json) =>
+    _WiFiAddCommand(
       SSID: json['SSID'] as String,
       psk: json['psk'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiAddCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WiFiAddCommandImplToJson(
-        _$WiFiAddCommandImpl instance) =>
+Map<String, dynamic> _$WiFiAddCommandToJson(_WiFiAddCommand instance) =>
     <String, dynamic>{
       'SSID': instance.SSID,
       'psk': instance.psk,
@@ -116,31 +108,30 @@ Map<String, dynamic> _$$WiFiAddCommandImplToJson(
       'type': instance.type,
     };
 
-_$WiFiGetStoredCommandImpl _$$WiFiGetStoredCommandImplFromJson(
+_WiFiGetStoredCommand _$WiFiGetStoredCommandFromJson(
         Map<String, dynamic> json) =>
-    _$WiFiGetStoredCommandImpl(
-      id: json['id'] as int,
+    _WiFiGetStoredCommand(
+      id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiGetStoredCommand.TYPE,
     );
 
-Map<String, dynamic> _$$WiFiGetStoredCommandImplToJson(
-        _$WiFiGetStoredCommandImpl instance) =>
+Map<String, dynamic> _$WiFiGetStoredCommandToJson(
+        _WiFiGetStoredCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_$WiFiGetStoredResultImpl _$$WiFiGetStoredResultImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WiFiGetStoredResultImpl(
+_WiFiGetStoredResult _$WiFiGetStoredResultFromJson(Map<String, dynamic> json) =>
+    _WiFiGetStoredResult(
       networks: (json['networks'] as List<dynamic>)
           .map((e) => WiFiStoredNetworkInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WiFiGetStoredResultImplToJson(
-        _$WiFiGetStoredResultImpl instance) =>
+Map<String, dynamic> _$WiFiGetStoredResultToJson(
+        _WiFiGetStoredResult instance) =>
     <String, dynamic>{
       'networks': instance.networks.map((e) => e.toJson()).toList(),
       'id': instance.id,

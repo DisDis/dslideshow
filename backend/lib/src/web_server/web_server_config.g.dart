@@ -8,7 +8,7 @@ part of 'web_server_config.dart';
 
 WebServerConfig _$WebServerConfigFromJson(Map<String, dynamic> json) =>
     WebServerConfig(
-      port: json['port'] as int? ?? 8080,
+      port: (json['port'] as num?)?.toInt() ?? 8080,
       alwaysEnabled: json['alwaysEnabled'] as bool? ?? false,
     )..permanentCode = json['permanentCode'] as String?;
 

@@ -4,7 +4,7 @@ part 'sensor_info.g.dart';
 part 'sensor_info.freezed.dart';
 
 @freezed
-class SensorInfo with _$SensorInfo {
+sealed class SensorInfo with _$SensorInfo {
   //String sensorTemp = '62.0\'C';
 
   const factory SensorInfo({

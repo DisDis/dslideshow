@@ -1,6 +1,7 @@
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,20 +36,21 @@ class OTAView extends StatelessWidget {
           autofocus: true,
           // textStyle: const TerminalStyle(fontFamily: ['Cascadia Mono']),
         ));
-    return state.when(
-      exit: (info) {
-        return const CircularProgressIndicator();
-      },
-      initial: (info) => const CircularProgressIndicator(),
-      failure: (info) => Column(children: [
+    if (state is OtaExitState) {
+      return const CircularProgressIndicator();
+    } else if (state is OtaInitialState) {
+      return const CircularProgressIndicator();
+    } else if (state is OtaFailureState) {
+      return Column(children: [
         ...header,
         Text(
           "Error${state.info.errorText == null ? '' : '$state.info.errorText'}",
           style: const TextStyle(color: Colors.red, fontSize: 50),
         ),
         terminalView
-      ]),
-      progress: (info) => Column(children: [
+      ]);
+    } else if (state is OtaProgressState) {
+      return Column(children: [
         ...header,
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -60,8 +62,9 @@ class OTAView extends StatelessWidget {
         ),
         if (!environment.isLinuxEmbedded) const TestConfigButton(),
         terminalView
-      ]),
-      ready: (info) => Column(children: [
+      ]);
+    } else if (state is OtaReadyState) {
+      return Column(children: [
         if (!environment.isLinuxEmbedded) const TestConfigButton(),
         // ElevatedButton(
         //   onPressed: () {
@@ -71,16 +74,18 @@ class OTAView extends StatelessWidget {
         // ),
         ...header,
         terminalView
-      ]),
-      success: (info) => Column(children: [
+      ]);
+    } else if (state is OtaSuccessState) {
+      return Column(children: [
         ...header,
         const Text(
           "Finished",
           style: TextStyle(color: Colors.green, fontSize: 50),
         ),
         terminalView
-      ]),
-    );
+      ]);
+    }
+    return Text("Unknown state ${state.runtimeType}");
   }
 
   // _runTestCommand(Terminal terminal) async {

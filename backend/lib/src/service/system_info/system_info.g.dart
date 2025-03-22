@@ -6,8 +6,7 @@ part of 'system_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SystemInfoImpl _$$SystemInfoImplFromJson(Map<String, dynamic> json) =>
-    _$SystemInfoImpl(
+_SystemInfo _$SystemInfoFromJson(Map<String, dynamic> json) => _SystemInfo(
       cpuInfo: CpuInfo.fromJson(json['cpuInfo'] as Map<String, dynamic>),
       networkInfo:
           NetworkInfo.fromJson(json['networkInfo'] as Map<String, dynamic>),
@@ -16,7 +15,7 @@ _$SystemInfoImpl _$$SystemInfoImplFromJson(Map<String, dynamic> json) =>
           UpdateInfo.fromJson(json['updateInfo'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$SystemInfoImplToJson(_$SystemInfoImpl instance) =>
+Map<String, dynamic> _$SystemInfoToJson(_SystemInfo instance) =>
     <String, dynamic>{
       'cpuInfo': instance.cpuInfo.toJson(),
       'networkInfo': instance.networkInfo.toJson(),

@@ -63,7 +63,7 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
 class _StaggerAnimation extends StatelessWidget {
   final bool? isPaused;
   // ignore: unused_element
-  _StaggerAnimation({super.key, required this.controller, this.isPaused})
+  _StaggerAnimation({required this.controller, this.isPaused})
       :
 
         // Each animation defined here transforms its value during the subset

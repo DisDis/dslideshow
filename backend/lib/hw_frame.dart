@@ -48,7 +48,6 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
           return GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
 
         case StorageType.DiskStorage:
-        default:
           return DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
       }
     });

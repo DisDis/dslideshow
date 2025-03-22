@@ -5,7 +5,7 @@ part 'os_info.g.dart';
 part 'os_info.freezed.dart';
 
 @freezed
-class OSInfo with _$OSInfo {
+sealed class OSInfo with _$OSInfo {
   //String kernelVersion = "Linux raspberrypi 4.19.97-v7l+ #1294 SMP Thu Jan 30 13:21:14 GMT 2020 armv7l GNU/Linux";
 
   const factory OSInfo({

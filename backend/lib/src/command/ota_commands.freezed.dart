@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,89 +10,65 @@ part of 'ota_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-OTAReadyCommand _$OTAReadyCommandFromJson(Map<String, dynamic> json) {
-  return _OTAReadyCommand.fromJson(json);
-}
 
 /// @nodoc
 mixin _$OTAReadyCommand {
-  bool get ready => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  bool get ready;
+  int get id;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OTAReadyCommandCopyWith<OTAReadyCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OTAReadyCommandCopyWith<$Res> {
-  factory $OTAReadyCommandCopyWith(
-          OTAReadyCommand value, $Res Function(OTAReadyCommand) then) =
-      _$OTAReadyCommandCopyWithImpl<$Res, OTAReadyCommand>;
-  @useResult
-  $Res call({bool ready, int id, String type});
-}
-
-/// @nodoc
-class _$OTAReadyCommandCopyWithImpl<$Res, $Val extends OTAReadyCommand>
-    implements $OTAReadyCommandCopyWith<$Res> {
-  _$OTAReadyCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of OTAReadyCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $OTAReadyCommandCopyWith<OTAReadyCommand> get copyWith =>
+      _$OTAReadyCommandCopyWithImpl<OTAReadyCommand>(
+          this as OTAReadyCommand, _$identity);
+
+  /// Serializes this OTAReadyCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? ready = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      ready: null == ready
-          ? _value.ready
-          : ready // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OTAReadyCommand &&
+            (identical(other.ready, ready) || other.ready == ready) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, ready, id, type);
+
+  @override
+  String toString() {
+    return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$OTAReadyCommandImplCopyWith<$Res>
-    implements $OTAReadyCommandCopyWith<$Res> {
-  factory _$$OTAReadyCommandImplCopyWith(_$OTAReadyCommandImpl value,
-          $Res Function(_$OTAReadyCommandImpl) then) =
-      __$$OTAReadyCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $OTAReadyCommandCopyWith<$Res> {
+  factory $OTAReadyCommandCopyWith(
+          OTAReadyCommand value, $Res Function(OTAReadyCommand) _then) =
+      _$OTAReadyCommandCopyWithImpl;
   @useResult
   $Res call({bool ready, int id, String type});
 }
 
 /// @nodoc
-class __$$OTAReadyCommandImplCopyWithImpl<$Res>
-    extends _$OTAReadyCommandCopyWithImpl<$Res, _$OTAReadyCommandImpl>
-    implements _$$OTAReadyCommandImplCopyWith<$Res> {
-  __$$OTAReadyCommandImplCopyWithImpl(
-      _$OTAReadyCommandImpl _value, $Res Function(_$OTAReadyCommandImpl) _then)
-      : super(_value, _then);
+class _$OTAReadyCommandCopyWithImpl<$Res>
+    implements $OTAReadyCommandCopyWith<$Res> {
+  _$OTAReadyCommandCopyWithImpl(this._self, this._then);
 
+  final OTAReadyCommand _self;
+  final $Res Function(OTAReadyCommand) _then;
+
+  /// Create a copy of OTAReadyCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -99,17 +76,17 @@ class __$$OTAReadyCommandImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_$OTAReadyCommandImpl(
+    return _then(_self.copyWith(
       ready: null == ready
-          ? _value.ready
+          ? _self.ready
           : ready // ignore: cast_nullable_to_non_nullable
               as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -118,14 +95,13 @@ class __$$OTAReadyCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$OTAReadyCommandImpl implements _OTAReadyCommand {
-  const _$OTAReadyCommandImpl(
+class _OTAReadyCommand implements OTAReadyCommand {
+  const _OTAReadyCommand(
       {required this.ready,
       required this.id,
       this.type = OTAReadyCommand.TYPE});
-
-  factory _$OTAReadyCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OTAReadyCommandImplFromJson(json);
+  factory _OTAReadyCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAReadyCommandFromJson(json);
 
   @override
   final bool ready;
@@ -135,174 +111,80 @@ class _$OTAReadyCommandImpl implements _OTAReadyCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of OTAReadyCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OTAReadyCommandCopyWith<_OTAReadyCommand> get copyWith =>
+      __$OTAReadyCommandCopyWithImpl<_OTAReadyCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OTAReadyCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OTAReadyCommandImpl &&
+            other is _OTAReadyCommand &&
             (identical(other.ready, ready) || other.ready == ready) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, ready, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OTAReadyCommandImplCopyWith<_$OTAReadyCommandImpl> get copyWith =>
-      __$$OTAReadyCommandImplCopyWithImpl<_$OTAReadyCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OTAReadyCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
   }
 }
 
-abstract class _OTAReadyCommand implements OTAReadyCommand {
-  const factory _OTAReadyCommand(
-      {required final bool ready,
-      required final int id,
-      final String type}) = _$OTAReadyCommandImpl;
-
-  factory _OTAReadyCommand.fromJson(Map<String, dynamic> json) =
-      _$OTAReadyCommandImpl.fromJson;
-
-  @override
-  bool get ready;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$OTAReadyCommandImplCopyWith<_$OTAReadyCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-OTAGetInfoCommand _$OTAGetInfoCommandFromJson(Map<String, dynamic> json) {
-  return _OTAGetInfoCommand.fromJson(json);
-}
-
 /// @nodoc
-mixin _$OTAGetInfoCommand {
-  OTAInfo? get info => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OTAGetInfoCommandCopyWith<OTAGetInfoCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OTAGetInfoCommandCopyWith<$Res> {
-  factory $OTAGetInfoCommandCopyWith(
-          OTAGetInfoCommand value, $Res Function(OTAGetInfoCommand) then) =
-      _$OTAGetInfoCommandCopyWithImpl<$Res, OTAGetInfoCommand>;
+abstract mixin class _$OTAReadyCommandCopyWith<$Res>
+    implements $OTAReadyCommandCopyWith<$Res> {
+  factory _$OTAReadyCommandCopyWith(
+          _OTAReadyCommand value, $Res Function(_OTAReadyCommand) _then) =
+      __$OTAReadyCommandCopyWithImpl;
+  @override
   @useResult
-  $Res call({OTAInfo? info, int id, String type});
-
-  $OTAInfoCopyWith<$Res>? get info;
+  $Res call({bool ready, int id, String type});
 }
 
 /// @nodoc
-class _$OTAGetInfoCommandCopyWithImpl<$Res, $Val extends OTAGetInfoCommand>
-    implements $OTAGetInfoCommandCopyWith<$Res> {
-  _$OTAGetInfoCommandCopyWithImpl(this._value, this._then);
+class __$OTAReadyCommandCopyWithImpl<$Res>
+    implements _$OTAReadyCommandCopyWith<$Res> {
+  __$OTAReadyCommandCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final _OTAReadyCommand _self;
+  final $Res Function(_OTAReadyCommand) _then;
 
-  @pragma('vm:prefer-inline')
+  /// Create a copy of OTAReadyCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? info = freezed,
+    Object? ready = null,
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_value.copyWith(
-      info: freezed == info
-          ? _value.info
-          : info // ignore: cast_nullable_to_non_nullable
-              as OTAInfo?,
+    return _then(_OTAReadyCommand(
+      ready: null == ready
+          ? _self.ready
+          : ready // ignore: cast_nullable_to_non_nullable
+              as bool,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $OTAInfoCopyWith<$Res>? get info {
-    if (_value.info == null) {
-      return null;
-    }
-
-    return $OTAInfoCopyWith<$Res>(_value.info!, (value) {
-      return _then(_value.copyWith(info: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$OTAGetInfoCommandImplCopyWith<$Res>
-    implements $OTAGetInfoCommandCopyWith<$Res> {
-  factory _$$OTAGetInfoCommandImplCopyWith(_$OTAGetInfoCommandImpl value,
-          $Res Function(_$OTAGetInfoCommandImpl) then) =
-      __$$OTAGetInfoCommandImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({OTAInfo? info, int id, String type});
-
-  @override
-  $OTAInfoCopyWith<$Res>? get info;
-}
-
-/// @nodoc
-class __$$OTAGetInfoCommandImplCopyWithImpl<$Res>
-    extends _$OTAGetInfoCommandCopyWithImpl<$Res, _$OTAGetInfoCommandImpl>
-    implements _$$OTAGetInfoCommandImplCopyWith<$Res> {
-  __$$OTAGetInfoCommandImplCopyWithImpl(_$OTAGetInfoCommandImpl _value,
-      $Res Function(_$OTAGetInfoCommandImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? info = freezed,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_$OTAGetInfoCommandImpl(
-      info: freezed == info
-          ? _value.info
-          : info // ignore: cast_nullable_to_non_nullable
-              as OTAInfo?,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -310,13 +192,108 @@ class __$$OTAGetInfoCommandImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$OTAGetInfoCommandImpl implements _OTAGetInfoCommand {
-  const _$OTAGetInfoCommandImpl(
-      {this.info, required this.id, this.type = OTAGetInfoCommand.TYPE});
+mixin _$OTAGetInfoCommand {
+  OTAInfo? get info;
+  int get id;
+  String get type;
 
-  factory _$OTAGetInfoCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OTAGetInfoCommandImplFromJson(json);
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OTAGetInfoCommandCopyWith<OTAGetInfoCommand> get copyWith =>
+      _$OTAGetInfoCommandCopyWithImpl<OTAGetInfoCommand>(
+          this as OTAGetInfoCommand, _$identity);
+
+  /// Serializes this OTAGetInfoCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OTAGetInfoCommand &&
+            (identical(other.info, info) || other.info == info) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, info, id, type);
+
+  @override
+  String toString() {
+    return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $OTAGetInfoCommandCopyWith<$Res> {
+  factory $OTAGetInfoCommandCopyWith(
+          OTAGetInfoCommand value, $Res Function(OTAGetInfoCommand) _then) =
+      _$OTAGetInfoCommandCopyWithImpl;
+  @useResult
+  $Res call({OTAInfo? info, int id, String type});
+
+  $OTAInfoCopyWith<$Res>? get info;
+}
+
+/// @nodoc
+class _$OTAGetInfoCommandCopyWithImpl<$Res>
+    implements $OTAGetInfoCommandCopyWith<$Res> {
+  _$OTAGetInfoCommandCopyWithImpl(this._self, this._then);
+
+  final OTAGetInfoCommand _self;
+  final $Res Function(OTAGetInfoCommand) _then;
+
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? info = freezed,
+    Object? id = null,
+    Object? type = null,
+  }) {
+    return _then(_self.copyWith(
+      info: freezed == info
+          ? _self.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as OTAInfo?,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res>? get info {
+    if (_self.info == null) {
+      return null;
+    }
+
+    return $OTAInfoCopyWith<$Res>(_self.info!, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _OTAGetInfoCommand implements OTAGetInfoCommand {
+  const _OTAGetInfoCommand(
+      {this.info, required this.id, this.type = OTAGetInfoCommand.TYPE});
+  factory _OTAGetInfoCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAGetInfoCommandFromJson(json);
 
   @override
   final OTAInfo? info;
@@ -326,312 +303,344 @@ class _$OTAGetInfoCommandImpl implements _OTAGetInfoCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OTAGetInfoCommandCopyWith<_OTAGetInfoCommand> get copyWith =>
+      __$OTAGetInfoCommandCopyWithImpl<_OTAGetInfoCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OTAGetInfoCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OTAGetInfoCommandImpl &&
+            other is _OTAGetInfoCommand &&
             (identical(other.info, info) || other.info == info) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, info, id, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OTAGetInfoCommandImplCopyWith<_$OTAGetInfoCommandImpl> get copyWith =>
-      __$$OTAGetInfoCommandImplCopyWithImpl<_$OTAGetInfoCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OTAGetInfoCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
   }
 }
 
-abstract class _OTAGetInfoCommand implements OTAGetInfoCommand {
-  const factory _OTAGetInfoCommand(
-      {final OTAInfo? info,
-      required final int id,
-      final String type}) = _$OTAGetInfoCommandImpl;
-
-  factory _OTAGetInfoCommand.fromJson(Map<String, dynamic> json) =
-      _$OTAGetInfoCommandImpl.fromJson;
-
-  @override
-  OTAInfo? get info;
-  @override
-  int get id;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$OTAGetInfoCommandImplCopyWith<_$OTAGetInfoCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-OTAGetInfoCommandResult _$OTAGetInfoCommandResultFromJson(
-    Map<String, dynamic> json) {
-  return _OTAGetInfoCommandResult.fromJson(json);
-}
-
 /// @nodoc
-mixin _$OTAGetInfoCommandResult {
-  OTAInfo get info => throw _privateConstructorUsedError;
-  int get id => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OTAGetInfoCommandResultCopyWith<OTAGetInfoCommandResult> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OTAGetInfoCommandResultCopyWith<$Res> {
-  factory $OTAGetInfoCommandResultCopyWith(OTAGetInfoCommandResult value,
-          $Res Function(OTAGetInfoCommandResult) then) =
-      _$OTAGetInfoCommandResultCopyWithImpl<$Res, OTAGetInfoCommandResult>;
+abstract mixin class _$OTAGetInfoCommandCopyWith<$Res>
+    implements $OTAGetInfoCommandCopyWith<$Res> {
+  factory _$OTAGetInfoCommandCopyWith(
+          _OTAGetInfoCommand value, $Res Function(_OTAGetInfoCommand) _then) =
+      __$OTAGetInfoCommandCopyWithImpl;
+  @override
   @useResult
-  $Res call({OTAInfo info, int id});
+  $Res call({OTAInfo? info, int id, String type});
 
-  $OTAInfoCopyWith<$Res> get info;
+  @override
+  $OTAInfoCopyWith<$Res>? get info;
 }
 
 /// @nodoc
-class _$OTAGetInfoCommandResultCopyWithImpl<$Res,
-        $Val extends OTAGetInfoCommandResult>
-    implements $OTAGetInfoCommandResultCopyWith<$Res> {
-  _$OTAGetInfoCommandResultCopyWithImpl(this._value, this._then);
+class __$OTAGetInfoCommandCopyWithImpl<$Res>
+    implements _$OTAGetInfoCommandCopyWith<$Res> {
+  __$OTAGetInfoCommandCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final _OTAGetInfoCommand _self;
+  final $Res Function(_OTAGetInfoCommand) _then;
 
-  @pragma('vm:prefer-inline')
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? info = null,
+    Object? info = freezed,
     Object? id = null,
+    Object? type = null,
   }) {
-    return _then(_value.copyWith(
-      info: null == info
-          ? _value.info
+    return _then(_OTAGetInfoCommand(
+      info: freezed == info
+          ? _self.info
           : info // ignore: cast_nullable_to_non_nullable
-              as OTAInfo,
+              as OTAInfo?,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-    ) as $Val);
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
   }
 
+  /// Create a copy of OTAGetInfoCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $OTAInfoCopyWith<$Res> get info {
-    return $OTAInfoCopyWith<$Res>(_value.info, (value) {
-      return _then(_value.copyWith(info: value) as $Val);
+  $OTAInfoCopyWith<$Res>? get info {
+    if (_self.info == null) {
+      return null;
+    }
+
+    return $OTAInfoCopyWith<$Res>(_self.info!, (value) {
+      return _then(_self.copyWith(info: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$OTAGetInfoCommandResultImplCopyWith<$Res>
-    implements $OTAGetInfoCommandResultCopyWith<$Res> {
-  factory _$$OTAGetInfoCommandResultImplCopyWith(
-          _$OTAGetInfoCommandResultImpl value,
-          $Res Function(_$OTAGetInfoCommandResultImpl) then) =
-      __$$OTAGetInfoCommandResultImplCopyWithImpl<$Res>;
+mixin _$OTAGetInfoCommandResult {
+  OTAInfo get info;
+  int get id;
+
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OTAGetInfoCommandResultCopyWith<OTAGetInfoCommandResult> get copyWith =>
+      _$OTAGetInfoCommandResultCopyWithImpl<OTAGetInfoCommandResult>(
+          this as OTAGetInfoCommandResult, _$identity);
+
+  /// Serializes this OTAGetInfoCommandResult to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OTAGetInfoCommandResult &&
+            (identical(other.info, info) || other.info == info) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, info, id);
+
+  @override
+  String toString() {
+    return 'OTAGetInfoCommandResult(info: $info, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $OTAGetInfoCommandResultCopyWith<$Res> {
+  factory $OTAGetInfoCommandResultCopyWith(OTAGetInfoCommandResult value,
+          $Res Function(OTAGetInfoCommandResult) _then) =
+      _$OTAGetInfoCommandResultCopyWithImpl;
   @useResult
   $Res call({OTAInfo info, int id});
 
-  @override
   $OTAInfoCopyWith<$Res> get info;
 }
 
 /// @nodoc
-class __$$OTAGetInfoCommandResultImplCopyWithImpl<$Res>
-    extends _$OTAGetInfoCommandResultCopyWithImpl<$Res,
-        _$OTAGetInfoCommandResultImpl>
-    implements _$$OTAGetInfoCommandResultImplCopyWith<$Res> {
-  __$$OTAGetInfoCommandResultImplCopyWithImpl(
-      _$OTAGetInfoCommandResultImpl _value,
-      $Res Function(_$OTAGetInfoCommandResultImpl) _then)
-      : super(_value, _then);
+class _$OTAGetInfoCommandResultCopyWithImpl<$Res>
+    implements $OTAGetInfoCommandResultCopyWith<$Res> {
+  _$OTAGetInfoCommandResultCopyWithImpl(this._self, this._then);
 
+  final OTAGetInfoCommandResult _self;
+  final $Res Function(OTAGetInfoCommandResult) _then;
+
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? info = null,
     Object? id = null,
   }) {
-    return _then(_$OTAGetInfoCommandResultImpl(
+    return _then(_self.copyWith(
       info: null == info
-          ? _value.info
+          ? _self.info
           : info // ignore: cast_nullable_to_non_nullable
               as OTAInfo,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
     ));
+  }
+
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res> get info {
+    return $OTAInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$OTAGetInfoCommandResultImpl implements _OTAGetInfoCommandResult {
-  const _$OTAGetInfoCommandResultImpl({required this.info, required this.id});
-
-  factory _$OTAGetInfoCommandResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OTAGetInfoCommandResultImplFromJson(json);
+class _OTAGetInfoCommandResult implements OTAGetInfoCommandResult {
+  const _OTAGetInfoCommandResult({required this.info, required this.id});
+  factory _OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$OTAGetInfoCommandResultFromJson(json);
 
   @override
   final OTAInfo info;
   @override
   final int id;
 
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'OTAGetInfoCommandResult(info: $info, id: $id)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OTAGetInfoCommandResultCopyWith<_OTAGetInfoCommandResult> get copyWith =>
+      __$OTAGetInfoCommandResultCopyWithImpl<_OTAGetInfoCommandResult>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OTAGetInfoCommandResultToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OTAGetInfoCommandResultImpl &&
+            other is _OTAGetInfoCommandResult &&
             (identical(other.info, info) || other.info == info) &&
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, info, id);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OTAGetInfoCommandResultImplCopyWith<_$OTAGetInfoCommandResultImpl>
-      get copyWith => __$$OTAGetInfoCommandResultImplCopyWithImpl<
-          _$OTAGetInfoCommandResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OTAGetInfoCommandResultImplToJson(
-      this,
-    );
+  String toString() {
+    return 'OTAGetInfoCommandResult(info: $info, id: $id)';
   }
 }
 
-abstract class _OTAGetInfoCommandResult implements OTAGetInfoCommandResult {
-  const factory _OTAGetInfoCommandResult(
-      {required final OTAInfo info,
-      required final int id}) = _$OTAGetInfoCommandResultImpl;
+/// @nodoc
+abstract mixin class _$OTAGetInfoCommandResultCopyWith<$Res>
+    implements $OTAGetInfoCommandResultCopyWith<$Res> {
+  factory _$OTAGetInfoCommandResultCopyWith(_OTAGetInfoCommandResult value,
+          $Res Function(_OTAGetInfoCommandResult) _then) =
+      __$OTAGetInfoCommandResultCopyWithImpl;
+  @override
+  @useResult
+  $Res call({OTAInfo info, int id});
 
-  factory _OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) =
-      _$OTAGetInfoCommandResultImpl.fromJson;
-
   @override
-  OTAInfo get info;
-  @override
-  int get id;
-  @override
-  @JsonKey(ignore: true)
-  _$$OTAGetInfoCommandResultImplCopyWith<_$OTAGetInfoCommandResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  $OTAInfoCopyWith<$Res> get info;
 }
 
-OTAOutputCommand _$OTAOutputCommandFromJson(Map<String, dynamic> json) {
-  return _OTAOutputCommand.fromJson(json);
+/// @nodoc
+class __$OTAGetInfoCommandResultCopyWithImpl<$Res>
+    implements _$OTAGetInfoCommandResultCopyWith<$Res> {
+  __$OTAGetInfoCommandResultCopyWithImpl(this._self, this._then);
+
+  final _OTAGetInfoCommandResult _self;
+  final $Res Function(_OTAGetInfoCommandResult) _then;
+
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? info = null,
+    Object? id = null,
+  }) {
+    return _then(_OTAGetInfoCommandResult(
+      info: null == info
+          ? _self.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as OTAInfo,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+
+  /// Create a copy of OTAGetInfoCommandResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res> get info {
+    return $OTAInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
 }
 
 /// @nodoc
 mixin _$OTAOutputCommand {
-  int get id => throw _privateConstructorUsedError;
-  String get output => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  int get id;
+  String get output;
+  String get type;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OTAOutputCommandCopyWith<OTAOutputCommand> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OTAOutputCommandCopyWith<$Res> {
-  factory $OTAOutputCommandCopyWith(
-          OTAOutputCommand value, $Res Function(OTAOutputCommand) then) =
-      _$OTAOutputCommandCopyWithImpl<$Res, OTAOutputCommand>;
-  @useResult
-  $Res call({int id, String output, String type});
-}
-
-/// @nodoc
-class _$OTAOutputCommandCopyWithImpl<$Res, $Val extends OTAOutputCommand>
-    implements $OTAOutputCommandCopyWith<$Res> {
-  _$OTAOutputCommandCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of OTAOutputCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $OTAOutputCommandCopyWith<OTAOutputCommand> get copyWith =>
+      _$OTAOutputCommandCopyWithImpl<OTAOutputCommand>(
+          this as OTAOutputCommand, _$identity);
+
+  /// Serializes this OTAOutputCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? output = null,
-    Object? type = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      output: null == output
-          ? _value.output
-          : output // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OTAOutputCommand &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.output, output) || other.output == output) &&
+            (identical(other.type, type) || other.type == type));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, output, type);
+
+  @override
+  String toString() {
+    return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
   }
 }
 
 /// @nodoc
-abstract class _$$OTAOutputCommandImplCopyWith<$Res>
-    implements $OTAOutputCommandCopyWith<$Res> {
-  factory _$$OTAOutputCommandImplCopyWith(_$OTAOutputCommandImpl value,
-          $Res Function(_$OTAOutputCommandImpl) then) =
-      __$$OTAOutputCommandImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $OTAOutputCommandCopyWith<$Res> {
+  factory $OTAOutputCommandCopyWith(
+          OTAOutputCommand value, $Res Function(OTAOutputCommand) _then) =
+      _$OTAOutputCommandCopyWithImpl;
   @useResult
   $Res call({int id, String output, String type});
 }
 
 /// @nodoc
-class __$$OTAOutputCommandImplCopyWithImpl<$Res>
-    extends _$OTAOutputCommandCopyWithImpl<$Res, _$OTAOutputCommandImpl>
-    implements _$$OTAOutputCommandImplCopyWith<$Res> {
-  __$$OTAOutputCommandImplCopyWithImpl(_$OTAOutputCommandImpl _value,
-      $Res Function(_$OTAOutputCommandImpl) _then)
-      : super(_value, _then);
+class _$OTAOutputCommandCopyWithImpl<$Res>
+    implements $OTAOutputCommandCopyWith<$Res> {
+  _$OTAOutputCommandCopyWithImpl(this._self, this._then);
 
+  final OTAOutputCommand _self;
+  final $Res Function(OTAOutputCommand) _then;
+
+  /// Create a copy of OTAOutputCommand
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -639,17 +648,17 @@ class __$$OTAOutputCommandImplCopyWithImpl<$Res>
     Object? output = null,
     Object? type = null,
   }) {
-    return _then(_$OTAOutputCommandImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       output: null == output
-          ? _value.output
+          ? _self.output
           : output // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -658,14 +667,13 @@ class __$$OTAOutputCommandImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$OTAOutputCommandImpl implements _OTAOutputCommand {
-  const _$OTAOutputCommandImpl(
+class _OTAOutputCommand implements OTAOutputCommand {
+  const _OTAOutputCommand(
       {required this.id,
       required this.output,
       this.type = OTAOutputCommand.TYPE});
-
-  factory _$OTAOutputCommandImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OTAOutputCommandImplFromJson(json);
+  factory _OTAOutputCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAOutputCommandFromJson(json);
 
   @override
   final int id;
@@ -675,141 +683,134 @@ class _$OTAOutputCommandImpl implements _OTAOutputCommand {
   @JsonKey()
   final String type;
 
+  /// Create a copy of OTAOutputCommand
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OTAOutputCommandCopyWith<_OTAOutputCommand> get copyWith =>
+      __$OTAOutputCommandCopyWithImpl<_OTAOutputCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OTAOutputCommandToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OTAOutputCommandImpl &&
+            other is _OTAOutputCommand &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.output, output) || other.output == output) &&
             (identical(other.type, type) || other.type == type));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, output, type);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OTAOutputCommandImplCopyWith<_$OTAOutputCommandImpl> get copyWith =>
-      __$$OTAOutputCommandImplCopyWithImpl<_$OTAOutputCommandImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OTAOutputCommandImplToJson(
-      this,
-    );
+  String toString() {
+    return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
   }
 }
 
-abstract class _OTAOutputCommand implements OTAOutputCommand {
-  const factory _OTAOutputCommand(
-      {required final int id,
-      required final String output,
-      final String type}) = _$OTAOutputCommandImpl;
-
-  factory _OTAOutputCommand.fromJson(Map<String, dynamic> json) =
-      _$OTAOutputCommandImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$OTAOutputCommandCopyWith<$Res>
+    implements $OTAOutputCommandCopyWith<$Res> {
+  factory _$OTAOutputCommandCopyWith(
+          _OTAOutputCommand value, $Res Function(_OTAOutputCommand) _then) =
+      __$OTAOutputCommandCopyWithImpl;
   @override
-  int get id;
-  @override
-  String get output;
-  @override
-  String get type;
-  @override
-  @JsonKey(ignore: true)
-  _$$OTAOutputCommandImplCopyWith<_$OTAOutputCommandImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({int id, String output, String type});
 }
 
-OTAInfo _$OTAInfoFromJson(Map<String, dynamic> json) {
-  return _OTAInfo.fromJson(json);
+/// @nodoc
+class __$OTAOutputCommandCopyWithImpl<$Res>
+    implements _$OTAOutputCommandCopyWith<$Res> {
+  __$OTAOutputCommandCopyWithImpl(this._self, this._then);
+
+  final _OTAOutputCommand _self;
+  final $Res Function(_OTAOutputCommand) _then;
+
+  /// Create a copy of OTAOutputCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? output = null,
+    Object? type = null,
+  }) {
+    return _then(_OTAOutputCommand(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      output: null == output
+          ? _self.output
+          : output // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$OTAInfo {
-  OTAStatus get status => throw _privateConstructorUsedError;
-  double get uploadingPercent => throw _privateConstructorUsedError;
-  String get code => throw _privateConstructorUsedError;
-  int? get exitCode => throw _privateConstructorUsedError;
-  String? get errorText => throw _privateConstructorUsedError;
+  OTAStatus get status;
+  double get uploadingPercent;
+  String get code;
+  int? get exitCode;
+  String? get errorText;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OTAInfoCopyWith<OTAInfo> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OTAInfoCopyWith<$Res> {
-  factory $OTAInfoCopyWith(OTAInfo value, $Res Function(OTAInfo) then) =
-      _$OTAInfoCopyWithImpl<$Res, OTAInfo>;
-  @useResult
-  $Res call(
-      {OTAStatus status,
-      double uploadingPercent,
-      String code,
-      int? exitCode,
-      String? errorText});
-}
-
-/// @nodoc
-class _$OTAInfoCopyWithImpl<$Res, $Val extends OTAInfo>
-    implements $OTAInfoCopyWith<$Res> {
-  _$OTAInfoCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of OTAInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<OTAInfo> get copyWith =>
+      _$OTAInfoCopyWithImpl<OTAInfo>(this as OTAInfo, _$identity);
+
+  /// Serializes this OTAInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? status = null,
-    Object? uploadingPercent = null,
-    Object? code = null,
-    Object? exitCode = freezed,
-    Object? errorText = freezed,
-  }) {
-    return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as OTAStatus,
-      uploadingPercent: null == uploadingPercent
-          ? _value.uploadingPercent
-          : uploadingPercent // ignore: cast_nullable_to_non_nullable
-              as double,
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as String,
-      exitCode: freezed == exitCode
-          ? _value.exitCode
-          : exitCode // ignore: cast_nullable_to_non_nullable
-              as int?,
-      errorText: freezed == errorText
-          ? _value.errorText
-          : errorText // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OTAInfo &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.uploadingPercent, uploadingPercent) ||
+                other.uploadingPercent == uploadingPercent) &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.exitCode, exitCode) ||
+                other.exitCode == exitCode) &&
+            (identical(other.errorText, errorText) ||
+                other.errorText == errorText));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, status, uploadingPercent, code, exitCode, errorText);
+
+  @override
+  String toString() {
+    return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
   }
 }
 
 /// @nodoc
-abstract class _$$OTAInfoImplCopyWith<$Res> implements $OTAInfoCopyWith<$Res> {
-  factory _$$OTAInfoImplCopyWith(
-          _$OTAInfoImpl value, $Res Function(_$OTAInfoImpl) then) =
-      __$$OTAInfoImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $OTAInfoCopyWith<$Res> {
+  factory $OTAInfoCopyWith(OTAInfo value, $Res Function(OTAInfo) _then) =
+      _$OTAInfoCopyWithImpl;
   @useResult
   $Res call(
       {OTAStatus status,
@@ -820,13 +821,14 @@ abstract class _$$OTAInfoImplCopyWith<$Res> implements $OTAInfoCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$OTAInfoImplCopyWithImpl<$Res>
-    extends _$OTAInfoCopyWithImpl<$Res, _$OTAInfoImpl>
-    implements _$$OTAInfoImplCopyWith<$Res> {
-  __$$OTAInfoImplCopyWithImpl(
-      _$OTAInfoImpl _value, $Res Function(_$OTAInfoImpl) _then)
-      : super(_value, _then);
+class _$OTAInfoCopyWithImpl<$Res> implements $OTAInfoCopyWith<$Res> {
+  _$OTAInfoCopyWithImpl(this._self, this._then);
 
+  final OTAInfo _self;
+  final $Res Function(OTAInfo) _then;
+
+  /// Create a copy of OTAInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -836,25 +838,25 @@ class __$$OTAInfoImplCopyWithImpl<$Res>
     Object? exitCode = freezed,
     Object? errorText = freezed,
   }) {
-    return _then(_$OTAInfoImpl(
+    return _then(_self.copyWith(
       status: null == status
-          ? _value.status
+          ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as OTAStatus,
       uploadingPercent: null == uploadingPercent
-          ? _value.uploadingPercent
+          ? _self.uploadingPercent
           : uploadingPercent // ignore: cast_nullable_to_non_nullable
               as double,
       code: null == code
-          ? _value.code
+          ? _self.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
       exitCode: freezed == exitCode
-          ? _value.exitCode
+          ? _self.exitCode
           : exitCode // ignore: cast_nullable_to_non_nullable
               as int?,
       errorText: freezed == errorText
-          ? _value.errorText
+          ? _self.errorText
           : errorText // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
@@ -863,16 +865,15 @@ class __$$OTAInfoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$OTAInfoImpl implements _OTAInfo {
-  const _$OTAInfoImpl(
+class _OTAInfo implements OTAInfo {
+  const _OTAInfo(
       {required this.status,
       required this.uploadingPercent,
       required this.code,
       this.exitCode,
       this.errorText});
-
-  factory _$OTAInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OTAInfoImplFromJson(json);
+  factory _OTAInfo.fromJson(Map<String, dynamic> json) =>
+      _$OTAInfoFromJson(json);
 
   @override
   final OTAStatus status;
@@ -885,16 +886,26 @@ class _$OTAInfoImpl implements _OTAInfo {
   @override
   final String? errorText;
 
+  /// Create a copy of OTAInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OTAInfoCopyWith<_OTAInfo> get copyWith =>
+      __$OTAInfoCopyWithImpl<_OTAInfo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OTAInfoToJson(
+      this,
+    );
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OTAInfoImpl &&
+            other is _OTAInfo &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.uploadingPercent, uploadingPercent) ||
                 other.uploadingPercent == uploadingPercent) &&
@@ -905,47 +916,72 @@ class _$OTAInfoImpl implements _OTAInfo {
                 other.errorText == errorText));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, status, uploadingPercent, code, exitCode, errorText);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OTAInfoImplCopyWith<_$OTAInfoImpl> get copyWith =>
-      __$$OTAInfoImplCopyWithImpl<_$OTAInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OTAInfoImplToJson(
-      this,
-    );
+  String toString() {
+    return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
   }
 }
 
-abstract class _OTAInfo implements OTAInfo {
-  const factory _OTAInfo(
-      {required final OTAStatus status,
-      required final double uploadingPercent,
-      required final String code,
-      final int? exitCode,
-      final String? errorText}) = _$OTAInfoImpl;
-
-  factory _OTAInfo.fromJson(Map<String, dynamic> json) = _$OTAInfoImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$OTAInfoCopyWith<$Res> implements $OTAInfoCopyWith<$Res> {
+  factory _$OTAInfoCopyWith(_OTAInfo value, $Res Function(_OTAInfo) _then) =
+      __$OTAInfoCopyWithImpl;
   @override
-  OTAStatus get status;
-  @override
-  double get uploadingPercent;
-  @override
-  String get code;
-  @override
-  int? get exitCode;
-  @override
-  String? get errorText;
-  @override
-  @JsonKey(ignore: true)
-  _$$OTAInfoImplCopyWith<_$OTAInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {OTAStatus status,
+      double uploadingPercent,
+      String code,
+      int? exitCode,
+      String? errorText});
 }
+
+/// @nodoc
+class __$OTAInfoCopyWithImpl<$Res> implements _$OTAInfoCopyWith<$Res> {
+  __$OTAInfoCopyWithImpl(this._self, this._then);
+
+  final _OTAInfo _self;
+  final $Res Function(_OTAInfo) _then;
+
+  /// Create a copy of OTAInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? status = null,
+    Object? uploadingPercent = null,
+    Object? code = null,
+    Object? exitCode = freezed,
+    Object? errorText = freezed,
+  }) {
+    return _then(_OTAInfo(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as OTAStatus,
+      uploadingPercent: null == uploadingPercent
+          ? _self.uploadingPercent
+          : uploadingPercent // ignore: cast_nullable_to_non_nullable
+              as double,
+      code: null == code
+          ? _self.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+      exitCode: freezed == exitCode
+          ? _self.exitCode
+          : exitCode // ignore: cast_nullable_to_non_nullable
+              as int?,
+      errorText: freezed == errorText
+          ? _self.errorText
+          : errorText // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+// dart format on

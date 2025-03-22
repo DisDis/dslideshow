@@ -5,7 +5,7 @@ part 'storage_commands.g.dart';
 part 'storage_commands.freezed.dart';
 
 @freezed
-class GetMediaItemCommand with _$GetMediaItemCommand implements RpcCommand {
+sealed class GetMediaItemCommand with _$GetMediaItemCommand implements RpcCommand {
   static const String TYPE = 'get_media_item';
   const factory GetMediaItemCommand({
     required bool isCurrent,
@@ -17,7 +17,7 @@ class GetMediaItemCommand with _$GetMediaItemCommand implements RpcCommand {
 }
 
 @freezed
-class GetMediaItemCommandResult with _$GetMediaItemCommandResult implements RpcResult {
+sealed class GetMediaItemCommandResult with _$GetMediaItemCommandResult implements RpcResult {
   const factory GetMediaItemCommandResult({
     String? mediaId,
     Uri? mediaUri,
@@ -28,7 +28,7 @@ class GetMediaItemCommandResult with _$GetMediaItemCommandResult implements RpcR
 }
 
 @freezed
-class StorageNextCommand with _$StorageNextCommand implements RpcCommand {
+sealed class StorageNextCommand with _$StorageNextCommand implements RpcCommand {
   static const String TYPE = 'storage_next';
 
   const factory StorageNextCommand({

@@ -15,7 +15,7 @@ part 'update_info.freezed.dart';
 //String uptime = printDuration( new Duration(days: 1, hours: 13, minutes: 46, seconds: 30));
 
 @freezed
-class UpdateInfo with _$UpdateInfo {
+sealed class UpdateInfo with _$UpdateInfo {
   const factory UpdateInfo({
     required double cpuLoad1,
     required double cpuLoad15,

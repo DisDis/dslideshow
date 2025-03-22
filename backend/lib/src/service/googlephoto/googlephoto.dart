@@ -147,7 +147,7 @@ class GooglePhotoService {
       }
 
 //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
-      var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
+      final clientARC = new AutoRefreshingClient(client, GoogleAuthEndpoints(), _clientId, credentials);
 
       final gphoto = new PhotosLibraryApi(clientARC);
       var albumsRes = await gphoto.albums.list();
