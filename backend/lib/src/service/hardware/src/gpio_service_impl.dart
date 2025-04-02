@@ -11,7 +11,7 @@ class GPIOServiceImpl extends GPIOService {
   FlutterGpiod get _gpio => FlutterGpiod.instance;
   late GpioChip _chip;
   late GpioLine _linePowerLED;
-  late GpioLine _linePIR;
+  late GpioLine _linePeopleSensor;
   late GpioLine _lineButton0;
   late GpioLine _lineButton1;
   late GpioLine _lineButton2;
@@ -82,7 +82,7 @@ class GPIOServiceImpl extends GPIOService {
       _log.info('Found: ${_chip.label} - OK');
       _linePowerLED = _chip.lines[_config.pinPowerLED];
       _log.info('linePowerLED - OK');
-      _linePIR = _chip.lines[_config.pinPIRSensor];
+      _linePeopleSensor = _chip.lines[_config.pinPeopleSensor];
       _lineButton0 = _chip.lines[_config.pinButton0];
       _lineButton1 = _chip.lines[_config.pinButton1];
       _lineButton2 = _chip.lines[_config.pinButton2];
@@ -90,16 +90,17 @@ class GPIOServiceImpl extends GPIOService {
 
       _linePowerLED.requestOutput(consumer: "PowerLED", initialValue: true);
 
-      _linePIR.requestInput(consumer: "PIR Sensor", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _linePeopleSensor
+          .requestInput(consumer: "People Sensor", bias: Bias.disable, activeState: ActiveState.high, triggers: {SignalEdge.falling, SignalEdge.rising});
 
-      _lineButton0.requestInput(consumer: "Button0", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton1.requestInput(consumer: "Button1", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton2.requestInput(consumer: "Button2", triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton3.requestInput(consumer: "Button3", triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton0.requestInput(consumer: "Button0", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton1.requestInput(consumer: "Button1", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton2.requestInput(consumer: "Button2", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton3.requestInput(consumer: "Button3", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
 
-      _linePIR.onEvent.listen((event) {
+      _linePeopleSensor.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
-          _log.info('PIR: $event');
+          _log.info('People Sensor: $event');
           _lastPIRTime = DateTime.now();
           _scMotion.add(event.edge == SignalEdge.rising);
         }
@@ -142,7 +143,7 @@ class GPIOServiceImpl extends GPIOService {
 
   Future release() async {
     _linePowerLED.release();
-    _linePIR.release();
+    _linePeopleSensor.release();
     _lineButton0.release();
     _lineButton3.release();
     _lineButton1.release();

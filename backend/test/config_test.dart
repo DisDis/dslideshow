@@ -33,9 +33,9 @@ void main() {
     });
 
     group('HardwareConfig', () {
-      test('pinPIRSensor', () {
+      test('pinPeopleSensor', () {
         final _config = new HardwareConfig.fromJson(<String, dynamic>{});
-        expect(_config.pinPIRSensor, equals(15));
+        expect(_config.pinPeopleSensor, equals(7));
       });
     });
     group('AppConfig', () {

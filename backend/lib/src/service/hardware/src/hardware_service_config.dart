@@ -16,10 +16,10 @@ class HardwareConfig {
   @JsonKey(defaultValue: 22)
   int pinButton2;
 
-  @JsonKey(defaultValue: 15)
-  int pinPIRSensor;
+  @JsonKey(defaultValue: 12)
+  int pinPeopleSensor;
 
-  @JsonKey(defaultValue: 14)
+  @JsonKey(defaultValue: 25)
   int pinPowerLED;
 
   @JsonKey(defaultValue: '/dev/root')
@@ -43,7 +43,7 @@ class HardwareConfig {
       {required this.screenPowerOnTimerSec,
       required this.screenPowerOnScript,
       required this.screenPowerOffScript,
-      required this.pinPIRSensor,
+      required this.pinPeopleSensor,
       required this.pinButton0,
       required this.pinButton1,
       required this.pinButton2,
