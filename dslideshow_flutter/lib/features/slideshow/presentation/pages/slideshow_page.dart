@@ -48,7 +48,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
 
   late AnimationController _fadeController;
   static final Random _rnd = Random();
-  MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
+  MediaSliderItemEffect _currentEffect = Effect.fadeEffect.createEffect();
   final List<Effect> _effectPool = [];
   final List<Effect> _allowedEffects = <Effect>[];
 
@@ -143,13 +143,12 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       }
     });
 
-    _mediaItemLoopController.forward();
-
-    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
-    if (_currentWidget == slideShowLoaderWidget) {
-      _fetchNextMediaItem();
-    }
     final SlideshowStatusBloc bloc = injector();
+    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
+    if (bloc.state.isPaused) {
+      _currentWidget = slideShowEmptyScreenWidget;
+    }
+    _fetchNextMediaItem(reloadCurrent: bloc.state.isPaused);
 
     _subs.add(bloc.onPause.listen((isPausedNewValue) {
       if (isPausedNewValue) {
@@ -162,10 +161,12 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     }));
   }
 
-  void _fetchNextMediaItem() async {
+  void _fetchNextMediaItem({bool reloadCurrent = false}) async {
     _log.info('Change image');
+    if (!reloadCurrent) {
+      await _frontendService.storageNext();
+    }
 
-    await _frontendService.storageNext();
     final mediaItem = await _getCurrentMediaItem();
     // ignore: use_build_context_synchronously
     final size = MediaQuery.of(context).size;
@@ -205,7 +206,9 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       _effectPool.addAll(_allowedEffects);
       _effectPool.shuffle(_rnd);
     }
-    _currentEffect = _effectPool.removeLast().createEffect();
+    if (!reloadCurrent) {
+      _currentEffect = _effectPool.removeLast().createEffect();
+    }
     setState(() {});
     try {
       await _effectController.forward().orCancel;
@@ -213,7 +216,11 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       _log.info('Skip error', e);
     }
     try {
-      _mediaItemLoopController.forward();
+      final SlideshowStatusBloc bloc = injector();
+
+      if (!bloc.state.isPaused) {
+        _mediaItemLoopController.forward();
+      }
     } catch (e, st) {
       _log.warning("_mediaItemLoopController.forward()", e, st);
     }

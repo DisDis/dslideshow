@@ -14,7 +14,7 @@ HardwareConfig _$HardwareConfigFromJson(Map<String, dynamic> json) =>
           json['screenPowerOnScript'] as String? ?? './scripts/screenOn.sh',
       screenPowerOffScript:
           json['screenPowerOffScript'] as String? ?? './scripts/screenOff.sh',
-      pinPeopleSensor: (json['pinPeopleSensor'] as num?)?.toInt() ?? 7,
+      pinPeopleSensor: (json['pinPeopleSensor'] as num?)?.toInt() ?? 12,
       pinButton0: (json['pinButton0'] as num?)?.toInt() ?? 17,
       pinButton1: (json['pinButton1'] as num?)?.toInt() ?? 27,
       pinButton2: (json['pinButton2'] as num?)?.toInt() ?? 22,

@@ -75,7 +75,7 @@ void main() async {
       return SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
     });
 
-    injector.registerLazySingleton<SlideshowBloc>(() {
+    injector.registerFactory<SlideshowBloc>(() {
       return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
     });
 
@@ -110,7 +110,6 @@ void _runFlutter(FrontendService frontendService) {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider<RouteBloc>.value(value: injector()),
-      BlocProvider<SlideshowBloc>.value(value: injector()),
       BlocProvider<SlideshowStatusBloc>.value(value: injector()),
     ],
     child: const MainApp(),
@@ -134,7 +133,10 @@ class MainApp extends StatelessWidget {
         builder: (_, state) {
           switch (state.current) {
             case RoutePage.slideshow:
-              return const SlideShowPage();
+              return BlocProvider<SlideshowBloc>.value(
+                value: injector(),
+                child: const SlideShowPage(),
+              );
             case RoutePage.config:
               return const ConfigPage();
             case RoutePage.ota:

@@ -14,6 +14,7 @@ part 'slideshow_status_state.dart';
 class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusState> {
   final FrontendService frontendService;
   final SlideShowConfig config;
+  StreamSubscription? _onActionSubscription;
 
   final _scPause = StreamController<bool>.broadcast();
   Stream<bool> get onPause => _scPause.stream;
@@ -51,5 +52,47 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
         frontendService.screenTurn(true);
       }
     });
+    _onActionSubscription = frontendService.onAction.listen((actionP) => executeAction(actionP.action, actionP.param));
+  }
+
+  void executeAction(SlideshowAction action, [bool? value]) {
+    switch (action) {
+      case SlideshowAction.pause:
+        _pause(value);
+        break;
+      case SlideshowAction.toggleScreen:
+        _toggleScreen(value);
+        break;
+      case SlideshowAction.showMenu:
+        _showMenu(value);
+        break;
+      case SlideshowAction.showInfo:
+        _showInfo(value);
+        break;
+    }
+  }
+
+  void _showInfo([bool? value]) {
+    add(SlideshowSystemInfoEvent(value ?? !state.isInfo));
+  }
+
+  void _showMenu([bool? value]) {
+    add(SlideshowMenuEvent(value ?? !state.isMenu));
+  }
+
+  void _pause([bool? value]) {
+    add(SlideshowPauseEvent(value ?? !state.isPaused));
+  }
+
+  Future _toggleScreen([bool? value]) async {
+    add(SlideshowScreenLockEvent(value ?? !state.isScreenLock));
+  }
+
+  @override
+  Future<void> close() {
+    _onActionSubscription?.cancel();
+    _onActionSubscription = null;
+
+    return super.close();
   }
 }

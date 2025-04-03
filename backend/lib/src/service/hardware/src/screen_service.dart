@@ -12,11 +12,12 @@ class ScreenService {
 
   final _stateChangePreparation = new StreamController<bool>.broadcast();
 
-  final Duration _preparationOffTime = Duration(milliseconds: 2000);
+  final Duration _preparationOffTime = const Duration(milliseconds: 2000);
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
 
   ScreenService(this._config);
   Timer? _timerScreenOff;
+  bool get isScreenOn => _screenOn;
   bool _screenOn = true;
 
   void screenOn() async {

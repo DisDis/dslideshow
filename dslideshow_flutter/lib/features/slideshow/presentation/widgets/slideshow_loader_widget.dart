@@ -10,3 +10,5 @@ final slideShowLoaderWidget = Container(
     ),
   ),
 );
+
+final slideShowEmptyScreenWidget = Container(key: const Key('empty_screen'));
