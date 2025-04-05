@@ -1,15 +1,19 @@
+import 'dart:async';
 import 'dart:math';
 
-import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
-import 'package:dslideshow_flutter/src/route_bloc.dart';
-import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
+import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class ConfigPage extends StatefulWidget {
   const ConfigPage({super.key});
@@ -31,6 +35,7 @@ class _ConfigPageState extends State<ConfigPage> {
   bool _enabled = false;
   // ignore: unused_field
   String _accessCode = INIT_CODE;
+  StreamSubscription? _onPushSubscription;
 
   @override
   void initState() {
@@ -41,12 +46,21 @@ class _ConfigPageState extends State<ConfigPage> {
       _enabled = true;
       setState(() {});
     });
+    _onPushSubscription = _frontendService.onPushButton.listen(_pushButton);
   }
 
   @override
   void dispose() {
     _frontendService.stopWebServer();
+    _onPushSubscription?.cancel();
+    _onPushSubscription = null;
     super.dispose();
+  }
+
+  void _pushButton(ButtonType event) {
+    if (event == ButtonType.button0) {
+      context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
+    }
   }
 
   @override
@@ -56,6 +70,7 @@ class _ConfigPageState extends State<ConfigPage> {
         child: Column(
           children: <Widget>[
             const CommonHeaderWidget(),
+            ButtonsHintWidget(buttons: _appConfig.slideshow.buttons),
             QrImageView(
               backgroundColor: Colors.white,
               data: _urlData,
@@ -104,6 +119,26 @@ class _ConfigPageState extends State<ConfigPage> {
                 _appConfig.toFile();
               },
               child: const Text('Save config'),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () => _frontendService.pushButton(ButtonType.button0),
+                  child: Text("B0"),
+                ),
+                ElevatedButton(
+                  onPressed: () => _frontendService.pushButton(ButtonType.button1),
+                  child: Text("B1"),
+                ),
+                ElevatedButton(
+                  onPressed: () => _frontendService.pushButton(ButtonType.button2),
+                  child: Text("B2"),
+                ),
+                ElevatedButton(
+                  onPressed: () => _frontendService.pushButton(ButtonType.button3),
+                  child: Text("B3"),
+                ),
+              ],
             ),
           ],
         ),

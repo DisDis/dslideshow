@@ -741,4 +741,164 @@ class __$LEDControlCommandCopyWithImpl<$Res>
   }
 }
 
+/// @nodoc
+mixin _$PowerOffCommand {
+  String get type;
+  int get id;
+
+  /// Create a copy of PowerOffCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PowerOffCommandCopyWith<PowerOffCommand> get copyWith =>
+      _$PowerOffCommandCopyWithImpl<PowerOffCommand>(
+          this as PowerOffCommand, _$identity);
+
+  /// Serializes this PowerOffCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PowerOffCommand &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, type, id);
+
+  @override
+  String toString() {
+    return 'PowerOffCommand(type: $type, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PowerOffCommandCopyWith<$Res> {
+  factory $PowerOffCommandCopyWith(
+          PowerOffCommand value, $Res Function(PowerOffCommand) _then) =
+      _$PowerOffCommandCopyWithImpl;
+  @useResult
+  $Res call({String type, int id});
+}
+
+/// @nodoc
+class _$PowerOffCommandCopyWithImpl<$Res>
+    implements $PowerOffCommandCopyWith<$Res> {
+  _$PowerOffCommandCopyWithImpl(this._self, this._then);
+
+  final PowerOffCommand _self;
+  final $Res Function(PowerOffCommand) _then;
+
+  /// Create a copy of PowerOffCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? id = null,
+  }) {
+    return _then(_self.copyWith(
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _PowerOffCommand implements PowerOffCommand {
+  const _PowerOffCommand({this.type = PowerOffCommand.TYPE, required this.id});
+  factory _PowerOffCommand.fromJson(Map<String, dynamic> json) =>
+      _$PowerOffCommandFromJson(json);
+
+  @override
+  @JsonKey()
+  final String type;
+  @override
+  final int id;
+
+  /// Create a copy of PowerOffCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PowerOffCommandCopyWith<_PowerOffCommand> get copyWith =>
+      __$PowerOffCommandCopyWithImpl<_PowerOffCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PowerOffCommandToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PowerOffCommand &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, type, id);
+
+  @override
+  String toString() {
+    return 'PowerOffCommand(type: $type, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$PowerOffCommandCopyWith<$Res>
+    implements $PowerOffCommandCopyWith<$Res> {
+  factory _$PowerOffCommandCopyWith(
+          _PowerOffCommand value, $Res Function(_PowerOffCommand) _then) =
+      __$PowerOffCommandCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String type, int id});
+}
+
+/// @nodoc
+class __$PowerOffCommandCopyWithImpl<$Res>
+    implements _$PowerOffCommandCopyWith<$Res> {
+  __$PowerOffCommandCopyWithImpl(this._self, this._then);
+
+  final _PowerOffCommand _self;
+  final $Res Function(_PowerOffCommand) _then;
+
+  /// Create a copy of PowerOffCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? type = null,
+    Object? id = null,
+  }) {
+    return _then(_PowerOffCommand(
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
 // dart format on

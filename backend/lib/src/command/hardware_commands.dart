@@ -55,3 +55,14 @@ sealed class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
 
   factory LEDControlCommand.fromJson(Map<String, dynamic> json) => _$LEDControlCommandFromJson(json);
 }
+
+@freezed
+sealed class PowerOffCommand with _$PowerOffCommand implements RpcCommand {
+  static const String TYPE = 'powerOff';
+  const factory PowerOffCommand({
+    @Default(PowerOffCommand.TYPE) String type,
+    required int id,
+  }) = _PowerOffCommand;
+
+  factory PowerOffCommand.fromJson(Map<String, dynamic> json) => _$PowerOffCommandFromJson(json);
+}

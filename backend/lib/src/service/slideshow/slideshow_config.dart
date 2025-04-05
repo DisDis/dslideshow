@@ -8,12 +8,12 @@ class SlideShowConfig {
   static final Logger _log = new Logger('SlideShowConfig');
 
   @JsonKey(fromJson: _parseButtons)
-  SlideShowButtonBind buttons;
+  SlideShowButton buttons;
 
-  static SlideShowButtonBind _parseButtons(dynamic data) {
+  static SlideShowButton _parseButtons(dynamic data) {
     _log.info("- parsing 'buttons' bind");
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
-    return SlideShowButtonBind.fromJson(dataV);
+    return SlideShowButton.fromJson(dataV);
   }
 
   @JsonKey(defaultValue: 5000)
@@ -82,7 +82,7 @@ class SlideShowConfig {
 }
 
 @JsonSerializable()
-class SlideShowButtonBind {
+class SlideShowButton {
   @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
   SlideshowAction button0;
   @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showMenu)
@@ -92,11 +92,18 @@ class SlideShowButtonBind {
   @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showInfo)
   SlideshowAction button3;
 
-  SlideShowButtonBind({
+  @JsonKey(defaultValue: 320)
+  int hintOffsetX;
+  @JsonKey(defaultValue: 20)
+  int hintOffsetY;
+
+  SlideShowButton({
     required this.button0,
     required this.button1,
     required this.button2,
     required this.button3,
+    required this.hintOffsetX,
+    required this.hintOffsetY,
   });
 
   static String _actionToJson(SlideshowAction value) {
@@ -110,9 +117,9 @@ class SlideShowButtonBind {
     return SlideshowAction.values.firstWhere((item) => item.toString() == value, orElse: () => SlideshowAction.pause);
   }
 
-  factory SlideShowButtonBind.fromJson(Map<String, dynamic> json) => _$SlideShowButtonBindFromJson(json);
+  factory SlideShowButton.fromJson(Map<String, dynamic> json) => _$SlideShowButtonFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SlideShowButtonBindToJson(this);
+  Map<String, dynamic> toJson() => _$SlideShowButtonToJson(this);
 }
 
 enum SlideshowAction {

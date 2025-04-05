@@ -35,27 +35,30 @@ Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
       'backgroundColor': SlideShowConfig._colorToJson(instance.backgroundColor),
     };
 
-SlideShowButtonBind _$SlideShowButtonBindFromJson(Map<String, dynamic> json) =>
-    SlideShowButtonBind(
+SlideShowButton _$SlideShowButtonFromJson(Map<String, dynamic> json) =>
+    SlideShowButton(
       button0: json['button0'] == null
           ? SlideshowAction.pause
-          : SlideShowButtonBind._parseAction(json['button0']),
+          : SlideShowButton._parseAction(json['button0']),
       button1: json['button1'] == null
           ? SlideshowAction.showMenu
-          : SlideShowButtonBind._parseAction(json['button1']),
+          : SlideShowButton._parseAction(json['button1']),
       button2: json['button2'] == null
           ? SlideshowAction.toggleScreen
-          : SlideShowButtonBind._parseAction(json['button2']),
+          : SlideShowButton._parseAction(json['button2']),
       button3: json['button3'] == null
           ? SlideshowAction.showInfo
-          : SlideShowButtonBind._parseAction(json['button3']),
+          : SlideShowButton._parseAction(json['button3']),
+      hintOffsetX: (json['hintOffsetX'] as num?)?.toInt() ?? 320,
+      hintOffsetY: (json['hintOffsetY'] as num?)?.toInt() ?? 20,
     );
 
-Map<String, dynamic> _$SlideShowButtonBindToJson(
-        SlideShowButtonBind instance) =>
+Map<String, dynamic> _$SlideShowButtonToJson(SlideShowButton instance) =>
     <String, dynamic>{
-      'button0': SlideShowButtonBind._actionToJson(instance.button0),
-      'button1': SlideShowButtonBind._actionToJson(instance.button1),
-      'button2': SlideShowButtonBind._actionToJson(instance.button2),
-      'button3': SlideShowButtonBind._actionToJson(instance.button3),
+      'button0': SlideShowButton._actionToJson(instance.button0),
+      'button1': SlideShowButton._actionToJson(instance.button1),
+      'button2': SlideShowButton._actionToJson(instance.button2),
+      'button3': SlideShowButton._actionToJson(instance.button3),
+      'hintOffsetX': instance.hintOffsetX,
+      'hintOffsetY': instance.hintOffsetY,
     };

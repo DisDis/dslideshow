@@ -6,6 +6,8 @@ import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/version.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
+import 'package:dslideshow_flutter/features/menu/presentation/bloc/main_menu_bloc.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/pages/ota_page.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
@@ -79,6 +81,13 @@ void main() async {
       return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
     });
 
+    injector.registerFactory<ButtonsHintBloc>(() {
+      return ButtonsHintBloc(frontendService: frontendService)..add(ButtonsHintEvent.show(isShow: true));
+    });
+    injector.registerFactory<MainMenuBloc>(() {
+      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), slideshowStatusBloc: injector());
+    });
+
     frontendService.onOTAReady.listen((isReady) {
       final RouteBloc bloc = injector();
       if (isReady) {
@@ -133,16 +142,27 @@ class MainApp extends StatelessWidget {
         builder: (_, state) {
           switch (state.current) {
             case RoutePage.slideshow:
-              return BlocProvider<SlideshowBloc>.value(
-                value: injector(),
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider<SlideshowBloc>(
+                    lazy: false,
+                    create: (context) => injector<SlideshowBloc>(),
+                  ),
+                  BlocProvider<MainMenuBloc>(
+                    lazy: false,
+                    create: (context) => injector<MainMenuBloc>(),
+                  )
+                ],
                 child: const SlideShowPage(),
               );
             case RoutePage.config:
-              return const ConfigPage();
+              return BlocProvider<ButtonsHintBloc>(
+                create: (context) => injector<ButtonsHintBloc>(),
+                child: const ConfigPage(),
+              );
             case RoutePage.ota:
               return OTAPage();
             case RoutePage.welcome:
-            default:
               return const WelcomePage();
           }
         },

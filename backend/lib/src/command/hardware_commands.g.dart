@@ -83,3 +83,15 @@ Map<String, dynamic> _$LEDControlCommandToJson(_LEDControlCommand instance) =>
 const _$LEDTypeEnumMap = {
   LEDType.power: 'power',
 };
+
+_PowerOffCommand _$PowerOffCommandFromJson(Map<String, dynamic> json) =>
+    _PowerOffCommand(
+      type: json['type'] as String? ?? PowerOffCommand.TYPE,
+      id: (json['id'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$PowerOffCommandToJson(_PowerOffCommand instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'id': instance.id,
+    };

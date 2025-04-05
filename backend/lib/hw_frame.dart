@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/power_off_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
@@ -51,6 +52,11 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
           return DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
       }
     });
+
+    injector.registerLazySingleton<PowerOffService>(() {
+      final _config = injector.get<AppConfig>();
+      return PowerOffService(_config.hardware);
+    });
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
       return getGPIOService(_config.hardware);
@@ -73,7 +79,18 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<HardwareService>(() {
       final _config = injector.get<AppConfig>();
-      return HardwareService(_config, _remoteFrontendService, injector(), injector(), injector(), injector(), _remoteWebServer, injector(), injector());
+      return HardwareService(
+        _config,
+        _remoteFrontendService,
+        injector(),
+        injector(),
+        injector(),
+        injector(),
+        _remoteWebServer,
+        injector(),
+        injector(),
+        injector(),
+      );
     });
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;

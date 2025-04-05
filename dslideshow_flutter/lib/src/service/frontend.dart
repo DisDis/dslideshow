@@ -153,6 +153,10 @@ class FrontendService implements RpcService {
     return _backendService.send(ScreenTurnCommand(id: RpcCommand.generateId(), enabled: value));
   }
 
+  Future powerOff() async {
+    return _backendService.send(PowerOffCommand(id: RpcCommand.generateId()));
+  }
+
   Future backendIsReady() async {
     return _backendService.send(AreYouReadyCommand(id: RpcCommand.generateId()));
   }

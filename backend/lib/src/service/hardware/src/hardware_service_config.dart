@@ -34,6 +34,9 @@ class HardwareConfig {
   @JsonKey(defaultValue: './scripts/screenOff.sh')
   String screenPowerOffScript;
 
+  @JsonKey(defaultValue: './scripts/powerOff.sh')
+  String powerOffScript;
+
   @JsonKey(defaultValue: './scripts/screenOn.sh')
   String screenPowerOnScript;
 
@@ -52,7 +55,8 @@ class HardwareConfig {
       required this.smoothingGPIOMs,
       required this.systemDiskDev,
       required this.systemIfConfigScript,
-      required this.sensorsScript});
+      required this.sensorsScript,
+      required this.powerOffScript});
 
   factory HardwareConfig.fromJson(Map<String, dynamic> json) => _$HardwareConfigFromJson(json);
 

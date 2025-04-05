@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/power_off_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -19,6 +20,7 @@ class HardwareService implements RpcService {
   final SystemInfoService _systemInfoService;
   final RemoteService _frontendService;
   final RemoteService _webServer;
+  final PowerOffService _powerOffService;
   final Storage _storage;
 
   final GPIOService _gpioService;
@@ -26,8 +28,18 @@ class HardwareService implements RpcService {
   final MqttService _mqttService;
   final WiFiService _wifiService;
 
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer,
-      this._mqttService, this._wifiService) {
+  HardwareService(
+    AppConfig config,
+    this._frontendService,
+    this._storage,
+    this._gpioService,
+    this._screenService,
+    this._systemInfoService,
+    this._webServer,
+    this._mqttService,
+    this._wifiService,
+    this._powerOffService,
+  ) {
     _init();
   }
 
@@ -115,6 +127,8 @@ class HardwareService implements RpcService {
         return _executeAreYouReadyCommand(command as AreYouReadyCommand);
       case WebServerControlCommand.TYPE:
         return _executeWebServerControlCommand(command as WebServerControlCommand);
+      case PowerOffCommand.TYPE:
+        return _executePowerOffCommand(command as PowerOffCommand);
       case ScreenTurnCommand.TYPE:
         return _executeScreenTurnCommand(command as ScreenTurnCommand);
       case ScreenLockCommand.TYPE:
@@ -210,6 +224,15 @@ class HardwareService implements RpcService {
       _screenService.screenOn();
     } else {
       _screenService.screenOff();
+    }
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executePowerOffCommand(PowerOffCommand command) async {
+    try {
+      _powerOffService.execute();
+    } catch (e, s) {
+      _log.severe('powerOff', e, s);
     }
     return EmptyResult.respond(command);
   }

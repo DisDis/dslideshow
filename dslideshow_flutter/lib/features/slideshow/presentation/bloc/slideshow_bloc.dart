@@ -25,6 +25,10 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   }
 
   void _pushButton(ButtonType event) {
+    if (statusBloc.state.isMenu) {
+      // Skip button push
+      return;
+    }
     switch (event) {
       case ButtonType.button0:
         statusBloc.executeAction(config.buttons.button0);

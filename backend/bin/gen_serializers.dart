@@ -9,6 +9,7 @@ final serializersFor = SerializersFor(const [
   GetMediaItemCommandResult,
   StorageNextCommand,
   ScreenTurnCommand,
+  PowerOffCommand,
   EmptyResult,
   GetSystemInfoCommand,
   GetSystemInfoCommandResult,

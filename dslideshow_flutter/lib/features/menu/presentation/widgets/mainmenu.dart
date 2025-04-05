@@ -1,21 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dslideshow_flutter/features/menu/presentation/bloc/main_menu_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'mainmenu_model.dart';
 
-class MainMenuWidget extends StatefulWidget {
+class MainMenuWidget extends StatelessWidget {
   const MainMenuWidget({super.key});
-
-  @override
-  MenuOptionsScreenState createState() => MenuOptionsScreenState();
-}
-
-class MenuOptionsScreenState extends State<MainMenuWidget> {
-  int _selectedOption = 0;
-  static final Random _rnd = Random();
-  late Timer _demoTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -28,67 +21,50 @@ class MenuOptionsScreenState extends State<MainMenuWidget> {
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: ListView.builder(
-          itemCount: options.length + 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return const SizedBox(height: 15.0);
-            } else if (index == options.length + 1) {
-              return const SizedBox(height: 100.0);
-            }
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(10.0),
-              width: double.infinity,
-              height: 80.0,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                border: _selectedOption == index - 1 ? Border.all(color: Colors.blue) : Border.all(color: Colors.black26),
-              ),
-              child: ListTile(
-                leading: options[index - 1].icon,
-                title: Text(
-                  options[index - 1].title!,
-                  style: TextStyle(
-                    color: _selectedOption == index - 1 ? Colors.black : Colors.grey[600],
+        child: BlocBuilder<MainMenuBloc, MainMenuState>(
+          builder: (context, state) {
+            return ListView.builder(
+              itemCount: options.length + 2,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return const SizedBox(height: 15.0);
+                } else if (index == options.length + 1) {
+                  return const SizedBox(height: 100.0);
+                }
+                return Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.all(10.0),
+                  width: double.infinity,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: state.selectedIndex == index - 1 ? Border.all(color: Colors.blue) : Border.all(color: Colors.black26),
                   ),
-                ),
-                subtitle: Text(
-                  options[index - 1].subtitle!,
-                  style: TextStyle(
-                    color: _selectedOption == index - 1 ? Colors.black : Colors.grey,
+                  child: ListTile(
+                    leading: options[index - 1].icon,
+                    title: Text(
+                      options[index - 1].title,
+                      style: TextStyle(
+                        color: state.selectedIndex == index - 1 ? Colors.black : Colors.grey[600],
+                      ),
+                    ),
+                    subtitle: Text(
+                      options[index - 1].subtitle!,
+                      style: TextStyle(
+                        color: state.selectedIndex == index - 1 ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                    selected: state.selectedIndex == index - 1,
+                    onTap: () {
+                      final bloc = BlocProvider.of<MainMenuBloc>(context);
+                      bloc.add(MainMenuEvent.execute(options[index - 1].command));
+                    },
                   ),
-                ),
-                selected: _selectedOption == index - 1,
-                onTap: () {
-                  setState(() {
-                    _selectedOption = index - 1;
-                  });
-                },
-              ),
+                );
+              },
             );
           },
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _demoTimer = Timer.periodic(const Duration(seconds: 3), _changeSelect);
-  }
-
-  @override
-  void dispose() {
-    _demoTimer.cancel();
-    super.dispose();
-  }
-
-  void _changeSelect(Timer _) {
-    if (mounted) {
-      setState(() {
-        _selectedOption = _rnd.nextInt(options.length - 1);
-      });
-    }
   }
 }

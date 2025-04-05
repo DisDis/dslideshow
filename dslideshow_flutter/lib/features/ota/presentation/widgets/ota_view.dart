@@ -31,6 +31,7 @@ class OTAView extends StatelessWidget {
     final terminalView = Expanded(
         flex: 2,
         child: TerminalView(
+          deleteDetection: true,
           terminal,
           readOnly: true,
           autofocus: true,

@@ -9,23 +9,23 @@ class CommonHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
-      return Stack(
-        children: <Widget>[
-          if (!isLinuxEmbedded)
-            Positioned(
-              right: 0,
-              top: 0,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  final bloc = BlocProvider.of<SlideshowStatusBloc>(context);
-                  bloc.add(SlideshowDebugEvent(!state.isDebug));
-                },
-                child: Container(color: Colors.transparent, width: 30, height: 30),
-              ),
+    return Stack(
+      children: <Widget>[
+        if (!isLinuxEmbedded)
+          Positioned(
+            right: 0,
+            top: 0,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                final bloc = BlocProvider.of<SlideshowStatusBloc>(context);
+                bloc.add(SlideshowDebugEvent(!bloc.state.isDebug));
+              },
+              child: Container(color: Colors.transparent, width: 30, height: 30),
             ),
-          Row(
+          ),
+        BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
+          return Row(
             children: <Widget>[
               if (state.storageStatus == StorageStatusEnum.off)
                 const BlinkAnimation(
@@ -43,7 +43,7 @@ class CommonHeaderWidget extends StatelessWidget {
                   child: Icon(
                     Icons.cloud_download,
                     size: 24.0,
-                    color: Colors.white,
+                    color: Colors.green,
                   ),
                 )
               else if (state.storageStatus == StorageStatusEnum.done)
@@ -83,9 +83,9 @@ class CommonHeaderWidget extends StatelessWidget {
                   ),
                 )
             ],
-          ),
-        ],
-      );
-    });
+          );
+        }),
+      ],
+    );
   }
 }
