@@ -5,12 +5,16 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart';
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   final FrontendService frontendService;
   final TerminalBackend backend;
-  OtaBloc({required this.frontendService, required this.backend})
+  final RouteBloc routeBloc;
+  StreamSubscription? _onPushSubscription;
+
+  OtaBloc({required this.frontendService, required this.backend, required this.routeBloc})
       : super(const OtaState.initial(
             info: OTAInfo(
           uploadingPercent: 0,
@@ -60,6 +64,8 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     //     },
     //   );
     // });
+
+    _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
   }
 
   Future<void> _initialization(OtaEvent event, Emitter<OtaState> emit) async {
@@ -82,6 +88,12 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     emit(OtaState.ready(info: info));
   }
 
+  void _pushButton(ButtonType event) {
+    if (event == ButtonType.button0 && state is OtaReadyState) {
+      routeBloc.add(ChangePageEvent(RoutePage.slideshow));
+    }
+  }
+
   StreamSubscription? _onOTAInfoSubscription;
   StreamSubscription? _onOTAOutputSubscription;
   StreamSubscription? _onOTAReadySubscription;
@@ -93,6 +105,8 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     _onOTAInfoSubscription = null;
     _onOTAOutputSubscription?.cancel();
     _onOTAOutputSubscription = null;
+    _onPushSubscription?.cancel();
+    _onPushSubscription = null;
     return super.close();
   }
 }

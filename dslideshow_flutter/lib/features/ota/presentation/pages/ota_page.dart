@@ -16,8 +16,8 @@ class OTAPage extends StatelessWidget {
   OTAPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-        value: OtaBloc(frontendService: injector(), backend: backend)..add(const OtaEvent.initialization()),
+    return BlocProvider(
+        create: (_) => OtaBloc(frontendService: injector(), backend: backend, routeBloc: injector())..add(const OtaEvent.initialization()),
         child: Scaffold(
             backgroundColor: Colors.black,
             body: OTAView(
