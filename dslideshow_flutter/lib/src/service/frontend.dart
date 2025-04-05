@@ -157,6 +157,10 @@ class FrontendService implements RpcService {
     return _backendService.send(PowerOffCommand(id: RpcCommand.generateId()));
   }
 
+  Future restartApp() async {
+    return _backendService.send(RestartAppCommand(id: RpcCommand.generateId()));
+  }
+
   Future backendIsReady() async {
     return _backendService.send(AreYouReadyCommand(id: RpcCommand.generateId()));
   }

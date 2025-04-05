@@ -66,3 +66,14 @@ sealed class PowerOffCommand with _$PowerOffCommand implements RpcCommand {
 
   factory PowerOffCommand.fromJson(Map<String, dynamic> json) => _$PowerOffCommandFromJson(json);
 }
+
+@freezed
+sealed class RestartAppCommand with _$RestartAppCommand implements RpcCommand {
+  static const String TYPE = 'restartApp';
+  const factory RestartAppCommand({
+    @Default(PowerOffCommand.TYPE) String type,
+    required int id,
+  }) = _RestartAppCommand;
+
+  factory RestartAppCommand.fromJson(Map<String, dynamic> json) => _$RestartAppCommandFromJson(json);
+}

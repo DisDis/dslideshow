@@ -28,6 +28,8 @@ HardwareConfig _$HardwareConfigFromJson(Map<String, dynamic> json) =>
           json['sensorsScript'] as String? ?? './scripts/sensorsScript.sh',
       powerOffScript:
           json['powerOffScript'] as String? ?? './scripts/powerOff.sh',
+      restartAppScript:
+          json['restartAppScript'] as String? ?? './scripts/restarApp.sh',
     );
 
 Map<String, dynamic> _$HardwareConfigToJson(HardwareConfig instance) =>
@@ -44,6 +46,7 @@ Map<String, dynamic> _$HardwareConfigToJson(HardwareConfig instance) =>
       'sensorsScript': instance.sensorsScript,
       'screenPowerOffScript': instance.screenPowerOffScript,
       'powerOffScript': instance.powerOffScript,
+      'restartAppScript': instance.restartAppScript,
       'screenPowerOnScript': instance.screenPowerOnScript,
       'screenPowerOnTimerSec': instance.screenPowerOnTimerSec,
     };

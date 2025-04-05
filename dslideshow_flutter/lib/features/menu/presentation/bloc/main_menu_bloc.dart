@@ -82,14 +82,22 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
       case MenuCommand.powerOff:
         _powerOff();
         break;
+
+      case MenuCommand.restartApp:
+        _restartApp();
+        break;
       case MenuCommand.returnToSlideshow:
-        slideshowStatusBloc.add(SlideshowMenuEvent(false));
         break;
     }
+    slideshowStatusBloc.add(SlideshowMenuEvent(false));
   }
 
   void _powerOff() {
     frontendService.powerOff();
+  }
+
+  void _restartApp() {
+    frontendService.restartApp();
   }
 
   @override

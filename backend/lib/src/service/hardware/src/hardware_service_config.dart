@@ -37,26 +37,31 @@ class HardwareConfig {
   @JsonKey(defaultValue: './scripts/powerOff.sh')
   String powerOffScript;
 
+  @JsonKey(defaultValue: './scripts/restarApp.sh')
+  String restartAppScript;
+
   @JsonKey(defaultValue: './scripts/screenOn.sh')
   String screenPowerOnScript;
 
   @JsonKey(defaultValue: 120)
   int screenPowerOnTimerSec;
-  HardwareConfig(
-      {required this.screenPowerOnTimerSec,
-      required this.screenPowerOnScript,
-      required this.screenPowerOffScript,
-      required this.pinPeopleSensor,
-      required this.pinButton0,
-      required this.pinButton1,
-      required this.pinButton2,
-      required this.pinButton3,
-      required this.pinPowerLED,
-      required this.smoothingGPIOMs,
-      required this.systemDiskDev,
-      required this.systemIfConfigScript,
-      required this.sensorsScript,
-      required this.powerOffScript});
+  HardwareConfig({
+    required this.screenPowerOnTimerSec,
+    required this.screenPowerOnScript,
+    required this.screenPowerOffScript,
+    required this.pinPeopleSensor,
+    required this.pinButton0,
+    required this.pinButton1,
+    required this.pinButton2,
+    required this.pinButton3,
+    required this.pinPowerLED,
+    required this.smoothingGPIOMs,
+    required this.systemDiskDev,
+    required this.systemIfConfigScript,
+    required this.sensorsScript,
+    required this.powerOffScript,
+    required this.restartAppScript,
+  });
 
   factory HardwareConfig.fromJson(Map<String, dynamic> json) => _$HardwareConfigFromJson(json);
 

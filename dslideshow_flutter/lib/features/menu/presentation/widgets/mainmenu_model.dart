@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MenuCommand { returnToSlideshow, update, config, powerOff }
+enum MenuCommand { returnToSlideshow, update, config, powerOff, restartApp }
 
 class Option {
   Icon icon;
@@ -29,6 +29,12 @@ final options = [
     title: 'Сonfig',
     subtitle: 'Сonfig.',
     command: MenuCommand.config,
+  ),
+  Option(
+    icon: const Icon(Icons.reset_tv, size: 40.0),
+    title: 'Restart application',
+    subtitle: 'Restart application.',
+    command: MenuCommand.restartApp,
   ),
   Option(
     icon: const Icon(Icons.power_settings_new, size: 40.0),

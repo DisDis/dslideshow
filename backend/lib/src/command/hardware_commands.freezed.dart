@@ -901,4 +901,165 @@ class __$PowerOffCommandCopyWithImpl<$Res>
   }
 }
 
+/// @nodoc
+mixin _$RestartAppCommand {
+  String get type;
+  int get id;
+
+  /// Create a copy of RestartAppCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RestartAppCommandCopyWith<RestartAppCommand> get copyWith =>
+      _$RestartAppCommandCopyWithImpl<RestartAppCommand>(
+          this as RestartAppCommand, _$identity);
+
+  /// Serializes this RestartAppCommand to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RestartAppCommand &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, type, id);
+
+  @override
+  String toString() {
+    return 'RestartAppCommand(type: $type, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $RestartAppCommandCopyWith<$Res> {
+  factory $RestartAppCommandCopyWith(
+          RestartAppCommand value, $Res Function(RestartAppCommand) _then) =
+      _$RestartAppCommandCopyWithImpl;
+  @useResult
+  $Res call({String type, int id});
+}
+
+/// @nodoc
+class _$RestartAppCommandCopyWithImpl<$Res>
+    implements $RestartAppCommandCopyWith<$Res> {
+  _$RestartAppCommandCopyWithImpl(this._self, this._then);
+
+  final RestartAppCommand _self;
+  final $Res Function(RestartAppCommand) _then;
+
+  /// Create a copy of RestartAppCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? id = null,
+  }) {
+    return _then(_self.copyWith(
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _RestartAppCommand implements RestartAppCommand {
+  const _RestartAppCommand(
+      {this.type = PowerOffCommand.TYPE, required this.id});
+  factory _RestartAppCommand.fromJson(Map<String, dynamic> json) =>
+      _$RestartAppCommandFromJson(json);
+
+  @override
+  @JsonKey()
+  final String type;
+  @override
+  final int id;
+
+  /// Create a copy of RestartAppCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$RestartAppCommandCopyWith<_RestartAppCommand> get copyWith =>
+      __$RestartAppCommandCopyWithImpl<_RestartAppCommand>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$RestartAppCommandToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _RestartAppCommand &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, type, id);
+
+  @override
+  String toString() {
+    return 'RestartAppCommand(type: $type, id: $id)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$RestartAppCommandCopyWith<$Res>
+    implements $RestartAppCommandCopyWith<$Res> {
+  factory _$RestartAppCommandCopyWith(
+          _RestartAppCommand value, $Res Function(_RestartAppCommand) _then) =
+      __$RestartAppCommandCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String type, int id});
+}
+
+/// @nodoc
+class __$RestartAppCommandCopyWithImpl<$Res>
+    implements _$RestartAppCommandCopyWith<$Res> {
+  __$RestartAppCommandCopyWithImpl(this._self, this._then);
+
+  final _RestartAppCommand _self;
+  final $Res Function(_RestartAppCommand) _then;
+
+  /// Create a copy of RestartAppCommand
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? type = null,
+    Object? id = null,
+  }) {
+    return _then(_RestartAppCommand(
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
 // dart format on

@@ -129,6 +129,8 @@ class HardwareService implements RpcService {
         return _executeWebServerControlCommand(command as WebServerControlCommand);
       case PowerOffCommand.TYPE:
         return _executePowerOffCommand(command as PowerOffCommand);
+      case RestartAppCommand.TYPE:
+        return _executeRestartAppCommand(command as RestartAppCommand);
       case ScreenTurnCommand.TYPE:
         return _executeScreenTurnCommand(command as ScreenTurnCommand);
       case ScreenLockCommand.TYPE:
@@ -233,6 +235,15 @@ class HardwareService implements RpcService {
       _powerOffService.execute();
     } catch (e, s) {
       _log.severe('powerOff', e, s);
+    }
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executeRestartAppCommand(RestartAppCommand command) async {
+    try {
+      _powerOffService.restartApp();
+    } catch (e, s) {
+      _log.severe('restartApp', e, s);
     }
     return EmptyResult.respond(command);
   }

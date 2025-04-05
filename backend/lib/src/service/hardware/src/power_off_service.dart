@@ -20,4 +20,13 @@ class PowerOffService {
       _log.severe('execute', e, s);
     }
   }
+
+  void restartApp() async {
+    _log.info('restartApp');
+    try {
+      io.Process.run(_config.restartAppScript, [], runInShell: true);
+    } catch (e, s) {
+      _log.severe('restartApp', e, s);
+    }
+  }
 }
