@@ -30,7 +30,7 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
   }
 
   void _pushButton(ButtonType event) {
-    if (slideshowStatusBloc.state.isMenu) {
+    if (!slideshowStatusBloc.state.isMenu) {
       // Skip button push
       return;
     }
@@ -39,10 +39,10 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
         add(MainMenuEvent.execute(MenuCommand.returnToSlideshow));
         break;
       case ButtonType.button2:
-        emit(state.copyWith(selectedIndex: state.selectedIndex - 1));
+        add(MainMenuEvent.select(state.selectedIndex - 1));
         break;
       case ButtonType.button1:
-        emit(state.copyWith(selectedIndex: state.selectedIndex + 1));
+        add(MainMenuEvent.select(state.selectedIndex + 1));
         break;
       case ButtonType.button3:
         add(MainMenuEvent.execute());
