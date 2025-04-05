@@ -978,7 +978,7 @@ class _$RestartAppCommandCopyWithImpl<$Res>
 @JsonSerializable()
 class _RestartAppCommand implements RestartAppCommand {
   const _RestartAppCommand(
-      {this.type = PowerOffCommand.TYPE, required this.id});
+      {this.type = RestartAppCommand.TYPE, required this.id});
   factory _RestartAppCommand.fromJson(Map<String, dynamic> json) =>
       _$RestartAppCommandFromJson(json);
 

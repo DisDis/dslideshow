@@ -71,7 +71,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return MqttService(_config.mqtt);
+      return MqttService(_config.mqtt, screenService: injector());
     });
     injector.registerLazySingleton<SystemInfoService>(() {
       final _config = injector.get<AppConfig>();

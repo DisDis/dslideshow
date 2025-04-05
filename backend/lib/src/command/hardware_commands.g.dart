@@ -98,7 +98,7 @@ Map<String, dynamic> _$PowerOffCommandToJson(_PowerOffCommand instance) =>
 
 _RestartAppCommand _$RestartAppCommandFromJson(Map<String, dynamic> json) =>
     _RestartAppCommand(
-      type: json['type'] as String? ?? PowerOffCommand.TYPE,
+      type: json['type'] as String? ?? RestartAppCommand.TYPE,
       id: (json['id'] as num).toInt(),
     );
 

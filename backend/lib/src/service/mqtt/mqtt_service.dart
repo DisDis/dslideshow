@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -10,6 +11,7 @@ import 'mqtt_config.dart';
 
 class MqttService {
   static final Logger _log = new Logger('MqttService');
+  final ScreenService screenService;
   final MqttConfig _config;
   final MqttServerClient _client;
   final String _prefixPauseTopic;
@@ -27,7 +29,7 @@ class MqttService {
 
   bool get isConnected => _client.connectionStatus?.state == MqttConnectionState.connected;
 
-  MqttService(this._config)
+  MqttService(this._config, {required this.screenService})
       : _client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
         _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
         _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
@@ -35,6 +37,7 @@ class MqttService {
     if (_config.enabled) {
       _init();
     }
+    screenService.onStateChangePreparation.listen(_onScreenChanged);
   }
 
   void _init() async {
@@ -131,7 +134,8 @@ class MqttService {
 
 //TODO: send real state
     _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
-    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('ON')).payload!);
+    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()..addUTF8String(screenService.isScreenOn ? 'ON' : 'OFF')).payload!);
     _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
   }
 
@@ -144,5 +148,10 @@ class MqttService {
   void _onAutoReconnected() {
     _log.info('onAutoReconnected');
     _publishAllConfig();
+  }
+
+  void _onScreenChanged(bool value) {
+    _client.publishMessage(
+        "$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(value ? 'ON' : 'OFF')).payload!);
   }
 }

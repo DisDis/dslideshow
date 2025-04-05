@@ -71,7 +71,7 @@ sealed class PowerOffCommand with _$PowerOffCommand implements RpcCommand {
 sealed class RestartAppCommand with _$RestartAppCommand implements RpcCommand {
   static const String TYPE = 'restartApp';
   const factory RestartAppCommand({
-    @Default(PowerOffCommand.TYPE) String type,
+    @Default(RestartAppCommand.TYPE) String type,
     required int id,
   }) = _RestartAppCommand;
 
