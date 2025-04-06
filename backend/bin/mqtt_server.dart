@@ -33,10 +33,16 @@ void main(List<String> args) async {
   _log.info("Run");
   try {
     getInjectorModule();
-
+    injector.registerLazySingleton<GPIOService>(() {
+      final _config = injector.get<AppConfig>();
+      return new GPIOServiceImpl(_config.hardware);
+    });
+    injector.registerLazySingleton<ApplicationStateService>(() {
+      return ApplicationStateService(screenService: injector(), gpioService: injector());
+    });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return MqttService(_config.mqtt);
+      return MqttService(_config.mqtt, applicationStateService: injector());
     });
 
     var config = injector.get<AppConfig>();

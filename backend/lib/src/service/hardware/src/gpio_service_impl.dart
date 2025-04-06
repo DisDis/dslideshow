@@ -105,6 +105,7 @@ class GPIOServiceImpl extends GPIOService {
           _scMotion.add(event.edge == SignalEdge.rising);
         }
       });
+      Future.delayed(Duration(milliseconds: 200)).then((_) => _scMotion.add(_linePeopleSensor.getValue()));
 
       _lineButton0.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds > _config.smoothingGPIOMs) {

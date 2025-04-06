@@ -17,6 +17,7 @@ class MqttService {
   final String _prefixPauseTopic;
   final String _prefixScreenTopic;
   final String _prefixMenuTopic;
+  final String _prefixMotionTopic;
   final ApplicationStateService applicationStateService;
 
   final StreamController<bool> _scPause = new StreamController.broadcast();
@@ -34,7 +35,8 @@ class MqttService {
       : _client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
         _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
         _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
-        _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu') {
+        _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
+        _prefixMotionTopic = _config.getDiscoveryPrefix(SensorType.binarySensor.value, 'motion') {
     if (_config.enabled) {
       _init();
     }
@@ -122,6 +124,18 @@ class MqttService {
         "$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
   }
 
+  void _publishSensorConfig(MqttServerClient client, String id, String name, [SensorType sensorType = SensorType.sensor]) {
+    final discovery_prefix = _config.getDiscoveryPrefix(sensorType.value, id);
+    final configPayload = '{'
+        '"name": "$name"'
+        ',"state_topic": "$discovery_prefix/${_config.state_topic}"'
+        ',"unique_id": "${_config.deviceId}_action_${id}"'
+        ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config.deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
+        '}';
+    _client.publishMessage(
+        "$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
+  }
+
   /// The unsolicited disconnect callback
   void _onDisconnected() {
     _log.info('Client onDisconnected');
@@ -140,6 +154,7 @@ class MqttService {
     _publishSwitchConfig(_client, 'pause', 'Pause');
     _publishSwitchConfig(_client, 'screen', 'Screen');
     _publishSwitchConfig(_client, 'menu', 'Menu');
+    _publishSensorConfig(_client, 'motion', 'Motion', SensorType.binarySensor);
   }
 
   void _onAutoReconnected() {
@@ -156,8 +171,18 @@ class MqttService {
           (MqttClientPayloadBuilder()..addUTF8String(state.isScreenOn ? 'ON' : 'OFF')).payload!);
       _client.publishMessage(
           "$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF')).payload!);
+      _client.publishMessage("$_prefixMotionTopic/${_config.state_topic}", MqttQos.atMostOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(state.isMotion ? 'ON' : 'OFF')).payload!);
     } catch (e, s) {
       _log.severe('Fatal error: $e, $s', e, s);
     }
   }
+}
+
+enum SensorType {
+  binarySensor('binary_sensor'),
+  sensor('sensor');
+
+  final String value;
+  const SensorType(this.value);
 }

@@ -54,11 +54,11 @@ class ApplicationStateService {
 sealed class ApplicationState with _$ApplicationState {
   const factory ApplicationState({
     @Default(true) bool hasInternet,
-    @Default(false) bool isScreenOn,
+    @Default(true) bool isScreenOn,
     // @Default(StorageStatusEnum.done) StorageStatusEnum storageStatus,
     @Default(false) bool isMenu,
     // @Default(false) bool isInfo,
     @Default(false) bool isPaused,
-    @Default(false) bool isMotion,
+    @Default(true) bool isMotion,
   }) = _ApplicationState;
 }
