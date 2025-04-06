@@ -3,8 +3,7 @@ import 'dart:isolate';
 import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
-import 'package:dslideshow_backend/src/service/hardware/src/power_off_service.dart';
-import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
+
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
@@ -71,12 +70,16 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return MqttService(_config.mqtt, screenService: injector());
+      return MqttService(_config.mqtt, applicationStateService: injector());
     });
     injector.registerLazySingleton<SystemInfoService>(() {
       final _config = injector.get<AppConfig>();
       return SystemInfoService(_config.hardware);
     });
+    injector.registerLazySingleton<ApplicationStateService>(() {
+      return ApplicationStateService(screenService: injector(), gpioService: injector());
+    });
+
     injector.registerLazySingleton<HardwareService>(() {
       final _config = injector.get<AppConfig>();
       return HardwareService(
@@ -87,6 +90,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
         injector(),
         injector(),
         _remoteWebServer,
+        injector(),
         injector(),
         injector(),
         injector(),

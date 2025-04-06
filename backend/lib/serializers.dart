@@ -25,6 +25,8 @@ class _SerializersImpl implements Serializers {
 
       if (object is PowerOffCommand) return ["PowerOffCommand", object.toJson()];
 
+      if (object is UpdateFrontendStateCommand) return ["UpdateFrontendStateCommand", object.toJson()];
+
       if (object is RestartAppCommand) return ["RestartAppCommand", object.toJson()];
 
       if (object is EmptyResult) return ["EmptyResult", object.toJson()];
@@ -140,6 +142,9 @@ class _SerializersImpl implements Serializers {
 
       case 'PowerOffCommand':
         return PowerOffCommand.fromJson(object);
+
+      case 'UpdateFrontendStateCommand':
+        return UpdateFrontendStateCommand.fromJson(object);
 
       case 'RestartAppCommand':
         return RestartAppCommand.fromJson(object);

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
@@ -11,12 +12,12 @@ import 'mqtt_config.dart';
 
 class MqttService {
   static final Logger _log = new Logger('MqttService');
-  final ScreenService screenService;
   final MqttConfig _config;
   final MqttServerClient _client;
   final String _prefixPauseTopic;
   final String _prefixScreenTopic;
   final String _prefixMenuTopic;
+  final ApplicationStateService applicationStateService;
 
   final StreamController<bool> _scPause = new StreamController.broadcast();
   Stream<bool> get onPause => _scPause.stream;
@@ -29,7 +30,7 @@ class MqttService {
 
   bool get isConnected => _client.connectionStatus?.state == MqttConnectionState.connected;
 
-  MqttService(this._config, {required this.screenService})
+  MqttService(this._config, {required this.applicationStateService})
       : _client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
         _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
         _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
@@ -37,7 +38,6 @@ class MqttService {
     if (_config.enabled) {
       _init();
     }
-    screenService.onStateChangePreparation.listen(_onScreenChanged);
   }
 
   void _init() async {
@@ -81,6 +81,7 @@ class MqttService {
       _log.warning('Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus?.state}');
       _client.disconnect();
     }
+    applicationStateService.onChangedState.listen(_onApplicationChangeState);
   }
 
   void _onUpdate(List<MqttReceivedMessage<MqttMessage>> msgs) {
@@ -132,11 +133,7 @@ class MqttService {
     _client.subscribe("$_prefixMenuTopic/${_config.command_topic}", MqttQos.atMostOnce);
     _publishAllConfig();
 
-//TODO: send real state
-    _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
-    _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String(screenService.isScreenOn ? 'ON' : 'OFF')).payload!);
-    _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String('OFF')).payload!);
+    _onApplicationChangeState(applicationStateService.state);
   }
 
   void _publishAllConfig() {
@@ -150,8 +147,17 @@ class MqttService {
     _publishAllConfig();
   }
 
-  void _onScreenChanged(bool value) {
-    _client.publishMessage(
-        "$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(value ? 'ON' : 'OFF')).payload!);
+  void _onApplicationChangeState(ApplicationState newState) {
+    try {
+      final state = applicationStateService.state;
+      _client.publishMessage(
+          "$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(state.isPaused ? 'ON' : 'OFF')).payload!);
+      _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(state.isScreenOn ? 'ON' : 'OFF')).payload!);
+      _client.publishMessage(
+          "$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF')).payload!);
+    } catch (e, s) {
+      _log.severe('Fatal error: $e, $s', e, s);
+    }
   }
 }

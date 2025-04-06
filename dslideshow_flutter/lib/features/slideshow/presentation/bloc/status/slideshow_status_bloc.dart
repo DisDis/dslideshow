@@ -77,11 +77,15 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   }
 
   void _showMenu([bool? value]) {
-    add(SlideshowMenuEvent(value ?? !state.isMenu));
+    bool tmp = value ?? !state.isMenu;
+    add(SlideshowMenuEvent(tmp));
+    frontendService.updateFrontendState(isMenu: tmp);
   }
 
   void _pause([bool? value]) {
-    add(SlideshowPauseEvent(value ?? !state.isPaused));
+    bool tmp = value ?? !state.isPaused;
+    add(SlideshowPauseEvent(tmp));
+    frontendService.updateFrontendState(isPaused: tmp);
   }
 
   Future _toggleScreen([bool? value]) async {

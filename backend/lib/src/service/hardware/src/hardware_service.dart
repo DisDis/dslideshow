@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/power_off_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
@@ -27,6 +28,7 @@ class HardwareService implements RpcService {
   final ScreenService _screenService;
   final MqttService _mqttService;
   final WiFiService _wifiService;
+  final ApplicationStateService _applicationStateService;
 
   HardwareService(
     AppConfig config,
@@ -39,6 +41,7 @@ class HardwareService implements RpcService {
     this._mqttService,
     this._wifiService,
     this._powerOffService,
+    this._applicationStateService,
   ) {
     _init();
   }
@@ -127,6 +130,8 @@ class HardwareService implements RpcService {
         return _executeAreYouReadyCommand(command as AreYouReadyCommand);
       case WebServerControlCommand.TYPE:
         return _executeWebServerControlCommand(command as WebServerControlCommand);
+      case UpdateFrontendStateCommand.TYPE:
+        return _executeUpdateFrontendStateCommand(command as UpdateFrontendStateCommand);
       case PowerOffCommand.TYPE:
         return _executePowerOffCommand(command as PowerOffCommand);
       case RestartAppCommand.TYPE:
@@ -295,5 +300,19 @@ class HardwareService implements RpcService {
       id: command.id,
       networks: result,
     );
+  }
+
+  Future<RpcResult> _executeUpdateFrontendStateCommand(UpdateFrontendStateCommand command) async {
+    var state = _applicationStateService.state;
+
+    if (command.isMenu != null) {
+      state = state.copyWith(isMenu: command.isMenu!);
+    }
+    if (command.isPaused != null) {
+      state = state.copyWith(isPaused: command.isPaused!);
+    }
+
+    _applicationStateService.update(state);
+    return EmptyResult.respond(command);
   }
 }

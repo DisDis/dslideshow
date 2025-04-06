@@ -10,6 +10,7 @@ final serializersFor = SerializersFor(const [
   StorageNextCommand,
   ScreenTurnCommand,
   PowerOffCommand,
+  UpdateFrontendStateCommand,
   RestartAppCommand,
   EmptyResult,
   GetSystemInfoCommand,

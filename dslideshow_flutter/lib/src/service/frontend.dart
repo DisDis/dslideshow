@@ -169,6 +169,14 @@ class FrontendService implements RpcService {
     return _backendService.send(WebServerControlCommand(id: RpcCommand.generateId(), enable: false));
   }
 
+  Future updateFrontendState({bool? isPaused, bool? isMenu}) async {
+    return _backendService.send(UpdateFrontendStateCommand(
+      id: RpcCommand.generateId(),
+      isPaused: isPaused,
+      isMenu: isMenu,
+    ));
+  }
+
   Future<String> startWebServer() async {
     var codeMsg = await _backendService.send(WebServerControlCommand(id: RpcCommand.generateId(), enable: true)) as WebServerControlCommandResult;
     return codeMsg.code;
