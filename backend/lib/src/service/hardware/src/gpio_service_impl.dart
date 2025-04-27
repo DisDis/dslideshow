@@ -49,18 +49,18 @@ class GPIOServiceImpl extends GPIOService {
 
       /// Print out all GPIO chips and all lines
       /// for all GPIO chips.
-      for (var chip in chips) {
-        _log.info('chip: "$chip"');
+      chips.forEach((indexC, chip) {
+        _log.info('chip: $indexC - "$chip"');
 
         var index = 0;
         for (var line in chip.lines) {
-          final info = await line.info;
+          final info = line.info;
           if (info.consumer != null) {
             _log.info('$index:  ${info}');
           }
           index++;
         }
-      }
+      });
     } catch (e, s) {
       _log.severe('GPIO error: ', e, s);
     }
@@ -77,8 +77,20 @@ class GPIOServiceImpl extends GPIOService {
       /// Retrieve the list of GPIO chips.
       final chips = _gpio.chips;
       _log.info('chips - OK');
-      // old kernel: pinctrl-bcm2835, new kernel: pinctrl-bcm2711
-      _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2711' || chip.label == 'pinctrl-bcm2835');
+      // old kernel: pinctrl-bcm2835, new kernel: pinctrl-bcm2711 , Pi5: pinctrl-rp1
+      GpioChip? chipS;
+      chips.forEach((indexC, chip) {
+        if (chip.label == 'pinctrl-rp1' || chip.label == 'pinctrl-bcm2711' || chip.label == 'pinctrl-bcm2835') {
+          chipS = chip;
+        }
+        _log.info('chip: $indexC - "${chip.label}"');
+      });
+      if (chipS != null) {
+        _chip = chipS!;
+      } else {
+        _log.severe('Not found chip');
+        return;
+      }
       _log.info('Found: ${_chip.label} - OK');
       _linePowerLED = _chip.lines[_config.pinPowerLED];
       _log.info('linePowerLED - OK');

@@ -1,6 +1,7 @@
 #!/bin/sh
 PROFILE_ARC=arm64
 DIR="dslideshow_$PROFILE_ARC"
+CPU_TYPE=pi4
 DEST=$DIR/opt/dslideshow/
 SOURCE_BIN=./source_$PROFILE_ARC
 if [ -d "$DIR" ]; then
@@ -19,7 +20,7 @@ cp -r ./template_build_$PROFILE_ARC ./$DIR || error_exit "copy"
 
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
-./build_aot.sh || error_exit "DSlideshow AOT"
+./build_aot_$CPU_TYPE.sh || error_exit "DSlideshow AOT '$CPU_TYPE'"
 cd ../config_app
 ./build_web.sh || error_exit "Config app"
 cd ../deb_factory
@@ -38,6 +39,6 @@ cd ..
 dpkg-deb -Zxz --build --root-owner-group ./$DIR || error_exit "Deb"
 
 VERSION=`cat $DEST/version`
-mv ./$DIR.deb ./dslideshow-$VERSION-$PROFILE_ARC.deb || error_exit "move"
-echo "Last version dslideshow-$VERSION-$PROFILE_ARC.deb"
+mv ./$DIR.deb ./dslideshow-$VERSION-$PROFILE_ARC-$CPU_TYPE.deb || error_exit "move"
+echo "Last version dslideshow-$VERSION-$PROFILE_ARC-$CPU_TYPE.deb"
 
