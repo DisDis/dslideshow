@@ -11,9 +11,6 @@
 analyzer:
 #  plugins:
 #    - dart_code_metrics
-  enable-experiment:
-    - records
-    - patterns
   exclude:
     - lib/**/**.config.dart
     - lib/**/**.g.dart

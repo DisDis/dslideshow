@@ -28,31 +28,34 @@ sealed class WiFiScanResult with _$WiFiScanResult implements RpcResult {
 @freezed
 sealed class WiFiNetworkInfo with _$WiFiNetworkInfo {
   const factory WiFiNetworkInfo({
+    required String BSSID,
     required String SSID,
     required int signal,
-    required String capability,
-    required int freq,
+    required int channel,
+    required int rate,
+    required String security,
   }) = _WiFiNetworkInfo;
 
   factory WiFiNetworkInfo.fromJson(Map<String, dynamic> json) => _$WiFiNetworkInfoFromJson(json);
 }
 
 @freezed
-sealed class WiFiStoredNetworkInfo with _$WiFiStoredNetworkInfo {
-  const factory WiFiStoredNetworkInfo({
-    required int id,
-    required String SSID,
-    required bool disabled,
-  }) = _WiFiStoredNetworkInfo;
+sealed class WiFiConnectionInfo with _$WiFiConnectionInfo {
+  const factory WiFiConnectionInfo({
+    required String name,
+    required String UUID,
+    required String type,
+    required String device,
+  }) = _WiFiConnectionInfo;
 
-  factory WiFiStoredNetworkInfo.fromJson(Map<String, dynamic> json) => _$WiFiStoredNetworkInfoFromJson(json);
+  factory WiFiConnectionInfo.fromJson(Map<String, dynamic> json) => _$WiFiConnectionInfoFromJson(json);
 }
 
 @freezed
 sealed class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
   static const String TYPE = 'wifi_remove';
   const factory WiFiRemoveCommand({
-    required int wifiId,
+    required String connectionId,
     required int id,
     @Default(WiFiRemoveCommand.TYPE) String type,
   }) = _WiFiRemoveCommand;
@@ -60,21 +63,22 @@ sealed class WiFiRemoveCommand with _$WiFiRemoveCommand implements RpcCommand {
   factory WiFiRemoveCommand.fromJson(Map<String, dynamic> json) => _$WiFiRemoveCommandFromJson(json);
 }
 
-@freezed
-sealed class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
-  static const String TYPE = 'wifi_savecfg';
-  const factory WiFiSaveConfigCommand({
-    required int id,
-    @Default(WiFiSaveConfigCommand.TYPE) String type,
-  }) = _WiFiSaveConfigCommand;
+// @freezed
+// sealed class WiFiSaveConfigCommand with _$WiFiSaveConfigCommand implements RpcCommand {
+//   static const String TYPE = 'wifi_savecfg';
+//   const factory WiFiSaveConfigCommand({
+//     required int id,
+//     @Default(WiFiSaveConfigCommand.TYPE) String type,
+//   }) = _WiFiSaveConfigCommand;
 
-  factory WiFiSaveConfigCommand.fromJson(Map<String, dynamic> json) => _$WiFiSaveConfigCommandFromJson(json);
-}
+//   factory WiFiSaveConfigCommand.fromJson(Map<String, dynamic> json) => _$WiFiSaveConfigCommandFromJson(json);
+// }
 
 @freezed
 sealed class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
   static const String TYPE = 'wifi_add';
   const factory WiFiAddCommand({
+    required String name,
     required String SSID,
     required String psk,
     required int id,
@@ -85,22 +89,22 @@ sealed class WiFiAddCommand with _$WiFiAddCommand implements RpcCommand {
 }
 
 @freezed
-sealed class WiFiGetStoredCommand with _$WiFiGetStoredCommand implements RpcCommand {
-  static const String TYPE = 'wifi_get_stored';
-  const factory WiFiGetStoredCommand({
+sealed class WiFiGetConnectionsCommand with _$WiFiGetConnectionsCommand implements RpcCommand {
+  static const String TYPE = 'wifi_get_connections';
+  const factory WiFiGetConnectionsCommand({
     required int id,
-    @Default(WiFiGetStoredCommand.TYPE) String type,
-  }) = _WiFiGetStoredCommand;
+    @Default(WiFiGetConnectionsCommand.TYPE) String type,
+  }) = _WiFiGetConnectionsCommand;
 
-  factory WiFiGetStoredCommand.fromJson(Map<String, dynamic> json) => _$WiFiGetStoredCommandFromJson(json);
+  factory WiFiGetConnectionsCommand.fromJson(Map<String, dynamic> json) => _$WiFiGetConnectionsCommandFromJson(json);
 }
 
 @freezed
-sealed class WiFiGetStoredResult with _$WiFiGetStoredResult implements RpcResult {
-  const factory WiFiGetStoredResult({
-    required List<WiFiStoredNetworkInfo> networks,
+sealed class WiFiGetConnectionsResult with _$WiFiGetConnectionsResult implements RpcResult {
+  const factory WiFiGetConnectionsResult({
+    required List<WiFiConnectionInfo> networks,
     required int id,
-  }) = _WiFiGetStoredResult;
+  }) = _WiFiGetConnectionsResult;
 
-  factory WiFiGetStoredResult.fromJson(Map<String, dynamic> json) => _$WiFiGetStoredResultFromJson(json);
+  factory WiFiGetConnectionsResult.fromJson(Map<String, dynamic> json) => _$WiFiGetConnectionsResultFromJson(json);
 }

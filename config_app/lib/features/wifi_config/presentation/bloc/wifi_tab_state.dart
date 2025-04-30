@@ -8,7 +8,7 @@ class WifiTabState with _$WifiTabState {
   const factory WifiTabState.uninitialized() = UnWifiTabState;
   const factory WifiTabState.initialized({
     required Iterable<WiFiNetworkInfo> availableNetworks,
-    required Iterable<WiFiStoredNetworkInfo> storedNetworks,
+    required Iterable<WiFiConnectionInfo> connections,
   }) = InWifiTabState;
   const factory WifiTabState.error(String errorMessage) = ErrorWifiTabState;
 }

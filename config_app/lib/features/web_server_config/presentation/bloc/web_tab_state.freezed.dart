@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,210 +10,110 @@ part of 'web_tab_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$WebTabState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() uninitialized,
-    required TResult Function(String errorMessage) error,
-    required TResult Function(AppConfig config) initialized,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? uninitialized,
-    TResult? Function(String errorMessage)? error,
-    TResult? Function(AppConfig config)? initialized,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? uninitialized,
-    TResult Function(String errorMessage)? error,
-    TResult Function(AppConfig config)? initialized,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UnWebTabState value) uninitialized,
-    required TResult Function(ErrorWebTabState value) error,
-    required TResult Function(InWebTabState value) initialized,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UnWebTabState value)? uninitialized,
-    TResult? Function(ErrorWebTabState value)? error,
-    TResult? Function(InWebTabState value)? initialized,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UnWebTabState value)? uninitialized,
-    TResult Function(ErrorWebTabState value)? error,
-    TResult Function(InWebTabState value)? initialized,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WebTabStateCopyWith<$Res> {
-  factory $WebTabStateCopyWith(
-          WebTabState value, $Res Function(WebTabState) then) =
-      _$WebTabStateCopyWithImpl<$Res, WebTabState>;
-}
-
-/// @nodoc
-class _$WebTabStateCopyWithImpl<$Res, $Val extends WebTabState>
-    implements $WebTabStateCopyWith<$Res> {
-  _$WebTabStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$UnWebTabStateImplCopyWith<$Res> {
-  factory _$$UnWebTabStateImplCopyWith(
-          _$UnWebTabStateImpl value, $Res Function(_$UnWebTabStateImpl) then) =
-      __$$UnWebTabStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$UnWebTabStateImplCopyWithImpl<$Res>
-    extends _$WebTabStateCopyWithImpl<$Res, _$UnWebTabStateImpl>
-    implements _$$UnWebTabStateImplCopyWith<$Res> {
-  __$$UnWebTabStateImplCopyWithImpl(
-      _$UnWebTabStateImpl _value, $Res Function(_$UnWebTabStateImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$UnWebTabStateImpl implements UnWebTabState {
-  const _$UnWebTabStateImpl();
-
   @override
-  String toString() {
-    return 'WebTabState.uninitialized()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$UnWebTabStateImpl);
+        (other.runtimeType == runtimeType && other is WebTabState);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() uninitialized,
-    required TResult Function(String errorMessage) error,
-    required TResult Function(AppConfig config) initialized,
-  }) {
-    return uninitialized();
+  String toString() {
+    return 'WebTabState()';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? uninitialized,
-    TResult? Function(String errorMessage)? error,
-    TResult? Function(AppConfig config)? initialized,
-  }) {
-    return uninitialized?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? uninitialized,
-    TResult Function(String errorMessage)? error,
-    TResult Function(AppConfig config)? initialized,
-    required TResult orElse(),
-  }) {
-    if (uninitialized != null) {
-      return uninitialized();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UnWebTabState value) uninitialized,
-    required TResult Function(ErrorWebTabState value) error,
-    required TResult Function(InWebTabState value) initialized,
-  }) {
-    return uninitialized(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UnWebTabState value)? uninitialized,
-    TResult? Function(ErrorWebTabState value)? error,
-    TResult? Function(InWebTabState value)? initialized,
-  }) {
-    return uninitialized?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UnWebTabState value)? uninitialized,
-    TResult Function(ErrorWebTabState value)? error,
-    TResult Function(InWebTabState value)? initialized,
-    required TResult orElse(),
-  }) {
-    if (uninitialized != null) {
-      return uninitialized(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class UnWebTabState implements WebTabState {
-  const factory UnWebTabState() = _$UnWebTabStateImpl;
 }
 
 /// @nodoc
-abstract class _$$ErrorWebTabStateImplCopyWith<$Res> {
-  factory _$$ErrorWebTabStateImplCopyWith(_$ErrorWebTabStateImpl value,
-          $Res Function(_$ErrorWebTabStateImpl) then) =
-      __$$ErrorWebTabStateImplCopyWithImpl<$Res>;
+class $WebTabStateCopyWith<$Res> {
+  $WebTabStateCopyWith(WebTabState _, $Res Function(WebTabState) __);
+}
+
+/// @nodoc
+
+class UnWebTabState implements WebTabState {
+  const UnWebTabState();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is UnWebTabState);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'WebTabState.uninitialized()';
+  }
+}
+
+/// @nodoc
+
+class ErrorWebTabState implements WebTabState {
+  const ErrorWebTabState(this.errorMessage);
+
+  final String errorMessage;
+
+  /// Create a copy of WebTabState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ErrorWebTabStateCopyWith<ErrorWebTabState> get copyWith =>
+      _$ErrorWebTabStateCopyWithImpl<ErrorWebTabState>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ErrorWebTabState &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, errorMessage);
+
+  @override
+  String toString() {
+    return 'WebTabState.error(errorMessage: $errorMessage)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ErrorWebTabStateCopyWith<$Res>
+    implements $WebTabStateCopyWith<$Res> {
+  factory $ErrorWebTabStateCopyWith(
+          ErrorWebTabState value, $Res Function(ErrorWebTabState) _then) =
+      _$ErrorWebTabStateCopyWithImpl;
   @useResult
   $Res call({String errorMessage});
 }
 
 /// @nodoc
-class __$$ErrorWebTabStateImplCopyWithImpl<$Res>
-    extends _$WebTabStateCopyWithImpl<$Res, _$ErrorWebTabStateImpl>
-    implements _$$ErrorWebTabStateImplCopyWith<$Res> {
-  __$$ErrorWebTabStateImplCopyWithImpl(_$ErrorWebTabStateImpl _value,
-      $Res Function(_$ErrorWebTabStateImpl) _then)
-      : super(_value, _then);
+class _$ErrorWebTabStateCopyWithImpl<$Res>
+    implements $ErrorWebTabStateCopyWith<$Res> {
+  _$ErrorWebTabStateCopyWithImpl(this._self, this._then);
 
+  final ErrorWebTabState _self;
+  final $Res Function(ErrorWebTabState) _then;
+
+  /// Create a copy of WebTabState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? errorMessage = null,
   }) {
-    return _then(_$ErrorWebTabStateImpl(
+    return _then(ErrorWebTabState(
       null == errorMessage
-          ? _value.errorMessage
+          ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -221,250 +122,66 @@ class __$$ErrorWebTabStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ErrorWebTabStateImpl implements ErrorWebTabState {
-  const _$ErrorWebTabStateImpl(this.errorMessage);
+class InWebTabState implements WebTabState {
+  const InWebTabState(this.config);
 
-  @override
-  final String errorMessage;
-
-  @override
-  String toString() {
-    return 'WebTabState.error(errorMessage: $errorMessage)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ErrorWebTabStateImpl &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, errorMessage);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ErrorWebTabStateImplCopyWith<_$ErrorWebTabStateImpl> get copyWith =>
-      __$$ErrorWebTabStateImplCopyWithImpl<_$ErrorWebTabStateImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() uninitialized,
-    required TResult Function(String errorMessage) error,
-    required TResult Function(AppConfig config) initialized,
-  }) {
-    return error(errorMessage);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? uninitialized,
-    TResult? Function(String errorMessage)? error,
-    TResult? Function(AppConfig config)? initialized,
-  }) {
-    return error?.call(errorMessage);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? uninitialized,
-    TResult Function(String errorMessage)? error,
-    TResult Function(AppConfig config)? initialized,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(errorMessage);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UnWebTabState value) uninitialized,
-    required TResult Function(ErrorWebTabState value) error,
-    required TResult Function(InWebTabState value) initialized,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UnWebTabState value)? uninitialized,
-    TResult? Function(ErrorWebTabState value)? error,
-    TResult? Function(InWebTabState value)? initialized,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UnWebTabState value)? uninitialized,
-    TResult Function(ErrorWebTabState value)? error,
-    TResult Function(InWebTabState value)? initialized,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ErrorWebTabState implements WebTabState {
-  const factory ErrorWebTabState(final String errorMessage) =
-      _$ErrorWebTabStateImpl;
-
-  String get errorMessage;
-  @JsonKey(ignore: true)
-  _$$ErrorWebTabStateImplCopyWith<_$ErrorWebTabStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$InWebTabStateImplCopyWith<$Res> {
-  factory _$$InWebTabStateImplCopyWith(
-          _$InWebTabStateImpl value, $Res Function(_$InWebTabStateImpl) then) =
-      __$$InWebTabStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({AppConfig config});
-}
-
-/// @nodoc
-class __$$InWebTabStateImplCopyWithImpl<$Res>
-    extends _$WebTabStateCopyWithImpl<$Res, _$InWebTabStateImpl>
-    implements _$$InWebTabStateImplCopyWith<$Res> {
-  __$$InWebTabStateImplCopyWithImpl(
-      _$InWebTabStateImpl _value, $Res Function(_$InWebTabStateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? config = null,
-  }) {
-    return _then(_$InWebTabStateImpl(
-      null == config
-          ? _value.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as AppConfig,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$InWebTabStateImpl implements InWebTabState {
-  const _$InWebTabStateImpl(this.config);
-
-  @override
   final AppConfig config;
 
-  @override
-  String toString() {
-    return 'WebTabState.initialized(config: $config)';
-  }
+  /// Create a copy of WebTabState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $InWebTabStateCopyWith<InWebTabState> get copyWith =>
+      _$InWebTabStateCopyWithImpl<InWebTabState>(this, _$identity);
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$InWebTabStateImpl &&
+            other is InWebTabState &&
             (identical(other.config, config) || other.config == config));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, config);
 
-  @JsonKey(ignore: true)
   @override
+  String toString() {
+    return 'WebTabState.initialized(config: $config)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $InWebTabStateCopyWith<$Res>
+    implements $WebTabStateCopyWith<$Res> {
+  factory $InWebTabStateCopyWith(
+          InWebTabState value, $Res Function(InWebTabState) _then) =
+      _$InWebTabStateCopyWithImpl;
+  @useResult
+  $Res call({AppConfig config});
+}
+
+/// @nodoc
+class _$InWebTabStateCopyWithImpl<$Res>
+    implements $InWebTabStateCopyWith<$Res> {
+  _$InWebTabStateCopyWithImpl(this._self, this._then);
+
+  final InWebTabState _self;
+  final $Res Function(InWebTabState) _then;
+
+  /// Create a copy of WebTabState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  _$$InWebTabStateImplCopyWith<_$InWebTabStateImpl> get copyWith =>
-      __$$InWebTabStateImplCopyWithImpl<_$InWebTabStateImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() uninitialized,
-    required TResult Function(String errorMessage) error,
-    required TResult Function(AppConfig config) initialized,
+  $Res call({
+    Object? config = null,
   }) {
-    return initialized(config);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? uninitialized,
-    TResult? Function(String errorMessage)? error,
-    TResult? Function(AppConfig config)? initialized,
-  }) {
-    return initialized?.call(config);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? uninitialized,
-    TResult Function(String errorMessage)? error,
-    TResult Function(AppConfig config)? initialized,
-    required TResult orElse(),
-  }) {
-    if (initialized != null) {
-      return initialized(config);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UnWebTabState value) uninitialized,
-    required TResult Function(ErrorWebTabState value) error,
-    required TResult Function(InWebTabState value) initialized,
-  }) {
-    return initialized(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UnWebTabState value)? uninitialized,
-    TResult? Function(ErrorWebTabState value)? error,
-    TResult? Function(InWebTabState value)? initialized,
-  }) {
-    return initialized?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UnWebTabState value)? uninitialized,
-    TResult Function(ErrorWebTabState value)? error,
-    TResult Function(InWebTabState value)? initialized,
-    required TResult orElse(),
-  }) {
-    if (initialized != null) {
-      return initialized(this);
-    }
-    return orElse();
+    return _then(InWebTabState(
+      null == config
+          ? _self.config
+          : config // ignore: cast_nullable_to_non_nullable
+              as AppConfig,
+    ));
   }
 }
 
-abstract class InWebTabState implements WebTabState {
-  const factory InWebTabState(final AppConfig config) = _$InWebTabStateImpl;
-
-  AppConfig get config;
-  @JsonKey(ignore: true)
-  _$$InWebTabStateImplCopyWith<_$InWebTabStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

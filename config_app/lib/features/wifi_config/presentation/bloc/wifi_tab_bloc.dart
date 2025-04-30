@@ -30,10 +30,10 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
       try {
         await client.send(WSSendRpcCommand.byCommand(WiFiAddCommand(
           id: RpcCommand.generateId(),
+          name: event.name,
           SSID: event.SSID,
           psk: event.psk,
         )));
-        await client.send(WSSendRpcCommand.byCommand(WiFiSaveConfigCommand(id: RpcCommand.generateId())));
         await _updateData(emit);
       } catch (e, st) {
         _log.severe('FATAL', e, st);
@@ -43,7 +43,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
 
     on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
       emit(const UnWifiTabState());
-      await client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(id: RpcCommand.generateId(), wifiId: event.wifiId)));
+      await client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(id: RpcCommand.generateId(), connectionId: event.connectionId)));
       await _updateData(emit);
     });
 
@@ -56,38 +56,14 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
 
   Future<void> _updateData(Emitter<WifiTabState> emit) async {
     final fScan = client.send(WSSendRpcCommand.byCommand(WiFiScanCommand(id: RpcCommand.generateId())));
-    final fStored = client.send(WSSendRpcCommand.byCommand(WiFiGetStoredCommand(id: RpcCommand.generateId())));
+    final fStored = client.send(WSSendRpcCommand.byCommand(WiFiGetConnectionsCommand(id: RpcCommand.generateId())));
     final scanResult = serializers.deserialize((await fScan as WSRpcResult).resultData) as WiFiScanResult;
-    final storedResult = serializers.deserialize((await fStored as WSRpcResult).resultData) as WiFiGetStoredResult;
-    //FIX: Remove delay
-    // await Future.delayed(const Duration(seconds: 1));
-    //FIX: Remove stub data
-    final availableNetworks =
-        /*scanResult.networks!.isEmpty
-        ? <WiFiNetworkInfo>[
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Tenda_7BF3B0'
-              ..signal = '-88.00 dBm'
-              ..capability = 'ESS Privacy ShortSlotTime (0x0411)'
-              ..freq = 2437),
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Jazzir_2G'
-              ..signal = '-67.00 dBm'
-              ..capability = 'ESS Privacy ShortSlotTime RadioMeasure (0x1411)'
-              ..freq = 2437),
-            WiFiNetworkInfo((b) => b
-              ..SSID = 'Jazzir_5G'
-              ..signal = '-57.00 dBm'
-              ..capability = 'ESS Privacy SpectrumMgmt RadioMeasure (0x1111)'
-              ..freq = 5500)
-          ]
-        : 
-        */
-        scanResult.networks.toList(growable: false);
+    final storedResult = serializers.deserialize((await fStored as WSRpcResult).resultData) as WiFiGetConnectionsResult;
+    final availableNetworks = scanResult.networks.toList(growable: false);
 
-    final storedNetworks = storedResult.networks.toList(growable: false);
+    final connections = storedResult.networks.toList(growable: false);
 
-    emit(InWifiTabState(availableNetworks: availableNetworks, storedNetworks: storedNetworks));
+    emit(InWifiTabState(availableNetworks: availableNetworks, connections: connections));
   }
 
   Future _onLoadWifi(WifiTabEvent event, emit) async {

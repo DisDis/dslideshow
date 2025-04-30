@@ -156,10 +156,8 @@ class HardwareService implements RpcService {
         return _executeWiFiAddCommand(command as WiFiAddCommand);
       case WiFiRemoveCommand.TYPE:
         return _executeWiFiRemoveCommand(command as WiFiRemoveCommand);
-      case WiFiSaveConfigCommand.TYPE:
-        return _executeWiFiSaveConfigCommand(command as WiFiSaveConfigCommand);
-      case WiFiGetStoredCommand.TYPE:
-        return _executeWiFiGetStoredCommand(command as WiFiGetStoredCommand);
+      case WiFiGetConnectionsCommand.TYPE:
+        return _executeWiFiGetConnectionsCommand(command as WiFiGetConnectionsCommand);
       case EchoCommand.TYPE:
         return _executeEchoCommand(command as EchoCommand);
       default:
@@ -280,23 +278,18 @@ class HardwareService implements RpcService {
   }
 
   Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {
-    _wifiService.addNetwork(command.SSID, command.psk);
-    return EmptyResult.respond(command);
-  }
-
-  Future<RpcResult> _executeWiFiSaveConfigCommand(WiFiSaveConfigCommand command) async {
-    _wifiService.saveConfig();
+    _wifiService.addWiFiConnection(command.name, command.SSID, command.psk);
     return EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeWiFiRemoveCommand(WiFiRemoveCommand command) async {
-    _wifiService.removeNetwork(command.wifiId);
+    _wifiService.deleteConnection(command.connectionId);
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executeWiFiGetStoredCommand(WiFiGetStoredCommand command) async {
-    var result = await _wifiService.getStored();
-    return WiFiGetStoredResult(
+  Future<RpcResult> _executeWiFiGetConnectionsCommand(WiFiGetConnectionsCommand command) async {
+    var result = await _wifiService.getConnections();
+    return WiFiGetConnectionsResult(
       id: command.id,
       networks: result,
     );

@@ -119,10 +119,10 @@ class _$ApplicationStateCopyWithImpl<$Res>
 class _ApplicationState implements ApplicationState {
   const _ApplicationState(
       {this.hasInternet = true,
-      this.isScreenOn = false,
+      this.isScreenOn = true,
       this.isMenu = false,
       this.isPaused = false,
-      this.isMotion = false});
+      this.isMotion = true});
 
   @override
   @JsonKey()

@@ -34,66 +34,57 @@ Map<String, dynamic> _$WiFiScanResultToJson(_WiFiScanResult instance) =>
 
 _WiFiNetworkInfo _$WiFiNetworkInfoFromJson(Map<String, dynamic> json) =>
     _WiFiNetworkInfo(
+      BSSID: json['BSSID'] as String,
       SSID: json['SSID'] as String,
       signal: (json['signal'] as num).toInt(),
-      capability: json['capability'] as String,
-      freq: (json['freq'] as num).toInt(),
+      channel: (json['channel'] as num).toInt(),
+      rate: (json['rate'] as num).toInt(),
+      security: json['security'] as String,
     );
 
 Map<String, dynamic> _$WiFiNetworkInfoToJson(_WiFiNetworkInfo instance) =>
     <String, dynamic>{
+      'BSSID': instance.BSSID,
       'SSID': instance.SSID,
       'signal': instance.signal,
-      'capability': instance.capability,
-      'freq': instance.freq,
+      'channel': instance.channel,
+      'rate': instance.rate,
+      'security': instance.security,
     };
 
-_WiFiStoredNetworkInfo _$WiFiStoredNetworkInfoFromJson(
-        Map<String, dynamic> json) =>
-    _WiFiStoredNetworkInfo(
-      id: (json['id'] as num).toInt(),
-      SSID: json['SSID'] as String,
-      disabled: json['disabled'] as bool,
+_WiFiConnectionInfo _$WiFiConnectionInfoFromJson(Map<String, dynamic> json) =>
+    _WiFiConnectionInfo(
+      name: json['name'] as String,
+      UUID: json['UUID'] as String,
+      type: json['type'] as String,
+      device: json['device'] as String,
     );
 
-Map<String, dynamic> _$WiFiStoredNetworkInfoToJson(
-        _WiFiStoredNetworkInfo instance) =>
+Map<String, dynamic> _$WiFiConnectionInfoToJson(_WiFiConnectionInfo instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'SSID': instance.SSID,
-      'disabled': instance.disabled,
+      'name': instance.name,
+      'UUID': instance.UUID,
+      'type': instance.type,
+      'device': instance.device,
     };
 
 _WiFiRemoveCommand _$WiFiRemoveCommandFromJson(Map<String, dynamic> json) =>
     _WiFiRemoveCommand(
-      wifiId: (json['wifiId'] as num).toInt(),
+      connectionId: json['connectionId'] as String,
       id: (json['id'] as num).toInt(),
       type: json['type'] as String? ?? WiFiRemoveCommand.TYPE,
     );
 
 Map<String, dynamic> _$WiFiRemoveCommandToJson(_WiFiRemoveCommand instance) =>
     <String, dynamic>{
-      'wifiId': instance.wifiId,
-      'id': instance.id,
-      'type': instance.type,
-    };
-
-_WiFiSaveConfigCommand _$WiFiSaveConfigCommandFromJson(
-        Map<String, dynamic> json) =>
-    _WiFiSaveConfigCommand(
-      id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? WiFiSaveConfigCommand.TYPE,
-    );
-
-Map<String, dynamic> _$WiFiSaveConfigCommandToJson(
-        _WiFiSaveConfigCommand instance) =>
-    <String, dynamic>{
+      'connectionId': instance.connectionId,
       'id': instance.id,
       'type': instance.type,
     };
 
 _WiFiAddCommand _$WiFiAddCommandFromJson(Map<String, dynamic> json) =>
     _WiFiAddCommand(
+      name: json['name'] as String,
       SSID: json['SSID'] as String,
       psk: json['psk'] as String,
       id: (json['id'] as num).toInt(),
@@ -102,36 +93,38 @@ _WiFiAddCommand _$WiFiAddCommandFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$WiFiAddCommandToJson(_WiFiAddCommand instance) =>
     <String, dynamic>{
+      'name': instance.name,
       'SSID': instance.SSID,
       'psk': instance.psk,
       'id': instance.id,
       'type': instance.type,
     };
 
-_WiFiGetStoredCommand _$WiFiGetStoredCommandFromJson(
+_WiFiGetConnectionsCommand _$WiFiGetConnectionsCommandFromJson(
         Map<String, dynamic> json) =>
-    _WiFiGetStoredCommand(
+    _WiFiGetConnectionsCommand(
       id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? WiFiGetStoredCommand.TYPE,
+      type: json['type'] as String? ?? WiFiGetConnectionsCommand.TYPE,
     );
 
-Map<String, dynamic> _$WiFiGetStoredCommandToJson(
-        _WiFiGetStoredCommand instance) =>
+Map<String, dynamic> _$WiFiGetConnectionsCommandToJson(
+        _WiFiGetConnectionsCommand instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
     };
 
-_WiFiGetStoredResult _$WiFiGetStoredResultFromJson(Map<String, dynamic> json) =>
-    _WiFiGetStoredResult(
+_WiFiGetConnectionsResult _$WiFiGetConnectionsResultFromJson(
+        Map<String, dynamic> json) =>
+    _WiFiGetConnectionsResult(
       networks: (json['networks'] as List<dynamic>)
-          .map((e) => WiFiStoredNetworkInfo.fromJson(e as Map<String, dynamic>))
+          .map((e) => WiFiConnectionInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
       id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$WiFiGetStoredResultToJson(
-        _WiFiGetStoredResult instance) =>
+Map<String, dynamic> _$WiFiGetConnectionsResultToJson(
+        _WiFiGetConnectionsResult instance) =>
     <String, dynamic>{
       'networks': instance.networks.map((e) => e.toJson()).toList(),
       'id': instance.id,

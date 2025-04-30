@@ -71,11 +71,9 @@ class _SerializersImpl implements Serializers {
 
       if (object is WiFiAddCommand) return ["WiFiAddCommand", object.toJson()];
 
-      if (object is WiFiGetStoredCommand) return ["WiFiGetStoredCommand", object.toJson()];
+      if (object is WiFiGetConnectionsCommand) return ["WiFiGetConnectionsCommand", object.toJson()];
 
       if (object is WiFiRemoveCommand) return ["WiFiRemoveCommand", object.toJson()];
-
-      if (object is WiFiSaveConfigCommand) return ["WiFiSaveConfigCommand", object.toJson()];
 
       if (object is WiFiScanCommand) return ["WiFiScanCommand", object.toJson()];
 
@@ -83,7 +81,7 @@ class _SerializersImpl implements Serializers {
 
       if (object is WiFiScanResult) return ["WiFiScanResult", object.toJson()];
 
-      if (object is WiFiGetStoredResult) return ["WiFiGetStoredResult", object.toJson()];
+      if (object is WiFiGetConnectionsResult) return ["WiFiGetConnectionsResult", object.toJson()];
 
       if (object is WSHelloCommand) return ["WSHelloCommand", object.toJson()];
 
@@ -212,14 +210,11 @@ class _SerializersImpl implements Serializers {
       case 'WiFiAddCommand':
         return WiFiAddCommand.fromJson(object);
 
-      case 'WiFiGetStoredCommand':
-        return WiFiGetStoredCommand.fromJson(object);
+      case 'WiFiGetConnectionsCommand':
+        return WiFiGetConnectionsCommand.fromJson(object);
 
       case 'WiFiRemoveCommand':
         return WiFiRemoveCommand.fromJson(object);
-
-      case 'WiFiSaveConfigCommand':
-        return WiFiSaveConfigCommand.fromJson(object);
 
       case 'WiFiScanCommand':
         return WiFiScanCommand.fromJson(object);
@@ -230,8 +225,8 @@ class _SerializersImpl implements Serializers {
       case 'WiFiScanResult':
         return WiFiScanResult.fromJson(object);
 
-      case 'WiFiGetStoredResult':
-        return WiFiGetStoredResult.fromJson(object);
+      case 'WiFiGetConnectionsResult':
+        return WiFiGetConnectionsResult.fromJson(object);
 
       case 'WSHelloCommand':
         return WSHelloCommand.fromJson(object);

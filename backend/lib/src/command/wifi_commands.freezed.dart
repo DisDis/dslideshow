@@ -344,10 +344,12 @@ class __$WiFiScanResultCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$WiFiNetworkInfo {
+  String get BSSID;
   String get SSID;
   int get signal;
-  String get capability;
-  int get freq;
+  int get channel;
+  int get rate;
+  String get security;
 
   /// Create a copy of WiFiNetworkInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -365,20 +367,23 @@ mixin _$WiFiNetworkInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is WiFiNetworkInfo &&
+            (identical(other.BSSID, BSSID) || other.BSSID == BSSID) &&
             (identical(other.SSID, SSID) || other.SSID == SSID) &&
             (identical(other.signal, signal) || other.signal == signal) &&
-            (identical(other.capability, capability) ||
-                other.capability == capability) &&
-            (identical(other.freq, freq) || other.freq == freq));
+            (identical(other.channel, channel) || other.channel == channel) &&
+            (identical(other.rate, rate) || other.rate == rate) &&
+            (identical(other.security, security) ||
+                other.security == security));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, SSID, signal, capability, freq);
+  int get hashCode =>
+      Object.hash(runtimeType, BSSID, SSID, signal, channel, rate, security);
 
   @override
   String toString() {
-    return 'WiFiNetworkInfo(SSID: $SSID, signal: $signal, capability: $capability, freq: $freq)';
+    return 'WiFiNetworkInfo(BSSID: $BSSID, SSID: $SSID, signal: $signal, channel: $channel, rate: $rate, security: $security)';
   }
 }
 
@@ -388,7 +393,13 @@ abstract mixin class $WiFiNetworkInfoCopyWith<$Res> {
           WiFiNetworkInfo value, $Res Function(WiFiNetworkInfo) _then) =
       _$WiFiNetworkInfoCopyWithImpl;
   @useResult
-  $Res call({String SSID, int signal, String capability, int freq});
+  $Res call(
+      {String BSSID,
+      String SSID,
+      int signal,
+      int channel,
+      int rate,
+      String security});
 }
 
 /// @nodoc
@@ -404,12 +415,18 @@ class _$WiFiNetworkInfoCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? BSSID = null,
     Object? SSID = null,
     Object? signal = null,
-    Object? capability = null,
-    Object? freq = null,
+    Object? channel = null,
+    Object? rate = null,
+    Object? security = null,
   }) {
     return _then(_self.copyWith(
+      BSSID: null == BSSID
+          ? _self.BSSID
+          : BSSID // ignore: cast_nullable_to_non_nullable
+              as String,
       SSID: null == SSID
           ? _self.SSID
           : SSID // ignore: cast_nullable_to_non_nullable
@@ -418,14 +435,18 @@ class _$WiFiNetworkInfoCopyWithImpl<$Res>
           ? _self.signal
           : signal // ignore: cast_nullable_to_non_nullable
               as int,
-      capability: null == capability
-          ? _self.capability
-          : capability // ignore: cast_nullable_to_non_nullable
-              as String,
-      freq: null == freq
-          ? _self.freq
-          : freq // ignore: cast_nullable_to_non_nullable
+      channel: null == channel
+          ? _self.channel
+          : channel // ignore: cast_nullable_to_non_nullable
               as int,
+      rate: null == rate
+          ? _self.rate
+          : rate // ignore: cast_nullable_to_non_nullable
+              as int,
+      security: null == security
+          ? _self.security
+          : security // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -434,21 +455,27 @@ class _$WiFiNetworkInfoCopyWithImpl<$Res>
 @JsonSerializable()
 class _WiFiNetworkInfo implements WiFiNetworkInfo {
   const _WiFiNetworkInfo(
-      {required this.SSID,
+      {required this.BSSID,
+      required this.SSID,
       required this.signal,
-      required this.capability,
-      required this.freq});
+      required this.channel,
+      required this.rate,
+      required this.security});
   factory _WiFiNetworkInfo.fromJson(Map<String, dynamic> json) =>
       _$WiFiNetworkInfoFromJson(json);
 
+  @override
+  final String BSSID;
   @override
   final String SSID;
   @override
   final int signal;
   @override
-  final String capability;
+  final int channel;
   @override
-  final int freq;
+  final int rate;
+  @override
+  final String security;
 
   /// Create a copy of WiFiNetworkInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -470,20 +497,23 @@ class _WiFiNetworkInfo implements WiFiNetworkInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _WiFiNetworkInfo &&
+            (identical(other.BSSID, BSSID) || other.BSSID == BSSID) &&
             (identical(other.SSID, SSID) || other.SSID == SSID) &&
             (identical(other.signal, signal) || other.signal == signal) &&
-            (identical(other.capability, capability) ||
-                other.capability == capability) &&
-            (identical(other.freq, freq) || other.freq == freq));
+            (identical(other.channel, channel) || other.channel == channel) &&
+            (identical(other.rate, rate) || other.rate == rate) &&
+            (identical(other.security, security) ||
+                other.security == security));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, SSID, signal, capability, freq);
+  int get hashCode =>
+      Object.hash(runtimeType, BSSID, SSID, signal, channel, rate, security);
 
   @override
   String toString() {
-    return 'WiFiNetworkInfo(SSID: $SSID, signal: $signal, capability: $capability, freq: $freq)';
+    return 'WiFiNetworkInfo(BSSID: $BSSID, SSID: $SSID, signal: $signal, channel: $channel, rate: $rate, security: $security)';
   }
 }
 
@@ -495,7 +525,13 @@ abstract mixin class _$WiFiNetworkInfoCopyWith<$Res>
       __$WiFiNetworkInfoCopyWithImpl;
   @override
   @useResult
-  $Res call({String SSID, int signal, String capability, int freq});
+  $Res call(
+      {String BSSID,
+      String SSID,
+      int signal,
+      int channel,
+      int rate,
+      String security});
 }
 
 /// @nodoc
@@ -511,12 +547,18 @@ class __$WiFiNetworkInfoCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? BSSID = null,
     Object? SSID = null,
     Object? signal = null,
-    Object? capability = null,
-    Object? freq = null,
+    Object? channel = null,
+    Object? rate = null,
+    Object? security = null,
   }) {
     return _then(_WiFiNetworkInfo(
+      BSSID: null == BSSID
+          ? _self.BSSID
+          : BSSID // ignore: cast_nullable_to_non_nullable
+              as String,
       SSID: null == SSID
           ? _self.SSID
           : SSID // ignore: cast_nullable_to_non_nullable
@@ -525,126 +567,140 @@ class __$WiFiNetworkInfoCopyWithImpl<$Res>
           ? _self.signal
           : signal // ignore: cast_nullable_to_non_nullable
               as int,
-      capability: null == capability
-          ? _self.capability
-          : capability // ignore: cast_nullable_to_non_nullable
-              as String,
-      freq: null == freq
-          ? _self.freq
-          : freq // ignore: cast_nullable_to_non_nullable
+      channel: null == channel
+          ? _self.channel
+          : channel // ignore: cast_nullable_to_non_nullable
               as int,
+      rate: null == rate
+          ? _self.rate
+          : rate // ignore: cast_nullable_to_non_nullable
+              as int,
+      security: null == security
+          ? _self.security
+          : security // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
-mixin _$WiFiStoredNetworkInfo {
-  int get id;
-  String get SSID;
-  bool get disabled;
+mixin _$WiFiConnectionInfo {
+  String get name;
+  String get UUID;
+  String get type;
+  String get device;
 
-  /// Create a copy of WiFiStoredNetworkInfo
+  /// Create a copy of WiFiConnectionInfo
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $WiFiStoredNetworkInfoCopyWith<WiFiStoredNetworkInfo> get copyWith =>
-      _$WiFiStoredNetworkInfoCopyWithImpl<WiFiStoredNetworkInfo>(
-          this as WiFiStoredNetworkInfo, _$identity);
+  $WiFiConnectionInfoCopyWith<WiFiConnectionInfo> get copyWith =>
+      _$WiFiConnectionInfoCopyWithImpl<WiFiConnectionInfo>(
+          this as WiFiConnectionInfo, _$identity);
 
-  /// Serializes this WiFiStoredNetworkInfo to a JSON map.
+  /// Serializes this WiFiConnectionInfo to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is WiFiStoredNetworkInfo &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.SSID, SSID) || other.SSID == SSID) &&
-            (identical(other.disabled, disabled) ||
-                other.disabled == disabled));
+            other is WiFiConnectionInfo &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.UUID, UUID) || other.UUID == UUID) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.device, device) || other.device == device));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, SSID, disabled);
+  int get hashCode => Object.hash(runtimeType, name, UUID, type, device);
 
   @override
   String toString() {
-    return 'WiFiStoredNetworkInfo(id: $id, SSID: $SSID, disabled: $disabled)';
+    return 'WiFiConnectionInfo(name: $name, UUID: $UUID, type: $type, device: $device)';
   }
 }
 
 /// @nodoc
-abstract mixin class $WiFiStoredNetworkInfoCopyWith<$Res> {
-  factory $WiFiStoredNetworkInfoCopyWith(WiFiStoredNetworkInfo value,
-          $Res Function(WiFiStoredNetworkInfo) _then) =
-      _$WiFiStoredNetworkInfoCopyWithImpl;
+abstract mixin class $WiFiConnectionInfoCopyWith<$Res> {
+  factory $WiFiConnectionInfoCopyWith(
+          WiFiConnectionInfo value, $Res Function(WiFiConnectionInfo) _then) =
+      _$WiFiConnectionInfoCopyWithImpl;
   @useResult
-  $Res call({int id, String SSID, bool disabled});
+  $Res call({String name, String UUID, String type, String device});
 }
 
 /// @nodoc
-class _$WiFiStoredNetworkInfoCopyWithImpl<$Res>
-    implements $WiFiStoredNetworkInfoCopyWith<$Res> {
-  _$WiFiStoredNetworkInfoCopyWithImpl(this._self, this._then);
+class _$WiFiConnectionInfoCopyWithImpl<$Res>
+    implements $WiFiConnectionInfoCopyWith<$Res> {
+  _$WiFiConnectionInfoCopyWithImpl(this._self, this._then);
 
-  final WiFiStoredNetworkInfo _self;
-  final $Res Function(WiFiStoredNetworkInfo) _then;
+  final WiFiConnectionInfo _self;
+  final $Res Function(WiFiConnectionInfo) _then;
 
-  /// Create a copy of WiFiStoredNetworkInfo
+  /// Create a copy of WiFiConnectionInfo
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? SSID = null,
-    Object? disabled = null,
+    Object? name = null,
+    Object? UUID = null,
+    Object? type = null,
+    Object? device = null,
   }) {
     return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      SSID: null == SSID
-          ? _self.SSID
-          : SSID // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      disabled: null == disabled
-          ? _self.disabled
-          : disabled // ignore: cast_nullable_to_non_nullable
-              as bool,
+      UUID: null == UUID
+          ? _self.UUID
+          : UUID // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      device: null == device
+          ? _self.device
+          : device // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _WiFiStoredNetworkInfo implements WiFiStoredNetworkInfo {
-  const _WiFiStoredNetworkInfo(
-      {required this.id, required this.SSID, required this.disabled});
-  factory _WiFiStoredNetworkInfo.fromJson(Map<String, dynamic> json) =>
-      _$WiFiStoredNetworkInfoFromJson(json);
+class _WiFiConnectionInfo implements WiFiConnectionInfo {
+  const _WiFiConnectionInfo(
+      {required this.name,
+      required this.UUID,
+      required this.type,
+      required this.device});
+  factory _WiFiConnectionInfo.fromJson(Map<String, dynamic> json) =>
+      _$WiFiConnectionInfoFromJson(json);
 
   @override
-  final int id;
+  final String name;
   @override
-  final String SSID;
+  final String UUID;
   @override
-  final bool disabled;
+  final String type;
+  @override
+  final String device;
 
-  /// Create a copy of WiFiStoredNetworkInfo
+  /// Create a copy of WiFiConnectionInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$WiFiStoredNetworkInfoCopyWith<_WiFiStoredNetworkInfo> get copyWith =>
-      __$WiFiStoredNetworkInfoCopyWithImpl<_WiFiStoredNetworkInfo>(
-          this, _$identity);
+  _$WiFiConnectionInfoCopyWith<_WiFiConnectionInfo> get copyWith =>
+      __$WiFiConnectionInfoCopyWithImpl<_WiFiConnectionInfo>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$WiFiStoredNetworkInfoToJson(
+    return _$WiFiConnectionInfoToJson(
       this,
     );
   }
@@ -653,71 +709,76 @@ class _WiFiStoredNetworkInfo implements WiFiStoredNetworkInfo {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _WiFiStoredNetworkInfo &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.SSID, SSID) || other.SSID == SSID) &&
-            (identical(other.disabled, disabled) ||
-                other.disabled == disabled));
+            other is _WiFiConnectionInfo &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.UUID, UUID) || other.UUID == UUID) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.device, device) || other.device == device));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, SSID, disabled);
+  int get hashCode => Object.hash(runtimeType, name, UUID, type, device);
 
   @override
   String toString() {
-    return 'WiFiStoredNetworkInfo(id: $id, SSID: $SSID, disabled: $disabled)';
+    return 'WiFiConnectionInfo(name: $name, UUID: $UUID, type: $type, device: $device)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$WiFiStoredNetworkInfoCopyWith<$Res>
-    implements $WiFiStoredNetworkInfoCopyWith<$Res> {
-  factory _$WiFiStoredNetworkInfoCopyWith(_WiFiStoredNetworkInfo value,
-          $Res Function(_WiFiStoredNetworkInfo) _then) =
-      __$WiFiStoredNetworkInfoCopyWithImpl;
+abstract mixin class _$WiFiConnectionInfoCopyWith<$Res>
+    implements $WiFiConnectionInfoCopyWith<$Res> {
+  factory _$WiFiConnectionInfoCopyWith(
+          _WiFiConnectionInfo value, $Res Function(_WiFiConnectionInfo) _then) =
+      __$WiFiConnectionInfoCopyWithImpl;
   @override
   @useResult
-  $Res call({int id, String SSID, bool disabled});
+  $Res call({String name, String UUID, String type, String device});
 }
 
 /// @nodoc
-class __$WiFiStoredNetworkInfoCopyWithImpl<$Res>
-    implements _$WiFiStoredNetworkInfoCopyWith<$Res> {
-  __$WiFiStoredNetworkInfoCopyWithImpl(this._self, this._then);
+class __$WiFiConnectionInfoCopyWithImpl<$Res>
+    implements _$WiFiConnectionInfoCopyWith<$Res> {
+  __$WiFiConnectionInfoCopyWithImpl(this._self, this._then);
 
-  final _WiFiStoredNetworkInfo _self;
-  final $Res Function(_WiFiStoredNetworkInfo) _then;
+  final _WiFiConnectionInfo _self;
+  final $Res Function(_WiFiConnectionInfo) _then;
 
-  /// Create a copy of WiFiStoredNetworkInfo
+  /// Create a copy of WiFiConnectionInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
-    Object? SSID = null,
-    Object? disabled = null,
+    Object? name = null,
+    Object? UUID = null,
+    Object? type = null,
+    Object? device = null,
   }) {
-    return _then(_WiFiStoredNetworkInfo(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      SSID: null == SSID
-          ? _self.SSID
-          : SSID // ignore: cast_nullable_to_non_nullable
+    return _then(_WiFiConnectionInfo(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      disabled: null == disabled
-          ? _self.disabled
-          : disabled // ignore: cast_nullable_to_non_nullable
-              as bool,
+      UUID: null == UUID
+          ? _self.UUID
+          : UUID // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      device: null == device
+          ? _self.device
+          : device // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 mixin _$WiFiRemoveCommand {
-  int get wifiId;
+  String get connectionId;
   int get id;
   String get type;
 
@@ -737,18 +798,19 @@ mixin _$WiFiRemoveCommand {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is WiFiRemoveCommand &&
-            (identical(other.wifiId, wifiId) || other.wifiId == wifiId) &&
+            (identical(other.connectionId, connectionId) ||
+                other.connectionId == connectionId) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, wifiId, id, type);
+  int get hashCode => Object.hash(runtimeType, connectionId, id, type);
 
   @override
   String toString() {
-    return 'WiFiRemoveCommand(wifiId: $wifiId, id: $id, type: $type)';
+    return 'WiFiRemoveCommand(connectionId: $connectionId, id: $id, type: $type)';
   }
 }
 
@@ -758,7 +820,7 @@ abstract mixin class $WiFiRemoveCommandCopyWith<$Res> {
           WiFiRemoveCommand value, $Res Function(WiFiRemoveCommand) _then) =
       _$WiFiRemoveCommandCopyWithImpl;
   @useResult
-  $Res call({int wifiId, int id, String type});
+  $Res call({String connectionId, int id, String type});
 }
 
 /// @nodoc
@@ -774,15 +836,15 @@ class _$WiFiRemoveCommandCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wifiId = null,
+    Object? connectionId = null,
     Object? id = null,
     Object? type = null,
   }) {
     return _then(_self.copyWith(
-      wifiId: null == wifiId
-          ? _self.wifiId
-          : wifiId // ignore: cast_nullable_to_non_nullable
-              as int,
+      connectionId: null == connectionId
+          ? _self.connectionId
+          : connectionId // ignore: cast_nullable_to_non_nullable
+              as String,
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -799,14 +861,14 @@ class _$WiFiRemoveCommandCopyWithImpl<$Res>
 @JsonSerializable()
 class _WiFiRemoveCommand implements WiFiRemoveCommand {
   const _WiFiRemoveCommand(
-      {required this.wifiId,
+      {required this.connectionId,
       required this.id,
       this.type = WiFiRemoveCommand.TYPE});
   factory _WiFiRemoveCommand.fromJson(Map<String, dynamic> json) =>
       _$WiFiRemoveCommandFromJson(json);
 
   @override
-  final int wifiId;
+  final String connectionId;
   @override
   final int id;
   @override
@@ -833,18 +895,19 @@ class _WiFiRemoveCommand implements WiFiRemoveCommand {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _WiFiRemoveCommand &&
-            (identical(other.wifiId, wifiId) || other.wifiId == wifiId) &&
+            (identical(other.connectionId, connectionId) ||
+                other.connectionId == connectionId) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, wifiId, id, type);
+  int get hashCode => Object.hash(runtimeType, connectionId, id, type);
 
   @override
   String toString() {
-    return 'WiFiRemoveCommand(wifiId: $wifiId, id: $id, type: $type)';
+    return 'WiFiRemoveCommand(connectionId: $connectionId, id: $id, type: $type)';
   }
 }
 
@@ -856,7 +919,7 @@ abstract mixin class _$WiFiRemoveCommandCopyWith<$Res>
       __$WiFiRemoveCommandCopyWithImpl;
   @override
   @useResult
-  $Res call({int wifiId, int id, String type});
+  $Res call({String connectionId, int id, String type});
 }
 
 /// @nodoc
@@ -872,177 +935,15 @@ class __$WiFiRemoveCommandCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? wifiId = null,
+    Object? connectionId = null,
     Object? id = null,
     Object? type = null,
   }) {
     return _then(_WiFiRemoveCommand(
-      wifiId: null == wifiId
-          ? _self.wifiId
-          : wifiId // ignore: cast_nullable_to_non_nullable
-              as int,
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
+      connectionId: null == connectionId
+          ? _self.connectionId
+          : connectionId // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
-  }
-}
-
-/// @nodoc
-mixin _$WiFiSaveConfigCommand {
-  int get id;
-  String get type;
-
-  /// Create a copy of WiFiSaveConfigCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $WiFiSaveConfigCommandCopyWith<WiFiSaveConfigCommand> get copyWith =>
-      _$WiFiSaveConfigCommandCopyWithImpl<WiFiSaveConfigCommand>(
-          this as WiFiSaveConfigCommand, _$identity);
-
-  /// Serializes this WiFiSaveConfigCommand to a JSON map.
-  Map<String, dynamic> toJson();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is WiFiSaveConfigCommand &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
-
-  @override
-  String toString() {
-    return 'WiFiSaveConfigCommand(id: $id, type: $type)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $WiFiSaveConfigCommandCopyWith<$Res> {
-  factory $WiFiSaveConfigCommandCopyWith(WiFiSaveConfigCommand value,
-          $Res Function(WiFiSaveConfigCommand) _then) =
-      _$WiFiSaveConfigCommandCopyWithImpl;
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class _$WiFiSaveConfigCommandCopyWithImpl<$Res>
-    implements $WiFiSaveConfigCommandCopyWith<$Res> {
-  _$WiFiSaveConfigCommandCopyWithImpl(this._self, this._then);
-
-  final WiFiSaveConfigCommand _self;
-  final $Res Function(WiFiSaveConfigCommand) _then;
-
-  /// Create a copy of WiFiSaveConfigCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _WiFiSaveConfigCommand implements WiFiSaveConfigCommand {
-  const _WiFiSaveConfigCommand(
-      {required this.id, this.type = WiFiSaveConfigCommand.TYPE});
-  factory _WiFiSaveConfigCommand.fromJson(Map<String, dynamic> json) =>
-      _$WiFiSaveConfigCommandFromJson(json);
-
-  @override
-  final int id;
-  @override
-  @JsonKey()
-  final String type;
-
-  /// Create a copy of WiFiSaveConfigCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$WiFiSaveConfigCommandCopyWith<_WiFiSaveConfigCommand> get copyWith =>
-      __$WiFiSaveConfigCommandCopyWithImpl<_WiFiSaveConfigCommand>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$WiFiSaveConfigCommandToJson(
-      this,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _WiFiSaveConfigCommand &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
-
-  @override
-  String toString() {
-    return 'WiFiSaveConfigCommand(id: $id, type: $type)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$WiFiSaveConfigCommandCopyWith<$Res>
-    implements $WiFiSaveConfigCommandCopyWith<$Res> {
-  factory _$WiFiSaveConfigCommandCopyWith(_WiFiSaveConfigCommand value,
-          $Res Function(_WiFiSaveConfigCommand) _then) =
-      __$WiFiSaveConfigCommandCopyWithImpl;
-  @override
-  @useResult
-  $Res call({int id, String type});
-}
-
-/// @nodoc
-class __$WiFiSaveConfigCommandCopyWithImpl<$Res>
-    implements _$WiFiSaveConfigCommandCopyWith<$Res> {
-  __$WiFiSaveConfigCommandCopyWithImpl(this._self, this._then);
-
-  final _WiFiSaveConfigCommand _self;
-  final $Res Function(_WiFiSaveConfigCommand) _then;
-
-  /// Create a copy of WiFiSaveConfigCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_WiFiSaveConfigCommand(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -1057,6 +958,7 @@ class __$WiFiSaveConfigCommandCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$WiFiAddCommand {
+  String get name;
   String get SSID;
   String get psk;
   int get id;
@@ -1078,6 +980,7 @@ mixin _$WiFiAddCommand {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is WiFiAddCommand &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.SSID, SSID) || other.SSID == SSID) &&
             (identical(other.psk, psk) || other.psk == psk) &&
             (identical(other.id, id) || other.id == id) &&
@@ -1086,11 +989,11 @@ mixin _$WiFiAddCommand {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, SSID, psk, id, type);
+  int get hashCode => Object.hash(runtimeType, name, SSID, psk, id, type);
 
   @override
   String toString() {
-    return 'WiFiAddCommand(SSID: $SSID, psk: $psk, id: $id, type: $type)';
+    return 'WiFiAddCommand(name: $name, SSID: $SSID, psk: $psk, id: $id, type: $type)';
   }
 }
 
@@ -1100,7 +1003,7 @@ abstract mixin class $WiFiAddCommandCopyWith<$Res> {
           WiFiAddCommand value, $Res Function(WiFiAddCommand) _then) =
       _$WiFiAddCommandCopyWithImpl;
   @useResult
-  $Res call({String SSID, String psk, int id, String type});
+  $Res call({String name, String SSID, String psk, int id, String type});
 }
 
 /// @nodoc
@@ -1116,12 +1019,17 @@ class _$WiFiAddCommandCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? name = null,
     Object? SSID = null,
     Object? psk = null,
     Object? id = null,
     Object? type = null,
   }) {
     return _then(_self.copyWith(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       SSID: null == SSID
           ? _self.SSID
           : SSID // ignore: cast_nullable_to_non_nullable
@@ -1146,13 +1054,16 @@ class _$WiFiAddCommandCopyWithImpl<$Res>
 @JsonSerializable()
 class _WiFiAddCommand implements WiFiAddCommand {
   const _WiFiAddCommand(
-      {required this.SSID,
+      {required this.name,
+      required this.SSID,
       required this.psk,
       required this.id,
       this.type = WiFiAddCommand.TYPE});
   factory _WiFiAddCommand.fromJson(Map<String, dynamic> json) =>
       _$WiFiAddCommandFromJson(json);
 
+  @override
+  final String name;
   @override
   final String SSID;
   @override
@@ -1183,6 +1094,7 @@ class _WiFiAddCommand implements WiFiAddCommand {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _WiFiAddCommand &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.SSID, SSID) || other.SSID == SSID) &&
             (identical(other.psk, psk) || other.psk == psk) &&
             (identical(other.id, id) || other.id == id) &&
@@ -1191,11 +1103,11 @@ class _WiFiAddCommand implements WiFiAddCommand {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, SSID, psk, id, type);
+  int get hashCode => Object.hash(runtimeType, name, SSID, psk, id, type);
 
   @override
   String toString() {
-    return 'WiFiAddCommand(SSID: $SSID, psk: $psk, id: $id, type: $type)';
+    return 'WiFiAddCommand(name: $name, SSID: $SSID, psk: $psk, id: $id, type: $type)';
   }
 }
 
@@ -1207,7 +1119,7 @@ abstract mixin class _$WiFiAddCommandCopyWith<$Res>
       __$WiFiAddCommandCopyWithImpl;
   @override
   @useResult
-  $Res call({String SSID, String psk, int id, String type});
+  $Res call({String name, String SSID, String psk, int id, String type});
 }
 
 /// @nodoc
@@ -1223,12 +1135,17 @@ class __$WiFiAddCommandCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? name = null,
     Object? SSID = null,
     Object? psk = null,
     Object? id = null,
     Object? type = null,
   }) {
     return _then(_WiFiAddCommand(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       SSID: null == SSID
           ? _self.SSID
           : SSID // ignore: cast_nullable_to_non_nullable
@@ -1250,26 +1167,26 @@ class __$WiFiAddCommandCopyWithImpl<$Res>
 }
 
 /// @nodoc
-mixin _$WiFiGetStoredCommand {
+mixin _$WiFiGetConnectionsCommand {
   int get id;
   String get type;
 
-  /// Create a copy of WiFiGetStoredCommand
+  /// Create a copy of WiFiGetConnectionsCommand
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $WiFiGetStoredCommandCopyWith<WiFiGetStoredCommand> get copyWith =>
-      _$WiFiGetStoredCommandCopyWithImpl<WiFiGetStoredCommand>(
-          this as WiFiGetStoredCommand, _$identity);
+  $WiFiGetConnectionsCommandCopyWith<WiFiGetConnectionsCommand> get copyWith =>
+      _$WiFiGetConnectionsCommandCopyWithImpl<WiFiGetConnectionsCommand>(
+          this as WiFiGetConnectionsCommand, _$identity);
 
-  /// Serializes this WiFiGetStoredCommand to a JSON map.
+  /// Serializes this WiFiGetConnectionsCommand to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is WiFiGetStoredCommand &&
+            other is WiFiGetConnectionsCommand &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
@@ -1280,28 +1197,28 @@ mixin _$WiFiGetStoredCommand {
 
   @override
   String toString() {
-    return 'WiFiGetStoredCommand(id: $id, type: $type)';
+    return 'WiFiGetConnectionsCommand(id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract mixin class $WiFiGetStoredCommandCopyWith<$Res> {
-  factory $WiFiGetStoredCommandCopyWith(WiFiGetStoredCommand value,
-          $Res Function(WiFiGetStoredCommand) _then) =
-      _$WiFiGetStoredCommandCopyWithImpl;
+abstract mixin class $WiFiGetConnectionsCommandCopyWith<$Res> {
+  factory $WiFiGetConnectionsCommandCopyWith(WiFiGetConnectionsCommand value,
+          $Res Function(WiFiGetConnectionsCommand) _then) =
+      _$WiFiGetConnectionsCommandCopyWithImpl;
   @useResult
   $Res call({int id, String type});
 }
 
 /// @nodoc
-class _$WiFiGetStoredCommandCopyWithImpl<$Res>
-    implements $WiFiGetStoredCommandCopyWith<$Res> {
-  _$WiFiGetStoredCommandCopyWithImpl(this._self, this._then);
+class _$WiFiGetConnectionsCommandCopyWithImpl<$Res>
+    implements $WiFiGetConnectionsCommandCopyWith<$Res> {
+  _$WiFiGetConnectionsCommandCopyWithImpl(this._self, this._then);
 
-  final WiFiGetStoredCommand _self;
-  final $Res Function(WiFiGetStoredCommand) _then;
+  final WiFiGetConnectionsCommand _self;
+  final $Res Function(WiFiGetConnectionsCommand) _then;
 
-  /// Create a copy of WiFiGetStoredCommand
+  /// Create a copy of WiFiGetConnectionsCommand
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1324,11 +1241,11 @@ class _$WiFiGetStoredCommandCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _WiFiGetStoredCommand implements WiFiGetStoredCommand {
-  const _WiFiGetStoredCommand(
-      {required this.id, this.type = WiFiGetStoredCommand.TYPE});
-  factory _WiFiGetStoredCommand.fromJson(Map<String, dynamic> json) =>
-      _$WiFiGetStoredCommandFromJson(json);
+class _WiFiGetConnectionsCommand implements WiFiGetConnectionsCommand {
+  const _WiFiGetConnectionsCommand(
+      {required this.id, this.type = WiFiGetConnectionsCommand.TYPE});
+  factory _WiFiGetConnectionsCommand.fromJson(Map<String, dynamic> json) =>
+      _$WiFiGetConnectionsCommandFromJson(json);
 
   @override
   final int id;
@@ -1336,18 +1253,19 @@ class _WiFiGetStoredCommand implements WiFiGetStoredCommand {
   @JsonKey()
   final String type;
 
-  /// Create a copy of WiFiGetStoredCommand
+  /// Create a copy of WiFiGetConnectionsCommand
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$WiFiGetStoredCommandCopyWith<_WiFiGetStoredCommand> get copyWith =>
-      __$WiFiGetStoredCommandCopyWithImpl<_WiFiGetStoredCommand>(
-          this, _$identity);
+  _$WiFiGetConnectionsCommandCopyWith<_WiFiGetConnectionsCommand>
+      get copyWith =>
+          __$WiFiGetConnectionsCommandCopyWithImpl<_WiFiGetConnectionsCommand>(
+              this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$WiFiGetStoredCommandToJson(
+    return _$WiFiGetConnectionsCommandToJson(
       this,
     );
   }
@@ -1356,7 +1274,7 @@ class _WiFiGetStoredCommand implements WiFiGetStoredCommand {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _WiFiGetStoredCommand &&
+            other is _WiFiGetConnectionsCommand &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type));
   }
@@ -1367,30 +1285,30 @@ class _WiFiGetStoredCommand implements WiFiGetStoredCommand {
 
   @override
   String toString() {
-    return 'WiFiGetStoredCommand(id: $id, type: $type)';
+    return 'WiFiGetConnectionsCommand(id: $id, type: $type)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$WiFiGetStoredCommandCopyWith<$Res>
-    implements $WiFiGetStoredCommandCopyWith<$Res> {
-  factory _$WiFiGetStoredCommandCopyWith(_WiFiGetStoredCommand value,
-          $Res Function(_WiFiGetStoredCommand) _then) =
-      __$WiFiGetStoredCommandCopyWithImpl;
+abstract mixin class _$WiFiGetConnectionsCommandCopyWith<$Res>
+    implements $WiFiGetConnectionsCommandCopyWith<$Res> {
+  factory _$WiFiGetConnectionsCommandCopyWith(_WiFiGetConnectionsCommand value,
+          $Res Function(_WiFiGetConnectionsCommand) _then) =
+      __$WiFiGetConnectionsCommandCopyWithImpl;
   @override
   @useResult
   $Res call({int id, String type});
 }
 
 /// @nodoc
-class __$WiFiGetStoredCommandCopyWithImpl<$Res>
-    implements _$WiFiGetStoredCommandCopyWith<$Res> {
-  __$WiFiGetStoredCommandCopyWithImpl(this._self, this._then);
+class __$WiFiGetConnectionsCommandCopyWithImpl<$Res>
+    implements _$WiFiGetConnectionsCommandCopyWith<$Res> {
+  __$WiFiGetConnectionsCommandCopyWithImpl(this._self, this._then);
 
-  final _WiFiGetStoredCommand _self;
-  final $Res Function(_WiFiGetStoredCommand) _then;
+  final _WiFiGetConnectionsCommand _self;
+  final $Res Function(_WiFiGetConnectionsCommand) _then;
 
-  /// Create a copy of WiFiGetStoredCommand
+  /// Create a copy of WiFiGetConnectionsCommand
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1398,7 +1316,7 @@ class __$WiFiGetStoredCommandCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
   }) {
-    return _then(_WiFiGetStoredCommand(
+    return _then(_WiFiGetConnectionsCommand(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -1412,26 +1330,26 @@ class __$WiFiGetStoredCommandCopyWithImpl<$Res>
 }
 
 /// @nodoc
-mixin _$WiFiGetStoredResult {
-  List<WiFiStoredNetworkInfo> get networks;
+mixin _$WiFiGetConnectionsResult {
+  List<WiFiConnectionInfo> get networks;
   int get id;
 
-  /// Create a copy of WiFiGetStoredResult
+  /// Create a copy of WiFiGetConnectionsResult
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $WiFiGetStoredResultCopyWith<WiFiGetStoredResult> get copyWith =>
-      _$WiFiGetStoredResultCopyWithImpl<WiFiGetStoredResult>(
-          this as WiFiGetStoredResult, _$identity);
+  $WiFiGetConnectionsResultCopyWith<WiFiGetConnectionsResult> get copyWith =>
+      _$WiFiGetConnectionsResultCopyWithImpl<WiFiGetConnectionsResult>(
+          this as WiFiGetConnectionsResult, _$identity);
 
-  /// Serializes this WiFiGetStoredResult to a JSON map.
+  /// Serializes this WiFiGetConnectionsResult to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is WiFiGetStoredResult &&
+            other is WiFiGetConnectionsResult &&
             const DeepCollectionEquality().equals(other.networks, networks) &&
             (identical(other.id, id) || other.id == id));
   }
@@ -1443,28 +1361,28 @@ mixin _$WiFiGetStoredResult {
 
   @override
   String toString() {
-    return 'WiFiGetStoredResult(networks: $networks, id: $id)';
+    return 'WiFiGetConnectionsResult(networks: $networks, id: $id)';
   }
 }
 
 /// @nodoc
-abstract mixin class $WiFiGetStoredResultCopyWith<$Res> {
-  factory $WiFiGetStoredResultCopyWith(
-          WiFiGetStoredResult value, $Res Function(WiFiGetStoredResult) _then) =
-      _$WiFiGetStoredResultCopyWithImpl;
+abstract mixin class $WiFiGetConnectionsResultCopyWith<$Res> {
+  factory $WiFiGetConnectionsResultCopyWith(WiFiGetConnectionsResult value,
+          $Res Function(WiFiGetConnectionsResult) _then) =
+      _$WiFiGetConnectionsResultCopyWithImpl;
   @useResult
-  $Res call({List<WiFiStoredNetworkInfo> networks, int id});
+  $Res call({List<WiFiConnectionInfo> networks, int id});
 }
 
 /// @nodoc
-class _$WiFiGetStoredResultCopyWithImpl<$Res>
-    implements $WiFiGetStoredResultCopyWith<$Res> {
-  _$WiFiGetStoredResultCopyWithImpl(this._self, this._then);
+class _$WiFiGetConnectionsResultCopyWithImpl<$Res>
+    implements $WiFiGetConnectionsResultCopyWith<$Res> {
+  _$WiFiGetConnectionsResultCopyWithImpl(this._self, this._then);
 
-  final WiFiGetStoredResult _self;
-  final $Res Function(WiFiGetStoredResult) _then;
+  final WiFiGetConnectionsResult _self;
+  final $Res Function(WiFiGetConnectionsResult) _then;
 
-  /// Create a copy of WiFiGetStoredResult
+  /// Create a copy of WiFiGetConnectionsResult
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1476,7 +1394,7 @@ class _$WiFiGetStoredResultCopyWithImpl<$Res>
       networks: null == networks
           ? _self.networks
           : networks // ignore: cast_nullable_to_non_nullable
-              as List<WiFiStoredNetworkInfo>,
+              as List<WiFiConnectionInfo>,
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -1487,16 +1405,16 @@ class _$WiFiGetStoredResultCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _WiFiGetStoredResult implements WiFiGetStoredResult {
-  const _WiFiGetStoredResult(
-      {required final List<WiFiStoredNetworkInfo> networks, required this.id})
+class _WiFiGetConnectionsResult implements WiFiGetConnectionsResult {
+  const _WiFiGetConnectionsResult(
+      {required final List<WiFiConnectionInfo> networks, required this.id})
       : _networks = networks;
-  factory _WiFiGetStoredResult.fromJson(Map<String, dynamic> json) =>
-      _$WiFiGetStoredResultFromJson(json);
+  factory _WiFiGetConnectionsResult.fromJson(Map<String, dynamic> json) =>
+      _$WiFiGetConnectionsResultFromJson(json);
 
-  final List<WiFiStoredNetworkInfo> _networks;
+  final List<WiFiConnectionInfo> _networks;
   @override
-  List<WiFiStoredNetworkInfo> get networks {
+  List<WiFiConnectionInfo> get networks {
     if (_networks is EqualUnmodifiableListView) return _networks;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_networks);
@@ -1505,18 +1423,18 @@ class _WiFiGetStoredResult implements WiFiGetStoredResult {
   @override
   final int id;
 
-  /// Create a copy of WiFiGetStoredResult
+  /// Create a copy of WiFiGetConnectionsResult
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$WiFiGetStoredResultCopyWith<_WiFiGetStoredResult> get copyWith =>
-      __$WiFiGetStoredResultCopyWithImpl<_WiFiGetStoredResult>(
+  _$WiFiGetConnectionsResultCopyWith<_WiFiGetConnectionsResult> get copyWith =>
+      __$WiFiGetConnectionsResultCopyWithImpl<_WiFiGetConnectionsResult>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$WiFiGetStoredResultToJson(
+    return _$WiFiGetConnectionsResultToJson(
       this,
     );
   }
@@ -1525,7 +1443,7 @@ class _WiFiGetStoredResult implements WiFiGetStoredResult {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _WiFiGetStoredResult &&
+            other is _WiFiGetConnectionsResult &&
             const DeepCollectionEquality().equals(other._networks, _networks) &&
             (identical(other.id, id) || other.id == id));
   }
@@ -1537,30 +1455,30 @@ class _WiFiGetStoredResult implements WiFiGetStoredResult {
 
   @override
   String toString() {
-    return 'WiFiGetStoredResult(networks: $networks, id: $id)';
+    return 'WiFiGetConnectionsResult(networks: $networks, id: $id)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$WiFiGetStoredResultCopyWith<$Res>
-    implements $WiFiGetStoredResultCopyWith<$Res> {
-  factory _$WiFiGetStoredResultCopyWith(_WiFiGetStoredResult value,
-          $Res Function(_WiFiGetStoredResult) _then) =
-      __$WiFiGetStoredResultCopyWithImpl;
+abstract mixin class _$WiFiGetConnectionsResultCopyWith<$Res>
+    implements $WiFiGetConnectionsResultCopyWith<$Res> {
+  factory _$WiFiGetConnectionsResultCopyWith(_WiFiGetConnectionsResult value,
+          $Res Function(_WiFiGetConnectionsResult) _then) =
+      __$WiFiGetConnectionsResultCopyWithImpl;
   @override
   @useResult
-  $Res call({List<WiFiStoredNetworkInfo> networks, int id});
+  $Res call({List<WiFiConnectionInfo> networks, int id});
 }
 
 /// @nodoc
-class __$WiFiGetStoredResultCopyWithImpl<$Res>
-    implements _$WiFiGetStoredResultCopyWith<$Res> {
-  __$WiFiGetStoredResultCopyWithImpl(this._self, this._then);
+class __$WiFiGetConnectionsResultCopyWithImpl<$Res>
+    implements _$WiFiGetConnectionsResultCopyWith<$Res> {
+  __$WiFiGetConnectionsResultCopyWithImpl(this._self, this._then);
 
-  final _WiFiGetStoredResult _self;
-  final $Res Function(_WiFiGetStoredResult) _then;
+  final _WiFiGetConnectionsResult _self;
+  final $Res Function(_WiFiGetConnectionsResult) _then;
 
-  /// Create a copy of WiFiGetStoredResult
+  /// Create a copy of WiFiGetConnectionsResult
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1568,11 +1486,11 @@ class __$WiFiGetStoredResultCopyWithImpl<$Res>
     Object? networks = null,
     Object? id = null,
   }) {
-    return _then(_WiFiGetStoredResult(
+    return _then(_WiFiGetConnectionsResult(
       networks: null == networks
           ? _self._networks
           : networks // ignore: cast_nullable_to_non_nullable
-              as List<WiFiStoredNetworkInfo>,
+              as List<WiFiConnectionInfo>,
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable

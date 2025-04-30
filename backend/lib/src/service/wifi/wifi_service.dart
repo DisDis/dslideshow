@@ -12,9 +12,11 @@ class WiFiService {
   Future<List<WiFiNetworkInfo>> scan() async {
     _log.info('scan');
     try {
-      var result = await io.Process.run(_config.scanWiFiScript, [_config.devId], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run('nmcli', ['device', 'wifi', 'list'], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
         return parseScanOutput(result.stdout.toString());
+      } else {
+        throw Exception('nmcli device wifi list -> exit code: ${result.exitCode}');
       }
     } catch (e, s) {
       _log.severe('scan', e, s);
@@ -22,197 +24,253 @@ class WiFiService {
     return <WiFiNetworkInfo>[];
   }
 
-  static const EMPTY_SSID = r'$$$$$!@  EMPTY SSID #$%^$$$$';
-  static const KEY_SSID = 'SSID: ';
-  static const KEY_SIGNAL = 'signal: ';
-  static const KEY_CAPABILITY = 'capability: ';
-  static const KEY_FREQ = 'freq: ';
+  static final _parseRateRegExp = RegExp(r'[^0-9]');
 
-  void addNetwork(String SSID, String psk) async {
-    _log.info('addNetwork "$SSID"');
+  void addWiFiConnection(String name, String SSID, String psk) async {
+    _log.info('addWiFiConnection "$SSID"');
+
+    try {
+      var result = await io.Process.run('nmcli', ['device', 'wifi', 'connect', SSID, 'password', psk, 'name', name], environment: {'LC_ALL': 'C'});
+      if (result.exitCode != 0) {
+        throw Exception('nmcli device wifi connect "$SSID" password "***" name "$name" -> exit code: ${result.exitCode}');
+      }
+    } catch (e, s) {
+      _log.severe('addWiFiConnection', e, s);
+    }
+  }
+
+  void upConnection(String connectionUUID) async {
+    _log.info('upConnection "$connectionUUID"');
     try {
 /*
-wpa_cli doesn't work
+nmcli connection up  <UUID>
  */
-
-      final newNetworkData = """
-network={
-	ssid="${SSID}"
-	psk="${psk}"
-}
-""";
-      final wpaData = io.File('/etc/wpa_supplicant/wpa_supplicant.conf').readAsStringSync() + newNetworkData;
-
-      io.File('/etc/wpa_supplicant/wpa_supplicant.conf').writeAsStringSync(wpaData);
+      var result = await io.Process.run('nmcli', ['connection', 'up', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      _log.info("nmcli connection up -> '${result.stdout.toString()}'");
+      if (result.exitCode != 0) {
+        throw Exception('nmcli connection up $connectionUUID -> exitCode: ${result.exitCode}');
+      }
     } catch (e, s) {
-      _log.severe('addNetwork "$SSID"', e, s);
+      _log.severe('upConnection "$connectionUUID"', e, s);
       throw e;
     }
   }
 
-  void enableNetwork(int networkId) async {
-    _log.info('enableNetwork "$networkId"');
+  void downConnection(String connectionUUID) async {
+    _log.info('downConnection "$connectionUUID"');
     try {
 /*
-wpa_cli enable_network <id>
+nmcli connection down  <UUID>
  */
-
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'enable_network', '$networkId'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli enable_network -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli enable_network $networkId -> exitCode: ${result.exitCode}');
+      var result = await io.Process.run('nmcli', ['connection', 'down', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      _log.info("nmcli connection down -> '${result.stdout.toString()}'");
+      if (result.exitCode != 0) {
+        throw Exception('nmcli connection down $connectionUUID -> exitCode: ${result.exitCode}');
       }
     } catch (e, s) {
-      _log.severe('enableNetwork "$networkId"', e, s);
+      _log.severe('downConnection "$connectionUUID"', e, s);
       throw e;
     }
   }
 
-  void disableNetwork(int networkId) async {
-    _log.info('disableNetwork "$networkId"');
+  // void saveConfig() async {
+  //   _log.info('saveConfig');
+  //   try {
+  //     var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'save_config'], environment: {'LC_ALL': 'C'});
+  //     _log.info("wpa_cli save_config -> '${result.stdout.toString()}'");
+  //     if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
+  //       throw Exception('wpa_cli save_config -> exitCode: ${result.exitCode}');
+  //     }
+  //   } catch (e, s) {
+  //     _log.severe('saveConfig', e, s);
+  //     throw e;
+  //   }
+  // }
+
+  void deleteConnection(String connectionUUID) async {
+    _log.info('deleteConnection "$connectionUUID"');
     try {
 /*
-wpa_cli disable_network <id>
+nmcli connection delete <UUID>
  */
-
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'disable_network', '$networkId'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli disable_network -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli disable_network $networkId -> exitCode: ${result.exitCode}');
+      var result = await io.Process.run('nmcli', ['connection', 'remove', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      _log.info("nmcli connection remove -> '${result.stdout.toString()}'");
+      if (result.exitCode != 0) {
+        throw Exception('nmcli connection remove $connectionUUID -> exitCode: ${result.exitCode}');
       }
     } catch (e, s) {
-      _log.severe('disableNetwork "$networkId"', e, s);
-      throw e;
-    }
-  }
-
-  void saveConfig() async {
-    _log.info('saveConfig');
-    try {
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'save_config'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli save_config -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli save_config -> exitCode: ${result.exitCode}');
-      }
-    } catch (e, s) {
-      _log.severe('saveConfig', e, s);
-      throw e;
-    }
-  }
-
-  void removeNetwork(int networkId) async {
-    _log.info('removeNetwork "$networkId"');
-    try {
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'remove_network', '$networkId'], environment: {'LC_ALL': 'C'});
-      _log.info("wpa_cli remove_network -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-        throw Exception('wpa_cli remove_network $networkId -> exitCode: ${result.exitCode}');
-      }
-    } catch (e, s) {
-      _log.severe('removeNetwork "$networkId"', e, s);
+      _log.severe('deleteConnection "$connectionUUID"', e, s);
       throw e;
     }
   }
 
   List<WiFiNetworkInfo> parseScanOutput(String outputStr) {
-    List<String> output = outputStr.split('\n');
-    if (output.isEmpty) {
+    List<String> lines = outputStr.split('\n');
+    lines.removeWhere((element) => element.isEmpty);
+    if (lines.isEmpty) {
       return <WiFiNetworkInfo>[];
     }
-    output.removeWhere((element) => element.isEmpty);
-    var result = <WiFiNetworkInfo>[];
-    var current = WiFiNetworkInfo(
-      SSID: EMPTY_SSID,
-      signal: -99,
-      capability: '',
-      freq: -1,
-    );
 
-// SSID: Koti783
-// signal: -82.00 dBm
-// capability: ESS Privacy ShortPreamble SpectrumMgmt ShortSlotTime (0x0531)
-// freq: 2437
+    final headers = lines[0];
+    const neededColumns = ['BSSID', ' SSID', 'MODE', 'RATE', 'BARS', 'SIGNAL', 'SECURITY', 'RATE', 'CHAN'];
+    final columnIndices = <String, List<int>>{};
 
-    output.forEach((element) {
-      try {
-        int tmpI;
-        if ((tmpI = element.indexOf(KEY_SSID)) != -1) {
-          if (current.SSID != EMPTY_SSID) {
-            result.add(current);
-            current = WiFiNetworkInfo(
-              SSID: EMPTY_SSID,
-              signal: -99,
-              capability: '',
-              freq: -1,
-            );
-          }
-          current = current.copyWith(SSID: element.substring(tmpI + KEY_SSID.length));
-        } else if ((tmpI = element.indexOf(KEY_SIGNAL)) != -1) {
-          final signalStr = element.substring(tmpI + KEY_SIGNAL.length);
-          final signalInt = int.tryParse(signalStr.substring(0, signalStr.indexOf('.')));
-          current = current.copyWith(signal: signalInt ?? -99);
-        } else if ((tmpI = element.indexOf(KEY_CAPABILITY)) != -1) {
-          current = current.copyWith(capability: element.substring(tmpI + KEY_CAPABILITY.length));
-        } else if ((tmpI = element.indexOf(KEY_FREQ)) != -1) {
-          current = current.copyWith(freq: int.tryParse(element.substring(tmpI + KEY_FREQ.length)) ?? -1);
+    // Находим позиции начала и конца каждого столбца
+    for (final column in neededColumns) {
+      final index = headers.indexOf(column);
+      if (index == -1) continue;
+
+      // Ищем конец столбца (либо следующий столбец, либо конец строки)
+      int endIndex = headers.length;
+      for (final otherColumn in neededColumns) {
+        if (otherColumn == column) continue;
+        final otherIndex = headers.indexOf(otherColumn);
+        if (otherIndex > index && otherIndex < endIndex) {
+          endIndex = otherIndex;
         }
-      } catch (e, st) {
-        _log.severe('_parseScanOutput', e, st);
       }
-    });
-    if (current.SSID != EMPTY_SSID) {
-      result.add(current);
+
+      columnIndices[column.trim()] = [index, endIndex];
     }
-    return result;
+
+    // Обрабатываем данные, начиная со второй строки
+    final networks = <WiFiNetworkInfo>[];
+    for (int i = 1; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.trim().isEmpty) continue;
+
+      try {
+        // Извлекаем данные из каждого столбца
+        String ssid;
+        String bssid;
+        int signal;
+        String security;
+        int rate;
+        int channel;
+        List<int> indices;
+
+        indices = columnIndices['BSSID']!;
+        bssid = line.substring(indices[0], indices[1]).trim();
+        if (bssid.isEmpty || bssid == '--') continue; // Пропускаем сети без BSSID
+
+        indices = columnIndices['SSID']!;
+        ssid = line.substring(indices[0], indices[1]).trim();
+        if (ssid.isEmpty || ssid == '--') continue; // Пропускаем сети без SSID
+
+        indices = columnIndices['SIGNAL']!;
+        final signalStr = line.substring(indices[0], indices[1]).trim();
+        signal = int.tryParse(signalStr) ?? 0;
+
+        indices = columnIndices['CHAN']!;
+        final channelStr = line.substring(indices[0], indices[1]).trim();
+        channel = int.tryParse(channelStr) ?? 0;
+
+        indices = columnIndices['SECURITY']!;
+        security = line.substring(indices[0] /*, indices[1]*/).trim();
+
+        indices = columnIndices['RATE']!;
+        final rateStr = line.substring(indices[0], indices[1]).trim();
+        rate = int.tryParse(rateStr.replaceAll(_parseRateRegExp, '')) ?? 0;
+
+        networks.add(WiFiNetworkInfo(
+          BSSID: bssid,
+          SSID: ssid,
+          signal: signal,
+          channel: channel,
+          security: security,
+          rate: rate,
+        ));
+      } catch (e, s) {
+        _log.severe('Error parsing line $i', e, s);
+      }
+    }
+
+    return networks;
   }
 
-  Future<List<WiFiStoredNetworkInfo>> getStored() async {
-    _log.info('getStored');
+  Future<List<WiFiConnectionInfo>> getConnections() async {
+    _log.info('getConnections');
     try {
-      var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'list_networks'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run('nmcli', ['connection', 'show'], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
-        return parseStoredOutput(result.stdout.toString());
+        return parseConnectionsOutput(result.stdout.toString());
       } else {
-        throw Exception('wpa_cli list_networks -> exit code: ${result.exitCode}');
+        throw Exception('nmcli connection show -> exit code: ${result.exitCode}');
       }
     } catch (e, s) {
-      _log.severe('getStored', e, s);
+      _log.severe('getConnections', e, s);
       throw e;
     }
   }
 
-  List<WiFiStoredNetworkInfo> parseStoredOutput(String outputStr) {
-    List<String> output = outputStr.split('\n');
-    if (output.isEmpty) {
-      return <WiFiStoredNetworkInfo>[];
+  List<WiFiConnectionInfo> parseConnectionsOutput(String outputStr) {
+    List<String> lines = outputStr.split('\n');
+    lines.removeWhere((element) => element.isEmpty);
+    if (lines.isEmpty) {
+      return <WiFiConnectionInfo>[];
     }
-    output.removeWhere((element) => element.isEmpty);
-    var result = <WiFiStoredNetworkInfo>[];
-/*
-Selected interface 'p2p-dev-wlan0'
-network id / ssid / bssid / flags
-0\tJazzir_5G\tany	
-1\tJazzir_2G\tany	
- */
 
-    output.forEach((element) {
-      try {
-        if (element.indexOf('\t') == -1) {
-          return;
+    final headers = lines[0];
+    const neededColumns = ['NAME', 'UUID', 'TYPE', 'DEVICE'];
+    final columnIndices = <String, List<int>>{};
+
+    // Находим позиции начала и конца каждого столбца
+    for (final column in neededColumns) {
+      final index = headers.indexOf(column);
+      if (index == -1) continue;
+
+      // Ищем конец столбца (либо следующий столбец, либо конец строки)
+      int endIndex = headers.length;
+      for (final otherColumn in neededColumns) {
+        if (otherColumn == column) continue;
+        final otherIndex = headers.indexOf(otherColumn);
+        if (otherIndex > index && otherIndex < endIndex) {
+          endIndex = otherIndex;
         }
-        var args = element.split('\t');
-        if (args.length > 3) {
-          result.add(WiFiStoredNetworkInfo(
-            id: int.tryParse(args[0]) ?? -1,
-            SSID: args[1],
-            disabled: args[3].contains('DISABLED'),
-          ));
-        }
-      } catch (e, st) {
-        _log.severe('_parseStoredOutput', e, st);
       }
-    });
 
+      columnIndices[column.trim()] = [index, endIndex];
+    }
+
+    // Обрабатываем данные, начиная со второй строки
+    final result = <WiFiConnectionInfo>[];
+    for (int i = 1; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.trim().isEmpty) continue;
+
+      try {
+        // Извлекаем данные из каждого столбца
+        String name;
+        String uuid;
+        String type;
+        String device;
+
+        List<int> indices;
+
+        indices = columnIndices['NAME']!;
+        name = line.substring(indices[0], indices[1]).trim();
+
+        indices = columnIndices['UUID']!;
+        uuid = line.substring(indices[0], indices[1]).trim();
+        if (uuid.isEmpty || uuid == '--') continue; // Пропускаем сети без SSID
+
+        indices = columnIndices['TYPE']!;
+        type = line.substring(indices[0], indices[1]).trim();
+        if (type.isEmpty || type == '--') continue;
+
+        indices = columnIndices['DEVICE']!;
+        device = line.substring(indices[0] /*, indices[1]*/).trim();
+
+        result.add(WiFiConnectionInfo(
+          name: name,
+          UUID: uuid,
+          type: type,
+          device: device,
+        ));
+      } catch (e, s) {
+        _log.severe('Error parsing line $i', e, s);
+      }
+    }
     return result;
   }
 }

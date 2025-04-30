@@ -87,18 +87,15 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
             ],
           ),
         ),
-        const Text('Stored:'),
-        for (var network in currentState.storedNetworks)
-          Row(
+        const Text('Connections:'),
+        Expanded(
+          flex: 2,
+          child: ListView(
             children: [
-              Text(network.SSID),
-              if (network.disabled)
-                const Icon(
-                  Icons.disabled_by_default_rounded,
-                  color: Colors.red,
-                )
+              for (var connection in currentState.connections) ConnectionListItem(connection: connection),
             ],
           ),
+        ),
       ],
     );
   }
@@ -160,12 +157,25 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
           FilledButton(
             child: const Text('Add'),
             onPressed: () {
-              bloc.add(AddWifiTabEvent(controllerSSID.text, controllerPassword.text));
+              bloc.add(AddWifiTabEvent("${controllerSSID.text} connection", controllerSSID.text, controllerPassword.text));
               Navigator.of(context).pop();
             },
           ),
         ],
       ),
+    );
+  }
+}
+
+class ConnectionListItem extends StatelessWidget {
+  final WiFiConnectionInfo connection;
+  const ConnectionListItem({super.key, required this.connection});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(connection.name),
+      subtitle: Text(connection.type),
     );
   }
 }
@@ -176,31 +186,19 @@ class WifiListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // network.signal
-/*
-SIGNAL STRENGTH (dBm)	Remarks
--30	Maximum possible signal strength.
--50	Excellent signal strength.
--60	Good signal strength.
--67	Reliable signal strength.
--70	Relatively weak signal strength.
--80	Unreliable. Most services will not work.
--90	Possibility of disconnection.
-*/
     final signal = network.signal;
-
     return ListTile(
       title: Text(network.SSID),
-      leading: Icon(signal >= -60
+      leading: Icon(signal >= 85
           ? Icons.network_wifi
-          : signal >= -70
+          : signal >= 70
               ? Icons.network_wifi_3_bar
-              : signal >= -80
+              : signal >= 50
                   ? Icons.network_wifi_2_bar
                   : Icons.network_wifi_1_bar),
       subtitle: Row(children: [
-        if (network.freq > 4900) const Icon(Icons.five_g),
-        Text("${network.signal} dBm"),
+        if (network.channel > 31) const Icon(Icons.five_g),
+        Text("${network.signal} %"),
       ]),
       onTap: () => _onTap(context, network),
     );

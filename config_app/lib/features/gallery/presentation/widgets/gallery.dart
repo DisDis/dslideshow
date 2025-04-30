@@ -12,7 +12,7 @@ class MediaGalleryWidget extends StatefulWidget {
 class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
   final items = <GalleryItem>[
     GalleryItem(
-        Uri.parse('http://192.168.50.175:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'), '1'),
+        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'), '1'),
     GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/2.jpg'), '2'),
     GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/3.jpg'), '3'),
     GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/4.gif'), '4'),

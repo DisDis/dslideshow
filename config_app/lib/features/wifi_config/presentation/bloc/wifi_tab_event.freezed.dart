@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,503 +10,163 @@ part of 'wifi_tab_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$WifiTabEvent {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is WifiTabEvent);
+  }
 
-/// @nodoc
-abstract class $WifiTabEventCopyWith<$Res> {
-  factory $WifiTabEventCopyWith(
-          WifiTabEvent value, $Res Function(WifiTabEvent) then) =
-      _$WifiTabEventCopyWithImpl<$Res, WifiTabEvent>;
-}
-
-/// @nodoc
-class _$WifiTabEventCopyWithImpl<$Res, $Val extends WifiTabEvent>
-    implements $WifiTabEventCopyWith<$Res> {
-  _$WifiTabEventCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$WifiTabEventImplCopyWith<$Res> {
-  factory _$$WifiTabEventImplCopyWith(
-          _$WifiTabEventImpl value, $Res Function(_$WifiTabEventImpl) then) =
-      __$$WifiTabEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$WifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$WifiTabEventImpl>
-    implements _$$WifiTabEventImplCopyWith<$Res> {
-  __$$WifiTabEventImplCopyWithImpl(
-      _$WifiTabEventImpl _value, $Res Function(_$WifiTabEventImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$WifiTabEventImpl implements _WifiTabEvent {
-  const _$WifiTabEventImpl();
+  @override
+  int get hashCode => runtimeType.hashCode;
 
   @override
   String toString() {
     return 'WifiTabEvent()';
   }
+}
+
+/// @nodoc
+class $WifiTabEventCopyWith<$Res> {
+  $WifiTabEventCopyWith(WifiTabEvent _, $Res Function(WifiTabEvent) __);
+}
+
+/// @nodoc
+
+class _WifiTabEvent implements WifiTabEvent {
+  const _WifiTabEvent();
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$WifiTabEventImpl);
+        (other.runtimeType == runtimeType && other is _WifiTabEvent);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return $default();
+  String toString() {
+    return 'WifiTabEvent()';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return $default?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if ($default != null) {
-      return $default();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return $default(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return $default?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if ($default != null) {
-      return $default(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _WifiTabEvent implements WifiTabEvent {
-  const factory _WifiTabEvent() = _$WifiTabEventImpl;
-}
-
-/// @nodoc
-abstract class _$$UnWifiTabEventImplCopyWith<$Res> {
-  factory _$$UnWifiTabEventImplCopyWith(_$UnWifiTabEventImpl value,
-          $Res Function(_$UnWifiTabEventImpl) then) =
-      __$$UnWifiTabEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$UnWifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$UnWifiTabEventImpl>
-    implements _$$UnWifiTabEventImplCopyWith<$Res> {
-  __$$UnWifiTabEventImplCopyWithImpl(
-      _$UnWifiTabEventImpl _value, $Res Function(_$UnWifiTabEventImpl) _then)
-      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$UnWifiTabEventImpl implements UnWifiTabEvent {
-  const _$UnWifiTabEventImpl();
+class UnWifiTabEvent implements WifiTabEvent {
+  const UnWifiTabEvent();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is UnWifiTabEvent);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
 
   @override
   String toString() {
     return 'WifiTabEvent.uninitialized()';
   }
+}
+
+/// @nodoc
+
+class LoadWifiTabEvent implements WifiTabEvent {
+  const LoadWifiTabEvent();
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$UnWifiTabEventImpl);
+        (other.runtimeType == runtimeType && other is LoadWifiTabEvent);
   }
 
   @override
   int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return uninitialized();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return uninitialized?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if (uninitialized != null) {
-      return uninitialized();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return uninitialized(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return uninitialized?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if (uninitialized != null) {
-      return uninitialized(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class UnWifiTabEvent implements WifiTabEvent {
-  const factory UnWifiTabEvent() = _$UnWifiTabEventImpl;
-}
-
-/// @nodoc
-abstract class _$$LoadWifiTabEventImplCopyWith<$Res> {
-  factory _$$LoadWifiTabEventImplCopyWith(_$LoadWifiTabEventImpl value,
-          $Res Function(_$LoadWifiTabEventImpl) then) =
-      __$$LoadWifiTabEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoadWifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$LoadWifiTabEventImpl>
-    implements _$$LoadWifiTabEventImplCopyWith<$Res> {
-  __$$LoadWifiTabEventImplCopyWithImpl(_$LoadWifiTabEventImpl _value,
-      $Res Function(_$LoadWifiTabEventImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LoadWifiTabEventImpl implements LoadWifiTabEvent {
-  const _$LoadWifiTabEventImpl();
 
   @override
   String toString() {
     return 'WifiTabEvent.load()';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadWifiTabEventImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return load();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return load?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if (load != null) {
-      return load();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return load(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return load?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if (load != null) {
-      return load(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class LoadWifiTabEvent implements WifiTabEvent {
-  const factory LoadWifiTabEvent() = _$LoadWifiTabEventImpl;
 }
 
 /// @nodoc
-abstract class _$$AddWifiTabEventImplCopyWith<$Res> {
-  factory _$$AddWifiTabEventImplCopyWith(_$AddWifiTabEventImpl value,
-          $Res Function(_$AddWifiTabEventImpl) then) =
-      __$$AddWifiTabEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String SSID, String psk});
-}
 
-/// @nodoc
-class __$$AddWifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$AddWifiTabEventImpl>
-    implements _$$AddWifiTabEventImplCopyWith<$Res> {
-  __$$AddWifiTabEventImplCopyWithImpl(
-      _$AddWifiTabEventImpl _value, $Res Function(_$AddWifiTabEventImpl) _then)
-      : super(_value, _then);
+class AddWifiTabEvent implements WifiTabEvent {
+  const AddWifiTabEvent(this.name, this.SSID, this.psk);
 
+  final String name;
+  final String SSID;
+  final String psk;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $AddWifiTabEventCopyWith<AddWifiTabEvent> get copyWith =>
+      _$AddWifiTabEventCopyWithImpl<AddWifiTabEvent>(this, _$identity);
+
   @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AddWifiTabEvent &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.SSID, SSID) || other.SSID == SSID) &&
+            (identical(other.psk, psk) || other.psk == psk));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name, SSID, psk);
+
+  @override
+  String toString() {
+    return 'WifiTabEvent.add(name: $name, SSID: $SSID, psk: $psk)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $AddWifiTabEventCopyWith<$Res>
+    implements $WifiTabEventCopyWith<$Res> {
+  factory $AddWifiTabEventCopyWith(
+          AddWifiTabEvent value, $Res Function(AddWifiTabEvent) _then) =
+      _$AddWifiTabEventCopyWithImpl;
+  @useResult
+  $Res call({String name, String SSID, String psk});
+}
+
+/// @nodoc
+class _$AddWifiTabEventCopyWithImpl<$Res>
+    implements $AddWifiTabEventCopyWith<$Res> {
+  _$AddWifiTabEventCopyWithImpl(this._self, this._then);
+
+  final AddWifiTabEvent _self;
+  final $Res Function(AddWifiTabEvent) _then;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
   $Res call({
+    Object? name = null,
     Object? SSID = null,
     Object? psk = null,
   }) {
-    return _then(_$AddWifiTabEventImpl(
+    return _then(AddWifiTabEvent(
+      null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       null == SSID
-          ? _value.SSID
+          ? _self.SSID
           : SSID // ignore: cast_nullable_to_non_nullable
               as String,
       null == psk
-          ? _value.psk
+          ? _self.psk
           : psk // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -514,458 +175,139 @@ class __$$AddWifiTabEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AddWifiTabEventImpl implements AddWifiTabEvent {
-  const _$AddWifiTabEventImpl(this.SSID, this.psk);
+class RemoveWifiTabEvent implements WifiTabEvent {
+  const RemoveWifiTabEvent(this.connectionId);
+
+  final String connectionId;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RemoveWifiTabEventCopyWith<RemoveWifiTabEvent> get copyWith =>
+      _$RemoveWifiTabEventCopyWithImpl<RemoveWifiTabEvent>(this, _$identity);
 
   @override
-  final String SSID;
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RemoveWifiTabEvent &&
+            (identical(other.connectionId, connectionId) ||
+                other.connectionId == connectionId));
+  }
+
   @override
-  final String psk;
+  int get hashCode => Object.hash(runtimeType, connectionId);
 
   @override
   String toString() {
-    return 'WifiTabEvent.add(SSID: $SSID, psk: $psk)';
+    return 'WifiTabEvent.remove(connectionId: $connectionId)';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AddWifiTabEventImpl &&
-            (identical(other.SSID, SSID) || other.SSID == SSID) &&
-            (identical(other.psk, psk) || other.psk == psk));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, SSID, psk);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AddWifiTabEventImplCopyWith<_$AddWifiTabEventImpl> get copyWith =>
-      __$$AddWifiTabEventImplCopyWithImpl<_$AddWifiTabEventImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return add(SSID, psk);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return add?.call(SSID, psk);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if (add != null) {
-      return add(SSID, psk);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return add(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return add?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if (add != null) {
-      return add(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class AddWifiTabEvent implements WifiTabEvent {
-  const factory AddWifiTabEvent(final String SSID, final String psk) =
-      _$AddWifiTabEventImpl;
-
-  String get SSID;
-  String get psk;
-  @JsonKey(ignore: true)
-  _$$AddWifiTabEventImplCopyWith<_$AddWifiTabEventImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RemoveWifiTabEventImplCopyWith<$Res> {
-  factory _$$RemoveWifiTabEventImplCopyWith(_$RemoveWifiTabEventImpl value,
-          $Res Function(_$RemoveWifiTabEventImpl) then) =
-      __$$RemoveWifiTabEventImplCopyWithImpl<$Res>;
+abstract mixin class $RemoveWifiTabEventCopyWith<$Res>
+    implements $WifiTabEventCopyWith<$Res> {
+  factory $RemoveWifiTabEventCopyWith(
+          RemoveWifiTabEvent value, $Res Function(RemoveWifiTabEvent) _then) =
+      _$RemoveWifiTabEventCopyWithImpl;
   @useResult
-  $Res call({int wifiId});
+  $Res call({String connectionId});
 }
 
 /// @nodoc
-class __$$RemoveWifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$RemoveWifiTabEventImpl>
-    implements _$$RemoveWifiTabEventImplCopyWith<$Res> {
-  __$$RemoveWifiTabEventImplCopyWithImpl(_$RemoveWifiTabEventImpl _value,
-      $Res Function(_$RemoveWifiTabEventImpl) _then)
-      : super(_value, _then);
+class _$RemoveWifiTabEventCopyWithImpl<$Res>
+    implements $RemoveWifiTabEventCopyWith<$Res> {
+  _$RemoveWifiTabEventCopyWithImpl(this._self, this._then);
 
+  final RemoveWifiTabEvent _self;
+  final $Res Function(RemoveWifiTabEvent) _then;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
-    Object? wifiId = null,
+    Object? connectionId = null,
   }) {
-    return _then(_$RemoveWifiTabEventImpl(
-      null == wifiId
-          ? _value.wifiId
-          : wifiId // ignore: cast_nullable_to_non_nullable
-              as int,
+    return _then(RemoveWifiTabEvent(
+      null == connectionId
+          ? _self.connectionId
+          : connectionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 
-class _$RemoveWifiTabEventImpl implements RemoveWifiTabEvent {
-  const _$RemoveWifiTabEventImpl(this.wifiId);
+class EnableWifiTabEvent implements WifiTabEvent {
+  const EnableWifiTabEvent(this.connectionId, this.value);
+
+  final String connectionId;
+  final bool value;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $EnableWifiTabEventCopyWith<EnableWifiTabEvent> get copyWith =>
+      _$EnableWifiTabEventCopyWithImpl<EnableWifiTabEvent>(this, _$identity);
 
   @override
-  final int wifiId;
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EnableWifiTabEvent &&
+            (identical(other.connectionId, connectionId) ||
+                other.connectionId == connectionId) &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, connectionId, value);
 
   @override
   String toString() {
-    return 'WifiTabEvent.remove(wifiId: $wifiId)';
+    return 'WifiTabEvent.enable(connectionId: $connectionId, value: $value)';
   }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RemoveWifiTabEventImpl &&
-            (identical(other.wifiId, wifiId) || other.wifiId == wifiId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, wifiId);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RemoveWifiTabEventImplCopyWith<_$RemoveWifiTabEventImpl> get copyWith =>
-      __$$RemoveWifiTabEventImplCopyWithImpl<_$RemoveWifiTabEventImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return remove(wifiId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return remove?.call(wifiId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if (remove != null) {
-      return remove(wifiId);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return remove(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return remove?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if (remove != null) {
-      return remove(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RemoveWifiTabEvent implements WifiTabEvent {
-  const factory RemoveWifiTabEvent(final int wifiId) = _$RemoveWifiTabEventImpl;
-
-  int get wifiId;
-  @JsonKey(ignore: true)
-  _$$RemoveWifiTabEventImplCopyWith<_$RemoveWifiTabEventImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$EnableWifiTabEventImplCopyWith<$Res> {
-  factory _$$EnableWifiTabEventImplCopyWith(_$EnableWifiTabEventImpl value,
-          $Res Function(_$EnableWifiTabEventImpl) then) =
-      __$$EnableWifiTabEventImplCopyWithImpl<$Res>;
+abstract mixin class $EnableWifiTabEventCopyWith<$Res>
+    implements $WifiTabEventCopyWith<$Res> {
+  factory $EnableWifiTabEventCopyWith(
+          EnableWifiTabEvent value, $Res Function(EnableWifiTabEvent) _then) =
+      _$EnableWifiTabEventCopyWithImpl;
   @useResult
-  $Res call({int wifiId, bool value});
+  $Res call({String connectionId, bool value});
 }
 
 /// @nodoc
-class __$$EnableWifiTabEventImplCopyWithImpl<$Res>
-    extends _$WifiTabEventCopyWithImpl<$Res, _$EnableWifiTabEventImpl>
-    implements _$$EnableWifiTabEventImplCopyWith<$Res> {
-  __$$EnableWifiTabEventImplCopyWithImpl(_$EnableWifiTabEventImpl _value,
-      $Res Function(_$EnableWifiTabEventImpl) _then)
-      : super(_value, _then);
+class _$EnableWifiTabEventCopyWithImpl<$Res>
+    implements $EnableWifiTabEventCopyWith<$Res> {
+  _$EnableWifiTabEventCopyWithImpl(this._self, this._then);
 
+  final EnableWifiTabEvent _self;
+  final $Res Function(EnableWifiTabEvent) _then;
+
+  /// Create a copy of WifiTabEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
-    Object? wifiId = null,
+    Object? connectionId = null,
     Object? value = null,
   }) {
-    return _then(_$EnableWifiTabEventImpl(
-      null == wifiId
-          ? _value.wifiId
-          : wifiId // ignore: cast_nullable_to_non_nullable
-              as int,
+    return _then(EnableWifiTabEvent(
+      null == connectionId
+          ? _self.connectionId
+          : connectionId // ignore: cast_nullable_to_non_nullable
+              as String,
       null == value
-          ? _value.value
+          ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
 }
 
-/// @nodoc
-
-class _$EnableWifiTabEventImpl implements EnableWifiTabEvent {
-  const _$EnableWifiTabEventImpl(this.wifiId, this.value);
-
-  @override
-  final int wifiId;
-  @override
-  final bool value;
-
-  @override
-  String toString() {
-    return 'WifiTabEvent.enable(wifiId: $wifiId, value: $value)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EnableWifiTabEventImpl &&
-            (identical(other.wifiId, wifiId) || other.wifiId == wifiId) &&
-            (identical(other.value, value) || other.value == value));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, wifiId, value);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EnableWifiTabEventImplCopyWith<_$EnableWifiTabEventImpl> get copyWith =>
-      __$$EnableWifiTabEventImplCopyWithImpl<_$EnableWifiTabEventImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function() uninitialized,
-    required TResult Function() load,
-    required TResult Function(String SSID, String psk) add,
-    required TResult Function(int wifiId) remove,
-    required TResult Function(int wifiId, bool value) enable,
-  }) {
-    return enable(wifiId, value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function()? uninitialized,
-    TResult? Function()? load,
-    TResult? Function(String SSID, String psk)? add,
-    TResult? Function(int wifiId)? remove,
-    TResult? Function(int wifiId, bool value)? enable,
-  }) {
-    return enable?.call(wifiId, value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function()? uninitialized,
-    TResult Function()? load,
-    TResult Function(String SSID, String psk)? add,
-    TResult Function(int wifiId)? remove,
-    TResult Function(int wifiId, bool value)? enable,
-    required TResult orElse(),
-  }) {
-    if (enable != null) {
-      return enable(wifiId, value);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value) $default, {
-    required TResult Function(UnWifiTabEvent value) uninitialized,
-    required TResult Function(LoadWifiTabEvent value) load,
-    required TResult Function(AddWifiTabEvent value) add,
-    required TResult Function(RemoveWifiTabEvent value) remove,
-    required TResult Function(EnableWifiTabEvent value) enable,
-  }) {
-    return enable(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_WifiTabEvent value)? $default, {
-    TResult? Function(UnWifiTabEvent value)? uninitialized,
-    TResult? Function(LoadWifiTabEvent value)? load,
-    TResult? Function(AddWifiTabEvent value)? add,
-    TResult? Function(RemoveWifiTabEvent value)? remove,
-    TResult? Function(EnableWifiTabEvent value)? enable,
-  }) {
-    return enable?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_WifiTabEvent value)? $default, {
-    TResult Function(UnWifiTabEvent value)? uninitialized,
-    TResult Function(LoadWifiTabEvent value)? load,
-    TResult Function(AddWifiTabEvent value)? add,
-    TResult Function(RemoveWifiTabEvent value)? remove,
-    TResult Function(EnableWifiTabEvent value)? enable,
-    required TResult orElse(),
-  }) {
-    if (enable != null) {
-      return enable(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class EnableWifiTabEvent implements WifiTabEvent {
-  const factory EnableWifiTabEvent(final int wifiId, final bool value) =
-      _$EnableWifiTabEventImpl;
-
-  int get wifiId;
-  bool get value;
-  @JsonKey(ignore: true)
-  _$$EnableWifiTabEventImplCopyWith<_$EnableWifiTabEventImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

@@ -58,7 +58,12 @@ echo "------------------------"
 # echo "$CMD"
 # eval $CMD || error_exit "gen_snapshot_linux"
 
+# Release
 CMD="flutterpi_tool build --arch=arm64 --cpu=pi4 --release"
+
+# Debug
+#CMD="flutterpi_tool build --arch=arm64 --cpu=pi4 --debug --debug-symbols"
+
 echo "$CMD"
 eval $CMD || error_exit "generate App data"
 

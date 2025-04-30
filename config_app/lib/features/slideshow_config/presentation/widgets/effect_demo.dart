@@ -86,10 +86,10 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
   Future<MediaItem> _getNextItem() async {
     if (_mediaItems.isEmpty) {
       final items = [
-        Uri.parse('http://192.168.50.175:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'),
-        Uri.parse('http://192.168.50.175:8080/cache/123/get/AIwhur2NgCqrUIjqXOzX1FjCNTeIs4GqGX9kifFSbhvi9vSJiND3SAqTbXQqTs15oC_cqj2Z-8Oi_2560x1600.jpeg'),
+        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'),
+        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2NgCqrUIjqXOzX1FjCNTeIs4GqGX9kifFSbhvi9vSJiND3SAqTbXQqTs15oC_cqj2Z-8Oi_2560x1600.jpeg'),
         Uri.parse(
-            'http://192.168.50.175:8080/cache/123/get/AIwhur23zNAQK1bHNZGzQv6CIEHUX_VxDW3P0RS4MPGycT8x2pE25sa57-RBG-74P76mecaE6OQk13-kaHBKNpEt6OeoyhX8Jw_2560x1600.jpeg')
+            'http://192.168.50.143:8080/cache/123/get/AIwhur23zNAQK1bHNZGzQv6CIEHUX_VxDW3P0RS4MPGycT8x2pE25sa57-RBG-74P76mecaE6OQk13-kaHBKNpEt6OeoyhX8Jw_2560x1600.jpeg')
       ];
       _mediaItems.addAll(items.map((e) => MediaItem(e.path, e)));
     }
