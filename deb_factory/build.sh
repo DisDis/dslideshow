@@ -21,8 +21,8 @@ cp -r ./template_build_$PROFILE_ARC ./$DIR || error_exit "copy"
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
 ./build_aot_$CPU_TYPE.sh || error_exit "DSlideshow AOT '$CPU_TYPE'"
-cd ../config_app
-./build_web.sh || error_exit "Config app"
+#cd ../config_app
+#./build_web.sh || error_exit "Config app"
 cd ../deb_factory
 
 cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy"

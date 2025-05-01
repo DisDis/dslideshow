@@ -6,7 +6,9 @@ cd /opt/dslideshow
 ./scripts/screenOff.sh
 ./scripts/screenOn.sh
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
-./flutter-pi --release --vulkan ./flutter_assets/
+#Vulkan version without video
+#./flutter-pi --release --vulkan ./flutter_assets/
+./flutter-pi --release ./flutter_assets/
 
 
 #debug

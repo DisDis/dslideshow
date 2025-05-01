@@ -7,14 +7,14 @@ class HardwareConfig {
   @JsonKey(defaultValue: 100)
   int smoothingGPIOMs;
 
-  @JsonKey(defaultValue: 17)
-  int pinButton0;
-  @JsonKey(defaultValue: 27)
-  int pinButton1;
   @JsonKey(defaultValue: 23)
-  int pinButton3;
+  int pinButton0;
   @JsonKey(defaultValue: 22)
+  int pinButton1;
+  @JsonKey(defaultValue: 27)
   int pinButton2;
+  @JsonKey(defaultValue: 17)
+  int pinButton3;
 
   @JsonKey(defaultValue: 12)
   int pinPeopleSensor;
