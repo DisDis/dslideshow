@@ -83,13 +83,13 @@ class SlideShowConfig {
 
 @JsonSerializable()
 class SlideShowButton {
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
-  SlideshowAction button0;
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showMenu)
-  SlideshowAction button1;
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.toggleScreen)
-  SlideshowAction button2;
   @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showInfo)
+  SlideshowAction button0;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.toggleScreen)
+  SlideshowAction button1;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showMenu)
+  SlideshowAction button2;
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
   SlideshowAction button3;
 
   @JsonKey(defaultValue: 320)

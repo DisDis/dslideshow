@@ -38,16 +38,16 @@ Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
 SlideShowButton _$SlideShowButtonFromJson(Map<String, dynamic> json) =>
     SlideShowButton(
       button0: json['button0'] == null
-          ? SlideshowAction.pause
+          ? SlideshowAction.showInfo
           : SlideShowButton._parseAction(json['button0']),
       button1: json['button1'] == null
-          ? SlideshowAction.showMenu
+          ? SlideshowAction.toggleScreen
           : SlideShowButton._parseAction(json['button1']),
       button2: json['button2'] == null
-          ? SlideshowAction.toggleScreen
+          ? SlideshowAction.showMenu
           : SlideShowButton._parseAction(json['button2']),
       button3: json['button3'] == null
-          ? SlideshowAction.showInfo
+          ? SlideshowAction.pause
           : SlideShowButton._parseAction(json['button3']),
       hintOffsetX: (json['hintOffsetX'] as num?)?.toInt() ?? 320,
       hintOffsetY: (json['hintOffsetY'] as num?)?.toInt() ?? 20,

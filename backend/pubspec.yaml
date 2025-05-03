@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 7.2.0+6
+version: 7.2.0+7
 description: A sample command-line application
 publish_to: none
 environment:
@@ -15,13 +15,14 @@ dependencies:
     googleapis_auth: ^1.4.1
     flutter_gpiod:  
         path: ../../flutter_packages/packages/flutter_gpiod
+    linux_dpms:  
+        path: ../../flutter_packages/packages/linux_dpms
     shelf: ^1.4.2
     shelf_router: ^1.1.4
     mqtt_client: ^10.8.0
     collection: ^1.15.0
     json_annotation: ^4.9.0
     freezed_annotation: ^3.0.0
-    ffi: ^2.1.4
 dev_dependencies:
   # shelf_router_generator: ^1.0.2
   json_serializable: ^6.9.4
