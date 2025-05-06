@@ -25,64 +25,67 @@ class CommonHeaderWidget extends StatelessWidget {
             ),
           ),
         BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(builder: (context, state) {
-          return Row(
-            children: <Widget>[
-              if (state.storageStatus == StorageStatusEnum.off)
-                const BlinkAnimation(
-                  key: Key('cloud_off'),
-                  hideAfterBlink: false,
-                  child: Icon(
-                    Icons.cloud_off,
-                    size: 24.0,
-                    color: Colors.red,
-                  ),
-                )
-              else if (state.storageStatus == StorageStatusEnum.download)
-                const BlinkAnimation(
-                  key: Key('cloud_download'),
-                  child: Icon(
-                    Icons.cloud_download,
-                    size: 24.0,
-                    color: Colors.green,
-                  ),
-                )
-              else if (state.storageStatus == StorageStatusEnum.done)
-                const BlinkAnimation(
-                    key: Key('cloud_done'),
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                if (state.storageStatus == StorageStatusEnum.off)
+                  const BlinkAnimation(
+                    key: Key('cloud_off'),
+                    hideAfterBlink: false,
                     child: Icon(
-                      Icons.cloud_done,
+                      Icons.cloud_off,
                       size: 24.0,
-                      color: Colors.white,
-                    )),
-              if (state.hasInternet)
-                const BlinkAnimation(
-                    key: Key('hasInternet'),
+                      color: Colors.red,
+                    ),
+                  )
+                else if (state.storageStatus == StorageStatusEnum.download)
+                  const BlinkAnimation(
+                    key: Key('cloud_download'),
                     child: Icon(
-                      Icons.signal_wifi_4_bar,
+                      Icons.cloud_download,
                       size: 24.0,
-                      color: Colors.white,
-                    ))
-              else
-                const BlinkAnimation(
-                  key: Key('noInternet'),
-                  hideAfterBlink: false,
-                  child: Icon(
-                    Icons.signal_wifi_off,
-                    size: 24.0,
-                    color: Colors.red,
+                      color: Colors.green,
+                    ),
+                  )
+                else if (state.storageStatus == StorageStatusEnum.done)
+                  const BlinkAnimation(
+                      key: Key('cloud_done'),
+                      child: Icon(
+                        Icons.cloud_done,
+                        size: 24.0,
+                        color: Colors.white,
+                      )),
+                if (state.hasInternet)
+                  const BlinkAnimation(
+                      key: Key('hasInternet'),
+                      child: Icon(
+                        Icons.signal_wifi_4_bar,
+                        size: 24.0,
+                        color: Colors.white,
+                      ))
+                else
+                  const BlinkAnimation(
+                    key: Key('noInternet'),
+                    hideAfterBlink: false,
+                    child: Icon(
+                      Icons.signal_wifi_off,
+                      size: 24.0,
+                      color: Colors.red,
+                    ),
                   ),
-                ),
-              if (state.isPaused)
-                const BlinkAnimation(
-                  key: Key('isPaused'),
-                  hideAfterBlink: false,
-                  child: Icon(
-                    Icons.pause_circle,
-                    size: 24.0,
-                    color: Colors.red,
-                  ),
-                )
-            ],
+                if (state.isPaused)
+                  const BlinkAnimation(
+                    key: Key('isPaused'),
+                    hideAfterBlink: false,
+                    child: Icon(
+                      Icons.pause_circle,
+                      size: 24.0,
+                      color: Colors.red,
+                    ),
+                  )
+              ],
+            ),
           );
         }),
       ],
