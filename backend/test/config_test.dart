@@ -15,18 +15,26 @@ void main() {
           "fadeTimeMs": 2000,
           "transitionTimeMs": 1000,
           "allowedEffects": ["Fade"],
-          "isBlurredBackground": false
-        }
+          "isBlurredBackground": false,
+        },
       };
 
       final _config = new AppConfig.fromJson(testData);
       expect(_config.slideshow.allowedEffects, equals(['Fade']));
     });
 
+    test('parse buttons', () {
+      final testData = {"action": "SlideshowAction.toggleScreen", "minPressingMs": 3000};
+
+      final _config = SlideShowButtonConfig.fromJson(testData);
+      expect(_config.action, SlideshowAction.toggleScreen);
+      expect(_config.minPressingMs, 3000);
+    });
+
     group('SlideShowConfig', () {
       test('parse allowedEffects', () {
         final _slideShowConfig = new SlideShowConfig.fromJson(<String, dynamic>{
-          'allowedEffects': ['Fade']
+          'allowedEffects': ['Fade'],
         });
         expect(_slideShowConfig.allowedEffects, equals(['Fade']));
       });
@@ -50,7 +58,7 @@ void main() {
           "syncPeriod": 60,
           "albumNames": ["TEST_slide1", "TEST_slide2"],
           "refreshToken": "123456",
-          "clientId": {"identifier": "id", "secret": "secret123"}
+          "clientId": {"identifier": "id", "secret": "secret123"},
         });
         expect(_config.albumNames, equals(["TEST_slide1", "TEST_slide2"]));
         expect(_config.syncPeriod, equals(Duration(seconds: 60)));
@@ -73,9 +81,9 @@ void main() {
               "syncPeriod": 60,
               "albumNames": ["TEST_slide"],
               "refreshToken": "123456",
-              "clientId": {"identifier": "id", "secret": "secret123"}
-            }
-          }
+              "clientId": {"identifier": "id", "secret": "secret123"},
+            },
+          },
         });
         expect(_config.selected, equals(StorageType.GPhotoStorage));
         final storage = _config.getOrCreateEmpty(_config.selected);

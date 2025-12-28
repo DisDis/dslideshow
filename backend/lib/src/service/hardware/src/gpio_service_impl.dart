@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';

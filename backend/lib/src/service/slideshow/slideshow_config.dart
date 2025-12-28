@@ -126,7 +126,7 @@ class SlideShowButtons {
 
 @JsonSerializable()
 class SlideShowButtonConfig {
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.none)
   SlideshowAction action;
   @JsonKey(defaultValue: 200)
   int minPressingMs;
