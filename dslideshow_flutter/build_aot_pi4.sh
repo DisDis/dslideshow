@@ -58,6 +58,8 @@ echo "------------------------"
 # echo "$CMD"
 # eval $CMD || error_exit "gen_snapshot_linux"
 
+echo "Use: 'dart pub global activate flutterpi_tool'"
+
 # Release
 CMD="flutterpi_tool build --arch=arm64 --cpu=pi4 --release"
 

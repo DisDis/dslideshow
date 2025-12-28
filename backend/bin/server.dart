@@ -45,11 +45,11 @@ void main(List<String> args) async {
       final _config = injector.get<AppConfig>();
       return new MqttService(_config.mqtt, applicationStateService: injector());
     });
-//        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
-//         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
-//        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-//        ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
-//         ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
+    //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
+    //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
+    //        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
+    //        ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
+    //         ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
@@ -57,23 +57,23 @@ void main(List<String> args) async {
     await mqtt.onMenu.first;
 
     //await _testSystemInfo();
-    // await _testGPIO();
-//    await _gphotoStorage.init();
+    _testGPIO();
+    //    await _gphotoStorage.init();
 
-//    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
-//     _gphoto.run();
+    //    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
+    //     _gphoto.run();
 
     // final backendService = RemoteServiceImpl(serializers: serializers)..spawn(hw_frame.serviceMain);
 
-//    IsolateRunner _rService = await IsolateRunner.spawn();
-//    await _rService.run(result_service.main,<dynamic>[]);
-//    IsolateRunner _server = await IsolateRunner.spawn();
-//    await _server.run(server.main,<dynamic>[]);
-//    _server.run(server.setServicesIsolate, [_simulatorService, _rService]);
-//    _simulatorService.run(universe.setServicesIsolate, [_rService]);
-//         _service.run(service.executeCommand,"run proccess");
+    //    IsolateRunner _rService = await IsolateRunner.spawn();
+    //    await _rService.run(result_service.main,<dynamic>[]);
+    //    IsolateRunner _server = await IsolateRunner.spawn();
+    //    await _server.run(server.main,<dynamic>[]);
+    //    _server.run(server.setServicesIsolate, [_simulatorService, _rService]);
+    //    _simulatorService.run(universe.setServicesIsolate, [_rService]);
+    //         _service.run(service.executeCommand,"run proccess");
 
-//    await Future.wait<dynamic>([_hw_FrameService.onExit]);
+    //    await Future.wait<dynamic>([_hw_FrameService.onExit]);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
     exit(1);

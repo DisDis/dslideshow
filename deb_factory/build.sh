@@ -20,14 +20,18 @@ cp -r ./template_build_$PROFILE_ARC ./$DIR || error_exit "copy"
 
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
+echo "--- Build 'DSlideshow' ---"
 ./build_aot_$CPU_TYPE.sh || error_exit "DSlideshow AOT '$CPU_TYPE'"
+
+echo "--- Build 'config_app' ---"
 cd ../config_app
 ./build_web.sh || error_exit "Config app"
-cd ../deb_factory
 
-cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy"
-cp -r ../dslideshow_flutter/build/flutter_assets $DEST/ || error_exit "copy"
-cp -r ../config_app/build/web $DEST/ || error_exit "copy"
+echo "--- Create DEB package 'DSlideshow' ---"
+cd ../deb_factory
+cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy flutter-pi"
+cp -r ../dslideshow_flutter/build/flutter-pi/${CPU_TYPE}-64/* $DEST/ || error_exit "copy flutter_assets"
+cp -r ../config_app/build/web $DEST/ || error_exit "copy config_app web"
 
 # remove templates
 rm $DEST/version.template

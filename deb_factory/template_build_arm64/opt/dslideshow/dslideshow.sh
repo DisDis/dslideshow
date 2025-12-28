@@ -7,21 +7,21 @@ cd /opt/dslideshow
 ./scripts/screenOn.sh
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
 #Vulkan version without video
-#./flutter-pi --release --vulkan ./flutter_assets/
-./flutter-pi --release ./flutter_assets/
+#./flutter-pi --release --vulkan ./
+./flutter-pi --release ./
 
 
 #debug
-#./flutter-pi -d "192, 120"  ./flutter_assets/
+#./flutter-pi -d "192, 120"  ./
 #release
-#./flutter-pi -d "192, 120"  --release ./flutter_assets/
+#./flutter-pi -d "192, 120"  --release ./
 #release
-#./flutter-pi  --release ./flutter_assets/
+#./flutter-pi  --release ./
 
 #while true
 #do
 #	echo "Press [CTRL+C] to stop.."
 #	sleep 1
-#        ./flutter-pi --release ./flutter_assets/
+#        ./flutter-pi --release ./
 #done
 
