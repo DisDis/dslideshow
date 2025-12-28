@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
+import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
 import 'package:logging/logging.dart';
 
 import 'package:dslideshow_backend/app_storage.dart';
@@ -101,7 +101,7 @@ void main() async {
     if (environment.isLinuxEmbedded) {
       try {
         _log.info("FlutterpiVideoPlayer initing");
-        // FlutterpiVideoPlayer.registerWith();
+        FlutterpiVideoPlayer.registerWith();
       } catch (e, s) {
         _log.severe('FlutterpiVideoPlayer: $e, $s', e, s);
       }

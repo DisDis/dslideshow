@@ -108,38 +108,34 @@ class GPIOServiceImpl extends GPIOService {
       });
       Future.delayed(Duration(milliseconds: 200)).then((_) => _scMotion.add(_linePeopleSensor.getValue()));
 
-      _lineButton0.onEvent.listen(
-        (event) => InputLineFilter(
-          button: ButtonType.button0,
-          skipNoiseMs: _config.smoothingGPIOMs,
-          maxDetectTimeMs: maxButtonDetectTimeMs,
-          scButtonEvent: _scButtonEvent,
-        ).execute,
+      final button0Filter = InputLineFilter(
+        button: ButtonType.button0,
+        skipNoiseMs: _config.smoothingGPIOMs,
+        maxDetectTimeMs: maxButtonDetectTimeMs,
+        scButtonEvent: _scButtonEvent,
       );
-      _lineButton1.onEvent.listen(
-        (event) => InputLineFilter(
-          button: ButtonType.button1,
-          skipNoiseMs: _config.smoothingGPIOMs,
-          maxDetectTimeMs: maxButtonDetectTimeMs,
-          scButtonEvent: _scButtonEvent,
-        ).execute,
+      final button1Filter = InputLineFilter(
+        button: ButtonType.button1,
+        skipNoiseMs: _config.smoothingGPIOMs,
+        maxDetectTimeMs: maxButtonDetectTimeMs,
+        scButtonEvent: _scButtonEvent,
       );
-      _lineButton2.onEvent.listen(
-        (event) => InputLineFilter(
-          button: ButtonType.button2,
-          skipNoiseMs: _config.smoothingGPIOMs,
-          maxDetectTimeMs: maxButtonDetectTimeMs,
-          scButtonEvent: _scButtonEvent,
-        ).execute,
+      final button2Filter = InputLineFilter(
+        button: ButtonType.button2,
+        skipNoiseMs: _config.smoothingGPIOMs,
+        maxDetectTimeMs: maxButtonDetectTimeMs,
+        scButtonEvent: _scButtonEvent,
       );
-      _lineButton3.onEvent.listen(
-        (event) => InputLineFilter(
-          button: ButtonType.button3,
-          skipNoiseMs: _config.smoothingGPIOMs,
-          maxDetectTimeMs: maxButtonDetectTimeMs,
-          scButtonEvent: _scButtonEvent,
-        ).execute,
+      final button3Filter = InputLineFilter(
+        button: ButtonType.button3,
+        skipNoiseMs: _config.smoothingGPIOMs,
+        maxDetectTimeMs: maxButtonDetectTimeMs,
+        scButtonEvent: _scButtonEvent,
       );
+      _lineButton0.onEvent.listen(button0Filter.execute);
+      _lineButton1.onEvent.listen(button1Filter.execute);
+      _lineButton2.onEvent.listen(button2Filter.execute);
+      _lineButton3.onEvent.listen(button3Filter.execute);
 
       _log.info('initialization completed');
     } catch (e, s) {
@@ -179,19 +175,19 @@ class InputLineFilter {
 
   InputLineFilter({required this.button, required this.skipNoiseMs, required this.maxDetectTimeMs, required this.scButtonEvent});
 
-  void execute(SignalEdge event) {
+  void execute(SignalEvent eventI) {
     final deltaMs = DateTime.now().difference(_lastEdgeRise).inMilliseconds;
-    _log.log(Level.FINEST, "${button}, event:${event}, deltaMs:${deltaMs}, skipNoiseMs: ${skipNoiseMs}, maxDetectTimeMs: ${maxDetectTimeMs}");
+    _log.log(Level.FINEST, "${button}, event:${eventI}, deltaMs:${deltaMs}, skipNoiseMs: ${skipNoiseMs}, maxDetectTimeMs: ${maxDetectTimeMs}");
     // H->L (Button down)
-    if (event == SignalEdge.falling) {
+    if (eventI.edge == SignalEdge.rising) {
       if (deltaMs > maxDetectTimeMs) {
         _lastEdgeRise = DateTime.now();
         scButtonEvent.add(ButtonEvent(button: button, event: ButtonEventType.pressed, durationMs: 0));
-        _log.info('button${button.index}: $event');
+        _log.info('button${button.index}: $eventI');
       } else if (deltaMs < skipNoiseMs) {
         return;
       }
-    } else if (event == SignalEdge.rising) {
+    } else if (eventI.edge == SignalEdge.falling) {
       if (deltaMs < skipNoiseMs) {
         return;
       }
@@ -200,7 +196,7 @@ class InputLineFilter {
       }
       scButtonEvent.add(ButtonEvent(button: button, event: ButtonEventType.released, durationMs: deltaMs));
       _lastEdgeRise = DateTime.fromMillisecondsSinceEpoch(0);
-      _log.info('button${button.index}: $event');
+      _log.info('button${button.index}: $eventI');
     }
   }
 }

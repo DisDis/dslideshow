@@ -31,9 +31,9 @@ class DiskStorage extends Storage {
   Stream<DateTime> get onEndSync => _scStub.stream;
 
   // Choose a database
-//  static final _database = MemoryDatabaseAdapter().database();
+  //  static final _database = MemoryDatabaseAdapter().database();
   // Our collection
-//  final Collection _items = _database.collection('items');
+  //  final Collection _items = _database.collection('items');
 
   final Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
 
@@ -59,14 +59,46 @@ class DiskStorage extends Storage {
 
   Future<Uri?> _getRandomItem() async {
     if (_cache.isEmpty) {
-      final items = await _folder.listSync(recursive: true,);
-      if (items.isEmpty) {
-        return null;
-      }
-      _cache = items.map((e) => e.uri).toList(growable: true);
-      _log.info('File cache has ${_cache.length} file(s)');
+      await _createFileCache();
     }
     return _cache.removeAt(_rnd.nextInt(_cache.length));
+  }
+
+  Future<void> _createFileCache() async {
+    _log.info('Create file cache');
+    final stopwatch = Stopwatch()..start();
+    final items = await _folder.listSync(recursive: true);
+    if (items.isEmpty) {
+      return null;
+    }
+    _cache = items
+        .where((item) {
+          try {
+            final fileInfo = FileSystemEntity.typeSync(item.path);
+            if (fileInfo != FileSystemEntityType.file) {
+              _log.log(Level.FINE, "Skip '${item.path}'");
+              return false;
+            }
+            return true;
+          } catch (_) {
+            return false;
+          }
+        })
+        .map((e) => e.uri)
+        .toList(growable: true);
+    stopwatch.stop();
+    _log.info('File cache has ${_cache.length} file(s), built in ${_formatDuration(stopwatch.elapsed)}');
+  }
+
+  String _formatDuration(Duration duration) {
+    final seconds = duration.inSeconds;
+    if (seconds < 60) {
+      return '${(duration.inMilliseconds / 1000).toStringAsFixed(1)} sec';
+    } else {
+      final minutes = seconds ~/ 60;
+      final remainingSeconds = seconds % 60;
+      return '$minutes min ${remainingSeconds} sec';
+    }
   }
 
   static final _nullMediaItem = new DiskMediaItem(null, null);

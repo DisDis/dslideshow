@@ -23,12 +23,20 @@ void main() {
       expect(_config.slideshow.allowedEffects, equals(['Fade']));
     });
 
-    test('parse buttons', () {
+    test('parse button', () {
       final testData = {"action": "SlideshowAction.toggleScreen", "minPressingMs": 3000};
 
       final _config = SlideShowButtonConfig.fromJson(testData);
       expect(_config.action, SlideshowAction.toggleScreen);
       expect(_config.minPressingMs, 3000);
+    });
+
+    test('parse default buttons', () {
+      final testData = <String, Map>{};
+
+      final _config = SlideShowConfig.fromJson(testData);
+      expect(_config.buttons.button0.action, SlideshowAction.showInfo);
+      expect(_config.buttons.button0.minPressingMs, 500);
     });
 
     group('SlideShowConfig', () {
@@ -43,7 +51,7 @@ void main() {
     group('HardwareConfig', () {
       test('pinPeopleSensor', () {
         final _config = new HardwareConfig.fromJson(<String, dynamic>{});
-        expect(_config.pinPeopleSensor, equals(7));
+        expect(_config.pinPeopleSensor, equals(12));
       });
     });
     group('AppConfig', () {
