@@ -49,7 +49,9 @@ class _SerializersImpl implements Serializers {
 
       if (object is LEDControlCommand) return ["LEDControlCommand", object.toJson()];
 
-      if (object is PushButtonCommand) return ["PushButtonCommand", object.toJson()];
+      if (object is ButtonChangeStateCommand) return ["ButtonChangeStateCommand", object.toJson()];
+
+      if (object is EmulatePushButtonCommand) return ["EmulatePushButtonCommand", object.toJson()];
 
       if (object is ExecuteSSActionCommand) return ["ExecuteSSActionCommand", object.toJson()];
 
@@ -177,8 +179,11 @@ class _SerializersImpl implements Serializers {
       case 'LEDControlCommand':
         return LEDControlCommand.fromJson(object);
 
-      case 'PushButtonCommand':
-        return PushButtonCommand.fromJson(object);
+      case 'ButtonChangeStateCommand':
+        return ButtonChangeStateCommand.fromJson(object);
+
+      case 'EmulatePushButtonCommand':
+        return EmulatePushButtonCommand.fromJson(object);
 
       case 'ExecuteSSActionCommand':
         return ExecuteSSActionCommand.fromJson(object);

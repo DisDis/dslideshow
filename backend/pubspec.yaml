@@ -11,13 +11,15 @@ dependencies:
     get_it: ^9.0.5
     dslideshow_common:
         path: ../common
-    googleapis: ^15.0.0
+    #googleapis: ^15.0.0
+    googleapis:  
+        path: ../../googleapis/discoveryapis_generator/googleapis
     googleapis_auth: ^2.0.0
-    flutter_gpiod: ^0.5.1+5
-    #flutter_gpiod:  
-    #    path: ../../flutter_packages/packages/flutter_gpiod
-    #linux_dpms:  
-    #    path: ../../flutter_packages/packages/linux_dpms
+    #flutter_gpiod: ^0.5.1+5
+    flutter_gpiod:  
+        path: ../../flutter_packages/packages/flutter_gpiod
+    linux_dpms:  
+        path: ../../flutter_packages/packages/linux_dpms
     shelf: ^1.4.2
     shelf_router: ^1.1.4
     mqtt_client: ^10.8.0

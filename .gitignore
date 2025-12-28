@@ -82,3 +82,5 @@ system_metrics_widget/android/
 /third_party/googleapis/test
 /third_party/discoveryapis_commons/test
 doc/photoframe_3d/~$splay_fix.m3~
+
+i18n/build
