@@ -86,3 +86,5 @@ pubspec.lock
 /firmwares/
 
 /web
+/linux
+/macos

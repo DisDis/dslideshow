@@ -8,8 +8,9 @@ part of 'slideshow_config.dart';
 
 SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
     SlideShowConfig(
-      allowedEffects:
-          SlideShowConfig._parseAllowedEffects(json['allowedEffects']),
+      allowedEffects: SlideShowConfig._parseAllowedEffects(
+        json['allowedEffects'],
+      ),
       backgroundBlurSigma: (json['backgroundBlurSigma'] as num?)?.toInt() ?? 20,
       backgroundColor: json['backgroundColor'] == null
           ? 4294967295
@@ -20,11 +21,13 @@ SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
       isBlurredBackground: json['isBlurredBackground'] as bool? ?? true,
       transitionTimeMs: (json['transitionTimeMs'] as num?)?.toInt() ?? 1000,
       buttons: SlideShowConfig._parseButtons(json['buttons']),
+      menu: SlideShowMenuConfig.fromJson(json['menu'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
     <String, dynamic>{
       'buttons': instance.buttons.toJson(),
+      'menu': instance.menu.toJson(),
       'displayTimeMs': instance.displayTimeMs,
       'fadeTimeMs': instance.fadeTimeMs,
       'transitionTimeMs': instance.transitionTimeMs,
@@ -35,30 +38,55 @@ Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
       'backgroundColor': SlideShowConfig._colorToJson(instance.backgroundColor),
     };
 
-SlideShowButton _$SlideShowButtonFromJson(Map<String, dynamic> json) =>
-    SlideShowButton(
-      button0: json['button0'] == null
-          ? SlideshowAction.showInfo
-          : SlideShowButton._parseAction(json['button0']),
-      button1: json['button1'] == null
-          ? SlideshowAction.toggleScreen
-          : SlideShowButton._parseAction(json['button1']),
-      button2: json['button2'] == null
-          ? SlideshowAction.showMenu
-          : SlideShowButton._parseAction(json['button2']),
-      button3: json['button3'] == null
-          ? SlideshowAction.pause
-          : SlideShowButton._parseAction(json['button3']),
+SlideShowButtons _$SlideShowButtonsFromJson(Map<String, dynamic> json) =>
+    SlideShowButtons(
+      button0: SlideShowButtonConfig.fromJson(
+        json['button0'] as Map<String, dynamic>,
+      ),
+      button1: SlideShowButtonConfig.fromJson(
+        json['button1'] as Map<String, dynamic>,
+      ),
+      button2: SlideShowButtonConfig.fromJson(
+        json['button2'] as Map<String, dynamic>,
+      ),
+      button3: SlideShowButtonConfig.fromJson(
+        json['button3'] as Map<String, dynamic>,
+      ),
       hintOffsetX: (json['hintOffsetX'] as num?)?.toInt() ?? 320,
       hintOffsetY: (json['hintOffsetY'] as num?)?.toInt() ?? 20,
     );
 
-Map<String, dynamic> _$SlideShowButtonToJson(SlideShowButton instance) =>
+Map<String, dynamic> _$SlideShowButtonsToJson(SlideShowButtons instance) =>
     <String, dynamic>{
-      'button0': SlideShowButton._actionToJson(instance.button0),
-      'button1': SlideShowButton._actionToJson(instance.button1),
-      'button2': SlideShowButton._actionToJson(instance.button2),
-      'button3': SlideShowButton._actionToJson(instance.button3),
+      'button0': instance.button0.toJson(),
+      'button1': instance.button1.toJson(),
+      'button2': instance.button2.toJson(),
+      'button3': instance.button3.toJson(),
       'hintOffsetX': instance.hintOffsetX,
       'hintOffsetY': instance.hintOffsetY,
     };
+
+SlideShowButtonConfig _$SlideShowButtonConfigFromJson(
+  Map<String, dynamic> json,
+) => SlideShowButtonConfig(
+  action: json['action'] == null
+      ? SlideshowAction.pause
+      : SlideShowButtonConfig._parseAction(json['action']),
+  minPressingMs: (json['minPressingMs'] as num?)?.toInt() ?? 200,
+);
+
+Map<String, dynamic> _$SlideShowButtonConfigToJson(
+  SlideShowButtonConfig instance,
+) => <String, dynamic>{
+  'action': SlideShowButtonConfig._actionToJson(instance.action),
+  'minPressingMs': instance.minPressingMs,
+};
+
+SlideShowMenuConfig _$SlideShowMenuConfigFromJson(Map<String, dynamic> json) =>
+    SlideShowMenuConfig(
+      minPressingMs: (json['minPressingMs'] as num?)?.toInt() ?? 200,
+    );
+
+Map<String, dynamic> _$SlideShowMenuConfigToJson(
+  SlideShowMenuConfig instance,
+) => <String, dynamic>{'minPressingMs': instance.minPressingMs};

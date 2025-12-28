@@ -1,17 +1,20 @@
 import 'dart:async';
 
+import 'package:dslideshow_backend/command.dart';
+
+
 abstract class GPIOService {
-  //Pause
-  Stream<bool> get onButton0;
-  //Menu
-  Stream<bool> get onButton1;
-  //ScreenToggle
-  Stream<bool> get onButton2;
-  //Back
-  Stream<bool> get onButton3;
+  Stream<ButtonEvent> get onButtonEvent;
 
   Stream<bool> get onMotion;
   Future init();
   Future release();
   set powerLED(bool? value);
+}
+
+class ButtonEvent{
+  final ButtonType button;
+  final ButtonEventType event;
+  final int durationMs;
+  ButtonEvent({required this.button, required this.event, required this.durationMs});
 }

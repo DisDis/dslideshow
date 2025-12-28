@@ -17,7 +17,7 @@ ThemeData createDarkTheme() {
         fontWeight: FontWeight.w600,
       ),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: AppColors.lightDark,
       titleTextStyle: headline1.copyWith(
         color: AppColors.darkestGrey,

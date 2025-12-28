@@ -6,7 +6,8 @@ import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 GPIOService getGPIOService(HardwareConfig config) => GPIOServiceImpl();
 
 class GPIOServiceImpl extends GPIOService {
-  final StreamController<bool> _fake = StreamController<bool>.broadcast();
+  final StreamController<bool> _fake = StreamController.broadcast();
+  final StreamController<ButtonEvent> _fake1 = StreamController.broadcast();
 
   @override
   Future init() async {}
@@ -21,11 +22,6 @@ class GPIOServiceImpl extends GPIOService {
   set powerLED(bool? value) {}
 
   @override
-  Stream<bool> get onButton0 => _fake.stream;
-  @override
-  Stream<bool> get onButton1 => _fake.stream;
-  @override
-  Stream<bool> get onButton2 => _fake.stream;
-  @override
-  Stream<bool> get onButton3 => _fake.stream;
+  Stream<ButtonEvent> get onButtonEvent => _fake1.stream;
+ 
 }

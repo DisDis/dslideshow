@@ -37,18 +37,15 @@ Map<String, dynamic> _$OTAGetInfoCommandToJson(_OTAGetInfoCommand instance) =>
     };
 
 _OTAGetInfoCommandResult _$OTAGetInfoCommandResultFromJson(
-        Map<String, dynamic> json) =>
-    _OTAGetInfoCommandResult(
-      info: OTAInfo.fromJson(json['info'] as Map<String, dynamic>),
-      id: (json['id'] as num).toInt(),
-    );
+  Map<String, dynamic> json,
+) => _OTAGetInfoCommandResult(
+  info: OTAInfo.fromJson(json['info'] as Map<String, dynamic>),
+  id: (json['id'] as num).toInt(),
+);
 
 Map<String, dynamic> _$OTAGetInfoCommandResultToJson(
-        _OTAGetInfoCommandResult instance) =>
-    <String, dynamic>{
-      'info': instance.info.toJson(),
-      'id': instance.id,
-    };
+  _OTAGetInfoCommandResult instance,
+) => <String, dynamic>{'info': instance.info.toJson(), 'id': instance.id};
 
 _OTAOutputCommand _$OTAOutputCommandFromJson(Map<String, dynamic> json) =>
     _OTAOutputCommand(
@@ -65,20 +62,20 @@ Map<String, dynamic> _$OTAOutputCommandToJson(_OTAOutputCommand instance) =>
     };
 
 _OTAInfo _$OTAInfoFromJson(Map<String, dynamic> json) => _OTAInfo(
-      status: $enumDecode(_$OTAStatusEnumMap, json['status']),
-      uploadingPercent: (json['uploadingPercent'] as num).toDouble(),
-      code: json['code'] as String,
-      exitCode: (json['exitCode'] as num?)?.toInt(),
-      errorText: json['errorText'] as String?,
-    );
+  status: $enumDecode(_$OTAStatusEnumMap, json['status']),
+  uploadingPercent: (json['uploadingPercent'] as num).toDouble(),
+  code: json['code'] as String,
+  exitCode: (json['exitCode'] as num?)?.toInt(),
+  errorText: json['errorText'] as String?,
+);
 
 Map<String, dynamic> _$OTAInfoToJson(_OTAInfo instance) => <String, dynamic>{
-      'status': _$OTAStatusEnumMap[instance.status]!,
-      'uploadingPercent': instance.uploadingPercent,
-      'code': instance.code,
-      'exitCode': instance.exitCode,
-      'errorText': instance.errorText,
-    };
+  'status': _$OTAStatusEnumMap[instance.status]!,
+  'uploadingPercent': instance.uploadingPercent,
+  'code': instance.code,
+  'exitCode': instance.exitCode,
+  'errorText': instance.errorText,
+};
 
 const _$OTAStatusEnumMap = {
   OTAStatus.disabled: 'disabled',

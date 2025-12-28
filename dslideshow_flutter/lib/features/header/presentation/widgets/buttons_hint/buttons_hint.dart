@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ButtonsHintWidget extends StatelessWidget {
-  final SlideShowButton buttons;
+  final SlideShowButtons buttons;
   const ButtonsHintWidget({
     required this.buttons,
     super.key,

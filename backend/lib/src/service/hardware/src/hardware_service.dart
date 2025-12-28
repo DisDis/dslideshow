@@ -54,21 +54,9 @@ class HardwareService implements RpcService {
     } else {
       _log.warning('GPIO does not support except Linux');
     }
-    _gpioService.onButton0.listen((event) {
-      _log.info('onButton0 button = $event');
-      if (event) _pushButton(ButtonType.button0);
-    });
-    _gpioService.onButton1.listen((event) {
-      _log.info('onButton1 button = $event');
-      if (event) _pushButton(ButtonType.button1);
-    });
-    _gpioService.onButton2.listen((event) {
-      _log.info('onButton2 button = $event');
-      if (event) _pushButton(ButtonType.button2);
-    });
-    _gpioService.onButton3.listen((event) {
-      _log.info('onButton3 button = $event');
-      if (event) _pushButton(ButtonType.button3);
+    _gpioService.onButtonEvent.listen((event){
+        _log.info('onButtonEvent button${event.button.index} = $event');
+        _sendButtonEvent(event);
     });
     _screenService.onStateChangePreparation.listen((newState) {
       screenConfigure(newState);
@@ -148,8 +136,8 @@ class HardwareService implements RpcService {
         return _executeGetMediaItemCommand(command as GetMediaItemCommand);
       case StorageNextCommand.TYPE:
         return _executeStorageNextCommand(command as StorageNextCommand);
-      case PushButtonCommand.TYPE:
-        return _executePushButtonCommand(command as PushButtonCommand);
+      case EmulatePushButtonCommand.TYPE:
+        return _executeEmulatePushButtonCommand(command as EmulatePushButtonCommand);
       case WiFiScanCommand.TYPE:
         return _executeWiFiScanCommand(command as WiFiScanCommand);
       case WiFiAddCommand.TYPE:
@@ -204,9 +192,13 @@ class HardwareService implements RpcService {
     );
   }
 
-  Future<RpcResult> _pushButton(ButtonType type) async {
-    return _frontendService.send(PushButtonCommand(button: type, id: RpcCommand.generateId()));
+  
+  Future<RpcResult> _sendButtonEvent(ButtonEvent event) async {
+    return _frontendService.send(ButtonChangeStateCommand(button: event.button,
+      event: event.event,durationMs: event.durationMs,
+     id: RpcCommand.generateId()));
   }
+
 
   Future<RpcResult> _executeAction(SlideshowAction action, bool value) async {
     return _frontendService.send(ExecuteSSActionCommand(action: action, value: value, id: RpcCommand.generateId()));
@@ -263,9 +255,9 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async {
+  Future<RpcResult> _executeEmulatePushButtonCommand(EmulatePushButtonCommand command) async {
     //Emulate
-    _pushButton(command.button);
+    _sendButtonEvent(ButtonEvent(button: command.button, event: ButtonEventType.released, durationMs: command.durationMs));
     return EmptyResult.respond(command);
   }
 

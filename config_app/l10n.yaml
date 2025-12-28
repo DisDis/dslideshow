@@ -1,4 +1,5 @@
-arb-dir: ../l10n
+arb-dir: ../i18n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
+output-dir: ../i18n/lib/src/generated
 nullable-getter: false

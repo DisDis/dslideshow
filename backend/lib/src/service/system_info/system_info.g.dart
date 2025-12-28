@@ -7,13 +7,13 @@ part of 'system_info.dart';
 // **************************************************************************
 
 _SystemInfo _$SystemInfoFromJson(Map<String, dynamic> json) => _SystemInfo(
-      cpuInfo: CpuInfo.fromJson(json['cpuInfo'] as Map<String, dynamic>),
-      networkInfo:
-          NetworkInfo.fromJson(json['networkInfo'] as Map<String, dynamic>),
-      osInfo: OSInfo.fromJson(json['osInfo'] as Map<String, dynamic>),
-      updateInfo:
-          UpdateInfo.fromJson(json['updateInfo'] as Map<String, dynamic>),
-    );
+  cpuInfo: CpuInfo.fromJson(json['cpuInfo'] as Map<String, dynamic>),
+  networkInfo: NetworkInfo.fromJson(
+    json['networkInfo'] as Map<String, dynamic>,
+  ),
+  osInfo: OSInfo.fromJson(json['osInfo'] as Map<String, dynamic>),
+  updateInfo: UpdateInfo.fromJson(json['updateInfo'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$SystemInfoToJson(_SystemInfo instance) =>
     <String, dynamic>{

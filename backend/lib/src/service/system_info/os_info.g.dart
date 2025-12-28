@@ -7,14 +7,14 @@ part of 'os_info.dart';
 // **************************************************************************
 
 _OSInfo _$OSInfoFromJson(Map<String, dynamic> json) => _OSInfo(
-      name: json['name'] as String,
-      osType: $enumDecode(_$OSTypeEnumMap, json['osType']),
-    );
+  name: json['name'] as String,
+  osType: $enumDecode(_$OSTypeEnumMap, json['osType']),
+);
 
 Map<String, dynamic> _$OSInfoToJson(_OSInfo instance) => <String, dynamic>{
-      'name': instance.name,
-      'osType': _$OSTypeEnumMap[instance.osType]!,
-    };
+  'name': instance.name,
+  'osType': _$OSTypeEnumMap[instance.osType]!,
+};
 
 const _$OSTypeEnumMap = {
   OSType.linux: 'linux',

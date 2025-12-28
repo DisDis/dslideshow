@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/features/menu/presentation/widgets/mainmenu_model.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:flutter/services.dart';
 
 part 'main_menu_event.dart';
 part 'main_menu_state.dart';
@@ -17,38 +16,44 @@ part 'main_menu_bloc.freezed.dart';
 class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
   final RouteBloc routeBloc;
   final FrontendService frontendService;
+  final SlideShowMenuConfig config;
   final SlideshowStatusBloc slideshowStatusBloc;
 
-  StreamSubscription? _onPushSubscription;
+  StreamSubscription? _onButtonEventSubscription;
 
   MainMenuBloc({
     required this.routeBloc,
     required this.frontendService,
     required this.slideshowStatusBloc,
+    required this.config,
   }) : super(MainMenuState(selectedIndex: -1)) {
     on<MainMenuSelectEvent>(_onSelectItem);
     on<MainMenuExecuteEvent>(_onExecuteItem);
-    _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
+    _onButtonEventSubscription = frontendService.onButtonEvent.listen(
+      _onButtonEvent,
+    );
   }
 
-  void _pushButton(ButtonType event) {
+  void _onButtonEvent(ButtonEvent event) {
     if (!slideshowStatusBloc.state.isMenu) {
       // Skip button push
       return;
     }
-    switch (event) {
-      case ButtonType.button0:
-        add(MainMenuEvent.execute(MenuCommand.returnToSlideshow));
-        break;
-      case ButtonType.button2:
-        add(MainMenuEvent.select(state.selectedIndex - 1));
-        break;
-      case ButtonType.button1:
-        add(MainMenuEvent.select(state.selectedIndex + 1));
-        break;
-      case ButtonType.button3:
-        add(MainMenuEvent.execute());
-        break;
+    if (event.event == ButtonEventType.released && event.durationMs > config.minPressingMs) {
+      switch (event.button) {
+        case ButtonType.button0:
+          add(MainMenuEvent.execute(MenuCommand.returnToSlideshow));
+          break;
+        case ButtonType.button2:
+          add(MainMenuEvent.select(state.selectedIndex - 1));
+          break;
+        case ButtonType.button1:
+          add(MainMenuEvent.select(state.selectedIndex + 1));
+          break;
+        case ButtonType.button3:
+          add(MainMenuEvent.execute());
+          break;
+      }
     }
   }
 
@@ -62,7 +67,10 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     emit(state.copyWith(selectedIndex: index));
   }
 
-  FutureOr<void> _onExecuteItem(MainMenuExecuteEvent event, Emitter<MainMenuState> emit) async {
+  FutureOr<void> _onExecuteItem(
+    MainMenuExecuteEvent event,
+    Emitter<MainMenuState> emit,
+  ) async {
     MenuCommand? command = event.command;
     if (command == null) {
       if (state.selectedIndex != -1) {
@@ -104,8 +112,8 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
 
   @override
   Future<void> close() {
-    _onPushSubscription?.cancel();
-    _onPushSubscription = null;
+    _onButtonEventSubscription?.cancel();
+    _onButtonEventSubscription = null;
 
     return super.close();
   }

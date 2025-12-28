@@ -3,20 +3,21 @@ version: 7.2.0+9
 description: A sample command-line application
 publish_to: none
 environment:
-  sdk: '^3.2.0'
+  sdk: '^3.8.0'
 dependencies:
     shelf_virtual_directory: ^3.0.1
     shelf_multipart: ^2.0.1
     logging: ^1.0.0
-    get_it: ^8.0.3
+    get_it: ^9.0.5
     dslideshow_common:
         path: ../common
-    googleapis: ^13.2.0
-    googleapis_auth: ^1.4.1
-    flutter_gpiod:  
-        path: ../../flutter_packages/packages/flutter_gpiod
-    linux_dpms:  
-        path: ../../flutter_packages/packages/linux_dpms
+    googleapis: ^15.0.0
+    googleapis_auth: ^2.0.0
+    flutter_gpiod: ^0.5.1+5
+    #flutter_gpiod:  
+    #    path: ../../flutter_packages/packages/flutter_gpiod
+    #linux_dpms:  
+    #    path: ../../flutter_packages/packages/linux_dpms
     shelf: ^1.4.2
     shelf_router: ^1.1.4
     mqtt_client: ^10.8.0
@@ -25,9 +26,9 @@ dependencies:
     freezed_annotation: ^3.0.0
 dev_dependencies:
   # shelf_router_generator: ^1.0.2
-  json_serializable: ^6.9.4
-  freezed: ^3.0.4
-  build_runner: ^2.4.15
+  json_serializable: ^6.10.0
+  freezed: ^3.1.0
+  build_runner: ^2.10.4
   test: ^1.15.7
 
 

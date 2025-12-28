@@ -20,8 +20,8 @@ final options = [
   ),
   Option(
     icon: const Icon(Icons.system_update, size: 40.0),
-    title: 'Update',
-    subtitle: 'Update.',
+    title: 'OTA Update',
+    subtitle: 'OTA Update.',
     command: MenuCommand.update,
   ),
   Option(

@@ -40,10 +40,8 @@ void main(List<String> args) async {
         case StorageType.GPhotoStorage:
           final appStorage = injector.get<AppStorage>();
           return new GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
-
         case StorageType.DiskStorage:
-        default:
-          return new DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
+         return new DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
       }
     });
 //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])

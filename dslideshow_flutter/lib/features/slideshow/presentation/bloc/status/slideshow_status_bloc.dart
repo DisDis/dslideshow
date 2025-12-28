@@ -69,6 +69,8 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
       case SlideshowAction.showInfo:
         _showInfo(value);
         break;
+      case SlideshowAction.none:
+        break;
     }
   }
 

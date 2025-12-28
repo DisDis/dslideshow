@@ -11,3 +11,5 @@ enum ButtonType {
   // back;
   button3;
 }
+
+enum ButtonEventType { pressed, released }

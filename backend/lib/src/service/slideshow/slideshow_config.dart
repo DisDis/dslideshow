@@ -8,12 +8,14 @@ class SlideShowConfig {
   static final Logger _log = new Logger('SlideShowConfig');
 
   @JsonKey(fromJson: _parseButtons)
-  SlideShowButton buttons;
+  SlideShowButtons buttons;
 
-  static SlideShowButton _parseButtons(dynamic data) {
+  SlideShowMenuConfig menu;
+
+  static SlideShowButtons _parseButtons(dynamic data) {
     _log.info("- parsing 'buttons' bind");
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
-    return SlideShowButton.fromJson(dataV);
+    return SlideShowButtons.fromJson(dataV);
   }
 
   @JsonKey(defaultValue: 5000)
@@ -55,7 +57,8 @@ class SlideShowConfig {
       return value;
     }
     if (value is String) {
-      return int.tryParse(value, radix: 16) ?? SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
+      return int.tryParse(value, radix: 16) ??
+          SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
     }
     return SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
   }
@@ -74,30 +77,28 @@ class SlideShowConfig {
     required this.isBlurredBackground,
     required this.transitionTimeMs,
     required this.buttons,
+    required this.menu,
   });
 
-  factory SlideShowConfig.fromJson(Map<String, dynamic> json) => _$SlideShowConfigFromJson(json);
+  factory SlideShowConfig.fromJson(Map<String, dynamic> json) =>
+      _$SlideShowConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
 }
 
 @JsonSerializable()
-class SlideShowButton {
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showInfo)
-  SlideshowAction button0;
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.toggleScreen)
-  SlideshowAction button1;
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.showMenu)
-  SlideshowAction button2;
-  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
-  SlideshowAction button3;
+class SlideShowButtons {
+  SlideShowButtonConfig button0;
+  SlideShowButtonConfig button1;
+  SlideShowButtonConfig button2;
+  SlideShowButtonConfig button3;
 
   @JsonKey(defaultValue: 320)
   int hintOffsetX;
   @JsonKey(defaultValue: 20)
   int hintOffsetY;
 
-  SlideShowButton({
+  SlideShowButtons({
     required this.button0,
     required this.button1,
     required this.button2,
@@ -106,25 +107,52 @@ class SlideShowButton {
     required this.hintOffsetY,
   });
 
+  factory SlideShowButtons.fromJson(Map<String, dynamic> json) =>
+      _$SlideShowButtonsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SlideShowButtonsToJson(this);
+}
+
+@JsonSerializable()
+class SlideShowButtonConfig {
+  @JsonKey(
+    fromJson: _parseAction,
+    toJson: _actionToJson,
+    defaultValue: SlideshowAction.pause,
+  )
+  SlideshowAction action;
+  @JsonKey(defaultValue: 200)
+  int minPressingMs;
+
+  SlideShowButtonConfig({required this.action, required this.minPressingMs});
   static String _actionToJson(SlideshowAction value) {
     return value.toString();
   }
 
   static SlideshowAction _parseAction(dynamic value) {
     if (value == null) {
-      return SlideshowAction.pause;
+      return SlideshowAction.none;
     }
-    return SlideshowAction.values.firstWhere((item) => item.toString() == value, orElse: () => SlideshowAction.pause);
+    return SlideshowAction.values.firstWhere(
+      (item) => item.toString() == value,
+      orElse: () => SlideshowAction.none,
+    );
   }
 
-  factory SlideShowButton.fromJson(Map<String, dynamic> json) => _$SlideShowButtonFromJson(json);
+  factory SlideShowButtonConfig.fromJson(Map<String, dynamic> json) =>
+      _$SlideShowButtonConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SlideShowButtonToJson(this);
+  Map<String, dynamic> toJson() => _$SlideShowButtonConfigToJson(this);
 }
 
-enum SlideshowAction {
-  pause,
-  toggleScreen,
-  showMenu,
-  showInfo;
+@JsonSerializable()
+class SlideShowMenuConfig {
+  @JsonKey(defaultValue: 200)
+  int minPressingMs;
+  SlideShowMenuConfig({required this.minPressingMs});
+  factory SlideShowMenuConfig.fromJson(Map<String, dynamic> json) =>
+      _$SlideShowMenuConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$SlideShowMenuConfigToJson(this);
 }
+
+enum SlideshowAction { none, pause, toggleScreen, showMenu, showInfo }

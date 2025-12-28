@@ -4,7 +4,7 @@ version: 7.2.0+1
 publish_to: none
 
 environment:
-  sdk: '^3.2.0'
+  sdk: '^3.8.0'
 
 dependencies:
   flutter:
@@ -12,10 +12,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  get_it: ^8.0.3
+  get_it: ^9.0.5
   path_provider: ^2.1.5
   path: ^1.9.1
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.0
 
   qr_flutter: ^4.1.0
   logging: ^1.0.0
@@ -41,9 +41,9 @@ dev_dependencies:
     sdk: flutter
   
   meta: ^1.10.0
-  freezed: ^3.0.4
-  build_runner: ^2.4.15
-  flutter_lints: ^5.0.0
+  freezed: ^3.1.0
+  build_runner: ^2.10.4
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

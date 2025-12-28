@@ -59,7 +59,7 @@ class DiskStorage extends Storage {
 
   Future<Uri?> _getRandomItem() async {
     if (_cache.isEmpty) {
-      final items = await _folder.listSync();
+      final items = await _folder.listSync(recursive: true,);
       if (items.isEmpty) {
         return null;
       }

@@ -18,16 +18,32 @@ sealed class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand 
   factory AreYouReadyCommand.fromJson(Map<String, dynamic> json) => _$AreYouReadyCommandFromJson(json);
 }
 
-@freezed
-sealed class PushButtonCommand with _$PushButtonCommand implements RpcCommand {
-  static const String TYPE = 'push_button';
-  const factory PushButtonCommand({
-    required ButtonType button,
-    required int id,
-    @Default(PushButtonCommand.TYPE) String type,
-  }) = _PushButtonCommand;
 
-  factory PushButtonCommand.fromJson(Map<String, dynamic> json) => _$PushButtonCommandFromJson(json);
+@freezed
+sealed class ButtonChangeStateCommand with _$ButtonChangeStateCommand implements RpcCommand {
+  static const String TYPE = 'button_change_state';
+  const factory ButtonChangeStateCommand({
+    required ButtonType button,
+    required ButtonEventType event,
+    required int durationMs,
+    required int id,
+    @Default(ButtonChangeStateCommand.TYPE) String type,
+  }) = _ButtonChangeStateCommand;
+
+  factory ButtonChangeStateCommand.fromJson(Map<String, dynamic> json) => _$ButtonChangeStateCommandFromJson(json);
+}
+
+@freezed
+sealed class EmulatePushButtonCommand with _$EmulatePushButtonCommand implements RpcCommand {
+  static const String TYPE = 'emulate_push_button';
+  const factory EmulatePushButtonCommand({
+    required ButtonType button,
+    required int durationMs,
+    required int id,
+    @Default(EmulatePushButtonCommand.TYPE) String type,
+  }) = _EmulatePushButtonCommand;
+
+  factory EmulatePushButtonCommand.fromJson(Map<String, dynamic> json) => _$EmulatePushButtonCommandFromJson(json);
 }
 
 @freezed

@@ -7,20 +7,20 @@ part of 'mqtt_config.dart';
 // **************************************************************************
 
 MqttConfig _$MqttConfigFromJson(Map<String, dynamic> json) => MqttConfig(
-      clientId: json['clientId'] as String? ?? 'dslideshow',
-      command_topic: json['command_topic'] as String? ?? 'set',
-      configuration_topic: json['configuration_topic'] as String? ?? 'config',
-      deviceId: json['deviceId'] as String? ?? 'dslideshow',
-      deviceName: json['deviceName'] as String? ?? 'PhotoFrame1',
-      discovery_prefix: json['discovery_prefix'] as String? ?? 'homeassistant',
-      enabled: json['enabled'] as bool? ?? false,
-      keepAlivePeriod: (json['keepAlivePeriod'] as num?)?.toInt() ?? 600,
-      pass: json['pass'] as String? ?? 'pass',
-      server: json['server'] as String? ?? 'smarthome.local',
-      serverPort: (json['port'] as num?)?.toInt() ?? 1883,
-      state_topic: json['state_topic'] as String? ?? 'state',
-      user: json['user'] as String? ?? 'user',
-    );
+  clientId: json['clientId'] as String? ?? 'dslideshow',
+  command_topic: json['command_topic'] as String? ?? 'set',
+  configuration_topic: json['configuration_topic'] as String? ?? 'config',
+  deviceId: json['deviceId'] as String? ?? 'dslideshow',
+  deviceName: json['deviceName'] as String? ?? 'PhotoFrame1',
+  discovery_prefix: json['discovery_prefix'] as String? ?? 'homeassistant',
+  enabled: json['enabled'] as bool? ?? false,
+  keepAlivePeriod: (json['keepAlivePeriod'] as num?)?.toInt() ?? 600,
+  pass: json['pass'] as String? ?? 'pass',
+  server: json['server'] as String? ?? 'smarthome.local',
+  serverPort: (json['port'] as num?)?.toInt() ?? 1883,
+  state_topic: json['state_topic'] as String? ?? 'state',
+  user: json['user'] as String? ?? 'user',
+);
 
 Map<String, dynamic> _$MqttConfigToJson(MqttConfig instance) =>
     <String, dynamic>{

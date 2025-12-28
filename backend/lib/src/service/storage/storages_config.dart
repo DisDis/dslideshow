@@ -26,7 +26,6 @@ class StoragesConfig {
         case StorageType.GPhotoStorage:
           return GPhotoStorageConfig.fromJson(<String, dynamic>{});
         case StorageType.DiskStorage:
-        default:
           return DiskStorageConfig.fromJson(<String, dynamic>{});
       }
     }) as T;

@@ -7,10 +7,10 @@ part of 'echo.dart';
 // **************************************************************************
 
 _EchoCommand _$EchoCommandFromJson(Map<String, dynamic> json) => _EchoCommand(
-      id: (json['id'] as num).toInt(),
-      text: json['text'] as String?,
-      type: json['type'] as String? ?? EchoCommand.TYPE,
-    );
+  id: (json['id'] as num).toInt(),
+  text: json['text'] as String?,
+  type: json['type'] as String? ?? EchoCommand.TYPE,
+);
 
 Map<String, dynamic> _$EchoCommandToJson(_EchoCommand instance) =>
     <String, dynamic>{
@@ -26,7 +26,4 @@ _EchoCommandResult _$EchoCommandResultFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$EchoCommandResultToJson(_EchoCommandResult instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'resultText': instance.resultText,
-    };
+    <String, dynamic>{'id': instance.id, 'resultText': instance.resultText};

@@ -17,7 +17,7 @@ ThemeData createLightTheme() {
         fontWeight: FontWeight.w600,
       ),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: AppColors.white,
       titleTextStyle: headline1.copyWith(
         color: AppColors.black,

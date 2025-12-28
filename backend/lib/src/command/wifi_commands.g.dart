@@ -13,10 +13,7 @@ _WiFiScanCommand _$WiFiScanCommandFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$WiFiScanCommandToJson(_WiFiScanCommand instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'type': instance.type,
-    };
+    <String, dynamic>{'id': instance.id, 'type': instance.type};
 
 _WiFiScanResult _$WiFiScanResultFromJson(Map<String, dynamic> json) =>
     _WiFiScanResult(
@@ -101,31 +98,28 @@ Map<String, dynamic> _$WiFiAddCommandToJson(_WiFiAddCommand instance) =>
     };
 
 _WiFiGetConnectionsCommand _$WiFiGetConnectionsCommandFromJson(
-        Map<String, dynamic> json) =>
-    _WiFiGetConnectionsCommand(
-      id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? WiFiGetConnectionsCommand.TYPE,
-    );
+  Map<String, dynamic> json,
+) => _WiFiGetConnectionsCommand(
+  id: (json['id'] as num).toInt(),
+  type: json['type'] as String? ?? WiFiGetConnectionsCommand.TYPE,
+);
 
 Map<String, dynamic> _$WiFiGetConnectionsCommandToJson(
-        _WiFiGetConnectionsCommand instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'type': instance.type,
-    };
+  _WiFiGetConnectionsCommand instance,
+) => <String, dynamic>{'id': instance.id, 'type': instance.type};
 
 _WiFiGetConnectionsResult _$WiFiGetConnectionsResultFromJson(
-        Map<String, dynamic> json) =>
-    _WiFiGetConnectionsResult(
-      networks: (json['networks'] as List<dynamic>)
-          .map((e) => WiFiConnectionInfo.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      id: (json['id'] as num).toInt(),
-    );
+  Map<String, dynamic> json,
+) => _WiFiGetConnectionsResult(
+  networks: (json['networks'] as List<dynamic>)
+      .map((e) => WiFiConnectionInfo.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  id: (json['id'] as num).toInt(),
+);
 
 Map<String, dynamic> _$WiFiGetConnectionsResultToJson(
-        _WiFiGetConnectionsResult instance) =>
-    <String, dynamic>{
-      'networks': instance.networks.map((e) => e.toJson()).toList(),
-      'id': instance.id,
-    };
+  _WiFiGetConnectionsResult instance,
+) => <String, dynamic>{
+  'networks': instance.networks.map((e) => e.toJson()).toList(),
+  'id': instance.id,
+};

@@ -46,7 +46,7 @@ class _ConfigPageState extends State<ConfigPage> {
       _enabled = true;
       setState(() {});
     });
-    _onPushSubscription = _frontendService.onPushButton.listen(_pushButton);
+    _onPushSubscription = _frontendService.onButtonEvent.listen(_pushButton);
   }
 
   @override
@@ -57,8 +57,8 @@ class _ConfigPageState extends State<ConfigPage> {
     super.dispose();
   }
 
-  void _pushButton(ButtonType event) {
-    if (event == ButtonType.button0) {
+  void _pushButton(ButtonEvent event) {
+    if (event.event == ButtonEventType.released && event.button == ButtonType.button0) {
       context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
     }
   }
@@ -123,19 +123,19 @@ class _ConfigPageState extends State<ConfigPage> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => _frontendService.pushButton(ButtonType.button0),
+                  onPressed: () => _frontendService.emulatePushButton(ButtonType.button0),
                   child: Text("B0"),
                 ),
                 ElevatedButton(
-                  onPressed: () => _frontendService.pushButton(ButtonType.button1),
+                  onPressed: () => _frontendService.emulatePushButton(ButtonType.button1),
                   child: Text("B1"),
                 ),
                 ElevatedButton(
-                  onPressed: () => _frontendService.pushButton(ButtonType.button2),
+                  onPressed: () => _frontendService.emulatePushButton(ButtonType.button2),
                   child: Text("B2"),
                 ),
                 ElevatedButton(
-                  onPressed: () => _frontendService.pushButton(ButtonType.button3),
+                  onPressed: () => _frontendService.emulatePushButton(ButtonType.button3),
                   child: Text("B3"),
                 ),
               ],

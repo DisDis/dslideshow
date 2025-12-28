@@ -13,24 +13,27 @@ _AreYouReadyCommand _$AreYouReadyCommandFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$AreYouReadyCommandToJson(_AreYouReadyCommand instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'type': instance.type,
-    };
+    <String, dynamic>{'id': instance.id, 'type': instance.type};
 
-_PushButtonCommand _$PushButtonCommandFromJson(Map<String, dynamic> json) =>
-    _PushButtonCommand(
-      button: $enumDecode(_$ButtonTypeEnumMap, json['button']),
-      id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? PushButtonCommand.TYPE,
-    );
+_ButtonChangeStateCommand _$ButtonChangeStateCommandFromJson(
+  Map<String, dynamic> json,
+) => _ButtonChangeStateCommand(
+  button: $enumDecode(_$ButtonTypeEnumMap, json['button']),
+  event: $enumDecode(_$ButtonEventTypeEnumMap, json['event']),
+  durationMs: (json['durationMs'] as num).toInt(),
+  id: (json['id'] as num).toInt(),
+  type: json['type'] as String? ?? ButtonChangeStateCommand.TYPE,
+);
 
-Map<String, dynamic> _$PushButtonCommandToJson(_PushButtonCommand instance) =>
-    <String, dynamic>{
-      'button': _$ButtonTypeEnumMap[instance.button]!,
-      'id': instance.id,
-      'type': instance.type,
-    };
+Map<String, dynamic> _$ButtonChangeStateCommandToJson(
+  _ButtonChangeStateCommand instance,
+) => <String, dynamic>{
+  'button': _$ButtonTypeEnumMap[instance.button]!,
+  'event': _$ButtonEventTypeEnumMap[instance.event]!,
+  'durationMs': instance.durationMs,
+  'id': instance.id,
+  'type': instance.type,
+};
 
 const _$ButtonTypeEnumMap = {
   ButtonType.button0: 'button0',
@@ -39,25 +42,49 @@ const _$ButtonTypeEnumMap = {
   ButtonType.button3: 'button3',
 };
 
+const _$ButtonEventTypeEnumMap = {
+  ButtonEventType.pressed: 'pressed',
+  ButtonEventType.released: 'released',
+};
+
+_EmulatePushButtonCommand _$EmulatePushButtonCommandFromJson(
+  Map<String, dynamic> json,
+) => _EmulatePushButtonCommand(
+  button: $enumDecode(_$ButtonTypeEnumMap, json['button']),
+  durationMs: (json['durationMs'] as num).toInt(),
+  id: (json['id'] as num).toInt(),
+  type: json['type'] as String? ?? EmulatePushButtonCommand.TYPE,
+);
+
+Map<String, dynamic> _$EmulatePushButtonCommandToJson(
+  _EmulatePushButtonCommand instance,
+) => <String, dynamic>{
+  'button': _$ButtonTypeEnumMap[instance.button]!,
+  'durationMs': instance.durationMs,
+  'id': instance.id,
+  'type': instance.type,
+};
+
 _ExecuteSSActionCommand _$ExecuteSSActionCommandFromJson(
-        Map<String, dynamic> json) =>
-    _ExecuteSSActionCommand(
-      action: $enumDecode(_$SlideshowActionEnumMap, json['action']),
-      value: json['value'] as bool,
-      id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? ExecuteSSActionCommand.TYPE,
-    );
+  Map<String, dynamic> json,
+) => _ExecuteSSActionCommand(
+  action: $enumDecode(_$SlideshowActionEnumMap, json['action']),
+  value: json['value'] as bool,
+  id: (json['id'] as num).toInt(),
+  type: json['type'] as String? ?? ExecuteSSActionCommand.TYPE,
+);
 
 Map<String, dynamic> _$ExecuteSSActionCommandToJson(
-        _ExecuteSSActionCommand instance) =>
-    <String, dynamic>{
-      'action': _$SlideshowActionEnumMap[instance.action]!,
-      'value': instance.value,
-      'id': instance.id,
-      'type': instance.type,
-    };
+  _ExecuteSSActionCommand instance,
+) => <String, dynamic>{
+  'action': _$SlideshowActionEnumMap[instance.action]!,
+  'value': instance.value,
+  'id': instance.id,
+  'type': instance.type,
+};
 
 const _$SlideshowActionEnumMap = {
+  SlideshowAction.none: 'none',
   SlideshowAction.pause: 'pause',
   SlideshowAction.toggleScreen: 'toggleScreen',
   SlideshowAction.showMenu: 'showMenu',
@@ -80,9 +107,7 @@ Map<String, dynamic> _$LEDControlCommandToJson(_LEDControlCommand instance) =>
       'type': instance.type,
     };
 
-const _$LEDTypeEnumMap = {
-  LEDType.power: 'power',
-};
+const _$LEDTypeEnumMap = {LEDType.power: 'power'};
 
 _PowerOffCommand _$PowerOffCommandFromJson(Map<String, dynamic> json) =>
     _PowerOffCommand(
@@ -91,10 +116,7 @@ _PowerOffCommand _$PowerOffCommandFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PowerOffCommandToJson(_PowerOffCommand instance) =>
-    <String, dynamic>{
-      'type': instance.type,
-      'id': instance.id,
-    };
+    <String, dynamic>{'type': instance.type, 'id': instance.id};
 
 _RestartAppCommand _$RestartAppCommandFromJson(Map<String, dynamic> json) =>
     _RestartAppCommand(
@@ -103,7 +125,4 @@ _RestartAppCommand _$RestartAppCommandFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$RestartAppCommandToJson(_RestartAppCommand instance) =>
-    <String, dynamic>{
-      'type': instance.type,
-      'id': instance.id,
-    };
+    <String, dynamic>{'type': instance.type, 'id': instance.id};

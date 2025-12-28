@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
-import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:mqtt_client/mqtt_client.dart';

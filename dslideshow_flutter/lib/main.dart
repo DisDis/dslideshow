@@ -87,7 +87,7 @@ void main() async {
       return ButtonsHintBloc(frontendService: frontendService)..add(ButtonsHintEvent.show(isShow: true));
     });
     injector.registerFactory<MainMenuBloc>(() {
-      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), slideshowStatusBloc: injector());
+      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), config:  config.slideshow.menu, slideshowStatusBloc: injector());
     });
 
     frontendService.onOTAReady.listen((isReady) {

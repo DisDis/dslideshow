@@ -8,7 +8,8 @@ part of 'storages_config.dart';
 
 StoragesConfig _$StoragesConfigFromJson(Map<String, dynamic> json) =>
     StoragesConfig(
-      selected: $enumDecodeNullable(_$StorageTypeEnumMap, json['selected']) ??
+      selected:
+          $enumDecodeNullable(_$StorageTypeEnumMap, json['selected']) ??
           StorageType.DiskStorage,
       storages: StoragesConfig._parseStorages(json['storages']),
     );

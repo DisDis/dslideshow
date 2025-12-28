@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:logging/logging.dart';
 
 part 'application_state_service.freezed.dart';
 
 class ApplicationStateService {
-  static final Logger _log = new Logger('ApplicationStateService');
   final StreamController<ApplicationState> _scApplicationState = new StreamController.broadcast();
   Stream<ApplicationState> get onChangedState => _scApplicationState.stream;
   ApplicationState _state = ApplicationState();

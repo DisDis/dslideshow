@@ -14,7 +14,9 @@ class FrontendService implements RpcService {
   late final RemoteService _otaService;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = StreamController<SystemInfo>.broadcast();
-  final _onPushButton = StreamController<ButtonType>.broadcast();
+  // final _onPushButton = StreamController<ButtonType>.broadcast();
+  final _onButtonEvent = StreamController<ButtonEvent>.broadcast();
+
   final _onAction = StreamController<ActionWithParam<bool>>.broadcast();
 
   final _onOTAReady = StreamController<bool>.broadcast();
@@ -27,7 +29,8 @@ class FrontendService implements RpcService {
 
   Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
   Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
-  Stream<ButtonType> get onPushButton => _onPushButton.stream;
+  //Stream<ButtonType> get onPushButton => _onPushButton.stream;
+  Stream<ButtonEvent> get onButtonEvent => _onButtonEvent.stream;
   Stream<ActionWithParam> get onAction => _onAction.stream;
 
   FrontendService(AppConfig config, this._backendService, this._otaService) {
@@ -81,8 +84,8 @@ class FrontendService implements RpcService {
     switch (command.type) {
       case ExecuteSSActionCommand.TYPE:
         return _executeSSActionCommand(command as ExecuteSSActionCommand);
-      case PushButtonCommand.TYPE:
-        return _executePushButtonCommand(command as PushButtonCommand);
+      case ButtonChangeStateCommand.TYPE:
+        return _executeButtonChangeStateCommand(command as ButtonChangeStateCommand);
       case ScreenTurnCommand.TYPE:
         return _executeScreenTurnCommand(command as ScreenTurnCommand);
       case EchoCommand.TYPE:
@@ -136,8 +139,8 @@ class FrontendService implements RpcService {
     _onSystemInfoUpdate.add(result);
   }
 
-  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async {
-    _onPushButton.add(command.button);
+  Future<RpcResult> _executeButtonChangeStateCommand(ButtonChangeStateCommand command) async {
+    _onButtonEvent.add(ButtonEvent(button: command.button, event: command.event, durationMs: command.durationMs));
     return EmptyResult.respond(command);
   }
 
@@ -145,8 +148,8 @@ class FrontendService implements RpcService {
     return _backendService.send(ScreenLockCommand(id: RpcCommand.generateId(), isLock: isScreenLockNewValue));
   }
 
-  Future pushButton(ButtonType buttonType) async {
-    return _backendService.send(PushButtonCommand(id: RpcCommand.generateId(), button: buttonType));
+  Future emulatePushButton(ButtonType buttonType,[int durationMs = 1000]) async {
+    return _backendService.send(EmulatePushButtonCommand(id: RpcCommand.generateId(), button: buttonType, durationMs: durationMs));
   }
 
   Future screenTurn(bool value) async {
@@ -213,4 +216,11 @@ class ActionWithParam<T> {
   final T param;
 
   const ActionWithParam({required this.action, required this.param});
+}
+
+class ButtonEvent{
+  final ButtonType button;
+  final ButtonEventType event;
+  final int durationMs;
+  ButtonEvent({required this.button, required this.event, required this.durationMs});
 }

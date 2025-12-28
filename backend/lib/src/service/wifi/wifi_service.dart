@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 
 class WiFiService {
   static final Logger _log = new Logger('WiFiService');
+  // ignore: unused_field
   final WiFiConfig _config;
   WiFiService(this._config);
 
@@ -72,20 +73,6 @@ nmcli connection down  <UUID>
       throw e;
     }
   }
-
-  // void saveConfig() async {
-  //   _log.info('saveConfig');
-  //   try {
-  //     var result = await io.Process.run('wpa_cli', ['-i', _config.devId, 'save_config'], environment: {'LC_ALL': 'C'});
-  //     _log.info("wpa_cli save_config -> '${result.stdout.toString()}'");
-  //     if (result.exitCode != 0 || result.stdout.toString().indexOf('OK') == -1) {
-  //       throw Exception('wpa_cli save_config -> exitCode: ${result.exitCode}');
-  //     }
-  //   } catch (e, s) {
-  //     _log.severe('saveConfig', e, s);
-  //     throw e;
-  //   }
-  // }
 
   void deleteConnection(String connectionUUID) async {
     _log.info('deleteConnection "$connectionUUID"');

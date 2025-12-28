@@ -15,10 +15,11 @@ part 'buttons_hint_bloc.freezed.dart';
 class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
   final FrontendService frontendService;
 
-  StreamSubscription? _onPushSubscription;
+  late StreamSubscription<ButtonEvent> _onButtonEventSubscription;
 
   ButtonsHintBloc({required this.frontendService})
-      : super(ButtonsHintDisplayState(
+    : super(
+        ButtonsHintDisplayState(
           isShow: false,
           normalColor: Colors.white,
           pushColor: Colors.blue.shade500,
@@ -30,13 +31,19 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
           button2isPush: false,
           button3Icon: Icons.check_circle_outline_outlined,
           button3isPush: false,
-        )) {
+        ),
+      ) {
     on<ButtonsHintPushButtonEvent>(_onPushButtonEvent);
     on<ButtonsHintShowEvent>(_onShowEvent);
-    _onPushSubscription = frontendService.onPushButton.listen(_pushButton);
+    _onButtonEventSubscription = frontendService.onButtonEvent.listen(
+      _onButtonEvent,
+    );
   }
 
-  FutureOr<void> _onPushButtonEvent(ButtonsHintPushButtonEvent event, emit) async {
+  FutureOr<void> _onPushButtonEvent(
+    ButtonsHintPushButtonEvent event,
+    emit,
+  ) async {
     switch (event.button) {
       case ButtonType.button0:
         emit(state.copyWith(button0isPush: true));
@@ -61,19 +68,23 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
     }
   }
 
-  void _pushButton(ButtonType event) {
-    add(ButtonsHintPushButtonEvent(button: event));
+  void _onButtonEvent(ButtonEvent event) {
+    if (event.event == ButtonEventType.released) {
+      add(ButtonsHintPushButtonEvent(button: event.button));
+    }
   }
 
   @override
   Future<void> close() {
-    _onPushSubscription?.cancel();
-    _onPushSubscription = null;
+    _onButtonEventSubscription.cancel();
 
     return super.close();
   }
 
-  FutureOr<void> _onShowEvent(ButtonsHintShowEvent event, Emitter<ButtonsHintState> emit) {
+  FutureOr<void> _onShowEvent(
+    ButtonsHintShowEvent event,
+    Emitter<ButtonsHintState> emit,
+  ) {
     emit(state.copyWith(isShow: event.isShow));
   }
 }

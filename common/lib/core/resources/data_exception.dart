@@ -49,7 +49,6 @@ extension _DataExceptionTypeExtension on DataExceptionType {
       case DataExceptionType.connectionError:
         return 'connection error';
       case DataExceptionType.unknown:
-      default:
         return 'unknown';
     }
   }

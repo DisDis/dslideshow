@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -15,51 +14,47 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$GetMediaItemCommand {
-  bool get isCurrent;
-  int get id;
-  String get type;
 
-  /// Create a copy of GetMediaItemCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $GetMediaItemCommandCopyWith<GetMediaItemCommand> get copyWith =>
-      _$GetMediaItemCommandCopyWithImpl<GetMediaItemCommand>(
-          this as GetMediaItemCommand, _$identity);
+ bool get isCurrent; int get id; String get type;
+/// Create a copy of GetMediaItemCommand
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GetMediaItemCommandCopyWith<GetMediaItemCommand> get copyWith => _$GetMediaItemCommandCopyWithImpl<GetMediaItemCommand>(this as GetMediaItemCommand, _$identity);
 
   /// Serializes this GetMediaItemCommand to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is GetMediaItemCommand &&
-            (identical(other.isCurrent, isCurrent) ||
-                other.isCurrent == isCurrent) &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, isCurrent, id, type);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommand&&(identical(other.isCurrent, isCurrent) || other.isCurrent == isCurrent)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+}
 
-  @override
-  String toString() {
-    return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,isCurrent,id,type);
+
+@override
+String toString() {
+  return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $GetMediaItemCommandCopyWith<$Res> {
-  factory $GetMediaItemCommandCopyWith(
-          GetMediaItemCommand value, $Res Function(GetMediaItemCommand) _then) =
-      _$GetMediaItemCommandCopyWithImpl;
-  @useResult
-  $Res call({bool isCurrent, int id, String type});
-}
+abstract mixin class $GetMediaItemCommandCopyWith<$Res>  {
+  factory $GetMediaItemCommandCopyWith(GetMediaItemCommand value, $Res Function(GetMediaItemCommand) _then) = _$GetMediaItemCommandCopyWithImpl;
+@useResult
+$Res call({
+ bool isCurrent, int id, String type
+});
 
+
+
+
+}
 /// @nodoc
 class _$GetMediaItemCommandCopyWithImpl<$Res>
     implements $GetMediaItemCommandCopyWith<$Res> {
@@ -68,98 +63,195 @@ class _$GetMediaItemCommandCopyWithImpl<$Res>
   final GetMediaItemCommand _self;
   final $Res Function(GetMediaItemCommand) _then;
 
-  /// Create a copy of GetMediaItemCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? isCurrent = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_self.copyWith(
-      isCurrent: null == isCurrent
-          ? _self.isCurrent
-          : isCurrent // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Create a copy of GetMediaItemCommand
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? isCurrent = null,Object? id = null,Object? type = null,}) {
+  return _then(_self.copyWith(
+isCurrent: null == isCurrent ? _self.isCurrent : isCurrent // ignore: cast_nullable_to_non_nullable
+as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [GetMediaItemCommand].
+extension GetMediaItemCommandPatterns on GetMediaItemCommand {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetMediaItemCommand value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommand() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetMediaItemCommand value)  $default,){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommand():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetMediaItemCommand value)?  $default,){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommand() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isCurrent,  int id,  String type)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommand() when $default != null:
+return $default(_that.isCurrent,_that.id,_that.type);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isCurrent,  int id,  String type)  $default,) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommand():
+return $default(_that.isCurrent,_that.id,_that.type);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isCurrent,  int id,  String type)?  $default,) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommand() when $default != null:
+return $default(_that.isCurrent,_that.id,_that.type);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
+
 class _GetMediaItemCommand implements GetMediaItemCommand {
-  const _GetMediaItemCommand(
-      {required this.isCurrent,
-      required this.id,
-      this.type = GetMediaItemCommand.TYPE});
-  factory _GetMediaItemCommand.fromJson(Map<String, dynamic> json) =>
-      _$GetMediaItemCommandFromJson(json);
+  const _GetMediaItemCommand({required this.isCurrent, required this.id, this.type = GetMediaItemCommand.TYPE});
+  factory _GetMediaItemCommand.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandFromJson(json);
 
-  @override
-  final bool isCurrent;
-  @override
-  final int id;
-  @override
-  @JsonKey()
-  final String type;
+@override final  bool isCurrent;
+@override final  int id;
+@override@JsonKey() final  String type;
 
-  /// Create a copy of GetMediaItemCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$GetMediaItemCommandCopyWith<_GetMediaItemCommand> get copyWith =>
-      __$GetMediaItemCommandCopyWithImpl<_GetMediaItemCommand>(
-          this, _$identity);
+/// Create a copy of GetMediaItemCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetMediaItemCommandCopyWith<_GetMediaItemCommand> get copyWith => __$GetMediaItemCommandCopyWithImpl<_GetMediaItemCommand>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$GetMediaItemCommandToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$GetMediaItemCommandToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _GetMediaItemCommand &&
-            (identical(other.isCurrent, isCurrent) ||
-                other.isCurrent == isCurrent) &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommand&&(identical(other.isCurrent, isCurrent) || other.isCurrent == isCurrent)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, isCurrent, id, type);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,isCurrent,id,type);
 
-  @override
-  String toString() {
-    return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
-  }
+@override
+String toString() {
+  return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$GetMediaItemCommandCopyWith<$Res>
-    implements $GetMediaItemCommandCopyWith<$Res> {
-  factory _$GetMediaItemCommandCopyWith(_GetMediaItemCommand value,
-          $Res Function(_GetMediaItemCommand) _then) =
-      __$GetMediaItemCommandCopyWithImpl;
-  @override
-  @useResult
-  $Res call({bool isCurrent, int id, String type});
-}
+abstract mixin class _$GetMediaItemCommandCopyWith<$Res> implements $GetMediaItemCommandCopyWith<$Res> {
+  factory _$GetMediaItemCommandCopyWith(_GetMediaItemCommand value, $Res Function(_GetMediaItemCommand) _then) = __$GetMediaItemCommandCopyWithImpl;
+@override @useResult
+$Res call({
+ bool isCurrent, int id, String type
+});
 
+
+
+
+}
 /// @nodoc
 class __$GetMediaItemCommandCopyWithImpl<$Res>
     implements _$GetMediaItemCommandCopyWith<$Res> {
@@ -168,79 +260,64 @@ class __$GetMediaItemCommandCopyWithImpl<$Res>
   final _GetMediaItemCommand _self;
   final $Res Function(_GetMediaItemCommand) _then;
 
-  /// Create a copy of GetMediaItemCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? isCurrent = null,
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_GetMediaItemCommand(
-      isCurrent: null == isCurrent
-          ? _self.isCurrent
-          : isCurrent // ignore: cast_nullable_to_non_nullable
-              as bool,
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Create a copy of GetMediaItemCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? isCurrent = null,Object? id = null,Object? type = null,}) {
+  return _then(_GetMediaItemCommand(
+isCurrent: null == isCurrent ? _self.isCurrent : isCurrent // ignore: cast_nullable_to_non_nullable
+as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
+
+
+}
+
 
 /// @nodoc
 mixin _$GetMediaItemCommandResult {
-  String? get mediaId;
-  Uri? get mediaUri;
-  int get id;
 
-  /// Create a copy of GetMediaItemCommandResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $GetMediaItemCommandResultCopyWith<GetMediaItemCommandResult> get copyWith =>
-      _$GetMediaItemCommandResultCopyWithImpl<GetMediaItemCommandResult>(
-          this as GetMediaItemCommandResult, _$identity);
+ String? get mediaId; Uri? get mediaUri; int get id;
+/// Create a copy of GetMediaItemCommandResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GetMediaItemCommandResultCopyWith<GetMediaItemCommandResult> get copyWith => _$GetMediaItemCommandResultCopyWithImpl<GetMediaItemCommandResult>(this as GetMediaItemCommandResult, _$identity);
 
   /// Serializes this GetMediaItemCommandResult to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is GetMediaItemCommandResult &&
-            (identical(other.mediaId, mediaId) || other.mediaId == mediaId) &&
-            (identical(other.mediaUri, mediaUri) ||
-                other.mediaUri == mediaUri) &&
-            (identical(other.id, id) || other.id == id));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, mediaId, mediaUri, id);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommandResult&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.mediaUri, mediaUri) || other.mediaUri == mediaUri)&&(identical(other.id, id) || other.id == id));
+}
 
-  @override
-  String toString() {
-    return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,mediaId,mediaUri,id);
+
+@override
+String toString() {
+  return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $GetMediaItemCommandResultCopyWith<$Res> {
-  factory $GetMediaItemCommandResultCopyWith(GetMediaItemCommandResult value,
-          $Res Function(GetMediaItemCommandResult) _then) =
-      _$GetMediaItemCommandResultCopyWithImpl;
-  @useResult
-  $Res call({String? mediaId, Uri? mediaUri, int id});
-}
+abstract mixin class $GetMediaItemCommandResultCopyWith<$Res>  {
+  factory $GetMediaItemCommandResultCopyWith(GetMediaItemCommandResult value, $Res Function(GetMediaItemCommandResult) _then) = _$GetMediaItemCommandResultCopyWithImpl;
+@useResult
+$Res call({
+ String? mediaId, Uri? mediaUri, int id
+});
 
+
+
+
+}
 /// @nodoc
 class _$GetMediaItemCommandResultCopyWithImpl<$Res>
     implements $GetMediaItemCommandResultCopyWith<$Res> {
@@ -249,96 +326,195 @@ class _$GetMediaItemCommandResultCopyWithImpl<$Res>
   final GetMediaItemCommandResult _self;
   final $Res Function(GetMediaItemCommandResult) _then;
 
-  /// Create a copy of GetMediaItemCommandResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? mediaId = freezed,
-    Object? mediaUri = freezed,
-    Object? id = null,
-  }) {
-    return _then(_self.copyWith(
-      mediaId: freezed == mediaId
-          ? _self.mediaId
-          : mediaId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaUri: freezed == mediaUri
-          ? _self.mediaUri
-          : mediaUri // ignore: cast_nullable_to_non_nullable
-              as Uri?,
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
+/// Create a copy of GetMediaItemCommandResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? mediaId = freezed,Object? mediaUri = freezed,Object? id = null,}) {
+  return _then(_self.copyWith(
+mediaId: freezed == mediaId ? _self.mediaId : mediaId // ignore: cast_nullable_to_non_nullable
+as String?,mediaUri: freezed == mediaUri ? _self.mediaUri : mediaUri // ignore: cast_nullable_to_non_nullable
+as Uri?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [GetMediaItemCommandResult].
+extension GetMediaItemCommandResultPatterns on GetMediaItemCommandResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetMediaItemCommandResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetMediaItemCommandResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetMediaItemCommandResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? mediaId,  Uri? mediaUri,  int id)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult() when $default != null:
+return $default(_that.mediaId,_that.mediaUri,_that.id);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? mediaId,  Uri? mediaUri,  int id)  $default,) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult():
+return $default(_that.mediaId,_that.mediaUri,_that.id);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? mediaId,  Uri? mediaUri,  int id)?  $default,) {final _that = this;
+switch (_that) {
+case _GetMediaItemCommandResult() when $default != null:
+return $default(_that.mediaId,_that.mediaUri,_that.id);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
+
 class _GetMediaItemCommandResult implements GetMediaItemCommandResult {
-  const _GetMediaItemCommandResult(
-      {this.mediaId, this.mediaUri, required this.id});
-  factory _GetMediaItemCommandResult.fromJson(Map<String, dynamic> json) =>
-      _$GetMediaItemCommandResultFromJson(json);
+  const _GetMediaItemCommandResult({this.mediaId, this.mediaUri, required this.id});
+  factory _GetMediaItemCommandResult.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandResultFromJson(json);
 
-  @override
-  final String? mediaId;
-  @override
-  final Uri? mediaUri;
-  @override
-  final int id;
+@override final  String? mediaId;
+@override final  Uri? mediaUri;
+@override final  int id;
 
-  /// Create a copy of GetMediaItemCommandResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$GetMediaItemCommandResultCopyWith<_GetMediaItemCommandResult>
-      get copyWith =>
-          __$GetMediaItemCommandResultCopyWithImpl<_GetMediaItemCommandResult>(
-              this, _$identity);
+/// Create a copy of GetMediaItemCommandResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetMediaItemCommandResultCopyWith<_GetMediaItemCommandResult> get copyWith => __$GetMediaItemCommandResultCopyWithImpl<_GetMediaItemCommandResult>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$GetMediaItemCommandResultToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$GetMediaItemCommandResultToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _GetMediaItemCommandResult &&
-            (identical(other.mediaId, mediaId) || other.mediaId == mediaId) &&
-            (identical(other.mediaUri, mediaUri) ||
-                other.mediaUri == mediaUri) &&
-            (identical(other.id, id) || other.id == id));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommandResult&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.mediaUri, mediaUri) || other.mediaUri == mediaUri)&&(identical(other.id, id) || other.id == id));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, mediaId, mediaUri, id);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,mediaId,mediaUri,id);
 
-  @override
-  String toString() {
-    return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
-  }
+@override
+String toString() {
+  return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$GetMediaItemCommandResultCopyWith<$Res>
-    implements $GetMediaItemCommandResultCopyWith<$Res> {
-  factory _$GetMediaItemCommandResultCopyWith(_GetMediaItemCommandResult value,
-          $Res Function(_GetMediaItemCommandResult) _then) =
-      __$GetMediaItemCommandResultCopyWithImpl;
-  @override
-  @useResult
-  $Res call({String? mediaId, Uri? mediaUri, int id});
-}
+abstract mixin class _$GetMediaItemCommandResultCopyWith<$Res> implements $GetMediaItemCommandResultCopyWith<$Res> {
+  factory _$GetMediaItemCommandResultCopyWith(_GetMediaItemCommandResult value, $Res Function(_GetMediaItemCommandResult) _then) = __$GetMediaItemCommandResultCopyWithImpl;
+@override @useResult
+$Res call({
+ String? mediaId, Uri? mediaUri, int id
+});
 
+
+
+
+}
 /// @nodoc
 class __$GetMediaItemCommandResultCopyWithImpl<$Res>
     implements _$GetMediaItemCommandResultCopyWith<$Res> {
@@ -347,76 +523,64 @@ class __$GetMediaItemCommandResultCopyWithImpl<$Res>
   final _GetMediaItemCommandResult _self;
   final $Res Function(_GetMediaItemCommandResult) _then;
 
-  /// Create a copy of GetMediaItemCommandResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? mediaId = freezed,
-    Object? mediaUri = freezed,
-    Object? id = null,
-  }) {
-    return _then(_GetMediaItemCommandResult(
-      mediaId: freezed == mediaId
-          ? _self.mediaId
-          : mediaId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaUri: freezed == mediaUri
-          ? _self.mediaUri
-          : mediaUri // ignore: cast_nullable_to_non_nullable
-              as Uri?,
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
+/// Create a copy of GetMediaItemCommandResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? mediaId = freezed,Object? mediaUri = freezed,Object? id = null,}) {
+  return _then(_GetMediaItemCommandResult(
+mediaId: freezed == mediaId ? _self.mediaId : mediaId // ignore: cast_nullable_to_non_nullable
+as String?,mediaUri: freezed == mediaUri ? _self.mediaUri : mediaUri // ignore: cast_nullable_to_non_nullable
+as Uri?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
+
+
+}
+
 
 /// @nodoc
 mixin _$StorageNextCommand {
-  int get id;
-  String get type;
 
-  /// Create a copy of StorageNextCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $StorageNextCommandCopyWith<StorageNextCommand> get copyWith =>
-      _$StorageNextCommandCopyWithImpl<StorageNextCommand>(
-          this as StorageNextCommand, _$identity);
+ int get id; String get type;
+/// Create a copy of StorageNextCommand
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StorageNextCommandCopyWith<StorageNextCommand> get copyWith => _$StorageNextCommandCopyWithImpl<StorageNextCommand>(this as StorageNextCommand, _$identity);
 
   /// Serializes this StorageNextCommand to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is StorageNextCommand &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StorageNextCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+}
 
-  @override
-  String toString() {
-    return 'StorageNextCommand(id: $id, type: $type)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,type);
+
+@override
+String toString() {
+  return 'StorageNextCommand(id: $id, type: $type)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $StorageNextCommandCopyWith<$Res> {
-  factory $StorageNextCommandCopyWith(
-          StorageNextCommand value, $Res Function(StorageNextCommand) _then) =
-      _$StorageNextCommandCopyWithImpl;
-  @useResult
-  $Res call({int id, String type});
-}
+abstract mixin class $StorageNextCommandCopyWith<$Res>  {
+  factory $StorageNextCommandCopyWith(StorageNextCommand value, $Res Function(StorageNextCommand) _then) = _$StorageNextCommandCopyWithImpl;
+@useResult
+$Res call({
+ int id, String type
+});
 
+
+
+
+}
 /// @nodoc
 class _$StorageNextCommandCopyWithImpl<$Res>
     implements $StorageNextCommandCopyWith<$Res> {
@@ -425,86 +589,193 @@ class _$StorageNextCommandCopyWithImpl<$Res>
   final StorageNextCommand _self;
   final $Res Function(StorageNextCommand) _then;
 
-  /// Create a copy of StorageNextCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Create a copy of StorageNextCommand
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [StorageNextCommand].
+extension StorageNextCommandPatterns on StorageNextCommand {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _StorageNextCommand value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _StorageNextCommand() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _StorageNextCommand value)  $default,){
+final _that = this;
+switch (_that) {
+case _StorageNextCommand():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _StorageNextCommand value)?  $default,){
+final _that = this;
+switch (_that) {
+case _StorageNextCommand() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String type)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _StorageNextCommand() when $default != null:
+return $default(_that.id,_that.type);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String type)  $default,) {final _that = this;
+switch (_that) {
+case _StorageNextCommand():
+return $default(_that.id,_that.type);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String type)?  $default,) {final _that = this;
+switch (_that) {
+case _StorageNextCommand() when $default != null:
+return $default(_that.id,_that.type);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
+
 class _StorageNextCommand implements StorageNextCommand {
-  const _StorageNextCommand(
-      {required this.id, this.type = StorageNextCommand.TYPE});
-  factory _StorageNextCommand.fromJson(Map<String, dynamic> json) =>
-      _$StorageNextCommandFromJson(json);
+  const _StorageNextCommand({required this.id, this.type = StorageNextCommand.TYPE});
+  factory _StorageNextCommand.fromJson(Map<String, dynamic> json) => _$StorageNextCommandFromJson(json);
 
-  @override
-  final int id;
-  @override
-  @JsonKey()
-  final String type;
+@override final  int id;
+@override@JsonKey() final  String type;
 
-  /// Create a copy of StorageNextCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$StorageNextCommandCopyWith<_StorageNextCommand> get copyWith =>
-      __$StorageNextCommandCopyWithImpl<_StorageNextCommand>(this, _$identity);
+/// Create a copy of StorageNextCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StorageNextCommandCopyWith<_StorageNextCommand> get copyWith => __$StorageNextCommandCopyWithImpl<_StorageNextCommand>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$StorageNextCommandToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$StorageNextCommandToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _StorageNextCommand &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StorageNextCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, type);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,type);
 
-  @override
-  String toString() {
-    return 'StorageNextCommand(id: $id, type: $type)';
-  }
+@override
+String toString() {
+  return 'StorageNextCommand(id: $id, type: $type)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$StorageNextCommandCopyWith<$Res>
-    implements $StorageNextCommandCopyWith<$Res> {
-  factory _$StorageNextCommandCopyWith(
-          _StorageNextCommand value, $Res Function(_StorageNextCommand) _then) =
-      __$StorageNextCommandCopyWithImpl;
-  @override
-  @useResult
-  $Res call({int id, String type});
-}
+abstract mixin class _$StorageNextCommandCopyWith<$Res> implements $StorageNextCommandCopyWith<$Res> {
+  factory _$StorageNextCommandCopyWith(_StorageNextCommand value, $Res Function(_StorageNextCommand) _then) = __$StorageNextCommandCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String type
+});
 
+
+
+
+}
 /// @nodoc
 class __$StorageNextCommandCopyWithImpl<$Res>
     implements _$StorageNextCommandCopyWith<$Res> {
@@ -513,25 +784,17 @@ class __$StorageNextCommandCopyWithImpl<$Res>
   final _StorageNextCommand _self;
   final $Res Function(_StorageNextCommand) _then;
 
-  /// Create a copy of StorageNextCommand
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-  }) {
-    return _then(_StorageNextCommand(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      type: null == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Create a copy of StorageNextCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,}) {
+  return _then(_StorageNextCommand(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
 }
 
 // dart format on

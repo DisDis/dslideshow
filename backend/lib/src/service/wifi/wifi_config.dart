@@ -4,16 +4,8 @@ part 'wifi_config.g.dart';
 
 @JsonSerializable()
 class WiFiConfig {
-  @JsonKey(defaultValue: 'wlan0')
-  String devId;
 
-  @JsonKey(defaultValue: './scripts/scanWiFi.sh')
-  String scanWiFiScript;
-
-  WiFiConfig({
-    required this.devId,
-    required this.scanWiFiScript,
-  });
+  WiFiConfig();
 
   factory WiFiConfig.fromJson(Map<String, dynamic> json) => _$WiFiConfigFromJson(json);
 
