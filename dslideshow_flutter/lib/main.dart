@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
+// import 'package:flutterpi_gstreamer_video_player/flutterpi_gstreamer_video_player.dart';
 import 'package:logging/logging.dart';
 
 import 'package:dslideshow_backend/app_storage.dart';
@@ -35,14 +35,13 @@ void main() async {
   }
   initLog('flutter');
   _log.info(
-      "Run f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
+    "Run f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}",
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-    ]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
   try {
     late RemoteServiceImpl backendService;
@@ -87,7 +86,7 @@ void main() async {
       return ButtonsHintBloc(frontendService: frontendService)..add(ButtonsHintEvent.show(isShow: true));
     });
     injector.registerFactory<MainMenuBloc>(() {
-      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), config:  config.slideshow.menu, slideshowStatusBloc: injector());
+      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), config: config.slideshow.menu, slideshowStatusBloc: injector());
     });
 
     frontendService.onOTAReady.listen((isReady) {
@@ -102,7 +101,7 @@ void main() async {
     if (environment.isLinuxEmbedded) {
       try {
         _log.info("FlutterpiVideoPlayer initing");
-        FlutterpiVideoPlayer.registerWith();
+        // FlutterpiVideoPlayer.registerWith();
       } catch (e, s) {
         _log.severe('FlutterpiVideoPlayer: $e, $s', e, s);
       }
@@ -118,13 +117,15 @@ void main() async {
 final Logger _log = Logger('main');
 
 void _runFlutter(FrontendService frontendService) {
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider<RouteBloc>.value(value: injector()),
-      BlocProvider<SlideshowStatusBloc>.value(value: injector()),
-    ],
-    child: const MainApp(),
-  ));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<RouteBloc>.value(value: injector()),
+        BlocProvider<SlideshowStatusBloc>.value(value: injector()),
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -146,22 +147,13 @@ class MainApp extends StatelessWidget {
             case RoutePage.slideshow:
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider<SlideshowBloc>(
-                    lazy: false,
-                    create: (context) => injector<SlideshowBloc>(),
-                  ),
-                  BlocProvider<MainMenuBloc>(
-                    lazy: false,
-                    create: (context) => injector<MainMenuBloc>(),
-                  )
+                  BlocProvider<SlideshowBloc>(lazy: false, create: (context) => injector<SlideshowBloc>()),
+                  BlocProvider<MainMenuBloc>(lazy: false, create: (context) => injector<MainMenuBloc>()),
                 ],
                 child: const SlideShowPage(),
               );
             case RoutePage.config:
-              return BlocProvider<ButtonsHintBloc>(
-                create: (context) => injector<ButtonsHintBloc>(),
-                child: const ConfigPage(),
-              );
+              return BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>(), child: const ConfigPage());
             case RoutePage.ota:
               return OTAPage();
             case RoutePage.welcome:

@@ -21,7 +21,7 @@ SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
       isBlurredBackground: json['isBlurredBackground'] as bool? ?? true,
       transitionTimeMs: (json['transitionTimeMs'] as num?)?.toInt() ?? 1000,
       buttons: SlideShowConfig._parseButtons(json['buttons']),
-      menu: SlideShowMenuConfig.fromJson(json['menu'] as Map<String, dynamic>),
+      menu: SlideShowConfig._parseMenu(json['menu']),
     );
 
 Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>

@@ -10,12 +10,30 @@ class SlideShowConfig {
   @JsonKey(fromJson: _parseButtons)
   SlideShowButtons buttons;
 
+  @JsonKey(fromJson: _parseMenu)
   SlideShowMenuConfig menu;
 
   static SlideShowButtons _parseButtons(dynamic data) {
     _log.info("- parsing 'buttons' bind");
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
-    return SlideShowButtons.fromJson(dataV);
+    try {
+      return SlideShowButtons.fromJson(dataV);
+    } catch (e) {
+      return SlideShowButtons(
+        button0: SlideShowButtonConfig(action: SlideshowAction.showInfo, minPressingMs: 500),
+        button1: SlideShowButtonConfig(action: SlideshowAction.toggleScreen, minPressingMs: 800),
+        button2: SlideShowButtonConfig(action: SlideshowAction.showMenu, minPressingMs: 500),
+        button3: SlideShowButtonConfig(action: SlideshowAction.pause, minPressingMs: 200),
+        hintOffsetX: 320,
+        hintOffsetY: 20,
+      );
+    }
+  }
+
+  static SlideShowMenuConfig _parseMenu(dynamic data) {
+    _log.info("- parsing 'menu'");
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return SlideShowMenuConfig.fromJson(dataV);
   }
 
   @JsonKey(defaultValue: 5000)
@@ -46,19 +64,14 @@ class SlideShowConfig {
   @JsonKey(defaultValue: 0.9)
   double backgroundOpacity;
   static const int DEFAULT_BACKGROUND_COLOR = 0xFFFFFFFF;
-  @JsonKey(
-    defaultValue: SlideShowConfig.DEFAULT_BACKGROUND_COLOR,
-    fromJson: _parseColor,
-    toJson: _colorToJson,
-  )
+  @JsonKey(defaultValue: SlideShowConfig.DEFAULT_BACKGROUND_COLOR, fromJson: _parseColor, toJson: _colorToJson)
   int backgroundColor;
   static int _parseColor(dynamic value) {
     if (value is int) {
       return value;
     }
     if (value is String) {
-      return int.tryParse(value, radix: 16) ??
-          SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
+      return int.tryParse(value, radix: 16) ?? SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
     }
     return SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
   }
@@ -80,8 +93,7 @@ class SlideShowConfig {
     required this.menu,
   });
 
-  factory SlideShowConfig.fromJson(Map<String, dynamic> json) =>
-      _$SlideShowConfigFromJson(json);
+  factory SlideShowConfig.fromJson(Map<String, dynamic> json) => _$SlideShowConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
 }
@@ -107,19 +119,14 @@ class SlideShowButtons {
     required this.hintOffsetY,
   });
 
-  factory SlideShowButtons.fromJson(Map<String, dynamic> json) =>
-      _$SlideShowButtonsFromJson(json);
+  factory SlideShowButtons.fromJson(Map<String, dynamic> json) => _$SlideShowButtonsFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowButtonsToJson(this);
 }
 
 @JsonSerializable()
 class SlideShowButtonConfig {
-  @JsonKey(
-    fromJson: _parseAction,
-    toJson: _actionToJson,
-    defaultValue: SlideshowAction.pause,
-  )
+  @JsonKey(fromJson: _parseAction, toJson: _actionToJson, defaultValue: SlideshowAction.pause)
   SlideshowAction action;
   @JsonKey(defaultValue: 200)
   int minPressingMs;
@@ -133,14 +140,10 @@ class SlideShowButtonConfig {
     if (value == null) {
       return SlideshowAction.none;
     }
-    return SlideshowAction.values.firstWhere(
-      (item) => item.toString() == value,
-      orElse: () => SlideshowAction.none,
-    );
+    return SlideshowAction.values.firstWhere((item) => item.toString() == value, orElse: () => SlideshowAction.none);
   }
 
-  factory SlideShowButtonConfig.fromJson(Map<String, dynamic> json) =>
-      _$SlideShowButtonConfigFromJson(json);
+  factory SlideShowButtonConfig.fromJson(Map<String, dynamic> json) => _$SlideShowButtonConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowButtonConfigToJson(this);
 }
@@ -150,8 +153,7 @@ class SlideShowMenuConfig {
   @JsonKey(defaultValue: 200)
   int minPressingMs;
   SlideShowMenuConfig({required this.minPressingMs});
-  factory SlideShowMenuConfig.fromJson(Map<String, dynamic> json) =>
-      _$SlideShowMenuConfigFromJson(json);
+  factory SlideShowMenuConfig.fromJson(Map<String, dynamic> json) => _$SlideShowMenuConfigFromJson(json);
   Map<String, dynamic> toJson() => _$SlideShowMenuConfigToJson(this);
 }
 
