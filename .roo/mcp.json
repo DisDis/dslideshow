@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "dart": {
+            "command": "/Users/igordemyanov/workspace/flutter/bin/dart",
+            "args": [
+                "mcp-server",
+                "--force-roots-fallback"
+            ]
+        }
+    }
+}

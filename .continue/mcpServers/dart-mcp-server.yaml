@@ -1,0 +1,10 @@
+name: My MCP server
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: Dart & Flutter
+    type: stdio
+    command: dart
+    args:
+      - "mcp-server"
+    env: {}
