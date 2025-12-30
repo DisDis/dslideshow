@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
 import 'package:logging/logging.dart';
-import 'package:linux_dpms/linux_dpms.dart';
+import 'package:dpms/dpms.dart';
 
 class ScreenService {
   static final Logger _log = new Logger('ScreenService');
-  static final DpmsLinux dpmsLinux = DpmsLinux();
+  static final Dpms dpmsLinux = Dpms();
   final HardwareConfig _config;
 
   // Property?
@@ -36,7 +36,7 @@ class ScreenService {
       if (!_screenOn) {
         io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
         if (dpmsLinux.isAvailable()) {
-          dpmsLinux.setPowerState(DpmsPowerState.on);
+          dpmsLinux.setMode(PowerMode.on);
         }
         _screenOn = true;
         _stateChangePreparation.add(true);
@@ -71,7 +71,7 @@ class ScreenService {
       await Future<void>.delayed(_preparationOffTime);
       io.Process.run(_config.screenPowerOffScript, [], runInShell: true);
       if (dpmsLinux.isAvailable()) {
-        dpmsLinux.setPowerState(DpmsPowerState.off);
+        dpmsLinux.setMode(PowerMode.off);
       }
       _screenOn = false;
     } catch (e, s) {

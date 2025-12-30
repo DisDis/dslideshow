@@ -29,8 +29,8 @@ cd ../config_app
 
 echo "--- Create DEB package 'DSlideshow' ---"
 cd ../deb_factory
-cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy flutter-pi"
 cp -r ../dslideshow_flutter/build/flutter-pi/${CPU_TYPE}-64/* $DEST/ || error_exit "copy flutter_assets"
+cp -f $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy flutter-pi"
 cp -r ../config_app/build/web $DEST/ || error_exit "copy config_app web"
 
 # remove templates
