@@ -4,60 +4,65 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 
-
 class GalleryWidget extends StatelessWidget {
   const GalleryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GalleryBloc, GalleryState>(
-        builder: (
-          BuildContext context,
-          GalleryState currentState,
-        ) {
-          if (currentState is UninitializedGalleryState) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (currentState is ErrorGalleryState) {
-            return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(currentState.errorMessage),
-                Padding(
-                  padding: const EdgeInsets.only(top: 32.0),
-                  child: ElevatedButton(
-                    onPressed: ()=>_load(context),
-                    child: const Text('reload'),
-                  ),
+    return BlocBuilder<GalleryBloc, GalleryState>(builder: (
+      BuildContext context,
+      GalleryState currentState,
+    ) {
+      if (currentState is UninitializedGalleryState) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      if (currentState is ErrorGalleryState) {
+        return Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(currentState.errorMessage),
+            Padding(
+              padding: const EdgeInsets.only(top: 32.0),
+              child: ElevatedButton(
+                onPressed: () => _load(context),
+                child: const Text('reload'),
+              ),
+            ),
+          ],
+        ));
+      }
+      if (currentState is LoadedGalleryState) {
+        return Center(
+            child: SingleChildScrollView(
+              child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+              Row(
+                children: [
+                  Text("Total ${currentState.items.length} items"),
+                  ElevatedButton(
+                  child: const Text('Reload'),
+                  onPressed: () {
+                    _load(context);
+                  },
                 ),
-              ],
+                ],
+              ),
+              MediaGalleryWidget(
+                items: currentState.items,
+              ),
+             
+                        ],
+                      ),
             ));
-          }
-          if (currentState is LoadedGalleryState) {
-            return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-              
-                Padding(
-                  padding: const EdgeInsets.only(top: 32.0),
-                  child: ElevatedButton(
-                    child: const Text('Test'),
-                    onPressed: () {
-                     _load(context);
-                    },
-                  ),
-                ),
-              ],
-            ));
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+      }
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    });
   }
 
   void _load(BuildContext context) {
@@ -66,27 +71,28 @@ class GalleryWidget extends StatelessWidget {
 }
 
 class MediaGalleryWidget extends StatefulWidget {
-  const MediaGalleryWidget({super.key});
+  final List<String> items;
+  const MediaGalleryWidget({super.key, required this.items});
 
   @override
   State<MediaGalleryWidget> createState() => _MediaGalleryWidgetState();
 }
 
 class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
-  final items = <GalleryItem>[
-    GalleryItem(
-        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'), '1'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/2.jpg'), '2'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/3.jpg'), '3'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/4.gif'), '4'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/5.mp4'), '5'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/1.jpg'), '1'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/1.jpg'), '1'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/1.jpg'), '1'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/1.jpg'), '1'),
-    GalleryItem(Uri.parse('http://127.0.0.1:8080/cache/123/get/1.jpg'), '1'),
-  ];
+  late List<GalleryItem> items;
   final _selected = <GalleryItem>[];
+  @override
+  void initState() {
+    final wclient = context.read<GalleryBloc>().getWebClient();
+    items = widget.items
+        .map((item) => GalleryItem(
+              uri: wclient.getMediaItemUri(item),
+              title: path.basename(item),
+            ))
+        .toList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -122,15 +128,31 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
         child: Container(
           alignment: Alignment.center,
           decoration: item.selected
-              ? BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10), border: Border.all(width: 1, color: Colors.blue))
-              : BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(width: 1)),
+              ? BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1, color: Colors.blue))
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1)),
           child: ext == '.mp4'
               ? Text('Video "${path.basename(item.uri.path)}"')
+              : ext == ''? 
+              Row(
+                      children: [
+                        const Icon(Icons.folder),
+                        Text(item.title),
+                      ],
+                    )
               : CachedNetworkImage(
                   imageUrl: item.uri.toString(),
                   errorWidget: (BuildContext context, String url, error) {
-                    return Row(
-                      children: [Text('Not found "${item.title}'), const Icon(Icons.error)],
+                    return Column(
+                      children: [
+                        const Icon(Icons.error),
+                        Text('Not found'),
+                        Text(item.uri.path),
+                      ],
                     );
                   },
                 ),
@@ -143,5 +165,8 @@ class GalleryItem {
   final String title;
   bool selected;
 
-  GalleryItem(this.uri, this.title, {this.selected = false});
+  GalleryItem(
+      {required this.uri,
+      required this.title,
+      this.selected = false,});
 }

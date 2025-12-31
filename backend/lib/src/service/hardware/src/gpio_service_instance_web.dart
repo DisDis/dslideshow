@@ -23,5 +23,4 @@ class GPIOServiceImpl extends GPIOService {
 
   @override
   Stream<ButtonEvent> get onButtonEvent => _fake1.stream;
- 
 }

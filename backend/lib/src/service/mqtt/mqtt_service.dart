@@ -28,14 +28,22 @@ class MqttService {
   final StreamController<bool> _scScreen = new StreamController.broadcast();
   Stream<bool> get onScreen => _scScreen.stream;
 
-  bool get isConnected => _client.connectionStatus?.state == MqttConnectionState.connected;
+  bool get isConnected =>
+      _client.connectionStatus?.state == MqttConnectionState.connected;
 
   MqttService(this._config, {required this.applicationStateService})
-      : _client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
-        _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
-        _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
-        _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
-        _prefixMotionTopic = _config.getDiscoveryPrefix(SensorType.binarySensor.value, 'motion') {
+    : _client = MqttServerClient.withPort(
+        _config.server,
+        _config.clientId,
+        _config.serverPort,
+      ),
+      _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
+      _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
+      _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
+      _prefixMotionTopic = _config.getDiscoveryPrefix(
+        SensorType.binarySensor.value,
+        'motion',
+      ) {
     if (_config.enabled) {
       _init();
     }
@@ -53,10 +61,14 @@ class MqttService {
 
     final discovery_topic = _config.getDiscoveryPrefix('info', "device");
     final connMess = MqttConnectMessage()
-        .withClientIdentifier(_config.clientId) // Must agree with the keep alive set above or not set
+        .withClientIdentifier(
+          _config.clientId,
+        ) // Must agree with the keep alive set above or not set
         // .withWillTopic(mqttConfig.discovery_prefix + mqttConfig.configuration_topic) // If you set this you must set a will message
         // .withWillMessage(configPayload)
-        .withWillTopic(discovery_topic) // If you set this you must set a will message
+        .withWillTopic(
+          discovery_topic,
+        ) // If you set this you must set a will message
         .withWillMessage(' ')
         .startClean() // Non persistent session for testing
         .withWillQos(MqttQos.atLeastOnce);
@@ -76,10 +88,14 @@ class MqttService {
 
     /// Check we are connected
     if (isConnected) {
-      _log.info('Mosquitto client connected "${_config.server}" port:${_config.serverPort}');
+      _log.info(
+        'Mosquitto client connected "${_config.server}" port:${_config.serverPort}',
+      );
       _client.updates?.listen(_onUpdate);
     } else {
-      _log.warning('Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus?.state}');
+      _log.warning(
+        'Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus?.state}',
+      );
       _client.disconnect();
     }
     applicationStateService.onChangedState.listen(_onApplicationChangeState);
@@ -88,17 +104,31 @@ class MqttService {
   void _onUpdate(List<MqttReceivedMessage<MqttMessage>> msgs) {
     msgs.forEach((element) {
       final MqttPublishMessage recMess = element.payload as MqttPublishMessage;
-      final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final pt = MqttPublishPayload.bytesToStringAsString(
+        recMess.payload.message,
+      );
 
       _log.info('topic is <${element.topic}>, payload is <-- $pt -->');
       if (element.topic.startsWith(_prefixPauseTopic)) {
-        _client.publishMessage("$_prefixPauseTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(
+          "$_prefixPauseTopic/${_config.state_topic}",
+          MqttQos.atLeastOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
+        );
         _scPause.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixScreenTopic)) {
-        _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(
+          "$_prefixScreenTopic/${_config.state_topic}",
+          MqttQos.atLeastOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
+        );
         _scScreen.add(pt == 'ON');
       } else if (element.topic.startsWith(_prefixMenuTopic)) {
-        _client.publishMessage("$_prefixMenuTopic/${_config.state_topic}", MqttQos.atLeastOnce, (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!);
+        _client.publishMessage(
+          "$_prefixMenuTopic/${_config.state_topic}",
+          MqttQos.atLeastOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
+        );
         _scMenu.add(pt == 'ON');
       }
     });
@@ -107,12 +137,17 @@ class MqttService {
   // ignore: unused_element
   void _unpublishSwitchConfig(MqttServerClient client, String id) {
     final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
-    client.publishMessage("$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, typed.Uint8Buffer());
+    client.publishMessage(
+      "$discovery_prefix/${_config.configuration_topic}",
+      MqttQos.atMostOnce,
+      typed.Uint8Buffer(),
+    );
   }
 
   void _publishSwitchConfig(MqttServerClient client, String id, String name) {
     final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
-    final configPayload = '{'
+    final configPayload =
+        '{'
         '"name": "$name"'
         ',"command_topic": "$discovery_prefix/${_config.command_topic}"'
         ',"state_topic": "$discovery_prefix/${_config.state_topic}"'
@@ -120,19 +155,31 @@ class MqttService {
         ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config.deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
         '}';
     _client.publishMessage(
-        "$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
+      "$discovery_prefix/${_config.configuration_topic}",
+      MqttQos.atMostOnce,
+      (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!,
+    );
   }
 
-  void _publishSensorConfig(MqttServerClient client, String id, String name, [SensorType sensorType = SensorType.sensor]) {
+  void _publishSensorConfig(
+    MqttServerClient client,
+    String id,
+    String name, [
+    SensorType sensorType = SensorType.sensor,
+  ]) {
     final discovery_prefix = _config.getDiscoveryPrefix(sensorType.value, id);
-    final configPayload = '{'
+    final configPayload =
+        '{'
         '"name": "$name"'
         ',"state_topic": "$discovery_prefix/${_config.state_topic}"'
         ',"unique_id": "${_config.deviceId}_action_${id}"'
         ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config.deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
         '}';
     _client.publishMessage(
-        "$discovery_prefix/${_config.configuration_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!);
+      "$discovery_prefix/${_config.configuration_topic}",
+      MqttQos.atMostOnce,
+      (MqttClientPayloadBuilder()..addUTF8String(configPayload)).payload!,
+    );
   }
 
   /// The unsolicited disconnect callback
@@ -141,9 +188,18 @@ class MqttService {
   }
 
   void _onConnected() {
-    _client.subscribe("$_prefixPauseTopic/${_config.command_topic}", MqttQos.atMostOnce);
-    _client.subscribe("$_prefixScreenTopic/${_config.command_topic}", MqttQos.atMostOnce);
-    _client.subscribe("$_prefixMenuTopic/${_config.command_topic}", MqttQos.atMostOnce);
+    _client.subscribe(
+      "$_prefixPauseTopic/${_config.command_topic}",
+      MqttQos.atMostOnce,
+    );
+    _client.subscribe(
+      "$_prefixScreenTopic/${_config.command_topic}",
+      MqttQos.atMostOnce,
+    );
+    _client.subscribe(
+      "$_prefixMenuTopic/${_config.command_topic}",
+      MqttQos.atMostOnce,
+    );
     _publishAllConfig();
 
     _onApplicationChangeState(applicationStateService.state);
@@ -165,13 +221,32 @@ class MqttService {
     try {
       final state = applicationStateService.state;
       _client.publishMessage(
-          "$_prefixPauseTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(state.isPaused ? 'ON' : 'OFF')).payload!);
-      _client.publishMessage("$_prefixScreenTopic/${_config.state_topic}", MqttQos.atMostOnce,
-          (MqttClientPayloadBuilder()..addUTF8String(state.isScreenOn ? 'ON' : 'OFF')).payload!);
+        "$_prefixPauseTopic/${_config.state_topic}",
+        MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()
+              ..addUTF8String(state.isPaused ? 'ON' : 'OFF'))
+            .payload!,
+      );
       _client.publishMessage(
-          "$_prefixMenuTopic/${_config.state_topic}", MqttQos.atMostOnce, (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF')).payload!);
-      _client.publishMessage("$_prefixMotionTopic/${_config.state_topic}", MqttQos.atMostOnce,
-          (MqttClientPayloadBuilder()..addUTF8String(state.isMotion ? 'ON' : 'OFF')).payload!);
+        "$_prefixScreenTopic/${_config.state_topic}",
+        MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()
+              ..addUTF8String(state.isScreenOn ? 'ON' : 'OFF'))
+            .payload!,
+      );
+      _client.publishMessage(
+        "$_prefixMenuTopic/${_config.state_topic}",
+        MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF'))
+            .payload!,
+      );
+      _client.publishMessage(
+        "$_prefixMotionTopic/${_config.state_topic}",
+        MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()
+              ..addUTF8String(state.isMotion ? 'ON' : 'OFF'))
+            .payload!,
+      );
     } catch (e, s) {
       _log.severe('Fatal error: $e, $s', e, s);
     }

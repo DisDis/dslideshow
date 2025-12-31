@@ -1,8 +1,53 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 class WebClient {
   final String host;
-  final String port;
+  final int port;
   final String code;
+
 
   WebClient({required this.host, required this.port, required this.code});
 
+  Uri getMediaItemUri(String itemPath){
+    return Uri.parse('http://$host:$port/cache/$code/get/$itemPath');
+  }
+
+  /// Получает список всех медиа данных по роуту WebServerRoutes.getMedialItemsList
+  ///
+  /// Возвращает Future<List<String>>, содержащий пути к медиафайлам.
+  ///
+  /// Бросает исключение в случае ошибки соединения, неверного кода аутентификации
+  /// или некорректного формата ответа.
+  Future<List<String>> getMediaItems() async {
+    final url = 'http://$host:$port/cache/$code/list';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'content-type': 'application/json; charset=utf-8'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData is Map<String, dynamic> && jsonData.containsKey('items')) {
+          final items = jsonData['items'] as List;
+          // Приводим к List<String>, проверяя типы элементов
+          return items.map((item) => item.toString()).toList(growable: false);
+        } else {
+          throw Exception('Неверный формат ответа: отсутствует поле "items"');
+        }
+      } else if (response.statusCode == 403) {
+        throw Exception('Неверный код аутентификации: $code');
+      } else {
+        throw Exception(
+          'Ошибка при получении списка медиафайлов: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+      }
+    } on FormatException {
+      throw Exception('Неверный формат JSON в ответе сервера');
+    } catch (e) {
+      throw Exception('Ошибка при выполнении HTTP-запроса: $e');
+    }
+  }
 }

@@ -6,7 +6,9 @@ part 'web_server_commands.g.dart';
 part 'web_server_commands.freezed.dart';
 
 @freezed
-sealed class WebServerControlCommand with _$WebServerControlCommand implements RpcCommand {
+sealed class WebServerControlCommand
+    with _$WebServerControlCommand
+    implements RpcCommand {
   static const String TYPE = 'web_server_control';
   const factory WebServerControlCommand({
     required bool enable,
@@ -14,13 +16,24 @@ sealed class WebServerControlCommand with _$WebServerControlCommand implements R
     @Default(WebServerControlCommand.TYPE) String type,
   }) = _WebServerControlCommand;
 
-  factory WebServerControlCommand.fromJson(Map<String, dynamic> json) => _$WebServerControlCommandFromJson(json);
+  factory WebServerControlCommand.fromJson(Map<String, dynamic> json) =>
+      _$WebServerControlCommandFromJson(json);
 }
 
 @freezed
-sealed class WebServerControlCommandResult with _$WebServerControlCommandResult implements RpcResult {
-  static WebServerControlCommandResult respond(RpcCommand command, String code, bool enable) {
-    return WebServerControlCommandResult(id: command.id, enable: enable, code: code);
+sealed class WebServerControlCommandResult
+    with _$WebServerControlCommandResult
+    implements RpcResult {
+  static WebServerControlCommandResult respond(
+    RpcCommand command,
+    String code,
+    bool enable,
+  ) {
+    return WebServerControlCommandResult(
+      id: command.id,
+      enable: enable,
+      code: code,
+    );
   }
 
   const factory WebServerControlCommandResult({
@@ -29,7 +42,8 @@ sealed class WebServerControlCommandResult with _$WebServerControlCommandResult 
     required int id,
   }) = _WebServerControlCommandResult;
 
-  factory WebServerControlCommandResult.fromJson(Map<String, dynamic> json) => _$WebServerControlCommandResultFromJson(json);
+  factory WebServerControlCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$WebServerControlCommandResultFromJson(json);
 }
 
 abstract class WebSocketResult {
@@ -49,27 +63,22 @@ abstract class WebSocketErrorResult extends WebSocketResult {
 }
 
 @freezed
-sealed class WSErrorResult with _$WSErrorResult implements WebSocketErrorResult {
-  const factory WSErrorResult({
-    required String error,
-    required int id,
-  }) = _WSErrorResult;
+sealed class WSErrorResult
+    with _$WSErrorResult
+    implements WebSocketErrorResult {
+  const factory WSErrorResult({required String error, required int id}) =
+      _WSErrorResult;
 
   static WSErrorResult byId(String error, int commandId) {
-    return WSErrorResult(
-      id: commandId,
-      error: error,
-    );
+    return WSErrorResult(id: commandId, error: error);
   }
 
   static WSErrorResult byCommand(String error, WebSocketCommand command) {
-    return WSErrorResult(
-      id: command.id,
-      error: error,
-    );
+    return WSErrorResult(id: command.id, error: error);
   }
 
-  factory WSErrorResult.fromJson(Map<String, dynamic> json) => _$WSErrorResultFromJson(json);
+  factory WSErrorResult.fromJson(Map<String, dynamic> json) =>
+      _$WSErrorResultFromJson(json);
 }
 
 @freezed
@@ -80,7 +89,8 @@ sealed class WSHelloCommand with _$WSHelloCommand implements WebSocketCommand {
     @Default(WSHelloCommand.TYPE) String type,
   }) = _WSHelloCommand;
 
-  factory WSHelloCommand.fromJson(Map<String, dynamic> json) => _$WSHelloCommandFromJson(json);
+  factory WSHelloCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSHelloCommandFromJson(json);
 }
 
 @freezed
@@ -93,11 +103,14 @@ sealed class WSAuthCommand with _$WSAuthCommand implements WebSocketCommand {
     @Default(WSAuthCommand.TYPE) String type,
   }) = _WSAuthCommand;
 
-  factory WSAuthCommand.fromJson(Map<String, dynamic> json) => _$WSAuthCommandFromJson(json);
+  factory WSAuthCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSAuthCommandFromJson(json);
 }
 
 @freezed
-sealed class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketCommand {
+sealed class WSSendRpcCommand
+    with _$WSSendRpcCommand
+    implements WebSocketCommand {
   static const String TYPE = 'ws_rpc';
   const factory WSSendRpcCommand({
     ///TODO: FIX it
@@ -115,7 +128,8 @@ sealed class WSSendRpcCommand with _$WSSendRpcCommand implements WebSocketComman
     );
   }
 
-  factory WSSendRpcCommand.fromJson(Map<String, dynamic> json) => _$WSSendRpcCommandFromJson(json);
+  factory WSSendRpcCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSSendRpcCommandFromJson(json);
 }
 
 @freezed
@@ -127,8 +141,12 @@ sealed class WSRpcResult with _$WSRpcResult implements WebSocketResult {
     required int id,
   }) = _WSRpcResult;
 
-  factory WSRpcResult.fromJson(Map<String, dynamic> json) => _$WSRpcResultFromJson(json);
-  static WSRpcResult byCommand<T extends RpcResult>(T result, WebSocketCommand command) {
+  factory WSRpcResult.fromJson(Map<String, dynamic> json) =>
+      _$WSRpcResultFromJson(json);
+  static WSRpcResult byCommand<T extends RpcResult>(
+    T result,
+    WebSocketCommand command,
+  ) {
     return WSRpcResult(
       id: command.id,
       resultData: serializers.serialize(result)!,
@@ -137,18 +155,23 @@ sealed class WSRpcResult with _$WSRpcResult implements WebSocketResult {
 }
 
 @freezed
-sealed class WSConfigDownloadCommand with _$WSConfigDownloadCommand implements WebSocketCommand {
+sealed class WSConfigDownloadCommand
+    with _$WSConfigDownloadCommand
+    implements WebSocketCommand {
   static const String TYPE = 'ws_config_download';
   const factory WSConfigDownloadCommand({
     required int id,
     @Default(WSConfigDownloadCommand.TYPE) String type,
   }) = _WSConfigDownloadCommand;
 
-  factory WSConfigDownloadCommand.fromJson(Map<String, dynamic> json) => _$WSConfigDownloadCommandFromJson(json);
+  factory WSConfigDownloadCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigDownloadCommandFromJson(json);
 }
 
 @freezed
-sealed class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSocketCommand {
+sealed class WSConfigUploadCommand
+    with _$WSConfigUploadCommand
+    implements WebSocketCommand {
   static const String TYPE = 'ws_config_upload';
   const factory WSConfigUploadCommand({
     required String content,
@@ -156,50 +179,55 @@ sealed class WSConfigUploadCommand with _$WSConfigUploadCommand implements WebSo
     @Default(WSConfigUploadCommand.TYPE) String type,
   }) = _WSConfigUploadCommand;
 
-  factory WSConfigUploadCommand.fromJson(Map<String, dynamic> json) => _$WSConfigUploadCommandFromJson(json);
+  factory WSConfigUploadCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigUploadCommandFromJson(json);
 }
 
 @freezed
-sealed class WSConfigDownloadResult with _$WSConfigDownloadResult implements WebSocketResult {
+sealed class WSConfigDownloadResult
+    with _$WSConfigDownloadResult
+    implements WebSocketResult {
   const factory WSConfigDownloadResult({
     required String content,
     required int id,
   }) = _WSConfigDownloadResult;
 
-  factory WSConfigDownloadResult.fromJson(Map<String, dynamic> json) => _$WSConfigDownloadResultFromJson(json);
+  factory WSConfigDownloadResult.fromJson(Map<String, dynamic> json) =>
+      _$WSConfigDownloadResultFromJson(json);
 }
 
 @freezed
-sealed class WSRestartApplicationCommand with _$WSRestartApplicationCommand implements WebSocketCommand {
+sealed class WSRestartApplicationCommand
+    with _$WSRestartApplicationCommand
+    implements WebSocketCommand {
   static const String TYPE = 'ws_restart_application';
   const factory WSRestartApplicationCommand({
     required int id,
     @Default(WSRestartApplicationCommand.TYPE) String type,
   }) = _WSRestartApplicationCommand;
 
-  factory WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) => _$WSRestartApplicationCommandFromJson(json);
+  factory WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSRestartApplicationCommandFromJson(json);
 }
 
 @freezed
 sealed class WSResultOk with _$WSResultOk implements WebSocketResult {
-  const factory WSResultOk({
-    required int id,
-  }) = _WSResultOk;
+  const factory WSResultOk({required int id}) = _WSResultOk;
   static WSResultOk byCommand(WebSocketCommand command) {
     return WSResultOk(id: command.id);
   }
 
-  factory WSResultOk.fromJson(Map<String, dynamic> json) => _$WSResultOkFromJson(json);
+  factory WSResultOk.fromJson(Map<String, dynamic> json) =>
+      _$WSResultOkFromJson(json);
 }
 
 @freezed
 sealed class WSEchoResult with _$WSEchoResult implements WebSocketResult {
-  const factory WSEchoResult({
-    required String msg,
-    required int id,
-  }) = _WSEchoResult;
+  const factory WSEchoResult({required String msg, required int id}) =
+      _WSEchoResult;
 
-  factory WSEchoResult.fromJson(Map<String, dynamic> json) => _$WSEchoResultFromJson(json);
+  factory WSEchoResult.fromJson(Map<String, dynamic> json) =>
+      _$WSEchoResultFromJson(json);
 }
 
 @freezed
@@ -211,5 +239,6 @@ sealed class WSEchoCommand with _$WSEchoCommand implements WebSocketCommand {
     @Default(WSEchoCommand.TYPE) String type,
   }) = _WSEchoCommand;
 
-  factory WSEchoCommand.fromJson(Map<String, dynamic> json) => _$WSEchoCommandFromJson(json);
+  factory WSEchoCommand.fromJson(Map<String, dynamic> json) =>
+      _$WSEchoCommandFromJson(json);
 }

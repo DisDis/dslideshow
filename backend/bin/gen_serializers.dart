@@ -51,7 +51,7 @@ final serializersFor = SerializersFor(const [
   WSRestartApplicationCommand,
   WSResultOk,
   WSEchoCommand,
-  WSEchoResult
+  WSEchoResult,
 ]);
 
 final outputSerializers = "./lib/serializers.dart";
@@ -65,10 +65,16 @@ void main(List<String> args) {
 
   serializersFor.types.forEach((type) {
     final typeName = type.toString();
-    CASE_SER_CLASS.writeln(_serializeClassTemplate.replaceAll(CLASS_Key, typeName));
-    CASE_DESER_CLASS.writeln(_deserializeClassTemplate.replaceAll(CLASS_Key, typeName));
+    CASE_SER_CLASS.writeln(
+      _serializeClassTemplate.replaceAll(CLASS_Key, typeName),
+    );
+    CASE_DESER_CLASS.writeln(
+      _deserializeClassTemplate.replaceAll(CLASS_Key, typeName),
+    );
   });
-  final out = fileTemplate.replaceFirst(CASE_SER_Key, CASE_SER_CLASS.toString()).replaceFirst(CASE_DESER_Key, CASE_DESER_CLASS.toString());
+  final out = fileTemplate
+      .replaceFirst(CASE_SER_Key, CASE_SER_CLASS.toString())
+      .replaceFirst(CASE_DESER_Key, CASE_DESER_CLASS.toString());
   print(out);
   File(outputSerializers).writeAsStringSync(out);
 }

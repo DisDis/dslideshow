@@ -35,24 +35,27 @@ class MqttConfig {
   @JsonKey(defaultValue: 'state')
   String state_topic;
 
-  String getDiscoveryPrefix(String type, String actionId) => '$discovery_prefix/$type/${deviceId}_${actionId}';
+  String getDiscoveryPrefix(String type, String actionId) =>
+      '$discovery_prefix/$type/${deviceId}_${actionId}';
 
-  MqttConfig(
-      {required this.clientId,
-      required this.command_topic,
-      required this.configuration_topic,
-      required this.deviceId,
-      required this.deviceName,
-      required this.discovery_prefix,
-      required this.enabled,
-      required this.keepAlivePeriod,
-      required this.pass,
-      required this.server,
-      required this.serverPort,
-      required this.state_topic,
-      required this.user});
+  MqttConfig({
+    required this.clientId,
+    required this.command_topic,
+    required this.configuration_topic,
+    required this.deviceId,
+    required this.deviceName,
+    required this.discovery_prefix,
+    required this.enabled,
+    required this.keepAlivePeriod,
+    required this.pass,
+    required this.server,
+    required this.serverPort,
+    required this.state_topic,
+    required this.user,
+  });
 
-  factory MqttConfig.fromJson(Map<String, dynamic> json) => _$MqttConfigFromJson(json);
+  factory MqttConfig.fromJson(Map<String, dynamic> json) =>
+      _$MqttConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$MqttConfigToJson(this);
 }

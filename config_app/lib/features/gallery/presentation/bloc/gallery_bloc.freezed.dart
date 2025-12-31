@@ -346,7 +346,7 @@ extension GalleryStatePatterns on GalleryState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? uninitialized,
     TResult Function(String errorMessage)? error,
-    TResult Function()? loaded,
+    TResult Function(List<String> items)? loaded,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -356,7 +356,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState() when error != null:
         return error(_that.errorMessage);
       case LoadedGalleryState() when loaded != null:
-        return loaded();
+        return loaded(_that.items);
       case _:
         return orElse();
     }
@@ -379,7 +379,7 @@ extension GalleryStatePatterns on GalleryState {
   TResult when<TResult extends Object?>({
     required TResult Function() uninitialized,
     required TResult Function(String errorMessage) error,
-    required TResult Function() loaded,
+    required TResult Function(List<String> items) loaded,
   }) {
     final _that = this;
     switch (_that) {
@@ -388,7 +388,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState():
         return error(_that.errorMessage);
       case LoadedGalleryState():
-        return loaded();
+        return loaded(_that.items);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -410,7 +410,7 @@ extension GalleryStatePatterns on GalleryState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? uninitialized,
     TResult? Function(String errorMessage)? error,
-    TResult? Function()? loaded,
+    TResult? Function(List<String> items)? loaded,
   }) {
     final _that = this;
     switch (_that) {
@@ -419,7 +419,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState() when error != null:
         return error(_that.errorMessage);
       case LoadedGalleryState() when loaded != null:
-        return loaded();
+        return loaded(_that.items);
       case _:
         return null;
     }
@@ -515,20 +515,71 @@ class _$ErrorGalleryStateCopyWithImpl<$Res>
 /// @nodoc
 
 class LoadedGalleryState implements GalleryState {
-  const LoadedGalleryState();
+  const LoadedGalleryState({required final List<String> items})
+      : _items = items;
+
+  final List<String> _items;
+  List<String> get items {
+    if (_items is EqualUnmodifiableListView) return _items;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_items);
+  }
+
+  /// Create a copy of GalleryState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $LoadedGalleryStateCopyWith<LoadedGalleryState> get copyWith =>
+      _$LoadedGalleryStateCopyWithImpl<LoadedGalleryState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoadedGalleryState);
+        (other.runtimeType == runtimeType &&
+            other is LoadedGalleryState &&
+            const DeepCollectionEquality().equals(other._items, _items));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
 
   @override
   String toString() {
-    return 'GalleryState.loaded()';
+    return 'GalleryState.loaded(items: $items)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $LoadedGalleryStateCopyWith<$Res>
+    implements $GalleryStateCopyWith<$Res> {
+  factory $LoadedGalleryStateCopyWith(
+          LoadedGalleryState value, $Res Function(LoadedGalleryState) _then) =
+      _$LoadedGalleryStateCopyWithImpl;
+  @useResult
+  $Res call({List<String> items});
+}
+
+/// @nodoc
+class _$LoadedGalleryStateCopyWithImpl<$Res>
+    implements $LoadedGalleryStateCopyWith<$Res> {
+  _$LoadedGalleryStateCopyWithImpl(this._self, this._then);
+
+  final LoadedGalleryState _self;
+  final $Res Function(LoadedGalleryState) _then;
+
+  /// Create a copy of GalleryState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? items = null,
+  }) {
+    return _then(LoadedGalleryState(
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+    ));
   }
 }
 

@@ -22,8 +22,13 @@ class GooglePhotoService {
   String _refreshToken;
   String _tokenAccess;
   DateTime? _tokenAExpire;
-  GooglePhotoService(final String identifier, final String secret, this._refreshToken, [this._tokenAccess = "", this._tokenAExpire])
-    : this._clientId = new ClientId(identifier, secret) {
+  GooglePhotoService(
+    final String identifier,
+    final String secret,
+    this._refreshToken, [
+    this._tokenAccess = "",
+    this._tokenAExpire,
+  ]) : this._clientId = new ClientId(identifier, secret) {
     if (_tokenAExpire == null) {
       _tokenAExpire = new DateTime.now().toUtc();
     }
@@ -31,8 +36,10 @@ class GooglePhotoService {
   final scopes = ["https://www.googleapis.com/auth/photoslibrary.readonly"];
   final redirectUri = 'http://localhost:8989/googleapi';
   final tokenAType = 'Bearer';
-  final StreamController<AccessCredentials> _scUpdateCredentials = new StreamController.broadcast();
-  Stream<AccessCredentials> get onUpdateCredentials => _scUpdateCredentials.stream;
+  final StreamController<AccessCredentials> _scUpdateCredentials =
+      new StreamController.broadcast();
+  Stream<AccessCredentials> get onUpdateCredentials =>
+      _scUpdateCredentials.stream;
 
   void prompt(String url) {
     print("Please go to the following URL and grant access:");
@@ -93,11 +100,15 @@ class GooglePhotoService {
         //        }
 
         if (error != null) {
-          throw new UserConsentException('Error occured while obtaining access credentials: $error');
+          throw new UserConsentException(
+            'Error occured while obtaining access credentials: $error',
+          );
         }
 
         if (code == null || code == '') {
-          throw new Exception('Invalid response from server (no auth code transmitted).');
+          throw new Exception(
+            'Invalid response from server (no auth code transmitted).',
+          );
         }
 
         codeCompleter.complete(code);
@@ -131,7 +142,11 @@ class GooglePhotoService {
     }
   }
 
-  Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(String albumName, int imageW, int imageH) async {
+  Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(
+    String albumName,
+    int imageW,
+    int imageH,
+  ) async {
     List<GooglePhotoItem> result = <GooglePhotoItem>[];
     var client = new http.Client();
     try {
@@ -142,7 +157,12 @@ class GooglePhotoService {
         var codeCompleter = new Completer<String>();
         _run(codeCompleter);
         var code = await codeCompleter.future;
-        credentials = await obtainAccessCredentialsViaCodeExchange(client, _clientId, code, redirectUrl: redirectUri);
+        credentials = await obtainAccessCredentialsViaCodeExchange(
+          client,
+          _clientId,
+          code,
+          redirectUrl: redirectUri,
+        );
         _log.info("New refreshToken: ${credentials.refreshToken}");
       } else {
         var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire!);
@@ -150,13 +170,22 @@ class GooglePhotoService {
       }
 
       //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
-      final clientARC = new AutoRefreshingClient(client, GoogleAuthEndpoints(), _clientId, credentials);
+      final clientARC = new AutoRefreshingClient(
+        client,
+        GoogleAuthEndpoints(),
+        _clientId,
+        credentials,
+      );
 
       final gphoto = new PhotosLibraryApi(clientARC);
       var albumsRes = await gphoto.albums.list();
-      var slideShowAlbum = albumsRes.albums!.firstWhereOrNull((item) => item.title == albumName);
+      var slideShowAlbum = albumsRes.albums!.firstWhereOrNull(
+        (item) => item.title == albumName,
+      );
       if (slideShowAlbum != null) {
-        _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
+        _log.info(
+          'Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}',
+        );
         String? nextPageToken;
         while (true) {
           final smiRequest = new SearchMediaItemsRequest()
@@ -174,9 +203,21 @@ class GooglePhotoService {
              * https://github.com/gilesknap/gphotos-sync/blob/main/src/gphotos_sync/GooglePhotosDownload.py#L267
              * Video download transcodes the videos even if you ask for the original file (=vd parameter). My experience is that the result is looks similar to the original but the compression is more clearly visible. It is a smaller file with approximately 60% bitrate (same resolution).
              **/
-              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=dv', item.mimeType));
+              result.add(
+                new GooglePhotoItem(
+                  item.id,
+                  '${item.baseUrl}=dv',
+                  item.mimeType,
+                ),
+              );
             } else {
-              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
+              result.add(
+                new GooglePhotoItem(
+                  item.id,
+                  '${item.baseUrl}=w$imageW-h$imageH',
+                  item.mimeType,
+                ),
+              );
             }
           });
           nextPageToken = mediaItems.nextPageToken;

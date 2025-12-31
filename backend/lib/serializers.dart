@@ -4,111 +4,137 @@ import 'package:dslideshow_backend/command.dart';
 //import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/serializers.dart';
 
-
 // @SerializersFor()
 // Serializers serializers = _$serializers;
 Serializers serializers = _SerializersImpl();
 
 class _SerializersImpl implements Serializers {
   Object? serialize<T>(T object) {
-          if (object is EchoCommand) return ["EchoCommand", object.toJson()];
+    if (object is EchoCommand) return ["EchoCommand", object.toJson()];
 
-      if (object is EchoCommandResult) return ["EchoCommandResult", object.toJson()];
+    if (object is EchoCommandResult)
+      return ["EchoCommandResult", object.toJson()];
 
-      if (object is GetMediaItemCommand) return ["GetMediaItemCommand", object.toJson()];
+    if (object is GetMediaItemCommand)
+      return ["GetMediaItemCommand", object.toJson()];
 
-      if (object is GetMediaItemCommandResult) return ["GetMediaItemCommandResult", object.toJson()];
+    if (object is GetMediaItemCommandResult)
+      return ["GetMediaItemCommandResult", object.toJson()];
 
-      if (object is StorageNextCommand) return ["StorageNextCommand", object.toJson()];
+    if (object is StorageNextCommand)
+      return ["StorageNextCommand", object.toJson()];
 
-      if (object is ScreenTurnCommand) return ["ScreenTurnCommand", object.toJson()];
+    if (object is ScreenTurnCommand)
+      return ["ScreenTurnCommand", object.toJson()];
 
-      if (object is PowerOffCommand) return ["PowerOffCommand", object.toJson()];
+    if (object is PowerOffCommand) return ["PowerOffCommand", object.toJson()];
 
-      if (object is UpdateFrontendStateCommand) return ["UpdateFrontendStateCommand", object.toJson()];
+    if (object is UpdateFrontendStateCommand)
+      return ["UpdateFrontendStateCommand", object.toJson()];
 
-      if (object is RestartAppCommand) return ["RestartAppCommand", object.toJson()];
+    if (object is RestartAppCommand)
+      return ["RestartAppCommand", object.toJson()];
 
-      if (object is EmptyResult) return ["EmptyResult", object.toJson()];
+    if (object is EmptyResult) return ["EmptyResult", object.toJson()];
 
-      if (object is GetSystemInfoCommand) return ["GetSystemInfoCommand", object.toJson()];
+    if (object is GetSystemInfoCommand)
+      return ["GetSystemInfoCommand", object.toJson()];
 
-      if (object is GetSystemInfoCommandResult) return ["GetSystemInfoCommandResult", object.toJson()];
+    if (object is GetSystemInfoCommandResult)
+      return ["GetSystemInfoCommandResult", object.toJson()];
 
-      if (object is SystemInfo) return ["SystemInfo", object.toJson()];
+    if (object is SystemInfo) return ["SystemInfo", object.toJson()];
 
-      if (object is OSInfo) return ["OSInfo", object.toJson()];
+    if (object is OSInfo) return ["OSInfo", object.toJson()];
 
-      if (object is UpdateInfo) return ["UpdateInfo", object.toJson()];
+    if (object is UpdateInfo) return ["UpdateInfo", object.toJson()];
 
-      if (object is SensorInfo) return ["SensorInfo", object.toJson()];
+    if (object is SensorInfo) return ["SensorInfo", object.toJson()];
 
-      if (object is CpuInfo) return ["CpuInfo", object.toJson()];
+    if (object is CpuInfo) return ["CpuInfo", object.toJson()];
 
-      if (object is NetworkInfo) return ["NetworkInfo", object.toJson()];
+    if (object is NetworkInfo) return ["NetworkInfo", object.toJson()];
 
-      if (object is LEDControlCommand) return ["LEDControlCommand", object.toJson()];
+    if (object is LEDControlCommand)
+      return ["LEDControlCommand", object.toJson()];
 
-      if (object is ButtonChangeStateCommand) return ["ButtonChangeStateCommand", object.toJson()];
+    if (object is ButtonChangeStateCommand)
+      return ["ButtonChangeStateCommand", object.toJson()];
 
-      if (object is EmulatePushButtonCommand) return ["EmulatePushButtonCommand", object.toJson()];
+    if (object is EmulatePushButtonCommand)
+      return ["EmulatePushButtonCommand", object.toJson()];
 
-      if (object is ExecuteSSActionCommand) return ["ExecuteSSActionCommand", object.toJson()];
+    if (object is ExecuteSSActionCommand)
+      return ["ExecuteSSActionCommand", object.toJson()];
 
-      if (object is ScreenLockCommand) return ["ScreenLockCommand", object.toJson()];
+    if (object is ScreenLockCommand)
+      return ["ScreenLockCommand", object.toJson()];
 
-      if (object is WebServerControlCommand) return ["WebServerControlCommand", object.toJson()];
+    if (object is WebServerControlCommand)
+      return ["WebServerControlCommand", object.toJson()];
 
-      if (object is WebServerControlCommandResult) return ["WebServerControlCommandResult", object.toJson()];
+    if (object is WebServerControlCommandResult)
+      return ["WebServerControlCommandResult", object.toJson()];
 
-      if (object is AreYouReadyCommand) return ["AreYouReadyCommand", object.toJson()];
+    if (object is AreYouReadyCommand)
+      return ["AreYouReadyCommand", object.toJson()];
 
-      if (object is OTAReadyCommand) return ["OTAReadyCommand", object.toJson()];
+    if (object is OTAReadyCommand) return ["OTAReadyCommand", object.toJson()];
 
-      if (object is OTAGetInfoCommand) return ["OTAGetInfoCommand", object.toJson()];
+    if (object is OTAGetInfoCommand)
+      return ["OTAGetInfoCommand", object.toJson()];
 
-      if (object is OTAGetInfoCommandResult) return ["OTAGetInfoCommandResult", object.toJson()];
+    if (object is OTAGetInfoCommandResult)
+      return ["OTAGetInfoCommandResult", object.toJson()];
 
-      if (object is OTAOutputCommand) return ["OTAOutputCommand", object.toJson()];
+    if (object is OTAOutputCommand)
+      return ["OTAOutputCommand", object.toJson()];
 
-      if (object is WiFiAddCommand) return ["WiFiAddCommand", object.toJson()];
+    if (object is WiFiAddCommand) return ["WiFiAddCommand", object.toJson()];
 
-      if (object is WiFiGetConnectionsCommand) return ["WiFiGetConnectionsCommand", object.toJson()];
+    if (object is WiFiGetConnectionsCommand)
+      return ["WiFiGetConnectionsCommand", object.toJson()];
 
-      if (object is WiFiRemoveCommand) return ["WiFiRemoveCommand", object.toJson()];
+    if (object is WiFiRemoveCommand)
+      return ["WiFiRemoveCommand", object.toJson()];
 
-      if (object is WiFiScanCommand) return ["WiFiScanCommand", object.toJson()];
+    if (object is WiFiScanCommand) return ["WiFiScanCommand", object.toJson()];
 
-      if (object is WiFiNetworkInfo) return ["WiFiNetworkInfo", object.toJson()];
+    if (object is WiFiNetworkInfo) return ["WiFiNetworkInfo", object.toJson()];
 
-      if (object is WiFiScanResult) return ["WiFiScanResult", object.toJson()];
+    if (object is WiFiScanResult) return ["WiFiScanResult", object.toJson()];
 
-      if (object is WiFiGetConnectionsResult) return ["WiFiGetConnectionsResult", object.toJson()];
+    if (object is WiFiGetConnectionsResult)
+      return ["WiFiGetConnectionsResult", object.toJson()];
 
-      if (object is WSHelloCommand) return ["WSHelloCommand", object.toJson()];
+    if (object is WSHelloCommand) return ["WSHelloCommand", object.toJson()];
 
-      if (object is WSAuthCommand) return ["WSAuthCommand", object.toJson()];
+    if (object is WSAuthCommand) return ["WSAuthCommand", object.toJson()];
 
-      if (object is WSErrorResult) return ["WSErrorResult", object.toJson()];
+    if (object is WSErrorResult) return ["WSErrorResult", object.toJson()];
 
-      if (object is WSConfigDownloadResult) return ["WSConfigDownloadResult", object.toJson()];
+    if (object is WSConfigDownloadResult)
+      return ["WSConfigDownloadResult", object.toJson()];
 
-      if (object is WSConfigDownloadCommand) return ["WSConfigDownloadCommand", object.toJson()];
+    if (object is WSConfigDownloadCommand)
+      return ["WSConfigDownloadCommand", object.toJson()];
 
-      if (object is WSConfigUploadCommand) return ["WSConfigUploadCommand", object.toJson()];
+    if (object is WSConfigUploadCommand)
+      return ["WSConfigUploadCommand", object.toJson()];
 
-      if (object is WSSendRpcCommand) return ["WSSendRpcCommand", object.toJson()];
+    if (object is WSSendRpcCommand)
+      return ["WSSendRpcCommand", object.toJson()];
 
-      if (object is WSRpcResult) return ["WSRpcResult", object.toJson()];
+    if (object is WSRpcResult) return ["WSRpcResult", object.toJson()];
 
-      if (object is WSRestartApplicationCommand) return ["WSRestartApplicationCommand", object.toJson()];
+    if (object is WSRestartApplicationCommand)
+      return ["WSRestartApplicationCommand", object.toJson()];
 
-      if (object is WSResultOk) return ["WSResultOk", object.toJson()];
+    if (object is WSResultOk) return ["WSResultOk", object.toJson()];
 
-      if (object is WSEchoCommand) return ["WSEchoCommand", object.toJson()];
+    if (object is WSEchoCommand) return ["WSEchoCommand", object.toJson()];
 
-      if (object is WSEchoResult) return ["WSEchoResult", object.toJson()];
-
+    if (object is WSEchoResult) return ["WSEchoResult", object.toJson()];
 
     throw ArgumentError('Not found serializer for "$T"');
   }
@@ -122,7 +148,7 @@ class _SerializersImpl implements Serializers {
 
   Object? _deserializeByType(String typeName, Map<String, dynamic> object) {
     switch (typeName) {
-            case 'EchoCommand':
+      case 'EchoCommand':
         return EchoCommand.fromJson(object);
 
       case 'EchoCommandResult':
@@ -268,7 +294,6 @@ class _SerializersImpl implements Serializers {
 
       case 'WSEchoResult':
         return WSEchoResult.fromJson(object);
-
 
       default:
         throw ArgumentError('Not found deserialize for "$typeName"');

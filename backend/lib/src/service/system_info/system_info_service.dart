@@ -10,8 +10,12 @@ class SystemInfoService {
   static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
   static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
   static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
-  static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
-  static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findMem = new RegExp(
+    'Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)',
+  );
+  static final RegExp _findSwap = new RegExp(
+    'Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)',
+  );
 
   SystemInfo? _lastInfo;
 
@@ -36,7 +40,11 @@ class SystemInfoService {
         networkInfo: _networkInfo,
       );
     } else {
-      var delta = new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo.lastUpdate));
+      var delta = new DateTime.now().difference(
+        new DateTime.fromMillisecondsSinceEpoch(
+          _lastInfo!.networkInfo.lastUpdate,
+        ),
+      );
       if (delta > _networkInfoUpdatePeriod) {
         final _networkInfo = await _getNetworkInfo();
         _lastInfo = _lastInfo?.copyWith(networkInfo: _networkInfo);
@@ -49,7 +57,11 @@ class SystemInfoService {
   Future<List<NetworkInterfaceInfo>> getNetworkInterfaces() async {
     //    _log.info('getNetworkInterfaces');
     try {
-      var result = await io.Process.run(_config.systemIfConfigScript, [], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        _config.systemIfConfigScript,
+        [],
+        environment: {'LC_ALL': 'C'},
+      );
       if (result.exitCode == 0) {
         return _parseIfconfigOutput(result.stdout.toString().split('\n\n'));
       }
@@ -81,9 +93,14 @@ class SystemInfoService {
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var strArr = str.split('\n');
-        var diskInfo = strArr.firstWhere((element) => element.startsWith(_config.systemDiskDev), orElse: () => '');
+        var diskInfo = strArr.firstWhere(
+          (element) => element.startsWith(_config.systemDiskDev),
+          orElse: () => '',
+        );
         if (diskInfo.isNotEmpty) {
-          var parseDiskInfo = RegExp('${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
+          var parseDiskInfo = RegExp(
+            '${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)',
+          );
           //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
 
           var info = parseDiskInfo.firstMatch(diskInfo)!;
@@ -136,7 +153,11 @@ class SystemInfoService {
   Future<bool> hasInternet() async {
     //    _log.info('hasInternet');
     try {
-      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'ping',
+        ['-c', '1', '8.8.8.8'],
+        environment: {'LC_ALL': 'C'},
+      );
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
       }
@@ -152,12 +173,7 @@ class SystemInfoService {
 
   Future<CpuInfo> _getCpuInfo() async {
     //    _log.info('_getCpuInfo');
-    var b = new CpuInfo(
-      cores: 0,
-      hardware: '',
-      model: '',
-      revision: '',
-    );
+    var b = new CpuInfo(cores: 0, hardware: '', model: '', revision: '');
 
     try {
       var result = await io.Process.run('nproc', ['--all']);
@@ -190,18 +206,12 @@ class SystemInfoService {
   }
 
   Future<OSInfo> _getOSInfo() async {
-    var b = OSInfo(
-      name: '',
-      osType: OSType.unknown,
-    );
+    var b = OSInfo(name: '', osType: OSType.unknown);
     try {
       var result = await io.Process.run('uname', ['-a']);
       if (result.exitCode == 0) {
         final osInfo = result.stdout.toString().replaceAll('\n', '');
-        b = b.copyWith(
-          name: osInfo,
-          osType: _resolveOSType(osInfo),
-        );
+        b = b.copyWith(name: osInfo, osType: _resolveOSType(osInfo));
       }
       //  _log.info(b.build());
     } catch (e, s) {
@@ -215,15 +225,16 @@ class SystemInfoService {
     //  vcgencmd measure_temp
     try {
       //'vcgencmd', ['measure_temp'],
-      var resultCommand = await io.Process.run(_config.sensorsScript, [], environment: {'LC_ALL': 'C'});
-//temp=61.3'C
+      var resultCommand = await io.Process.run(
+        _config.sensorsScript,
+        [],
+        environment: {'LC_ALL': 'C'},
+      );
+      //temp=61.3'C
       if (resultCommand.exitCode == 0) {
         //temp=49.0'C
         var arr = resultCommand.stdout.toString().split('=');
-        result.add(SensorInfo(
-          name: arr[0],
-          value: arr[1],
-        ));
+        result.add(SensorInfo(name: arr[0], value: arr[1]));
       }
     } catch (e, s) {
       _log.severe('_getSensorInfo', e, s);
@@ -242,25 +253,29 @@ class SystemInfoService {
       try {
         var interfaceName = element.substring(0, element.indexOf(':'));
         var interfaceStatus =
-            _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1 ? NetworkInterfaceStatus.running : NetworkInterfaceStatus.offline;
+            _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
+            ? NetworkInterfaceStatus.running
+            : NetworkInterfaceStatus.offline;
         var interfaceIp4 = _findIp4.firstMatch(element);
         var interfaceIp4Str = interfaceIp4 == null
             ? ''
             : interfaceIp4.groupCount == 1
-                ? interfaceIp4.group(1)
-                : '';
+            ? interfaceIp4.group(1)
+            : '';
         var interfaceIp6 = _findIp6.firstMatch(element);
         var interfaceIp6Str = interfaceIp6 == null
             ? ''
             : interfaceIp6.groupCount == 1
-                ? interfaceIp6.group(1)
-                : '';
-        result.add(NetworkInterfaceInfo(
-          name: interfaceName,
-          status: interfaceStatus,
-          ip4: interfaceIp4Str ?? '',
-          ip6: interfaceIp6Str ?? '',
-        ));
+            ? interfaceIp6.group(1)
+            : '';
+        result.add(
+          NetworkInterfaceInfo(
+            name: interfaceName,
+            status: interfaceStatus,
+            ip4: interfaceIp4Str ?? '',
+            ip6: interfaceIp6Str ?? '',
+          ),
+        );
       } catch (e, st) {
         _log.severe('_parseIfconfigOutput', e, st);
       }

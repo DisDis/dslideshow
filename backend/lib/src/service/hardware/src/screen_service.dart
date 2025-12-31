@@ -54,10 +54,13 @@ class ScreenService {
       _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
-    _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec), () {
-      _timerScreenOff = null;
-      screenOff();
-    });
+    _timerScreenOff = new Timer(
+      new Duration(seconds: _config.screenPowerOnTimerSec),
+      () {
+        _timerScreenOff = null;
+        screenOff();
+      },
+    );
   }
 
   void screenOff() async {

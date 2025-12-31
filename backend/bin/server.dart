@@ -39,7 +39,10 @@ void main(List<String> args) async {
       return new GPIOServiceImpl(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(screenService: injector(), gpioService: injector());
+      return ApplicationStateService(
+        screenService: injector(),
+        gpioService: injector(),
+      );
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
@@ -94,8 +97,14 @@ void _testSystemInfo() async {
 
 void testGPhoto() async {
   final _gphotoStorage = injector.get<Storage>() as GPhotoStorage;
-  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum('TEST_slide', 100, 100);
+  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum(
+    'TEST_slide',
+    100,
+    100,
+  );
   mediaList.forEach((googleItem) {
-    _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
+    _log.info(
+      '  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}',
+    );
   });
 }

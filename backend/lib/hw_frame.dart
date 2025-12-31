@@ -35,7 +35,10 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
-    await _remoteWebServer.spawn(web_server.serviceMain, debugName: "webServer");
+    await _remoteWebServer.spawn(
+      web_server.serviceMain,
+      debugName: "webServer",
+    );
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -45,10 +48,15 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       switch (_config.storages.selected) {
         case StorageType.GPhotoStorage:
           final appStorage = injector.get<AppStorage>();
-          return GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
+          return GPhotoStorage(
+            _config.storages.getOrCreateEmpty(StorageType.GPhotoStorage),
+            appStorage,
+          );
 
         case StorageType.DiskStorage:
-          return DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
+          return DiskStorage(
+            _config.storages.getOrCreateEmpty(StorageType.DiskStorage),
+          );
       }
     });
 
@@ -77,7 +85,10 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       return SystemInfoService(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(screenService: injector(), gpioService: injector());
+      return ApplicationStateService(
+        screenService: injector(),
+        gpioService: injector(),
+      );
     });
 
     injector.registerLazySingleton<HardwareService>(() {

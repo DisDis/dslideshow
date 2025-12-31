@@ -9,7 +9,7 @@ enum ButtonType {
   button2,
 
   // back;
-  button3;
+  button3,
 }
 
 enum ButtonEventType { pressed, released }

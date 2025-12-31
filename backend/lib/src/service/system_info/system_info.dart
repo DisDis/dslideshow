@@ -17,5 +17,6 @@ sealed class SystemInfo with _$SystemInfo {
     required UpdateInfo updateInfo,
   }) = _SystemInfo;
 
-  factory SystemInfo.fromJson(Map<String, dynamic> json) => _$SystemInfoFromJson(json);
+  factory SystemInfo.fromJson(Map<String, dynamic> json) =>
+      _$SystemInfoFromJson(json);
 }

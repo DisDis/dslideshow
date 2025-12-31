@@ -20,7 +20,11 @@ void main(List<String> args) async {
     final injector = GetIt.instance;
     injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
-      return new WebService(_config, _config.webServer, new FakeRemoteService(name: 'backend'));
+      return new WebService(
+        _config,
+        _config.webServer,
+        new FakeRemoteService(name: 'backend'),
+      );
     });
 
     var config = injector.get<AppConfig>();

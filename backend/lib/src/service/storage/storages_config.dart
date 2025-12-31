@@ -16,22 +16,26 @@ class StoragesConfig {
 
   StoragesConfig({required this.selected, required this.storages});
 
-  factory StoragesConfig.fromJson(Map<String, dynamic> json) => _$StoragesConfigFromJson(json);
+  factory StoragesConfig.fromJson(Map<String, dynamic> json) =>
+      _$StoragesConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$StoragesConfigToJson(this);
 
   T getOrCreateEmpty<T extends AbstractStorageConfig>(StorageType type) {
     return storages.putIfAbsent(type, () {
-      switch (type) {
-        case StorageType.GPhotoStorage:
-          return GPhotoStorageConfig.fromJson(<String, dynamic>{});
-        case StorageType.DiskStorage:
-          return DiskStorageConfig.fromJson(<String, dynamic>{});
-      }
-    }) as T;
+          switch (type) {
+            case StorageType.GPhotoStorage:
+              return GPhotoStorageConfig.fromJson(<String, dynamic>{});
+            case StorageType.DiskStorage:
+              return DiskStorageConfig.fromJson(<String, dynamic>{});
+          }
+        })
+        as T;
   }
 
-  static Map<String, Map<String, dynamic>> _storagesToJson(Map<StorageType, AbstractStorageConfig> value) {
+  static Map<String, Map<String, dynamic>> _storagesToJson(
+    Map<StorageType, AbstractStorageConfig> value,
+  ) {
     final result = Map<String, Map<String, dynamic>>();
     value.forEach((key, value) {
       result[key.name] = value.toJson();
@@ -39,7 +43,9 @@ class StoragesConfig {
     return result;
   }
 
-  static Map<StorageType, AbstractStorageConfig> _parseStorages(dynamic valueI) {
+  static Map<StorageType, AbstractStorageConfig> _parseStorages(
+    dynamic valueI,
+  ) {
     var result = Map<StorageType, AbstractStorageConfig>();
     if (valueI is Map<String, dynamic>) {
       var nameToType = StorageType.values.asNameMap();
@@ -53,10 +59,14 @@ class StoragesConfig {
           AbstractStorageConfig? valueT;
           switch (targetT) {
             case StorageType.DiskStorage:
-              valueT = DiskStorageConfig.fromJson(value as Map<String, dynamic>);
+              valueT = DiskStorageConfig.fromJson(
+                value as Map<String, dynamic>,
+              );
               break;
             case StorageType.GPhotoStorage:
-              valueT = GPhotoStorageConfig.fromJson(value as Map<String, dynamic>);
+              valueT = GPhotoStorageConfig.fromJson(
+                value as Map<String, dynamic>,
+              );
               break;
             default:
               valueT = null;

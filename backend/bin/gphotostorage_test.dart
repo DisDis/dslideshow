@@ -39,16 +39,21 @@ void main(List<String> args) async {
       switch (_config.storages.selected) {
         case StorageType.GPhotoStorage:
           final appStorage = injector.get<AppStorage>();
-          return new GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
+          return new GPhotoStorage(
+            _config.storages.getOrCreateEmpty(StorageType.GPhotoStorage),
+            appStorage,
+          );
         case StorageType.DiskStorage:
-         return new DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
+          return new DiskStorage(
+            _config.storages.getOrCreateEmpty(StorageType.DiskStorage),
+          );
       }
     });
-//        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
-//         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
-//        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-//        ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
-//         ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
+    //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
+    //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
+    //        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
+    //        ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
+    //         ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
@@ -59,9 +64,12 @@ void main(List<String> args) async {
     // _gphoto.run();
 
     final _gphotoStorage = injector.get<Storage>() as GPhotoStorage;
-    var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum('TEST_slide', 100, 100);
+    var mediaList = await _gphotoStorage.googlePhotoService!
+        .getMediaItemInAlbum('TEST_slide', 100, 100);
     mediaList.forEach((googleItem) {
-      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
+      _log.info(
+        '  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}',
+      );
     });
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);

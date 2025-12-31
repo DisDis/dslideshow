@@ -1,6 +1,1 @@
-enum OSType {
-  linux,
-  android,
-  ios,
-  unknown;
-}
+enum OSType { linux, android, ios, unknown }

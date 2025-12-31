@@ -13,11 +13,17 @@ class WiFiService {
   Future<List<WiFiNetworkInfo>> scan() async {
     _log.info('scan');
     try {
-      var result = await io.Process.run('nmcli', ['device', 'wifi', 'list'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['device', 'wifi', 'list'],
+        environment: {'LC_ALL': 'C'},
+      );
       if (result.exitCode == 0) {
         return parseScanOutput(result.stdout.toString());
       } else {
-        throw Exception('nmcli device wifi list -> exit code: ${result.exitCode}');
+        throw Exception(
+          'nmcli device wifi list -> exit code: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('scan', e, s);
@@ -31,9 +37,15 @@ class WiFiService {
     _log.info('addWiFiConnection "$SSID"');
 
     try {
-      var result = await io.Process.run('nmcli', ['device', 'wifi', 'connect', SSID, 'password', psk, 'name', name], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['device', 'wifi', 'connect', SSID, 'password', psk, 'name', name],
+        environment: {'LC_ALL': 'C'},
+      );
       if (result.exitCode != 0) {
-        throw Exception('nmcli device wifi connect "$SSID" password "***" name "$name" -> exit code: ${result.exitCode}');
+        throw Exception(
+          'nmcli device wifi connect "$SSID" password "***" name "$name" -> exit code: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('addWiFiConnection', e, s);
@@ -43,13 +55,19 @@ class WiFiService {
   void upConnection(String connectionUUID) async {
     _log.info('upConnection "$connectionUUID"');
     try {
-/*
+      /*
 nmcli connection up  <UUID>
  */
-      var result = await io.Process.run('nmcli', ['connection', 'up', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['connection', 'up', '$connectionUUID'],
+        environment: {'LC_ALL': 'C'},
+      );
       _log.info("nmcli connection up -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
-        throw Exception('nmcli connection up $connectionUUID -> exitCode: ${result.exitCode}');
+        throw Exception(
+          'nmcli connection up $connectionUUID -> exitCode: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('upConnection "$connectionUUID"', e, s);
@@ -60,13 +78,19 @@ nmcli connection up  <UUID>
   void downConnection(String connectionUUID) async {
     _log.info('downConnection "$connectionUUID"');
     try {
-/*
+      /*
 nmcli connection down  <UUID>
  */
-      var result = await io.Process.run('nmcli', ['connection', 'down', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['connection', 'down', '$connectionUUID'],
+        environment: {'LC_ALL': 'C'},
+      );
       _log.info("nmcli connection down -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
-        throw Exception('nmcli connection down $connectionUUID -> exitCode: ${result.exitCode}');
+        throw Exception(
+          'nmcli connection down $connectionUUID -> exitCode: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('downConnection "$connectionUUID"', e, s);
@@ -77,13 +101,19 @@ nmcli connection down  <UUID>
   void deleteConnection(String connectionUUID) async {
     _log.info('deleteConnection "$connectionUUID"');
     try {
-/*
+      /*
 nmcli connection delete <UUID>
  */
-      var result = await io.Process.run('nmcli', ['connection', 'remove', '$connectionUUID'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['connection', 'remove', '$connectionUUID'],
+        environment: {'LC_ALL': 'C'},
+      );
       _log.info("nmcli connection remove -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
-        throw Exception('nmcli connection remove $connectionUUID -> exitCode: ${result.exitCode}');
+        throw Exception(
+          'nmcli connection remove $connectionUUID -> exitCode: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('deleteConnection "$connectionUUID"', e, s);
@@ -99,7 +129,17 @@ nmcli connection delete <UUID>
     }
 
     final headers = lines[0];
-    const neededColumns = ['BSSID', ' SSID', 'MODE', 'RATE', 'BARS', 'SIGNAL', 'SECURITY', 'RATE', 'CHAN'];
+    const neededColumns = [
+      'BSSID',
+      ' SSID',
+      'MODE',
+      'RATE',
+      'BARS',
+      'SIGNAL',
+      'SECURITY',
+      'RATE',
+      'CHAN',
+    ];
     final columnIndices = <String, List<int>>{};
 
     // Находим позиции начала и конца каждого столбца
@@ -138,7 +178,8 @@ nmcli connection delete <UUID>
 
         indices = columnIndices['BSSID']!;
         bssid = line.substring(indices[0], indices[1]).trim();
-        if (bssid.isEmpty || bssid == '--') continue; // Пропускаем сети без BSSID
+        if (bssid.isEmpty || bssid == '--')
+          continue; // Пропускаем сети без BSSID
 
         indices = columnIndices['SSID']!;
         ssid = line.substring(indices[0], indices[1]).trim();
@@ -159,14 +200,16 @@ nmcli connection delete <UUID>
         final rateStr = line.substring(indices[0], indices[1]).trim();
         rate = int.tryParse(rateStr.replaceAll(_parseRateRegExp, '')) ?? 0;
 
-        networks.add(WiFiNetworkInfo(
-          BSSID: bssid,
-          SSID: ssid,
-          signal: signal,
-          channel: channel,
-          security: security,
-          rate: rate,
-        ));
+        networks.add(
+          WiFiNetworkInfo(
+            BSSID: bssid,
+            SSID: ssid,
+            signal: signal,
+            channel: channel,
+            security: security,
+            rate: rate,
+          ),
+        );
       } catch (e, s) {
         _log.severe('Error parsing line $i', e, s);
       }
@@ -178,11 +221,17 @@ nmcli connection delete <UUID>
   Future<List<WiFiConnectionInfo>> getConnections() async {
     _log.info('getConnections');
     try {
-      var result = await io.Process.run('nmcli', ['connection', 'show'], environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(
+        'nmcli',
+        ['connection', 'show'],
+        environment: {'LC_ALL': 'C'},
+      );
       if (result.exitCode == 0) {
         return parseConnectionsOutput(result.stdout.toString());
       } else {
-        throw Exception('nmcli connection show -> exit code: ${result.exitCode}');
+        throw Exception(
+          'nmcli connection show -> exit code: ${result.exitCode}',
+        );
       }
     } catch (e, s) {
       _log.severe('getConnections', e, s);
@@ -248,12 +297,14 @@ nmcli connection delete <UUID>
         indices = columnIndices['DEVICE']!;
         device = line.substring(indices[0] /*, indices[1]*/).trim();
 
-        result.add(WiFiConnectionInfo(
-          name: name,
-          UUID: uuid,
-          type: type,
-          device: device,
-        ));
+        result.add(
+          WiFiConnectionInfo(
+            name: name,
+            UUID: uuid,
+            type: type,
+            device: device,
+          ),
+        );
       } catch (e, s) {
         _log.severe('Error parsing line $i', e, s);
       }

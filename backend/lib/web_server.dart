@@ -16,7 +16,9 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("web");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteBackendService = new RemoteServiceImpl(serializers: serializers);
+    final _remoteBackendService = new RemoteServiceImpl(
+      serializers: serializers,
+    );
     _remoteBackendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     // Use this static instance
@@ -28,7 +30,11 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<WebServer>(() {
       final _config = injector.get<AppConfig>();
-      return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
+      return new WebServer(
+        _config.webServer,
+        _remoteBackendService,
+        injector.get<WebService>(),
+      );
     });
     final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;

@@ -5,7 +5,9 @@ part 'storage_commands.g.dart';
 part 'storage_commands.freezed.dart';
 
 @freezed
-sealed class GetMediaItemCommand with _$GetMediaItemCommand implements RpcCommand {
+sealed class GetMediaItemCommand
+    with _$GetMediaItemCommand
+    implements RpcCommand {
   static const String TYPE = 'get_media_item';
   const factory GetMediaItemCommand({
     required bool isCurrent,
@@ -13,22 +15,28 @@ sealed class GetMediaItemCommand with _$GetMediaItemCommand implements RpcComman
     @Default(GetMediaItemCommand.TYPE) String type,
   }) = _GetMediaItemCommand;
 
-  factory GetMediaItemCommand.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandFromJson(json);
+  factory GetMediaItemCommand.fromJson(Map<String, dynamic> json) =>
+      _$GetMediaItemCommandFromJson(json);
 }
 
 @freezed
-sealed class GetMediaItemCommandResult with _$GetMediaItemCommandResult implements RpcResult {
+sealed class GetMediaItemCommandResult
+    with _$GetMediaItemCommandResult
+    implements RpcResult {
   const factory GetMediaItemCommandResult({
     String? mediaId,
     Uri? mediaUri,
     required int id,
   }) = _GetMediaItemCommandResult;
 
-  factory GetMediaItemCommandResult.fromJson(Map<String, dynamic> json) => _$GetMediaItemCommandResultFromJson(json);
+  factory GetMediaItemCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$GetMediaItemCommandResultFromJson(json);
 }
 
 @freezed
-sealed class StorageNextCommand with _$StorageNextCommand implements RpcCommand {
+sealed class StorageNextCommand
+    with _$StorageNextCommand
+    implements RpcCommand {
   static const String TYPE = 'storage_next';
 
   const factory StorageNextCommand({
@@ -36,5 +44,6 @@ sealed class StorageNextCommand with _$StorageNextCommand implements RpcCommand 
     @Default(StorageNextCommand.TYPE) String type,
   }) = _StorageNextCommand;
 
-  factory StorageNextCommand.fromJson(Map<String, dynamic> json) => _$StorageNextCommandFromJson(json);
+  factory StorageNextCommand.fromJson(Map<String, dynamic> json) =>
+      _$StorageNextCommandFromJson(json);
 }

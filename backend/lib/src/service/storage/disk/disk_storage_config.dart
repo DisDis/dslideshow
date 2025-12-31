@@ -9,7 +9,8 @@ class DiskStorageConfig implements AbstractStorageConfig {
 
   DiskStorageConfig();
 
-  factory DiskStorageConfig.fromJson(Map<String, dynamic> json) => _$DiskStorageConfigFromJson(json);
+  factory DiskStorageConfig.fromJson(Map<String, dynamic> json) =>
+      _$DiskStorageConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$DiskStorageConfigToJson(this);
 

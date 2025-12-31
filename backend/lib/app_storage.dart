@@ -11,7 +11,12 @@ class AppStorage {
   final File _storageFile;
   Timer? _saveTimer;
 
-  AppStorage([String? rootPath]) : this._storageFile = new File(rootPath != null ? path.join(rootPath, AppStorage.STORAGE_FILE) : AppStorage.STORAGE_FILE) {
+  AppStorage([String? rootPath])
+    : this._storageFile = new File(
+        rootPath != null
+            ? path.join(rootPath, AppStorage.STORAGE_FILE)
+            : AppStorage.STORAGE_FILE,
+      ) {
     load();
   }
 
@@ -78,7 +83,9 @@ class AppStorage {
     }
     final valueO = int.tryParse(value as String);
     if (valueO == null) {
-      _log.fine('Could not parse value "$value" (field "$field") into a number.');
+      _log.fine(
+        'Could not parse value "$value" (field "$field") into a number.',
+      );
       return defaultValue;
     } else {
       return valueO;

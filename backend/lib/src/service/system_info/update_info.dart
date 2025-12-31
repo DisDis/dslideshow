@@ -32,5 +32,6 @@ sealed class UpdateInfo with _$UpdateInfo {
     required String uptime,
   }) = _UpdateInfo;
 
-  factory UpdateInfo.fromJson(Map<String, dynamic> json) => _$UpdateInfoFromJson(json);
+  factory UpdateInfo.fromJson(Map<String, dynamic> json) =>
+      _$UpdateInfoFromJson(json);
 }

@@ -7,14 +7,15 @@ part 'ota_commands.g.dart';
 @freezed
 sealed class OTAReadyCommand with _$OTAReadyCommand implements RpcCommand {
   static const String TYPE = 'ota_ready';
-//
-//RpcCommand.generateId
+  //
+  //RpcCommand.generateId
   const factory OTAReadyCommand({
     required bool ready,
     required int id,
     @Default(OTAReadyCommand.TYPE) String type,
   }) = _OTAReadyCommand;
-  factory OTAReadyCommand.fromJson(Map<String, dynamic> json) => _$OTAReadyCommandFromJson(json);
+  factory OTAReadyCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAReadyCommandFromJson(json);
 }
 
 @freezed
@@ -26,21 +27,33 @@ sealed class OTAGetInfoCommand with _$OTAGetInfoCommand implements RpcCommand {
     required int id,
     @Default(OTAGetInfoCommand.TYPE) String type,
   }) = _OTAGetInfoCommand;
-  factory OTAGetInfoCommand.fromJson(Map<String, dynamic> json) => _$OTAGetInfoCommandFromJson(json);
+  factory OTAGetInfoCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAGetInfoCommandFromJson(json);
 }
 
 @freezed
-sealed class OTAGetInfoCommandResult with _$OTAGetInfoCommandResult implements RpcResult {
-  const factory OTAGetInfoCommandResult({required OTAInfo info, required int id}) = _OTAGetInfoCommandResult;
-  factory OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) => _$OTAGetInfoCommandResultFromJson(json);
+sealed class OTAGetInfoCommandResult
+    with _$OTAGetInfoCommandResult
+    implements RpcResult {
+  const factory OTAGetInfoCommandResult({
+    required OTAInfo info,
+    required int id,
+  }) = _OTAGetInfoCommandResult;
+  factory OTAGetInfoCommandResult.fromJson(Map<String, dynamic> json) =>
+      _$OTAGetInfoCommandResultFromJson(json);
 }
 
 @freezed
 sealed class OTAOutputCommand with _$OTAOutputCommand implements RpcCommand {
   static const String TYPE = 'ota_output';
 
-  const factory OTAOutputCommand({required int id, required String output, @Default(OTAOutputCommand.TYPE) String type}) = _OTAOutputCommand;
-  factory OTAOutputCommand.fromJson(Map<String, dynamic> json) => _$OTAOutputCommandFromJson(json);
+  const factory OTAOutputCommand({
+    required int id,
+    required String output,
+    @Default(OTAOutputCommand.TYPE) String type,
+  }) = _OTAOutputCommand;
+  factory OTAOutputCommand.fromJson(Map<String, dynamic> json) =>
+      _$OTAOutputCommandFromJson(json);
 }
 
 @freezed
@@ -52,7 +65,8 @@ abstract class OTAInfo with _$OTAInfo {
     int? exitCode,
     String? errorText,
   }) = _OTAInfo;
-  factory OTAInfo.fromJson(Map<String, dynamic> json) => _$OTAInfoFromJson(json);
+  factory OTAInfo.fromJson(Map<String, dynamic> json) =>
+      _$OTAInfoFromJson(json);
 }
 
 enum OTAStatus {
@@ -62,5 +76,5 @@ enum OTAStatus {
   instaling,
   finished,
   issue,
-  preReboot;
+  preReboot,
 }

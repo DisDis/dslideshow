@@ -63,7 +63,8 @@ class HardwareConfig {
     required this.restartAppScript,
   });
 
-  factory HardwareConfig.fromJson(Map<String, dynamic> json) => _$HardwareConfigFromJson(json);
+  factory HardwareConfig.fromJson(Map<String, dynamic> json) =>
+      _$HardwareConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$HardwareConfigToJson(this);
 }

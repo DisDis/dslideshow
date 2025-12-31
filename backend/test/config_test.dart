@@ -24,7 +24,10 @@ void main() {
     });
 
     test('parse button', () {
-      final testData = {"action": "SlideshowAction.toggleScreen", "minPressingMs": 3000};
+      final testData = {
+        "action": "SlideshowAction.toggleScreen",
+        "minPressingMs": 3000,
+      };
 
       final _config = SlideShowButtonConfig.fromJson(testData);
       expect(_config.action, SlideshowAction.toggleScreen);

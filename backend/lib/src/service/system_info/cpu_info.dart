@@ -16,5 +16,6 @@ sealed class CpuInfo with _$CpuInfo {
     required String revision,
   }) = _CpuInfo;
 
-  factory CpuInfo.fromJson(Map<String, dynamic> json) => _$CpuInfoFromJson(json);
+  factory CpuInfo.fromJson(Map<String, dynamic> json) =>
+      _$CpuInfoFromJson(json);
 }

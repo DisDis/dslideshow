@@ -13,7 +13,8 @@ sealed class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
     @Default(ScreenTurnCommand.TYPE) String type,
   }) = _ScreenTurnCommand;
 
-  factory ScreenTurnCommand.fromJson(Map<String, dynamic> json) => _$ScreenTurnCommandFromJson(json);
+  factory ScreenTurnCommand.fromJson(Map<String, dynamic> json) =>
+      _$ScreenTurnCommandFromJson(json);
 }
 
 @freezed
@@ -26,5 +27,6 @@ sealed class ScreenLockCommand with _$ScreenLockCommand implements RpcCommand {
     @Default(ScreenLockCommand.TYPE) String type,
   }) = _ScreenLockCommand;
 
-  factory ScreenLockCommand.fromJson(Map<String, dynamic> json) => _$ScreenLockCommandFromJson(json);
+  factory ScreenLockCommand.fromJson(Map<String, dynamic> json) =>
+      _$ScreenLockCommandFromJson(json);
 }

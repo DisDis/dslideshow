@@ -11,7 +11,8 @@ class WebServerConfig {
   String? permanentCode;
 
   WebServerConfig({required this.port, required this.alwaysEnabled});
-  factory WebServerConfig.fromJson(Map<String, dynamic> json) => _$WebServerConfigFromJson(json);
+  factory WebServerConfig.fromJson(Map<String, dynamic> json) =>
+      _$WebServerConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$WebServerConfigToJson(this);
 }

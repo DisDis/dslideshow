@@ -11,7 +11,8 @@ sealed class NetworkInfo with _$NetworkInfo {
     required List<NetworkInterfaceInfo>? interfaces,
   }) = _NetworkInfo;
 
-  factory NetworkInfo.fromJson(Map<String, dynamic> json) => _$NetworkInfoFromJson(json);
+  factory NetworkInfo.fromJson(Map<String, dynamic> json) =>
+      _$NetworkInfoFromJson(json);
 }
 
 @freezed
@@ -23,10 +24,8 @@ sealed class NetworkInterfaceInfo with _$NetworkInterfaceInfo {
     required String ip6,
   }) = _NetworkInterfaceInfo;
 
-  factory NetworkInterfaceInfo.fromJson(Map<String, dynamic> json) => _$NetworkInterfaceInfoFromJson(json);
+  factory NetworkInterfaceInfo.fromJson(Map<String, dynamic> json) =>
+      _$NetworkInterfaceInfoFromJson(json);
 }
 
-enum NetworkInterfaceStatus {
-  running,
-  offline;
-}
+enum NetworkInterfaceStatus { running, offline }

@@ -235,6 +235,7 @@ class WebService {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
+    _log.info("get item: '$itemPath'");
     itemPath = path.absolute(path.join(_cacheFolder.path, itemPath));
     final file = io.File(itemPath);
     if (!file.existsSync() || !itemPath.startsWith(_cacheFolder.path)) {

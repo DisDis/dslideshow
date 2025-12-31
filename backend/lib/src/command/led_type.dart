@@ -1,3 +1,1 @@
-enum LEDType {
-  power;
-}
+enum LEDType { power }

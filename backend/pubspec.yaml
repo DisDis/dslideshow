@@ -12,13 +12,13 @@ dependencies:
     dslideshow_common:
         path: ../common
     #googleapis: ^15.0.0
-    googleapis:  
+    googleapis:
         path: ../../googleapis/discoveryapis_generator/googleapis
     googleapis_auth: ^2.0.0
     #flutter_gpiod: ^0.5.1+5
-    flutter_gpiod:  
+    flutter_gpiod:
         path: ../../flutter_packages/packages/flutter_gpiod
-    dpms:  
+    dpms:
         path: ../../flutter_packages/packages/dpms
     shelf: ^1.4.2
     shelf_router: ^1.1.4
@@ -26,6 +26,7 @@ dependencies:
     collection: ^1.15.0
     json_annotation: ^4.9.0
     freezed_annotation: ^3.0.0
+    http: ^1.6.0
 dev_dependencies:
   # shelf_router_generator: ^1.0.2
   json_serializable: ^6.10.0

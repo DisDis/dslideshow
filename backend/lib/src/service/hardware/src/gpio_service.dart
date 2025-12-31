@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dslideshow_backend/command.dart';
 
-
 abstract class GPIOService {
   Stream<ButtonEvent> get onButtonEvent;
 
@@ -12,9 +11,13 @@ abstract class GPIOService {
   set powerLED(bool? value);
 }
 
-class ButtonEvent{
+class ButtonEvent {
   final ButtonType button;
   final ButtonEventType event;
   final int durationMs;
-  ButtonEvent({required this.button, required this.event, required this.durationMs});
+  ButtonEvent({
+    required this.button,
+    required this.event,
+    required this.durationMs,
+  });
 }

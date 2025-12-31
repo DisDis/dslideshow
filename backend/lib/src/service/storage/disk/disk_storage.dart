@@ -19,7 +19,9 @@ class DiskStorage extends Storage {
   static const String CACHE_FOLDER_NAME = 'images';
   static final Logger _log = new Logger('DiskStorage');
   static const String name = 'DiskStorage';
-  final Directory _folder = new Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
+  final Directory _folder = new Directory(
+    path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
+  );
   // ignore: unused_field
   final DiskStorageConfig _config;
   Directory get folder => _folder;
@@ -87,7 +89,9 @@ class DiskStorage extends Storage {
         .map((e) => e.uri)
         .toList(growable: true);
     stopwatch.stop();
-    _log.info('File cache has ${_cache.length} file(s), built in ${_formatDuration(stopwatch.elapsed)}');
+    _log.info(
+      'File cache has ${_cache.length} file(s), built in ${_formatDuration(stopwatch.elapsed)}',
+    );
   }
 
   String _formatDuration(Duration duration) {
@@ -107,7 +111,9 @@ class DiskStorage extends Storage {
   Future<MediaItem?> next() async {
     _current = _next;
     final nextUri = await _getRandomItem();
-    _next = nextUri == null ? _nullMediaItem : new DiskMediaItem(nextUri.path, nextUri);
+    _next = nextUri == null
+        ? _nullMediaItem
+        : new DiskMediaItem(nextUri.path, nextUri);
     return _next;
   }
 

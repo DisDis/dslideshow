@@ -8,19 +8,23 @@ part 'hardware_commands.g.dart';
 part 'hardware_commands.freezed.dart';
 
 @freezed
-sealed class AreYouReadyCommand with _$AreYouReadyCommand implements RpcCommand {
+sealed class AreYouReadyCommand
+    with _$AreYouReadyCommand
+    implements RpcCommand {
   static const String TYPE = 'are_you_ready?';
   const factory AreYouReadyCommand({
     required int id,
     @Default(AreYouReadyCommand.TYPE) String type,
   }) = _AreYouReadyCommand;
 
-  factory AreYouReadyCommand.fromJson(Map<String, dynamic> json) => _$AreYouReadyCommandFromJson(json);
+  factory AreYouReadyCommand.fromJson(Map<String, dynamic> json) =>
+      _$AreYouReadyCommandFromJson(json);
 }
 
-
 @freezed
-sealed class ButtonChangeStateCommand with _$ButtonChangeStateCommand implements RpcCommand {
+sealed class ButtonChangeStateCommand
+    with _$ButtonChangeStateCommand
+    implements RpcCommand {
   static const String TYPE = 'button_change_state';
   const factory ButtonChangeStateCommand({
     required ButtonType button,
@@ -30,11 +34,14 @@ sealed class ButtonChangeStateCommand with _$ButtonChangeStateCommand implements
     @Default(ButtonChangeStateCommand.TYPE) String type,
   }) = _ButtonChangeStateCommand;
 
-  factory ButtonChangeStateCommand.fromJson(Map<String, dynamic> json) => _$ButtonChangeStateCommandFromJson(json);
+  factory ButtonChangeStateCommand.fromJson(Map<String, dynamic> json) =>
+      _$ButtonChangeStateCommandFromJson(json);
 }
 
 @freezed
-sealed class EmulatePushButtonCommand with _$EmulatePushButtonCommand implements RpcCommand {
+sealed class EmulatePushButtonCommand
+    with _$EmulatePushButtonCommand
+    implements RpcCommand {
   static const String TYPE = 'emulate_push_button';
   const factory EmulatePushButtonCommand({
     required ButtonType button,
@@ -43,11 +50,14 @@ sealed class EmulatePushButtonCommand with _$EmulatePushButtonCommand implements
     @Default(EmulatePushButtonCommand.TYPE) String type,
   }) = _EmulatePushButtonCommand;
 
-  factory EmulatePushButtonCommand.fromJson(Map<String, dynamic> json) => _$EmulatePushButtonCommandFromJson(json);
+  factory EmulatePushButtonCommand.fromJson(Map<String, dynamic> json) =>
+      _$EmulatePushButtonCommandFromJson(json);
 }
 
 @freezed
-sealed class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements RpcCommand {
+sealed class ExecuteSSActionCommand
+    with _$ExecuteSSActionCommand
+    implements RpcCommand {
   static const String TYPE = 'execute_action';
   const factory ExecuteSSActionCommand({
     required SlideshowAction action,
@@ -56,7 +66,8 @@ sealed class ExecuteSSActionCommand with _$ExecuteSSActionCommand implements Rpc
     @Default(ExecuteSSActionCommand.TYPE) String type,
   }) = _ExecuteSSActionCommand;
 
-  factory ExecuteSSActionCommand.fromJson(Map<String, dynamic> json) => _$ExecuteSSActionCommandFromJson(json);
+  factory ExecuteSSActionCommand.fromJson(Map<String, dynamic> json) =>
+      _$ExecuteSSActionCommandFromJson(json);
 }
 
 @freezed
@@ -69,7 +80,8 @@ sealed class LEDControlCommand with _$LEDControlCommand implements RpcCommand {
     @Default(LEDControlCommand.TYPE) String type,
   }) = _LEDControlCommand;
 
-  factory LEDControlCommand.fromJson(Map<String, dynamic> json) => _$LEDControlCommandFromJson(json);
+  factory LEDControlCommand.fromJson(Map<String, dynamic> json) =>
+      _$LEDControlCommandFromJson(json);
 }
 
 @freezed
@@ -80,7 +92,8 @@ sealed class PowerOffCommand with _$PowerOffCommand implements RpcCommand {
     required int id,
   }) = _PowerOffCommand;
 
-  factory PowerOffCommand.fromJson(Map<String, dynamic> json) => _$PowerOffCommandFromJson(json);
+  factory PowerOffCommand.fromJson(Map<String, dynamic> json) =>
+      _$PowerOffCommandFromJson(json);
 }
 
 @freezed
@@ -91,5 +104,6 @@ sealed class RestartAppCommand with _$RestartAppCommand implements RpcCommand {
     required int id,
   }) = _RestartAppCommand;
 
-  factory RestartAppCommand.fromJson(Map<String, dynamic> json) => _$RestartAppCommandFromJson(json);
+  factory RestartAppCommand.fromJson(Map<String, dynamic> json) =>
+      _$RestartAppCommandFromJson(json);
 }

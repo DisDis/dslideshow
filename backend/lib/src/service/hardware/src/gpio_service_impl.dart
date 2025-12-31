@@ -24,7 +24,8 @@ class GPIOServiceImpl extends GPIOService {
   final StreamController<bool> _scMotion = new StreamController.broadcast();
   Stream<bool> get onMotion => _scMotion.stream;
 
-  final StreamController<ButtonEvent> _scButtonEvent = new StreamController.broadcast();
+  final StreamController<ButtonEvent> _scButtonEvent =
+      new StreamController.broadcast();
 
   Stream<ButtonEvent> get onButtonEvent => _scButtonEvent.stream;
 
@@ -65,7 +66,9 @@ class GPIOServiceImpl extends GPIOService {
       // old kernel: pinctrl-bcm2835, new kernel: pinctrl-bcm2711 , Pi5: pinctrl-rp1
       GpioChip? chipS;
       chips.forEach((indexC, chip) {
-        if (chip.label == 'pinctrl-rp1' || chip.label == 'pinctrl-bcm2711' || chip.label == 'pinctrl-bcm2835') {
+        if (chip.label == 'pinctrl-rp1' ||
+            chip.label == 'pinctrl-bcm2711' ||
+            chip.label == 'pinctrl-bcm2835') {
           chipS = chip;
         }
         _log.info('chip: $indexC - "${chip.label}"');
@@ -94,10 +97,30 @@ class GPIOServiceImpl extends GPIOService {
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
 
-      _lineButton0.requestInput(consumer: "Button0", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton1.requestInput(consumer: "Button1", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton2.requestInput(consumer: "Button2", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
-      _lineButton3.requestInput(consumer: "Button3", bias: Bias.pullUp, activeState: ActiveState.low, triggers: {SignalEdge.falling, SignalEdge.rising});
+      _lineButton0.requestInput(
+        consumer: "Button0",
+        bias: Bias.pullUp,
+        activeState: ActiveState.low,
+        triggers: {SignalEdge.falling, SignalEdge.rising},
+      );
+      _lineButton1.requestInput(
+        consumer: "Button1",
+        bias: Bias.pullUp,
+        activeState: ActiveState.low,
+        triggers: {SignalEdge.falling, SignalEdge.rising},
+      );
+      _lineButton2.requestInput(
+        consumer: "Button2",
+        bias: Bias.pullUp,
+        activeState: ActiveState.low,
+        triggers: {SignalEdge.falling, SignalEdge.rising},
+      );
+      _lineButton3.requestInput(
+        consumer: "Button3",
+        bias: Bias.pullUp,
+        activeState: ActiveState.low,
+        triggers: {SignalEdge.falling, SignalEdge.rising},
+      );
 
       _linePeopleSensor.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
@@ -106,7 +129,9 @@ class GPIOServiceImpl extends GPIOService {
           _scMotion.add(event.edge == SignalEdge.rising);
         }
       });
-      Future.delayed(Duration(milliseconds: 200)).then((_) => _scMotion.add(_linePeopleSensor.getValue()));
+      Future.delayed(
+        Duration(milliseconds: 200),
+      ).then((_) => _scMotion.add(_linePeopleSensor.getValue()));
 
       final button0Filter = InputLineFilter(
         button: ButtonType.button0,
@@ -173,16 +198,30 @@ class InputLineFilter {
   final StreamController<ButtonEvent> scButtonEvent;
   DateTime _lastEdgeRise = DateTime.now();
 
-  InputLineFilter({required this.button, required this.skipNoiseMs, required this.maxDetectTimeMs, required this.scButtonEvent});
+  InputLineFilter({
+    required this.button,
+    required this.skipNoiseMs,
+    required this.maxDetectTimeMs,
+    required this.scButtonEvent,
+  });
 
   void execute(SignalEvent eventI) {
     final deltaMs = DateTime.now().difference(_lastEdgeRise).inMilliseconds;
-    _log.log(Level.FINEST, "${button}, event:${eventI}, deltaMs:${deltaMs}, skipNoiseMs: ${skipNoiseMs}, maxDetectTimeMs: ${maxDetectTimeMs}");
+    _log.log(
+      Level.FINEST,
+      "${button}, event:${eventI}, deltaMs:${deltaMs}, skipNoiseMs: ${skipNoiseMs}, maxDetectTimeMs: ${maxDetectTimeMs}",
+    );
     // H->L (Button down)
     if (eventI.edge == SignalEdge.rising) {
       if (deltaMs > maxDetectTimeMs) {
         _lastEdgeRise = DateTime.now();
-        scButtonEvent.add(ButtonEvent(button: button, event: ButtonEventType.pressed, durationMs: 0));
+        scButtonEvent.add(
+          ButtonEvent(
+            button: button,
+            event: ButtonEventType.pressed,
+            durationMs: 0,
+          ),
+        );
         _log.info('button${button.index}: $eventI');
       } else if (deltaMs < skipNoiseMs) {
         return;
@@ -194,7 +233,13 @@ class InputLineFilter {
       if (deltaMs > maxDetectTimeMs) {
         return;
       }
-      scButtonEvent.add(ButtonEvent(button: button, event: ButtonEventType.released, durationMs: deltaMs));
+      scButtonEvent.add(
+        ButtonEvent(
+          button: button,
+          event: ButtonEventType.released,
+          durationMs: deltaMs,
+        ),
+      );
       _lastEdgeRise = DateTime.fromMillisecondsSinceEpoch(0);
       _log.info('button${button.index}: $eventI');
     }

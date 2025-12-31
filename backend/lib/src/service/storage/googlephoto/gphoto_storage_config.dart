@@ -49,15 +49,17 @@ class GPhotoStorageConfig implements AbstractStorageConfig, DiskStorageConfig {
     return value.inSeconds;
   }
 
-  GPhotoStorageConfig(
-      {required this.albumNames,
-      required this.clientId,
-      required this.imageHeight,
-      required this.imageWidth,
-      required this.refreshToken,
-      required this.syncPeriod});
+  GPhotoStorageConfig({
+    required this.albumNames,
+    required this.clientId,
+    required this.imageHeight,
+    required this.imageWidth,
+    required this.refreshToken,
+    required this.syncPeriod,
+  });
 
-  factory GPhotoStorageConfig.fromJson(Map<String, dynamic> json) => _$GPhotoStorageConfigFromJson(json);
+  factory GPhotoStorageConfig.fromJson(Map<String, dynamic> json) =>
+      _$GPhotoStorageConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$GPhotoStorageConfigToJson(this);
 
@@ -75,7 +77,8 @@ class GPhotoClientIdConfig {
   String secret;
   GPhotoClientIdConfig({required this.identifier, required this.secret});
 
-  factory GPhotoClientIdConfig.fromJson(Map<String, dynamic> json) => _$GPhotoClientIdConfigFromJson(json);
+  factory GPhotoClientIdConfig.fromJson(Map<String, dynamic> json) =>
+      _$GPhotoClientIdConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$GPhotoClientIdConfigToJson(this);
 }

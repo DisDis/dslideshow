@@ -7,11 +7,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'application_state_service.freezed.dart';
 
 class ApplicationStateService {
-  final StreamController<ApplicationState> _scApplicationState = new StreamController.broadcast();
+  final StreamController<ApplicationState> _scApplicationState =
+      new StreamController.broadcast();
   Stream<ApplicationState> get onChangedState => _scApplicationState.stream;
   ApplicationState _state = ApplicationState();
   ApplicationState get state => _state;
-// Timer to manage debounce duration
+  // Timer to manage debounce duration
   Timer? _debounce;
   final ScreenService screenService;
   final GPIOService gpioService;
