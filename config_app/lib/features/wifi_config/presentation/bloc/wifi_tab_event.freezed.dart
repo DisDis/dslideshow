@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -33,6 +32,253 @@ mixin _$WifiTabEvent {
 /// @nodoc
 class $WifiTabEventCopyWith<$Res> {
   $WifiTabEventCopyWith(WifiTabEvent _, $Res Function(WifiTabEvent) __);
+}
+
+/// Adds pattern-matching-related methods to [WifiTabEvent].
+extension WifiTabEventPatterns on WifiTabEvent {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_WifiTabEvent value)? $default, {
+    TResult Function(UnWifiTabEvent value)? uninitialized,
+    TResult Function(LoadWifiTabEvent value)? load,
+    TResult Function(AddWifiTabEvent value)? add,
+    TResult Function(RemoveWifiTabEvent value)? remove,
+    TResult Function(EnableWifiTabEvent value)? enable,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent() when $default != null:
+        return $default(_that);
+      case UnWifiTabEvent() when uninitialized != null:
+        return uninitialized(_that);
+      case LoadWifiTabEvent() when load != null:
+        return load(_that);
+      case AddWifiTabEvent() when add != null:
+        return add(_that);
+      case RemoveWifiTabEvent() when remove != null:
+        return remove(_that);
+      case EnableWifiTabEvent() when enable != null:
+        return enable(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_WifiTabEvent value) $default, {
+    required TResult Function(UnWifiTabEvent value) uninitialized,
+    required TResult Function(LoadWifiTabEvent value) load,
+    required TResult Function(AddWifiTabEvent value) add,
+    required TResult Function(RemoveWifiTabEvent value) remove,
+    required TResult Function(EnableWifiTabEvent value) enable,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent():
+        return $default(_that);
+      case UnWifiTabEvent():
+        return uninitialized(_that);
+      case LoadWifiTabEvent():
+        return load(_that);
+      case AddWifiTabEvent():
+        return add(_that);
+      case RemoveWifiTabEvent():
+        return remove(_that);
+      case EnableWifiTabEvent():
+        return enable(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_WifiTabEvent value)? $default, {
+    TResult? Function(UnWifiTabEvent value)? uninitialized,
+    TResult? Function(LoadWifiTabEvent value)? load,
+    TResult? Function(AddWifiTabEvent value)? add,
+    TResult? Function(RemoveWifiTabEvent value)? remove,
+    TResult? Function(EnableWifiTabEvent value)? enable,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent() when $default != null:
+        return $default(_that);
+      case UnWifiTabEvent() when uninitialized != null:
+        return uninitialized(_that);
+      case LoadWifiTabEvent() when load != null:
+        return load(_that);
+      case AddWifiTabEvent() when add != null:
+        return add(_that);
+      case RemoveWifiTabEvent() when remove != null:
+        return remove(_that);
+      case EnableWifiTabEvent() when enable != null:
+        return enable(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function()? $default, {
+    TResult Function()? uninitialized,
+    TResult Function()? load,
+    TResult Function(String name, String SSID, String psk)? add,
+    TResult Function(String connectionId)? remove,
+    TResult Function(String connectionId, bool value)? enable,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent() when $default != null:
+        return $default();
+      case UnWifiTabEvent() when uninitialized != null:
+        return uninitialized();
+      case LoadWifiTabEvent() when load != null:
+        return load();
+      case AddWifiTabEvent() when add != null:
+        return add(_that.name, _that.SSID, _that.psk);
+      case RemoveWifiTabEvent() when remove != null:
+        return remove(_that.connectionId);
+      case EnableWifiTabEvent() when enable != null:
+        return enable(_that.connectionId, _that.value);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function() $default, {
+    required TResult Function() uninitialized,
+    required TResult Function() load,
+    required TResult Function(String name, String SSID, String psk) add,
+    required TResult Function(String connectionId) remove,
+    required TResult Function(String connectionId, bool value) enable,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent():
+        return $default();
+      case UnWifiTabEvent():
+        return uninitialized();
+      case LoadWifiTabEvent():
+        return load();
+      case AddWifiTabEvent():
+        return add(_that.name, _that.SSID, _that.psk);
+      case RemoveWifiTabEvent():
+        return remove(_that.connectionId);
+      case EnableWifiTabEvent():
+        return enable(_that.connectionId, _that.value);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function()? $default, {
+    TResult? Function()? uninitialized,
+    TResult? Function()? load,
+    TResult? Function(String name, String SSID, String psk)? add,
+    TResult? Function(String connectionId)? remove,
+    TResult? Function(String connectionId, bool value)? enable,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _WifiTabEvent() when $default != null:
+        return $default();
+      case UnWifiTabEvent() when uninitialized != null:
+        return uninitialized();
+      case LoadWifiTabEvent() when load != null:
+        return load();
+      case AddWifiTabEvent() when add != null:
+        return add(_that.name, _that.SSID, _that.psk);
+      case RemoveWifiTabEvent() when remove != null:
+        return remove(_that.connectionId);
+      case EnableWifiTabEvent() when enable != null:
+        return enable(_that.connectionId, _that.value);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc

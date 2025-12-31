@@ -26,7 +26,14 @@ class ClientServiceImpl implements RealtimeService {
   // Stream get onConnect => _onConnect.stream;
   // Stream<bool> get onAuth => _onAuth.stream;
   String _authCode = '';
+  @override
   String get authCode => _authCode;
+
+  Uri _connectUri = Uri.parse('http://127.0.0.1');
+
+  @override
+  Uri get connectUri => _connectUri;
+
   final _resultQueue = <int, Completer<WebSocketResult>>{};
   ClientServiceImpl();
   @override
@@ -37,7 +44,8 @@ class ClientServiceImpl implements RealtimeService {
     // Completer<bool> _result = Completer();
     _isAuth = false;
     _authCode = code;
-    channel = WebSocketChannel.connect(uri);
+    _connectUri = uri;
+    channel = WebSocketChannel.connect(_connectUri);
     channel!.stream.listen(_parseMessage, onError: (error) {
       _log.info('onError: $error');
       // _result.completeError(error);

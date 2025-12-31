@@ -70,7 +70,7 @@ SlideShowButtonConfig _$SlideShowButtonConfigFromJson(
   Map<String, dynamic> json,
 ) => SlideShowButtonConfig(
   action: json['action'] == null
-      ? SlideshowAction.pause
+      ? SlideshowAction.none
       : SlideShowButtonConfig._parseAction(json['action']),
   minPressingMs: (json['minPressingMs'] as num?)?.toInt() ?? 200,
 );

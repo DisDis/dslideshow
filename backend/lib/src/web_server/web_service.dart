@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
+import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
 import 'package:path/path.dart' as path;
 import 'package:http_parser/http_parser.dart' as hp;
 
@@ -26,7 +27,9 @@ import 'package:mime/mime.dart' as mime;
 class WebService {
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
-  final _cacheFolder = new io.Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
+  final _cacheFolder = new io.Directory(
+    path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
+  );
   final RemoteService _remoteBackendService;
   String _code = '__';
   String get code => _code;
@@ -84,18 +87,22 @@ class WebService {
       io.HttpHeaders.contentTypeHeader: fileType ?? 'application/octet-stream',
       io.HttpHeaders.contentLengthHeader: fileStat.size.toString(),
       io.HttpHeaders.lastModifiedHeader: hp.formatHttpDate(fileStat.modified),
-      io.HttpHeaders.acceptRangesHeader: 'bytes'
+      io.HttpHeaders.acceptRangesHeader: 'bytes',
     };
   }
 
   WebService(this._appConfig, this._config, this._remoteBackendService) {
     updateCode();
-    _router.get('/info', _getInfo);
-    _router.get("/ws", _webSocketHandler);
-    _router.get("/cache/<code>/list", _getImageList);
-    _router.get("/cache/<code>/get/<imageId>", _getImage);
+    _router.get(WebServerRoutes.info, _getInfo);
+    _router.get(WebServerRoutes.webSocket, _webSocketHandler);
+    _router.get(WebServerRoutes.getMedialItemsList, _getItemsList);
+    _router.get(WebServerRoutes.getMediaItem, _getItem);
 
-    final fsPath = path.join(io.Directory.current.path, 'web'); // path to server
+    final fsPath = path.join(
+      io.Directory.current.path,
+      'web',
+    ); // path to server
+    _log.info("WebServer root: $fsPath");
     final virtualDir = ShelfVirtualDirectory(
       fsPath,
       defaultFile: 'index.html',
@@ -115,10 +122,24 @@ class WebService {
   io.HttpServer? _server;
 
   Response _getInfo(Request request) {
-    return Response.ok(_infoHtml, headers: {'content-type': 'text/html; charset=utf-8'});
+    if (request.params.isNotEmpty && request.params.containsKey("format")) {
+      if (request.params['format'] == 'json') {
+        return Response.ok(
+          _infoJSON,
+          headers: {'content-type': 'text/json; charset=utf-8'},
+        );
+      }
+    }
+    return Response.ok(
+      _infoHtml,
+      headers: {'content-type': 'text/html; charset=utf-8'},
+    );
   }
 
-  static const _infoHtml = """
+  static const _infoJSON =
+      '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"}}';
+  static const _infoHtml =
+      """
 <html>
 <head>
 <title>DSlideShow v${ApplicationInfo.frontendVersion}</title>
@@ -128,6 +149,7 @@ class WebService {
     <p><b>DSlideShow</b></p>
     <p>frontend: v${ApplicationInfo.frontendVersion}</p> 
     <p>backend: v${ApplicationInfo.backendVersion}</p> 
+    <p>Use ?format=json for JSON data</p>
  </div>
 </body>
 </html>
@@ -137,7 +159,13 @@ class WebService {
   Future<Response> _webSocketHandler(Request request) async {
     _log.info('_webSocketHandler');
     return webSocketHandler((WebSocketChannel webSocket, _) {
-      final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
+      final newUser = new WebSocketUser(
+        _appConfig,
+        _code,
+        webSocket,
+        request.headers,
+        this._remoteBackendService,
+      );
       _activeUsers.add(newUser);
       newUser.onDisconnect.then((dynamic value) {
         _activeUsers.remove(newUser);
@@ -152,12 +180,18 @@ class WebService {
       _stopWebServer();
     }
     //HTTPS? securityContext: io.SecurityContext()
-    io.HttpServer server = await io.serve(_router, io.InternetAddress.anyIPv4, _config.port);
+    io.HttpServer server = await io.serve(
+      _router,
+      io.InternetAddress.anyIPv4,
+      _config.port,
+    );
     _server = server;
     // Enable content compression
     server.autoCompress = true;
 
-    _log.info('Serving at http://${server.address.host}:${server.port} authCode:$_code');
+    _log.info(
+      'Serving at http://${server.address.host}:${server.port} authCode:$_code',
+    );
   }
 
   void _stopWebServer() {
@@ -173,13 +207,14 @@ class WebService {
     }
   }
 
-  Response _getImageList(Request request, String code) {
+  Response _getItemsList(Request request, String code) {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
     final StringBuffer sb = StringBuffer();
-    sb.writeln('{"ver":"${ApplicationInfo.frontendVersion}", "images":[');
-    var items = _cacheFolder.listSync();
+    sb.writeln('{"items":[');
+    final cachePath = _cacheFolder.path;
+    var items = _cacheFolder.listSync(recursive: true);
     bool isFirst = true;
     items.forEach((imageUri) {
       if (isFirst) {
@@ -187,20 +222,23 @@ class WebService {
       } else {
         sb.write(',');
       }
-      sb.writeln('"${path.basename(imageUri.path)}"');
+      sb.writeln('"${path.relative(imageUri.path, from: cachePath)}"');
     });
     sb.writeln(']}');
-    return Response.ok(sb.toString(), headers: {'content-type': 'text/json; charset=utf-8'});
+    return Response.ok(
+      sb.toString(),
+      headers: {'content-type': 'text/json; charset=utf-8'},
+    );
   }
 
-  Future<Response> _getImage(Request req, String code, String imageId) async {
+  Future<Response> _getItem(Request req, String code, String itemPath) async {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
-    imageId = path.absolute(path.join(_cacheFolder.path, imageId));
-    final file = io.File(imageId);
-    if (!file.existsSync() || !imageId.startsWith(_cacheFolder.path)) {
-      return Response.notFound('$imageId');
+    itemPath = path.absolute(path.join(_cacheFolder.path, itemPath));
+    final file = io.File(itemPath);
+    if (!file.existsSync() || !itemPath.startsWith(_cacheFolder.path)) {
+      return Response.notFound('$itemPath');
     }
 
     // collect file data
@@ -243,10 +281,12 @@ class WebService {
             }
 
             // Override Content-Length with the actual bytes sent.
-            headers[io.HttpHeaders.contentLengthHeader] = (end - start + 1).toString();
+            headers[io.HttpHeaders.contentLengthHeader] = (end - start + 1)
+                .toString();
 
             // Set 'Partial Content' status code.
-            headers[io.HttpHeaders.contentRangeHeader] = 'bytes $start-$end/$length';
+            headers[io.HttpHeaders.contentRangeHeader] =
+                'bytes $start-$end/$length';
             // Pipe the 'range' of the file.
 
             return Response(
@@ -293,7 +333,13 @@ class WebSocketUser {
     _resultQueue.clear();
   }
 
-  WebSocketUser(this._appConfig, this._code, this._webSocket, this._headers, this._remoteBackendService) {
+  WebSocketUser(
+    this._appConfig,
+    this._code,
+    this._webSocket,
+    this._headers,
+    this._remoteBackendService,
+  ) {
     _log.info('User connected');
     // now we have access to request argument
     // that key is being generated by the websocket itself, every connection has a unique key.
@@ -326,7 +372,9 @@ class WebSocketUser {
   void _parseMessage(dynamic message) {
     try {
       _log.info('user> "$message"');
-      final msg = serializers.deserialize(json.decode(message.toString())) as WebSocketResult;
+      final msg =
+          serializers.deserialize(json.decode(message.toString()))
+              as WebSocketResult;
       if (msg is WebSocketCommand) {
         _execCommand(msg);
       } else {
@@ -346,13 +394,19 @@ class WebSocketUser {
       WebSocketResult result;
       switch (command.type) {
         case WSConfigDownloadCommand.TYPE:
-          result = _executeWSConfigDownloadCommand(command as WSConfigDownloadCommand);
+          result = _executeWSConfigDownloadCommand(
+            command as WSConfigDownloadCommand,
+          );
           break;
         case WSConfigUploadCommand.TYPE:
-          result = _executeWSConfigUploadCommand(command as WSConfigUploadCommand);
+          result = _executeWSConfigUploadCommand(
+            command as WSConfigUploadCommand,
+          );
           break;
         case WSRestartApplicationCommand.TYPE:
-          result = _executeWSRestartApplicationCommand(command as WSRestartApplicationCommand);
+          result = _executeWSRestartApplicationCommand(
+            command as WSRestartApplicationCommand,
+          );
           break;
         case WSSendRpcCommand.TYPE:
           result = await _executeWSSendRpcCommand(command as WSSendRpcCommand);
@@ -403,7 +457,9 @@ class WebSocketUser {
     }
   }
 
-  WSConfigDownloadResult _executeWSConfigDownloadCommand(WSConfigDownloadCommand msg) {
+  WSConfigDownloadResult _executeWSConfigDownloadCommand(
+    WSConfigDownloadCommand msg,
+  ) {
     return WSConfigDownloadResult(
       content: json.encode(_appConfig.toJson()),
       id: msg.id,
@@ -411,24 +467,37 @@ class WebSocketUser {
   }
 
   WebSocketResult _executeWSConfigUploadCommand(WSConfigUploadCommand msg) {
-    var _newAppConfig = AppConfig.fromJson(json.decode(msg.content) as Map<String, dynamic>);
+    var _newAppConfig = AppConfig.fromJson(
+      json.decode(msg.content) as Map<String, dynamic>,
+    );
     _newAppConfig.toFile(_appConfig.fullConfigFilename);
     return WSResultOk.byCommand(msg);
   }
 
-  WebSocketResult _executeWSRestartApplicationCommand(WSRestartApplicationCommand msg) {
+  WebSocketResult _executeWSRestartApplicationCommand(
+    WSRestartApplicationCommand msg,
+  ) {
     _log.info('Restart application');
-    io.Process.run('sudo', ['systemctl', 'restart', 'dslideshow'], environment: {'LC_ALL': 'C'});
+    io.Process.run(
+      'sudo',
+      ['systemctl', 'restart', 'dslideshow'],
+      environment: {'LC_ALL': 'C'},
+    );
     return WSResultOk.byCommand(msg);
   }
 
   Future<WSRpcResult> _executeWSSendRpcCommand(WSSendRpcCommand msg) async {
-    final result = await _remoteBackendService.send(serializers.deserialize(msg.commandData)! as RpcCommand);
+    final result = await _remoteBackendService.send(
+      serializers.deserialize(msg.commandData)! as RpcCommand,
+    );
     return WSRpcResult.byCommand(result, msg);
   }
 
   Future<WebSocketResult> _addMessageToQueue(int id) {
-    final result = _resultQueue.putIfAbsent(id, () => Completer<WebSocketResult>());
+    final result = _resultQueue.putIfAbsent(
+      id,
+      () => Completer<WebSocketResult>(),
+    );
     return result.future;
   }
 

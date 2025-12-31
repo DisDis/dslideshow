@@ -13,20 +13,28 @@ class WebTabBloc extends Bloc<WebTabEvent, WebTabState> {
   static final Logger _log = Logger('WebTabBloc');
   final RealtimeService _client;
   static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
-  WebTabBloc({required WebTabState initialState, required RealtimeService client})
+  WebTabBloc(
+      {required WebTabState initialState, required RealtimeService client})
       : _client = client,
         super(initialState) {
-    on<ReloadAppWebTabEvent>((event, emit) {
-      _client.sendOneWay(WSRestartApplicationCommand(id: WebSocketCommand.generateId()));
-    });
-    on<LoadWebTabEvent>((event, emit) async {
-      final result = await _client.send(WSConfigDownloadCommand(id: WebSocketCommand.generateId())) as WSConfigDownloadResult;
-      _log.info('Recived config:');
-      var jsonMsg = json.decode(result.content);
-      final config = AppConfig.fromJson(jsonMsg);
-      _log.info(prettyPrintJSONEncode.convert(jsonMsg));
-      emit(InWebTabState(config));
-    });
+    on<ReloadAppWebTabEvent>(_reloadApp);
+    on<LoadWebTabEvent>(_loadConfig);
+  }
+
+  void _loadConfig(LoadWebTabEvent event, emit) async {
+    final result = await _client
+            .send(WSConfigDownloadCommand(id: WebSocketCommand.generateId()))
+        as WSConfigDownloadResult;
+    _log.info('Recived config:');
+    var jsonMsg = json.decode(result.content);
+    final config = AppConfig.fromJson(jsonMsg);
+    _log.info(prettyPrintJSONEncode.convert(jsonMsg));
+    emit(InWebTabState(config));
+  }
+
+  void _reloadApp(ReloadAppWebTabEvent event, emit) {
+    _client.sendOneWay(
+        WSRestartApplicationCommand(id: WebSocketCommand.generateId()));
   }
 }
 /*
