@@ -9,11 +9,11 @@ class EntityPermissionService {
     required this.globalPermissionService,
   });
   final List<int> _permissionIds = <int>[];
-  clear() {
+  void clear() {
     _permissionIds.clear();
   }
 
-  setAll(Scope scope) {
+  void setAll(Scope scope) {
     clear();
     for (var element in Permission.values) {
       if (element.scope.id == scope.id) {
@@ -22,12 +22,12 @@ class EntityPermissionService {
     }
   }
 
-  loadData(Iterable<int> permissionIds) {
+  void loadData(Iterable<int> permissionIds) {
     clear();
     _permissionIds.addAll(permissionIds);
   }
 
-  loadDataByScopeId(Map<int, List<int>> permissionIdsByScopeId) {
+  void loadDataByScopeId(Map<int, List<int>> permissionIdsByScopeId) {
     clear();
     permissionIdsByScopeId.values.forEach(_permissionIds.addAll);
   }

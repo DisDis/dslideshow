@@ -26,7 +26,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
   ImageWidget(this.item, this._config, this.size) : super(key: Key('img:${item.uri!.toFilePath()}')) {
     if (isGif) {
       _image = Image.memory(File(item.uri!.toFilePath()).readAsBytesSync(),
-          errorBuilder: (context, _, __) => Container(), fit: BoxFit.contain, filterQuality: FilterQuality.high);
+          errorBuilder: (context, _, _) => Container(), fit: BoxFit.contain, filterQuality: FilterQuality.high);
     }
   }
 
@@ -80,7 +80,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
 
     final outputImage = await recorder.endRecording().toImage(size.width.truncate(), size.height.truncate());
     final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
-    _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context, _, __) => Container());
+    _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context, _, _) => Container());
   }
 
   /// Paints an image into the given rectangle on the canvas.

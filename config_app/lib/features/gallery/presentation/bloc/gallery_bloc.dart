@@ -4,7 +4,6 @@ import 'package:config_app/features/realtime/domain/services/realtime_service.da
 import 'package:dslideshow_backend/web_client.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 
 part 'gallery_bloc.freezed.dart';
 part 'gallery_event.dart';

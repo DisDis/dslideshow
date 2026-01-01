@@ -15,8 +15,8 @@ void initEnvironment() {
   _log.info('initEnvironment - Standalone');
 }
 
-void configHttpAdapter(obj) {
-  // _log.info('configHttpAdapter :$obj');
+void configHttpAdapter(dynamic obj) {
+  _log.info('configHttpAdapter :$obj');
   // if (obj is Dio) {
   //   obj.interceptors.add(CookieManager(_cookieJar));
   //   //TODO: only for dev, pls remove in prod

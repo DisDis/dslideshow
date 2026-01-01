@@ -7,7 +7,6 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/s
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'main_menu_event.dart';
 part 'main_menu_state.dart';

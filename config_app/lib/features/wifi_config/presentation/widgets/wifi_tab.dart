@@ -207,7 +207,7 @@ class WifiListItem extends StatelessWidget {
     // Text('${network.SSID}'),
   }
 
-  _onTap(BuildContext context, WiFiNetworkInfo network) {
+  void _onTap(BuildContext context, WiFiNetworkInfo network) {
     WifiTabScreenState.showNewAddNetworkDialog(context, network.SSID);
   }
 }

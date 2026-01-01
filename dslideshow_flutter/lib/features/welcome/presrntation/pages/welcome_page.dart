@@ -52,6 +52,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
   void initState() {
     _log.info("initState");
     super.initState();
+    final bloc = context.read<RouteBloc>();
     var future = environment.checkPermissionReadExternalStorage();
     controller = AnimationController(duration: Duration(milliseconds: _appConfig.welcome.delayMs), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
@@ -61,7 +62,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
         } else if (status == AnimationStatus.dismissed) {
           controller.stop();
           _frontendService.backendIsReady().then((dynamic _) {
-            future.then((dynamic _) => context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow)));
+            future.then((dynamic _) => bloc.add(ChangePageEvent(RoutePage.slideshow)));
           });
         }
       });

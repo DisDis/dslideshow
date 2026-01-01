@@ -123,11 +123,11 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     );
   }
 
-  static get light => ThemeColors(
+  static ThemeColors get light => ThemeColors(
         appContainerBackground: AppColors.white,
-        appContainerShadow: AppColors.grey.withOpacity(0.5),
+        appContainerShadow: AppColors.grey.withAlpha((255.0 * 0.5).round()),
         selectedLabel: AppColors.darkestGrey,
-        unselectedLabel: AppColors.darkestGrey.withOpacity(0.7),
+        unselectedLabel: AppColors.darkestGrey.withAlpha((255.0 * 0.7).round()),
         coursorColor: AppColors.pink,
         micIcon: AppColors.lightGrey,
         settingsDialogLanguage: AppColors.white,
@@ -141,11 +141,11 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
         messageReceivedBubbleColor: AppColors.lightMessageReceivedBubbleColor,
       );
 
-  static get dark => ThemeColors(
+  static ThemeColors get dark => ThemeColors(
         appContainerBackground: AppColors.lightDark,
-        appContainerShadow: AppColors.darkerGrey.withOpacity(0.2),
+        appContainerShadow: AppColors.darkerGrey.withAlpha((255.0 * 0.2).round()),
         selectedLabel: AppColors.darkestGrey,
-        unselectedLabel: AppColors.darkestGrey.withOpacity(0.7),
+        unselectedLabel: AppColors.darkestGrey.withAlpha((255.0 * 0.7).round()),
         coursorColor: AppColors.pink,
         micIcon: AppColors.lightGrey,
         settingsDialogLanguage: AppColors.lighterDark,

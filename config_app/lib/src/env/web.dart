@@ -6,6 +6,6 @@ void initEnvironment() {
   _log.info('initEnvironment - Web');
 }
 
-void configHttpAdapter(obj) {
+void configHttpAdapter(dynamic obj) {
   _log.info('configHttpAdapter :$obj');
 }

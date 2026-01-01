@@ -2,6 +2,6 @@ void initEnvironment() {
   throw UnimplementedError();
 }
 
-void configHttpAdapter(obj) {
+void configHttpAdapter(dynamic obj) {
   throw UnimplementedError("$obj");
 }

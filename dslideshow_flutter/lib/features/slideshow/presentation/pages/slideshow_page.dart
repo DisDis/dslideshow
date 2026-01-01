@@ -55,6 +55,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
   late Duration _transitionTime;
+  late Duration _fadeTime;
 
   bool _screenState = true;
 
@@ -115,7 +116,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     _log.info('Allowed effects: $_allowedEffects');
 
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
-    final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
+    _fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
     _effectController = FixedAnimationController(duration: _transitionTime, vsync: this, animationBehavior: AnimationBehavior.preserve);
     _effectController.addStatusListener((status) {
@@ -127,12 +128,13 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       }
     });
 
-    _fadeController = AnimationController(duration: fadeTime, vsync: this);
+    _fadeController = AnimationController(duration: _fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
         _fadeController.reset();
       }
     });
+  
 
     final displayTime = Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
     _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
@@ -192,7 +194,7 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
     _transitionWidget = AnimatedBuilder(
         key: const Key('anim'),
         animation: _effectController,
-        builder: (context, __) {
+        builder: (context, _) {
           return Stack(children: <Widget>[
             _currentEffect.transform(context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
             _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
@@ -247,7 +249,8 @@ class SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMi
       _mediaItemLoopController.stop();
       _fadeController.forward();
     } else {
-      await Future<void>.delayed(const Duration(seconds: 4));
+      
+      await Future<void>.delayed(Duration(seconds: _fadeTime.inSeconds + 1));
       // Double check, after delay
       if (_screenState == enabled) {
         _fadeController.reverse();

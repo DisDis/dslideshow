@@ -4,8 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'buttons_hint_event.dart';

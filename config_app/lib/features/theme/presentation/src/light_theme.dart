@@ -9,7 +9,7 @@ ThemeData createLightTheme() {
       ThemeTextStyles.light,
     ],
     appBarTheme: AppBarTheme(
-      color: AppColors.white,
+      backgroundColor: AppColors.white,
       iconTheme: const IconThemeData(color: AppColors.lightGrey),
       titleTextStyle: headline1.copyWith(
         color: AppColors.grey,

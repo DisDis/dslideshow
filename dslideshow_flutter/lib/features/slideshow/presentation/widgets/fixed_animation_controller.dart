@@ -1,4 +1,7 @@
 ///  flutter/packages/flutter/lib/src/animation/animation_controller.dart
+// ignore_for_file: annotate_overrides
+
+library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';

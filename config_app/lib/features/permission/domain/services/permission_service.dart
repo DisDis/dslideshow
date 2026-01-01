@@ -2,16 +2,16 @@ import 'package:config_app/features/permission/domain/entities/permission.dart';
 
 class PermissionService {
   final List<int> _permissionIds = <int>[];
-  clear() {
+  void clear() {
     _permissionIds.clear();
   }
 
-  loadData(List<int> permissionIds) {
+  void loadData(List<int> permissionIds) {
     clear();
     _permissionIds.addAll(permissionIds);
   }
 
-  loadDataByScopeId(Map<int, List<int>> permissionIdsByScopeId) {
+  void loadDataByScopeId(Map<int, List<int>> permissionIdsByScopeId) {
     clear();
     permissionIdsByScopeId.values.forEach(_permissionIds.addAll);
   }

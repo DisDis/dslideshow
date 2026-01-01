@@ -68,13 +68,8 @@ class StoragesConfig {
                 value as Map<String, dynamic>,
               );
               break;
-            default:
-              valueT = null;
-              break;
           }
-          if (valueT != null) {
-            result[targetT] = valueT;
-          }
+          result[targetT] = valueT;
         } catch (e, st) {
           _log.info(e.toString(), e, st);
         }
