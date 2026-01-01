@@ -1,5 +1,5 @@
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
+import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
 import 'package:config_app/features/wifi_config/presentation/widgets/wifi_tab.dart';
 import 'package:config_app/injection_container.dart';
@@ -11,27 +11,14 @@ class WiFiConfigMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("WiFi config")),
-      drawer: const ConfigAppNavigationBar(),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider<WifiTabBloc>(
-            create: (BuildContext context) =>
-                WifiTabBloc(initialState: const UnWifiTabState(), client: sl()),
-          ), /*
-    BlocProvider<BlocC>(
-      create: (BuildContext context) => BlocC(),
-    ),*/
-        ],
-        child: Builder(
-          builder: (context) {
-            return WiFiConfigTab(
-              wifiTabBloc: context.read(),
-            );
-          },
-        ),
-      ),
+    // Здесь НЕТ Scaffold и НЕТ Drawer.
+    // Только провайдер Блока.
+    return BlocProvider<WifiTabBloc>(
+      create: (BuildContext context) => WifiTabBloc(
+        initialState: const UnWifiTabState(),
+        client: sl(),
+      )..add(const LoadWifiTabEvent()),
+      child: const WiFiConfigTab(),
     );
   }
 }
