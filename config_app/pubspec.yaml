@@ -61,6 +61,8 @@ dependencies:
 
   go_router: ^17.0.0
 
+  file_picker: ^8.0.3
+
   dslideshow_i18n:
     path: ../i18n
 

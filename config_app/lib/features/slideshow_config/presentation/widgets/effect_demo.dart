@@ -132,7 +132,11 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
     _effectController.reset();
     _mediaItemLoopController.reset();
     setState(() {});
+    try{
     await _effectController.forward().orCancel;
+    } catch(_){
+
+    }
     _mediaItemLoopController.forward();
   }
 
