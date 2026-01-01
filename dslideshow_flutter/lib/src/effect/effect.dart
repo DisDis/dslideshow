@@ -102,7 +102,7 @@ class Effect {
     blindsEffect,
     blurFadeEffect,
     zoomOverEffect,
-    cubeEffect2,
+    // cubeEffect2,
   ];
   final String name;
 

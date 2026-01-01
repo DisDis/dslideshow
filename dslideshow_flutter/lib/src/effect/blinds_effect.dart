@@ -27,40 +27,53 @@ class BlindsEffect extends MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) {
+    final double stripHeight = screenH / stripCount;
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        nextWidget, // Внизу новое
-        // Сверху старое, разбитое на полосы
+        // 1. Новое изображение (лежит на дне)
+        nextWidget, 
+
+        // 2. Жалюзи из старого изображения
         Column(
           children: List.generate(stripCount, (index) {
-            // Вычисляем прогресс для волны
+            // Расчет прогресса для "волны"
             final double delay = index * 0.05;
-            double progress =
-                (controller.value - delay) * (1.0 + (stripCount * 0.05));
+            double progress = (controller.value - delay) * (1.0 + (stripCount * 0.05));
             progress = progress.clamp(0.0, 1.0);
 
-            // Эффект закрытия жалюзи (поворот) или растворения
-            // Сделаем эффект "Схлопывания" высоты полоски
-            return Flexible(
-              flex: 1, // Все полоски равны
+            // Сдвиг контента:
+            // Для 0-й полоски сдвиг 0.
+            // Для 1-й полоски сдвиг = -stripHeight (поднимаем картинку вверх)
+            // Для 2-й полоски сдвиг = -2 * stripHeight
+            final double contentOffset = -1.0 * index * stripHeight;
+
+            return SizedBox(
+              width: screenW,
+              height: stripHeight,
               child: progress >= 1.0
-                  ? const SizedBox()
-                  : FractionallySizedBox(
-                      widthFactor: 1.0,
-                      // Высота полоски уменьшается до 0
-                      heightFactor: 1.0 - progress,
+                  ? null // Полоска исчезла
+                  : Transform(
+                      // Анимация закрытия полоски (сплющивание по вертикали)
+                      transform: Matrix4.identity()..scale(1.0, 1.0 - progress),
                       alignment: Alignment.topCenter,
                       child: ClipRect(
-                        child: Align(
-                          alignment: Alignment(
-                            0.0,
-                            -1.0 + (index / (stripCount - 1)) * 2.0,
+                        child: OverflowBox(
+                          // !!! ГЛАВНОЕ ИСПРАВЛЕНИЕ !!!
+                          // Разрешаем (и заставляем) ребенку быть размером во весь экран,
+                          // несмотря на то, что родитель (SizedBox) маленький.
+                          minWidth: screenW,
+                          maxWidth: screenW,
+                          minHeight: screenH,
+                          maxHeight: screenH,
+                          alignment: Alignment.topLeft, // Якорь слева сверху
+                          child: Transform.translate(
+                            // Сдвигаем большую картинку вверх, чтобы в окошко
+                            // попал нужный фрагмент
+                            offset: Offset(0, contentOffset),
+                            child: currentWidget,
                           ),
-                          heightFactor:
-                              1.0 /
-                              stripCount, // Показываем 1/10 часть картинки
-                          child: currentWidget,
                         ),
                       ),
                     ),
