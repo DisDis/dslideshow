@@ -30,7 +30,7 @@
     "displayTimeMs": 2000,
     "fadeTimeMs": 2000,
     "transitionTimeMs": 1000,
-    "allowedEffects": ["Cube2"],
+    "allowedEffects": ["ZoomOver"],
     "isBlurredBackground": true,
     "backgroundBlurSigma": 20,
     "backgroundOpacity": 0.9,

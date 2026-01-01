@@ -14,9 +14,12 @@ import 'package:config_app/features/web_server_config/config/router.dart' as web
 import 'package:config_app/features/wifi_config/config/router.dart' as wifi_config;
 import 'package:config_app/features/slideshow_config/config/router.dart' as slideshow_config;
 import 'package:config_app/features/gallery/config/router.dart' as gallery;
+import 'package:config_app/features/ota/config/router.dart' as ota;
+
 
 const _defaultPath = '/splash';
 const _loginPath = '/login';
+const _homePath = '/home';
 
 //TODO: Fix it
 String _lastPath = _defaultPath;
@@ -32,9 +35,14 @@ GoRouter createAppRouter(BuildContext context) {
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: '/home',
+        path: _homePath,
         builder: (context, state) => const HomePage(),
       ),
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomePage(),
+      ),
+      ota.createRoute(context),
       web_config.createRoute(context),
       wifi_config.createRoute(context),
       gallery.createRoute(context),
@@ -54,7 +62,7 @@ GoRouter createAppRouter(BuildContext context) {
         return _loginPath;
       }
       if (authState is AuthenticationAuthenticatedState && (location == _loginPath || location == _defaultPath)) {
-        return '/home';
+        return _homePath;
       }
       _lastPath = location;
       return null;

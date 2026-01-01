@@ -241,7 +241,14 @@ class OTAService implements RpcService {
     if (_autostop != null && _autostop!.isActive) {
       _autostop!.cancel();
     }
+    
     _frontendService.send(new OTAReadyCommand(id: RpcCommand.generateId(), ready: true));
+     if (request.url.queryParameters.isNotEmpty && request.url.queryParameters['format'] == 'json') {
+        return Response.ok(
+          '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"},"status":"${_info.status.name}"}',
+          headers: {'content-type': 'text/json; charset=utf-8'},
+        );
+    }
     return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
