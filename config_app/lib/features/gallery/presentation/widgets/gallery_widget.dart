@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
@@ -201,26 +202,7 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
       );
     } else if (isVideo) {
       // Заглушка для видео
-      return Container(
-        color: Colors.black87, // Темный фон для видео
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.play_circle_outline,
-                color: Colors.white54, size: 32),
-            const SizedBox(height: 4),
-            Text(
-              item.title,
-              style: const TextStyle(color: Colors.white70, fontSize: 10),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      );
+      return VideoGridItem(title: item.title, url: item.uri.toString());
     }
 
     // Обычное изображение
