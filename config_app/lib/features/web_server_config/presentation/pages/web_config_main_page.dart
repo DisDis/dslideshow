@@ -17,7 +17,8 @@ class WebConfigMainPage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<WebTabBloc>(
-            create: (BuildContext context) => WebTabBloc(initialState: const UnWebTabState(), client: sl()),
+            create: (BuildContext context) =>
+                WebTabBloc(initialState: const UnWebTabState(), client: sl()),
           ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),

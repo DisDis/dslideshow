@@ -15,10 +15,14 @@ import 'package:get_it/get_it.dart';
 // import 'package:workagree_app/src/providers/scaffold_provider_impl.dart';
 
 final sl = GetIt.instance;
-Future<void> initializeAllDependencies({String? apiUrl, String webSocketHost = "localhost", int webSocketPort = 8000}) async {
+Future<void> initializeAllDependencies(
+    {String? apiUrl,
+    String webSocketHost = "localhost",
+    int webSocketPort = 8000}) async {
   sl.registerSingleton<RealtimeService>(ClientServiceImpl());
   sl.registerSingleton<UserRepository>(UserRepositoryImpl());
-  sl.registerSingleton<AuthenticationRepository>(AuthenticationRepositoryImpl(client: sl()));
+  sl.registerSingleton<AuthenticationRepository>(
+      AuthenticationRepositoryImpl(client: sl()));
   sl.registerSingleton<PermissionService>(PermissionService());
 
   sl.registerSingleton(AuthenticationBloc(

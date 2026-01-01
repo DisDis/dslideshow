@@ -13,7 +13,8 @@ class UserRepositoryImpl implements UserRepository {
     return Future.delayed(
       const Duration(milliseconds: 300),
       () => _user = User(
-        firstName: "Frame User ${DateTime.now().millisecondsSinceEpoch.toString()}",
+        firstName:
+            "Frame User ${DateTime.now().millisecondsSinceEpoch.toString()}",
         lastName: "",
         id: "0",
         avatarUrl: AvatarUrl.empty,

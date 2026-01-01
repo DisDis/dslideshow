@@ -10,12 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:config_app/features/web_server_config/config/router.dart' as web_config;
-import 'package:config_app/features/wifi_config/config/router.dart' as wifi_config;
-import 'package:config_app/features/slideshow_config/config/router.dart' as slideshow_config;
+import 'package:config_app/features/web_server_config/config/router.dart'
+    as web_config;
+import 'package:config_app/features/wifi_config/config/router.dart'
+    as wifi_config;
+import 'package:config_app/features/slideshow_config/config/router.dart'
+    as slideshow_config;
 import 'package:config_app/features/gallery/config/router.dart' as gallery;
 import 'package:config_app/features/ota/config/router.dart' as ota;
-
 
 const _defaultPath = '/splash';
 const _loginPath = '/login';
@@ -58,10 +60,12 @@ GoRouter createAppRouter(BuildContext context) {
     redirect: (BuildContext context, GoRouterState state) {
       final authState = context.read<AuthenticationBloc>().state;
       final location = state.uri.toString();
-      if (location != _defaultPath && authState is! AuthenticationAuthenticatedState) {
+      if (location != _defaultPath &&
+          authState is! AuthenticationAuthenticatedState) {
         return _loginPath;
       }
-      if (authState is AuthenticationAuthenticatedState && (location == _loginPath || location == _defaultPath)) {
+      if (authState is AuthenticationAuthenticatedState &&
+          (location == _loginPath || location == _defaultPath)) {
         return _homePath;
       }
       _lastPath = location;
@@ -69,7 +73,8 @@ GoRouter createAppRouter(BuildContext context) {
     },
 
     // changes on the listenable will cause the router to refresh it's route
-    refreshListenable: _GoRouterRefreshStream(context.read<AuthenticationBloc>().stream),
+    refreshListenable:
+        _GoRouterRefreshStream(context.read<AuthenticationBloc>().stream),
   );
 }
 

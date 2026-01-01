@@ -18,12 +18,13 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
         super(initialState) {
     on<GalleryLoadEvent>(_onLoad);
   }
-  WebClient getWebClient(){
-     return WebClient(
+  WebClient getWebClient() {
+    return WebClient(
         host: _client.connectUri.host,
         port: _client.connectUri.port,
         code: _client.authCode);
   }
+
   FutureOr<void> _onLoad(GalleryLoadEvent event, emit) async {
     emit(UninitializedGalleryState());
     WebClient webClient = getWebClient();

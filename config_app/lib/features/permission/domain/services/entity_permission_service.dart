@@ -33,11 +33,13 @@ class EntityPermissionService {
   }
 
   bool checkById(int permissionId) {
-    return _permissionIds.contains(permissionId) && globalPermissionService.checkById(permissionId);
+    return _permissionIds.contains(permissionId) &&
+        globalPermissionService.checkById(permissionId);
   }
 
   bool check(Permission permission) {
-    return _permissionIds.contains(permission.id) && globalPermissionService.checkById(permission.id);
+    return _permissionIds.contains(permission.id) &&
+        globalPermissionService.checkById(permission.id);
   }
 
   @override

@@ -17,7 +17,8 @@ class WiFiConfigMainPage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<WifiTabBloc>(
-            create: (BuildContext context) => WifiTabBloc(initialState: const UnWifiTabState(), client: sl()),
+            create: (BuildContext context) =>
+                WifiTabBloc(initialState: const UnWifiTabState(), client: sl()),
           ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),

@@ -16,7 +16,9 @@ class GalleryMainPage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<GalleryBloc>(
-            create: (BuildContext context) => GalleryBloc(initialState: const UninitializedGalleryState(), client: sl())..add(GalleryLoadEvent()),
+            create: (BuildContext context) => GalleryBloc(
+                initialState: const UninitializedGalleryState(), client: sl())
+              ..add(GalleryLoadEvent()),
           ), /*
     BlocProvider<BlocC>(
       create: (BuildContext context) => BlocC(),

@@ -10,7 +10,9 @@ final Logger _log = Logger('main');
 Future _setup() async {
   _log.info("Url: '${Uri.base}'");
   final currentUrl = Uri.parse(Uri.base.toString());
-  final apiUrl = currentUrl.scheme == 'file' ? null : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
+  final apiUrl = currentUrl.scheme == 'file'
+      ? null
+      : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
   _log.info("currentUrl: '${Uri.base}' , apiUrl: '$apiUrl'");
   await initializeAllDependencies(apiUrl: apiUrl);
 }

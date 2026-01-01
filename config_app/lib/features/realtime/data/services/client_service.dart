@@ -93,7 +93,8 @@ class ClientServiceImpl implements RealtimeService {
   }
 
   Future<WebSocketResult> _addMessageToQueue(int id) {
-    final result = _resultQueue.putIfAbsent(id, () => Completer<WebSocketResult>());
+    final result =
+        _resultQueue.putIfAbsent(id, () => Completer<WebSocketResult>());
     return result.future;
   }
 
@@ -110,7 +111,8 @@ class ClientServiceImpl implements RealtimeService {
   void _parseMessage(dynamic message) {
     try {
       _log.info('user< "$message"');
-      final msg = serializers.deserialize(json.decode(message.toString())) as WebSocketResult;
+      final msg = serializers.deserialize(json.decode(message.toString()))
+          as WebSocketResult;
       if (msg is WebSocketCommand) {
         _execCommand(msg);
       } else {

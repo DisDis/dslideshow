@@ -9,7 +9,8 @@ sealed class AuthenticationState with _$AuthenticationState {
   ]) = _unknown;
 
   const factory AuthenticationState.authenticated(User user,
-      /* String socketToken,*/ [@Default(AuthenticationStatus.authenticated) AuthenticationStatus state]) = AuthenticationAuthenticatedState;
+      /* String socketToken,*/ [@Default(AuthenticationStatus.authenticated)
+      AuthenticationStatus state]) = AuthenticationAuthenticatedState;
 
   const factory AuthenticationState.unauthenticated([
     @Default(AuthenticationStatus.unauthenticated) AuthenticationStatus status,

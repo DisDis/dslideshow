@@ -10,7 +10,6 @@ class WebTabState with _$WebTabState {
   const factory WebTabState.initialized(AppConfig config) = InWebTabState;
 }
 
-
 /*
 class WebTabState extends Equatable {
   const WebTabState({

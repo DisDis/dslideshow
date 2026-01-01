@@ -46,7 +46,10 @@ class ConfigAppNavigationBar extends StatelessWidget {
                 ),
                 decoration: const BoxDecoration(
                   color: Colors.blue,
-                  image: DecorationImage(fit: BoxFit.fill, image: NetworkImage('https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(
+                          'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
                 ),
               );
             },
@@ -87,7 +90,9 @@ class ConfigAppNavigationBar extends StatelessWidget {
           ListTile(
             title: const Text('Exit'),
             leading: const Icon(Icons.exit_to_app),
-            onTap: () => context.read<AuthenticationBloc>().add(const AuthenticationLogoutRequested()),
+            onTap: () => context
+                .read<AuthenticationBloc>()
+                .add(const AuthenticationLogoutRequested()),
           ),
           // ..._leftDrawerProvider.getMenuItems()
         ],

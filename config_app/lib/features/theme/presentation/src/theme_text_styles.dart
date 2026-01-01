@@ -43,7 +43,8 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
       searchInput: searchInput ?? this.searchInput,
       chatDateStyle: chatDateStyle ?? this.chatDateStyle,
       chatMessageTextStyle: chatMessageTextStyle ?? this.chatMessageTextStyle,
-      settingsDialogLanguage: settingsDialogLanguage ?? this.settingsDialogLanguage,
+      settingsDialogLanguage:
+          settingsDialogLanguage ?? this.settingsDialogLanguage,
     );
   }
 
@@ -63,7 +64,8 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
       searchHint: TextStyle.lerp(searchHint, other.searchHint, t)!,
       chatDateStyle: TextStyle.lerp(chatDateStyle, other.chatDateStyle, t)!,
       searchInput: TextStyle.lerp(searchInput, other.searchInput, t)!,
-      chatMessageTextStyle: TextStyle.lerp(chatMessageTextStyle, other.chatMessageTextStyle, t)!,
+      chatMessageTextStyle:
+          TextStyle.lerp(chatMessageTextStyle, other.chatMessageTextStyle, t)!,
       settingsDialogLanguage: TextStyle.lerp(
         settingsDialogLanguage,
         other.settingsDialogLanguage,
@@ -98,7 +100,8 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
           fontSize: 13,
           color: ThemeColors.light.messageDateTimeColor,
         ),
-        chatMessageTextStyle: TextStyle(fontSize: 16, color: ThemeColors.light.messagePrimaryColor),
+        chatMessageTextStyle: TextStyle(
+            fontSize: 16, color: ThemeColors.light.messagePrimaryColor),
       );
 
   static ThemeTextStyles get dark => ThemeTextStyles(
@@ -128,6 +131,7 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
           fontSize: 13,
           color: ThemeColors.dark.messageDateTimeColor,
         ),
-        chatMessageTextStyle: TextStyle(fontSize: 16, color: ThemeColors.dark.messagePrimaryColor),
+        chatMessageTextStyle: TextStyle(
+            fontSize: 16, color: ThemeColors.dark.messagePrimaryColor),
       );
 }

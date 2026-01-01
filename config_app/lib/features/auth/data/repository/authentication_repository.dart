@@ -31,7 +31,8 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     required String username,
     required String password,
   }) async {
-    _log.finest("Try to logIn U:$username P(${password.length}), url:$connectUrl");
+    _log.finest(
+        "Try to logIn U:$username P(${password.length}), url:$connectUrl");
     try {
       final result = await client.connect(connectUrl, password);
       if (result is WebSocketErrorResult) {

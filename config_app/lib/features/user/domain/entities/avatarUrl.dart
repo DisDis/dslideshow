@@ -7,7 +7,8 @@ class AvatarUrl {
 
   final String large;
 
-  const AvatarUrl({required this.small, required this.medium, required this.large});
+  const AvatarUrl(
+      {required this.small, required this.medium, required this.large});
 
   //TODO: set default urls
   static const empty = AvatarUrl(

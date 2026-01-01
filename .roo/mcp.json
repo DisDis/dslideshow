@@ -1,9 +1,1 @@
-{
-  "mcpServers": {
-    "dart": {
-      "command": "/Users/igordemyanov/workspace/flutter/bin/dart",
-      "args": ["mcp-server", "--force-roots-fallback"],
-      "alwaysAllow": ["analyze_files"]
-    }
-  }
-}
+{"mcpServers":{"dart":{"command":"/Users/igordemyanov/workspace/flutter/bin/dart","args":["mcp-server","--force-roots-fallback"],"alwaysAllow":["analyze_files","add_roots","dart_format"]}}}

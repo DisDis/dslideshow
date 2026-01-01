@@ -45,11 +45,15 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
-          controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
-          onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+          controller: state.username.isPure
+              ? TextEditingController(text: state.username.value)
+              : null,
+          onChanged: (username) =>
+              context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: 'username',
-            errorText: state.username.displayError != null ? 'invalid username' : null,
+            errorText:
+                state.username.displayError != null ? 'invalid username' : null,
           ),
         );
       },
@@ -61,15 +65,20 @@ class _ConnectUriInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.connectUri != current.connectUri,
+      buildWhen: (previous, current) =>
+          previous.connectUri != current.connectUri,
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_connectUriInput_textField'),
-          controller: state.connectUri.isPure ? TextEditingController(text: state.connectUri.value) : null,
-          onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
+          controller: state.connectUri.isPure
+              ? TextEditingController(text: state.connectUri.value)
+              : null,
+          onChanged: (connectUri) =>
+              context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
           decoration: InputDecoration(
             labelText: 'connectUri',
-            errorText: state.connectUri.displayError != null ? 'invalid uri' : null,
+            errorText:
+                state.connectUri.displayError != null ? 'invalid uri' : null,
           ),
         );
       },
@@ -85,12 +94,16 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          controller: state.password.isPure ? TextEditingController(text: state.password.value) : null,
-          onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+          controller: state.password.isPure
+              ? TextEditingController(text: state.password.value)
+              : null,
+          onChanged: (password) =>
+              context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'password',
-            errorText: state.password.displayError != null ? 'invalid password' : null,
+            errorText:
+                state.password.displayError != null ? 'invalid password' : null,
           ),
         );
       },
@@ -102,7 +115,9 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => (previous.status != current.status) || (previous.isValid != current.isValid),
+      buildWhen: (previous, current) =>
+          (previous.status != current.status) ||
+          (previous.isValid != current.isValid),
       builder: (context, state) {
         return state.status.isInProgress
             ? const CircularProgressIndicator()

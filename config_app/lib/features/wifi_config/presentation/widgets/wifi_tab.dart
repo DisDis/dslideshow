@@ -83,7 +83,8 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
           flex: 2,
           child: ListView(
             children: [
-              for (var network in currentState.availableNetworks) WifiListItem(network: network),
+              for (var network in currentState.availableNetworks)
+                WifiListItem(network: network),
             ],
           ),
         ),
@@ -92,7 +93,8 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
           flex: 2,
           child: ListView(
             children: [
-              for (var connection in currentState.connections) ConnectionListItem(connection: connection),
+              for (var connection in currentState.connections)
+                ConnectionListItem(connection: connection),
             ],
           ),
         ),
@@ -114,9 +116,12 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
   }
 
   // ignore: non_constant_identifier_names
-  static void showNewAddNetworkDialog(BuildContext context, [String SSID = '']) {
-    final TextEditingController controllerSSID = TextEditingController(text: SSID);
-    final TextEditingController controllerPassword = TextEditingController(text: "");
+  static void showNewAddNetworkDialog(BuildContext context,
+      [String SSID = '']) {
+    final TextEditingController controllerSSID =
+        TextEditingController(text: SSID);
+    final TextEditingController controllerPassword =
+        TextEditingController(text: "");
     final bloc = context.read<WifiTabBloc>();
     showDialog<void>(
       context: context,
@@ -157,7 +162,8 @@ class WifiTabScreenState extends State<WiFiConfigTab> {
           FilledButton(
             child: const Text('Add'),
             onPressed: () {
-              bloc.add(AddWifiTabEvent("${controllerSSID.text} connection", controllerSSID.text, controllerPassword.text));
+              bloc.add(AddWifiTabEvent("${controllerSSID.text} connection",
+                  controllerSSID.text, controllerPassword.text));
               Navigator.of(context).pop();
             },
           ),

@@ -56,21 +56,28 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     Color? messageReceivedBubbleColor,
   }) {
     return ThemeColors(
-      appContainerBackground: appContainerBackground ?? this.appContainerBackground,
+      appContainerBackground:
+          appContainerBackground ?? this.appContainerBackground,
       appContainerShadow: appContainerShadow ?? this.appContainerShadow,
       selectedLabel: selectedLabel ?? this.selectedLabel,
       unselectedLabel: unselectedLabel ?? this.unselectedLabel,
       coursorColor: coursorColor ?? this.coursorColor,
       micIcon: micIcon ?? this.micIcon,
-      settingsDialogLanguage: settingsDialogLanguage ?? this.settingsDialogLanguage,
+      settingsDialogLanguage:
+          settingsDialogLanguage ?? this.settingsDialogLanguage,
       messagePrimaryColor: messagePrimaryColor ?? this.messagePrimaryColor,
       messageBubbleColor: messageBubbleColor ?? this.messageBubbleColor,
-      avatarBackgroundColor: avatarBackgroundColor ?? this.avatarBackgroundColor,
-      messageReceiptBackgroundColor: messageReceiptBackgroundColor ?? this.messageReceiptBackgroundColor,
-      messageReceiptIconReadColor: messageReceiptIconReadColor ?? this.messageReceiptIconReadColor,
-      messageReceiptIconUnReadColor: messageReceiptIconUnReadColor ?? this.messageReceiptIconUnReadColor,
+      avatarBackgroundColor:
+          avatarBackgroundColor ?? this.avatarBackgroundColor,
+      messageReceiptBackgroundColor:
+          messageReceiptBackgroundColor ?? this.messageReceiptBackgroundColor,
+      messageReceiptIconReadColor:
+          messageReceiptIconReadColor ?? this.messageReceiptIconReadColor,
+      messageReceiptIconUnReadColor:
+          messageReceiptIconUnReadColor ?? this.messageReceiptIconUnReadColor,
       messageDateTimeColor: messageDateTimeColor ?? this.messageDateTimeColor,
-      messageReceivedBubbleColor: messageReceivedBubbleColor ?? this.messageReceivedBubbleColor,
+      messageReceivedBubbleColor:
+          messageReceivedBubbleColor ?? this.messageReceivedBubbleColor,
     );
   }
 
@@ -85,16 +92,22 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     }
 
     return ThemeColors(
-      appContainerBackground: Color.lerp(appContainerBackground, other.appContainerBackground, t)!,
-      appContainerShadow: Color.lerp(appContainerShadow, other.appContainerShadow, t)!,
+      appContainerBackground:
+          Color.lerp(appContainerBackground, other.appContainerBackground, t)!,
+      appContainerShadow:
+          Color.lerp(appContainerShadow, other.appContainerShadow, t)!,
       selectedLabel: Color.lerp(selectedLabel, other.selectedLabel, t)!,
       unselectedLabel: Color.lerp(unselectedLabel, other.unselectedLabel, t)!,
       coursorColor: Color.lerp(coursorColor, other.coursorColor, t)!,
       micIcon: Color.lerp(micIcon, other.micIcon, t)!,
-      settingsDialogLanguage: Color.lerp(settingsDialogLanguage, other.settingsDialogLanguage, t)!,
-      messagePrimaryColor: Color.lerp(messagePrimaryColor, other.messagePrimaryColor, t)!,
-      messageBubbleColor: Color.lerp(messageBubbleColor, other.messageBubbleColor, t)!,
-      avatarBackgroundColor: Color.lerp(avatarBackgroundColor, other.avatarBackgroundColor, t)!,
+      settingsDialogLanguage:
+          Color.lerp(settingsDialogLanguage, other.settingsDialogLanguage, t)!,
+      messagePrimaryColor:
+          Color.lerp(messagePrimaryColor, other.messagePrimaryColor, t)!,
+      messageBubbleColor:
+          Color.lerp(messageBubbleColor, other.messageBubbleColor, t)!,
+      avatarBackgroundColor:
+          Color.lerp(avatarBackgroundColor, other.avatarBackgroundColor, t)!,
       messageReceiptBackgroundColor: Color.lerp(
         messageReceiptBackgroundColor,
         other.messageReceiptBackgroundColor,
@@ -143,7 +156,8 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
 
   static ThemeColors get dark => ThemeColors(
         appContainerBackground: AppColors.lightDark,
-        appContainerShadow: AppColors.darkerGrey.withAlpha((255.0 * 0.2).round()),
+        appContainerShadow:
+            AppColors.darkerGrey.withAlpha((255.0 * 0.2).round()),
         selectedLabel: AppColors.darkestGrey,
         unselectedLabel: AppColors.darkestGrey.withAlpha((255.0 * 0.7).round()),
         coursorColor: AppColors.pink,

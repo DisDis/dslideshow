@@ -13,10 +13,9 @@ import 'package:logging/logging.dart';
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   static final Logger _log = Logger('OtaBloc');
   final RealtimeService client;
-  
+
   OtaBloc({required OtaState initialState, required this.client})
-      : 
-        super(initialState) {
+      : super(initialState) {
     on<InitOtaEvent>(_onInit);
     on<UploadFileOtaEvent>(_onUploadFile);
     on<UploadProgressOtaEvent>(_onUploadProgress);
@@ -28,9 +27,10 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     try {
       final ota = OTAClient(host: client.connectUri.host);
       final result = await ota.start();
-      
-      _log.info('Received OTA info: v_frontend=${result["version"]["frontend"]}, v_backend=${result["version"]["backend"]}');
-      
+
+      _log.info(
+          'Received OTA info: v_frontend=${result["version"]["frontend"]}, v_backend=${result["version"]["backend"]}');
+
       // Пока используем тестовые данные
       emit(InitializedOtaState(
         version: "${result["version"]["frontend"]}",
@@ -53,60 +53,60 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
       emit(UploadingOtaState(progress: 0.0));
       await ota.uploadFile(event.code, event.filePath);
       emit(UploadCompleteOtaState());
-      
-    //   // Обновляем состояние на процесс загрузки
-    //   emit(UploadingOtaState(
-    //     version: state.maybeWhen(
-    //       initialized: (version, updateCode) => version,
-    //       uploading: (version, updateCode, progress) => version,
-    //       uploadComplete: (version, updateCode) => version,
-    //       orElse: () => 'Unknown',
-    //     ),
-    //     updateCode: state.maybeWhen(
-    //       initialized: (version, updateCode) => updateCode,
-    //       uploading: (version, updateCode, progress) => updateCode,
-    //       uploadComplete: (version, updateCode) => updateCode,
-    //       orElse: () => 'Unknown',
-    //     ),
-    //     progress: 0.0,
-    //   ));
 
-    //   // Отправляем файл на сервер
-    //   final bytes = await file.readAsBytes();
-    //   final base64Data = base64Encode(bytes);
-      
-    //   // TODO: Заменить на реальную команду загрузки OTA
-    //   // final uploadResult = await _client
-    //   //         .send(WSOtaUploadCommand(
-    //   //           id: WebSocketCommand.generateId(),
-    //   //           data: base64Data,
-    //   //           filename: file.path.split('/').last,
-    //   //         ))
-    //   //     as WSOtaUploadResult;
-          
-    //   // _log.info('Upload complete: ${uploadResult.success}');
-      
-    //   // Пока используем тестовую логику
-    //   // Имитируем процесс загрузки
-    //   for (int i = 10; i <= 100; i += 10) {
-    //     await Future.delayed(const Duration(milliseconds: 200));
-    //     add(UploadProgressOtaEvent(i / 100.0));
-    //   }
-      
-    //   emit(UploadCompleteOtaState(
-    //     version: state.maybeWhen(
-    //       initialized: (version, updateCode) => version,
-    //       uploading: (version, updateCode, progress) => version,
-    //       uploadComplete: (version, updateCode) => version,
-    //       orElse: () => 'Unknown',
-    //     ),
-    //     updateCode: state.maybeWhen(
-    //       initialized: (version, updateCode) => updateCode,
-    //       uploading: (version, updateCode, progress) => updateCode,
-    //       uploadComplete: (version, updateCode) => updateCode,
-    //       orElse: () => 'Unknown',
-    //     ),
-    //   ));
+      //   // Обновляем состояние на процесс загрузки
+      //   emit(UploadingOtaState(
+      //     version: state.maybeWhen(
+      //       initialized: (version, updateCode) => version,
+      //       uploading: (version, updateCode, progress) => version,
+      //       uploadComplete: (version, updateCode) => version,
+      //       orElse: () => 'Unknown',
+      //     ),
+      //     updateCode: state.maybeWhen(
+      //       initialized: (version, updateCode) => updateCode,
+      //       uploading: (version, updateCode, progress) => updateCode,
+      //       uploadComplete: (version, updateCode) => updateCode,
+      //       orElse: () => 'Unknown',
+      //     ),
+      //     progress: 0.0,
+      //   ));
+
+      //   // Отправляем файл на сервер
+      //   final bytes = await file.readAsBytes();
+      //   final base64Data = base64Encode(bytes);
+
+      //   // TODO: Заменить на реальную команду загрузки OTA
+      //   // final uploadResult = await _client
+      //   //         .send(WSOtaUploadCommand(
+      //   //           id: WebSocketCommand.generateId(),
+      //   //           data: base64Data,
+      //   //           filename: file.path.split('/').last,
+      //   //         ))
+      //   //     as WSOtaUploadResult;
+
+      //   // _log.info('Upload complete: ${uploadResult.success}');
+
+      //   // Пока используем тестовую логику
+      //   // Имитируем процесс загрузки
+      //   for (int i = 10; i <= 100; i += 10) {
+      //     await Future.delayed(const Duration(milliseconds: 200));
+      //     add(UploadProgressOtaEvent(i / 100.0));
+      //   }
+
+      //   emit(UploadCompleteOtaState(
+      //     version: state.maybeWhen(
+      //       initialized: (version, updateCode) => version,
+      //       uploading: (version, updateCode, progress) => version,
+      //       uploadComplete: (version, updateCode) => version,
+      //       orElse: () => 'Unknown',
+      //     ),
+      //     updateCode: state.maybeWhen(
+      //       initialized: (version, updateCode) => updateCode,
+      //       uploading: (version, updateCode, progress) => updateCode,
+      //       uploadComplete: (version, updateCode) => updateCode,
+      //       orElse: () => 'Unknown',
+      //     ),
+      //   ));
     } catch (e) {
       _log.severe('Error uploading file: $e');
       emit(ErrorOtaState('Upload failed: $e'));
@@ -127,9 +127,9 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     if (state is UploadingOtaState) {
       final currentState = state as UploadingOtaState;
       emit(UploadCompleteOtaState(
-       //version: currentState.version,
-       // updateCode: currentState.updateCode,
-      ));
+          //version: currentState.version,
+          // updateCode: currentState.updateCode,
+          ));
     }
   }
 
@@ -137,4 +137,3 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     emit(const UninitializedOtaState());
   }
 }
-

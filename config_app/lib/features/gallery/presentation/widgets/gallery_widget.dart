@@ -37,27 +37,26 @@ class GalleryWidget extends StatelessWidget {
       if (currentState is LoadedGalleryState) {
         return Center(
             child: SingleChildScrollView(
-              child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               Row(
                 children: [
                   Text("Total ${currentState.items.length} items"),
                   ElevatedButton(
-                  child: const Text('Reload'),
-                  onPressed: () {
-                    _load(context);
-                  },
-                ),
+                    child: const Text('Reload'),
+                    onPressed: () {
+                      _load(context);
+                    },
+                  ),
                 ],
               ),
               MediaGalleryWidget(
                 items: currentState.items,
               ),
-             
-                        ],
-                      ),
-            ));
+            ],
+          ),
+        ));
       }
       return const Center(
         child: CircularProgressIndicator(),
@@ -114,49 +113,52 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
     final item = items[index];
     final ext = path.extension(item.uri.path);
 
-    return GestureDetector(
-        onTap: () {
-          setState(() {
-            item.selected = !item.selected;
-            if (item.selected) {
-              _selected.add(item);
-            } else {
-              _selected.remove(item);
-            }
-          });
-        }, // Image tapped
-        child: Container(
-          alignment: Alignment.center,
-          decoration: item.selected
-              ? BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.blue))
-              : BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1)),
-          child: ext == '.mp4'
-              ? Text('Video "${path.basename(item.uri.path)}"')
-              : ext == ''? 
-              Row(
-                      children: [
-                        const Icon(Icons.folder),
-                        Text(item.title),
-                      ],
-                    )
-              : CachedNetworkImage(
-                  imageUrl: item.uri.toString(),
-                  errorWidget: (BuildContext context, String url, error) {
-                    return Column(
-                      children: [
-                        const Icon(Icons.error),
-                        Text('Not found'),
-                        Text(item.uri.path),
-                      ],
-                    );
-                  },
-                ),
-        ));
+    return Tooltip(
+      message: item.title,
+      child: GestureDetector(
+          onTap: () {
+            setState(() {
+              item.selected = !item.selected;
+              if (item.selected) {
+                _selected.add(item);
+              } else {
+                _selected.remove(item);
+              }
+            });
+          }, // Image tapped
+          child: Container(
+            alignment: Alignment.center,
+            decoration: item.selected
+                ? BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.blue))
+                : BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1)),
+            child: ext == '.mp4'
+                ? Text('Video "${path.basename(item.uri.path)}"')
+                : ext == ''
+                    ? Row(
+                        children: [
+                          const Icon(Icons.folder),
+                          Text(item.title),
+                        ],
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: item.uri.toString(),
+                        errorWidget: (BuildContext context, String url, error) {
+                          return Column(
+                            children: [
+                              const Icon(Icons.error),
+                              Text('Not found'),
+                              Text(item.uri.path),
+                            ],
+                          );
+                        },
+                      ),
+          )),
+    );
   }
 }
 
@@ -165,8 +167,9 @@ class GalleryItem {
   final String title;
   bool selected;
 
-  GalleryItem(
-      {required this.uri,
-      required this.title,
-      this.selected = false,});
+  GalleryItem({
+    required this.uri,
+    required this.title,
+    this.selected = false,
+  });
 }

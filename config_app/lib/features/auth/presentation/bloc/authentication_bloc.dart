@@ -12,7 +12,8 @@ part 'authentication_event.dart';
 part 'authentication_state.dart';
 part 'authentication_bloc.freezed.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
     required UserRepository userRepository,
@@ -38,7 +39,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
   // final RealtimeService _realtimeService;
-  late StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
+  late StreamSubscription<AuthenticationStatus>
+      _authenticationStatusSubscription;
 
   @override
   Future<void> close() {
@@ -60,7 +62,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         _permissionService.loadData([Permission.NONE.id]);
         //_realtimeService.connect(userId: user.user.id, socketToken: user.socketToken);
         return emit(
-          user != User.empty ? AuthenticationState.authenticated(user) : const AuthenticationState.unauthenticated(),
+          user != User.empty
+              ? AuthenticationState.authenticated(user)
+              : const AuthenticationState.unauthenticated(),
         );
       case AuthenticationStatus.unknown:
         return emit(const AuthenticationState.unknown());

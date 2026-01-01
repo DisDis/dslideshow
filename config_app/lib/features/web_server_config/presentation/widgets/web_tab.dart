@@ -68,16 +68,23 @@ class WebConfigTabState extends State<WebConfigTab> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextField(
-                  controller: TextEditingController(text: currentState.config.webServer.port.toString()),
+                  controller: TextEditingController(
+                      text: currentState.config.webServer.port.toString()),
                   decoration: const InputDecoration(labelText: 'Port'),
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly], // Only numbers can be entered
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ], // Only numbers can be entered
                 ),
                 TextField(
-                  controller: TextEditingController(text: currentState.config.webServer.permanentCode),
-                  decoration: const InputDecoration(labelText: 'Permanent Code'),
+                  controller: TextEditingController(
+                      text: currentState.config.webServer.permanentCode),
+                  decoration:
+                      const InputDecoration(labelText: 'Permanent Code'),
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly], // Only numbers can be entered
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ], // Only numbers can be entered
                 ),
                 CheckboxListTile(
                   value: currentState.config.webServer.alwaysEnabled,

@@ -8,9 +8,12 @@ enum Permission {
   NONE(1001, Scope.PHOTOFRAME, ACTIVE, true),
   ;
 
-  static final Map<String, Permission> NAME_IDX = Map<String, Permission>.fromIterables(Permission.values.map((e) => e.name), Permission.values);
+  static final Map<String, Permission> NAME_IDX =
+      Map<String, Permission>.fromIterables(
+          Permission.values.map((e) => e.name), Permission.values);
 
-  static final ID_IDX = Map<int, Permission>.fromIterables(values.map((e) => e.id), values);
+  static final ID_IDX =
+      Map<int, Permission>.fromIterables(values.map((e) => e.id), values);
 
   final int id;
   final Scope scope;

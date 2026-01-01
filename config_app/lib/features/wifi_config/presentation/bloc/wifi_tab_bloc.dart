@@ -12,7 +12,8 @@ import 'package:logging/logging.dart';
 class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
   static final _log = Logger('WifiTabBloc');
   final RealtimeService client;
-  WifiTabBloc({required WifiTabState initialState, required this.client}) : super(initialState) {
+  WifiTabBloc({required WifiTabState initialState, required this.client})
+      : super(initialState) {
     // on<WifiTabEvent>((WifiTabEvent event, emit) {
     //   return emit.forEach<WifiTabState>(
     //     event.applyAsync(currentState: state, bloc: this),
@@ -43,7 +44,8 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
 
     on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
       emit(const UnWifiTabState());
-      await client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(id: RpcCommand.generateId(), connectionId: event.connectionId)));
+      await client.send(WSSendRpcCommand.byCommand(WiFiRemoveCommand(
+          id: RpcCommand.generateId(), connectionId: event.connectionId)));
       await _updateData(emit);
     });
 
@@ -55,15 +57,21 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
   }
 
   Future<void> _updateData(Emitter<WifiTabState> emit) async {
-    final fScan = client.send(WSSendRpcCommand.byCommand(WiFiScanCommand(id: RpcCommand.generateId())));
-    final fStored = client.send(WSSendRpcCommand.byCommand(WiFiGetConnectionsCommand(id: RpcCommand.generateId())));
-    final scanResult = serializers.deserialize((await fScan as WSRpcResult).resultData) as WiFiScanResult;
-    final storedResult = serializers.deserialize((await fStored as WSRpcResult).resultData) as WiFiGetConnectionsResult;
+    final fScan = client.send(WSSendRpcCommand.byCommand(
+        WiFiScanCommand(id: RpcCommand.generateId())));
+    final fStored = client.send(WSSendRpcCommand.byCommand(
+        WiFiGetConnectionsCommand(id: RpcCommand.generateId())));
+    final scanResult = serializers
+        .deserialize((await fScan as WSRpcResult).resultData) as WiFiScanResult;
+    final storedResult =
+        serializers.deserialize((await fStored as WSRpcResult).resultData)
+            as WiFiGetConnectionsResult;
     final availableNetworks = scanResult.networks.toList(growable: false);
 
     final connections = storedResult.networks.toList(growable: false);
 
-    emit(InWifiTabState(availableNetworks: availableNetworks, connections: connections));
+    emit(InWifiTabState(
+        availableNetworks: availableNetworks, connections: connections));
   }
 
   Future _onLoadWifi(WifiTabEvent event, emit) async {

@@ -26,11 +26,13 @@ class EffectDemoWidget extends StatefulWidget {
   EffectDemoWidgetState createState() => EffectDemoWidgetState();
 }
 
-class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderStateMixin {
+class EffectDemoWidgetState extends State<EffectDemoWidget>
+    with TickerProviderStateMixin {
   bool get isItemChanging => _currentWidget != _nextWidget;
   late AnimationController _mediaItemLoopController;
   late AnimationController _effectController;
-  late final MediaSliderItemEffect _currentEffect = widget.currentEffect.createEffect();
+  late final MediaSliderItemEffect _currentEffect =
+      widget.currentEffect.createEffect();
   late final String effectTitle = widget.currentEffect.name;
   static const int transitionTimeMsValue = 1000;
   static const int displayTimeValue = 200;
@@ -53,7 +55,8 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
     const transitionTime = Duration(milliseconds: 2000);
     const displayTime = Duration(milliseconds: displayTimeValue);
 
-    _effectController = AnimationController(duration: transitionTime, vsync: this);
+    _effectController =
+        AnimationController(duration: transitionTime, vsync: this);
 
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -63,7 +66,8 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
       }
     });
 
-    _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
+    _mediaItemLoopController =
+        AnimationController(duration: displayTime, vsync: this);
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -86,14 +90,17 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
   Future<MediaItem> _getNextItem() async {
     if (_mediaItems.isEmpty) {
       final items = [
-        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'),
-        Uri.parse('http://192.168.50.143:8080/cache/123/get/AIwhur2NgCqrUIjqXOzX1FjCNTeIs4GqGX9kifFSbhvi9vSJiND3SAqTbXQqTs15oC_cqj2Z-8Oi_2560x1600.jpeg'),
+        Uri.parse(
+            'http://192.168.50.143:8080/cache/123/get/AIwhur2ZikzgWevRNwD38jU4WO5PqyMIURfz-xN_RYDP0dEJpWbkNXPRIDqY2UItoHTLKZsVKUSg_2560x1600.jpeg'),
+        Uri.parse(
+            'http://192.168.50.143:8080/cache/123/get/AIwhur2NgCqrUIjqXOzX1FjCNTeIs4GqGX9kifFSbhvi9vSJiND3SAqTbXQqTs15oC_cqj2Z-8Oi_2560x1600.jpeg'),
         Uri.parse(
             'http://192.168.50.143:8080/cache/123/get/AIwhur23zNAQK1bHNZGzQv6CIEHUX_VxDW3P0RS4MPGycT8x2pE25sa57-RBG-74P76mecaE6OQk13-kaHBKNpEt6OeoyhX8Jw_2560x1600.jpeg')
       ];
       _mediaItems.addAll(items.map((e) => MediaItem(e.path, e)));
     }
-    return _mediaItems.removeLast(); //removeAt(_rnd.nextInt(_mediaItems.length));
+    return _mediaItems
+        .removeLast(); //removeAt(_rnd.nextInt(_mediaItems.length));
   }
 
 //
@@ -104,7 +111,10 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
       imageUrl: mediaItem.uri.toString(),
       errorWidget: (BuildContext context, String url, error) {
         return Row(
-          children: [Text('Not found "${mediaItem.id}'), const Icon(Icons.error)],
+          children: [
+            Text('Not found "${mediaItem.id}'),
+            const Icon(Icons.error)
+          ],
         );
       },
     );
@@ -123,8 +133,10 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            _currentEffect.transform(context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
-            _currentEffect.transform(context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
+            _currentEffect.transform(context, _currentWidget, true /*,0,0*/,
+                _effectController.value /*, 2*/, screenW, screenH),
+            _currentEffect.transform(context, _nextWidget, false /*1, 0*/,
+                _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
         child: slideShowLoaderWidget);
@@ -132,11 +144,9 @@ class EffectDemoWidgetState extends State<EffectDemoWidget> with TickerProviderS
     _effectController.reset();
     _mediaItemLoopController.reset();
     setState(() {});
-    try{
-    await _effectController.forward().orCancel;
-    } catch(_){
-
-    }
+    try {
+      await _effectController.forward().orCancel;
+    } catch (_) {}
     _mediaItemLoopController.forward();
   }
 
