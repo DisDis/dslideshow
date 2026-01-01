@@ -1,5 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:config_app/features/gallery/presentation/widgets/folder_grid_item.dart';
+import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,7 +117,8 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
 
     // Определяем типы для удобства чтения
     final isFolder = ext == '';
-    final isVideo = ext == '.mp4' || ext == '.avi'; // Можно расширить список: || ext == '.mov'
+    final isVideo = ext == '.mp4' ||
+        ext == '.avi'; // Можно расширить список: || ext == '.mov'
     final isSelected = item.selected;
 
     return Tooltip(
@@ -184,49 +186,13 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
 // Вспомогательный метод для чистоты кода
   Widget _buildContent(GalleryItem item, bool isFolder, bool isVideo) {
     if (isFolder) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.folder, size: 48, color: Colors.amber[700]),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text(
-              item.title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis, // Обрезаем длинный текст
-            ),
-          ),
-        ],
-      );
+      return FolderGridItem(item: item);
     } else if (isVideo) {
       // Заглушка для видео
       return VideoGridItem(title: item.title, url: item.uri.toString());
     }
-
     // Обычное изображение
-    return CachedNetworkImage(
-      imageUrl: item.uri.toString(),
-      fit: BoxFit.cover, // ВАЖНО: Заполняет весь квадрат
-      placeholder: (context, url) => const Center(
-        child: SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      ),
-      errorWidget: (context, url, error) => Container(
-        color: Colors.grey[300],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.broken_image, color: Colors.grey),
-            Text('Error', style: TextStyle(fontSize: 10)),
-          ],
-        ),
-      ),
-    );
+    return ImageGridItem(item: item);
   }
 }
 

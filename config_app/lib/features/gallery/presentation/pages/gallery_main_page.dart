@@ -19,10 +19,7 @@ class GalleryMainPage extends StatelessWidget {
             create: (BuildContext context) => GalleryBloc(
                 initialState: const UninitializedGalleryState(), client: sl())
               ..add(GalleryLoadEvent()),
-          ), /*
-    BlocProvider<BlocC>(
-      create: (BuildContext context) => BlocC(),
-    ),*/
+          ),
         ],
         child: Builder(
           builder: (context) {
