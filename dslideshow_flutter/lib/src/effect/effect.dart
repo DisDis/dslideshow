@@ -1,5 +1,8 @@
+import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
+
 import 'media_slider_item_effects.dart';
 import 'media_slider_item_effect.dart';
+import 'mosaic_transition_effect.dart';
 
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
@@ -21,6 +24,9 @@ class Effect {
   static const Effect rotateUpEffect = Effect._('Rotate Up', _createRotateUpEffect);
   static const Effect zoomOutSlideEffect = Effect._('Zoom Out', _createZoomOutSlideEffect);
   static const Effect fadeEffect = Effect._('Fade', _createFadeEffect);
+  static const Effect mosaic10Effect = Effect._('Mosaic10', _createMosaic10Effect);
+  static const Effect mosaic10FadeEffect = Effect._('Mosaic10Fade', _createMosaic10FadeEffect);
+  
 
   static const Iterable<Effect> values = [
     cubeEffect,
@@ -37,7 +43,9 @@ class Effect {
     rotateDownEffect,
     rotateUpEffect,
     zoomOutSlideEffect,
-    fadeEffect
+    fadeEffect,
+    mosaic10Effect,
+    mosaic10FadeEffect,
   ];
   final String name;
 
@@ -73,6 +81,9 @@ class Effect {
   static MediaSliderItemEffect _createTabletEffect() => TabletEffect();
   static MediaSliderItemEffect _createZoomOutSlideEffect() => ZoomOutEffect();
   static MediaSliderItemEffect _createFadeEffect() => FadeEffect();
+  static MediaSliderItemEffect _createMosaic10Effect() => MosaicTransitionEffect();
+  static MediaSliderItemEffect _createMosaic10FadeEffect() => MosaicFadeEffect();
+  
 
   static Effect parse(String name) {
     return values.firstWhere((element) => element.name == name, orElse: () => defaultEffect);

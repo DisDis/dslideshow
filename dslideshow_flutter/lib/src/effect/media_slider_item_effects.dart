@@ -25,7 +25,7 @@ mixin class TranslateEffect {
   }
 }
 
-class AccordionEffect with TranslateEffect implements MediaSliderItemEffect {
+class AccordionEffect extends MediaSliderItemEffect with TranslateEffect {
   final bool transformRight;
   final bool transformLeft;
 
@@ -40,6 +40,7 @@ class AccordionEffect with TranslateEffect implements MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) {
+
     if (isCurrentPage /*index == currentPage*/ && transformLeft) {
       return Transform(
         transformHitTests: false,
@@ -78,8 +79,8 @@ class AccordionEffect with TranslateEffect implements MediaSliderItemEffect {
 }
 
 class BackgroundToForegroundEffect
-    with TranslateEffect
-    implements MediaSliderItemEffect {
+   extends MediaSliderItemEffect  with TranslateEffect
+    {
   final double startScale;
 
   BackgroundToForegroundEffect({this.startScale = 0.4});
@@ -121,7 +122,7 @@ class BackgroundToForegroundEffect
   }
 }
 
-class CubeEffect with TranslateEffect implements MediaSliderItemEffect {
+class CubeEffect extends MediaSliderItemEffect  with TranslateEffect {
   final double perspectiveScale;
   final AlignmentGeometry rightPageAlignment;
   final AlignmentGeometry leftPageAlignment;
@@ -188,7 +189,7 @@ class CubeEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class DefaultEffect with TranslateEffect implements MediaSliderItemEffect {
+class DefaultEffect extends MediaSliderItemEffect  with TranslateEffect{
   @override
   Widget transform(
     BuildContext context,
@@ -208,7 +209,7 @@ class DefaultEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class DepthEffect with TranslateEffect implements MediaSliderItemEffect {
+class DepthEffect extends MediaSliderItemEffect  with TranslateEffect{
   final double startScale;
 
   DepthEffect({this.startScale = 0.4});
@@ -251,8 +252,8 @@ class DepthEffect with TranslateEffect implements MediaSliderItemEffect {
 }
 
 class FlipHorizontalEffect
-    with TranslateEffect
-    implements MediaSliderItemEffect {
+    extends MediaSliderItemEffect  with TranslateEffect
+    {
   final double perspectiveScale;
 
   FlipHorizontalEffect({this.perspectiveScale = 0.002});
@@ -310,7 +311,7 @@ class FlipHorizontalEffect
   }
 }
 
-class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
+class FlipVerticalEffect extends MediaSliderItemEffect  with TranslateEffect {
   final double perspectiveScale;
 
   FlipVerticalEffect({this.perspectiveScale = 0.002});
@@ -370,8 +371,8 @@ class FlipVerticalEffect with TranslateEffect implements MediaSliderItemEffect {
 
 //1
 class ForegroundToBackgroundEffect
-    with TranslateEffect
-    implements MediaSliderItemEffect {
+    extends MediaSliderItemEffect  with TranslateEffect
+     {
   final double endScale;
 
   ForegroundToBackgroundEffect({this.endScale = 0.4});
@@ -410,7 +411,7 @@ class ForegroundToBackgroundEffect
   }
 }
 
-class ParallaxEffect with TranslateEffect implements MediaSliderItemEffect {
+class ParallaxEffect extends MediaSliderItemEffect  with TranslateEffect {
   final double clipAmount;
 
   ParallaxEffect({this.clipAmount = 200});
@@ -468,7 +469,7 @@ class RectClipper extends CustomClipper<Rect> {
   }
 }
 
-class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
+class RotateDownEffect extends MediaSliderItemEffect  with TranslateEffect{
   final double rotationAngle;
 
   RotateDownEffect({double rotationAngle = 45})
@@ -519,7 +520,7 @@ class RotateDownEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
+class RotateUpEffect extends MediaSliderItemEffect  with TranslateEffect  {
   final double rotationAngle;
 
   RotateUpEffect({double rotationAngle = 45})
@@ -570,7 +571,7 @@ class RotateUpEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class StackEffect with TranslateEffect implements MediaSliderItemEffect {
+class StackEffect extends MediaSliderItemEffect  with TranslateEffect {
   @override
   Widget transform(
     BuildContext context,
@@ -604,7 +605,7 @@ class StackEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
+class TabletEffect extends MediaSliderItemEffect  with TranslateEffect {
   @override
   Widget transform(
     BuildContext context,
@@ -654,7 +655,7 @@ class TabletEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
+class ZoomOutEffect extends MediaSliderItemEffect  with TranslateEffect {
   final double zoomOutScale;
   final bool enableOpacity;
 
@@ -711,7 +712,7 @@ class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
   }
 }
 
-class FadeEffect implements MediaSliderItemEffect {
+class FadeEffect extends MediaSliderItemEffect {
   @override
   Widget transform(
     BuildContext context,
@@ -724,5 +725,5 @@ class FadeEffect implements MediaSliderItemEffect {
     return isCurrentPage
         ? Opacity(opacity: 1 - pageDelta, child: page)
         : Opacity(opacity: pageDelta, child: page);
-  }
+   }
 }
