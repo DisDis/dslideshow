@@ -35,28 +35,26 @@ class GalleryWidget extends StatelessWidget {
         ));
       }
       if (currentState is LoadedGalleryState) {
-        return Center(
-            child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: [
-                  Text("Total ${currentState.items.length} items"),
-                  ElevatedButton(
-                    child: const Text('Reload'),
-                    onPressed: () {
-                      _load(context);
-                    },
-                  ),
-                ],
-              ),
-              MediaGalleryWidget(
+        return Column(
+          children: [
+            Row(
+              children: [
+                Text("Total ${currentState.items.length} items"),
+                ElevatedButton(
+                  child: const Text('Reload'),
+                  onPressed: () {
+                    _load(context);
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: MediaGalleryWidget(
                 items: currentState.items,
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        );
       }
       return const Center(
         child: CircularProgressIndicator(),
@@ -96,17 +94,19 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              //maxCrossAxisExtent: 200,
-              childAspectRatio: 3 / 2,
-              crossAxisSpacing: 10,
-              crossAxisCount: 3,
-              mainAxisSpacing: 10,
-            ),
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: _buildItem));
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height -
+                200, // Устанавливаем высоту, чтобы избежать проблем с shrinkWrap
+            child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  //maxCrossAxisExtent: 200,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 10,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: items.length,
+                itemBuilder: _buildItem)));
   }
 
   Widget _buildItem(BuildContext ctx, index) {
