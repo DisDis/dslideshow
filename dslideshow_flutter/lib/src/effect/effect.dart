@@ -1,5 +1,9 @@
+import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
+import 'package:dslideshow_flutter/src/effect/blure_fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
 import 'package:dslideshow_flutter/src/effect/liquid_morph_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/zoom_over_effect.dart';
 
 import 'media_slider_item_effects.dart';
 import 'media_slider_item_effect.dart';
@@ -67,6 +71,11 @@ class Effect {
     'LiquidMorph',
     _createLiquidMorphEffect,
   );
+  static const Effect blindsEffect = Effect._('Blinds', _createBlindsEffect);
+  static const Effect blurFadeEffect = Effect._('BlurFade', _createBlurFadeEffect);
+  static const Effect zoomOverEffect = Effect._('ZoomOver', _createZoomOverEffect);
+  static const Effect cubeEffect2 = Effect._('Cube2', _createCubeEffect2);
+  
   
 
   static const Iterable<Effect> values = [
@@ -90,6 +99,10 @@ class Effect {
     mosaicTLFadeEffect,
     mosaicBRFadeEffect,
     liquidMorphEffect,
+    blindsEffect,
+    blurFadeEffect,
+    zoomOverEffect,
+    cubeEffect2,
   ];
   final String name;
 
@@ -141,7 +154,11 @@ class Effect {
       MosaicFadeEffect(direction: MosaicDirection.bottomRight);
   static MediaSliderItemEffect _createLiquidMorphEffect() =>
       LiquidMorphEffect();
-
+  static MediaSliderItemEffect _createBlindsEffect() => BlindsEffect();
+  static MediaSliderItemEffect _createBlurFadeEffect() => BlurFadeEffect();
+  static MediaSliderItemEffect _createZoomOverEffect() => ZoomOverEffect();
+  static MediaSliderItemEffect _createCubeEffect2() => CubeEffect2();
+  
   static Effect parse(String name) {
     return values.firstWhere(
       (element) => element.name == name,
