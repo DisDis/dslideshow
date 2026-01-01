@@ -7,7 +7,7 @@ class MosaicTransitionEffect extends MediaSliderItemEffect {
   final int gridSize;
   late final List<double> _thresholds;
 
-  MosaicTransitionEffect({this.gridSize = 10}) {
+  MosaicTransitionEffect({this.gridSize = 100}) {
     // Генерируем случайные пороги исчезновения один раз при создании эффекта.
     // Если вы хотите, чтобы рисунок менялся каждый раз, создавайте новый экземпляр
     // MosaicTransitionEffect при каждом переключении слайда.

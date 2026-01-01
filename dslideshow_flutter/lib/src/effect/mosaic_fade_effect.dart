@@ -3,27 +3,89 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+// --- Направления эффекта ---
+enum MosaicDirection {
+  random,
+  topLeft,    // leftUp
+  topRight,   // rightUp
+  bottomLeft, // leftDown
+  bottomRight // rightDown
+}
+
+// --- Обновленный MosaicFadeEffect ---
 class MosaicFadeEffect extends MediaSliderItemEffect {
   final int gridSize;
-  late final List<double> _startTimes;
+  final double fadeFraction;
+  final MosaicDirection direction;
   
-  // Длительность угасания одного квадратика относительно всей анимации (0.0 - 1.0).
-  // 0.2 означает, что квадратик будет гаснуть 20% от времени всей анимации.
-  final double fadeFraction; 
+  // Здесь храним расписание исчезновения для каждой клетки
+  late final List<double> _startTimes;
 
   MosaicFadeEffect({
-    this.gridSize = 10,
-    this.fadeFraction = 0.3, // Квадратик гаснет быстро, но не мгновенно
+    this.gridSize = 100,
+    this.fadeFraction = 0.3, 
+    this.direction = MosaicDirection.random,
   }) {
-    // Генерируем случайное время старта для каждого квадрата.
-    // Максимальное время старта = 1.0 - fadeFraction, чтобы успеть погаснуть до конца.
+    _calculateStartTimes();
+  }
+
+  void _calculateStartTimes() {
     final random = Random();
+    // Максимальное время начала анимации квадрата, чтобы он успел погаснуть к концу (1.0)
     final maxStartTime = 1.0 - fadeFraction;
+    final int count = gridSize * gridSize;
     
-    _startTimes = List.generate(
-      gridSize * gridSize,
-      (_) => random.nextDouble() * maxStartTime,
-    );
+    _startTimes = List<double>.filled(count, 0.0);
+
+    for (int i = 0; i < count; i++) {
+      final int col = i % gridSize;
+      final int row = i ~/ gridSize;
+      
+      double normalizedScore = 0.0;
+
+      if (direction == MosaicDirection.random) {
+        normalizedScore = random.nextDouble();
+      } else {
+        // Логика направлений
+        // Мы вычисляем дистанцию от нужного угла
+        double dist = 0.0;
+        final double maxDist = (gridSize - 1) * 2.0; // Макс сумма координат (x+y)
+
+        switch (direction) {
+          case MosaicDirection.topLeft:
+            dist = (col + row).toDouble();
+            break;
+          case MosaicDirection.bottomRight:
+            // Инверсия topLeft
+            dist = maxDist - (col + row);
+            break;
+          case MosaicDirection.topRight:
+             // Чем больше X и меньше Y, тем раньше (или наоборот, зависит от угла)
+             // TopRight это (max, 0). Дистанция от (0,0) до (x,y) в манхэттенском виде для правого угла:
+             // start ~ (maxCol - col) + row
+             dist = ((gridSize - 1 - col) + row).toDouble();
+            break;
+          case MosaicDirection.bottomLeft:
+            // BottomLeft это (0, max). 
+            // start ~ col + (maxRow - row)
+            dist = (col + (gridSize - 1 - row)).toDouble();
+            break;
+          default:
+            dist = 0;
+        }
+        
+        // Нормализуем от 0.0 до 1.0
+        double linearPos = dist / maxDist;
+        
+        // Добавляем шум (Jitter), чтобы линия не была идеально ровной
+        // 80% влияет позиция, 20% влияет случайность
+        double noise = random.nextDouble();
+        normalizedScore = (linearPos * 0.8) + (noise * 0.2);
+      }
+      
+      // Записываем итоговое время старта
+      _startTimes[i] = normalizedScore * maxStartTime;
+    }
   }
 
   @override
@@ -44,11 +106,7 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // 1. Слой назначения (лежит внизу)
         nextWidget,
-
-        // 2. Слой текущий с маской прозрачности
-        // Мы оборачиваем currentWidget в наш спец-виджет
         _MosaicFadeLayer(
           progress: controller.value,
           gridSize: gridSize,
@@ -61,7 +119,7 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
   }
 }
 
-// --- Виджет-обертка для RenderObject ---
+// --- RenderObject Widget ---
 class _MosaicFadeLayer extends SingleChildRenderObjectWidget {
   final double progress;
   final int gridSize;
@@ -91,12 +149,12 @@ class _MosaicFadeLayer extends SingleChildRenderObjectWidget {
     renderObject
       ..progress = progress
       ..gridSize = gridSize
-      ..startTimes = startTimes
+      ..startTimes = startTimes // Ссылка на список
       ..fadeFraction = fadeFraction;
   }
 }
 
-// --- RenderObject (Вся магия здесь) ---
+// --- RenderObject Implementation (с исправленным багом) ---
 class _RenderMosaicFadeLayer extends RenderProxyBox {
   double _progress;
   int _gridSize;
@@ -115,7 +173,6 @@ class _RenderMosaicFadeLayer extends RenderProxyBox {
         _fadeFraction = fadeFraction,
         super(child);
 
-  // Сеттеры для обновления параметров
   set progress(double value) {
     if (_progress != value) {
       _progress = value;
@@ -131,7 +188,8 @@ class _RenderMosaicFadeLayer extends RenderProxyBox {
   }
 
   set startTimes(List<double> value) {
-    _startTimes = value; // Ссылку обновляем, перерисовка вызовется прогрессом
+    _startTimes = value;
+    markNeedsPaint(); 
   }
   
   set fadeFraction(double value) {
@@ -144,72 +202,51 @@ class _RenderMosaicFadeLayer extends RenderProxyBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child == null) return;
+    if (_progress >= 1.0) return; // Полностью исчез
 
-    // Если анимация закончилась (progress=1.0), то старый слой должен исчезнуть целиком.
-    // Мы просто ничего не рисуем -> полная пустота (прозрачность).
-    if (_progress >= 1.0) return;
-
-    // Если анимация не началась, рисуем ребенка как есть (полная видимость)
     if (_progress <= 0.0) {
       context.paintChild(child!, offset);
       return;
     }
 
-    // 1. Создаем слой. Это обязательно для смешивания.
     context.canvas.saveLayer(offset & size, Paint());
-
-    // 2. Рисуем картинку (CurrentWidget)
     context.paintChild(child!, offset);
 
-    // 3. Подготавливаем кисть для "вырезания"
-    // dstIn оставляет пиксели картинки только там, где мы нарисуем маску.
-    // Прозрачность маски переносится на картинку.
     final Paint maskPaint = Paint()..blendMode = BlendMode.dstIn;
-
     final double cellW = size.width / _gridSize;
     final double cellH = size.height / _gridSize;
 
-    // Проходим по всем квадратикам
     for (int i = 0; i < _startTimes.length; i++) {
       final double startTime = _startTimes[i];
       final double endTime = startTime + _fadeFraction;
 
       double alpha = 1.0;
-      
       if (_progress >= endTime) {
-        alpha = 0.0; // Полностью исчез
+        alpha = 0.0;
       } else if (_progress > startTime) {
-        // Линейная интерполяция
         final double localProgress = (_progress - startTime) / _fadeFraction;
         alpha = 1.0 - localProgress;
       }
 
-      // ВАЖНОЕ ИСПРАВЛЕНИЕ:
-      // Мы должны рисовать маску, если alpha < 1.0.
-      // Если alpha == 1.0, рисовать не обязательно (картинка и так видна).
-      // Но если alpha == 0.0, мы ОБЯЗАНЫ нарисовать прозрачный квадрат, чтобы стереть картинку.
-      
+      // Исправленное условие: рисуем, если прозрачность не полная (1.0).
+      // Если alpha == 0.0, рисуем прозрачный квадрат, чтобы стереть.
       if (alpha < 1.0) {
         maskPaint.color = Colors.black.withOpacity(alpha);
         
         final int col = i % _gridSize;
         final int row = i ~/ _gridSize;
 
-        // Рисуем прямоугольник.
-        // Добавляем +1.0 к размеру, чтобы гарантированно перекрыть стыки (anti-aliasing)
         context.canvas.drawRect(
           Rect.fromLTWH(
             offset.dx + col * cellW,
             offset.dy + row * cellH,
-            cellW + 1.0, 
+            cellW + 1.0, // Перекрытие стыков
             cellH + 1.0,
           ),
           maskPaint,
         );
       }
     }
-
-    // 4. Применяем слой
     context.canvas.restore();
   }
 }
