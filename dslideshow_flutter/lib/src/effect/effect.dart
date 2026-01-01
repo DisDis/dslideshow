@@ -1,6 +1,5 @@
 import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
 import 'package:dslideshow_flutter/src/effect/blure_fade_effect.dart';
-import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
 import 'package:dslideshow_flutter/src/effect/liquid_morph_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/zoom_over_effect.dart';
@@ -73,9 +72,7 @@ class Effect {
   );
   static const Effect blindsEffect = Effect._('Blinds', _createBlindsEffect);
   static const Effect blurFadeEffect = Effect._('BlurFade', _createBlurFadeEffect);
-  static const Effect zoomOverEffect = Effect._('ZoomOver', _createZoomOverEffect);
-  static const Effect cubeEffect2 = Effect._('Cube2', _createCubeEffect2);
-  
+  static const Effect zoomOverEffect = Effect._('ZoomOver', _createZoomOverEffect);  
   
 
   static const Iterable<Effect> values = [
@@ -102,7 +99,6 @@ class Effect {
     blindsEffect,
     blurFadeEffect,
     zoomOverEffect,
-    // cubeEffect2,
   ];
   final String name;
 
@@ -157,7 +153,6 @@ class Effect {
   static MediaSliderItemEffect _createBlindsEffect() => BlindsEffect();
   static MediaSliderItemEffect _createBlurFadeEffect() => BlurFadeEffect();
   static MediaSliderItemEffect _createZoomOverEffect() => ZoomOverEffect();
-  static MediaSliderItemEffect _createCubeEffect2() => CubeEffect2();
   
   static Effect parse(String name) {
     return values.firstWhere(
