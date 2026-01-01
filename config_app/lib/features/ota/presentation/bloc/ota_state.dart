@@ -9,7 +9,6 @@ class OtaState with _$OtaState {
     required String version,
   }) = InitializedOtaState;
   const factory OtaState.uploading({
-    required String version,
     required double progress,
   }) = UploadingOtaState;
   const factory OtaState.uploadComplete() = UploadCompleteOtaState;

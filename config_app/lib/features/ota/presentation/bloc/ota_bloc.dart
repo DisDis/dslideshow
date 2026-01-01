@@ -12,10 +12,10 @@ import 'package:logging/logging.dart';
 
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   static final Logger _log = Logger('OtaBloc');
-  final RealtimeService _client;
+  final RealtimeService client;
   
-  OtaBloc({required OtaState initialState, required RealtimeService client})
-      : _client = client,
+  OtaBloc({required OtaState initialState, required this.client})
+      : 
         super(initialState) {
     on<InitOtaEvent>(_onInit);
     on<UploadFileOtaEvent>(_onUploadFile);
@@ -26,7 +26,7 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
 
   void _onInit(InitOtaEvent event, Emitter<OtaState> emit) async {
     try {
-      final ota = OTAClient(host: _client.connectUri.host);
+      final ota = OTAClient(host: client.connectUri.host);
       final result = await ota.start();
       
       _log.info('Received OTA info: v_frontend=${result["version"]["frontend"]}, v_backend=${result["version"]["backend"]}');
@@ -49,7 +49,8 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
         emit(const ErrorOtaState('File does not exist'));
         return;
       }
-      final ota = OTAClient(host: _client.connectUri.host);
+      final ota = OTAClient(host: client.connectUri.host);
+      emit(UploadingOtaState(progress: 0.0));
       await ota.uploadFile(event.code, event.filePath);
       emit(UploadCompleteOtaState());
       
@@ -116,8 +117,6 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
     if (state is UploadingOtaState) {
       final currentState = state as UploadingOtaState;
       emit(UploadingOtaState(
-        version: currentState.version,
-        //updateCode: currentState.updateCode,
         progress: event.progress,
       ));
     }

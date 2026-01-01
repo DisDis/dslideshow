@@ -52,29 +52,9 @@ class ConfigAppNavigationBar extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.info),
-            title: Text(context.localizations.admin_nav_account_name),
+            leading: const Icon(Icons.home),
+            title: Text("Home"),
             onTap: () => context.go('/home'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Request'),
-            trailing: ClipOval(
-              child: Container(
-                color: Colors.red,
-                width: 20,
-                height: 20,
-                child: const Center(
-                  child: Text(
-                    '8',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ),
           const Divider(),
           ListTile(
@@ -88,14 +68,18 @@ class ConfigAppNavigationBar extends StatelessWidget {
             onTap: () => context.go('/wifi_config'),
           ),
           ListTile(
-            leading: const Icon(Icons.wifi),
+            leading: const Icon(Icons.slideshow),
             title: const Text('Slideshow'),
             onTap: () => context.go('/slideshow_config'),
           ),
-
+          ListTile(
+            leading: const Icon(Icons.update),
+            title: const Text('OTA Update'),
+            onTap: () => context.go('/ota'),
+          ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.work),
+            leading: const Icon(Icons.image),
             title: const Text('Gallery'),
             onTap: () => context.go('/gallery'),
           ),

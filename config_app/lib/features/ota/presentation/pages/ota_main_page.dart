@@ -6,7 +6,6 @@ import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io' as io;
 import 'package:file_picker/file_picker.dart';
 
 class OtaMainPage extends StatelessWidget {
@@ -20,7 +19,8 @@ class OtaMainPage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<OtaBloc>(
-            create: (BuildContext context) => OtaBloc(initialState: const UninitializedOtaState(), client: sl()),
+            create: (BuildContext context) => OtaBloc(
+                initialState: const UninitializedOtaState(), client: sl()),
           ),
         ],
         child: Builder(
@@ -59,7 +59,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
         return state.maybeWhen(
           uninitialized: () => _buildUninitializedState(context),
           initialized: (version) => _buildInitializedState(context, version),
-          uploading: (version, progress) => _buildUploadingState(context, version, progress),
+          uploading: (progress) => _buildUploadingState(context, progress),
           uploadComplete: () => _buildUploadCompleteState(context),
           error: (errorMessage) => _buildErrorState(context, errorMessage),
           orElse: () => const Center(child: Text('Unknown state')),
@@ -69,10 +69,19 @@ class _OtaPageContentState extends State<OtaPageContent> {
   }
 
   Widget _buildUninitializedState(BuildContext context) {
+    final uri = context.read<OtaBloc>().client.connectUri;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SelectableText(
+            'http://${uri.host}:8282/ota_start',
+            style: TextStyle(fontSize: 18),
+            onTap: () {
+              // Тут можно добавить логику открытия, если нужно
+              print('Нажали на текст');
+            },
+          ),
           const Text(
             'OTA Update',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -103,11 +112,13 @@ class _OtaPageContentState extends State<OtaPageContent> {
           ),
           const SizedBox(height: 10),
           TextField(
-                  controller: tEdCode,
-                  decoration: const InputDecoration(labelText: 'OTA Code'),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly], // Only numbers can be entered
-                ),
+            controller: tEdCode,
+            decoration: const InputDecoration(labelText: 'OTA Code'),
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ], // Only numbers can be entered
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
@@ -118,7 +129,9 @@ class _OtaPageContentState extends State<OtaPageContent> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              context.read<OtaBloc>().add(UploadFileOtaEvent(filePath!,tEdCode.value.text));
+              context
+                  .read<OtaBloc>()
+                  .add(UploadFileOtaEvent(filePath!, tEdCode.value.text));
             },
             child: const Text('Update'),
           ),
@@ -127,22 +140,12 @@ class _OtaPageContentState extends State<OtaPageContent> {
     );
   }
 
-  Widget _buildUploadingState(BuildContext context, String version, double progress) {
+  Widget _buildUploadingState(BuildContext context, double progress) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Version: $version',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          // const SizedBox(height: 10),
-          // Text(
-          //   'Update Code: $updateCode',
-          //   style: const TextStyle(fontSize: 16),
-          // ),
-          const SizedBox(height: 20),
           const Text(
             'Uploading firmware...',
             style: TextStyle(fontSize: 16),

@@ -165,7 +165,7 @@ extension OtaStatePatterns on OtaState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? uninitialized,
     TResult Function(String version)? initialized,
-    TResult Function(String version, double progress)? uploading,
+    TResult Function(double progress)? uploading,
     TResult Function()? uploadComplete,
     TResult Function(String errorMessage)? error,
     required TResult orElse(),
@@ -177,7 +177,7 @@ extension OtaStatePatterns on OtaState {
       case InitializedOtaState() when initialized != null:
         return initialized(_that.version);
       case UploadingOtaState() when uploading != null:
-        return uploading(_that.version, _that.progress);
+        return uploading(_that.progress);
       case UploadCompleteOtaState() when uploadComplete != null:
         return uploadComplete();
       case ErrorOtaState() when error != null:
@@ -204,7 +204,7 @@ extension OtaStatePatterns on OtaState {
   TResult when<TResult extends Object?>({
     required TResult Function() uninitialized,
     required TResult Function(String version) initialized,
-    required TResult Function(String version, double progress) uploading,
+    required TResult Function(double progress) uploading,
     required TResult Function() uploadComplete,
     required TResult Function(String errorMessage) error,
   }) {
@@ -215,7 +215,7 @@ extension OtaStatePatterns on OtaState {
       case InitializedOtaState():
         return initialized(_that.version);
       case UploadingOtaState():
-        return uploading(_that.version, _that.progress);
+        return uploading(_that.progress);
       case UploadCompleteOtaState():
         return uploadComplete();
       case ErrorOtaState():
@@ -241,7 +241,7 @@ extension OtaStatePatterns on OtaState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? uninitialized,
     TResult? Function(String version)? initialized,
-    TResult? Function(String version, double progress)? uploading,
+    TResult? Function(double progress)? uploading,
     TResult? Function()? uploadComplete,
     TResult? Function(String errorMessage)? error,
   }) {
@@ -252,7 +252,7 @@ extension OtaStatePatterns on OtaState {
       case InitializedOtaState() when initialized != null:
         return initialized(_that.version);
       case UploadingOtaState() when uploading != null:
-        return uploading(_that.version, _that.progress);
+        return uploading(_that.progress);
       case UploadCompleteOtaState() when uploadComplete != null:
         return uploadComplete();
       case ErrorOtaState() when error != null:
@@ -350,9 +350,8 @@ class _$InitializedOtaStateCopyWithImpl<$Res>
 /// @nodoc
 
 class UploadingOtaState implements OtaState {
-  const UploadingOtaState({required this.version, required this.progress});
+  const UploadingOtaState({required this.progress});
 
-  final String version;
   final double progress;
 
   /// Create a copy of OtaState
@@ -367,17 +366,16 @@ class UploadingOtaState implements OtaState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is UploadingOtaState &&
-            (identical(other.version, version) || other.version == version) &&
             (identical(other.progress, progress) ||
                 other.progress == progress));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, version, progress);
+  int get hashCode => Object.hash(runtimeType, progress);
 
   @override
   String toString() {
-    return 'OtaState.uploading(version: $version, progress: $progress)';
+    return 'OtaState.uploading(progress: $progress)';
   }
 }
 
@@ -388,7 +386,7 @@ abstract mixin class $UploadingOtaStateCopyWith<$Res>
           UploadingOtaState value, $Res Function(UploadingOtaState) _then) =
       _$UploadingOtaStateCopyWithImpl;
   @useResult
-  $Res call({String version, double progress});
+  $Res call({double progress});
 }
 
 /// @nodoc
@@ -403,14 +401,9 @@ class _$UploadingOtaStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? version = null,
     Object? progress = null,
   }) {
     return _then(UploadingOtaState(
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
       progress: null == progress
           ? _self.progress
           : progress // ignore: cast_nullable_to_non_nullable
