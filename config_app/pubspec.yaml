@@ -40,6 +40,7 @@ dependencies:
   dslideshow_backend:
     path: ../backend
 
+  video_player: ^2.10.1
   cached_network_image: ^3.4.1
   get_it: ^9.0.5
   path_provider: ^2.1.5
