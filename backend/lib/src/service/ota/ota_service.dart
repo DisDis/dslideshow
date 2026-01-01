@@ -22,19 +22,13 @@ class OTAService implements RpcService {
   String _code = _generateCode();
   String get code => _code;
 
-  final io.Directory _folder = new io.Directory(
-    path.join(externalStorage.path, 'firmwares'),
-  );
+  final io.Directory _folder = new io.Directory(path.join(externalStorage.path, 'firmwares'));
   static final math.Random _rnd = math.Random();
 
   bool _enabled = false;
   bool get enabled => _enabled;
 
-  OTAInfo _info = OTAInfo(
-    status: OTAStatus.disabled,
-    code: "-",
-    uploadingPercent: 0,
-  );
+  OTAInfo _info = OTAInfo(status: OTAStatus.disabled, code: "-", uploadingPercent: 0);
 
   void set enabled(bool newvalue) {
     if (_autostop != null && _autostop!.isActive) {
@@ -102,9 +96,7 @@ class OTAService implements RpcService {
     server.autoCompress = true;
     _info = _info.copyWith(status: OTAStatus.ready);
 
-    _log.info(
-      'Serving at http://${server.address.host}:${server.port} authCode:$_code',
-    );
+    _log.info('Serving at http://${server.address.host}:${server.port} authCode:$_code');
   }
 
   void _stopWebServer() {
@@ -123,10 +115,7 @@ class OTAService implements RpcService {
       case OTAGetInfoCommand.TYPE:
         return _executeOTAGetInfoCommand(command as OTAGetInfoCommand);
       default:
-        return _generateErrorResult(
-          new Exception("Unknown command: ${command.type}"),
-          command,
-        );
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
@@ -134,16 +123,10 @@ class OTAService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} Service ${new DateTime.now()}",
-    );
+    return new EchoCommandResult(id: command.id, resultText: "${command.text} Service ${new DateTime.now()}");
   }
 
-  Future<RpcErrorResult> _generateErrorResult(
-    Object e,
-    RpcCommand command,
-  ) async {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -153,9 +136,7 @@ class OTAService implements RpcService {
 
   void _updateInfo(OTAInfo newValue) {
     _info = newValue;
-    _frontendService.send(
-      OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info),
-    );
+    _frontendService.send(OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info));
   }
 
   Future<Response> _postOTAUploadPackage(Request request) async {
@@ -180,11 +161,8 @@ class OTAService implements RpcService {
     if (fullSize > 200 * 1024 * 1024) {
       return Response.ok('Too big size');
     }
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 0, status: OTAStatus.uploading),
-    );
-    await for (final formData
-        in multipartFormData.formData /*request.multipartFormData*/ ) {
+    _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.uploading));
+    await for (final formData in multipartFormData.formData /*request.multipartFormData*/ ) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
         code = await formData.part.readString();
@@ -195,9 +173,7 @@ class OTAService implements RpcService {
         await formData.part.forEach((bytes) {
           firmwareData.add(bytes);
           uploadedSize += bytes.length;
-          _updateInfo(
-            _info.copyWith(uploadingPercent: (uploadedSize / fullSize * 100)),
-          );
+          _updateInfo(_info.copyWith(uploadingPercent: (uploadedSize / fullSize * 100)));
         });
       }
     }
@@ -210,9 +186,7 @@ class OTAService implements RpcService {
       _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
       return Response.forbidden('Support only deb package');
     }
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 100, status: OTAStatus.uploading),
-    );
+    _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.uploading));
     _processFirmware(filename, firmwareData);
     return Response.ok('Firmware uploaded');
 
@@ -259,9 +233,7 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAStop(Request request) {
-    _frontendService.send(
-      OTAReadyCommand(id: RpcCommand.generateId(), ready: false),
-    );
+    _frontendService.send(OTAReadyCommand(id: RpcCommand.generateId(), ready: false));
     return Response.ok('Return to normal mode');
   }
 
@@ -269,13 +241,8 @@ class OTAService implements RpcService {
     if (_autostop != null && _autostop!.isActive) {
       _autostop!.cancel();
     }
-    _frontendService.send(
-      new OTAReadyCommand(id: RpcCommand.generateId(), ready: true),
-    );
-    return Response.ok(
-      _uploadForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    _frontendService.send(new OTAReadyCommand(id: RpcCommand.generateId(), ready: true));
+    return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   void _processFirmware(String filename, io.BytesBuilder firmwareData) async {
@@ -288,54 +255,26 @@ class OTAService implements RpcService {
       ..add(firmwareData.toBytes())
       ..close();
 
-    _frontendService.send(
-      OTAOutputCommand(
-        id: RpcCommand.generateId(),
-        output: '\n\rSave firmware to "$fullFilename"\n\r',
-      ),
-    );
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling),
-    );
+    _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: '\n\rSave firmware to "$fullFilename"\n\r'));
+    _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling));
 
     var process = await io.Process.start(
       'sudo',
       ['apt-get', '-f', '-y', 'install', '$fullFilename'],
       environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
     );
-    process.stdout.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(
-        OTAOutputCommand(id: RpcCommand.generateId(), output: str),
-      );
+    process.stdout.cast<List<int>>().transform(utf8.decoder).listen((str) {
+      _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: str));
     });
-    process.stderr.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(
-        OTAOutputCommand(id: RpcCommand.generateId(), output: str),
-      );
+    process.stderr.cast<List<int>>().transform(utf8.decoder).listen((str) {
+      _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: str));
     });
     var exitCode = await process.exitCode;
-    _frontendService.send(
-      OTAOutputCommand(
-        id: RpcCommand.generateId(),
-        output: '\n\rExit code: $exitCode',
-      ),
-    );
-    _updateInfo(
-      _info.copyWith(
-        uploadingPercent: 100,
-        exitCode: exitCode,
-        status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue,
-      ),
-    );
+    _frontendService.send(OTAOutputCommand(id: RpcCommand.generateId(), output: '\n\rExit code: $exitCode'));
+    _updateInfo(_info.copyWith(uploadingPercent: 100, exitCode: exitCode, status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue));
     if (exitCode == 0) {
       Timer(const Duration(seconds: 5), () {
-        _updateInfo(
-          _info.copyWith(
-            uploadingPercent: 100,
-            exitCode: 0,
-            status: OTAStatus.preReboot,
-          ),
-        );
+        _updateInfo(_info.copyWith(uploadingPercent: 100, exitCode: 0, status: OTAStatus.preReboot));
         Timer(const Duration(seconds: 5), () {
           io.Process.start('sudo', ['systemctl', 'restart', 'dslideshow']);
         });
@@ -344,10 +283,7 @@ class OTAService implements RpcService {
   }
 
   Response _getOTAGetConfig(Request request) {
-    return Response.ok(
-      _downloadConfigForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_downloadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   static const _downloadConfigForm =
@@ -373,16 +309,12 @@ class OTAService implements RpcService {
 """;
 
   Future<Response> _postOTAGetConfig(Request request) async {
-    var content = await request
-        .readAsString(); //.transform(utf8.decoder).join();
+    var content = await request.readAsString(); //.transform(utf8.decoder).join();
     var queryParams = Uri(query: content).queryParameters;
     if (queryParams['code'] != _code) {
       return Response.forbidden('Incorrect code');
     }
-    return Response.ok(
-      io.File(config.fullConfigFilename).readAsStringSync(),
-      headers: {'Content-Type': 'text/plain; charset=utf-8'},
-    );
+    return Response.ok(io.File(config.fullConfigFilename).readAsStringSync(), headers: {'Content-Type': 'text/plain; charset=utf-8'});
   }
 
   static const _uploadConfigForm =
@@ -410,10 +342,7 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAUploadConfig(Request request) {
-    return Response.ok(
-      _uploadConfigForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_uploadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   Future<Response> _postOTAUploadConfig(Request request) async {
@@ -434,8 +363,7 @@ class OTAService implements RpcService {
       return Response.ok('Too big size');
     }
 
-    await for (final formData
-        in multipartForm.formData /*request.multipartFormData*/ ) {
+    await for (final formData in multipartForm.formData /*request.multipartFormData*/ ) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
         code = await formData.part.readString();
@@ -455,11 +383,7 @@ class OTAService implements RpcService {
         ..openWrite()
         ..writeAsStringSync(configData);
     } catch (e, st) {
-      _log.warning(
-        "Parse & save config to '${config.fullConfigFilename}'",
-        e,
-        st,
-      );
+      _log.warning("Parse & save config to '${config.fullConfigFilename}'", e, st);
       return Response.forbidden('Error: $e');
     }
     _log.info('Config updated');
