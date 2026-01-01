@@ -147,6 +147,11 @@ class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
                       )
                     : CachedNetworkImage(
                         imageUrl: item.uri.toString(),
+                        placeholder: (BuildContext context, String url) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
                         errorWidget: (BuildContext context, String url, error) {
                           return Column(
                             children: [
