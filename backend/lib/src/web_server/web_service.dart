@@ -235,6 +235,7 @@ class WebService {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
+    itemPath = Uri.decodeFull(itemPath);
     _log.info("get item: '$itemPath'");
     itemPath = path.absolute(path.join(_cacheFolder.path, itemPath));
     final file = io.File(itemPath);

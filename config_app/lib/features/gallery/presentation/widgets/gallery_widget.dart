@@ -2,196 +2,260 @@ import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart'
 import 'package:config_app/features/gallery/presentation/widgets/folder_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
+import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 
-class GalleryWidget extends StatelessWidget {
+class GalleryWidget extends StatefulWidget {
   const GalleryWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<GalleryBloc, GalleryState>(builder: (
-      BuildContext context,
-      GalleryState currentState,
-    ) {
-      if (currentState is UninitializedGalleryState) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-      if (currentState is ErrorGalleryState) {
-        return Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(currentState.errorMessage),
-            Padding(
-              padding: const EdgeInsets.only(top: 32.0),
-              child: ElevatedButton(
-                onPressed: () => _load(context),
-                child: const Text('reload'),
-              ),
-            ),
-          ],
-        ));
-      }
-      if (currentState is LoadedGalleryState) {
-        return Column(
-          children: [
-            Row(
-              children: [
-                Text("Total ${currentState.items.length} items"),
-                ElevatedButton(
-                  child: const Text('Reload'),
-                  onPressed: () {
-                    _load(context);
-                  },
-                ),
-              ],
-            ),
-            Expanded(
-              child: MediaGalleryWidget(
-                items: currentState.items,
-              ),
-            ),
-          ],
-        );
-      }
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    });
-  }
-
-  void _load(BuildContext context) {
-    context.read<GalleryBloc>().add(const GalleryLoadEvent());
-  }
+  State<GalleryWidget> createState() => _GalleryWidgetState();
 }
 
-class MediaGalleryWidget extends StatefulWidget {
-  final List<String> items;
-  const MediaGalleryWidget({super.key, required this.items});
-
-  @override
-  State<MediaGalleryWidget> createState() => _MediaGalleryWidgetState();
-}
-
-class _MediaGalleryWidgetState extends State<MediaGalleryWidget> {
-  late List<GalleryItem> items;
-  final _selected = <GalleryItem>[];
-  @override
-  void initState() {
-    final wclient = context.read<GalleryBloc>().getWebClient();
-    items = widget.items
-        .map((item) => GalleryItem(
-              uri: wclient.getMediaItemUri(item),
-              title: path.basename(item),
-            ))
-        .toList();
-    super.initState();
-  }
+class _GalleryWidgetState extends State<GalleryWidget> {
+  final Set<String> _selectedIds = {}; 
+  bool get _isSelectionMode => _selectedIds.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-            height: MediaQuery.of(context).size.height -
-                200, // Устанавливаем высоту, чтобы избежать проблем с shrinkWrap
-            child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  //maxCrossAxisExtent: 200,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 10,
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: items.length,
-                itemBuilder: _buildItem)));
-  }
+    return BlocBuilder<GalleryBloc, GalleryState>(
+      builder: (context, state) {
+        // 1. Состояние загрузки (Показываем пустой экран с Drawer, чтобы меню работало всегда)
+        if (state is UninitializedGalleryState) {
+          return Scaffold(
+            appBar: AppBar(title: const Text("Gallery")),
+            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+            body: const Center(child: CircularProgressIndicator()),
+          );
+        }
 
-  Widget _buildItem(BuildContext ctx, int index) {
-    final item = items[index];
-    final ext = path.extension(item.uri.path);
+        // 2. Состояние ошибки
+        if (state is ErrorGalleryState) {
+          return Scaffold(
+            appBar: AppBar(title: const Text("Gallery")),
+            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(state.errorMessage),
+                  TextButton(
+                    onPressed: () => context.read<GalleryBloc>().add(const GalleryLoadEvent()),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
-    // Определяем типы для удобства чтения
-    final isFolder = ext == '';
-    final isVideo = ext == '.mp4' ||
-        ext == '.avi'; // Можно расширить список: || ext == '.mov'
-    final isSelected = item.selected;
+        // 3. Состояние данных (Основной экран)
+        if (state is LoadedGalleryState) {
+          return Scaffold(
+            // ВАЖНО: Добавляем Drawer сюда
+            drawer: const ConfigAppNavigationBar(),
+            
+            body: RefreshIndicator(
+              onRefresh: () async {
+                 context.read<GalleryBloc>().add(const GalleryLoadEvent());
+              },
+              child: CustomScrollView(
+                slivers: [
+                  // SliverAppBar автоматически покажет кнопку меню (Drawer),
+                  // потому что мы добавили drawer в Scaffold выше.
+                  SliverAppBar(
+                    title: Text(_isSelectionMode 
+                        ? "${_selectedIds.length} selected" 
+                        : "Gallery (${state.items.length})"),
+                    floating: true,
+                    pinned: true,
+                    // Меняем цвет, если выбран режим выделения
+                    backgroundColor: _isSelectionMode ? Colors.blueGrey.shade900 : null,
+                    // Если режим выбора - показываем кнопку "Назад" (закрыть выбор) вместо "Меню"
+                    leading: _isSelectionMode 
+                        ? IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => setState(() => _selectedIds.clear()),
+                          )
+                        : null, // Если null, Flutter сам поставит кнопку Drawer (бургер)
+                    actions: [
+                      if (_isSelectionMode) ...[
+                        IconButton(icon: const Icon(Icons.share), onPressed: () {}),
+                        IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
+                      ] else 
+                        IconButton(
+                           icon: const Icon(Icons.refresh),
+                           onPressed: () => context.read<GalleryBloc>().add(const GalleryLoadEvent()),
+                        )
+                    ],
+                  ),
 
-    return Tooltip(
-      message: item.title,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            item.selected = !item.selected;
-            if (item.selected) {
-              _selected.add(item);
-            } else {
-              _selected.remove(item);
-            }
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200), // Плавная анимация рамки
-          decoration: BoxDecoration(
-            color: Colors.grey[200], // Цвет фона (пока грузится картинка)
-            borderRadius: BorderRadius.circular(12),
-            border: isSelected
-                ? Border.all(
-                    width: 3, color: Colors.blue) // Жирная рамка при выборе
-                : Border.all(
-                    width: 1,
-                    color: Colors.grey.withOpacity(0.3)), // Тонкая рамка обычно
-          ),
-          child: ClipRRect(
-            borderRadius:
-                BorderRadius.circular(9), // Радиус чуть меньше внешнего
-            child: Stack(
-              fit: StackFit.expand, // Растягиваем детей на всю ячейку
-              children: [
-                // 1. СЛОЙ КОНТЕНТА (Фото/Видео/Папка)
-                _buildContent(item, isFolder, isVideo),
-
-                // 2. СЛОЙ ВЫДЕЛЕНИЯ (Затемнение + Галочка)
-                if (isSelected)
-                  Container(
-                    color: Colors.black45, // Полупрозрачный черный
-                    child: const Center(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Colors.white,
-                        size: 32,
-                      ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(8.0),
+                    sliver: MediaGallerySliverGrid(
+                      items: state.items,
+                      selectedIds: _selectedIds,
+                      onToggleSelect: _toggleSelection,
                     ),
                   ),
-
-                // 3. ИКОНКА ТИПА ФАЙЛА (Например, значок Play для видео)
-                if (isVideo)
-                  const Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Icon(Icons.videocam, color: Colors.white, size: 20),
-                  ),
-              ],
+                ],
+              ),
             ),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  void _toggleSelection(String uri) {
+    setState(() {
+      if (_selectedIds.contains(uri)) {
+        _selectedIds.remove(uri);
+      } else {
+        _selectedIds.add(uri);
+      }
+    });
+  }
+}
+
+class MediaGallerySliverGrid extends StatelessWidget {
+  final List<String> items;
+  final Set<String> selectedIds;
+  final Function(String) onToggleSelect;
+
+  const MediaGallerySliverGrid({
+    super.key,
+    required this.items,
+    required this.selectedIds,
+    required this.onToggleSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final wclient = context.read<GalleryBloc>().getWebClient();
+
+    // SliverGridDelegateWithMaxCrossAxisExtent делает сетку адаптивной
+    return SliverGrid(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200, // Максимальная ширина ячейки
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
+        childAspectRatio: 1.0, // Квадратные ячейки выглядят современнее
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          final itemString = items[index];
+          // Создаем модель на лету (или лучше делать это в BLoC)
+          final galleryItem = GalleryItem(
+            uri: wclient.getMediaItemUri(itemString),
+            title: path.basename(itemString),
+          );
+
+          final isSelected = selectedIds.contains(galleryItem.uri.toString());
+
+          return _GalleryItemWidget(
+            item: galleryItem,
+            isSelected: isSelected,
+            onTap: () {
+              if (selectedIds.isNotEmpty) {
+                // Если режим выбора активен, обычный клик тоже выбирает
+                onToggleSelect(galleryItem.uri.toString());
+              } 
+              // else {
+              //   // Иначе открываем фуллскрин
+              //   print("Open Fullscreen: ${galleryItem.title}");
+              //   // Navigator.push(...)
+              // }
+            },
+            onLongPress: () => onToggleSelect(galleryItem.uri.toString()),
+          );
+        },
+        childCount: items.length,
+      ),
+    );
+  }
+}
+
+class _GalleryItemWidget extends StatelessWidget {
+  final GalleryItem item;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+
+  const _GalleryItemWidget({
+    required this.item,
+    required this.isSelected,
+    required this.onTap,
+    required this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ext = path.extension(item.uri.path).toLowerCase();
+    final isFolder = ext == '';
+    final isVideo = ['.mp4', '.avi', '.mov'].contains(ext);
+
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(width: 3, color: Colors.blueAccent)
+              : Border.all(width: 0, color: Colors.transparent),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(9),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Контент
+              _buildContent(isFolder, isVideo),
+
+              // Затемнение при выборе
+              if (isSelected)
+                Container(
+                  color: Colors.blue.withOpacity(0.2),
+                  child: const Center(
+                    child:
+                        Icon(Icons.check_circle, color: Colors.blue, size: 36),
+                  ),
+                ),
+
+              // Индикаторы типа файла
+              if (isVideo)
+                const Positioned(
+                  top: 6,
+                  right: 6,
+                  child: Icon(Icons.play_circle_fill,
+                      color: Colors.white, size: 24),
+                ),
+            ],
           ),
         ),
       ),
     );
   }
 
-// Вспомогательный метод для чистоты кода
-  Widget _buildContent(GalleryItem item, bool isFolder, bool isVideo) {
-    if (isFolder) {
+  Widget _buildContent(bool isFolder, bool isVideo) {
+    if (isFolder){
       return FolderGridItem(item: item);
-    } else if (isVideo) {
-      // Заглушка для видео
+    }
+    if (isVideo) {
+      // Ваша заглушка
       return VideoGridItem(title: item.title, url: item.uri.toString());
     }
-    // Обычное изображение
+
+    // CachedNetworkImage (предположительно внутри ImageGridItem)
+    // Добавьте fit: BoxFit.cover внутрь ImageGridItem для красивого квадрата
     return ImageGridItem(item: item);
   }
 }

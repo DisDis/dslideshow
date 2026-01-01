@@ -68,7 +68,20 @@ class _VideoGridItemState extends State<VideoGridItem> {
     if (_hasError) {
       return Container(
         color: Colors.black,
-        child: const Center(child: Icon(Icons.error, color: Colors.red)),
+        child: Center(
+            child: Column(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            Text(
+              widget.title,
+              style: const TextStyle(color: Colors.white70, fontSize: 10),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            
+          ],
+        )),
       );
     }
 
@@ -78,12 +91,15 @@ class _VideoGridItemState extends State<VideoGridItem> {
         fit: StackFit.expand,
         children: [
           // Сам плеер. FittedBox нужен, чтобы видео заполнило квадрат (обрезалось)
-          FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: _controller!.value.size.width,
-              height: _controller!.value.size.height,
-              child: VideoPlayer(_controller!),
+          Tooltip(
+            message: widget.title,
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _controller!.value.size.width,
+                height: _controller!.value.size.height,
+                child: VideoPlayer(_controller!),
+              ),
             ),
           ),
           // Кнопка паузы (появляется при тапе, если нужно, или делаем прозрачной)
@@ -118,20 +134,24 @@ class _VideoGridItemState extends State<VideoGridItem> {
           icon: const Icon(Icons.play_circle_outline,
               size: 40, color: Colors.white),
         ),
-        const SizedBox(height: 4),
-        Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white70, fontSize: 10),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+
         // Текст для понятности
-        const Positioned(
+        Positioned(
           bottom: 10,
-          child: Text(
-            "Tap to play",
-            style: TextStyle(color: Colors.white54, fontSize: 10),
+          child: Column(
+            children: [
+              Text(
+                widget.title,
+                style: const TextStyle(color: Colors.white70, fontSize: 10),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                "Tap to play",
+                style: TextStyle(color: Colors.white54, fontSize: 10),
+              ),
+            ],
           ),
         )
       ],

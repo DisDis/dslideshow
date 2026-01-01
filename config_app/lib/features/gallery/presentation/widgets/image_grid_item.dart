@@ -11,24 +11,27 @@ class ImageGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: item.uri.toString(),
-      fit: BoxFit.cover, // ВАЖНО: Заполняет весь квадрат
-      placeholder: (context, url) => const Center(
-        child: SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
+    return Tooltip(
+      message: item.title,
+      child: CachedNetworkImage(
+        imageUrl: item.uri.toString(),
+        fit: BoxFit.cover, // ВАЖНО: Заполняет весь квадрат
+        placeholder: (context, url) => const Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
         ),
-      ),
-      errorWidget: (context, url, error) => Container(
-        color: Colors.grey[300],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.broken_image, color: Colors.grey),
-            Text('Error', style: TextStyle(fontSize: 10)),
-          ],
+        errorWidget: (context, url, error) => Container(
+          color: Colors.grey[300],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.broken_image, color: Colors.grey),
+              Text('Error', style: TextStyle(fontSize: 10)),
+            ],
+          ),
         ),
       ),
     );
