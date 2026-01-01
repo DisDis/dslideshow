@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 7.4.0+4
+version: 7.5.0+1
 description: A sample command-line application
 publish_to: none
 environment:
