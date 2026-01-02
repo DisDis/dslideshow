@@ -107,42 +107,28 @@ class _ConfigPageState extends State<ConfigPage> {
       backgroundColor: _backgroundColor,
       body: Stack(
         children: [
-          // 1. ОСНОВНОЙ СЛОЙ
-          // Оборачиваем весь контент в Positioned.fill. 
-          // Это решает проблему "unbounded constraints", так как слой жестко привязывается к краям экрана.
-          Positioned.fill(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  const CommonHeaderWidget(),
-                  Expanded(
-                    child: isReady
-                        ? _buildConfigContent()
-                        : Center(
-                            child: CircularProgressIndicator(
-                              color: _accentColor,
-                            ),
-                          ),
-                  ),
-                ],
+          Column(
+            children: [
+              const CommonHeaderWidget(),
+              Expanded(
+                child: isReady
+                    ? _buildConfigContent()
+                    : Center(
+                        child: CircularProgressIndicator(
+                          color: _accentColor,
+                        ),
+                      ),
               ),
-            ),
+            ],
           ),
 
           // 2. DEBUG СЛОЙ (поверх основного)
-          // if (!isLinuxEmbedded)
-          //   Positioned(
-          //     bottom: 0,
-          //     left: 0,
-          //     right: 0,
-          //     // Обязательно ограничиваем высоту, если DebugWidget пытается быть бесконечным,
-          //     // но обычно Positioned + bottom/left/right достаточно.
-          //     child: BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-          //       builder: (context, state) {
-          //         return DebugWidget(_frontendService, _appConfig);
-          //       },
-          //     ),
-          //   ),
+          if (!isLinuxEmbedded)
+            BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
+              builder: (context, state) {
+                return DebugWidget(_frontendService, _appConfig);
+              },
+            ),
         ],
       ),
     );
@@ -186,7 +172,7 @@ class _ConfigPageState extends State<ConfigPage> {
       child: QrImageView(
         data: _urlData,
         version: QrVersions.auto,
-        size: 240.0,
+        size: 300.0,
         backgroundColor: Colors.white,
       ),
     );
