@@ -1,4 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ionicons/ionicons.dart';
@@ -16,19 +17,22 @@ class OSInfoWidget extends StatelessWidget {
     final iconData = model.osType == OSType.linux
         ? FontAwesomeIcons.linux
         : model.osType == OSType.android
-            ? Ionicons.logo_android
-            : Icons.device_unknown;
+        ? Ionicons.logo_android
+        : Icons.device_unknown;
     return MetricsContainerWidget(
       iconData: iconData,
       backgroundColor: Colors.deepPurpleAccent,
-      child: Column(children: <Widget>[
-        MetricsDetails('Os info', value: model.name),
-        Icon(
-          iconData,
-          color: Colors.white,
-          size: 50.0,
-        ),
-      ]),
+      child: Column(
+        children: <Widget>[
+          MetricsDetails(
+            'App v',
+            value:
+                "${ApplicationInfo.frontendVersion}/${ApplicationInfo.backendVersion}",
+          ),
+          MetricsDetails('Os info', value: model.name),
+          Icon(iconData, color: Colors.white, size: 50.0),
+        ],
+      ),
     );
   }
 }

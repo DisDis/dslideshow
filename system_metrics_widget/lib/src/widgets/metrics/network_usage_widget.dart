@@ -17,7 +17,9 @@ class NetworkUsageWidget extends StatelessWidget {
       child: Column(children: <Widget>[
         const Row(children: [MetricsDetails('Network:', value: null)]),
         for (final interface in model.interfaces!)
-          if (interface.status == NetworkInterfaceStatus.running && interface.name != 'lo')
+          if (interface.status == NetworkInterfaceStatus.running && interface.name != 'lo'
+          && interface.name != 'lo0'
+          && interface.ip4.isNotEmpty)
             Row(children: [MetricsDetails(interface.name, value: interface.ip4)]),
       ]),
     );

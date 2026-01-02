@@ -24,17 +24,6 @@ class SystemInfoWidgetState extends State<SystemInfoWidget> {
     if (_systemInfo == null) {
       return Container(color: Colors.transparent);
     }
-
-    // if (_systemInfo!.cpuInfo.cores == 0) {
-    //   const cores = 4;
-    //   _systemInfo = _systemInfo!.rebuild((builder) {
-    //     builder.cpuInfo.cores = cores;
-    //     builder.updateInfo.cpuLoad1 = math.Random().nextDouble() * cores;
-    //     builder.updateInfo.cpuLoad5 = math.Random().nextDouble() * cores;
-    //     builder.updateInfo.cpuLoad15 = math.Random().nextDouble() * cores;
-    //   });
-    // }
-
     return SystemInfoMetrics(model: _systemInfo!);
   }
 

@@ -20,9 +20,15 @@ class SystemInfoService {
   SystemInfo? _lastInfo;
 
   final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
-  static final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
-  static final RegExp _findIp4 = new RegExp('inet ([^ ]*)');
-  static final RegExp _findIp6 = new RegExp('inet6 ([^ ]*)');
+  // Флаги: ищет текст внутри <...> после flags=
+  static final flagsRegex = RegExp(r'flags=\d+<([^>]+)>');
+
+  // IPv4: ищет "inet 192.168.1.1"
+  static final ip4Regex = RegExp(r'inet\s+([0-9\.]+)');
+
+  // IPv6: ищет "inet6 fe80::..."
+  // Исключаем % (zone index), если он приклеен к адресу, хотя обычно там пробел
+  static final ip6Regex = RegExp(r'inet6\s+([a-fA-F0-9:]+)');
   final HardwareConfig _config;
 
   SystemInfoService(this._config);
@@ -63,7 +69,7 @@ class SystemInfoService {
         environment: {'LC_ALL': 'C'},
       );
       if (result.exitCode == 0) {
-        return _parseIfconfigOutput(result.stdout.toString().split('\n\n'));
+        return parseIfconfigOutput(result.stdout.toString());
       }
     } catch (e, s) {
       _log.severe('getNetworkInterfaces', e, s);
@@ -243,44 +249,89 @@ class SystemInfoService {
     return result;
   }
 
-  List<NetworkInterfaceInfo> _parseIfconfigOutput(List<String> output) {
-    if (output.isEmpty) {
-      return <NetworkInterfaceInfo>[];
-    }
-    output.removeWhere((element) => element.isEmpty);
-    var result = <NetworkInterfaceInfo>[];
-    output.forEach((element) {
-      try {
-        var interfaceName = element.substring(0, element.indexOf(':'));
-        var interfaceStatus =
-            _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
-            ? NetworkInterfaceStatus.running
-            : NetworkInterfaceStatus.offline;
-        var interfaceIp4 = _findIp4.firstMatch(element);
-        var interfaceIp4Str = interfaceIp4 == null
-            ? ''
-            : interfaceIp4.groupCount == 1
-            ? interfaceIp4.group(1)
-            : '';
-        var interfaceIp6 = _findIp6.firstMatch(element);
-        var interfaceIp6Str = interfaceIp6 == null
-            ? ''
-            : interfaceIp6.groupCount == 1
-            ? interfaceIp6.group(1)
-            : '';
-        result.add(
+  static List<NetworkInterfaceInfo> parseIfconfigOutput(String output) {
+    final List<NetworkInterfaceInfo> interfaces = [];
+
+    // Переменные для хранения состояния текущего парсимого интерфейса
+    String? currentName;
+    NetworkInterfaceStatus currentStatus = NetworkInterfaceStatus.offline;
+    String currentIp4 = '';
+    String currentIp6 = '';
+
+    // Регулярные выражения для извлечения данных
+    // Имя интерфейса: берет первое слово в строке, убирает двоеточие на конце (en0: -> en0)
+    final nameRegex = RegExp(r'^([a-zA-Z0-9\-\.]+):?');
+
+    // Вспомогательная функция для сохранения накопленных данных
+    void saveCurrentInterface() {
+      if (currentName != null) {
+        interfaces.add(
           NetworkInterfaceInfo(
-            name: interfaceName,
-            status: interfaceStatus,
-            ip4: interfaceIp4Str ?? '',
-            ip6: interfaceIp6Str ?? '',
+            name: currentName,
+            status: currentStatus,
+            ip4: currentIp4,
+            ip6: currentIp6,
           ),
         );
-      } catch (e, st) {
-        _log.severe('_parseIfconfigOutput', e, st);
       }
-    });
-    return result;
+    }
+
+    final lines = output.split('\n');
+
+    for (final line in lines) {
+      if (line.trim().isEmpty) continue;
+
+      // Если строка начинается НЕ с пробела, это начало нового интерфейса
+      if (!line.startsWith(RegExp(r'\s'))) {
+        // 1. Сохраняем предыдущий интерфейс, если он был
+        saveCurrentInterface();
+
+        // 2. Сбрасываем данные для нового интерфейса
+        currentName = null;
+        currentStatus = NetworkInterfaceStatus.offline;
+        currentIp4 = '';
+        currentIp6 = '';
+
+        // 3. Парсим имя
+        final nameMatch = nameRegex.firstMatch(line);
+        if (nameMatch != null) {
+          currentName = nameMatch.group(1);
+        }
+
+        // 4. Парсим статус из первой строки (флаги)
+        final flagsMatch = flagsRegex.firstMatch(line);
+        if (flagsMatch != null) {
+          final flagsContent = flagsMatch.group(1) ?? '';
+          // Если есть флаг RUNNING, считаем статус running, иначе offline
+          if (flagsContent.contains('RUNNING')) {
+            currentStatus = NetworkInterfaceStatus.running;
+          }
+        }
+      } else {
+        // Это строка с параметрами (начинается с отступа)
+
+        // Парсим IPv4 (берем первый найденный)
+        if (currentIp4.isEmpty) {
+          final ip4Match = ip4Regex.firstMatch(line);
+          if (ip4Match != null) {
+            currentIp4 = ip4Match.group(1)!;
+          }
+        }
+
+        // Парсим IPv6 (берем первый найденный)
+        if (currentIp6.isEmpty) {
+          final ip6Match = ip6Regex.firstMatch(line);
+          if (ip6Match != null) {
+            currentIp6 = ip6Match.group(1)!;
+          }
+        }
+      }
+    }
+
+    // Не забываем сохранить последний интерфейс после выхода из цикла
+    saveCurrentInterface();
+
+    return interfaces;
   }
 
   OSType _resolveOSType(String osInfo) {
