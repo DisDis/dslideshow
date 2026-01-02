@@ -1,5 +1,6 @@
 import 'package:config_app/features/login/presentation/bloc/login_bloc.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -53,6 +54,12 @@ class LoginForm extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
+              Text(
+                "v${ApplicationInfo.frontendVersion}/v${ApplicationInfo.backendVersion}",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
               const SizedBox(height: 32),
 
               // Inputs
@@ -62,7 +69,7 @@ class LoginForm extends StatelessWidget {
               const SizedBox(height: 16),
               _PasswordInput(),
               const SizedBox(height: 32),
-              
+
               // Button
               _LoginButton(),
             ],
@@ -77,19 +84,15 @@ class _ConnectUriInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          previous.connectUri != current.connectUri,
+      buildWhen: (previous, current) => previous.connectUri != current.connectUri,
       builder: (context, state) {
-        // Мы сохраняем логику с созданием контроллера на лету, 
+        // Мы сохраняем логику с созданием контроллера на лету,
         // так как это единственный способ обновить текст из Блока в Stateless
         // без использования хуков.
         return TextField(
           key: const Key('loginForm_connectUriInput_textField'),
-          controller: state.connectUri.isPure
-              ? TextEditingController(text: state.connectUri.value)
-              : null,
-          onChanged: (connectUri) =>
-              context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
+          controller: state.connectUri.isPure ? TextEditingController(text: state.connectUri.value) : null,
+          onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
           decoration: InputDecoration(
             labelText: 'Server URI',
             hintText: 'ws://192.168.1.x:8080/ws',
@@ -114,11 +117,8 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
-          controller: state.username.isPure
-              ? TextEditingController(text: state.username.value)
-              : null,
-          onChanged: (username) =>
-              context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+          controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
+          onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: 'Username',
             prefixIcon: const Icon(Icons.person_outline),
@@ -142,11 +142,8 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          controller: state.password.isPure
-              ? TextEditingController(text: state.password.value)
-              : null,
-          onChanged: (password) =>
-              context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+          controller: state.password.isPure ? TextEditingController(text: state.password.value) : null,
+          onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true, // Всегда скрыт, так как мы в Stateless
           decoration: InputDecoration(
             labelText: 'Password',
@@ -159,7 +156,7 @@ class _PasswordInput extends StatelessWidget {
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
             if (state.isValid) {
-               context.read<LoginBloc>().add(const LoginSubmitted());
+              context.read<LoginBloc>().add(const LoginSubmitted());
             }
           },
         );
@@ -172,14 +169,12 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          (previous.status != current.status) ||
-          (previous.isValid != current.isValid),
+      buildWhen: (previous, current) => (previous.status != current.status) || (previous.isValid != current.isValid),
       builder: (context, state) {
         if (state.status.isInProgress) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         return SizedBox(
           width: double.infinity,
           height: 50,
