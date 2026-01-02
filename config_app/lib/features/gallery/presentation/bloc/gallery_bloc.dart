@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
-import 'package:dslideshow_backend/web_client.dart';
+import 'package:config_app/src/web_client/web_client.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
@@ -12,17 +12,13 @@ part 'gallery_state.dart';
 class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
   static final Logger _log = Logger('GalleryBloc');
   final RealtimeService _client;
-  GalleryBloc(
-      {required GalleryState initialState, required RealtimeService client})
+  GalleryBloc({required GalleryState initialState, required RealtimeService client})
       : _client = client,
         super(initialState) {
     on<GalleryLoadEvent>(_onLoad);
   }
   WebClient getWebClient() {
-    return WebClient(
-        host: _client.connectUri.host,
-        port: _client.connectUri.port,
-        code: _client.authCode);
+    return WebClient(host: _client.connectUri.host, port: _client.connectUri.port, code: _client.authCode);
   }
 
   FutureOr<void> _onLoad(GalleryLoadEvent event, emit) async {

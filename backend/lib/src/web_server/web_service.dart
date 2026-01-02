@@ -28,9 +28,7 @@ import 'package:mime/mime.dart' as mime;
 class WebService {
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
-  final _cacheFolder = new io.Directory(
-    path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
-  );
+  final _cacheFolder = new io.Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME));
   final RemoteService _remoteBackendService;
   String _code = '__';
   String get code => _code;
@@ -101,16 +99,9 @@ class WebService {
     _router.post(WebServerRoutes.uploadMedia, _postUploadMedia);
     _router.get(WebServerRoutes.uploadMedia, _getUploadForm);
 
-    final fsPath = path.join(
-      io.Directory.current.path,
-      'web',
-    ); // path to server
+    final fsPath = path.join(io.Directory.current.path, 'web'); // path to server
     _log.info("WebServer root: $fsPath");
-    final virtualDir = ShelfVirtualDirectory(
-      fsPath,
-      defaultFile: 'index.html',
-      default404File: '404.html',
-    );
+    final virtualDir = ShelfVirtualDirectory(fsPath, defaultFile: 'index.html', default404File: '404.html');
     _router.mount('/', virtualDir.router);
 
     enabled = _config.alwaysEnabled;
@@ -153,20 +144,13 @@ class WebService {
   Response _getInfo(Request request) {
     if (request.params.isNotEmpty && request.params.containsKey("format")) {
       if (request.params['format'] == 'json') {
-        return Response.ok(
-          _infoJSON,
-          headers: {'content-type': 'text/json; charset=utf-8'},
-        );
+        return Response.ok(_infoJSON, headers: {'content-type': 'text/json; charset=utf-8'});
       }
     }
-    return Response.ok(
-      _infoHtml,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_infoHtml, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
-  static const _infoJSON =
-      '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"}}';
+  static const _infoJSON = '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"}}';
   static const _infoHtml =
       """
 <html>
@@ -188,13 +172,7 @@ class WebService {
   Future<Response> _webSocketHandler(Request request) async {
     _log.info('_webSocketHandler');
     return webSocketHandler((WebSocketChannel webSocket, _) {
-      final newUser = new WebSocketUser(
-        _appConfig,
-        _code,
-        webSocket,
-        request.headers,
-        this._remoteBackendService,
-      );
+      final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
       _activeUsers.add(newUser);
       newUser.onDisconnect.then((dynamic value) {
         _activeUsers.remove(newUser);
@@ -202,11 +180,7 @@ class WebService {
     })(request);
   }
 
-  Future<Response> _postUploadMedia(
-    Request request,
-    final String code,
-    String itemPath,
-  ) async {
+  Future<Response> _postUploadMedia(Request request, final String code, String itemPath) async {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
@@ -223,14 +197,12 @@ class WebService {
     if ( /*!request.isMultipartForm*/ multipartFormData == null) {
       return Response.forbidden('Need multipart request');
     }
-    _log.info('Parsed form multipart request');
     var fullSize = request.contentLength!;
     //200Mb
     if (fullSize > 200 * 1024 * 1024) {
       return Response.ok('Too big size (200Mb>)');
     }
-    await for (final formData
-        in multipartFormData.formData /*request.multipartFormData*/ ) {
+    await for (final formData in multipartFormData.formData /*request.multipartFormData*/ ) {
       // if (formData.name == 'code') {
       //   code = await formData.part.readString();
       //   _log.info('code="$code"');
@@ -241,13 +213,11 @@ class WebService {
         await formData.part.forEach((bytes) {
           mediaData.add(bytes);
           uploadedSize += bytes.length;
-          _log.info(
-            "Uploading '$itemPath' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}",
-          );
+          _log.info("Uploading '$itemPath' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}");
         });
       }
     }
-    _log.info('file size: ${mediaData.length}');
+    _log.info("'$itemPath' file size: ${mediaData.length}");
     // if (code != _code) {
     //   return Response.forbidden('Code error');
     // }
@@ -267,18 +237,12 @@ class WebService {
       _stopWebServer();
     }
     //HTTPS? securityContext: io.SecurityContext()
-    io.HttpServer server = await io.serve(
-      _router,
-      io.InternetAddress.anyIPv4,
-      _config.port,
-    );
+    io.HttpServer server = await io.serve(_router, io.InternetAddress.anyIPv4, _config.port);
     _server = server;
     // Enable content compression
     server.autoCompress = true;
 
-    _log.info(
-      'Serving at http://${server.address.host}:${server.port} authCode:$_code',
-    );
+    _log.info('Serving at http://${server.address.host}:${server.port} authCode:$_code');
   }
 
   void _stopWebServer() {
@@ -312,10 +276,7 @@ class WebService {
       sb.writeln('"${path.relative(imageUri.path, from: cachePath)}"');
     });
     sb.writeln(']}');
-    return Response.ok(
-      sb.toString(),
-      headers: {'content-type': 'text/json; charset=utf-8'},
-    );
+    return Response.ok(sb.toString(), headers: {'content-type': 'text/json; charset=utf-8'});
   }
 
   Future<Response> _getItem(Request req, String code, String itemPath) async {
@@ -370,36 +331,22 @@ class WebService {
             }
 
             // Override Content-Length with the actual bytes sent.
-            headers[io.HttpHeaders.contentLengthHeader] = (end - start + 1)
-                .toString();
+            headers[io.HttpHeaders.contentLengthHeader] = (end - start + 1).toString();
 
             // Set 'Partial Content' status code.
-            headers[io.HttpHeaders.contentRangeHeader] =
-                'bytes $start-$end/$length';
+            headers[io.HttpHeaders.contentRangeHeader] = 'bytes $start-$end/$length';
             // Pipe the 'range' of the file.
 
-            return Response(
-              io.HttpStatus.partialContent,
-              body: req.method == 'HEAD' ? null : file.openRead(start, end + 1),
-              headers: headers,
-            );
+            return Response(io.HttpStatus.partialContent, body: req.method == 'HEAD' ? null : file.openRead(start, end + 1), headers: headers);
           }
         }
       }
     }
 
-    return Response(
-      200,
-      body: req.method == 'HEAD' ? null : file.openRead(),
-      headers: headers,
-    );
+    return Response(200, body: req.method == 'HEAD' ? null : file.openRead(), headers: headers);
   }
 
-  Future<Future<io.File>> _processMediaFile(
-    String itemPath,
-    String filename,
-    io.BytesBuilder mediaData,
-  ) async {
+  Future<Future<io.File>> _processMediaFile(String itemPath, String filename, io.BytesBuilder mediaData) async {
     itemPath = Uri.decodeFull(itemPath);
     _log.info('_processMediaFile "${itemPath}" size:${mediaData.length}');
     final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));
@@ -440,13 +387,7 @@ class WebSocketUser {
     _resultQueue.clear();
   }
 
-  WebSocketUser(
-    this._appConfig,
-    this._code,
-    this._webSocket,
-    this._headers,
-    this._remoteBackendService,
-  ) {
+  WebSocketUser(this._appConfig, this._code, this._webSocket, this._headers, this._remoteBackendService) {
     _log.info('User connected');
     // now we have access to request argument
     // that key is being generated by the websocket itself, every connection has a unique key.
@@ -479,9 +420,7 @@ class WebSocketUser {
   void _parseMessage(dynamic message) {
     try {
       _log.info('user> "$message"');
-      final msg =
-          serializers.deserialize(json.decode(message.toString()))
-              as WebSocketResult;
+      final msg = serializers.deserialize(json.decode(message.toString())) as WebSocketResult;
       if (msg is WebSocketCommand) {
         _execCommand(msg);
       } else {
@@ -501,19 +440,13 @@ class WebSocketUser {
       WebSocketResult result;
       switch (command.type) {
         case WSConfigDownloadCommand.TYPE:
-          result = _executeWSConfigDownloadCommand(
-            command as WSConfigDownloadCommand,
-          );
+          result = _executeWSConfigDownloadCommand(command as WSConfigDownloadCommand);
           break;
         case WSConfigUploadCommand.TYPE:
-          result = _executeWSConfigUploadCommand(
-            command as WSConfigUploadCommand,
-          );
+          result = _executeWSConfigUploadCommand(command as WSConfigUploadCommand);
           break;
         case WSRestartApplicationCommand.TYPE:
-          result = _executeWSRestartApplicationCommand(
-            command as WSRestartApplicationCommand,
-          );
+          result = _executeWSRestartApplicationCommand(command as WSRestartApplicationCommand);
           break;
         case WSSendRpcCommand.TYPE:
           result = await _executeWSSendRpcCommand(command as WSSendRpcCommand);
@@ -564,47 +497,29 @@ class WebSocketUser {
     }
   }
 
-  WSConfigDownloadResult _executeWSConfigDownloadCommand(
-    WSConfigDownloadCommand msg,
-  ) {
-    return WSConfigDownloadResult(
-      content: json.encode(_appConfig.toJson()),
-      id: msg.id,
-    );
+  WSConfigDownloadResult _executeWSConfigDownloadCommand(WSConfigDownloadCommand msg) {
+    return WSConfigDownloadResult(content: json.encode(_appConfig.toJson()), id: msg.id);
   }
 
   WebSocketResult _executeWSConfigUploadCommand(WSConfigUploadCommand msg) {
-    var _newAppConfig = AppConfig.fromJson(
-      json.decode(msg.content) as Map<String, dynamic>,
-    );
+    var _newAppConfig = AppConfig.fromJson(json.decode(msg.content) as Map<String, dynamic>);
     _newAppConfig.toFile(_appConfig.fullConfigFilename);
     return WSResultOk.byCommand(msg);
   }
 
-  WebSocketResult _executeWSRestartApplicationCommand(
-    WSRestartApplicationCommand msg,
-  ) {
+  WebSocketResult _executeWSRestartApplicationCommand(WSRestartApplicationCommand msg) {
     _log.info('Restart application');
-    io.Process.run(
-      'sudo',
-      ['systemctl', 'restart', 'dslideshow'],
-      environment: {'LC_ALL': 'C'},
-    );
+    io.Process.run('sudo', ['systemctl', 'restart', 'dslideshow'], environment: {'LC_ALL': 'C'});
     return WSResultOk.byCommand(msg);
   }
 
   Future<WSRpcResult> _executeWSSendRpcCommand(WSSendRpcCommand msg) async {
-    final result = await _remoteBackendService.send(
-      serializers.deserialize(msg.commandData)! as RpcCommand,
-    );
+    final result = await _remoteBackendService.send(serializers.deserialize(msg.commandData)! as RpcCommand);
     return WSRpcResult.byCommand(result, msg);
   }
 
   Future<WebSocketResult> _addMessageToQueue(int id) {
-    final result = _resultQueue.putIfAbsent(
-      id,
-      () => Completer<WebSocketResult>(),
-    );
+    final result = _resultQueue.putIfAbsent(id, () => Completer<WebSocketResult>());
     return result.future;
   }
 
