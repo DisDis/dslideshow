@@ -1,10 +1,16 @@
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/widgets/ota_ready_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
+import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:xterm/xterm.dart';
 
 class OTAView extends StatelessWidget {
@@ -14,109 +20,65 @@ class OTAView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<OtaBloc>().state;
-    final header = [
-      // Text(
-      //   "OTA - ${state.info.status}",
-      //   style: const TextStyle(color: Colors.white),
-      // ),
-      const Text(
-        "Version: v${ApplicationInfo.frontendVersion}",
-        style: TextStyle(color: Colors.white, fontSize: 25),
-      ),
-      Text(
-        "Code: ${state.info.code}",
-        style: const TextStyle(color: Colors.white, fontSize: 65),
-      ),
-    ];
+  
     final terminalView = Expanded(
-        flex: 2,
-        child: TerminalView(
-          deleteDetection: true,
-          terminal,
-          readOnly: true,
-          autofocus: true,
-          // textStyle: const TerminalStyle(fontFamily: ['Cascadia Mono']),
-        ));
+      flex: 2,
+      child: TerminalView(
+        deleteDetection: true,
+        terminal,
+        readOnly: true,
+        autofocus: true,
+        // textStyle: const TerminalStyle(fontFamily: ['Cascadia Mono']),
+      ),
+    );
     if (state is OtaExitState) {
       return const CircularProgressIndicator();
     } else if (state is OtaInitialState) {
       return const CircularProgressIndicator();
     } else if (state is OtaFailureState) {
-      return Column(children: [
-        ...header,
-        Text(
-          "Error${state.info.errorText == null ? '' : '$state.info.errorText'}",
-          style: const TextStyle(color: Colors.red, fontSize: 50),
-        ),
-        terminalView
-      ]);
-    } else if (state is OtaProgressState) {
-      return Column(children: [
-        ...header,
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: LinearProgressIndicator(
-            value: state.info.uploadingPercent / 100,
-            semanticsLabel: 'OTA progress',
-            minHeight: 15,
+      return Column(
+        children: [
+          Text(
+            "Error${state.info.errorText == null ? '' : '$state.info.errorText'}",
+            style: const TextStyle(color: Colors.red, fontSize: 50),
           ),
-        ),
-        if (!environment.isLinuxEmbedded) const TestConfigButton(),
-        terminalView
-      ]);
+          terminalView,
+        ],
+      );
+    } else if (state is OtaProgressState) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LinearProgressIndicator(
+              value: state.info.uploadingPercent / 100,
+              semanticsLabel: 'OTA progress',
+              minHeight: 15,
+            ),
+          ),
+          if (!environment.isLinuxEmbedded) const TestConfigButton(),
+          terminalView,
+        ],
+      );
     } else if (state is OtaReadyState) {
-      return Column(children: [
-        if (!environment.isLinuxEmbedded) const TestConfigButton(),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     _runTestCommand(terminal);
-        //   },
-        //   child: const Text('echo'),
-        // ),
-        ...header,
-        terminalView
-      ]);
+      return OtaReadyWidget(state: state);
     } else if (state is OtaSuccessState) {
-      return Column(children: [
-        ...header,
-        const Text(
-          "Finished",
-          style: TextStyle(color: Colors.green, fontSize: 50),
-        ),
-        terminalView
-      ]);
+      return Column(
+        children: [
+          const Text(
+            "Finished",
+            style: TextStyle(color: Colors.green, fontSize: 50),
+          ),
+          terminalView,
+        ],
+      );
     }
     return Text("Unknown state ${state.runtimeType}");
   }
-
-  // _runTestCommand(Terminal terminal) async {
-  //   var process = await io.Process.start(
-  //     'htop',
-  //     [],
-  //     // 'tput', ['cols'],
-  //     // 'sudo',
-  //     // ['apt-get', '-f', '-y', 'install', 'test'],
-  //     environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
-  //     // runInShell: true,
-  //   );
-  //   // process.stdout.transform(utf8.decoder).forEach((str) {
-  //   //   terminal.write(str);
-  //   // });
-  //   process.stdout.transform(utf8.decoder).listen((str) {
-  //     terminal.write(str);
-  //     terminal.write('\r');
-  //   });
-  //   process.stderr.transform(utf8.decoder).listen((str) {
-  //     terminal.write(str);
-  //     terminal.write('\r');
-  //   });
-  // }
 }
 
 class TestConfigButton extends StatelessWidget {
-  const TestConfigButton({
-    super.key,
-  });
+  const TestConfigButton({super.key});
 
   @override
   Widget build(BuildContext context) {

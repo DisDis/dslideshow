@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
+import 'package:dslideshow_flutter/src/extension/network_info_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -47,12 +48,7 @@ class _ConfigPageState extends State<ConfigPage> {
       return;
     }
     try {
-      final interface = _systemInfo!.networkInfo.interfaces!.firstWhere(
-        (item) =>
-            item.status == NetworkInterfaceStatus.running &&
-            item.ip4.isNotEmpty &&
-            !item.ip4.startsWith('127.'),
-      );
+      final interface = _systemInfo!.networkInfo.getCurrentInterface();
       _urlData = 'http://${interface.ip4}:${_appConfig.webServer.port}';
       // Небольшая задержка для плавности UI
       await Future.delayed(const Duration(milliseconds: 500));
