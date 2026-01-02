@@ -1,6 +1,7 @@
 // import 'package:dio/dio.dart';
 import 'package:config_app/features/auth/domain/repository/authentication_repository.dart';
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
+import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
 import 'package:config_app/features/permission/domain/services/permission_service.dart';
 import 'package:config_app/features/realtime/data/services/client_service.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
@@ -23,6 +24,8 @@ Future<void> initializeAllDependencies(
   sl.registerSingleton<UserRepository>(UserRepositoryImpl());
   sl.registerSingleton<AuthenticationRepository>(
       AuthenticationRepositoryImpl(client: sl()));
+  sl.registerSingleton<PhotoframeRepository>(PhotoframeRepository(sl()));
+
   sl.registerSingleton<PermissionService>(PermissionService());
 
   sl.registerSingleton(AuthenticationBloc(

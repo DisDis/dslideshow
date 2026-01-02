@@ -18,6 +18,8 @@ import 'package:config_app/features/slideshow_config/config/router.dart'
     as slideshow_config;
 import 'package:config_app/features/gallery/config/router.dart' as gallery;
 import 'package:config_app/features/ota/config/router.dart' as ota;
+import 'package:config_app/features/config/config/router.dart'
+    as config;
 
 const _defaultPath = '/splash';
 const _loginPath = '/login';
@@ -49,6 +51,7 @@ GoRouter createAppRouter(BuildContext context) {
       wifi_config.createRoute(context),
       gallery.createRoute(context),
       slideshow_config.createRoute(context),
+      config.createRoute(context),
       GoRoute(
         path: _defaultPath,
         builder: (context, state) => const SplashPage(),

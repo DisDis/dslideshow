@@ -132,12 +132,7 @@ class EffectDemoWidgetState extends State<EffectDemoWidget>
         key: const Key('anim'),
         animation: _effectController,
         builder: (_, __) {
-          return Stack(children: <Widget>[
-            _currentEffect.transform(context, _currentWidget, true /*,0,0*/,
-                _effectController.value /*, 2*/, screenW, screenH),
-            _currentEffect.transform(context, _nextWidget, false /*1, 0*/,
-                _effectController.value /*, 1*/, screenW, screenH)
-          ]);
+          return _currentEffect.createTransformWidget(context,_currentWidget,_nextWidget,_effectController,screenW,screenH);
         },
         child: slideShowLoaderWidget);
 
