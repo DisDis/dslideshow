@@ -8,7 +8,6 @@ import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
-import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:get_it/get_it.dart';

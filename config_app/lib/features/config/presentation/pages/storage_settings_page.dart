@@ -1,16 +1,14 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
-import 'package:dslideshow_backend/config.dart'; // Ваши конфиги
-import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
-import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
-import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
+
 
 
 
 class StorageSettingsPage extends StatefulWidget {
   final StoragesConfig config;
 
-  const StorageSettingsPage({Key? key, required this.config}) : super(key: key);
+  const StorageSettingsPage({super.key, required this.config});
 
   @override
   State<StorageSettingsPage> createState() => _StorageSettingsPageState();

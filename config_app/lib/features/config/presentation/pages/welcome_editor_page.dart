@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class WelcomeEditorPage extends StatelessWidget {
   final WelcomeConfig config;
 
-  const WelcomeEditorPage({Key? key, required this.config}) : super(key: key);
+  const WelcomeEditorPage({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {

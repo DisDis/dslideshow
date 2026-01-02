@@ -1,16 +1,10 @@
-import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
-import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/widgets/ota_ready_widget.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
-import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:xterm/xterm.dart';
 
 class OTAView extends StatelessWidget {

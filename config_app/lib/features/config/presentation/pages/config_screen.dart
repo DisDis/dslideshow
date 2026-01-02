@@ -5,17 +5,15 @@ import 'package:config_app/features/config/presentation/pages/slideshow_editor_p
 import 'package:config_app/features/config/presentation/pages/storage_settings_page.dart';
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:logging/logging.dart';
-import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 
-final sl = GetIt.instance;
 
 class ConfigScreen extends StatelessWidget {
-  const ConfigScreen({Key? key}) : super(key: key);
+  const ConfigScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +28,7 @@ class ConfigScreen extends StatelessWidget {
 }
 
 class _ConfigView extends StatefulWidget {
-  const _ConfigView({Key? key}) : super(key: key);
+  const _ConfigView();
 
   @override
   State<_ConfigView> createState() => _ConfigViewState();
@@ -195,8 +193,9 @@ class _ConfigViewState extends State<_ConfigView> {
               value: _editingConfig!.log.levelMain,
               items: Level.LEVELS, // Список уровней: INFO, FINE, SEVERE...
               onChanged: (val) {
-                if (val != null)
+                if (val != null) {
                   setState(() => _editingConfig!.log.levelMain = val);
+                }
               },
             ),
             SettingsDropdown<Level>(
@@ -204,8 +203,9 @@ class _ConfigViewState extends State<_ConfigView> {
               value: _editingConfig!.log.levelWeb,
               items: Level.LEVELS,
               onChanged: (val) {
-                if (val != null)
+                if (val != null) {
                   setState(() => _editingConfig!.log.levelWeb = val);
+                }
               },
             ),
             SettingsDropdown<Level>(
@@ -213,8 +213,9 @@ class _ConfigViewState extends State<_ConfigView> {
               value: _editingConfig!.log.levelOTA,
               items: Level.LEVELS,
               onChanged: (val) {
-                if (val != null)
+                if (val != null) {
                   setState(() => _editingConfig!.log.levelOTA = val);
+                }
               },
             ),
             SettingsDropdown<Level>(
@@ -222,8 +223,9 @@ class _ConfigViewState extends State<_ConfigView> {
               value: _editingConfig!.log.levelHwFrame,
               items: Level.LEVELS,
               onChanged: (val) {
-                if (val != null)
+                if (val != null) {
                   setState(() => _editingConfig!.log.levelHwFrame = val);
+                }
               },
             ),
           ],

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
+import 'dart:typed_data';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
 import 'package:path/path.dart' as path;
@@ -187,7 +188,7 @@ class WebService {
     String filename = '';
     int uploadedSize = 0;
 
-    final mediaData = io.BytesBuilder();
+    final mediaData = BytesBuilder();
     var multiPartR = request.multipart();
     if (multiPartR == null /*!request.isMultipart*/ ) {
       return Response.badRequest(body: 'Not a multipart request');
@@ -346,7 +347,7 @@ class WebService {
     return Response(200, body: req.method == 'HEAD' ? null : file.openRead(), headers: headers);
   }
 
-  Future<Future<io.File>> _processMediaFile(String itemPath, String filename, io.BytesBuilder mediaData) async {
+  Future<Future<io.File>> _processMediaFile(String itemPath, String filename, BytesBuilder mediaData) async {
     itemPath = Uri.decodeFull(itemPath);
     _log.info('_processMediaFile "${itemPath}" size:${mediaData.length}');
     final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));

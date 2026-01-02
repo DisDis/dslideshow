@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -16,11 +15,6 @@ class WebClient {
   }
 
   /// Получает список всех медиа данных по роуту WebServerRoutes.getMedialItemsList
-  ///
-  /// Возвращает Future<List<String>>, содержащий пути к медиафайлам.
-  ///
-  /// Бросает исключение в случае ошибки соединения, неверного кода аутентификации
-  /// или некорректного формата ответа.
   Future<List<String>> getMediaItems() async {
     final url = 'http://$host:$port/cache/$code/list';
 

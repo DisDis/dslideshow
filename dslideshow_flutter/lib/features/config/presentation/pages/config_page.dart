@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:google_fonts/google_fonts.dart'; // Если есть возможность подключить, иначе используйте стандартные шрифты
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';

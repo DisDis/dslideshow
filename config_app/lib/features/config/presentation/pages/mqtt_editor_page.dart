@@ -1,11 +1,11 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
-import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
+import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 
 class MqttEditorPage extends StatelessWidget {
   final MqttConfig config;
 
-  const MqttEditorPage({Key? key, required this.config}) : super(key: key);
+  const MqttEditorPage({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {

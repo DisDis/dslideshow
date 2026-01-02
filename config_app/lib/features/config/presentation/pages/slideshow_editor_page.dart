@@ -2,12 +2,12 @@ import 'package:config_app/features/config/presentation/wigdgets/settings_sectio
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
+import 'package:dslideshow_flutter/effect.dart';
 
 class SlideshowEditorPage extends StatefulWidget {
   final SlideShowConfig config;
 
-  const SlideshowEditorPage({Key? key, required this.config}) : super(key: key);
+  const SlideshowEditorPage({super.key, required this.config});
 
   @override
   State<SlideshowEditorPage> createState() => _SlideshowEditorPageState();
@@ -21,7 +21,7 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
       body: Column(
         children: [
           // --- PREVIEW AREA ---
-          Container(
+          SizedBox(
               height: 200, child: SlideshowPreview(config: widget.config)),
 
           // --- SETTINGS LIST ---

@@ -13,6 +13,11 @@ import 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 
 export 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
 export 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
+export 'package:dslideshow_backend/src/service/storage/storages_config.dart';
+export 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
+export 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
+export 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
+
 
 part 'config.g.dart';
 

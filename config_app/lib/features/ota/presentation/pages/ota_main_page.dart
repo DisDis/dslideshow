@@ -78,8 +78,6 @@ class _OtaPageContentState extends State<OtaPageContent> {
             'http://${uri.host}:8282/ota_start',
             style: TextStyle(fontSize: 18),
             onTap: () {
-              // Тут можно добавить логику открытия, если нужно
-              print('Нажали на текст');
             },
           ),
           const Text(

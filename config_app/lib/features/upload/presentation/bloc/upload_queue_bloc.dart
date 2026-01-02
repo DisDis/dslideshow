@@ -188,9 +188,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         add(UploadQueueEvent.taskFailed(task.id, "File not found"));
         return;
       }
-      final _client = WebClient(code: client.authCode, host: client.connectUri.host, port: client.connectUri.port);
+      final wclient = WebClient(code: client.authCode, host: client.connectUri.host, port: client.connectUri.port);
       // Вызываем WebClient
-      await _client.uploadMedia(
+      await wclient.uploadMedia(
         task.localPath,
         task.serverPath,
         (sent, total) {

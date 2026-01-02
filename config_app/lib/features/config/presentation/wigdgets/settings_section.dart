@@ -7,11 +7,11 @@ class SettingsSection extends StatelessWidget {
   final IconData? icon;
 
   const SettingsSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.children,
     this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +50,12 @@ class SettingsTextField extends StatelessWidget {
   final bool isNumber;
 
   const SettingsTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.initialValue,
     required this.onChanged,
     this.isNumber = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +80,11 @@ class SettingsSwitch extends StatefulWidget {
   final ValueChanged<bool> onChanged;
 
   const SettingsSwitch({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<SettingsSwitch> createState() => _SettingsSwitchState();
@@ -124,8 +124,8 @@ class SettingsTileNavigation extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     required this.icon,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -148,13 +148,13 @@ class SettingsDropdown<T> extends StatelessWidget {
   final String Function(T item)? itemLabelBuilder;
 
   const SettingsDropdown({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.items,
     required this.onChanged,
     this.itemLabelBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -190,13 +190,13 @@ class SettingsMultiSelect<T> extends StatelessWidget {
   final String Function(T item)? itemLabelBuilder;
 
   const SettingsMultiSelect({
-    Key? key,
+    super.key,
     required this.label,
     required this.allItems,
     required this.selectedItems,
     required this.onChanged,
     this.itemLabelBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -235,11 +235,11 @@ class _MultiSelectDialog<T> extends StatefulWidget {
   final String Function(T)? itemLabelBuilder;
 
   const _MultiSelectDialog({
-    Key? key,
+    super.key,
     required this.items,
     required this.initialSelected,
     this.itemLabelBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<_MultiSelectDialog<T>> createState() => _MultiSelectDialogState<T>();

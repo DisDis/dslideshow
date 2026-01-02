@@ -4,9 +4,7 @@ import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
-import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
-import 'package:logging/logging.dart';
+import 'package:dslideshow_flutter/effect.dart';
 
 class SlideshowPreview extends StatefulWidget {
   final SlideShowConfig config;
@@ -27,7 +25,6 @@ class SlideshowPreview extends StatefulWidget {
 
 class SlideshowPreviewState extends State<SlideshowPreview>
     with TickerProviderStateMixin {
-  static final Logger _log = Logger('SlideshowPreview');
 
   bool get isItemChanging => _currentWidget != _nextWidget;
   late AnimationController _mediaItemLoopController;

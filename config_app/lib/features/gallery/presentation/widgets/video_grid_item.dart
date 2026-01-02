@@ -6,8 +6,7 @@ class VideoGridItem extends StatefulWidget {
   final String url;
   final String title;
 
-  const VideoGridItem({Key? key, required this.url, required this.title})
-      : super(key: key);
+  const VideoGridItem({super.key, required this.url, required this.title});
 
   @override
   State<VideoGridItem> createState() => _VideoGridItemState();

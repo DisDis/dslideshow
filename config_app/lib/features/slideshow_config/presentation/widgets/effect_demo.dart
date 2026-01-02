@@ -1,13 +1,10 @@
-// ignore_for_file: implementation_imports
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_backend/storage.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
-import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
+import 'package:dslideshow_flutter/effect.dart';
 
 class EffectDemoWidget extends StatefulWidget {
   final Effect currentEffect;
