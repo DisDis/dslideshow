@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 class WebClient {
@@ -50,4 +51,6 @@ class WebClient {
       throw Exception('Ошибка при выполнении HTTP-запроса: $e');
     }
   }
+
+  Future<void> uploadMedia(String serverPath, Uint8List bytes, void Function(int sentBytes, int totalBytes) param2) async {}
 }

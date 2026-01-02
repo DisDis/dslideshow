@@ -93,6 +93,29 @@ class HomePage extends StatelessWidget {
                   crossAxisSpacing: 16,
                   childAspectRatio: 2.5, // Чуть шире чем квадрат
                   children: [
+                    
+                    // Добавил Галерею, так как мы её делали ранее (для примера)
+                    _DashboardCard(
+                      title: "Gallery",
+                      subtitle: "View media",
+                      icon: Icons.photo_library,
+                      color: Colors.green,
+                      onTap: () => context.go('/gallery'), // Если такой роут есть
+                    ),
+                    _DashboardCard(
+                      title: "Upload",
+                      subtitle: "Upload media",
+                      icon: Icons.upload_file,
+                      color: Colors.red,
+                      onTap: () => context.go('/upload'), // Если такой роут есть
+                    ),
+                    _DashboardCard(
+                      title: "OTA Update",
+                      subtitle: "Firmware upgrade",
+                      icon: Icons.system_update,
+                      color: Colors.purpleAccent,
+                      onTap: () => context.go('/ota'),
+                    ),
                     _DashboardCard(
                       title: "WiFi Setup",
                       subtitle: "Manage connections",
@@ -107,21 +130,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.orangeAccent,
                       onTap: () => context.go('/config'),
                     ),
-                    _DashboardCard(
-                      title: "OTA Update",
-                      subtitle: "Firmware upgrade",
-                      icon: Icons.system_update,
-                      color: Colors.purpleAccent,
-                      onTap: () => context.go('/ota'),
-                    ),
-                    // Добавил Галерею, так как мы её делали ранее (для примера)
-                    _DashboardCard(
-                      title: "Gallery",
-                      subtitle: "View media",
-                      icon: Icons.photo_library,
-                      color: Colors.green,
-                      onTap: () => context.go('/gallery'), // Если такой роут есть
-                    ),
+                    
                   ],
                 ),
               ),
