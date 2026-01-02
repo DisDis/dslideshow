@@ -6,6 +6,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
 import 'package:path/path.dart' as path;
 import 'package:http_parser/http_parser.dart' as hp;
+import 'package:shelf_multipart/shelf_multipart.dart';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -97,6 +98,8 @@ class WebService {
     _router.get(WebServerRoutes.webSocket, _webSocketHandler);
     _router.get(WebServerRoutes.getMedialItemsList, _getItemsList);
     _router.get(WebServerRoutes.getMediaItem, _getItem);
+    _router.post(WebServerRoutes.uploadMedia, _postUploadMedia);
+    _router.get(WebServerRoutes.uploadMedia, _getUploadForm);
 
     final fsPath = path.join(
       io.Directory.current.path,
@@ -120,6 +123,32 @@ class WebService {
   }
 
   io.HttpServer? _server;
+
+  Response _getUploadForm(Request request) {
+    return Response.ok(_uploadMediaForm, headers: {'content-type': 'text/html; charset=utf-8'});
+  }
+
+  static const _uploadMediaForm =
+      """
+<html>
+<head>
+<title>Upload media file</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+ <div>
+    <p>v${ApplicationInfo.frontendVersion}</p> 
+    <p><b>Upload media file</b></p>
+   <label for="file">Choose file to upload</label><Br>
+   <input type="file" id="file" name="file" multiple>
+ </div>
+ <div>
+   <button>Upload</button>
+ </div>
+</form>
+</body>
+</html>
+""";
 
   Response _getInfo(Request request) {
     if (request.params.isNotEmpty && request.params.containsKey("format")) {
@@ -171,6 +200,64 @@ class WebService {
         _activeUsers.remove(newUser);
       });
     })(request);
+  }
+
+  Future<Response> _postUploadMedia(
+    Request request,
+    final String code,
+    String itemPath,
+  ) async {
+    if (code != _code) {
+      return Response.forbidden('Code is incorrect');
+    }
+    String filename = '';
+    int uploadedSize = 0;
+
+    final mediaData = io.BytesBuilder();
+    var multiPartR = request.multipart();
+    if (multiPartR == null /*!request.isMultipart*/ ) {
+      return Response.badRequest(body: 'Not a multipart request');
+    }
+
+    var multipartFormData = request.formData();
+    if ( /*!request.isMultipartForm*/ multipartFormData == null) {
+      return Response.forbidden('Need multipart request');
+    }
+    _log.info('Parsed form multipart request');
+    var fullSize = request.contentLength!;
+    //200Mb
+    if (fullSize > 200 * 1024 * 1024) {
+      return Response.ok('Too big size (200Mb>)');
+    }
+    await for (final formData
+        in multipartFormData.formData /*request.multipartFormData*/ ) {
+      // if (formData.name == 'code') {
+      //   code = await formData.part.readString();
+      //   _log.info('code="$code"');
+      // } else
+      if (formData.name == 'file') {
+        filename = formData.filename!;
+        _log.info('Filename "$filename"');
+        await formData.part.forEach((bytes) {
+          mediaData.add(bytes);
+          uploadedSize += bytes.length;
+          _log.info(
+            "Uploading '$itemPath' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}",
+          );
+        });
+      }
+    }
+    _log.info('file size: ${mediaData.length}');
+    // if (code != _code) {
+    //   return Response.forbidden('Code error');
+    // }
+
+    try {
+      _processMediaFile(itemPath, filename, mediaData);
+    } catch (e) {
+      return Response.forbidden('Upload error: $e');
+    }
+    return Response.ok('File uploaded');
   }
 
   void _startWebServer() async {
@@ -306,6 +393,24 @@ class WebService {
       body: req.method == 'HEAD' ? null : file.openRead(),
       headers: headers,
     );
+  }
+
+  Future<Future<io.File>> _processMediaFile(
+    String itemPath,
+    String filename,
+    io.BytesBuilder mediaData,
+  ) async {
+    itemPath = Uri.decodeFull(itemPath);
+    _log.info('_processMediaFile "${itemPath}" size:${mediaData.length}');
+    final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));
+    if (!fullFilename.startsWith(_cacheFolder.path)) {
+      throw Exception('Outside cache folder');
+    }
+    final file = io.File(fullFilename);
+
+    await file.parent.create(recursive: true);
+
+    return file.writeAsBytes(mediaData.toBytes(), flush: true);
   }
 }
 
