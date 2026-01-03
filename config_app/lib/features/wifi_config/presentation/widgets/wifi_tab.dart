@@ -213,7 +213,13 @@ class _AvailableNetworkTile extends StatelessWidget {
       onTap: onTap,
       leading: Stack(
         children: [
-          Icon(Icons.wifi, color: signalColor),
+          Icon(network.signal >= 85
+          ? Icons.network_wifi
+          : network.signal >= 70
+              ? Icons.network_wifi_3_bar
+              : network.signal >= 50
+                  ? Icons.network_wifi_2_bar
+                  : Icons.network_wifi_1_bar, color: signalColor),
           if (isLocked)
             Positioned(
               right: 0,
