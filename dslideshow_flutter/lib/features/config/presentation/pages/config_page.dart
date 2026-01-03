@@ -130,7 +130,7 @@ class _ConfigPageState extends State<ConfigPage> {
         Expanded(flex: 4, child: Center(child: _buildQrCode())),
         // Правая часть - Информация
         Expanded(
-          flex: 5,
+          flex: 2,
           child: Padding(padding: const EdgeInsets.only(right: 32.0), child: _buildInfoPanel()),
         ),
       ],
@@ -145,7 +145,7 @@ class _ConfigPageState extends State<ConfigPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(data: _urlData, version: QrVersions.auto, size: 500.0, backgroundColor: Colors.white),
+      child: QrImageView(data: _urlData, version: QrVersions.auto, backgroundColor: Colors.white),
     );
   }
 
