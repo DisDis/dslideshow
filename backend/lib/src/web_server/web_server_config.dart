@@ -8,9 +8,10 @@ class WebServerConfig {
   @JsonKey(defaultValue: false)
   bool alwaysEnabled;
 
-  String? permanentCode;
+  @JsonKey(defaultValue: '')
+  String permanentCode;
 
-  WebServerConfig({required this.port, required this.alwaysEnabled});
+  WebServerConfig({required this.port, required this.alwaysEnabled, required this.permanentCode});
   factory WebServerConfig.fromJson(Map<String, dynamic> json) =>
       _$WebServerConfigFromJson(json);
 

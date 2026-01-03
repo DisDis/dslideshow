@@ -63,8 +63,8 @@ class WebService {
       sb.write(_rnd.nextInt(10));
       count--;
     }
-    if (_config.permanentCode != null || _config.permanentCode != '') {
-      return _config.permanentCode.toString();
+    if (_config.permanentCode.isNotEmpty) {
+      return _config.permanentCode;
     }
     return sb.toString();
   }
@@ -109,7 +109,7 @@ class WebService {
     if (_config.alwaysEnabled) {
       _log.warning('Web server always on');
     }
-    if (_config.permanentCode != null || _config.permanentCode != '') {
+    if (_config.permanentCode.isNotEmpty) {
       _log.severe('Permanent code enabled = "$_code"');
     }
   }

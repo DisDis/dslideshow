@@ -17,6 +17,7 @@ export 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 export 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 export 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
 export 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
+export 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 
 
 part 'config.g.dart';

@@ -3,6 +3,7 @@ import 'package:config_app/features/config/presentation/bloc/config_bloc_models.
 import 'package:config_app/features/config/presentation/pages/mqtt_editor_page.dart';
 import 'package:config_app/features/config/presentation/pages/slideshow_editor_page.dart';
 import 'package:config_app/features/config/presentation/pages/storage_settings_page.dart';
+import 'package:config_app/features/config/presentation/pages/webserver_editor.dart';
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
@@ -153,6 +154,13 @@ class _ConfigViewState extends State<_ConfigView> {
           title: 'Connectivity',
           icon: Icons.wifi,
           children: [
+             SettingsTileNavigation(
+              title: 'Web server',
+              subtitle:
+                  '${_editingConfig!.webServer.alwaysEnabled ? "Enabled" : "Disabled"}',
+              icon: Icons.dns,
+              onTap: () => _navigateToWebServerEditor(context),
+            ),
             SettingsTileNavigation(
               title: 'MQTT',
               subtitle:
@@ -251,6 +259,15 @@ class _ConfigViewState extends State<_ConfigView> {
     ));
     setState(() {});
   }
+
+  void _navigateToWebServerEditor(BuildContext context) async {
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => WebServerEditorPage(config: _editingConfig!.webServer),
+    ));
+    setState(() {});
+  }
+
+  
 
   void _navigateToWelcomeEditor(BuildContext context) async {
     await Navigator.of(context).push(MaterialPageRoute(

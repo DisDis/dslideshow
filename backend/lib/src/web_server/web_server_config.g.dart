@@ -10,7 +10,8 @@ WebServerConfig _$WebServerConfigFromJson(Map<String, dynamic> json) =>
     WebServerConfig(
       port: (json['port'] as num?)?.toInt() ?? 8080,
       alwaysEnabled: json['alwaysEnabled'] as bool? ?? false,
-    )..permanentCode = json['permanentCode'] as String?;
+      permanentCode: json['permanentCode'] as String? ?? '',
+    );
 
 Map<String, dynamic> _$WebServerConfigToJson(WebServerConfig instance) =>
     <String, dynamic>{
