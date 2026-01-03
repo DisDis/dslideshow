@@ -37,7 +37,7 @@ class HardwareConfig {
   @JsonKey(defaultValue: './scripts/powerOff.sh')
   String powerOffScript;
 
-  @JsonKey(defaultValue: './scripts/restarApp.sh')
+  @JsonKey(defaultValue: './scripts/restartApp.sh')
   String restartAppScript;
 
   @JsonKey(defaultValue: './scripts/screenOn.sh')
@@ -63,8 +63,7 @@ class HardwareConfig {
     required this.restartAppScript,
   });
 
-  factory HardwareConfig.fromJson(Map<String, dynamic> json) =>
-      _$HardwareConfigFromJson(json);
+  factory HardwareConfig.fromJson(Map<String, dynamic> json) => _$HardwareConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$HardwareConfigToJson(this);
 }
