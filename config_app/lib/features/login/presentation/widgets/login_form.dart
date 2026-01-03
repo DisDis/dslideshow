@@ -4,6 +4,7 @@ import 'package:dslideshow_common/version.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -98,6 +99,7 @@ class _ConnectUriInput extends StatelessWidget {
             hintText: 'ws://192.168.1.x:8080/ws',
             prefixIcon: const Icon(Icons.link),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            enabled: !kIsWeb,
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
             errorText: state.connectUri.displayError != null ? 'Invalid URI' : null,

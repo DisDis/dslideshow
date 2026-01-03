@@ -13,7 +13,12 @@ part of 'login_bloc.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$LoginEvent {
+mixin _$LoginEvent implements DiagnosticableTreeMixin {
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties..add(DiagnosticsProperty('type', 'LoginEvent'));
+  }
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -24,7 +29,7 @@ mixin _$LoginEvent {
   int get hashCode => runtimeType.hashCode;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent()';
   }
 }
@@ -108,8 +113,6 @@ extension LoginEventPatterns on LoginEvent {
         return submit(_that);
       case LoginConnectUriAutoChanged():
         return autoChangedConnectUri(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -221,8 +224,6 @@ extension LoginEventPatterns on LoginEvent {
         return submit();
       case LoginConnectUriAutoChanged():
         return autoChangedConnectUri();
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -266,7 +267,7 @@ extension LoginEventPatterns on LoginEvent {
 
 /// @nodoc
 
-class LoginUsernameChanged implements LoginEvent {
+class LoginUsernameChanged with DiagnosticableTreeMixin implements LoginEvent {
   const LoginUsernameChanged(this.username);
 
   final String username;
@@ -278,6 +279,13 @@ class LoginUsernameChanged implements LoginEvent {
   $LoginUsernameChangedCopyWith<LoginUsernameChanged> get copyWith =>
       _$LoginUsernameChangedCopyWithImpl<LoginUsernameChanged>(
           this, _$identity);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginEvent.changedUsename'))
+      ..add(DiagnosticsProperty('username', username));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -292,7 +300,7 @@ class LoginUsernameChanged implements LoginEvent {
   int get hashCode => Object.hash(runtimeType, username);
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent.changedUsename(username: $username)';
   }
 }
@@ -332,7 +340,7 @@ class _$LoginUsernameChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class LoginPasswordChanged implements LoginEvent {
+class LoginPasswordChanged with DiagnosticableTreeMixin implements LoginEvent {
   const LoginPasswordChanged(this.password);
 
   final String password;
@@ -344,6 +352,13 @@ class LoginPasswordChanged implements LoginEvent {
   $LoginPasswordChangedCopyWith<LoginPasswordChanged> get copyWith =>
       _$LoginPasswordChangedCopyWithImpl<LoginPasswordChanged>(
           this, _$identity);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginEvent.changedPassword'))
+      ..add(DiagnosticsProperty('password', password));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -358,7 +373,7 @@ class LoginPasswordChanged implements LoginEvent {
   int get hashCode => Object.hash(runtimeType, password);
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent.changedPassword(password: $password)';
   }
 }
@@ -398,7 +413,9 @@ class _$LoginPasswordChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class LoginConnectUriChanged implements LoginEvent {
+class LoginConnectUriChanged
+    with DiagnosticableTreeMixin
+    implements LoginEvent {
   const LoginConnectUriChanged(this.connectUri);
 
   final String connectUri;
@@ -410,6 +427,13 @@ class LoginConnectUriChanged implements LoginEvent {
   $LoginConnectUriChangedCopyWith<LoginConnectUriChanged> get copyWith =>
       _$LoginConnectUriChangedCopyWithImpl<LoginConnectUriChanged>(
           this, _$identity);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginEvent.changedConnectUri'))
+      ..add(DiagnosticsProperty('connectUri', connectUri));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -424,7 +448,7 @@ class LoginConnectUriChanged implements LoginEvent {
   int get hashCode => Object.hash(runtimeType, connectUri);
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent.changedConnectUri(connectUri: $connectUri)';
   }
 }
@@ -464,8 +488,13 @@ class _$LoginConnectUriChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class LoginSubmitted implements LoginEvent {
+class LoginSubmitted with DiagnosticableTreeMixin implements LoginEvent {
   const LoginSubmitted();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties..add(DiagnosticsProperty('type', 'LoginEvent.submit'));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -477,15 +506,23 @@ class LoginSubmitted implements LoginEvent {
   int get hashCode => runtimeType.hashCode;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent.submit()';
   }
 }
 
 /// @nodoc
 
-class LoginConnectUriAutoChanged implements LoginEvent {
+class LoginConnectUriAutoChanged
+    with DiagnosticableTreeMixin
+    implements LoginEvent {
   const LoginConnectUriAutoChanged();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginEvent.autoChangedConnectUri'));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -498,13 +535,13 @@ class LoginConnectUriAutoChanged implements LoginEvent {
   int get hashCode => runtimeType.hashCode;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginEvent.autoChangedConnectUri()';
   }
 }
 
 /// @nodoc
-mixin _$LoginState {
+mixin _$LoginState implements DiagnosticableTreeMixin {
   FormzSubmissionStatus get status;
   Username get username;
   Password get password;
@@ -517,6 +554,17 @@ mixin _$LoginState {
   @pragma('vm:prefer-inline')
   $LoginStateCopyWith<LoginState> get copyWith =>
       _$LoginStateCopyWithImpl<LoginState>(this as LoginState, _$identity);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginState'))
+      ..add(DiagnosticsProperty('status', status))
+      ..add(DiagnosticsProperty('username', username))
+      ..add(DiagnosticsProperty('password', password))
+      ..add(DiagnosticsProperty('connectUri', connectUri))
+      ..add(DiagnosticsProperty('isValid', isValid));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -538,7 +586,7 @@ mixin _$LoginState {
       Object.hash(runtimeType, status, username, password, connectUri, isValid);
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginState(status: $status, username: $username, password: $password, connectUri: $connectUri, isValid: $isValid)';
   }
 }
@@ -764,13 +812,13 @@ extension LoginStatePatterns on LoginState {
 
 /// @nodoc
 
-class _LoginState implements LoginState {
+class _LoginState with DiagnosticableTreeMixin implements LoginState {
   const _LoginState(
       {this.status = FormzSubmissionStatus.initial,
       this.username = const Username.pure(defaultValue: 'admin'),
       this.password = const Password.pure(defaultValue: '123'),
       this.connectUri =
-          const ConnectUri.pure(defaultValue: 'ws://192.168.50.177:8081/ws'),
+          const ConnectUri.pure(defaultValue: 'ws://192.168.50.xx:8080/ws'),
       this.isValid = false});
 
   @override
@@ -798,6 +846,17 @@ class _LoginState implements LoginState {
       __$LoginStateCopyWithImpl<_LoginState>(this, _$identity);
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginState'))
+      ..add(DiagnosticsProperty('status', status))
+      ..add(DiagnosticsProperty('username', username))
+      ..add(DiagnosticsProperty('password', password))
+      ..add(DiagnosticsProperty('connectUri', connectUri))
+      ..add(DiagnosticsProperty('isValid', isValid));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -817,7 +876,7 @@ class _LoginState implements LoginState {
       Object.hash(runtimeType, status, username, password, connectUri, isValid);
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LoginState(status: $status, username: $username, password: $password, connectUri: $connectUri, isValid: $isValid)';
   }
 }

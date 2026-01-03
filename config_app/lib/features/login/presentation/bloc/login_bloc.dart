@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:config_app/features/auth/domain/repository/authentication_repository.dart';
 import 'package:config_app/features/login/presentation/bloc/models/models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
@@ -11,12 +12,12 @@ part 'login_bloc.freezed.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final _log = Logger('LoginBloc');
-  static final defaultConnectUri = 'ws://${Uri.base.host}:8080/ws';
+  static final defaultConnectUri = 'ws://${Uri.base.host}:${Uri.base.port}/ws';
 
   LoginBloc({
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
-        super(const LoginState()) {
+        super( kIsWeb? LoginState(connectUri:  ConnectUri.pure(defaultValue: defaultConnectUri)): const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginConnectUriChanged>(_onConnectUriChanged);
