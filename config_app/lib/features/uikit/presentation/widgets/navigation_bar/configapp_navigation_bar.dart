@@ -88,7 +88,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.power_settings_new),
-            title: const Text('Power Menu'),
+            title: const Text('System Control'),
             onTap: () => context.go("/power"),
           ),
           const Divider(),

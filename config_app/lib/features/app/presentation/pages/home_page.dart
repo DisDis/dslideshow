@@ -131,10 +131,10 @@ class HomePage extends StatelessWidget {
                       onTap: () => context.go('/config'),
                     ),
                     _DashboardCard(
-                      title: "Power menu",
+                      title: "System Control",
                       subtitle: "Restart app, power off",
                       icon: Icons.power_settings_new,
-                      color: Colors.orangeAccent,
+                      color: Colors.lightBlue,
                       onTap: () => context.go('/power'),
                     ),
                     
