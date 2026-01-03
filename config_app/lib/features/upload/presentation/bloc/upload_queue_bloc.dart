@@ -55,11 +55,12 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
 
   // Добавление файлов в очередь
   Future<void> _onAddFiles(_AddFiles event, Emitter<UploadQueueState> emit) async {
+    final rootPath = p.dirname(event.rootPath);
     final newTasks = event.files.map((file) {
       // Вычисляем относительный путь для сервера
       // Если rootPath = /user/photos, а файл /user/photos/vacation/1.jpg
       // то serverPath = vacation/1.jpg
-      String serverPath = p.relative(file.path, from: event.rootPath);
+      String serverPath = p.relative(file.path, from: rootPath);
 
       return UploadTask(
         id: const Uuid().v4(),

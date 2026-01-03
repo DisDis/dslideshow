@@ -5,6 +5,7 @@ import 'package:config_app/features/config/presentation/pages/slideshow_editor_p
 import 'package:config_app/features/config/presentation/pages/storage_settings_page.dart';
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,6 +68,7 @@ class _ConfigViewState extends State<_ConfigView> {
       },
       builder: (context, state) {
         return Scaffold(
+          drawer: const ConfigAppNavigationBar(),
           appBar: AppBar(
             title: const Text('Settings'),
             actions: [

@@ -132,17 +132,6 @@ Map<String, dynamic> _$WSConfigDownloadResultToJson(
   _WSConfigDownloadResult instance,
 ) => <String, dynamic>{'content': instance.content, 'id': instance.id};
 
-_WSRestartApplicationCommand _$WSRestartApplicationCommandFromJson(
-  Map<String, dynamic> json,
-) => _WSRestartApplicationCommand(
-  id: (json['id'] as num).toInt(),
-  type: json['type'] as String? ?? WSRestartApplicationCommand.TYPE,
-);
-
-Map<String, dynamic> _$WSRestartApplicationCommandToJson(
-  _WSRestartApplicationCommand instance,
-) => <String, dynamic>{'id': instance.id, 'type': instance.type};
-
 _WSResultOk _$WSResultOkFromJson(Map<String, dynamic> json) =>
     _WSResultOk(id: (json['id'] as num).toInt());
 

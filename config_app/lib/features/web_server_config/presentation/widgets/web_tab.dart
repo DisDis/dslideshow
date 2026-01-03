@@ -56,7 +56,7 @@ class WebConfigTabState extends State<WebConfigTab> {
                   padding: const EdgeInsets.only(top: 32.0),
                   child: ElevatedButton(
                     onPressed: _load,
-                    child: const Text('reload'),
+                    child: const Text('Reload'),
                   ),
                 ),
               ],
@@ -97,13 +97,24 @@ class WebConfigTabState extends State<WebConfigTab> {
     "permanentCode": "123" */
                 Padding(
                   padding: const EdgeInsets.only(top: 32.0),
-                  child: ElevatedButton(
-                    child: const Text('Restart application'),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        child: const Text('Restart application'),
+                        onPressed: () {
+                          widget._tabBloc.add(const RestartAppWebTabEvent());
+                        },
+                      ),
+                      ElevatedButton(
+                    child: const Text('Power off'),
                     onPressed: () {
-                      widget._tabBloc.add(const ReloadAppWebTabEvent());
+                      widget._tabBloc.add(const PowerOffWebTabEvent());
                     },
                   ),
+                    ],
+                  ),
                 ),
+                 
               ],
             ));
           }

@@ -197,20 +197,6 @@ sealed class WSConfigDownloadResult
 }
 
 @freezed
-sealed class WSRestartApplicationCommand
-    with _$WSRestartApplicationCommand
-    implements WebSocketCommand {
-  static const String TYPE = 'ws_restart_application';
-  const factory WSRestartApplicationCommand({
-    required int id,
-    @Default(WSRestartApplicationCommand.TYPE) String type,
-  }) = _WSRestartApplicationCommand;
-
-  factory WSRestartApplicationCommand.fromJson(Map<String, dynamic> json) =>
-      _$WSRestartApplicationCommandFromJson(json);
-}
-
-@freezed
 sealed class WSResultOk with _$WSResultOk implements WebSocketResult {
   const factory WSResultOk({required int id}) = _WSResultOk;
   static WSResultOk byCommand(WebSocketCommand command) {

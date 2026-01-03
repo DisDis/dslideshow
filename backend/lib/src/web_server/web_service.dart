@@ -181,7 +181,7 @@ class WebService {
     })(request);
   }
 
-  Future<Response> _postUploadMedia(Request request, final String code, String itemPath) async {
+  Future<Response> _postUploadMedia(Request request, final String code) async {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }
@@ -210,21 +210,17 @@ class WebService {
       // } else
       if (formData.name == 'file') {
         filename = formData.filename!;
-        _log.info('Filename "$filename"');
+        _log.info('Detect file "$filename"');
         await formData.part.forEach((bytes) {
           mediaData.add(bytes);
           uploadedSize += bytes.length;
-          _log.info("Uploading '$itemPath' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}");
+          _log.info("Uploading '$filename' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}");
         });
       }
     }
-    _log.info("'$itemPath' file size: ${mediaData.length}");
-    // if (code != _code) {
-    //   return Response.forbidden('Code error');
-    // }
 
     try {
-      _processMediaFile(itemPath, filename, mediaData);
+      _processMediaFile(filename, mediaData);
     } catch (e) {
       return Response.forbidden('Upload error: $e');
     }
@@ -347,9 +343,9 @@ class WebService {
     return Response(200, body: req.method == 'HEAD' ? null : file.openRead(), headers: headers);
   }
 
-  Future<Future<io.File>> _processMediaFile(String itemPath, String filename, BytesBuilder mediaData) async {
+  Future<Future<io.File>> _processMediaFile(String itemPath, BytesBuilder mediaData) async {
     itemPath = Uri.decodeFull(itemPath);
-    _log.info('_processMediaFile "${itemPath}" size:${mediaData.length}');
+    _log.info('processMediaFile "${itemPath}" size:${mediaData.length}');
     final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));
     if (!fullFilename.startsWith(_cacheFolder.path)) {
       throw Exception('Outside cache folder');
@@ -446,9 +442,9 @@ class WebSocketUser {
         case WSConfigUploadCommand.TYPE:
           result = _executeWSConfigUploadCommand(command as WSConfigUploadCommand);
           break;
-        case WSRestartApplicationCommand.TYPE:
-          result = _executeWSRestartApplicationCommand(command as WSRestartApplicationCommand);
-          break;
+        // case WSRestartApplicationCommand.TYPE:
+        //   result = _executeWSRestartApplicationCommand(command as WSRestartApplicationCommand);
+        //   break;
         case WSSendRpcCommand.TYPE:
           result = await _executeWSSendRpcCommand(command as WSSendRpcCommand);
           break;
@@ -508,11 +504,11 @@ class WebSocketUser {
     return WSResultOk.byCommand(msg);
   }
 
-  WebSocketResult _executeWSRestartApplicationCommand(WSRestartApplicationCommand msg) {
-    _log.info('Restart application');
-    io.Process.run('sudo', ['systemctl', 'restart', 'dslideshow'], environment: {'LC_ALL': 'C'});
-    return WSResultOk.byCommand(msg);
-  }
+  // WebSocketResult _executeWSRestartApplicationCommand(WSRestartApplicationCommand msg) {
+  //   _log.info('Restart application');
+  //   io.Process.run('sudo', ['systemctl', 'restart', 'dslideshow'], environment: {'LC_ALL': 'C'});
+  //   return WSResultOk.byCommand(msg);
+  // }
 
   Future<WSRpcResult> _executeWSSendRpcCommand(WSSendRpcCommand msg) async {
     final result = await _remoteBackendService.send(serializers.deserialize(msg.commandData)! as RpcCommand);

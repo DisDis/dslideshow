@@ -50,14 +50,17 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ReloadAppWebTabEvent value)? reload,
+    TResult Function(RestartAppWebTabEvent value)? restartApp,
+    TResult Function(PowerOffWebTabEvent value)? powerOff,
     TResult Function(LoadWebTabEvent value)? load,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent() when reload != null:
-        return reload(_that);
+      case RestartAppWebTabEvent() when restartApp != null:
+        return restartApp(_that);
+      case PowerOffWebTabEvent() when powerOff != null:
+        return powerOff(_that);
       case LoadWebTabEvent() when load != null:
         return load(_that);
       case _:
@@ -80,13 +83,16 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ReloadAppWebTabEvent value) reload,
+    required TResult Function(RestartAppWebTabEvent value) restartApp,
+    required TResult Function(PowerOffWebTabEvent value) powerOff,
     required TResult Function(LoadWebTabEvent value) load,
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent():
-        return reload(_that);
+      case RestartAppWebTabEvent():
+        return restartApp(_that);
+      case PowerOffWebTabEvent():
+        return powerOff(_that);
       case LoadWebTabEvent():
         return load(_that);
       case _:
@@ -108,13 +114,16 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ReloadAppWebTabEvent value)? reload,
+    TResult? Function(RestartAppWebTabEvent value)? restartApp,
+    TResult? Function(PowerOffWebTabEvent value)? powerOff,
     TResult? Function(LoadWebTabEvent value)? load,
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent() when reload != null:
-        return reload(_that);
+      case RestartAppWebTabEvent() when restartApp != null:
+        return restartApp(_that);
+      case PowerOffWebTabEvent() when powerOff != null:
+        return powerOff(_that);
       case LoadWebTabEvent() when load != null:
         return load(_that);
       case _:
@@ -136,14 +145,17 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? reload,
+    TResult Function()? restartApp,
+    TResult Function()? powerOff,
     TResult Function()? load,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent() when reload != null:
-        return reload();
+      case RestartAppWebTabEvent() when restartApp != null:
+        return restartApp();
+      case PowerOffWebTabEvent() when powerOff != null:
+        return powerOff();
       case LoadWebTabEvent() when load != null:
         return load();
       case _:
@@ -166,13 +178,16 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() reload,
+    required TResult Function() restartApp,
+    required TResult Function() powerOff,
     required TResult Function() load,
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent():
-        return reload();
+      case RestartAppWebTabEvent():
+        return restartApp();
+      case PowerOffWebTabEvent():
+        return powerOff();
       case LoadWebTabEvent():
         return load();
       case _:
@@ -194,13 +209,16 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? reload,
+    TResult? Function()? restartApp,
+    TResult? Function()? powerOff,
     TResult? Function()? load,
   }) {
     final _that = this;
     switch (_that) {
-      case ReloadAppWebTabEvent() when reload != null:
-        return reload();
+      case RestartAppWebTabEvent() when restartApp != null:
+        return restartApp();
+      case PowerOffWebTabEvent() when powerOff != null:
+        return powerOff();
       case LoadWebTabEvent() when load != null:
         return load();
       case _:
@@ -211,13 +229,13 @@ extension WebTabEventPatterns on WebTabEvent {
 
 /// @nodoc
 
-class ReloadAppWebTabEvent implements WebTabEvent {
-  const ReloadAppWebTabEvent();
+class RestartAppWebTabEvent implements WebTabEvent {
+  const RestartAppWebTabEvent();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is ReloadAppWebTabEvent);
+        (other.runtimeType == runtimeType && other is RestartAppWebTabEvent);
   }
 
   @override
@@ -225,7 +243,27 @@ class ReloadAppWebTabEvent implements WebTabEvent {
 
   @override
   String toString() {
-    return 'WebTabEvent.reload()';
+    return 'WebTabEvent.restartApp()';
+  }
+}
+
+/// @nodoc
+
+class PowerOffWebTabEvent implements WebTabEvent {
+  const PowerOffWebTabEvent();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is PowerOffWebTabEvent);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'WebTabEvent.powerOff()';
   }
 }
 

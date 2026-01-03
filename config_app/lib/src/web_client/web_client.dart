@@ -44,9 +44,9 @@ class WebClient {
 
   Future<dynamic> uploadMedia(String localPath, String serverPath, void Function(int sentBytes, int totalBytes) onSendProgress) async {
     final dio = Dio();
-    final url = 'http://$host:$port/upload/$code/$serverPath';
+    final url = 'http://$host:$port/upload/$code/';
     final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(localPath, filename: path.basename(localPath)),
+      'file': await MultipartFile.fromFile(localPath, filename: serverPath),
     });
     return dio.post(url, data: formData);
   }

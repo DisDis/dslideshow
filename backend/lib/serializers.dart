@@ -127,9 +127,6 @@ class _SerializersImpl implements Serializers {
 
     if (object is WSRpcResult) return ["WSRpcResult", object.toJson()];
 
-    if (object is WSRestartApplicationCommand)
-      return ["WSRestartApplicationCommand", object.toJson()];
-
     if (object is WSResultOk) return ["WSResultOk", object.toJson()];
 
     if (object is WSEchoCommand) return ["WSEchoCommand", object.toJson()];
@@ -282,9 +279,6 @@ class _SerializersImpl implements Serializers {
 
       case 'WSRpcResult':
         return WSRpcResult.fromJson(object);
-
-      case 'WSRestartApplicationCommand':
-        return WSRestartApplicationCommand.fromJson(object);
 
       case 'WSResultOk':
         return WSResultOk.fromJson(object);

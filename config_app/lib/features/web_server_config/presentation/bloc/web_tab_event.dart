@@ -4,6 +4,7 @@ part 'web_tab_event.freezed.dart';
 
 @freezed
 class WebTabEvent with _$WebTabEvent {
-  const factory WebTabEvent.reload() = ReloadAppWebTabEvent;
+  const factory WebTabEvent.restartApp() = RestartAppWebTabEvent;
+  const factory WebTabEvent.powerOff() = PowerOffWebTabEvent;
   const factory WebTabEvent.load() = LoadWebTabEvent;
 }

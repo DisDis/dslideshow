@@ -76,8 +76,8 @@ class UploadScreen extends StatelessWidget {
         final List<File> files = dir
             .listSync(recursive: true)
             .whereType<File>()
-            // Фильтр по расширениям картинки
-            .where((f) => _isImage(f.path))
+            // Фильтр по расширениям
+            .where((f) => _isSupportFile(f.path))
             .toList();
 
         if (files.isNotEmpty) {
@@ -91,7 +91,7 @@ class UploadScreen extends StatelessWidget {
     }
   }
 
-  bool _isImage(String path) {
+  bool _isSupportFile(String path) {
     final ext = p.extension(path).toLowerCase();
     return [
       '.jpg',
@@ -99,6 +99,8 @@ class UploadScreen extends StatelessWidget {
       '.png',
       '.gif',
       '.webp',
+      '.avi',
+      '.mp4',
     ].contains(ext);
   }
 }

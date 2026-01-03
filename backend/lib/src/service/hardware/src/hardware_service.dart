@@ -250,7 +250,7 @@ class HardwareService implements RpcService {
 
   Future<RpcResult> _executePowerOffCommand(PowerOffCommand command) async {
     try {
-      _powerOffService.execute();
+      _powerOffService.powerOff();
     } catch (e, s) {
       _log.severe('powerOff', e, s);
     }

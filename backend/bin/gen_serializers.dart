@@ -48,7 +48,6 @@ final serializersFor = SerializersFor(const [
   WSConfigUploadCommand,
   WSSendRpcCommand,
   WSRpcResult,
-  WSRestartApplicationCommand,
   WSResultOk,
   WSEchoCommand,
   WSEchoResult,

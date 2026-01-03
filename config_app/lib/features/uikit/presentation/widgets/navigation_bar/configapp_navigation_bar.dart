@@ -60,30 +60,35 @@ class ConfigAppNavigationBar extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.web),
-            title: const Text('Web'),
+            leading: const Icon(Icons.photo_library),
+            title: const Text('Gallery'),
+            onTap: () => context.go('/gallery'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.upload_file),
+            title: const Text('Upload media'),
+            onTap: () => context.go('/upload'),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configuration'),
+            onTap: () => context.go('/config'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.system_update),
+            title: const Text('OTA Update'),
+            onTap: () => context.go('/ota'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.dns),
+            title: const Text('Web settings'),
             onTap: () => context.go("/web_config"),
           ),
           ListTile(
             leading: const Icon(Icons.wifi),
             title: const Text('Wifi'),
             onTap: () => context.go('/wifi_config'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.slideshow),
-            title: const Text('Slideshow'),
-            onTap: () => context.go('/slideshow_config'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.update),
-            title: const Text('OTA Update'),
-            onTap: () => context.go('/ota'),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.image),
-            title: const Text('Gallery'),
-            onTap: () => context.go('/gallery'),
           ),
           const Divider(),
           ListTile(
