@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'web_tab_event.dart';
+part of 'power_event.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,11 +13,11 @@ part of 'web_tab_event.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$WebTabEvent {
+mixin _$PowerEvent {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is WebTabEvent);
+        (other.runtimeType == runtimeType && other is PowerEvent);
   }
 
   @override
@@ -25,17 +25,17 @@ mixin _$WebTabEvent {
 
   @override
   String toString() {
-    return 'WebTabEvent()';
+    return 'PowerEvent()';
   }
 }
 
 /// @nodoc
-class $WebTabEventCopyWith<$Res> {
-  $WebTabEventCopyWith(WebTabEvent _, $Res Function(WebTabEvent) __);
+class $PowerEventCopyWith<$Res> {
+  $PowerEventCopyWith(PowerEvent _, $Res Function(PowerEvent) __);
 }
 
-/// Adds pattern-matching-related methods to [WebTabEvent].
-extension WebTabEventPatterns on WebTabEvent {
+/// Adds pattern-matching-related methods to [PowerEvent].
+extension PowerEventPatterns on PowerEvent {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -50,18 +50,18 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestartAppWebTabEvent value)? restartApp,
-    TResult Function(PowerOffWebTabEvent value)? powerOff,
-    TResult Function(LoadWebTabEvent value)? load,
+    TResult Function(RestartAppPowerEvent value)? restartApp,
+    TResult Function(PowerOffPowerEvent value)? powerOff,
+    TResult Function(LoadPowerEvent value)? load,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent() when restartApp != null:
+      case RestartAppPowerEvent() when restartApp != null:
         return restartApp(_that);
-      case PowerOffWebTabEvent() when powerOff != null:
+      case PowerOffPowerEvent() when powerOff != null:
         return powerOff(_that);
-      case LoadWebTabEvent() when load != null:
+      case LoadPowerEvent() when load != null:
         return load(_that);
       case _:
         return orElse();
@@ -83,17 +83,17 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestartAppWebTabEvent value) restartApp,
-    required TResult Function(PowerOffWebTabEvent value) powerOff,
-    required TResult Function(LoadWebTabEvent value) load,
+    required TResult Function(RestartAppPowerEvent value) restartApp,
+    required TResult Function(PowerOffPowerEvent value) powerOff,
+    required TResult Function(LoadPowerEvent value) load,
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent():
+      case RestartAppPowerEvent():
         return restartApp(_that);
-      case PowerOffWebTabEvent():
+      case PowerOffPowerEvent():
         return powerOff(_that);
-      case LoadWebTabEvent():
+      case LoadPowerEvent():
         return load(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -114,17 +114,17 @@ extension WebTabEventPatterns on WebTabEvent {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestartAppWebTabEvent value)? restartApp,
-    TResult? Function(PowerOffWebTabEvent value)? powerOff,
-    TResult? Function(LoadWebTabEvent value)? load,
+    TResult? Function(RestartAppPowerEvent value)? restartApp,
+    TResult? Function(PowerOffPowerEvent value)? powerOff,
+    TResult? Function(LoadPowerEvent value)? load,
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent() when restartApp != null:
+      case RestartAppPowerEvent() when restartApp != null:
         return restartApp(_that);
-      case PowerOffWebTabEvent() when powerOff != null:
+      case PowerOffPowerEvent() when powerOff != null:
         return powerOff(_that);
-      case LoadWebTabEvent() when load != null:
+      case LoadPowerEvent() when load != null:
         return load(_that);
       case _:
         return null;
@@ -152,11 +152,11 @@ extension WebTabEventPatterns on WebTabEvent {
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent() when restartApp != null:
+      case RestartAppPowerEvent() when restartApp != null:
         return restartApp();
-      case PowerOffWebTabEvent() when powerOff != null:
+      case PowerOffPowerEvent() when powerOff != null:
         return powerOff();
-      case LoadWebTabEvent() when load != null:
+      case LoadPowerEvent() when load != null:
         return load();
       case _:
         return orElse();
@@ -184,11 +184,11 @@ extension WebTabEventPatterns on WebTabEvent {
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent():
+      case RestartAppPowerEvent():
         return restartApp();
-      case PowerOffWebTabEvent():
+      case PowerOffPowerEvent():
         return powerOff();
-      case LoadWebTabEvent():
+      case LoadPowerEvent():
         return load();
       case _:
         throw StateError('Unexpected subclass');
@@ -215,11 +215,11 @@ extension WebTabEventPatterns on WebTabEvent {
   }) {
     final _that = this;
     switch (_that) {
-      case RestartAppWebTabEvent() when restartApp != null:
+      case RestartAppPowerEvent() when restartApp != null:
         return restartApp();
-      case PowerOffWebTabEvent() when powerOff != null:
+      case PowerOffPowerEvent() when powerOff != null:
         return powerOff();
-      case LoadWebTabEvent() when load != null:
+      case LoadPowerEvent() when load != null:
         return load();
       case _:
         return null;
@@ -229,13 +229,13 @@ extension WebTabEventPatterns on WebTabEvent {
 
 /// @nodoc
 
-class RestartAppWebTabEvent implements WebTabEvent {
-  const RestartAppWebTabEvent();
+class RestartAppPowerEvent implements PowerEvent {
+  const RestartAppPowerEvent();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is RestartAppWebTabEvent);
+        (other.runtimeType == runtimeType && other is RestartAppPowerEvent);
   }
 
   @override
@@ -243,19 +243,19 @@ class RestartAppWebTabEvent implements WebTabEvent {
 
   @override
   String toString() {
-    return 'WebTabEvent.restartApp()';
+    return 'PowerEvent.restartApp()';
   }
 }
 
 /// @nodoc
 
-class PowerOffWebTabEvent implements WebTabEvent {
-  const PowerOffWebTabEvent();
+class PowerOffPowerEvent implements PowerEvent {
+  const PowerOffPowerEvent();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PowerOffWebTabEvent);
+        (other.runtimeType == runtimeType && other is PowerOffPowerEvent);
   }
 
   @override
@@ -263,19 +263,19 @@ class PowerOffWebTabEvent implements WebTabEvent {
 
   @override
   String toString() {
-    return 'WebTabEvent.powerOff()';
+    return 'PowerEvent.powerOff()';
   }
 }
 
 /// @nodoc
 
-class LoadWebTabEvent implements WebTabEvent {
-  const LoadWebTabEvent();
+class LoadPowerEvent implements PowerEvent {
+  const LoadPowerEvent();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoadWebTabEvent);
+        (other.runtimeType == runtimeType && other is LoadPowerEvent);
   }
 
   @override
@@ -283,7 +283,7 @@ class LoadWebTabEvent implements WebTabEvent {
 
   @override
   String toString() {
-    return 'WebTabEvent.load()';
+    return 'PowerEvent.load()';
   }
 }
 
