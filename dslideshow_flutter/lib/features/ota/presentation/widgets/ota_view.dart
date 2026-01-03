@@ -41,7 +41,7 @@ class OTAView extends StatelessWidget {
       return Column(
         children: [
           if (state.info.status == OTAStatus.uploading)
-            Text("Updating ${state.info.uploadingPercent}%", style: TextStyle(color: Colors.amberAccent, fontSize: 50)),
+            Text("Uploading ${state.info.uploadingPercent.toStringAsFixed(0)}%", style: TextStyle(color: Colors.amberAccent, fontSize: 50)),
           if (state.info.status == OTAStatus.instaling) const Text("Installing", style: TextStyle(color: Colors.amberAccent, fontSize: 50)),
           Padding(
             padding: const EdgeInsets.all(16.0),

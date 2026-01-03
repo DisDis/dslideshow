@@ -28,7 +28,7 @@ HardwareConfig _$HardwareConfigFromJson(
       json['sensorsScript'] as String? ?? './scripts/sensorsScript.sh',
   powerOffScript: json['powerOffScript'] as String? ?? './scripts/powerOff.sh',
   restartAppScript:
-      json['restartAppScript'] as String? ?? './scripts/restarApp.sh',
+      json['restartAppScript'] as String? ?? './scripts/restartApp.sh',
 );
 
 Map<String, dynamic> _$HardwareConfigToJson(HardwareConfig instance) =>

@@ -9,7 +9,7 @@ part of 'welcome_config.dart';
 WelcomeConfig _$WelcomeConfigFromJson(Map<String, dynamic> json) =>
     WelcomeConfig(
       delayMs: (json['delayMs'] as num?)?.toInt() ?? 2000,
-      size: (json['size'] as num?)?.toDouble() ?? 100,
+      size: (json['size'] as num?)?.toDouble() ?? 300,
       text: json['text'] as String? ?? 'Welcome',
     );
 
