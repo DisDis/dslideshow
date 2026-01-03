@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:config_app/features/web_server_config/config/router.dart'
+import 'package:config_app/features/power/config/router.dart'
     as web_config;
 import 'package:config_app/features/wifi_config/config/router.dart'
     as wifi_config;

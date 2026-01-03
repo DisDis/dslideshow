@@ -1,6 +1,6 @@
-import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_bloc.dart';
-import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_event.dart';
-import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_state.dart';
+import 'package:config_app/features/power/presentation/bloc/web_tab_bloc.dart';
+import 'package:config_app/features/power/presentation/bloc/web_tab_event.dart';
+import 'package:config_app/features/power/presentation/bloc/web_tab_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

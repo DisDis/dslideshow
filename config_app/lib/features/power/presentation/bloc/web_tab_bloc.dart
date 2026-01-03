@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
-import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_event.dart';
-import 'package:config_app/features/web_server_config/presentation/bloc/web_tab_state.dart';
+import 'package:config_app/features/power/presentation/bloc/web_tab_event.dart';
+import 'package:config_app/features/power/presentation/bloc/web_tab_state.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/rpc.dart';

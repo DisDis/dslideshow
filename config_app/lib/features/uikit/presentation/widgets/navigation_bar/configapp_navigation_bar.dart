@@ -81,14 +81,15 @@ class ConfigAppNavigationBar extends StatelessWidget {
             onTap: () => context.go('/ota'),
           ),
           ListTile(
-            leading: const Icon(Icons.dns),
-            title: const Text('Web settings'),
-            onTap: () => context.go("/web_config"),
-          ),
-          ListTile(
             leading: const Icon(Icons.wifi),
             title: const Text('Wifi'),
             onTap: () => context.go('/wifi_config'),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.power_settings_new),
+            title: const Text('Power Menu'),
+            onTap: () => context.go("/web_config"),
           ),
           const Divider(),
           ListTile(
