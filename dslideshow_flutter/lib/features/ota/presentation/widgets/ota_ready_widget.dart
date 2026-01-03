@@ -47,10 +47,7 @@ class OtaReadyWidget extends StatelessWidget {
         // Правая часть - Информация
         Expanded(
           flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 32.0),
-            child: _buildInfoPanel(),
-          ),
+          child: Padding(padding: const EdgeInsets.only(right: 32.0), child: _buildInfoPanel()),
         ),
       ],
     );
@@ -62,20 +59,9 @@ class OtaReadyWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(
-        data: state.otaStartUrl,
-        version: QrVersions.auto,
-        size: 300.0,
-        backgroundColor: Colors.white,
-      ),
+      child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, size: 500.0, backgroundColor: Colors.white),
     );
   }
 
@@ -93,30 +79,19 @@ class OtaReadyWidget extends StatelessWidget {
         children: [
           Text(
             "Update firmware",
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
               const Text("Current version: "),
               Text(
                 "v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(
-                  color: Colors.red.withOpacity(0.9),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildStepRow(
-            Icons.qr_code_scanner,
-            "1. Scan the QR code to update firmware",
-          ),
+          _buildStepRow(Icons.qr_code_scanner, "1. Scan the QR code to update firmware"),
           const SizedBox(height: 12),
           _buildStepRow(Icons.wifi, "2. Make sure you are on the same Wi-Fi"),
 
@@ -134,11 +109,7 @@ class OtaReadyWidget extends StatelessWidget {
           const SizedBox(height: 8),
           SelectableText(
             state.otaStartUrl,
-            style: TextStyle(
-              color: _accentColor,
-              fontSize: 18,
-              decoration: TextDecoration.underline,
-            ),
+            style: TextStyle(color: _accentColor, fontSize: 18, decoration: TextDecoration.underline),
           ),
 
           const SizedBox(height: 24),
@@ -182,13 +153,7 @@ class OtaReadyWidget extends StatelessWidget {
         Icon(icon, color: _accentColor, size: 20),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 16,
-            ),
-          ),
+          child: Text(text, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16)),
         ),
       ],
     );

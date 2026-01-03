@@ -12,7 +12,7 @@ class PowerOffService {
   PowerOffService(this._config);
 
   void powerOff() async {
-    _log.info('execute');
+    _log.info('powerOff');
     try {
       io.Process.run(_config.powerOffScript, [], runInShell: true);
     } catch (e, s) {

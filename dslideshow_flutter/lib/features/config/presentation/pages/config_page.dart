@@ -90,8 +90,7 @@ class _ConfigPageState extends State<ConfigPage> {
   }
 
   void _pushButton(ButtonEvent event) {
-    if (event.event == ButtonEventType.released &&
-        event.button == ButtonType.button0) {
+    if (event.event == ButtonEventType.released && event.button == ButtonType.button0) {
       context.read<RouteBloc>().add(ChangePageEvent(RoutePage.slideshow));
     }
   }
@@ -106,13 +105,7 @@ class _ConfigPageState extends State<ConfigPage> {
             children: [
               const CommonHeaderWidget(),
               Expanded(
-                child: isReady
-                    ? _buildConfigContent()
-                    : Center(
-                        child: CircularProgressIndicator(
-                          color: _accentColor,
-                        ),
-                      ),
+                child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
               ),
             ],
           ),
@@ -130,24 +123,18 @@ class _ConfigPageState extends State<ConfigPage> {
   }
 
   Widget _buildConfigContent() {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Левая часть - QR
-              Expanded(
-                flex: 4,
-                child: Center(child: _buildQrCode()),
-              ),
-              // Правая часть - Информация
-              Expanded(
-                flex: 5,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 32.0),
-                  child: _buildInfoPanel(),
-                ),
-              ),
-            ],
-          );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Левая часть - QR
+        Expanded(flex: 4, child: Center(child: _buildQrCode())),
+        // Правая часть - Информация
+        Expanded(
+          flex: 5,
+          child: Padding(padding: const EdgeInsets.only(right: 32.0), child: _buildInfoPanel()),
+        ),
+      ],
+    );
   }
 
   Widget _buildQrCode() {
@@ -156,20 +143,9 @@ class _ConfigPageState extends State<ConfigPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(
-        data: _urlData,
-        version: QrVersions.auto,
-        size: 300.0,
-        backgroundColor: Colors.white,
-      ),
+      child: QrImageView(data: _urlData, version: QrVersions.auto, size: 500.0, backgroundColor: Colors.white),
     );
   }
 
@@ -187,19 +163,15 @@ class _ConfigPageState extends State<ConfigPage> {
         children: [
           Text(
             "Device Setup",
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildStepRow(Icons.qr_code_scanner, "1. Scan the QR code to open settings"),
           const SizedBox(height: 12),
           _buildStepRow(Icons.wifi, "2. Make sure you are on the same Wi-Fi"),
-          
+
           const Divider(height: 40, color: Colors.white24),
-          
+
           Text(
             "Manual Connection",
             style: TextStyle(
@@ -212,15 +184,11 @@ class _ConfigPageState extends State<ConfigPage> {
           const SizedBox(height: 8),
           SelectableText(
             _urlData,
-            style: TextStyle(
-              color: _accentColor,
-              fontSize: 18,
-              decoration: TextDecoration.underline,
-            ),
+            style: TextStyle(color: _accentColor, fontSize: 18, decoration: TextDecoration.underline),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           Text(
             "Access Code",
             style: TextStyle(
@@ -260,13 +228,7 @@ class _ConfigPageState extends State<ConfigPage> {
         Icon(icon, color: _accentColor, size: 20),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 16,
-            ),
-          ),
+          child: Text(text, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16)),
         ),
       ],
     );

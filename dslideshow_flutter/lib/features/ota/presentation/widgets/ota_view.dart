@@ -1,3 +1,4 @@
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
@@ -14,7 +15,7 @@ class OTAView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<OtaBloc>().state;
-  
+
     final terminalView = Expanded(
       flex: 2,
       child: TerminalView(
@@ -32,23 +33,19 @@ class OTAView extends StatelessWidget {
     } else if (state is OtaFailureState) {
       return Column(
         children: [
-          Text(
-            "Error${state.info.errorText == null ? '' : '$state.info.errorText'}",
-            style: const TextStyle(color: Colors.red, fontSize: 50),
-          ),
+          Text("Error${state.info.errorText == null ? '' : '$state.info.errorText'}", style: const TextStyle(color: Colors.red, fontSize: 50)),
           terminalView,
         ],
       );
     } else if (state is OtaProgressState) {
       return Column(
         children: [
+          if (state.info.status == OTAStatus.uploading)
+            Text("Updating ${state.info.uploadingPercent}%", style: TextStyle(color: Colors.amberAccent, fontSize: 50)),
+          if (state.info.status == OTAStatus.instaling) const Text("Installing", style: TextStyle(color: Colors.amberAccent, fontSize: 50)),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: LinearProgressIndicator(
-              value: state.info.uploadingPercent / 100,
-              semanticsLabel: 'OTA progress',
-              minHeight: 15,
-            ),
+            child: LinearProgressIndicator(value: state.info.uploadingPercent / 100, semanticsLabel: 'OTA progress', minHeight: 15),
           ),
           if (!environment.isLinuxEmbedded) const TestConfigButton(),
           terminalView,
@@ -59,10 +56,7 @@ class OTAView extends StatelessWidget {
     } else if (state is OtaSuccessState) {
       return Column(
         children: [
-          const Text(
-            "Finished",
-            style: TextStyle(color: Colors.green, fontSize: 50),
-          ),
+          const Text("Finished", style: TextStyle(color: Colors.green, fontSize: 50)),
           terminalView,
         ],
       );
