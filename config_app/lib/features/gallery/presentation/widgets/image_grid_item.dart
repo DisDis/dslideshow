@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -27,9 +28,9 @@ class ImageGridItem extends StatelessWidget {
           color: Colors.grey[300],
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.broken_image, color: Colors.grey),
-              Text('Error', style: TextStyle(fontSize: 10)),
+            children: [
+              const Icon(Icons.broken_image, color: Colors.grey),
+              Text(context.localizations.error_text, style: const TextStyle(fontSize: 10)),
             ],
           ),
         ),

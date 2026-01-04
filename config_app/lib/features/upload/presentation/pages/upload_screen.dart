@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart';
@@ -16,15 +17,15 @@ class UploadScreen extends StatelessWidget {
     // Блок уже должен быть предоставлен выше в дереве
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Upload Queue"),
+        title: Text(context.localizations.upload_queue_title),
         actions: [
           // Меню добавления
           PopupMenuButton<String>(
             icon: const Icon(Icons.add),
             onSelected: (value) => _handleMenuSelection(context, value),
             itemBuilder: (context) => [
-              const PopupMenuItem(value: 'files', child: Text("Add Files")),
-              const PopupMenuItem(value: 'folder', child: Text("Add Folder")),
+              PopupMenuItem(value: 'files', child: Text(context.localizations.add_files_menu_item)),
+              PopupMenuItem(value: 'folder', child: Text(context.localizations.add_folder_menu_item)),
             ],
           )
         ],
@@ -33,7 +34,7 @@ class UploadScreen extends StatelessWidget {
       body: BlocBuilder<UploadQueueBloc, UploadQueueState>(
         builder: (context, state) {
           if (state.tasks.isEmpty) {
-            return const Center(child: Text("Queue is empty"));
+            return Center(child: Text(context.localizations.queue_is_empty));
           }
 
           // Показываем новые сверху или снизу? Обычно новые снизу.
@@ -85,7 +86,7 @@ class UploadScreen extends StatelessWidget {
               files: files, rootPath: selectedDirectory));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("No images found in folder")));
+              SnackBar(content: Text(context.localizations.no_images_found_in_folder)));
         }
       }
     }

@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
@@ -18,7 +19,7 @@ class WiFiConfigTab extends StatelessWidget {
         // 1. Состояние Загрузки
         if (state is UnWifiTabState) {
           return Scaffold(
-            appBar: AppBar(title: const Text("WiFi Configuration")),
+            appBar: AppBar(title: Text(context.localizations.connect_form_title)),
             drawer: const ConfigAppNavigationBar(),
             body: const Center(child: CircularProgressIndicator()),
           );
@@ -27,7 +28,7 @@ class WiFiConfigTab extends StatelessWidget {
         // 2. Состояние Ошибки
         if (state is ErrorWifiTabState) {
           return Scaffold(
-            appBar: AppBar(title: const Text("WiFi Configuration")),
+            appBar: AppBar(title: Text(context.localizations.connect_form_title)),
             drawer: const ConfigAppNavigationBar(),
             body: Center(
               child: Column(
@@ -42,7 +43,7 @@ class WiFiConfigTab extends StatelessWidget {
                         .read<WifiTabBloc>()
                         .add(const LoadWifiTabEvent()),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Reload'),
+                    label: Text(context.localizations.try_again_button),
                   ),
                 ],
               ),
@@ -60,7 +61,7 @@ class WiFiConfigTab extends StatelessWidget {
               child: CustomScrollView(
                 slivers: [
                   SliverAppBar(
-                    title: const Text("WiFi Configuration"),
+                    title: Text(context.localizations.connect_form_title),
                     floating: true,
                     pinned: true,
                     actions: [
@@ -81,7 +82,7 @@ class WiFiConfigTab extends StatelessWidget {
 
                 // Секция: Сохраненные сети
                 if (state.connections.isNotEmpty) ...[
-                  const _SectionHeader(title: "Saved Connections"),
+                  _SectionHeader(title: context.localizations.saved_connections_subtitle),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
@@ -94,13 +95,13 @@ class WiFiConfigTab extends StatelessWidget {
                 ],
 
                 // Секция: Доступные сети
-                const _SectionHeader(title: "Nearby Networks"),
+                _SectionHeader(title: context.localizations.manage_connections_subtitle),
 
                 if (state.availableNetworks.isEmpty)
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.all(32.0),
-                      child: Center(child: Text("No networks found nearby")),
+                      child: Center(child: Text(context.localizations.no_networks_found_nearby)),
                     ),
                   ),
 

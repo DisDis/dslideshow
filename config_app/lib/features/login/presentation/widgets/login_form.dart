@@ -18,7 +18,7 @@ class LoginForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: const Text('Authentication Failure'),
+                content: Text(context.localizations.authentication_failure),
                 backgroundColor: Theme.of(context).colorScheme.error,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -50,7 +50,7 @@ class LoginForm extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                "Please sign in to continue",
+                context.localizations.please_sign_in_to_continue,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -95,14 +95,14 @@ class _ConnectUriInput extends StatelessWidget {
           controller: state.connectUri.isPure ? TextEditingController(text: state.connectUri.value) : null,
           onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
           decoration: InputDecoration(
-            labelText: 'Server URI',
+            labelText: context.localizations.server_uri,
             hintText: 'ws://192.168.1.x:8080/ws',
             prefixIcon: const Icon(Icons.link),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             enabled: !kIsWeb,
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.connectUri.displayError != null ? 'Invalid URI' : null,
+            errorText: state.connectUri.displayError != null ? context.localizations.invalid_uri : null,
           ),
           keyboardType: TextInputType.url,
         );
@@ -122,12 +122,12 @@ class _UsernameInput extends StatelessWidget {
           controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
           onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
-            labelText: 'Username',
+            labelText: context.localizations.username,
             prefixIcon: const Icon(Icons.person_outline),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.username.displayError != null ? 'Invalid username' : null,
+            errorText: state.username.displayError != null ? context.localizations.invalid_username : null,
           ),
           textInputAction: TextInputAction.next,
         );
@@ -148,12 +148,12 @@ class _PasswordInput extends StatelessWidget {
           onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true, // Всегда скрыт, так как мы в Stateless
           decoration: InputDecoration(
-            labelText: 'Password',
+            labelText: context.localizations.password,
             prefixIcon: const Icon(Icons.lock_outline),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.password.displayError != null ? 'Invalid password' : null,
+            errorText: state.password.displayError != null ? context.localizations.invalid_password : null,
           ),
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
@@ -193,9 +193,9 @@ class _LoginButton extends StatelessWidget {
                     context.read<LoginBloc>().add(const LoginSubmitted());
                   }
                 : null,
-            child: const Text(
-              'Sign In',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: Text(
+              context.localizations.sign_in,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
         );

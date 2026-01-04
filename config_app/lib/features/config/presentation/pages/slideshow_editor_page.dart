@@ -1,5 +1,6 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -17,7 +18,7 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Slideshow Settings')),
+      appBar: AppBar(title: Text(context.localizations.slideshow_settings_title)),
       body: Column(
         children: [
           // --- PREVIEW AREA ---
@@ -83,7 +84,7 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
                     ),
                     // Пример слайдера для Opacity
                     ListTile(
-                      title: const Text('Background Opacity'),
+                      title: Text(context.localizations.background_opacity),
                       subtitle: Slider(
                         value: widget.config.backgroundOpacity,
                         min: 0.0,

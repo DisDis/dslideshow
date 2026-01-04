@@ -6,6 +6,7 @@ import 'package:config_app/features/config/presentation/pages/storage_settings_p
 import 'package:config_app/features/config/presentation/pages/webserver_editor.dart';
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -55,13 +56,13 @@ class _ConfigViewState extends State<_ConfigView> {
           },
           saved: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Config saved successfully')),
+              SnackBar(content: Text(context.localizations.config_saved_successfully)),
             );
           },
           error: (msg) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text('Error: $msg'), backgroundColor: Colors.red),
+                  content: Text(context.localizations.error_with_message(msg)), backgroundColor: Colors.red),
             );
           },
           orElse: () {},
@@ -71,14 +72,14 @@ class _ConfigViewState extends State<_ConfigView> {
         return Scaffold(
           drawer: const ConfigAppNavigationBar(),
           appBar: AppBar(
-            title: const Text('Settings'),
+            title: Text(context.localizations.settings_title),
             actions: [
               IconButton(
                 icon: const Icon(Icons.restore),
                 onPressed: () {
                   context.read<ConfigBloc>().add(ConfigEvent.load());
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Config is reloading...')),
+                    SnackBar(content: Text(context.localizations.config_is_reloading)),
                   );
                 },
               ),
@@ -114,18 +115,18 @@ class _ConfigViewState extends State<_ConfigView> {
       children: [
         // --- SlideShow Section ---
         SettingsSection(
-          title: 'Slideshow',
+          title: context.localizations.slideshow_section_title,
           icon: Icons.slideshow,
           children: [
             SettingsTileNavigation(
-              title: 'General & Effects',
+              title: context.localizations.general_and_effects_title,
               subtitle:
                   'Delay: ${_editingConfig!.slideshow.displayTimeMs}ms, Effects...',
               icon: Icons.photo_library,
               onTap: () => _navigateToSlideshowEditor(context),
             ),
             SettingsTileNavigation(
-              title: 'Welcome Screen',
+              title: context.localizations.welcome_screen_title,
               subtitle: _editingConfig!.welcome.text,
               icon: Icons.waving_hand,
               onTap: () => _navigateToWelcomeEditor(context),
@@ -134,16 +135,16 @@ class _ConfigViewState extends State<_ConfigView> {
         ),
         // Внутри ListView в ConfigView
         SettingsSection(
-          title: 'Storage',
+          title: context.localizations.storage_title,
           icon: Icons.sd_storage,
           children: [
             SettingsTileNavigation(
-              title: 'Storage Configuration',
+              title: context.localizations.storage_configuration_title,
               // Показываем текущий выбор в подзаголовке
               subtitle:
                   _editingConfig!.storages.selected == StorageType.DiskStorage
-                      ? 'Using Local Disk'
-                      : 'Using Google Photos',
+                      ? context.localizations.using_local_disk
+                      : context.localizations.using_google_photos,
               icon: Icons.settings_system_daydream,
               onTap: () => _navigateToStorageSettings(context),
             ),
@@ -151,18 +152,18 @@ class _ConfigViewState extends State<_ConfigView> {
         ),
         // --- MQTT Section ---
         SettingsSection(
-          title: 'Connectivity',
+          title: context.localizations.connectivity_title,
           icon: Icons.wifi,
           children: [
              SettingsTileNavigation(
-              title: 'Web server',
+              title: context.localizations.web_server_settings_title,
               subtitle:
                   _editingConfig!.webServer.alwaysEnabled ? "Enabled" : "Disabled",
               icon: Icons.dns,
               onTap: () => _navigateToWebServerEditor(context),
             ),
             SettingsTileNavigation(
-              title: 'MQTT',
+              title: context.localizations.mqtt_title,
               subtitle:
                   '${_editingConfig!.mqtt.server}:${_editingConfig!.mqtt.serverPort}',
               icon: Icons.cloud_sync,
@@ -173,11 +174,11 @@ class _ConfigViewState extends State<_ConfigView> {
 
         // --- Hardware Section (Пример быстрого редактирования на месте) ---
         SettingsSection(
-          title: 'Hardware',
+          title: context.localizations.hardware_title,
           icon: Icons.developer_board,
           children: [
             SettingsTextField(
-              label: 'GPIO Smoothing (ms)',
+              label: context.localizations.gpio_smoothing_label,
               isNumber: true,
               initialValue: _editingConfig!.hardware.smoothingGPIOMs.toString(),
               onChanged: (val) {
@@ -195,11 +196,11 @@ class _ConfigViewState extends State<_ConfigView> {
           ],
         ),
         SettingsSection(
-          title: 'Logging Levels',
+          title: context.localizations.logging_levels_title,
           icon: Icons.bug_report,
           children: [
             SettingsDropdown<Level>(
-              label: 'Main Logic',
+              label: context.localizations.main_logic_label,
               value: _editingConfig!.log.levelMain,
               items: Level.LEVELS, // Список уровней: INFO, FINE, SEVERE...
               onChanged: (val) {
@@ -209,7 +210,7 @@ class _ConfigViewState extends State<_ConfigView> {
               },
             ),
             SettingsDropdown<Level>(
-              label: 'Web Server',
+              label: context.localizations.web_server_settings_title,
               value: _editingConfig!.log.levelWeb,
               items: Level.LEVELS,
               onChanged: (val) {
@@ -219,7 +220,7 @@ class _ConfigViewState extends State<_ConfigView> {
               },
             ),
             SettingsDropdown<Level>(
-              label: 'OTA Update',
+              label: context.localizations.ota_update_label,
               value: _editingConfig!.log.levelOTA,
               items: Level.LEVELS,
               onChanged: (val) {
@@ -229,7 +230,7 @@ class _ConfigViewState extends State<_ConfigView> {
               },
             ),
             SettingsDropdown<Level>(
-              label: 'Hardware Frame',
+              label: context.localizations.hardware_frame_label,
               value: _editingConfig!.log.levelHwFrame,
               items: Level.LEVELS,
               onChanged: (val) {

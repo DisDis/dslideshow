@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:flutter/material.dart';
@@ -44,26 +45,26 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.initialSSID.isEmpty ? "Add Network" : "Connect to Network",
+              widget.initialSSID.isEmpty ? context.localizations.add_network : context.localizations.connect_to_network,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _ssidController,
-              decoration: const InputDecoration(
-                labelText: 'SSID (Name)',
-                prefixIcon: Icon(Icons.wifi_find),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: context.localizations.ssid_name_label,
+                prefixIcon: const Icon(Icons.wifi_find),
+                border: const OutlineInputBorder(),
               ),
               validator: (value) =>
-                  value == null || value.isEmpty ? 'Required' : null,
+                  value == null || value.isEmpty ? context.localizations.required_field : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _passwordController,
               obscureText: _obscurePassword,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: context.localizations.password,
                 prefixIcon: const Icon(Icons.key),
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
@@ -80,7 +81,7 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel"),
+                  child: Text(context.localizations.cancel_button),
                 ),
                 const Spacer(),
                 FilledButton.icon(
@@ -94,7 +95,7 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
                     }
                   },
                   icon: const Icon(Icons.check),
-                  label: const Text("Connect"),
+                  label: Text(context.localizations.connect_button),
                 ),
               ],
             )

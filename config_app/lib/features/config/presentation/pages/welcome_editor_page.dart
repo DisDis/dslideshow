@@ -1,4 +1,5 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class WelcomeEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Welcome Settings')),
+      appBar: AppBar(title: Text(context.localizations.welcome_settings_title)),
       body: ListView(
         children: [
           SettingsTextField(

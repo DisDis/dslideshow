@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 // Группировка настроек в карточку
@@ -257,7 +258,7 @@ class _MultiSelectDialogState<T> extends State<_MultiSelectDialog<T>> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select items'),
+      title: Text(context.localizations.select_items_dialog_title),
       content: SingleChildScrollView(
         child: ListBody(
           children: widget.items.map((item) {
@@ -286,11 +287,11 @@ class _MultiSelectDialogState<T> extends State<_MultiSelectDialog<T>> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), // Cancel (null result)
-          child: const Text('Cancel'),
+          child: Text(context.localizations.cancel_button),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context, _tempSelected), // OK
-          child: const Text('OK'),
+          child: Text(context.localizations.ok_button),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
             builder: (context, state) {
               return UserAccountsDrawerHeader(
                 accountName: Text(state.user.username),
-                accountEmail: const Text('example@gmail.com'),
+                accountEmail: Text(context.localizations.example_email_address),
                 currentAccountPicture: CircleAvatar(
                   child: ClipOval(
                     child: Image.network(
@@ -55,45 +56,45 @@ class ConfigAppNavigationBar extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.home),
-            title: Text("Home"),
+            title: Text(context.localizations.home_menu_item),
             onTap: () => context.go('/home'),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.photo_library),
-            title: const Text('Gallery'),
+            title: Text(context.localizations.gallery_menu_item),
             onTap: () => context.go('/gallery'),
           ),
           ListTile(
             leading: const Icon(Icons.upload_file),
-            title: const Text('Upload media'),
+            title: Text(context.localizations.upload_media_menu_item),
             onTap: () => context.go('/upload'),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Configuration'),
+            title: Text(context.localizations.configuration_menu_item),
             onTap: () => context.go('/config'),
           ),
           ListTile(
             leading: const Icon(Icons.system_update),
-            title: const Text('OTA Update'),
+            title: Text(context.localizations.ota_update_title),
             onTap: () => context.go('/ota'),
           ),
           ListTile(
             leading: const Icon(Icons.wifi),
-            title: const Text('Wifi'),
+            title: Text(context.localizations.wifi_menu_item),
             onTap: () => context.go('/wifi_config'),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.power_settings_new),
-            title: const Text('System Control'),
+            title: Text(context.localizations.system_control_menu_item),
             onTap: () => context.go("/power"),
           ),
           const Divider(),
           ListTile(
-            title: const Text('Exit'),
+            title: Text(context.localizations.exit_menu_item),
             leading: const Icon(Icons.exit_to_app),
             onTap: () => context
                 .read<AuthenticationBloc>()

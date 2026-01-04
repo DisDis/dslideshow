@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20), // Отступ под AppBar
                       Text(
-                        "Welcome back,",
+                        context.localizations.welcome_back,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               color: Colors.grey,
                             ),
@@ -74,7 +74,7 @@ class HomePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Manage your device settings and updates.",
+                        context.localizations.manage_your_device_settings_and_updates,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.grey[600],
                         ),
@@ -96,43 +96,43 @@ class HomePage extends StatelessWidget {
                     
                     // Добавил Галерею, так как мы её делали ранее (для примера)
                     _DashboardCard(
-                      title: "Gallery",
-                      subtitle: "View media",
+                      title: context.localizations.gallery_card_title,
+                      subtitle: context.localizations.view_media_subtitle,
                       icon: Icons.photo_library,
                       color: Colors.green,
                       onTap: () => context.go('/gallery'), // Если такой роут есть
                     ),
                     _DashboardCard(
-                      title: "Upload",
-                      subtitle: "Upload media",
+                      title: context.localizations.upload_card_title,
+                      subtitle: context.localizations.upload_media_subtitle,
                       icon: Icons.upload_file,
                       color: Colors.red,
                       onTap: () => context.go('/upload'), // Если такой роут есть
                     ),
                     _DashboardCard(
-                      title: "OTA Update",
-                      subtitle: "Firmware upgrade",
+                      title: context.localizations.ota_update_card_title,
+                      subtitle: context.localizations.firmware_upgrade_subtitle,
                       icon: Icons.system_update,
                       color: Colors.purpleAccent,
                       onTap: () => context.go('/ota'),
                     ),
                     _DashboardCard(
-                      title: "WiFi Setup",
-                      subtitle: "Manage connections",
+                      title: context.localizations.wifi_setup_card_title,
+                      subtitle: context.localizations.manage_connections_subtitle,
                       icon: Icons.wifi,
                       color: Colors.blueAccent,
                       onTap: () => context.go(WiFiConfigPages.main.value),
                     ),
                     _DashboardCard(
-                      title: "Configuration",
-                      subtitle: "System settings",
+                      title: context.localizations.configuration_card_title,
+                      subtitle: context.localizations.system_settings_subtitle,
                       icon: Icons.settings,
                       color: Colors.orangeAccent,
                       onTap: () => context.go('/config'),
                     ),
                     _DashboardCard(
-                      title: "System Control",
-                      subtitle: "Restart app, power off",
+                      title: context.localizations.system_control_card_title,
+                      subtitle: context.localizations.restart_app_power_off_subtitle,
                       icon: Icons.power_settings_new,
                       color: Colors.lightBlue,
                       onTap: () => context.go('/power'),

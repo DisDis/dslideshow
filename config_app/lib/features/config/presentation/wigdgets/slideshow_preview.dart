@@ -3,6 +3,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_flutter/effect.dart';
 
@@ -102,7 +103,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       errorWidget: (BuildContext context, String url, error) {
         return Row(
           children: [
-            Text('Not found "${mediaItem.id}'),
+            Text(context.localizations.not_found_with_id(mediaItem.id!)),
             const Icon(Icons.error)
           ],
         );
@@ -174,8 +175,10 @@ class SlideshowPreviewState extends State<SlideshowPreview>
                 ),
               ),
               Text(
-                'Transition: ${widget.config.transitionTimeMs} ms\n'
-                'Display: ${widget.config.displayTimeMs} ms',
+                context.localizations.transition_display_times(
+                  widget.config.transitionTimeMs,
+                  widget.config.displayTimeMs,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

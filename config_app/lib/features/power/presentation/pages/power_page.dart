@@ -2,6 +2,7 @@ import 'package:config_app/features/power/presentation/bloc/power_bloc.dart';
 import 'package:config_app/features/power/presentation/bloc/power_event.dart';
 import 'package:config_app/features/power/presentation/bloc/power_state.dart';
 import 'package:config_app/features/power/presentation/widgets/power_tab.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class PowerMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // Используем более "системное" название
-      appBar: AppBar(title: const Text("System Control")),
+      appBar: AppBar(title: Text(context.localizations.system_control_title)),
       drawer: const ConfigAppNavigationBar(),
       // Градиентный фон для современности
       body: Container(

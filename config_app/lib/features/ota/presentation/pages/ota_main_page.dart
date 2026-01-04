@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_state.dart';
@@ -14,7 +15,7 @@ class OtaMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("OTA Update")),
+      appBar: AppBar(title: Text(context.localizations.ota_update_title)),
       drawer: const ConfigAppNavigationBar(),
       body: MultiBlocProvider(
         providers: [
@@ -62,7 +63,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
           uploading: (progress) => _buildUploadingState(context, progress),
           uploadComplete: () => _buildUploadCompleteState(context),
           error: (errorMessage) => _buildErrorState(context, errorMessage),
-          orElse: () => const Center(child: Text('Unknown state')),
+          orElse: () => Center(child: Text(context.localizations.unknown_state)),
         );
       },
     );
@@ -89,7 +90,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
             onPressed: () {
               context.read<OtaBloc>().add(const InitOtaEvent());
             },
-            child: const Text('Initialize'),
+            child: Text(context.localizations.initialize_button),
           ),
         ],
       ),
@@ -122,7 +123,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
             onPressed: () async {
               filePath = await _pickFile();
             },
-            child: const Text('Select File'),
+            child: Text(context.localizations.select_file_button),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -131,7 +132,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
                   .read<OtaBloc>()
                   .add(UploadFileOtaEvent(filePath!, tEdCode.value.text));
             },
-            child: const Text('Update'),
+            child: Text(context.localizations.update_button),
           ),
         ],
       ),
@@ -189,7 +190,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
             onPressed: () {
               context.read<OtaBloc>().add(const ResetOtaEvent());
             },
-            child: const Text('Reset'),
+            child: Text(context.localizations.reset_button),
           ),
         ],
       ),
@@ -210,7 +211,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
             onPressed: () {
               context.read<OtaBloc>().add(const ResetOtaEvent());
             },
-            child: const Text('Reset'),
+            child: Text(context.localizations.reset_button),
           ),
         ],
       ),

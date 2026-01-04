@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class SavedConnectionTile extends StatelessWidget {
       ),
       title: Text(connection.name,
           style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text("Device: ${connection.device} • ${connection.type}"),
+      subtitle: Text(context.localizations.device_connection_info(connection.device, connection.type)),
       //trailing: const Icon(Icons.chevron_right, color: Colors.grey),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:config_app/features/power/presentation/bloc/power_bloc.dart';
 import 'package:config_app/features/power/presentation/bloc/power_event.dart';
 import 'package:config_app/features/power/presentation/bloc/power_state.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +28,7 @@ class PowerTab extends StatelessWidget {
                   const Icon(Icons.error_outline, size: 64, color: Colors.redAccent),
                   const SizedBox(height: 16),
                   Text(
-                    "Connection Failed",
+                    context.localizations.connection_failed,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
@@ -40,7 +41,7 @@ class PowerTab extends StatelessWidget {
                   FilledButton.icon(
                     onPressed: () => context.read<PowerBloc>().add(const LoadPowerEvent()),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Try Again'),
+                    label: Text(context.localizations.try_again_button),
                   ),
                 ],
               ),
@@ -65,14 +66,14 @@ class PowerTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "Power Management",
+                      context.localizations.power_management_title,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Choose an action to perform on the device",
+                      context.localizations.choose_action_on_device,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -81,15 +82,15 @@ class PowerTab extends StatelessWidget {
 
                     // Кнопка рестарта
                     _PowerActionCard(
-                      title: 'Restart Application',
-                      description: 'Reloads the software without rebooting the OS.',
+                      title: context.localizations.restart_application,
+                      description: context.localizations.reload_software_without_rebooting_os,
                       icon: Icons.restart_alt,
                       color: Colors.orange,
                       onTap: () => _showConfirmationDialog(
                         context,
-                        title: 'Restart Application?',
-                        content: 'This will reload the configuration app and slideshow services.',
-                        confirmText: 'Restart',
+                        title: context.localizations.restart_application_question,
+                        content: context.localizations.this_will_reload_configuration_app_and_slideshow_services,
+                        confirmText: context.localizations.restart,
                         confirmColor: Colors.orange,
                         onConfirm: () {
                           context.read<PowerBloc>().add(const RestartAppPowerEvent());
@@ -101,16 +102,16 @@ class PowerTab extends StatelessWidget {
 
                     // Кнопка выключения
                     _PowerActionCard(
-                      title: 'Power Off',
-                      description: 'Safely shuts down the device operating system.',
+                      title: context.localizations.power_off,
+                      description: context.localizations.safely_shuts_down_the_device_operating_system,
                       icon: Icons.power_off,
                       color: Colors.red,
                       isDangerous: true,
                       onTap: () => _showConfirmationDialog(
                         context,
-                        title: 'Power Off Device?',
-                        content: 'The device will shut down completely. You will need to physically turn it on again.',
-                        confirmText: 'Power Off',
+                        title: context.localizations.power_off_device_question,
+                        content: context.localizations.the_device_will_shut_down_completely,
+                        confirmText: context.localizations.power_off_button,
                         confirmColor: Colors.red,
                         onConfirm: () {
                           context.read<PowerBloc>().add(const PowerOffPowerEvent());
@@ -146,7 +147,7 @@ class PowerTab extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(), // Закрыть
-            child: const Text("Cancel"),
+            child: Text(context.localizations.cancel_button),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: confirmColor),
@@ -154,7 +155,7 @@ class PowerTab extends StatelessWidget {
               Navigator.of(ctx).pop(); // Сначала закрываем диалог
               onConfirm(); // Потом выполняем действие
             },
-            child: Text(confirmText),
+            child: Text(context.localizations.ok_button),
           ),
         ],
       ),

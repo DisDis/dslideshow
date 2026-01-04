@@ -1,4 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 class AvailableNetworkTile extends StatelessWidget {
@@ -61,7 +62,7 @@ class AvailableNetworkTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                       color: Colors.blue.withAlpha((255.0 * 0.3).round()))),
-              child: const Text("5G",
+              child: Text(context.localizations.wifi_5ghz_label,
                   style: TextStyle(
                       fontSize: 9,
                       color: Colors.blue,
@@ -71,7 +72,7 @@ class AvailableNetworkTile extends StatelessWidget {
           ],
           Text("${network.signal}%", style: const TextStyle(fontSize: 12)),
           const SizedBox(width: 6),
-          Text("• Ch: ${network.channel}",
+          Text("• ${context.localizations.channel_text(network.channel)}",
               style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),

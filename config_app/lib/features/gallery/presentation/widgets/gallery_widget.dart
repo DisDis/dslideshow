@@ -2,6 +2,7 @@ import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart'
 import 'package:config_app/features/gallery/presentation/widgets/folder_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
         // 1. Состояние загрузки (Показываем пустой экран с Drawer, чтобы меню работало всегда)
         if (state is UninitializedGalleryState) {
           return Scaffold(
-            appBar: AppBar(title: const Text("Gallery")),
+            appBar: AppBar(title: Text(context.localizations.gallery_title)),
             drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
             body: const Center(child: CircularProgressIndicator()),
           );
@@ -34,7 +35,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
         // 2. Состояние ошибки
         if (state is ErrorGalleryState) {
           return Scaffold(
-            appBar: AppBar(title: const Text("Gallery")),
+            appBar: AppBar(title: Text(context.localizations.gallery_title)),
             drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
             body: Center(
               child: Column(
@@ -45,7 +46,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                   Text(state.errorMessage),
                   TextButton(
                     onPressed: () => context.read<GalleryBloc>().add(const GalleryLoadEvent()),
-                    child: const Text('Retry'),
+                    child: Text(context.localizations.retry_button),
                   ),
                 ],
               ),
@@ -70,7 +71,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                   SliverAppBar(
                     title: Text(_isSelectionMode 
                         ? "${_selectedIds.length} selected" 
-                        : "Gallery (${state.items.length})"),
+                        : "${context.localizations.gallery_title} (${state.items.length})"),
                     floating: true,
                     pinned: true,
                     // Меняем цвет, если выбран режим выделения

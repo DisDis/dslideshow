@@ -1,4 +1,5 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class _StorageSettingsPageState extends State<StorageSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Storage Settings')),
+      appBar: AppBar(title: Text(context.localizations.storage_settings_title)),
       body: ListView(
         children: [
           // 1. Выбор типа хранилища
@@ -84,9 +85,9 @@ class _StorageSettingsPageState extends State<StorageSettingsPage> {
         break;
     }
 
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.all(16.0),
-      child: Text('Unknown storage type configuration'),
+      child: Text(context.localizations.unknown_storage_type_configuration),
     );
   }
 }
@@ -189,10 +190,10 @@ class _DiskStorageForm extends StatelessWidget {
     return SettingsSection(
       title: 'Local Disk Settings',
       icon: Icons.folder,
-      children: const [
+      children: [
         // В вашем DiskStorageConfig пока нет полей, но они появятся здесь
         ListTile(
-          title: Text('No configuration needed for local disk yet.'),
+          title: Text(context.localizations.no_configuration_needed_for_local_disk),
           leading: Icon(Icons.info_outline, color: Colors.grey),
         )
       ],

@@ -1,41 +1,500 @@
 {
-      "connectButtonText": "Connect",
-    "urlInputText": "Url",
-    "codeInputText": "Code",
-    "helloWorld": "Hello World!",
-    "@helloWorld": {
-      "description": "The conventional newborn programmer greeting"
-    },
-    "username":"Username",
-    "password": "Password",
-    "english": "English",
-    "russian": "Russian",
-    "feature_scope_user_permission": "Permissions",
-    "feature_scope_users": "Users",
-    "feature_scope_agreement": "Agreement",
-    "feature_scope_goal": "Goal", 
-    "feature_scope_chat": "Chat",
-    "feature_scope_work": "Work",
-    "home_userid" : "UserId: '{userId}'",
- "@home_userid":{
- "placeholders": {
- "userId": {
-         "type":"String"
-         }
-       }
-    }, 
-    "home_page_name":"Home",
-    "home_page_logout_button":"Logout",
-    "login_page_name": "Login",
-    "chat_message_datetime_format": "hh:mm",
-    "admin_nav_account_name" : "Account",
-    "admin_roles_scope": "Scope",
-    "admin_account_info_title": "Title: {title}",
-     "@admin_account_info_title":{
- "placeholders": {
- "title": {
-         "type":"String"
-         }
-       }
+  "connectButtonText": "Connect",
+  "urlInputText": "Url",
+  "codeInputText": "Code",
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "username": "Username",
+  "password": "Password",
+  "english": "English",
+  "russian": "Russian",
+  "feature_scope_user_permission": "Permissions",
+  "feature_scope_users": "Users",
+  "feature_scope_agreement": "Agreement",
+  "feature_scope_goal": "Goal",
+  "feature_scope_chat": "Chat",
+  "feature_scope_work": "Work",
+  "home_userid": "UserId: '{userId}'",
+  "@home_userid": {
+    "placeholders": {
+      "userId": {
+        "type": "String"
+      }
     }
+  },
+  "home_page_name": "Home",
+  "home_page_logout_button": "Logout",
+  "login_page_name": "Login",
+  "chat_message_datetime_format": "hh:mm",
+  "admin_nav_account_name": "Account",
+  "admin_roles_scope": "Scope",
+  "admin_account_info_title": "Title: {title}",
+  "@admin_account_info_title": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "upload_queue_title": "Upload Queue",
+  "add_files_menu_item": "Add Files",
+  "add_folder_menu_item": "Add Folder",
+  "queue_is_empty": "Queue is empty",
+  "no_images_found_in_folder": "No images found in folder",
+  "authentication_failure": "Authentication Failure",
+  "ota_update_title": "OTA Update",
+  "unknown_state": "Unknown state",
+  "initialize_button": "Initialize",
+  "select_file_button": "Select File",
+  "update_button": "Update",
+  "reset_button": "Reset",
+  "home_menu_item": "Home",
+  "gallery_menu_item": "Gallery",
+  "upload_media_menu_item": "Upload media",
+  "configuration_menu_item": "Configuration",
+  "wifi_menu_item": "Wifi",
+  "system_control_menu_item": "System Control",
+  "exit_menu_item": "Exit",
+  "storage_settings_title": "Storage Settings",
+  "unknown_storage_type_configuration": "Unknown storage type configuration",
+  "no_configuration_needed_for_local_disk": "No configuration needed for local disk yet.",
+  "slideshow_settings_title": "Slideshow Settings",
+  "background_opacity": "Background Opacity",
+  "config_saved_successfully": "Config saved successfully",
+  "config_is_reloading": "Config is reloading...",
+  "settings_title": "Settings",
+  "select_items_dialog_title": "Select items",
+  "cancel_button": "Cancel",
+  "ok_button": "OK",
+  "not_found": "Not found",
+  "no_access_title": "No access",
+  "no_access_contact_administrator": "No access, contact your administrator",
+  "ch_text": "Ch:",
+  "device_text": "Device:",
+  "connect_form_title": "WiFi Configuration",
+  "connect_button": "Connect",
+  "gallery_title": "Gallery",
+  "system_control_title": "System Control",
+  "try_again_button": "Try Again",
+  "error_text": "Error",
+  "@upload_queue_title": {
+    "description": "Title for the upload queue page"
+  },
+  "@add_files_menu_item": {
+    "description": "Menu item to add files for upload"
+  },
+  "@add_folder_menu_item": {
+    "description": "Menu item to add a folder for upload"
+  },
+  "@queue_is_empty": {
+    "description": "Message shown when upload queue is empty"
+  },
+  "@no_images_found_in_folder": {
+    "description": "Message shown when no images are found in selected folder"
+  },
+  "@authentication_failure": {
+    "description": "Message shown when authentication fails"
+  },
+  "@ota_update_title": {
+    "description": "Title for the OTA update page"
+  },
+  "@unknown_state": {
+    "description": "Message shown when system is in unknown state"
+  },
+  "@initialize_button": {
+    "description": "Text for initialize button"
+  },
+  "@select_file_button": {
+    "description": "Text for select file button"
+  },
+  "@update_button": {
+    "description": "Text for update button"
+  },
+  "@reset_button": {
+    "description": "Text for reset button"
+  },
+  "@home_menu_item": {
+    "description": "Home menu item text"
+  },
+  "@gallery_menu_item": {
+    "description": "Gallery menu item text"
+  },
+  "@upload_media_menu_item": {
+    "description": "Upload media menu item text"
+  },
+  "@configuration_menu_item": {
+    "description": "Configuration menu item text"
+  },
+  "@wifi_menu_item": {
+    "description": "WiFi menu item text"
+  },
+  "@system_control_menu_item": {
+    "description": "System control menu item text"
+  },
+  "@exit_menu_item": {
+    "description": "Exit menu item text"
+  },
+  "@storage_settings_title": {
+    "description": "Title for storage settings page"
+  },
+  "@unknown_storage_type_configuration": {
+    "description": "Message for unknown storage type configuration"
+  },
+  "@no_configuration_needed_for_local_disk": {
+    "description": "Message when no configuration is needed for local disk"
+  },
+  "@slideshow_settings_title": {
+    "description": "Title for slideshow settings page"
+  },
+  "@background_opacity": {
+    "description": "Label for background opacity setting"
+  },
+  "@config_saved_successfully": {
+    "description": "Message shown when config is saved successfully"
+  },
+  "@config_is_reloading": {
+    "description": "Message shown when config is reloading"
+  },
+  "@settings_title": {
+    "description": "Title for settings page"
+  },
+  "@select_items_dialog_title": {
+    "description": "Title for select items dialog"
+  },
+  "@cancel_button": {
+    "description": "Cancel button text"
+  },
+  "@ok_button": {
+    "description": "OK button text"
+  },
+  "@not_found": {
+    "description": "Not found message"
+  },
+  "@no_access_title": {
+    "description": "Title for no access page"
+  },
+  "@no_access_contact_administrator": {
+    "description": "Message to contact administrator when no access"
+  },
+  "@ch_text": {
+    "description": "Short text for 'Channel' in WiFi context"
+  },
+  "@device_text": {
+    "description": "Text for 'Device' label"
+  },
+  "@connect_form_title": {
+    "description": "Title for WiFi connect form"
+  },
+  "@connect_button": {
+    "description": "Connect button text"
+  },
+  "@gallery_title": {
+    "description": "Title for gallery page"
+  },
+  "@system_control_title": {
+    "description": "Title for system control page"
+  },
+  "@try_again_button": {
+    "description": "Try again button text"
+  },
+  "@error_text": {
+    "description": "Generic error text"
+  },
+  "welcome_back": "Welcome back,",
+  "@welcome_back": {
+    "description": "Welcome back greeting text"
+  },
+  "manage_your_device_settings_and_updates": "Manage your device settings and updates.",
+  "@manage_your_device_settings_and_updates": {
+    "description": "Description text on home page"
+  },
+  "gallery_card_title": "Gallery",
+  "@gallery_card_title": {
+    "description": "Title for gallery card on home page"
+  },
+  "view_media_subtitle": "View media",
+  "@view_media_subtitle": {
+    "description": "Subtitle for gallery card"
+  },
+  "upload_card_title": "Upload",
+  "@upload_card_title": {
+    "description": "Title for upload card on home page"
+  },
+  "upload_media_subtitle": "Upload media",
+  "@upload_media_subtitle": {
+    "description": "Subtitle for upload card"
+  },
+  "ota_update_card_title": "OTA Update",
+  "@ota_update_card_title": {
+    "description": "Title for OTA update card on home page"
+  },
+  "firmware_upgrade_subtitle": "Firmware upgrade",
+  "@firmware_upgrade_subtitle": {
+    "description": "Subtitle for OTA update card"
+  },
+  "wifi_setup_card_title": "WiFi Setup",
+  "@wifi_setup_card_title": {
+    "description": "Title for WiFi setup card on home page"
+  },
+  "manage_connections_subtitle": "Manage connections",
+  "@manage_connections_subtitle": {
+    "description": "Subtitle for WiFi setup card"
+  },
+  "configuration_card_title": "Configuration",
+  "@configuration_card_title": {
+    "description": "Title for configuration card on home page"
+  },
+  "system_settings_subtitle": "System settings",
+  "@system_settings_subtitle": {
+    "description": "Subtitle for configuration card"
+  },
+  "system_control_card_title": "System Control",
+  "@system_control_card_title": {
+    "description": "Title for system control card on home page"
+  },
+  "restart_app_power_off_subtitle": "Restart app, power off",
+  "@restart_app_power_off_subtitle": {
+    "description": "Subtitle for system control card"
+  },
+  "mqtt_settings_title": "MQTT Settings",
+  "@mqtt_settings_title": {
+    "description": "Title for MQTT settings page"
+  },
+  "webserver_settings_title": "WebServer Settings",
+  "@webserver_settings_title": {
+    "description": "Title for WebServer settings page"
+  },
+  "welcome_settings_title": "Welcome Settings",
+  "@welcome_settings_title": {
+    "description": "Title for Welcome settings page"
+  },
+  "saved_connections_subtitle": "Saved Connections",
+  "@saved_connections_subtitle": {
+    "description": "Subtitle for saved connections section in WiFi"
+  },
+  "no_networks_found_nearby": "No networks found nearby",
+  "@no_networks_found_nearby": {
+    "description": "Message when no WiFi networks are found nearby"
+  },
+  "add_network": "Add Network",
+  "@add_network": {
+    "description": "Title for adding a new WiFi network"
+  },
+  "connect_to_network": "Connect to Network",
+  "@connect_to_network": {
+    "description": "Title for connecting to a WiFi network"
+  },
+  "ssid_name_label": "SSID (Name)",
+  "@ssid_name_label": {
+    "description": "Label for SSID input field"
+  },
+  "required_field": "Required",
+  "@required_field": {
+    "description": "Message for required field validation"
+  },
+  "connection_failed": "Connection Failed",
+  "@connection_failed": {
+    "description": "Message shown when connection fails"
+  },
+  "power_management_title": "Power Management",
+  "@power_management_title": {
+    "description": "Title for power management section"
+  },
+  "choose_action_on_device": "Choose an action to perform on the device",
+  "@choose_action_on_device": {
+    "description": "Description text for power management section"
+  },
+  "restart_application": "Restart Application",
+  "@restart_application": {
+    "description": "Title for restart application action"
+  },
+  "reload_software_without_rebooting_os": "Reloads the software without rebooting the OS.",
+  "@reload_software_without_rebooting_os": {
+    "description": "Description for restart application action"
+  },
+  "restart_application_question": "Restart Application?",
+  "@restart_application_question": {
+    "description": "Question for restart application confirmation dialog"
+  },
+  "this_will_reload_configuration_app_and_slideshow_services": "This will reload the configuration app and slideshow services.",
+  "@this_will_reload_configuration_app_and_slideshow_services": {
+    "description": "Description for restart application confirmation dialog"
+  },
+  "restart": "Restart",
+  "@restart": {
+    "description": "Restart button text"
+  },
+  "power_off": "Power Off",
+  "@power_off": {
+    "description": "Title for power off action"
+  },
+  "safely_shuts_down_the_device_operating_system": "Safely shuts down the device operating system.",
+  "@safely_shuts_down_the_device_operating_system": {
+    "description": "Description for power off action"
+  },
+  "power_off_device_question": "Power Off Device?",
+  "@power_off_device_question": {
+    "description": "Question for power off confirmation dialog"
+  },
+  "the_device_will_shut_down_completely": "The device will shut down completely. You will need to physically turn it on again.",
+  "@the_device_will_shut_down_completely": {
+    "description": "Description for power off confirmation dialog"
+  },
+  "power_off_button": "Power Off",
+  "@power_off_button": {
+    "description": "Power off button text"
+  },
+  "please_sign_in_to_continue": "Please sign in to continue",
+  "@please_sign_in_to_continue": {
+    "description": "Message prompting user to sign in"
+  },
+  "server_uri": "Server URI",
+  "@server_uri": {
+    "description": "Label for server URI input field"
+  },
+  "invalid_uri": "Invalid URI",
+  "@invalid_uri": {
+    "description": "Error message for invalid URI"
+  },
+  "invalid_username": "Invalid username",
+  "@invalid_username": {
+    "description": "Error message for invalid username"
+  },
+  "invalid_password": "Invalid password",
+  "@invalid_password": {
+    "description": "Error message for invalid password"
+  },
+  "sign_in": "Sign In",
+  "@sign_in": {
+    "description": "Sign in button text"
+  },
+  "not_found_with_id": "Not found \"{id}\"",
+  "@not_found_with_id": {
+    "description": "Message for not found item with specific ID",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "transition_display_times": "Transition: {transitionTime} ms\\nDisplay: {displayTime} ms",
+  "@transition_display_times": {
+    "description": "Display transition and display times",
+    "placeholders": {
+      "transitionTime": {
+        "type": "int"
+      },
+      "displayTime": {
+        "type": "int"
+      }
+    }
+  },
+  "wifi_5ghz_label": "5G",
+  "@wifi_5ghz_label": {
+    "description": "Label for 5GHz WiFi networks"
+  },
+  "channel_text": "Ch: {channel}",
+  "@channel_text": {
+    "description": "Text showing the WiFi channel number",
+    "placeholders": {
+      "channel": {
+        "type": "int"
+      }
+    }
+  },
+  "device_connection_info": "Device: {device} • {type}",
+  "@device_connection_info": {
+    "description": "Information about device connection",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "slideshow_section_title": "Slideshow",
+  "@slideshow_section_title": {
+    "description": "Title for slideshow section in config"
+  },
+  "general_and_effects_title": "General & Effects",
+  "@general_and_effects_title": {
+    "description": "Title for general and effects settings"
+  },
+  "welcome_screen_title": "Welcome Screen",
+  "@welcome_screen_title": {
+    "description": "Title for welcome screen settings"
+  },
+  "storage_configuration_title": "Storage Configuration",
+  "@storage_configuration_title": {
+    "description": "Title for storage configuration"
+  },
+  "using_local_disk": "Using Local Disk",
+  "@using_local_disk": {
+    "description": "Text indicating local disk is being used"
+  },
+  "using_google_photos": "Using Google Photos",
+  "@using_google_photos": {
+    "description": "Text indicating Google Photos is being used"
+  },
+  "connectivity_title": "Connectivity",
+  "@connectivity_title": {
+    "description": "Title for connectivity section"
+  },
+  "web_server_settings_title": "Web server",
+  "@web_server_settings_title": {
+    "description": "Title for web server settings"
+  },
+  "mqtt_title": "MQTT",
+  "@mqtt_title": {
+    "description": "Title for MQTT settings"
+  },
+  "hardware_title": "Hardware",
+  "@hardware_title": {
+    "description": "Title for hardware section"
+  },
+  "gpio_smoothing_label": "GPIO Smoothing (ms)",
+  "@gpio_smoothing_label": {
+    "description": "Label for GPIO smoothing setting"
+  },
+  "logging_levels_title": "Logging Levels",
+  "@logging_levels_title": {
+    "description": "Title for logging levels section"
+  },
+  "main_logic_label": "Main Logic",
+  "@main_logic_label": {
+    "description": "Label for main logic logging level"
+  },
+  "ota_update_label": "OTA Update",
+  "@ota_update_label": {
+    "description": "Label for OTA update logging level"
+  },
+  "hardware_frame_label": "Hardware Frame",
+  "@hardware_frame_label": {
+    "description": "Label for hardware frame logging level"
+  },
+  "storage_title": "Storage",
+  "@storage_title": {
+    "description": "Title for storage section"
+  },
+  "retry_button": "Retry",
+  "@retry_button": {
+    "description": "Text for retry button"
+  },
+  "error_with_message": "Error: {message}",
+  "@error_with_message": {
+    "description": "Error message with specific details",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "example_email_address": "example@gmail.com",
+  "@example_email_address": {
+    "description": "Example email address for display purposes"
+  }
 }
