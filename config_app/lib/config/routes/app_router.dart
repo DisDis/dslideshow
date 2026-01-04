@@ -6,6 +6,7 @@ import 'package:config_app/features/app/presentation/pages/home_page.dart';
 import 'package:config_app/features/app/presentation/pages/splash_page.dart';
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
 import 'package:config_app/features/login/presentation/pages/login_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +30,7 @@ String _lastPath = _defaultPath;
 // ignore: long-method
 GoRouter createAppRouter(BuildContext context) {
   return GoRouter(
-    //! TODO: Remove before release
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: kDebugMode,
     routes: [
       GoRoute(
         path: _loginPath,

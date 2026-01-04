@@ -56,7 +56,8 @@ class BlindsEffect extends MediaSliderItemEffect {
                   ? null // Полоска исчезла
                   : Transform(
                       // Анимация закрытия полоски (сплющивание по вертикали)
-                      transform: Matrix4.identity()..scale(1.0, 1.0 - progress),
+                      transform: Matrix4.identity()..
+                      scaleByDouble(1.0, 1.0 - progress, 1.0, 1.0),
                       alignment: Alignment.topCenter,
                       child: ClipRect(
                         child: OverflowBox(

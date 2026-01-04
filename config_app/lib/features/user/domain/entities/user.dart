@@ -14,8 +14,6 @@ class User {
 
   final AvatarUrl avatarUrl;
 
-  ///TODO: Optimize it!
-  /*String? _username;*/
   String get username => /*_username ??= */ "$firstName $lastName";
 
   static const empty = User(

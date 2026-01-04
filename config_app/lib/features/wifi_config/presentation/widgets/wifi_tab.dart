@@ -198,13 +198,14 @@ class _AvailableNetworkTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color signalColor;
-    if (network.signal >= 75)
+    if (network.signal >= 75) {
       signalColor = Colors.green;
-    else if (network.signal >= 50)
+    } else if (network.signal >= 50){
       signalColor = Colors.orange;
-    else
+    }else{
       signalColor = Colors.red;
-
+    }
+    
     final is5Ghz = network.channel > 14;
     final isLocked = network.security.toUpperCase() != 'OPEN' &&
         network.security.isNotEmpty;

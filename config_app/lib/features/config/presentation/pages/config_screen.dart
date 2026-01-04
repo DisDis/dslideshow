@@ -157,7 +157,7 @@ class _ConfigViewState extends State<_ConfigView> {
              SettingsTileNavigation(
               title: 'Web server',
               subtitle:
-                  '${_editingConfig!.webServer.alwaysEnabled ? "Enabled" : "Disabled"}',
+                  _editingConfig!.webServer.alwaysEnabled ? "Enabled" : "Disabled",
               icon: Icons.dns,
               onTap: () => _navigateToWebServerEditor(context),
             ),
