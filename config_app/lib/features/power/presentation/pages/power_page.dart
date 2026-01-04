@@ -24,7 +24,7 @@ class PowerMainPage extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+              Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.5).round()),
             ],
           ),
         ),

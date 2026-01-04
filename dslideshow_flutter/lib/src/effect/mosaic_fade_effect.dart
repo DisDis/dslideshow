@@ -231,7 +231,7 @@ class _RenderMosaicFadeLayer extends RenderProxyBox {
       // Исправленное условие: рисуем, если прозрачность не полная (1.0).
       // Если alpha == 0.0, рисуем прозрачный квадрат, чтобы стереть.
       if (alpha < 1.0) {
-        maskPaint.color = Colors.black.withOpacity(alpha);
+        maskPaint.color = Colors.black.withAlpha((255.0 * alpha).round());
         
         final int col = i % _gridSize;
         final int row = i ~/ _gridSize;

@@ -155,7 +155,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         bottom: 10,
         child: Container(
           padding: const EdgeInsets.all(8),
-          color: Colors.white.withOpacity(0.8),
+          color: Colors.white.withAlpha((255.0 * 0.8).round()),
           child: Column(
             children: [
               DropdownButtonHideUnderline(
@@ -214,14 +214,14 @@ class SlideshowPreview extends StatelessWidget {
               'https://picsum.photos/400/200',
               fit: BoxFit.cover,
               color: Colors.black
-                  .withOpacity(1 - config.backgroundOpacity),
+                  .withAlpha((255.0 * (1 - config.backgroundOpacity)).round()),
               colorBlendMode: BlendMode.darken,
             ),
           ),
           Center(
             child: Container(
               padding: const EdgeInsets.all(8),
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withAlpha((255.0 * 0.8).round()),
               child: Text(
                 'Transition: ${config.transitionTimeMs} ms\n'
                 'Display: ${config.displayTimeMs} ms',

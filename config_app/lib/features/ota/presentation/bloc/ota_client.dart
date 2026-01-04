@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class OTAClient {
+  static final _log = Logger('OTAClient');
   final String host;
   static const int port = 8282;
 
@@ -46,7 +48,7 @@ class OTAClient {
       if (streamedResponse.statusCode == 200) {
         // Если нужно получить тело ответа (строку):
         var response = await http.Response.fromStream(streamedResponse);
-        // print('Ответ сервера: ${response.body}');
+        _log.info("Server response: ${response.body}");
       } else {
         throw Exception('Ошибка загрузки: ${streamedResponse.statusCode}');
       }

@@ -178,7 +178,7 @@ class _SavedConnectionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: Colors.green.withOpacity(0.1),
+        backgroundColor: Colors.green.withAlpha((255.0 * 0.1).round()),
         child: const Icon(Icons.wifi, color: Colors.green),
       ),
       title: Text(connection.name,
@@ -242,9 +242,9 @@ class _AvailableNetworkTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
+                  color: Colors.blue.withAlpha((255.0 * 0.1).round()),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.blue.withOpacity(0.3))),
+                  border: Border.all(color: Colors.blue.withAlpha((255.0 * 0.3).round()))),
               child: const Text("5G",
                   style: TextStyle(
                       fontSize: 9,

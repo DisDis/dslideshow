@@ -223,7 +223,7 @@ class _GalleryItemWidget extends StatelessWidget {
               // Затемнение при выборе
               if (isSelected)
                 Container(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withAlpha((255.0 * 0.2).round()),
                   child: const Center(
                     child:
                         Icon(Icons.check_circle, color: Colors.blue, size: 36),

@@ -143,7 +143,7 @@ class _ConfigPageState extends State<ConfigPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha((255.0 * 0.3).round()), blurRadius: 15, offset: const Offset(0, 10))],
       ),
       child: QrImageView(data: _urlData, version: QrVersions.auto, backgroundColor: Colors.white),
     );
@@ -163,7 +163,7 @@ class _ConfigPageState extends State<ConfigPage> {
         children: [
           Text(
             "Device Setup",
-            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildStepRow(Icons.qr_code_scanner, "1. Scan the QR code to open settings"),
@@ -175,7 +175,7 @@ class _ConfigPageState extends State<ConfigPage> {
           Text(
             "Manual Connection",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withAlpha((255.0 * 0.5).round()),
               fontSize: 12,
               // uppercase: true,
               letterSpacing: 1.2,
@@ -192,7 +192,7 @@ class _ConfigPageState extends State<ConfigPage> {
           Text(
             "Access Code",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withAlpha((255.0 * 0.5).round()),
               fontSize: 12,
               // uppercase: true,
               letterSpacing: 1.2,
@@ -204,7 +204,7 @@ class _ConfigPageState extends State<ConfigPage> {
             decoration: BoxDecoration(
               color: Colors.black26,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _accentColor.withOpacity(0.3)),
+              border: Border.all(color: _accentColor.withAlpha((255.0 * 0.3).round())),
             ),
             child: Text(
               _accessCode,
@@ -228,7 +228,7 @@ class _ConfigPageState extends State<ConfigPage> {
         Icon(icon, color: _accentColor, size: 20),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16)),
+          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: 16)),
         ),
       ],
     );

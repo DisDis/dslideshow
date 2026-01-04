@@ -59,7 +59,7 @@ class OtaReadyWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha((255.0 * 0.3).round()), blurRadius: 15, offset: const Offset(0, 10))],
       ),
       child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, backgroundColor: Colors.white),
     );
@@ -79,14 +79,14 @@ class OtaReadyWidget extends StatelessWidget {
         children: [
           Text(
             "Update firmware",
-            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
               const Text("Current version: "),
               Text(
                 "v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.red.withAlpha((255.0 * 0.9).round()), fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -100,7 +100,7 @@ class OtaReadyWidget extends StatelessWidget {
           Text(
             "Manual Connection",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withAlpha((255.0 * 0.5).round()),
               fontSize: 12,
               // uppercase: true,
               letterSpacing: 1.2,
@@ -117,7 +117,7 @@ class OtaReadyWidget extends StatelessWidget {
           Text(
             "Access Code",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withAlpha((255.0 * 0.5).round()),
               fontSize: 12,
               // uppercase: true,
               letterSpacing: 1.2,
@@ -129,7 +129,7 @@ class OtaReadyWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.black26,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _accentColor.withOpacity(0.3)),
+              border: Border.all(color: _accentColor.withAlpha((255.0 * 0.3).round())),
             ),
             child: Text(
               state.info.code,
@@ -153,7 +153,7 @@ class OtaReadyWidget extends StatelessWidget {
         Icon(icon, color: _accentColor, size: 20),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16)),
+          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: 16)),
         ),
       ],
     );

@@ -61,7 +61,7 @@ class PowerTab extends StatelessWidget {
                     Icon(
                       Icons.power_settings_new,
                       size: 80,
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.primary.withAlpha((255.0 * 0.5).round()),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -185,7 +185,7 @@ class _PowerActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      shadowColor: color.withOpacity(0.4),
+      shadowColor: color.withAlpha((255.0 * 0.4).round()),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: onTap,
@@ -199,7 +199,7 @@ class _PowerActionCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withAlpha((255.0 * 0.1).round()),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 32),

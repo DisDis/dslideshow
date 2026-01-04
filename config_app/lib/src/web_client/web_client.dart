@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 
 class WebClient {
   final String host;

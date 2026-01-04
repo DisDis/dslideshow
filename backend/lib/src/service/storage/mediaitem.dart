@@ -6,10 +6,9 @@ class MediaItem {
   static const empty = const MediaItem(null, null);
   const MediaItem(this.id, this.uri);
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is MediaItem &&
+        (other is MediaItem &&
             id == other.id &&
             uri == other.uri);
   }

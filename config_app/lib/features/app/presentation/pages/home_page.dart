@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
             ],
           ),
         ),
@@ -196,13 +196,13 @@ class _DashboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shadowColor: color.withOpacity(0.3),
+      shadowColor: color.withAlpha((255.0 * 0.3).round()),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       clipBehavior: Clip.antiAlias, // Чтобы ripple effect не вылезал
       child: InkWell(
         onTap: onTap,
-        splashColor: color.withOpacity(0.1),
-        highlightColor: color.withOpacity(0.05),
+        splashColor: color.withAlpha((255.0 * 0.1).round()),
+        highlightColor: color.withAlpha((255.0 * 0.05).round()),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -212,7 +212,7 @@ class _DashboardCard extends StatelessWidget {
                 Theme.of(context).cardColor,
                 Theme.of(context).cardColor,
                 // Легкий оттенок цвета в углу
-                color.withOpacity(0.05),
+                color.withAlpha((255.0 * 0.05).round()),
               ],
             ),
           ),
@@ -225,7 +225,7 @@ class _DashboardCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withAlpha((255.0 * 0.1).round()),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 28),
