@@ -1,3 +1,4 @@
+import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';

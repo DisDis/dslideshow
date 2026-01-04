@@ -56,7 +56,8 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     });
   }
 
-  Future<void> _updateData(Emitter<WifiTabState> emit) async {
+  Future<void> _updateData(Emitter<WifiTabState> emit,[minDuration = const Duration(milliseconds: 0)]) async {
+    final waitF = Future.delayed(minDuration);
     final fScan = client.send(WSSendRpcCommand.byCommand(
         WiFiScanCommand(id: RpcCommand.generateId())));
     final fStored = client.send(WSSendRpcCommand.byCommand(
@@ -69,15 +70,15 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
     final availableNetworks = scanResult.networks.toList(growable: false);
 
     final connections = storedResult.networks.toList(growable: false);
-
+    await waitF;
     emit(InWifiTabState(
         availableNetworks: availableNetworks, connections: connections));
   }
 
   Future _onLoadWifi(WifiTabEvent event, emit) async {
-    emit(const UnWifiTabState());
+    emit(const UnWifiTabState());    
     try {
-      await _updateData(emit);
+      await _updateData(emit,Duration(milliseconds: 500));
     } catch (e, st) {
       _log.severe('FATAL', e, st);
       emit(ErrorWifiTabState(e.toString()));
