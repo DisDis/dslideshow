@@ -1,4 +1,4 @@
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart'; // Импорт Drawer
+import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
@@ -6,14 +6,9 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class WiFiConfigTab extends StatefulWidget {
+class WiFiConfigTab extends StatelessWidget {
   const WiFiConfigTab({super.key});
 
-  @override
-  State<WiFiConfigTab> createState() => _WiFiConfigTabState();
-}
-
-class _WiFiConfigTabState extends State<WiFiConfigTab> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WifiTabBloc, WifiTabState>(
@@ -22,7 +17,7 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
         if (state is UnWifiTabState) {
           return Scaffold(
             appBar: AppBar(title: const Text("WiFi Config")),
-            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+            drawer: const ConfigAppNavigationBar(),
             body: const Center(child: CircularProgressIndicator()),
           );
         }
@@ -31,7 +26,7 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
         if (state is ErrorWifiTabState) {
           return Scaffold(
             appBar: AppBar(title: const Text("WiFi Config")),
-            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+            drawer: const ConfigAppNavigationBar(),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -56,9 +51,7 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
         // 3. Основное состояние (Список сетей)
         if (state is InWifiTabState) {
           return Scaffold(
-            // ВАЖНО: Добавляем Drawer в основной Scaffold
             drawer: const ConfigAppNavigationBar(),
-            
             body: RefreshIndicator(
               onRefresh: () async {
                 context.read<WifiTabBloc>().add(const LoadWifiTabEvent());
@@ -73,6 +66,7 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
                       IconButton(
                         icon: const Icon(Icons.add),
                         tooltip: "Add manually",
+                        // Передаем context, так как мы в StatelessWidget
                         onPressed: () => _showConnectBottomSheet(context),
                       )
                     ],
@@ -106,7 +100,8 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final network = state.availableNetworks.elementAt(index);
+                        final network =
+                            state.availableNetworks.elementAt(index);
                         return _AvailableNetworkTile(
                           network: network,
                           onTap: () => _showConnectBottomSheet(context,
@@ -137,9 +132,10 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        // Передаем Блок через parentContext, так как BottomSheet - это новый роут
         child: _ConnectNetworkForm(
           initialSSID: ssid,
+          // Важно использовать parentContext для доступа к Bloc,
+          // так как контекст внутри BottomSheet может быть оторван от провайдера выше
           wifiBloc: parentContext.read<WifiTabBloc>(),
         ),
       ),
@@ -147,7 +143,7 @@ class _WiFiConfigTabState extends State<WiFiConfigTab> {
   }
 }
 
-// --- Вспомогательные виджеты UI (остаются теми же) ---
+// --- Вспомогательные виджеты UI (Без изменений) ---
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -200,27 +196,29 @@ class _AvailableNetworkTile extends StatelessWidget {
     Color signalColor;
     if (network.signal >= 75) {
       signalColor = Colors.green;
-    } else if (network.signal >= 50){
+    } else if (network.signal >= 50) {
       signalColor = Colors.orange;
-    }else{
+    } else {
       signalColor = Colors.red;
     }
-    
+
     final is5Ghz = network.channel > 14;
-    final isLocked = network.security.toUpperCase() != 'OPEN' &&
-        network.security.isNotEmpty;
+    final isLocked =
+        network.security.toUpperCase() != 'OPEN' && network.security.isNotEmpty;
 
     return ListTile(
       onTap: onTap,
       leading: Stack(
         children: [
-          Icon(network.signal >= 85
-          ? Icons.network_wifi
-          : network.signal >= 70
-              ? Icons.network_wifi_3_bar
-              : network.signal >= 50
-                  ? Icons.network_wifi_2_bar
-                  : Icons.network_wifi_1_bar, color: signalColor),
+          Icon(
+              network.signal >= 85
+                  ? Icons.network_wifi
+                  : network.signal >= 70
+                      ? Icons.network_wifi_3_bar
+                      : network.signal >= 50
+                          ? Icons.network_wifi_2_bar
+                          : Icons.network_wifi_1_bar,
+              color: signalColor),
           if (isLocked)
             Positioned(
               right: 0,
@@ -245,7 +243,8 @@ class _AvailableNetworkTile extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.blue.withAlpha((255.0 * 0.1).round()),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.blue.withAlpha((255.0 * 0.3).round()))),
+                  border: Border.all(
+                      color: Colors.blue.withAlpha((255.0 * 0.3).round()))),
               child: const Text("5G",
                   style: TextStyle(
                       fontSize: 9,
@@ -274,6 +273,7 @@ class _AvailableNetworkTile extends StatelessWidget {
   }
 }
 
+// Форма остается StatefulWidget, так как ей нужно управлять контроллерами текста
 class _ConnectNetworkForm extends StatefulWidget {
   final String initialSSID;
   final WifiTabBloc wifiBloc;
@@ -339,8 +339,9 @@ class _ConnectNetworkFormState extends State<_ConnectNetworkForm> {
                 prefixIcon: const Icon(Icons.key),
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  icon: Icon(
-                      _obscurePassword ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(_obscurePassword
+                      ? Icons.visibility
+                      : Icons.visibility_off),
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
