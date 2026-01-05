@@ -140,13 +140,13 @@ nmcli connection delete <UUID>
       var result = await io.Process.run('sudo', [
         'nmcli',
         'connection',
-        'remove',
+        'delete',
         '$connectionUUID',
       ], environment: _environment);
-      _log.info("nmcli connection remove -> '${result.stdout.toString()}'");
+      _log.info("nmcli connection delete -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
         throw Exception(
-          'nmcli connection remove $connectionUUID -> exitCode: ${result.exitCode}',
+          'nmcli connection delete $connectionUUID -> exitCode: ${result.exitCode}',
         );
       }
     } catch (e, s) {

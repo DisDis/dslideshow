@@ -6,6 +6,7 @@ import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state
 import 'package:config_app/features/wifi_config/presentation/widgets/available_network_tile.dart';
 import 'package:config_app/features/wifi_config/presentation/widgets/connect_network_form.dart';
 import 'package:config_app/features/wifi_config/presentation/widgets/saved_connection_tile.dart';
+import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -86,8 +87,12 @@ class WiFiConfigTab extends StatelessWidget {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final connection = state.connections.elementAt(index);
-                        return SavedConnectionTile(connection: connection);
+                        final connectionItem = state.connections.elementAt(index);
+                        
+                        return SavedConnectionTile(connection: connectionItem,
+                        onDelete: (){
+                          _showDeleteConfirmation(context, connectionItem);
+                        },);
                       },
                       childCount: state.connections.length,
                     ),
@@ -130,6 +135,27 @@ class WiFiConfigTab extends StatelessWidget {
       },
     );
   }
+
+  void _showDeleteConfirmation(BuildContext context, WiFiConnectionInfo connection) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text("Forget Network?"),
+      content: Text("Are you sure you want to delete '${connection.name}'?"),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+        FilledButton(
+          style: FilledButton.styleFrom(backgroundColor: Colors.red),
+          onPressed: () {
+            context.read<WifiTabBloc>().add(RemoveWifiTabEvent(connection.UUID));
+            Navigator.pop(ctx);
+          },
+          child: const Text("Delete"),
+        ),
+      ],
+    ),
+  );
+}
 
   void _showConnectBottomSheet(BuildContext parentContext, {String ssid = ''}) {
     showModalBottomSheet(

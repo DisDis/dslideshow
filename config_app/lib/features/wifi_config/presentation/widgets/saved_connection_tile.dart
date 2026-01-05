@@ -4,19 +4,54 @@ import 'package:flutter/material.dart';
 
 class SavedConnectionTile extends StatelessWidget {
   final WiFiConnectionInfo connection;
-  const SavedConnectionTile({super.key, required this.connection});
+  final VoidCallback? onDelete;
+
+  const SavedConnectionTile({
+    super.key,
+    required this.connection,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Проверка на защищенные сети
+    final isProtected = connection.name == 'AccessPopup' ||
+        connection.name == 'preconfigured' ||
+        connection.type == 'loopback' ||
+        connection.type == 'ethernet';
+
     return ListTile(
+      // 1. Меняем иконку и цвет в зависимости от типа сети
       leading: CircleAvatar(
-        backgroundColor: Colors.green.withAlpha((255.0 * 0.1).round()),
-        child: const Icon(Icons.wifi, color: Colors.green),
+        backgroundColor: isProtected
+            ? Colors.grey
+                .withAlpha((255.0 * 0.1).round()) // Серый фон для системных
+            : Colors.green
+                .withAlpha((255.0 * 0.1).round()), // Зеленый для обычных
+        child: Icon(
+          isProtected ? Icons.lock_outline : Icons.wifi,
+          color: isProtected ? Colors.grey : Colors.green,
+        ),
       ),
-      title: Text(connection.name,
-          style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(context.localizations.device_connection_info(connection.device, connection.type)),
-      //trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+
+      title: Text(
+        connection.name,
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+
+      subtitle: Text(
+        context.localizations
+            .device_connection_info(connection.device, connection.type),
+      ),
+
+      // 2. Кнопка удаления только для незащищенных сетей
+      trailing: isProtected
+          ? null //Icon(Icons.info_outline)
+          : IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              tooltip: 'Delete connection',
+              onPressed: onDelete, // Вызываем коллбек
+            ),
     );
   }
 }
