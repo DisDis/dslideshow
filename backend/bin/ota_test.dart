@@ -20,7 +20,7 @@ void main(List<String> args) async {
     final injector = GetIt.instance;
     injector.registerLazySingleton<OTAService>(() {
       final _config = injector.get<AppConfig>();
-      return new OTAService(_config, new FakeRemoteService());
+      return new OTAService(config: _config,frontendService: FakeRemoteService());
     });
     //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
     //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])

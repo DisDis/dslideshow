@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_config.dart';
 import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_config.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_config.dart';
@@ -40,6 +41,8 @@ class AppConfig {
   MqttConfig mqtt;
   @JsonKey(fromJson: _parseStorages)
   StoragesConfig storages;
+  @JsonKey(fromJson: _parseOTA)
+  OTAConfig ota;
   @JsonKey(fromJson: _parseWifi)
   WiFiConfig wifi;
 
@@ -52,6 +55,7 @@ class AppConfig {
     required this.mqtt,
     required this.storages,
     required this.wifi,
+    required this.ota,
   });
 
   @JsonKey(includeToJson: false, includeFromJson: false)
@@ -139,6 +143,12 @@ class AppConfig {
     _log.info("- parsing 'storage'");
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return StoragesConfig.fromJson(dataV);
+  }
+
+  static OTAConfig _parseOTA(dynamic data) {
+    _log.info("- parsing 'ota'");
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return OTAConfig.fromJson(dataV);
   }
 
   static WiFiConfig _parseWifi(dynamic data) {

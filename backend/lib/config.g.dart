@@ -15,6 +15,7 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
   mqtt: AppConfig._parseMQTT(json['mqtt']),
   storages: AppConfig._parseStorages(json['storages']),
   wifi: AppConfig._parseWifi(json['wifi']),
+  ota: AppConfig._parseOTA(json['ota']),
 );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -25,6 +26,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'web': instance.webServer.toJson(),
   'mqtt': instance.mqtt.toJson(),
   'storages': instance.storages.toJson(),
+  'ota': instance.ota.toJson(),
   'wifi': instance.wifi.toJson(),
 };
 

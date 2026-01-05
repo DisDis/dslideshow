@@ -9,7 +9,7 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 
-final Logger _log = new Logger('main');
+final _log = Logger('main');
 late OTAService _service;
 void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("ota");
@@ -21,13 +21,12 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     // Use this static instance
     final injector = GetIt.instance;
     getInjectorModule();
+    final AppConfig config = injector();
+    Logger.root.level = config.log.levelOTA;
 
     injector.registerLazySingleton<OTAService>(() {
-      final _config = injector.get<AppConfig>();
-      return new OTAService(_config, _remoteFrontendService);
+      return OTAService(config:injector(), frontendService: _remoteFrontendService );
     });
-    var config = injector.get<AppConfig>();
-    Logger.root.level = config.log.levelOTA;
 
     _service = injector.get<OTAService>();
     await _remoteFrontendService.service.processing(_service, serializers);

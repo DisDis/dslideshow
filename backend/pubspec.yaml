@@ -9,6 +9,7 @@ dependencies:
     shelf_multipart: ^2.0.1
     logging: ^1.0.0
     get_it: ^9.0.5
+    pub_semver: ^2.2.0
     dslideshow_common:
         path: ../common
     #googleapis: ^15.0.0
@@ -32,7 +33,9 @@ dev_dependencies:
   json_serializable: ^6.10.0
   freezed: ^3.1.0
   build_runner: ^2.10.4
-  test: ^1.15.7
+  test: ^1.24.0
+  # mockito: ^5.4.0
+  # http_mock: ^1.0.0
 
 
 autover:
