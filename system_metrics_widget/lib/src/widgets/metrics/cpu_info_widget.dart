@@ -39,7 +39,7 @@ class CpuInfoWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  cpu.hardware.isEmpty ? 'Unknown CPU' : cpu.hardware.toUpperCase(),
+                  cpu.model.isEmpty ? 'Unknown CPU' : cpu.model.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 12, 
                     fontWeight: FontWeight.bold,
