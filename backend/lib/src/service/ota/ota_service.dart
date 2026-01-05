@@ -87,6 +87,9 @@ class OTAService implements RpcService {
       Timer.periodic(const Duration(minutes: 60), (timer) {
         _checkLatestRelease();
       });
+      Timer(const Duration(seconds: 30), () {
+        _checkLatestRelease();
+      });
     }
   }
 
@@ -125,11 +128,7 @@ class OTAService implements RpcService {
         final httpClient = io.HttpClient();
         httpClient.connectionTimeout = const Duration(seconds: 60);
         httpClient.idleTimeout = const Duration(seconds: 60);
-        final request = await httpClient.get(
-          debUri.host,
-          debUri.port,
-          debUri.path,
-        );
+        final request = await httpClient.getUrl(debUri);
         request.headers.add('User-Agent', 'dslideshow-flutter-app');
         var response = await request.close();
         if (response.statusCode != io.HttpStatus.ok) {
