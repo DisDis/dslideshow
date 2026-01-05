@@ -18,12 +18,12 @@ class Settings {
   );
 
   static TextStyle metricsClockTextDigitalStyle = GoogleFonts.righteous(
-    fontSize: 44,
+    fontSize: 80,
     color: Colors.white,
   );
 
   static TextStyle metricsClockDateTextDigitalStyle = GoogleFonts.righteous(
-    fontSize: 18,
+    fontSize: 36,
     color: Colors.white,
   );
 }

@@ -16,13 +16,10 @@ class UptimeInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
       iconData: CommunityMaterialIcons.clock_fast,
-      backgroundColor: Colors.teal,
-      child: Container(
-        color: Colors.teal,
-        child: Column(children: <Widget>[
-          Row(children: [MetricsDetails('${uptime}last updated ${_timeFormatter.format(DateTime.now())}', value: null)]),
-        ]),
-      ),
+      iconColor: Colors.tealAccent,
+      child: Column(children: <Widget>[
+        Row(children: [MetricsDetails('${uptime}last updated ${_timeFormatter.format(DateTime.now())}', value: null)]),
+      ]),
     );
   }
 }

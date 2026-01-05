@@ -22,7 +22,7 @@ HardwareConfig _$HardwareConfigFromJson(
   pinButton3: (json['pinButton3'] as num?)?.toInt() ?? 17,
   pinPowerLED: (json['pinPowerLED'] as num?)?.toInt() ?? 25,
   smoothingGPIOMs: (json['smoothingGPIOMs'] as num?)?.toInt() ?? 100,
-  systemDiskDev: json['systemDiskDev'] as String? ?? '/dev/root',
+  systemDiskDev: json['systemDiskDev'] as String? ?? '/dev/mmcblk0p2',
   systemIfConfigScript: json['systemIfConfigScript'] as String? ?? 'ifconfig',
   sensorsScript:
       json['sensorsScript'] as String? ?? './scripts/sensorsScript.sh',

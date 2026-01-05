@@ -19,8 +19,8 @@ class MemoryUsageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
-      iconData: Icons.data_usage,
-      backgroundColor: Colors.indigo,
+      iconData: Icons.memory,
+      iconColor: Colors.indigoAccent,
       child: Column(
         children: <Widget>[
           MemoryUsageIndicatorWidget(

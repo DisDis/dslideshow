@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_bar.dart';
 
 abstract class UsageIndicatorWidget extends StatelessWidget {
@@ -19,19 +17,67 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
     required this.usagePercent,
   });
 
+  // Логика цветов "Светофор"
+  Color _getStatusColor(int percent) {
+    if (percent > 85) return Colors.redAccent;    // Критично
+    if (percent > 60) return Colors.amberAccent;  // Внимание
+    return Colors.cyanAccent;                     // Норма (Техно-стиль)
+  }
+
   @override
   Widget build(BuildContext context) {
+    final statusColor = _getStatusColor(usagePercent);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          '$title: $total, used: $used, free: $free - $usagePercent%',
-          style: Settings.metricsDetailsTextStyle,
+        // 1. Верхняя строка: Заголовок и Процент
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title.toUpperCase(),
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.0,
+              ),
+            ),
+            Text(
+              '$usagePercent%',
+              style: TextStyle(
+                color: statusColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
+        
+        const SizedBox(height: 4),
+
+        // 2. Полоса загрузки
+        SizedBox(
+          height: 6, // Тонкая, аккуратная полоска
           child: UsageBar(
             usagePercent: usagePercent,
+            primaryColor: statusColor,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        // 3. Нижняя строка: Детали (Used / Total)
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            '$used / $total',
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 10,
+            ),
           ),
         ),
       ],

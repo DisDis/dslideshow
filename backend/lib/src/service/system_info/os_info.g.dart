@@ -20,5 +20,7 @@ const _$OSTypeEnumMap = {
   OSType.linux: 'linux',
   OSType.android: 'android',
   OSType.ios: 'ios',
+  OSType.windows: 'windows',
+  OSType.macos: 'macos',
   OSType.unknown: 'unknown',
 };

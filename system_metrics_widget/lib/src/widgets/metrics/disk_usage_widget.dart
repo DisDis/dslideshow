@@ -14,7 +14,7 @@ class DiskUsageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
       iconData: CommunityMaterialIcons.harddisk,
-      backgroundColor: Colors.indigo,
+      iconColor: Colors.indigoAccent,
       child: DiskUsageIndicatorWidget(
         totalMemory: totalMemory,
         usedMemory: usedMemory,

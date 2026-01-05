@@ -25,7 +25,6 @@ class CurrentTimeWidgetState extends State<CurrentTimeWidget> {
 
     return MetricsContainerWidget(
       iconData: FeatherIcons.activity,
-      backgroundColor: Colors.black,
       child: Container(
         color: Colors.black,
         child: Column(children: <Widget>[

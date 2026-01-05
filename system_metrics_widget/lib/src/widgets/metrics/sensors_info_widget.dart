@@ -11,8 +11,7 @@ class SensorsInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
       iconData: Icons.sensors_outlined,
-      backgroundColor: Colors.blueGrey,
-      iconColor: Colors.white,
+      iconColor: Colors.blueAccent,
       child: Column(children: <Widget>[
         const Row(children: [MetricsDetails('Sensors:', value: null)]),
         for (final sensor in model.sensors) Row(children: [MetricsDetails(sensor.name, value: sensor.value)]),

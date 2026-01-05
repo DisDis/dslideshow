@@ -1,44 +1,62 @@
 import 'package:flutter/material.dart';
 
 class MetricsContainerWidget extends StatelessWidget {
-  final Color backgroundColor;
   final IconData iconData;
   final Widget child;
   final Color iconColor;
 
   const MetricsContainerWidget({
     required this.iconData,
-    required this.backgroundColor,
     required this.child,
     super.key,
     this.iconColor = Colors.white,
   });
 
   @override
-  Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xDD000000), 
+        borderRadius: BorderRadius.circular(8), 
+        border: Border.all(
+          color: Colors.white24, 
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center, 
         children: <Widget>[
-          Flexible(
-            flex: 0,
-            child: Container(
-              color: backgroundColor,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Icon(
-                  iconData,
-                  color: iconColor,
-                  size: 20.0,
+          // Левая часть с иконкой
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              // Легкий разделитель справа
+              border: Border(
+                right: BorderSide(color: Colors.white10),
+              ),
+            ),
+            child: Icon(
+              iconData,
+              color: iconColor, 
+              size: 20.0,
+            ),
+          ),
+          Expanded( // Expanded теперь безопасен, так как Row знает свою ширину от Grid
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              // Принудительный стиль текста
+              child: DefaultTextStyle.merge(
+                style: const TextStyle(
+                  color: Colors.white, 
+                  fontSize: 12,
+                  decoration: TextDecoration.none, // Убираем подчеркивания если нет Material
                 ),
+                child: child,
               ),
             ),
           ),
-          Flexible(
-            flex: 6,
-            child: Container(
-              color: backgroundColor,
-              child: Padding(padding: const EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8), child: child),
-            ),
-          ),
         ],
-      );
+      ),
+    );
+  }
 }

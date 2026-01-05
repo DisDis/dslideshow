@@ -1,83 +1,39 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 class UsageBar extends StatefulWidget {
   final int usagePercent;
+  final Color primaryColor; // Передаем цвет снаружи
 
-  const UsageBar({super.key, required this.usagePercent});
+  const UsageBar({
+    super.key, 
+    required this.usagePercent, 
+    this.primaryColor = Colors.blue,
+  });
 
   @override
   State<StatefulWidget> createState() => _UsageBarState();
 }
 
-class UsageBarPainter extends CustomPainter {
-  final Color _usedColorStart = Colors.red;
-  final Color _usedColoEnd = Colors.red;
-
-  final Color _freeColorStart = Colors.lightGreenAccent;
-  final Color _freeColoEnd = Colors.lightGreenAccent;
-
-  final int usagePercent;
-
-  UsageBarPainter(this.usagePercent);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const transitionWidth = 8.0;
-    final usageEndPosition = size.width * usagePercent / 100;
-    final hasTransition = math.min(usageEndPosition, size.width - usageEndPosition) > 10;
-
-    final usedRect = Offset.zero & Size(usageEndPosition, size.height);
-    final freeRect = usedRect.topRight & Size(size.width - usageEndPosition, size.height);
-
-    final Paint usedPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          _usedColorStart,
-          _usedColoEnd,
-        ],
-      ).createShader(usedRect);
-
-    final Paint freePaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          _freeColorStart,
-          _freeColoEnd,
-        ],
-      ).createShader(freeRect);
-
-    final transitionRect = hasTransition ? (usedRect.topRight - const Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height)) : Rect.zero;
-
-    final Paint transitionPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          _usedColoEnd,
-          _freeColorStart,
-        ],
-      ).createShader(transitionRect);
-
-    canvas
-      ..drawRect(usedRect, usedPaint)
-      ..drawRect(freeRect, freePaint)
-      ..drawRect(transitionRect, transitionPaint);
-  }
-
-  @override
-  bool shouldRepaint(UsageBarPainter oldDelegate) => oldDelegate.usagePercent != usagePercent;
-}
-
 class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  late final AnimationController _controller = AnimationController(
+    vsync: this, 
+    duration: const Duration(milliseconds: 800) // Плавная анимация
+  );
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return CustomPaint(
-      size: Size(size.width, 8),
-      painter: UsageBarPainter((widget.usagePercent * _controller.value).toInt()),
-    );
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
+  
+  // Обновляем анимацию при изменении данных
+  @override
+  void didUpdateWidget(UsageBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.usagePercent != widget.usagePercent) {
+      // Можно перезапустить анимацию, если нужно, или просто перерисовать
+      // _controller.forward(from: 0); 
+    }
   }
 
   @override
@@ -87,10 +43,58 @@ class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin
   }
 
   @override
-  void initState() {
-    super.initState();
-    _controller
-      ..addListener(() => setState(() {}))
-      ..forward();
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return CustomPaint(
+          size: Size.infinite,
+          painter: UsageBarPainter(
+            // Анимируем значение от 0 до текущего при старте
+            percent: widget.usagePercent * _controller.value, 
+            color: widget.primaryColor,
+          ),
+        );
+      },
+    );
   }
+}
+
+class UsageBarPainter extends CustomPainter {
+  final double percent;
+  final Color color;
+
+  UsageBarPainter({required this.percent, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 1. Рисуем Background Track (темно-серый)
+    final trackPaint = Paint()
+      ..color = Colors.white10 // Очень тусклый белый (серый на темном фоне)
+      ..style = PaintingStyle.fill;
+    
+    // RRect для скругленных краев полоски
+    final trackRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(trackRect, trackPaint);
+
+    // 2. Рисуем заполненную часть (Progress)
+    final fillWidth = (size.width * percent / 100).clamp(0.0, size.width);
+    
+    final progressPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final progressRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, fillWidth.toDouble(), size.height),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(progressRect, progressPaint);
+  }
+
+  @override
+  bool shouldRepaint(UsageBarPainter oldDelegate) => 
+      oldDelegate.percent != percent || oldDelegate.color != color;
 }

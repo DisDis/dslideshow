@@ -10,28 +10,27 @@ import 'package:system_metrics_widget/src/widgets/metrics/network_usage_widget.d
 import 'package:system_metrics_widget/src/widgets/metrics/os_info_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/sensors_info_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/uptime_info_widget.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/version_info_widget.dart';
 
 class SystemInfoMetrics extends StatelessWidget {
   final SystemInfo _model;
 
   const SystemInfoMetrics({required SystemInfo model, super.key}) : _model = model;
 
-  @override
-  Widget build(BuildContext context) {
-    // final currentOrientation = MediaQuery.of(context).orientation;
-
-    // var shortestSide = MediaQuery.of(context).size.shortestSide;
-    // var useMobileLayout = shortestSide < 600;
-
-    return OrientationBuilder(builder: (context, orientation) {
-      return StaggeredGrid.count(
-        crossAxisCount: 8,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 8.0,
-        children: <Widget>[
+    @override
+      Widget build(BuildContext context) {
+    return StaggeredGrid.count(
+      crossAxisCount: 8,
+      mainAxisSpacing: 8.0,  // Компактные отступы
+      crossAxisSpacing: 8.0,
+      children: <Widget>[
           const StaggeredGridTile.fit(
             crossAxisCellCount: 8,
             child: CurrentTimeWidget(),
+          ),
+          const StaggeredGridTile.fit(
+            crossAxisCellCount: 5,
+            child: VersionInfoWidget(),
           ),
           StaggeredGridTile.fit(
             crossAxisCellCount: 5,
@@ -50,10 +49,7 @@ class SystemInfoMetrics extends StatelessWidget {
             crossAxisCellCount: 5,
             child: OSInfoWidget(model: _model.osInfo),
           ),
-          StaggeredGridTile.fit(
-            crossAxisCellCount: 8,
-            child: NetworkUsageWidget(model: _model.networkInfo),
-          ),
+          
           StaggeredGridTile.fit(
             crossAxisCellCount: 4,
             child: MemoryUsageWidget(
@@ -71,6 +67,10 @@ class SystemInfoMetrics extends StatelessWidget {
               usagePercent: _model.updateInfo.diskUsedPercent,
             ),
           ),
+          StaggeredGridTile.fit(
+            crossAxisCellCount: 8,
+            child: NetworkUsageWidget(model: _model.networkInfo),
+          ),
           if (_model.updateInfo.sensors.isNotEmpty)
             StaggeredGridTile.fit(
               crossAxisCellCount: 4,
@@ -80,6 +80,5 @@ class SystemInfoMetrics extends StatelessWidget {
             ),
         ],
       );
-    });
   }
 }
