@@ -22,7 +22,7 @@ class HardwareConfig {
   @JsonKey(defaultValue: 25)
   int pinPowerLED;
 
-  @JsonKey(defaultValue: '/dev/root')
+  @JsonKey(defaultValue: '/dev/mmcblk0p2')
   String systemDiskDev;
 
   @JsonKey(defaultValue: 'ifconfig')

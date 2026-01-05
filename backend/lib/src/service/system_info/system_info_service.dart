@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 
 class SystemInfoService {
   static final Logger _log = new Logger('SystemInfoService');
+  static final _environment = {'LC_ALL': 'C'};
 
   static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
   static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
@@ -66,7 +67,7 @@ class SystemInfoService {
       var result = await io.Process.run(
         _config.systemIfConfigScript,
         [],
-        environment: {'LC_ALL': 'C'},
+        environment: _environment,
       );
       if (result.exitCode == 0) {
         return parseIfconfigOutput(result.stdout.toString());
@@ -95,7 +96,7 @@ class SystemInfoService {
     );
 
     try {
-      var result = await io.Process.run('df', []);
+      var result = await io.Process.run('df', [], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var strArr = str.split('\n');
@@ -117,13 +118,13 @@ class SystemInfoService {
           );
         }
       }
-      result = await io.Process.run('uptime', ['-p']);
+      result = await io.Process.run('uptime', ['-p'], environment: _environment);
       if (result.exitCode == 0) {
         b = b.copyWith(uptime: result.stdout.toString());
       }
 
       //LC_ALL=C free
-      result = await io.Process.run('free', [], environment: {'LC_ALL': 'C'});
+      result = await io.Process.run('free', [], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         //              total        used        free
@@ -137,7 +138,7 @@ class SystemInfoService {
           swapUsed: int.tryParse(infoSwap.group(2)!) ?? 0,
         );
       }
-      result = await io.Process.run('cat', ['/proc/loadavg']);
+      result = await io.Process.run('cat', ['/proc/loadavg'], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var arrData = str.split(' ');
@@ -162,7 +163,7 @@ class SystemInfoService {
       var result = await io.Process.run(
         'ping',
         ['-c', '1', '8.8.8.8'],
-        environment: {'LC_ALL': 'C'},
+        environment: _environment,
       );
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
@@ -182,12 +183,12 @@ class SystemInfoService {
     var b = new CpuInfo(cores: 0, hardware: '', model: '', revision: '');
 
     try {
-      var result = await io.Process.run('nproc', ['--all']);
+      var result = await io.Process.run('nproc', ['--all'], environment: _environment);
       if (result.exitCode == 0) {
         b = b.copyWith(cores: int.tryParse(result.stdout.toString()) ?? 0);
       }
 
-      result = await io.Process.run('cat', ['/proc/cpuinfo']);
+      result = await io.Process.run('cat', ['/proc/cpuinfo'], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         b = b.copyWith(
@@ -214,7 +215,7 @@ class SystemInfoService {
   Future<OSInfo> _getOSInfo() async {
     var b = OSInfo(name: '', osType: OSType.unknown);
     try {
-      var result = await io.Process.run('uname', ['-a']);
+      var result = await io.Process.run('uname', ['-a'], environment: _environment);
       if (result.exitCode == 0) {
         final osInfo = result.stdout.toString().replaceAll('\n', '');
         b = b.copyWith(name: osInfo, osType: _resolveOSType(osInfo));
@@ -234,7 +235,7 @@ class SystemInfoService {
       var resultCommand = await io.Process.run(
         _config.sensorsScript,
         [],
-        environment: {'LC_ALL': 'C'},
+        environment: _environment,
       );
       //temp=61.3'C
       if (resultCommand.exitCode == 0) {
