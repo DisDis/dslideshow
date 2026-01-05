@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 
 class MetricsContainerWidget extends StatelessWidget {
   final IconData iconData;
@@ -46,11 +47,7 @@ class MetricsContainerWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               // Принудительный стиль текста
               child: DefaultTextStyle.merge(
-                style: const TextStyle(
-                  color: Colors.white, 
-                  fontSize: 12,
-                  decoration: TextDecoration.none, // Убираем подчеркивания если нет Material
-                ),
+                style: Settings.metricsContainerDefaultTextStyle,
                 child: child,
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 
 class NetworkUsageWidget extends StatelessWidget {
@@ -29,9 +30,9 @@ class NetworkUsageWidget extends StatelessWidget {
         children: <Widget>[
           // Если интерфейсов нет, пишем статус
           if (activeInterfaces.isEmpty)
-             const Text(
+             Text(
                "NO ACTIVE CONNECTION",
-               style: TextStyle(color: Colors.redAccent, fontSize: 10, fontWeight: FontWeight.bold),
+               style: Settings.networkNoConnectionTextStyle,
              ),
 
           // Список интерфейсов
@@ -69,23 +70,12 @@ class NetworkUsageWidget extends StatelessWidget {
               // Имя интерфейса (мелко, как label)
               Text(
                 interface.name.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white38,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
+                style: Settings.networkInterfaceNameTextStyle,
               ),
               // IP Адрес (Крупно, Моноширинно, Ярко)
               Text(
                 interface.ip4,
-                style: const TextStyle(
-                  color: Colors.cyanAccent, // Tech цвет
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Courier', // Или Platform.isAndroid ? 'monospace' : 'Courier'
-                  letterSpacing: 0.5,
-                ),
+                style: Settings.networkIpAddressTextStyle,
               ),
             ],
           ),

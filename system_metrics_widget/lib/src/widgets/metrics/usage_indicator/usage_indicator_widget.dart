@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_bar.dart';
 
 abstract class UsageIndicatorWidget extends StatelessWidget {
@@ -38,20 +39,11 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
           children: [
             Text(
               title.toUpperCase(),
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.0,
-              ),
+              style: Settings.usageIndicatorTitleTextStyle,
             ),
             Text(
               '$usagePercent%',
-              style: TextStyle(
-                color: statusColor,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Settings.usageIndicatorPercentTextStyle(statusColor),
             ),
           ],
         ),
@@ -74,10 +66,7 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Text(
             '$used / $total',
-            style: const TextStyle(
-              color: Colors.white54,
-              fontSize: 10,
-            ),
+            style: Settings.usageIndicatorDetailsTextStyle,
           ),
         ),
       ],

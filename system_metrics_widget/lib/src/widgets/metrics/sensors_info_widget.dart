@@ -1,5 +1,6 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 
 class SensorsInfoWidget extends StatelessWidget {
@@ -82,7 +83,7 @@ class SensorsInfoWidget extends StatelessWidget {
         Expanded(
           child: Text(
             name,
-            style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.w600),
+            style: Settings.sensorNameTextStyle,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -93,17 +94,12 @@ class SensorsInfoWidget extends StatelessWidget {
           children: [
             Text(
               cleanValue,
-              style: TextStyle(
-                color: valueColor,
-                fontSize: 16,
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-              ),
+              style: Settings.sensorValueTextStyle(valueColor),
             ),
             const SizedBox(width: 2),
             Text(
               unit,
-              style: TextStyle(color: valueColor.withOpacity(0.5), fontSize: 10),
+              style: Settings.sensorUnitTextStyle(valueColor),
             ),
           ],
         ),
@@ -119,7 +115,7 @@ class SensorsInfoWidget extends StatelessWidget {
         Expanded(
           child: Text(
             name,
-            style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.w600),
+            style: Settings.sensorNameTextStyle,
           ),
         ),
         Container(
@@ -147,11 +143,7 @@ class SensorsInfoWidget extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 isActive ? "ON" : "OFF",
-                style: TextStyle(
-                  color: isActive ? Colors.greenAccent : Colors.white38,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Settings.sensorBinaryStatusTextStyle(isActive ? Colors.greenAccent : Colors.white38),
               ),
             ],
           ),
@@ -165,15 +157,10 @@ class SensorsInfoWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(name, style: const TextStyle(color: Colors.white54, fontSize: 10)),
+        Text(name, style: Settings.sensorNameTextStyle),
         Text(
           value.toUpperCase(),
-          style: const TextStyle(
-            color: Colors.deepOrangeAccent,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.0,
-            fontSize: 12,
-          ),
+          style: Settings.sensorAlertTextStyle,
         ),
       ],
     );
@@ -184,10 +171,10 @@ class SensorsInfoWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(child: Text(name, style: const TextStyle(color: Colors.white54, fontSize: 10))),
+        Expanded(child: Text(name, style: Settings.sensorNameTextStyle)),
         Text(
           value,
-          style: const TextStyle(color: Colors.cyanAccent, fontSize: 12, fontFamily: 'Courier'),
+          style: Settings.sensorGenericValueTextStyle,
         ),
       ],
     );

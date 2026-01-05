@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 
 class CircularIndicatorWidget extends StatefulWidget {
   final String? title;
@@ -69,20 +70,13 @@ class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with 
                 // Значение (например 0.45)
                 Text(
                   widget.percent.toStringAsFixed(2),
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+                  style: Settings.circularIndicatorValueTextStyle(color),
                 ),
                 // Подпись (если есть)
                 if (widget.title != null)
                   Text(
                     widget.title!,
-                    style: const TextStyle(
-                      color: Colors.white38,
-                      fontSize: 8,
-                    ),
+                    style: Settings.circularIndicatorTitleTextStyle,
                   )
               ],
             ),

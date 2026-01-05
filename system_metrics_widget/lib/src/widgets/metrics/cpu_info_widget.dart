@@ -1,6 +1,7 @@
 import 'package:feather_icons/feather_icons.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/circular_indicator/circular_indicator_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 
@@ -40,12 +41,7 @@ class CpuInfoWidget extends StatelessWidget {
               Flexible(
                 child: Text(
                   cpu.model.isEmpty ? 'Unknown CPU' : cpu.model.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 12, 
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
+                  style: Settings.cpuModelTextStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -58,7 +54,7 @@ class CpuInfoWidget extends StatelessWidget {
                 ),
                 child: Text(
                   '${cpu.cores} CORES',
-                  style: const TextStyle(fontSize: 9, color: Colors.white70),
+                  style: Settings.cpuCoresBadgeTextStyle,
                 ),
               ),
             ],
@@ -101,10 +97,7 @@ class CpuInfoWidget extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white54,
-            fontSize: 9,
-          ),
+          style: Settings.cpuLoadAverageLabelTextStyle,
         ),
       ],
     );
