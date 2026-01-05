@@ -118,7 +118,9 @@ class SystemInfoService {
           );
         }
       }
-      result = await io.Process.run('uptime', ['-p'], environment: _environment);
+      result = await io.Process.run('uptime', [
+        '-p',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         b = b.copyWith(uptime: result.stdout.toString());
       }
@@ -138,7 +140,9 @@ class SystemInfoService {
           swapUsed: int.tryParse(infoSwap.group(2)!) ?? 0,
         );
       }
-      result = await io.Process.run('cat', ['/proc/loadavg'], environment: _environment);
+      result = await io.Process.run('cat', [
+        '/proc/loadavg',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var arrData = str.split(' ');
@@ -160,11 +164,11 @@ class SystemInfoService {
   Future<bool> hasInternet() async {
     //    _log.info('hasInternet');
     try {
-      var result = await io.Process.run(
-        'ping',
-        ['-c', '1', '8.8.8.8'],
-        environment: _environment,
-      );
+      var result = await io.Process.run('ping', [
+        '-c',
+        '1',
+        '8.8.8.8',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
       }
@@ -183,12 +187,16 @@ class SystemInfoService {
     var b = new CpuInfo(cores: 0, hardware: '', model: '', revision: '');
 
     try {
-      var result = await io.Process.run('nproc', ['--all'], environment: _environment);
+      var result = await io.Process.run('nproc', [
+        '--all',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         b = b.copyWith(cores: int.tryParse(result.stdout.toString()) ?? 0);
       }
 
-      result = await io.Process.run('cat', ['/proc/cpuinfo'], environment: _environment);
+      result = await io.Process.run('cat', [
+        '/proc/cpuinfo',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         b = b.copyWith(
@@ -215,7 +223,9 @@ class SystemInfoService {
   Future<OSInfo> _getOSInfo() async {
     var b = OSInfo(name: '', osType: OSType.unknown);
     try {
-      var result = await io.Process.run('uname', ['-a'], environment: _environment);
+      var result = await io.Process.run('uname', [
+        '-a',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         final osInfo = result.stdout.toString().replaceAll('\n', '');
         b = b.copyWith(name: osInfo, osType: _resolveOSType(osInfo));
@@ -240,8 +250,17 @@ class SystemInfoService {
       //temp=61.3'C
       if (resultCommand.exitCode == 0) {
         //temp=49.0'C
-        var arr = resultCommand.stdout.toString().split('=');
-        result.add(SensorInfo(name: arr[0], value: arr[1]));
+        final arrSensors = resultCommand.stdout.toString().split('\n');
+        arrSensors.forEach((line) {
+          if (line.isEmpty){
+            return;
+          }
+          final arr = line.split('=');
+          if (arr.length<2){
+            return;
+          }
+          result.add(SensorInfo(name: arr[0], value: arr[1]));
+        });
       }
     } catch (e, s) {
       _log.severe('_getSensorInfo', e, s);

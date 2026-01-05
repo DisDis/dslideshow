@@ -1,3 +1,7 @@
+# 8.4.5
+Fix CPU title
+Multiple sensor support
+
 # 8.4.4
 update UI for system info
 

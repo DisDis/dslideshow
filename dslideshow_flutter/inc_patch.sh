@@ -1,0 +1,1 @@
+dart ../autover/bin/main.dart -c autover.yaml -v patch
