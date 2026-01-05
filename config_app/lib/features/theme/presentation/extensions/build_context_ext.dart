@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 
 extension BuildContextExt on BuildContext {
-  AppLocalizations get localizations => AppLocalizations.of(this)!;
+  AppLocalizations get localizations => AppLocalizations.of(this);
 
   ThemeTextStyles get text => Theme.of(this).extension<ThemeTextStyles>()!;
 

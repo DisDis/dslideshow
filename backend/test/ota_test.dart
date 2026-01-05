@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dslideshow_backend/src/service/ota/ota_service.dart';
-import 'package:dslideshow_common/version.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;

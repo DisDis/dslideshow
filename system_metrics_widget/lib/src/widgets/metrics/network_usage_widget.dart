@@ -38,7 +38,7 @@ class NetworkUsageWidget extends StatelessWidget {
           for (int i = 0; i < activeInterfaces.length; i++) ...[
             // Добавляем разделитель между интерфейсами, но не перед первым
             if (i > 0) 
-              Divider(height: 12, color: Colors.white.withOpacity(0.1)),
+              Divider(height: 12, color: Colors.white..withAlpha((255.0 * 0.1).round())),
               
             _buildInterfaceRow(activeInterfaces[i]),
           ]

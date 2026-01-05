@@ -13,7 +13,6 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/command/web_server_commands.dart';
-import 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';

@@ -27,7 +27,7 @@ class SensorsInfoWidget extends StatelessWidget {
           // Список датчиков
           for (int i = 0; i < model.sensors.length; i++) ...[
             if (i > 0) 
-              Divider(height: 12, color: Colors.white.withOpacity(0.1)),
+              Divider(height: 12, color: Colors.white.withAlpha((255.0 * 0.1).round())),
             _buildSensorRow(model.sensors[i]),
           ],
         ],
@@ -121,7 +121,7 @@ class SensorsInfoWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(
-            color: isActive ? Colors.green.withOpacity(0.2) : Colors.white10,
+            color: isActive ? Colors.green.withAlpha((255.0 * 0.2).round()) : Colors.white10,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: isActive ? Colors.green : Colors.white24,

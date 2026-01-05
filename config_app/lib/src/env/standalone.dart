@@ -19,7 +19,7 @@ void configHttpAdapter(dynamic obj) {
   _log.info('configHttpAdapter :$obj');
   // if (obj is Dio) {
   //   obj.interceptors.add(CookieManager(_cookieJar));
-  //   //TODO: only for dev, pls remove in prod
+
   //   obj.interceptors
   //       .add(PrettyDioLogger(requestHeader: false, requestBody: false, responseHeader: false, responseBody: true));
   // }

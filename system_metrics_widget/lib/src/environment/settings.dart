@@ -82,7 +82,7 @@ class Settings {
   );
   
   static TextStyle sensorUnitTextStyle(Color valueColor) => TextStyle(
-    color: valueColor.withOpacity(0.5),
+    color: valueColor.withAlpha((255.0 * 0.5).round()),
     fontSize: 10,
   );
   
