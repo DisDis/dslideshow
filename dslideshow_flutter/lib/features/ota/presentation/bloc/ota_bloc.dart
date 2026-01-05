@@ -109,7 +109,7 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
   void _pushButton(ButtonEvent event) {
     if (event.event == ButtonEventType.released &&
         event.button == ButtonType.button0 &&
-        state is OtaReadyState) {
+        (state is OtaReadyState || state is OtaFailureState || state is OtaSuccessState)) {
       routeBloc.add(ChangePageEvent(RoutePage.slideshow));
     }
   }
