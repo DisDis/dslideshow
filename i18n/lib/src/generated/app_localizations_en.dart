@@ -139,10 +139,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storage_settings_title => 'Storage Settings';
 
   @override
-  String get unknown_storage_type_configuration => 'Unknown storage type configuration';
+  String get unknown_storage_type_configuration =>
+      'Unknown storage type configuration';
 
   @override
-  String get no_configuration_needed_for_local_disk => 'No configuration needed for local disk yet.';
+  String get no_configuration_needed_for_local_disk =>
+      'No configuration needed for local disk yet.';
 
   @override
   String get slideshow_settings_title => 'Slideshow Settings';
@@ -175,7 +177,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_access_title => 'No access';
 
   @override
-  String get no_access_contact_administrator => 'No access, contact your administrator';
+  String get no_access_contact_administrator =>
+      'No access, contact your administrator';
 
   @override
   String get ch_text => 'Ch:';
@@ -205,7 +208,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome_back => 'Welcome back,';
 
   @override
-  String get manage_your_device_settings_and_updates => 'Manage your device settings and updates.';
+  String get manage_your_device_settings_and_updates =>
+      'Manage your device settings and updates.';
 
   @override
   String get gallery_card_title => 'Gallery';
@@ -277,19 +281,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get power_management_title => 'Power Management';
 
   @override
-  String get choose_action_on_device => 'Choose an action to perform on the device';
+  String get choose_action_on_device =>
+      'Choose an action to perform on the device';
 
   @override
   String get restart_application => 'Restart Application';
 
   @override
-  String get reload_software_without_rebooting_os => 'Reloads the software without rebooting the OS.';
+  String get reload_software_without_rebooting_os =>
+      'Reloads the software without rebooting the OS.';
 
   @override
   String get restart_application_question => 'Restart Application?';
 
   @override
-  String get this_will_reload_configuration_app_and_slideshow_services => 'This will reload the configuration app and slideshow services.';
+  String get this_will_reload_configuration_app_and_slideshow_services =>
+      'This will reload the configuration app and slideshow services.';
 
   @override
   String get restart => 'Restart';
@@ -298,13 +305,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get power_off => 'Power Off';
 
   @override
-  String get safely_shuts_down_the_device_operating_system => 'Safely shuts down the device operating system.';
+  String get safely_shuts_down_the_device_operating_system =>
+      'Safely shuts down the device operating system.';
 
   @override
   String get power_off_device_question => 'Power Off Device?';
 
   @override
-  String get the_device_will_shut_down_completely => 'The device will shut down completely. You will need to physically turn it on again.';
+  String get the_device_will_shut_down_completely =>
+      'The device will shut down completely. You will need to physically turn it on again.';
 
   @override
   String get power_off_button => 'Power Off';
