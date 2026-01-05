@@ -38,8 +38,8 @@ class WiFiService {
 
     try {
       var result = await io.Process.run(
-        'nmcli',
-        ['device', 'wifi', 'connect', SSID, 'password', psk, 'name', name],
+        'sudo',
+        ['nmcli', 'device', 'wifi', 'connect', SSID, 'password', psk, 'name', name],
         environment: {'LC_ALL': 'C'},
       );
       if (result.exitCode != 0) {
@@ -59,8 +59,8 @@ class WiFiService {
 nmcli connection up  <UUID>
  */
       var result = await io.Process.run(
-        'nmcli',
-        ['connection', 'up', '$connectionUUID'],
+        'sudo',
+        ['nmcli', 'connection', 'up', '$connectionUUID'],
         environment: {'LC_ALL': 'C'},
       );
       _log.info("nmcli connection up -> '${result.stdout.toString()}'");
@@ -82,8 +82,8 @@ nmcli connection up  <UUID>
 nmcli connection down  <UUID>
  */
       var result = await io.Process.run(
-        'nmcli',
-        ['connection', 'down', '$connectionUUID'],
+        'sudo',
+        ['nmcli', 'connection', 'down', '$connectionUUID'],
         environment: {'LC_ALL': 'C'},
       );
       _log.info("nmcli connection down -> '${result.stdout.toString()}'");
@@ -105,8 +105,8 @@ nmcli connection down  <UUID>
 nmcli connection delete <UUID>
  */
       var result = await io.Process.run(
-        'nmcli',
-        ['connection', 'remove', '$connectionUUID'],
+        'sudo',
+        ['nmcli', 'connection', 'remove', '$connectionUUID'],
         environment: {'LC_ALL': 'C'},
       );
       _log.info("nmcli connection remove -> '${result.stdout.toString()}'");
