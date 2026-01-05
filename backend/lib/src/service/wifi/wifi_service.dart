@@ -9,26 +9,51 @@ class WiFiService {
   // ignore: unused_field
   final WiFiConfig _config;
   WiFiService(this._config);
+  static final _environment = {'LC_ALL': 'C'};
 
-  Future<List<WiFiNetworkInfo>> scan() async {
-    _log.info('scan');
+  Future<List<WiFiNetworkInfo>> list([bool isRescan = true]) async {
+    _log.info('list');
     try {
+      final args = ['nmcli', 'device', 'wifi', 'list'];
+      if (isRescan) {
+        args.addAll(['--rescan', 'auto']);
+      }
+
       var result = await io.Process.run(
-        'nmcli',
-        ['device', 'wifi', 'list'],
-        environment: {'LC_ALL': 'C'},
+        'sudo',
+        args,
+        environment: _environment,
       );
       if (result.exitCode == 0) {
         return parseScanOutput(result.stdout.toString());
       } else {
         throw Exception(
-          'nmcli device wifi list -> exit code: ${result.exitCode}',
+          'nmcli device wifi list${isRescan ? ' --rescan auto' : ''} -> exit code: ${result.exitCode}',
+        );
+      }
+    } catch (e, s) {
+      _log.severe('list', e, s);
+    }
+    return <WiFiNetworkInfo>[];
+  }
+
+  void rescan() async {
+    _log.info('rescan');
+    try {
+      var result = await io.Process.run('sudo', [
+        'nmcli',
+        'device',
+        'wifi',
+        'rescan',
+      ], environment: _environment);
+      if (result.exitCode != 0) {
+        throw Exception(
+          'nmcli device wifi rescan -> exit code: ${result.exitCode}',
         );
       }
     } catch (e, s) {
       _log.severe('scan', e, s);
     }
-    return <WiFiNetworkInfo>[];
   }
 
   static final _parseRateRegExp = RegExp(r'[^0-9]');
@@ -37,11 +62,17 @@ class WiFiService {
     _log.info('addWiFiConnection "$SSID"');
 
     try {
-      var result = await io.Process.run(
-        'sudo',
-        ['nmcli', 'device', 'wifi', 'connect', SSID, 'password', psk, 'name', name],
-        environment: {'LC_ALL': 'C'},
-      );
+      var result = await io.Process.run('sudo', [
+        'nmcli',
+        'device',
+        'wifi',
+        'connect',
+        SSID,
+        'password',
+        psk,
+        'name',
+        name,
+      ], environment: _environment);
       if (result.exitCode != 0) {
         throw Exception(
           'nmcli device wifi connect "$SSID" password "***" name "$name" -> exit code: ${result.exitCode}',
@@ -58,11 +89,12 @@ class WiFiService {
       /*
 nmcli connection up  <UUID>
  */
-      var result = await io.Process.run(
-        'sudo',
-        ['nmcli', 'connection', 'up', '$connectionUUID'],
-        environment: {'LC_ALL': 'C'},
-      );
+      var result = await io.Process.run('sudo', [
+        'nmcli',
+        'connection',
+        'up',
+        '$connectionUUID',
+      ], environment: _environment);
       _log.info("nmcli connection up -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
         throw Exception(
@@ -81,11 +113,12 @@ nmcli connection up  <UUID>
       /*
 nmcli connection down  <UUID>
  */
-      var result = await io.Process.run(
-        'sudo',
-        ['nmcli', 'connection', 'down', '$connectionUUID'],
-        environment: {'LC_ALL': 'C'},
-      );
+      var result = await io.Process.run('sudo', [
+        'nmcli',
+        'connection',
+        'down',
+        '$connectionUUID',
+      ], environment: _environment);
       _log.info("nmcli connection down -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
         throw Exception(
@@ -104,11 +137,12 @@ nmcli connection down  <UUID>
       /*
 nmcli connection delete <UUID>
  */
-      var result = await io.Process.run(
-        'sudo',
-        ['nmcli', 'connection', 'remove', '$connectionUUID'],
-        environment: {'LC_ALL': 'C'},
-      );
+      var result = await io.Process.run('sudo', [
+        'nmcli',
+        'connection',
+        'remove',
+        '$connectionUUID',
+      ], environment: _environment);
       _log.info("nmcli connection remove -> '${result.stdout.toString()}'");
       if (result.exitCode != 0) {
         throw Exception(
@@ -221,11 +255,10 @@ nmcli connection delete <UUID>
   Future<List<WiFiConnectionInfo>> getConnections() async {
     _log.info('getConnections');
     try {
-      var result = await io.Process.run(
-        'nmcli',
-        ['connection', 'show'],
-        environment: {'LC_ALL': 'C'},
-      );
+      var result = await io.Process.run('nmcli', [
+        'connection',
+        'show',
+      ], environment: _environment);
       if (result.exitCode == 0) {
         return parseConnectionsOutput(result.stdout.toString());
       } else {

@@ -142,8 +142,10 @@ class HardwareService implements RpcService {
         return _executeEmulatePushButtonCommand(
           command as EmulatePushButtonCommand,
         );
-      case WiFiScanCommand.TYPE:
-        return _executeWiFiScanCommand(command as WiFiScanCommand);
+      case WiFiRescanCommand.TYPE:
+        return _executeWiFiRescanCommand(command as WiFiRescanCommand);
+      case WiFiListCommand.TYPE:
+        return _executeWiFiListCommand(command as WiFiListCommand);
       case WiFiAddCommand.TYPE:
         return _executeWiFiAddCommand(command as WiFiAddCommand);
       case WiFiRemoveCommand.TYPE:
@@ -296,11 +298,19 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<WiFiScanResult> _executeWiFiScanCommand(
-    WiFiScanCommand command,
+  
+  Future<WiFiListResult> _executeWiFiListCommand(
+    WiFiListCommand command,
   ) async {
-    var result = await _wifiService.scan();
-    return new WiFiScanResult(id: command.id, networks: result);
+    var result = await _wifiService.list();
+    return new WiFiListResult(id: command.id, networks: result);
+  }
+
+  Future<RpcResult> _executeWiFiRescanCommand(
+    WiFiRescanCommand command,
+  ) async {
+    _wifiService.rescan();
+    return EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {

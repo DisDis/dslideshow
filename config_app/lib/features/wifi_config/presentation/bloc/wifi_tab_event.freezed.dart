@@ -52,6 +52,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_WifiTabEvent value)? $default, {
     TResult Function(UnWifiTabEvent value)? uninitialized,
+    TResult Function(RescanWifiTabEvent value)? rescan,
     TResult Function(LoadWifiTabEvent value)? load,
     TResult Function(AddWifiTabEvent value)? add,
     TResult Function(RemoveWifiTabEvent value)? remove,
@@ -64,6 +65,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default(_that);
       case UnWifiTabEvent() when uninitialized != null:
         return uninitialized(_that);
+      case RescanWifiTabEvent() when rescan != null:
+        return rescan(_that);
       case LoadWifiTabEvent() when load != null:
         return load(_that);
       case AddWifiTabEvent() when add != null:
@@ -94,6 +97,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult map<TResult extends Object?>(
     TResult Function(_WifiTabEvent value) $default, {
     required TResult Function(UnWifiTabEvent value) uninitialized,
+    required TResult Function(RescanWifiTabEvent value) rescan,
     required TResult Function(LoadWifiTabEvent value) load,
     required TResult Function(AddWifiTabEvent value) add,
     required TResult Function(RemoveWifiTabEvent value) remove,
@@ -105,6 +109,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default(_that);
       case UnWifiTabEvent():
         return uninitialized(_that);
+      case RescanWifiTabEvent():
+        return rescan(_that);
       case LoadWifiTabEvent():
         return load(_that);
       case AddWifiTabEvent():
@@ -134,6 +140,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_WifiTabEvent value)? $default, {
     TResult? Function(UnWifiTabEvent value)? uninitialized,
+    TResult? Function(RescanWifiTabEvent value)? rescan,
     TResult? Function(LoadWifiTabEvent value)? load,
     TResult? Function(AddWifiTabEvent value)? add,
     TResult? Function(RemoveWifiTabEvent value)? remove,
@@ -145,6 +152,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default(_that);
       case UnWifiTabEvent() when uninitialized != null:
         return uninitialized(_that);
+      case RescanWifiTabEvent() when rescan != null:
+        return rescan(_that);
       case LoadWifiTabEvent() when load != null:
         return load(_that);
       case AddWifiTabEvent() when add != null:
@@ -174,6 +183,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function()? $default, {
     TResult Function()? uninitialized,
+    TResult Function()? rescan,
     TResult Function()? load,
     TResult Function(String name, String SSID, String psk)? add,
     TResult Function(String connectionId)? remove,
@@ -186,6 +196,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default();
       case UnWifiTabEvent() when uninitialized != null:
         return uninitialized();
+      case RescanWifiTabEvent() when rescan != null:
+        return rescan();
       case LoadWifiTabEvent() when load != null:
         return load();
       case AddWifiTabEvent() when add != null:
@@ -216,6 +228,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult when<TResult extends Object?>(
     TResult Function() $default, {
     required TResult Function() uninitialized,
+    required TResult Function() rescan,
     required TResult Function() load,
     required TResult Function(String name, String SSID, String psk) add,
     required TResult Function(String connectionId) remove,
@@ -227,6 +240,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default();
       case UnWifiTabEvent():
         return uninitialized();
+      case RescanWifiTabEvent():
+        return rescan();
       case LoadWifiTabEvent():
         return load();
       case AddWifiTabEvent():
@@ -256,6 +271,7 @@ extension WifiTabEventPatterns on WifiTabEvent {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function()? $default, {
     TResult? Function()? uninitialized,
+    TResult? Function()? rescan,
     TResult? Function()? load,
     TResult? Function(String name, String SSID, String psk)? add,
     TResult? Function(String connectionId)? remove,
@@ -267,6 +283,8 @@ extension WifiTabEventPatterns on WifiTabEvent {
         return $default();
       case UnWifiTabEvent() when uninitialized != null:
         return uninitialized();
+      case RescanWifiTabEvent() when rescan != null:
+        return rescan();
       case LoadWifiTabEvent() when load != null:
         return load();
       case AddWifiTabEvent() when add != null:
@@ -318,6 +336,26 @@ class UnWifiTabEvent implements WifiTabEvent {
   @override
   String toString() {
     return 'WifiTabEvent.uninitialized()';
+  }
+}
+
+/// @nodoc
+
+class RescanWifiTabEvent implements WifiTabEvent {
+  const RescanWifiTabEvent();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RescanWifiTabEvent);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'WifiTabEvent.rescan()';
   }
 }
 

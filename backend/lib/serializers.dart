@@ -98,11 +98,14 @@ class _SerializersImpl implements Serializers {
     if (object is WiFiRemoveCommand)
       return ["WiFiRemoveCommand", object.toJson()];
 
-    if (object is WiFiScanCommand) return ["WiFiScanCommand", object.toJson()];
+    if (object is WiFiRescanCommand)
+      return ["WiFiRescanCommand", object.toJson()];
+
+    if (object is WiFiListCommand) return ["WiFiListCommand", object.toJson()];
 
     if (object is WiFiNetworkInfo) return ["WiFiNetworkInfo", object.toJson()];
 
-    if (object is WiFiScanResult) return ["WiFiScanResult", object.toJson()];
+    if (object is WiFiListResult) return ["WiFiListResult", object.toJson()];
 
     if (object is WiFiGetConnectionsResult)
       return ["WiFiGetConnectionsResult", object.toJson()];
@@ -244,14 +247,17 @@ class _SerializersImpl implements Serializers {
       case 'WiFiRemoveCommand':
         return WiFiRemoveCommand.fromJson(object);
 
-      case 'WiFiScanCommand':
-        return WiFiScanCommand.fromJson(object);
+      case 'WiFiRescanCommand':
+        return WiFiRescanCommand.fromJson(object);
+
+      case 'WiFiListCommand':
+        return WiFiListCommand.fromJson(object);
 
       case 'WiFiNetworkInfo':
         return WiFiNetworkInfo.fromJson(object);
 
-      case 'WiFiScanResult':
-        return WiFiScanResult.fromJson(object);
+      case 'WiFiListResult':
+        return WiFiListResult.fromJson(object);
 
       case 'WiFiGetConnectionsResult':
         return WiFiGetConnectionsResult.fromJson(object);

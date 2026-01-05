@@ -13,22 +13,22 @@ part of 'wifi_commands.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$WiFiScanCommand {
+mixin _$WiFiRescanCommand {
 
  int get id; String get type;
-/// Create a copy of WiFiScanCommand
+/// Create a copy of WiFiRescanCommand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$WiFiScanCommandCopyWith<WiFiScanCommand> get copyWith => _$WiFiScanCommandCopyWithImpl<WiFiScanCommand>(this as WiFiScanCommand, _$identity);
+$WiFiRescanCommandCopyWith<WiFiRescanCommand> get copyWith => _$WiFiRescanCommandCopyWithImpl<WiFiRescanCommand>(this as WiFiRescanCommand, _$identity);
 
-  /// Serializes this WiFiScanCommand to a JSON map.
+  /// Serializes this WiFiRescanCommand to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiScanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiRescanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,15 +37,15 @@ int get hashCode => Object.hash(runtimeType,id,type);
 
 @override
 String toString() {
-  return 'WiFiScanCommand(id: $id, type: $type)';
+  return 'WiFiRescanCommand(id: $id, type: $type)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $WiFiScanCommandCopyWith<$Res>  {
-  factory $WiFiScanCommandCopyWith(WiFiScanCommand value, $Res Function(WiFiScanCommand) _then) = _$WiFiScanCommandCopyWithImpl;
+abstract mixin class $WiFiRescanCommandCopyWith<$Res>  {
+  factory $WiFiRescanCommandCopyWith(WiFiRescanCommand value, $Res Function(WiFiRescanCommand) _then) = _$WiFiRescanCommandCopyWithImpl;
 @useResult
 $Res call({
  int id, String type
@@ -56,14 +56,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$WiFiScanCommandCopyWithImpl<$Res>
-    implements $WiFiScanCommandCopyWith<$Res> {
-  _$WiFiScanCommandCopyWithImpl(this._self, this._then);
+class _$WiFiRescanCommandCopyWithImpl<$Res>
+    implements $WiFiRescanCommandCopyWith<$Res> {
+  _$WiFiRescanCommandCopyWithImpl(this._self, this._then);
 
-  final WiFiScanCommand _self;
-  final $Res Function(WiFiScanCommand) _then;
+  final WiFiRescanCommand _self;
+  final $Res Function(WiFiRescanCommand) _then;
 
-/// Create a copy of WiFiScanCommand
+/// Create a copy of WiFiRescanCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
   return _then(_self.copyWith(
@@ -76,8 +76,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [WiFiScanCommand].
-extension WiFiScanCommandPatterns on WiFiScanCommand {
+/// Adds pattern-matching-related methods to [WiFiRescanCommand].
+extension WiFiRescanCommandPatterns on WiFiRescanCommand {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -90,10 +90,10 @@ extension WiFiScanCommandPatterns on WiFiScanCommand {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WiFiScanCommand value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WiFiRescanCommand value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _WiFiScanCommand() when $default != null:
+case _WiFiRescanCommand() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -112,10 +112,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WiFiScanCommand value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WiFiRescanCommand value)  $default,){
 final _that = this;
 switch (_that) {
-case _WiFiScanCommand():
+case _WiFiRescanCommand():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -130,10 +130,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WiFiScanCommand value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WiFiRescanCommand value)?  $default,){
 final _that = this;
 switch (_that) {
-case _WiFiScanCommand() when $default != null:
+case _WiFiRescanCommand() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -153,7 +153,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String type)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _WiFiScanCommand() when $default != null:
+case _WiFiRescanCommand() when $default != null:
 return $default(_that.id,_that.type);case _:
   return orElse();
 
@@ -174,7 +174,7 @@ return $default(_that.id,_that.type);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String type)  $default,) {final _that = this;
 switch (_that) {
-case _WiFiScanCommand():
+case _WiFiRescanCommand():
 return $default(_that.id,_that.type);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -191,7 +191,7 @@ return $default(_that.id,_that.type);}
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String type)?  $default,) {final _that = this;
 switch (_that) {
-case _WiFiScanCommand() when $default != null:
+case _WiFiRescanCommand() when $default != null:
 return $default(_that.id,_that.type);case _:
   return null;
 
@@ -203,27 +203,27 @@ return $default(_that.id,_that.type);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _WiFiScanCommand implements WiFiScanCommand {
-  const _WiFiScanCommand({required this.id, this.type = WiFiScanCommand.TYPE});
-  factory _WiFiScanCommand.fromJson(Map<String, dynamic> json) => _$WiFiScanCommandFromJson(json);
+class _WiFiRescanCommand implements WiFiRescanCommand {
+  const _WiFiRescanCommand({required this.id, this.type = WiFiRescanCommand.TYPE});
+  factory _WiFiRescanCommand.fromJson(Map<String, dynamic> json) => _$WiFiRescanCommandFromJson(json);
 
 @override final  int id;
 @override@JsonKey() final  String type;
 
-/// Create a copy of WiFiScanCommand
+/// Create a copy of WiFiRescanCommand
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$WiFiScanCommandCopyWith<_WiFiScanCommand> get copyWith => __$WiFiScanCommandCopyWithImpl<_WiFiScanCommand>(this, _$identity);
+_$WiFiRescanCommandCopyWith<_WiFiRescanCommand> get copyWith => __$WiFiRescanCommandCopyWithImpl<_WiFiRescanCommand>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$WiFiScanCommandToJson(this, );
+  return _$WiFiRescanCommandToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiScanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiRescanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -232,15 +232,15 @@ int get hashCode => Object.hash(runtimeType,id,type);
 
 @override
 String toString() {
-  return 'WiFiScanCommand(id: $id, type: $type)';
+  return 'WiFiRescanCommand(id: $id, type: $type)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$WiFiScanCommandCopyWith<$Res> implements $WiFiScanCommandCopyWith<$Res> {
-  factory _$WiFiScanCommandCopyWith(_WiFiScanCommand value, $Res Function(_WiFiScanCommand) _then) = __$WiFiScanCommandCopyWithImpl;
+abstract mixin class _$WiFiRescanCommandCopyWith<$Res> implements $WiFiRescanCommandCopyWith<$Res> {
+  factory _$WiFiRescanCommandCopyWith(_WiFiRescanCommand value, $Res Function(_WiFiRescanCommand) _then) = __$WiFiRescanCommandCopyWithImpl;
 @override @useResult
 $Res call({
  int id, String type
@@ -251,17 +251,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$WiFiScanCommandCopyWithImpl<$Res>
-    implements _$WiFiScanCommandCopyWith<$Res> {
-  __$WiFiScanCommandCopyWithImpl(this._self, this._then);
+class __$WiFiRescanCommandCopyWithImpl<$Res>
+    implements _$WiFiRescanCommandCopyWith<$Res> {
+  __$WiFiRescanCommandCopyWithImpl(this._self, this._then);
 
-  final _WiFiScanCommand _self;
-  final $Res Function(_WiFiScanCommand) _then;
+  final _WiFiRescanCommand _self;
+  final $Res Function(_WiFiRescanCommand) _then;
 
-/// Create a copy of WiFiScanCommand
+/// Create a copy of WiFiRescanCommand
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_WiFiScanCommand(
+  return _then(_WiFiRescanCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -273,42 +273,42 @@ as String,
 
 
 /// @nodoc
-mixin _$WiFiScanResult {
+mixin _$WiFiListCommand {
 
- List<WiFiNetworkInfo> get networks; int get id;
-/// Create a copy of WiFiScanResult
+ int get id; String get type;
+/// Create a copy of WiFiListCommand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$WiFiScanResultCopyWith<WiFiScanResult> get copyWith => _$WiFiScanResultCopyWithImpl<WiFiScanResult>(this as WiFiScanResult, _$identity);
+$WiFiListCommandCopyWith<WiFiListCommand> get copyWith => _$WiFiListCommandCopyWithImpl<WiFiListCommand>(this as WiFiListCommand, _$identity);
 
-  /// Serializes this WiFiScanResult to a JSON map.
+  /// Serializes this WiFiListCommand to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiScanResult&&const DeepCollectionEquality().equals(other.networks, networks)&&(identical(other.id, id) || other.id == id));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(networks),id);
+int get hashCode => Object.hash(runtimeType,id,type);
 
 @override
 String toString() {
-  return 'WiFiScanResult(networks: $networks, id: $id)';
+  return 'WiFiListCommand(id: $id, type: $type)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $WiFiScanResultCopyWith<$Res>  {
-  factory $WiFiScanResultCopyWith(WiFiScanResult value, $Res Function(WiFiScanResult) _then) = _$WiFiScanResultCopyWithImpl;
+abstract mixin class $WiFiListCommandCopyWith<$Res>  {
+  factory $WiFiListCommandCopyWith(WiFiListCommand value, $Res Function(WiFiListCommand) _then) = _$WiFiListCommandCopyWithImpl;
 @useResult
 $Res call({
- List<WiFiNetworkInfo> networks, int id
+ int id, String type
 });
 
 
@@ -316,28 +316,28 @@ $Res call({
 
 }
 /// @nodoc
-class _$WiFiScanResultCopyWithImpl<$Res>
-    implements $WiFiScanResultCopyWith<$Res> {
-  _$WiFiScanResultCopyWithImpl(this._self, this._then);
+class _$WiFiListCommandCopyWithImpl<$Res>
+    implements $WiFiListCommandCopyWith<$Res> {
+  _$WiFiListCommandCopyWithImpl(this._self, this._then);
 
-  final WiFiScanResult _self;
-  final $Res Function(WiFiScanResult) _then;
+  final WiFiListCommand _self;
+  final $Res Function(WiFiListCommand) _then;
 
-/// Create a copy of WiFiScanResult
+/// Create a copy of WiFiListCommand
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? networks = null,Object? id = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
   return _then(_self.copyWith(
-networks: null == networks ? _self.networks : networks // ignore: cast_nullable_to_non_nullable
-as List<WiFiNetworkInfo>,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [WiFiScanResult].
-extension WiFiScanResultPatterns on WiFiScanResult {
+/// Adds pattern-matching-related methods to [WiFiListCommand].
+extension WiFiListCommandPatterns on WiFiListCommand {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -350,10 +350,10 @@ extension WiFiScanResultPatterns on WiFiScanResult {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WiFiScanResult value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WiFiListCommand value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _WiFiScanResult() when $default != null:
+case _WiFiListCommand() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -372,10 +372,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WiFiScanResult value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WiFiListCommand value)  $default,){
 final _that = this;
 switch (_that) {
-case _WiFiScanResult():
+case _WiFiListCommand():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -390,10 +390,270 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WiFiScanResult value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WiFiListCommand value)?  $default,){
 final _that = this;
 switch (_that) {
-case _WiFiScanResult() when $default != null:
+case _WiFiListCommand() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String type)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WiFiListCommand() when $default != null:
+return $default(_that.id,_that.type);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String type)  $default,) {final _that = this;
+switch (_that) {
+case _WiFiListCommand():
+return $default(_that.id,_that.type);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String type)?  $default,) {final _that = this;
+switch (_that) {
+case _WiFiListCommand() when $default != null:
+return $default(_that.id,_that.type);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _WiFiListCommand implements WiFiListCommand {
+  const _WiFiListCommand({required this.id, this.type = WiFiListCommand.TYPE});
+  factory _WiFiListCommand.fromJson(Map<String, dynamic> json) => _$WiFiListCommandFromJson(json);
+
+@override final  int id;
+@override@JsonKey() final  String type;
+
+/// Create a copy of WiFiListCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WiFiListCommandCopyWith<_WiFiListCommand> get copyWith => __$WiFiListCommandCopyWithImpl<_WiFiListCommand>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WiFiListCommandToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,type);
+
+@override
+String toString() {
+  return 'WiFiListCommand(id: $id, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WiFiListCommandCopyWith<$Res> implements $WiFiListCommandCopyWith<$Res> {
+  factory _$WiFiListCommandCopyWith(_WiFiListCommand value, $Res Function(_WiFiListCommand) _then) = __$WiFiListCommandCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String type
+});
+
+
+
+
+}
+/// @nodoc
+class __$WiFiListCommandCopyWithImpl<$Res>
+    implements _$WiFiListCommandCopyWith<$Res> {
+  __$WiFiListCommandCopyWithImpl(this._self, this._then);
+
+  final _WiFiListCommand _self;
+  final $Res Function(_WiFiListCommand) _then;
+
+/// Create a copy of WiFiListCommand
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,}) {
+  return _then(_WiFiListCommand(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$WiFiListResult {
+
+ List<WiFiNetworkInfo> get networks; int get id;
+/// Create a copy of WiFiListResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WiFiListResultCopyWith<WiFiListResult> get copyWith => _$WiFiListResultCopyWithImpl<WiFiListResult>(this as WiFiListResult, _$identity);
+
+  /// Serializes this WiFiListResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListResult&&const DeepCollectionEquality().equals(other.networks, networks)&&(identical(other.id, id) || other.id == id));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(networks),id);
+
+@override
+String toString() {
+  return 'WiFiListResult(networks: $networks, id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WiFiListResultCopyWith<$Res>  {
+  factory $WiFiListResultCopyWith(WiFiListResult value, $Res Function(WiFiListResult) _then) = _$WiFiListResultCopyWithImpl;
+@useResult
+$Res call({
+ List<WiFiNetworkInfo> networks, int id
+});
+
+
+
+
+}
+/// @nodoc
+class _$WiFiListResultCopyWithImpl<$Res>
+    implements $WiFiListResultCopyWith<$Res> {
+  _$WiFiListResultCopyWithImpl(this._self, this._then);
+
+  final WiFiListResult _self;
+  final $Res Function(WiFiListResult) _then;
+
+/// Create a copy of WiFiListResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? networks = null,Object? id = null,}) {
+  return _then(_self.copyWith(
+networks: null == networks ? _self.networks : networks // ignore: cast_nullable_to_non_nullable
+as List<WiFiNetworkInfo>,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [WiFiListResult].
+extension WiFiListResultPatterns on WiFiListResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WiFiListResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WiFiListResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WiFiListResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _WiFiListResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WiFiListResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WiFiListResult() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -413,7 +673,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WiFiNetworkInfo> networks,  int id)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _WiFiScanResult() when $default != null:
+case _WiFiListResult() when $default != null:
 return $default(_that.networks,_that.id);case _:
   return orElse();
 
@@ -434,7 +694,7 @@ return $default(_that.networks,_that.id);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WiFiNetworkInfo> networks,  int id)  $default,) {final _that = this;
 switch (_that) {
-case _WiFiScanResult():
+case _WiFiListResult():
 return $default(_that.networks,_that.id);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -451,7 +711,7 @@ return $default(_that.networks,_that.id);}
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WiFiNetworkInfo> networks,  int id)?  $default,) {final _that = this;
 switch (_that) {
-case _WiFiScanResult() when $default != null:
+case _WiFiListResult() when $default != null:
 return $default(_that.networks,_that.id);case _:
   return null;
 
@@ -463,9 +723,9 @@ return $default(_that.networks,_that.id);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _WiFiScanResult implements WiFiScanResult {
-  const _WiFiScanResult({required final  List<WiFiNetworkInfo> networks, required this.id}): _networks = networks;
-  factory _WiFiScanResult.fromJson(Map<String, dynamic> json) => _$WiFiScanResultFromJson(json);
+class _WiFiListResult implements WiFiListResult {
+  const _WiFiListResult({required final  List<WiFiNetworkInfo> networks, required this.id}): _networks = networks;
+  factory _WiFiListResult.fromJson(Map<String, dynamic> json) => _$WiFiListResultFromJson(json);
 
  final  List<WiFiNetworkInfo> _networks;
 @override List<WiFiNetworkInfo> get networks {
@@ -476,20 +736,20 @@ class _WiFiScanResult implements WiFiScanResult {
 
 @override final  int id;
 
-/// Create a copy of WiFiScanResult
+/// Create a copy of WiFiListResult
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$WiFiScanResultCopyWith<_WiFiScanResult> get copyWith => __$WiFiScanResultCopyWithImpl<_WiFiScanResult>(this, _$identity);
+_$WiFiListResultCopyWith<_WiFiListResult> get copyWith => __$WiFiListResultCopyWithImpl<_WiFiListResult>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$WiFiScanResultToJson(this, );
+  return _$WiFiListResultToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiScanResult&&const DeepCollectionEquality().equals(other._networks, _networks)&&(identical(other.id, id) || other.id == id));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListResult&&const DeepCollectionEquality().equals(other._networks, _networks)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -498,15 +758,15 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'WiFiScanResult(networks: $networks, id: $id)';
+  return 'WiFiListResult(networks: $networks, id: $id)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$WiFiScanResultCopyWith<$Res> implements $WiFiScanResultCopyWith<$Res> {
-  factory _$WiFiScanResultCopyWith(_WiFiScanResult value, $Res Function(_WiFiScanResult) _then) = __$WiFiScanResultCopyWithImpl;
+abstract mixin class _$WiFiListResultCopyWith<$Res> implements $WiFiListResultCopyWith<$Res> {
+  factory _$WiFiListResultCopyWith(_WiFiListResult value, $Res Function(_WiFiListResult) _then) = __$WiFiListResultCopyWithImpl;
 @override @useResult
 $Res call({
  List<WiFiNetworkInfo> networks, int id
@@ -517,17 +777,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$WiFiScanResultCopyWithImpl<$Res>
-    implements _$WiFiScanResultCopyWith<$Res> {
-  __$WiFiScanResultCopyWithImpl(this._self, this._then);
+class __$WiFiListResultCopyWithImpl<$Res>
+    implements _$WiFiListResultCopyWith<$Res> {
+  __$WiFiListResultCopyWithImpl(this._self, this._then);
 
-  final _WiFiScanResult _self;
-  final $Res Function(_WiFiScanResult) _then;
+  final _WiFiListResult _self;
+  final $Res Function(_WiFiListResult) _then;
 
-/// Create a copy of WiFiScanResult
+/// Create a copy of WiFiListResult
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? networks = null,Object? id = null,}) {
-  return _then(_WiFiScanResult(
+  return _then(_WiFiListResult(
 networks: null == networks ? _self._networks : networks // ignore: cast_nullable_to_non_nullable
 as List<WiFiNetworkInfo>,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,

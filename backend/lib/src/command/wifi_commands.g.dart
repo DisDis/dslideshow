@@ -6,24 +6,33 @@ part of 'wifi_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_WiFiScanCommand _$WiFiScanCommandFromJson(Map<String, dynamic> json) =>
-    _WiFiScanCommand(
+_WiFiRescanCommand _$WiFiRescanCommandFromJson(Map<String, dynamic> json) =>
+    _WiFiRescanCommand(
       id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? WiFiScanCommand.TYPE,
+      type: json['type'] as String? ?? WiFiRescanCommand.TYPE,
     );
 
-Map<String, dynamic> _$WiFiScanCommandToJson(_WiFiScanCommand instance) =>
+Map<String, dynamic> _$WiFiRescanCommandToJson(_WiFiRescanCommand instance) =>
     <String, dynamic>{'id': instance.id, 'type': instance.type};
 
-_WiFiScanResult _$WiFiScanResultFromJson(Map<String, dynamic> json) =>
-    _WiFiScanResult(
+_WiFiListCommand _$WiFiListCommandFromJson(Map<String, dynamic> json) =>
+    _WiFiListCommand(
+      id: (json['id'] as num).toInt(),
+      type: json['type'] as String? ?? WiFiListCommand.TYPE,
+    );
+
+Map<String, dynamic> _$WiFiListCommandToJson(_WiFiListCommand instance) =>
+    <String, dynamic>{'id': instance.id, 'type': instance.type};
+
+_WiFiListResult _$WiFiListResultFromJson(Map<String, dynamic> json) =>
+    _WiFiListResult(
       networks: (json['networks'] as List<dynamic>)
           .map((e) => WiFiNetworkInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
       id: (json['id'] as num).toInt(),
     );
 
-Map<String, dynamic> _$WiFiScanResultToJson(_WiFiScanResult instance) =>
+Map<String, dynamic> _$WiFiListResultToJson(_WiFiListResult instance) =>
     <String, dynamic>{
       'networks': instance.networks.map((e) => e.toJson()).toList(),
       'id': instance.id,

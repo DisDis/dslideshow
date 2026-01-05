@@ -54,16 +54,22 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
       // await _client.send(WSSendRpcCommand((b) => b.command = WiFiEnableCommand((b)=>b..wifiId=event.wifiId..value=event.value)));
       await _updateData(emit);
     });
+    on<RescanWifiTabEvent>(_rescan);
+  }
+
+  Future _rescan(WifiTabEvent event, emit) async {
+    client.send(WSSendRpcCommand.byCommand(
+        WiFiRescanCommand(id: RpcCommand.generateId())));
   }
 
   Future<void> _updateData(Emitter<WifiTabState> emit,[minDuration = const Duration(milliseconds: 0)]) async {
     final waitF = Future.delayed(minDuration);
-    final fScan = client.send(WSSendRpcCommand.byCommand(
-        WiFiScanCommand(id: RpcCommand.generateId())));
+    final fWifiList = client.send(WSSendRpcCommand.byCommand(
+        WiFiListCommand(id: RpcCommand.generateId())));
     final fStored = client.send(WSSendRpcCommand.byCommand(
         WiFiGetConnectionsCommand(id: RpcCommand.generateId())));
     final scanResult = serializers
-        .deserialize((await fScan as WSRpcResult).resultData) as WiFiScanResult;
+        .deserialize((await fWifiList as WSRpcResult).resultData) as WiFiListResult;
     final storedResult =
         serializers.deserialize((await fStored as WSRpcResult).resultData)
             as WiFiGetConnectionsResult;

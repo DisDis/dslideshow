@@ -5,26 +5,38 @@ part 'wifi_commands.g.dart';
 part 'wifi_commands.freezed.dart';
 
 @freezed
-sealed class WiFiScanCommand with _$WiFiScanCommand implements RpcCommand {
-  static const String TYPE = 'wifi_scan';
-  const factory WiFiScanCommand({
+sealed class WiFiRescanCommand with _$WiFiRescanCommand implements RpcCommand {
+  static const String TYPE = 'wifi_rescan';
+  const factory WiFiRescanCommand({
     required int id,
-    @Default(WiFiScanCommand.TYPE) String type,
-  }) = _WiFiScanCommand;
+    @Default(WiFiRescanCommand.TYPE) String type,
+  }) = _WiFiRescanCommand;
 
-  factory WiFiScanCommand.fromJson(Map<String, dynamic> json) =>
-      _$WiFiScanCommandFromJson(json);
+  factory WiFiRescanCommand.fromJson(Map<String, dynamic> json) =>
+      _$WiFiRescanCommandFromJson(json);
 }
 
 @freezed
-sealed class WiFiScanResult with _$WiFiScanResult implements RpcResult {
-  const factory WiFiScanResult({
+sealed class WiFiListCommand with _$WiFiListCommand implements RpcCommand {
+  static const String TYPE = 'wifi_list';
+  const factory WiFiListCommand({
+    required int id,
+    @Default(WiFiListCommand.TYPE) String type,
+  }) = _WiFiListCommand;
+
+  factory WiFiListCommand.fromJson(Map<String, dynamic> json) =>
+      _$WiFiListCommandFromJson(json);
+}
+
+@freezed
+sealed class WiFiListResult with _$WiFiListResult implements RpcResult {
+  const factory WiFiListResult({
     required List<WiFiNetworkInfo> networks,
     required int id,
-  }) = _WiFiScanResult;
+  }) = _WiFiListResult;
 
-  factory WiFiScanResult.fromJson(Map<String, dynamic> json) =>
-      _$WiFiScanResultFromJson(json);
+  factory WiFiListResult.fromJson(Map<String, dynamic> json) =>
+      _$WiFiListResultFromJson(json);
 }
 
 @freezed
