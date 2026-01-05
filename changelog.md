@@ -1,3 +1,6 @@
+# 8.4.6
+New UX for OTA page
+
 # 8.4.5
 Fix CPU title
 Multiple sensor support

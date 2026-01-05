@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 8.4.5+1
+version: 8.4.6+1
 description: A sample command-line application
 publish_to: none
 environment:
@@ -27,7 +27,6 @@ dependencies:
     collection: ^1.15.0
     json_annotation: ^4.9.0
     freezed_annotation: ^3.0.0
-    http: ^1.6.0
 dev_dependencies:
   # shelf_router_generator: ^1.0.2
   json_serializable: ^6.10.0

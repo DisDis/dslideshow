@@ -94,29 +94,11 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// No description provided for @connectButtonText.
+  /// No description provided for @password.
   ///
   /// In en, this message translates to:
-  /// **'Connect'**
-  String get connectButtonText;
-
-  /// No description provided for @urlInputText.
-  ///
-  /// In en, this message translates to:
-  /// **'Url'**
-  String get urlInputText;
-
-  /// No description provided for @codeInputText.
-  ///
-  /// In en, this message translates to:
-  /// **'Code'**
-  String get codeInputText;
-
-  /// The conventional newborn programmer greeting
-  ///
-  /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
+  /// **'Password'**
+  String get password;
 
   /// No description provided for @username.
   ///
@@ -124,11 +106,11 @@ abstract class AppLocalizations {
   /// **'Username'**
   String get username;
 
-  /// No description provided for @password.
+  /// The conventional newborn programmer greeting
   ///
   /// In en, this message translates to:
-  /// **'Password'**
-  String get password;
+  /// **'Hello World!'**
+  String get helloWorld;
 
   /// No description provided for @english.
   ///
@@ -141,42 +123,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Russian'**
   String get russian;
-
-  /// No description provided for @feature_scope_user_permission.
-  ///
-  /// In en, this message translates to:
-  /// **'Permissions'**
-  String get feature_scope_user_permission;
-
-  /// No description provided for @feature_scope_users.
-  ///
-  /// In en, this message translates to:
-  /// **'Users'**
-  String get feature_scope_users;
-
-  /// No description provided for @feature_scope_agreement.
-  ///
-  /// In en, this message translates to:
-  /// **'Agreement'**
-  String get feature_scope_agreement;
-
-  /// No description provided for @feature_scope_goal.
-  ///
-  /// In en, this message translates to:
-  /// **'Goal'**
-  String get feature_scope_goal;
-
-  /// No description provided for @feature_scope_chat.
-  ///
-  /// In en, this message translates to:
-  /// **'Chat'**
-  String get feature_scope_chat;
-
-  /// No description provided for @feature_scope_work.
-  ///
-  /// In en, this message translates to:
-  /// **'Work'**
-  String get feature_scope_work;
 
   /// No description provided for @home_userid.
   ///
@@ -201,24 +147,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get login_page_name;
-
-  /// No description provided for @chat_message_datetime_format.
-  ///
-  /// In en, this message translates to:
-  /// **'hh:mm'**
-  String get chat_message_datetime_format;
-
-  /// No description provided for @admin_nav_account_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get admin_nav_account_name;
-
-  /// No description provided for @admin_roles_scope.
-  ///
-  /// In en, this message translates to:
-  /// **'Scope'**
-  String get admin_roles_scope;
 
   /// No description provided for @admin_account_info_title.
   ///
