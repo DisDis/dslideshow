@@ -7,6 +7,7 @@ import 'package:config_app/features/config/presentation/pages/webserver_editor.d
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _ConfigViewState extends State<_ConfigView> {
           error: (msg) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(context.localizations.error_with_message(msg)), backgroundColor: Colors.red),
+                  content: Text(context.localizations.error_with_message(msg)), backgroundColor: AppColors.errorRed),
             );
           },
           orElse: () {},

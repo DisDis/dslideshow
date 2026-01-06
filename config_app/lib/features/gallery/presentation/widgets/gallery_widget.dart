@@ -3,6 +3,7 @@ import 'package:config_app/features/gallery/presentation/widgets/folder_grid_ite
 import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +42,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const Icon(Icons.error_outline, size: 48, color: AppColors.errorRed),
                   const SizedBox(height: 16),
                   Text(state.errorMessage),
                   TextButton(
@@ -75,7 +76,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                     floating: true,
                     pinned: true,
                     // Меняем цвет, если выбран режим выделения
-                    backgroundColor: _isSelectionMode ? Colors.blueGrey.shade900 : null,
+                    backgroundColor: _isSelectionMode ? AppColors.gallerySelectionModeHeader : null,
                     // Если режим выбора - показываем кнопку "Назад" (закрыть выбор) вместо "Меню"
                     leading: _isSelectionMode 
                         ? IconButton(
@@ -207,11 +208,11 @@ class _GalleryItemWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: AppColors.galleryItem,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-              ? Border.all(width: 3, color: Colors.blueAccent)
-              : Border.all(width: 0, color: Colors.transparent),
+              ? Border.all(width: 3, color: AppColors.gallerySelectionBorder)
+              : Border.all(width: 0, color:  AppColors.galleryUnSelectionBorder),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
@@ -224,10 +225,10 @@ class _GalleryItemWidget extends StatelessWidget {
               // Затемнение при выборе
               if (isSelected)
                 Container(
-                  color: Colors.blue.withAlpha((255.0 * 0.2).round()),
+                  color: AppColors.selectionBackground.withAlpha((255.0 * 0.2).round()),
                   child: const Center(
                     child:
-                        Icon(Icons.check_circle, color: Colors.blue, size: 36),
+                        Icon(Icons.check_circle, color: AppColors.selectionBackground, size: 36),
                   ),
                 ),
 
@@ -237,7 +238,7 @@ class _GalleryItemWidget extends StatelessWidget {
                   top: 6,
                   right: 6,
                   child: Icon(Icons.play_circle_fill,
-                      color: Colors.white, size: 24),
+                      color: AppColors.videoPlayIcon, size: 24),
                 ),
             ],
           ),

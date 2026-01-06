@@ -4,6 +4,7 @@ import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:dslideshow_flutter/effect.dart';
 
@@ -149,14 +150,14 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       Container(
         width: size.width,
         height: size.height,
-        color: Colors.black,
+        color: AppColors.slideshowBackground,
         child: !isItemChanging ? _currentWidget : _transitionWidget,
       ),
       Positioned(
         bottom: 10,
         child: Container(
           padding: const EdgeInsets.all(8),
-          color: Colors.white.withAlpha((255.0 * 0.8).round()),
+          color: AppColors.slideshowInfoPanel,
           child: Column(
             children: [
               DropdownButtonHideUnderline(
@@ -194,46 +195,3 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     _fetchNextMediaItem();
   }
 }
-/*
-class SlideshowPreview extends StatelessWidget {
-  const SlideshowPreview({
-    super.key,
-    required this.config,
-  });
-
-  final SlideShowConfig config;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      color: Colors.black,
-      child: Stack(
-        children: [
-          // Имитация картинки
-          Positioned.fill(
-            child: Image.network(
-              'https://picsum.photos/400/200',
-              fit: BoxFit.cover,
-              color: Colors.black
-                  .withAlpha((255.0 * (1 - config.backgroundOpacity)).round()),
-              colorBlendMode: BlendMode.darken,
-            ),
-          ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              color: Colors.white.withAlpha((255.0 * 0.8).round()),
-              child: Text(
-                'Transition: ${config.transitionTimeMs} ms\n'
-                'Display: ${config.displayTimeMs} ms',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}*/

@@ -1,5 +1,6 @@
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/config/router.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class HomePage extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(context.localizations.home_page_name),
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.homeHeader,
         elevation: 0,
         // Если фон хедера темный, иконки делаем светлыми, иначе наоборот
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
@@ -63,7 +64,7 @@ class HomePage extends StatelessWidget {
                       Text(
                         context.localizations.welcome_back,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              color: Colors.grey,
+                              color: AppColors.homePageHeaderWelcome,
                             ),
                       ),
                       Text(
@@ -76,7 +77,7 @@ class HomePage extends StatelessWidget {
                       Text(
                         context.localizations.manage_your_device_settings_and_updates,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
+                          color: AppColors.homePageHeaderWelcome[600],
                         ),
                       ),
                     ],
@@ -99,42 +100,42 @@ class HomePage extends StatelessWidget {
                       title: context.localizations.gallery_card_title,
                       subtitle: context.localizations.view_media_subtitle,
                       icon: Icons.photo_library,
-                      color: Colors.green,
+                      color: AppColors.navGalleryMenuItem,
                       onTap: () => context.go('/gallery'), // Если такой роут есть
                     ),
                     _DashboardCard(
                       title: context.localizations.upload_card_title,
                       subtitle: context.localizations.upload_media_subtitle,
                       icon: Icons.upload_file,
-                      color: Colors.red,
+                      color: AppColors.navUploadMenuItem,
                       onTap: () => context.go('/upload'), // Если такой роут есть
                     ),
                     _DashboardCard(
                       title: context.localizations.ota_update_card_title,
                       subtitle: context.localizations.firmware_upgrade_subtitle,
                       icon: Icons.system_update,
-                      color: Colors.purpleAccent,
+                      color: AppColors.navOtaMenuItem,
                       onTap: () => context.go('/ota'),
                     ),
                     _DashboardCard(
                       title: context.localizations.wifi_setup_card_title,
                       subtitle: context.localizations.manage_connections_subtitle,
                       icon: Icons.wifi,
-                      color: Colors.blueAccent,
+                      color: AppColors.navWiFiMenuItem,
                       onTap: () => context.go(WiFiConfigPages.main.value),
                     ),
                     _DashboardCard(
                       title: context.localizations.configuration_card_title,
                       subtitle: context.localizations.system_settings_subtitle,
                       icon: Icons.settings,
-                      color: Colors.orangeAccent,
+                      color: AppColors.navConfigMenuItem,
                       onTap: () => context.go('/config'),
                     ),
                     _DashboardCard(
                       title: context.localizations.system_control_card_title,
                       subtitle: context.localizations.restart_app_power_off_subtitle,
                       icon: Icons.power_settings_new,
-                      color: Colors.lightBlue,
+                      color: AppColors.navPowerMenuItem,
                       onTap: () => context.go('/power'),
                     ),
                     
@@ -150,7 +151,7 @@ class HomePage extends StatelessWidget {
                   child: Center(
                     child: TextButton.icon(
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.red,
+                        foregroundColor: AppColors.errorRed,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                       icon: const Icon(Icons.logout),

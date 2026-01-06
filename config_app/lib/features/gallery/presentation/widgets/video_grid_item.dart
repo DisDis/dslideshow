@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
@@ -66,14 +67,14 @@ class _VideoGridItemState extends State<VideoGridItem> {
     // 1. Если ошибка загрузки
     if (_hasError) {
       return Container(
-        color: Colors.black,
+        color: AppColors.videoBackground,
         child: Center(
             child: Column(
           children: [
-            Icon(Icons.error, color: Colors.red),
+            Icon(Icons.error, color: AppColors.videoErrorIcon),
             Text(
               widget.title,
-              style: const TextStyle(color: Colors.white70, fontSize: 10),
+              style: const TextStyle(color: AppColors.videoText, fontSize: 10),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -107,7 +108,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
               child: IconButton(
                 onPressed: _playPause,
                 icon: const Icon(Icons.play_circle_fill,
-                    size: 50, color: Colors.white),
+                    size: 50, color: AppColors.videoPlayIcon),
               ),
             ),
           // Прозрачный слой для управления нажатием (Play/Pause)
@@ -125,13 +126,13 @@ class _VideoGridItemState extends State<VideoGridItem> {
       alignment: Alignment.center,
       children: [
         // Фон (черный или можно поставить превью картинкой, если есть)
-        Container(color: Colors.black87),
+        Container(color: AppColors.galleryVideoLoadinBackground),
 
         // Кнопка "Скачать и смотреть"
         IconButton(
           onPressed: _initializeVideo, // Начинаем грузить только по клику
           icon: const Icon(Icons.play_circle_outline,
-              size: 40, color: Colors.white),
+              size: 40, color: AppColors.videoPlayButton),
         ),
 
         // Текст для понятности
@@ -141,14 +142,14 @@ class _VideoGridItemState extends State<VideoGridItem> {
             children: [
               Text(
                 widget.title,
-                style: const TextStyle(color: Colors.white70, fontSize: 10),
+                style: const TextStyle(color: AppColors.videoText, fontSize: 10),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "Tap to play",
-                style: TextStyle(color: Colors.white54, fontSize: 10),
+                style: TextStyle(color: AppColors.galleryVideoHint, fontSize: 10),
               ),
             ],
           ),

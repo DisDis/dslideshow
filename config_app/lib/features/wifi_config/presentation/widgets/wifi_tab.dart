@@ -1,4 +1,5 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
@@ -35,7 +36,7 @@ class WiFiConfigTab extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                  const Icon(Icons.wifi_off, size: 64, color: AppColors.wifiIconError),
                   const SizedBox(height: 16),
                   Text(state.errorMessage, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
@@ -145,7 +146,7 @@ class WiFiConfigTab extends StatelessWidget {
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
         FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: Colors.red),
+          style: FilledButton.styleFrom(backgroundColor: AppColors.wifiDeleteButton),
           onPressed: () {
             context.read<WifiTabBloc>().add(RemoveWifiTabEvent(connection.UUID));
             Navigator.pop(ctx);

@@ -1,5 +1,6 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 
 class AvailableNetworkTile extends StatelessWidget {
@@ -12,11 +13,11 @@ class AvailableNetworkTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Color signalColor;
     if (network.signal >= 75) {
-      signalColor = Colors.green;
+      signalColor = AppColors.wifiSignalStrong;
     } else if (network.signal >= 50) {
-      signalColor = Colors.orange;
+      signalColor = AppColors.wifiSignalMedium;
     } else {
-      signalColor = Colors.red;
+      signalColor = AppColors.wifiSignalWeak;
     }
 
     final is5Ghz = network.channel > 14;
@@ -45,7 +46,7 @@ class AvailableNetworkTile extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(4)),
-                child: const Icon(Icons.lock, size: 10, color: Colors.grey),
+                child: const Icon(Icons.lock, size: 10, color: AppColors.wifiLockedIcon),
               ),
             )
         ],
@@ -58,14 +59,14 @@ class AvailableNetworkTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
-                  color: Colors.blue.withAlpha((255.0 * 0.1).round()),
+                  color: AppColors.wifiBackground.withAlpha((255.0 * 0.1).round()),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
-                      color: Colors.blue.withAlpha((255.0 * 0.3).round()))),
+                      color: AppColors.wifiBackground.withAlpha((255.0 * 0.3).round()))),
               child: Text(context.localizations.wifi_5ghz_label,
                   style: TextStyle(
                       fontSize: 9,
-                      color: Colors.blue,
+                      color: AppColors.wifi5GhzLabel,
                       fontWeight: FontWeight.bold)),
             ),
             const SizedBox(width: 6),
@@ -73,7 +74,7 @@ class AvailableNetworkTile extends StatelessWidget {
           Text("${network.signal}%", style: const TextStyle(fontSize: 12)),
           const SizedBox(width: 6),
           Text("• ${context.localizations.channel_text(network.channel)}",
-              style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              style: const TextStyle(fontSize: 12, color: AppColors.wifiChannel)),
         ],
       ),
       trailing: ElevatedButton(

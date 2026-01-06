@@ -2,6 +2,7 @@ import 'package:config_app/features/power/presentation/bloc/power_bloc.dart';
 import 'package:config_app/features/power/presentation/bloc/power_event.dart';
 import 'package:config_app/features/power/presentation/bloc/power_state.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +26,7 @@ class PowerTab extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.redAccent),
+                  const Icon(Icons.error_outline, size: 64, color: AppColors.errorRedAccent),
                   const SizedBox(height: 16),
                   Text(
                     context.localizations.connection_failed,
@@ -75,7 +76,7 @@ class PowerTab extends StatelessWidget {
                     Text(
                       context.localizations.choose_action_on_device,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.grey[600],
+                            color: AppColors.powerTabHint,
                           ),
                     ),
                     const SizedBox(height: 40),
@@ -85,13 +86,13 @@ class PowerTab extends StatelessWidget {
                       title: context.localizations.restart_application,
                       description: context.localizations.reload_software_without_rebooting_os,
                       icon: Icons.restart_alt,
-                      color: Colors.orange,
+                      color: AppColors.powerIconRestart,
                       onTap: () => _showConfirmationDialog(
                         context,
                         title: context.localizations.restart_application_question,
                         content: context.localizations.this_will_reload_configuration_app_and_slideshow_services,
                         confirmText: context.localizations.restart,
-                        confirmColor: Colors.orange,
+                        confirmColor: AppColors.powerIconRestart,
                         onConfirm: () {
                           context.read<PowerBloc>().add(const RestartAppPowerEvent());
                         },
@@ -105,14 +106,14 @@ class PowerTab extends StatelessWidget {
                       title: context.localizations.power_off,
                       description: context.localizations.safely_shuts_down_the_device_operating_system,
                       icon: Icons.power_off,
-                      color: Colors.red,
+                      color: AppColors.powerIconPowerOff,
                       isDangerous: true,
                       onTap: () => _showConfirmationDialog(
                         context,
                         title: context.localizations.power_off_device_question,
                         content: context.localizations.the_device_will_shut_down_completely,
                         confirmText: context.localizations.power_off_button,
-                        confirmColor: Colors.red,
+                        confirmColor: AppColors.powerIconPowerOff,
                         onConfirm: () {
                           context.read<PowerBloc>().add(const PowerOffPowerEvent());
                         },
@@ -231,7 +232,7 @@ class _PowerActionCard extends StatelessWidget {
               ),
               
               // Стрелочка
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(Icons.chevron_right, color: AppColors.powerTabArrow ),
             ],
           ),
         ),

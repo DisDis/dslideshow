@@ -1,4 +1,5 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 
@@ -24,13 +25,13 @@ class SavedConnectionTile extends StatelessWidget {
       // 1. Меняем иконку и цвет в зависимости от типа сети
       leading: CircleAvatar(
         backgroundColor: isProtected
-            ? Colors.grey
+            ? AppColors.connectonProtected
                 .withAlpha((255.0 * 0.1).round()) // Серый фон для системных
-            : Colors.green
+            : AppColors.connectionNotProtected 
                 .withAlpha((255.0 * 0.1).round()), // Зеленый для обычных
         child: Icon(
           isProtected ? Icons.lock_outline : Icons.wifi,
-          color: isProtected ? Colors.grey : Colors.green,
+          color: isProtected ? AppColors.connectonProtected : AppColors.connectionNotProtected,
         ),
       ),
 
@@ -48,7 +49,7 @@ class SavedConnectionTile extends StatelessWidget {
       trailing: isProtected
           ? null //Icon(Icons.info_outline)
           : IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              icon: const Icon(Icons.delete_outline, color: AppColors.errorRedAccent),
               tooltip: 'Delete connection',
               onPressed: onDelete, // Вызываем коллбек
             ),

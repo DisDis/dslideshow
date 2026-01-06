@@ -1,4 +1,5 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_state.dart';
@@ -51,7 +52,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.errorRed,
             ),
           );
         }
@@ -152,8 +153,8 @@ class _OtaPageContentState extends State<OtaPageContent> {
           const SizedBox(height: 10),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.grey[300],
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            backgroundColor: AppColors.progressOta,
+            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.progressOtaValue),
           ),
           const SizedBox(height: 10),
           Text(
@@ -183,7 +184,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
           // const SizedBox(height: 20),
           const Text(
             'Firmware upload completed successfully!',
-            style: TextStyle(fontSize: 16, color: Colors.green),
+            style: TextStyle(fontSize: 16, color: AppColors.firmwareUploadSuccess),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -204,7 +205,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
         children: [
           Text(
             'Error: $errorMessage',
-            style: const TextStyle(fontSize: 16, color: Colors.red),
+            style: const TextStyle(fontSize: 16, color: AppColors.errorRedDark),
           ),
           const SizedBox(height: 20),
           ElevatedButton(

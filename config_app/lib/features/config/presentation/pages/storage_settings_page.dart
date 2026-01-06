@@ -1,5 +1,6 @@
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
 
@@ -194,7 +195,7 @@ class _DiskStorageForm extends StatelessWidget {
         // В вашем DiskStorageConfig пока нет полей, но они появятся здесь
         ListTile(
           title: Text(context.localizations.no_configuration_needed_for_local_disk),
-          leading: Icon(Icons.info_outline, color: Colors.grey),
+          leading: Icon(Icons.info_outline, color: AppColors.settingsInfoIcon),
         )
       ],
     );

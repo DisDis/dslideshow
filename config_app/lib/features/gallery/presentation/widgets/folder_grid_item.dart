@@ -1,4 +1,5 @@
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 
 class FolderGridItem extends StatelessWidget {
@@ -13,7 +14,7 @@ class FolderGridItem extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.folder, size: 48, color: Colors.amber[700]),
+        Icon(Icons.folder, size: 48, color: AppColors.folderIcon),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Text(

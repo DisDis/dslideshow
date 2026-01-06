@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart';
@@ -120,12 +121,12 @@ class _UploadTaskTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(task.serverPath,
-              style: const TextStyle(fontSize: 10, color: Colors.grey)),
+              style: const TextStyle(fontSize: 10, color: AppColors.uploadText)),
           if (task.status == UploadStatus.uploading)
             LinearProgressIndicator(value: task.progress),
           if (task.status == UploadStatus.error)
             Text(task.errorMessage ?? "Error",
-                style: const TextStyle(color: Colors.red, fontSize: 12)),
+                style: const TextStyle(color: AppColors.uploadErrorText, fontSize: 12)),
         ],
       ),
       trailing: _buildAction(context),
@@ -136,7 +137,7 @@ class _UploadTaskTile extends StatelessWidget {
   Widget _buildLeadingIcon() {
     switch (task.status) {
       case UploadStatus.queued:
-        return const Icon(Icons.hourglass_empty, color: Colors.grey);
+        return const Icon(Icons.hourglass_empty, color: AppColors.uploadQueuedIcon);
       case UploadStatus.uploading:
         return Stack(
           alignment: Alignment.center,
@@ -147,9 +148,9 @@ class _UploadTaskTile extends StatelessWidget {
           ],
         );
       case UploadStatus.completed:
-        return const Icon(Icons.check_circle, color: Colors.green);
+        return const Icon(Icons.check_circle, color: AppColors.uploadCompletedIcon);
       case UploadStatus.error:
-        return const Icon(Icons.error, color: Colors.red);
+        return const Icon(Icons.error, color: AppColors.uploadErrorIcon);
     }
   }
 

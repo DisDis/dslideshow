@@ -1,5 +1,6 @@
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +34,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
                       height: 90,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.amber,
+                          color: AppColors.noImageAvatar ,
                           alignment: Alignment.center,
                           child: const Text(
                             'No image',
@@ -45,7 +46,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
                   ),
                 ),
                 decoration: const BoxDecoration(
-                  color: Colors.blue,
+                  color: AppColors.imageAvatar,
                   image: DecorationImage(
                       fit: BoxFit.fill,
                       image: NetworkImage(
