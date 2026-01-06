@@ -91,7 +91,7 @@ void main() {
       final releaseInfo = OTAService.parseReleaseData(releaseData);
       expect(releaseInfo!.version, equals(Version(8, 2, 0, build: "7")));
       expect(
-        releaseInfo!.debUrl,
+        releaseInfo.debUrl,
         equals(
           "https://github.com/DisDis/dslideshow/releases/download/v8.2.0%2B7/dslideshow-8.2.0%2B7-arm64-pi4.deb",
         ),
