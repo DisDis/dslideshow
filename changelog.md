@@ -1,3 +1,6 @@
+# 9.0.1
+New menu UX
+
 # 9.0.0
 Migrate SlideShowPage to StatelessWidget
 SlideshowPreview: displayTime = 1000ms
