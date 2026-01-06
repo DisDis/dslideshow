@@ -1,298 +1,255 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/features/menu/presentation/widgets/mainmenu.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state_notify_widget.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
-import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state_notify_widget.dart';
-
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
-import 'package:path/path.dart' as path;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
-class SlideShowPage extends StatefulWidget {
+class SlideShowPage extends StatelessWidget {
   const SlideShowPage({super.key});
 
   @override
-  SlideShowPageState createState() => SlideShowPageState();
+  Widget build(BuildContext context) {
+    // Инициализация Блока при входе на страницу
+    context.read<SlideshowBloc>().add(const SlideshowInitEvent());
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: <Widget>[
+          // Рендеринг слайдшоу (Stateful часть для анимаций)
+          const _SlideshowRenderer(),
+
+          // Оверлеи (Инфо, Меню, Дебаг, Fade)
+          const _SlideshowOverlays(),
+
+          // Хедер
+          const CommonHeaderWidget(),
+        ],
+      ),
+    );
+  }
 }
 
-class SlideShowPageState extends State<SlideShowPage>
-    with TickerProviderStateMixin {
-  static final Logger _log = Logger('_SlideShowPageState');
-  static final _stateKey = GlobalKey<StateNotifyState>();
+// Отдельный виджет для Оверлеев (для чистоты кода)
+class _SlideshowOverlays extends StatelessWidget {
+  const _SlideshowOverlays();
 
-  late AnimationController _mediaItemLoopController;
-  late AnimationController _effectController;
+  @override
+  Widget build(BuildContext context) {
+    final FrontendService frontendService = injector();
+    final AppConfig appConfig = injector();
+
+    return BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
+      builder: (context, state) {
+        return Stack(
+          children: <Widget>[
+            StateNotify(isPaused: state.isPaused),
+            if (state.isInfo) const SystemInfoWidget(),
+            if (state.isMenu) const MainMenuWidget(),
+            if (!isLinuxEmbedded && state.isDebug)
+              DebugWidget(frontendService, appConfig),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Stateful виджет для управления контроллерами анимации и прекэшем
+// Логика принятия решений вынесена в Bloc, здесь только исполнение.
+class _SlideshowRenderer extends StatefulWidget {
+  const _SlideshowRenderer();
+
+  @override
+  _SlideshowRendererState createState() => _SlideshowRendererState();
+}
+
+class _SlideshowRendererState extends State<_SlideshowRenderer>
+    with TickerProviderStateMixin {
+  static final Logger _log = Logger('_SlideshowRendererState');
+
+  late FixedAnimationController _effectController;
+  late AnimationController _fadeController; // Для Screen Lock
 
   Widget _currentWidget = slideShowLoaderWidget;
   Widget _nextWidget = slideShowLoaderWidget;
   Widget _transitionWidget = slideShowLoaderWidget;
 
-  final FrontendService _frontendService = injector();
   final AppConfig _appConfig = injector();
 
-  late AnimationController _fadeController;
-  static final Random _rnd = Random();
-  MediaSliderItemEffect _currentEffect = Effect.fadeEffect.createEffect();
-  final List<Effect> _effectPool = [];
-  final List<Effect> _allowedEffects = <Effect>[];
-
-  final List<StreamSubscription> _subs = <StreamSubscription>[];
-
-  late Duration _transitionTime;
-  late Duration _fadeTime;
-
-  bool _screenState = true;
-
-  bool get isItemChanging => _currentWidget != _nextWidget;
-
-  final Key _fadeWidgetKey = const Key('fadeWidget');
-
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            height: size.height,
-            color: Colors.black,
-            child: !isItemChanging ? _currentWidget : _transitionWidget,
-          ),
-          BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-            builder: (context, state) {
-              return Stack(
-                children: <Widget>[
-                  StateNotify(key: _stateKey, isPaused: state.isPaused),
-                  FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
-                  if (state.isInfo) const SystemInfoWidget(),
-                  if (state.isMenu) const MainMenuWidget(),
-                  if (!isLinuxEmbedded && state.isDebug)
-                    DebugWidget(_frontendService, _appConfig),
-                ],
-              );
-            },
-          ),
-          const CommonHeaderWidget(),
-        ],
-      ),
+  void initState() {
+    super.initState();
+
+    _effectController = FixedAnimationController(
+      duration: Duration(milliseconds: _appConfig.slideshow.transitionTimeMs),
+      vsync: this,
+      animationBehavior: AnimationBehavior.preserve,
+    );
+
+    _effectController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        // Меняем виджеты местами
+        setState(() {
+          _currentWidget = _nextWidget;
+        });
+        imageCache.clear();
+
+        // Сообщаем блоку, что переход завершен
+        context.read<SlideshowBloc>().add(
+          const SlideshowTransitionCompleteEvent(),
+        );
+        _effectController.reset();
+      }
+    });
+
+    _fadeController = AnimationController(
+      duration: Duration(milliseconds: _appConfig.slideshow.fadeTimeMs),
+      vsync: this,
     );
   }
 
   @override
   void dispose() {
     _effectController.dispose();
-    _mediaItemLoopController.dispose();
     _fadeController.dispose();
-    for (var element in _subs) {
-      element.cancel();
-    }
-    _subs.clear();
     super.dispose();
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
 
-    final allowedETmp = _appConfig.slideshow.allowedEffects;
-    _log.info('Config effects = $allowedETmp');
-    if (allowedETmp.isNotEmpty) {
-      _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
-    }
-
-    if (_allowedEffects.isEmpty) {
-      _allowedEffects.addAll(Effect.values);
-    }
-    _log.info('Allowed effects: $_allowedEffects');
-
-    _transitionTime = Duration(
-      milliseconds: _appConfig.slideshow.transitionTimeMs,
-    );
-    _fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
-
-    _effectController = FixedAnimationController(
-      duration: _transitionTime,
-      vsync: this,
-      animationBehavior: AnimationBehavior.preserve,
-    );
-    _effectController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          _currentWidget = _nextWidget;
-        });
-        imageCache.clear();
-      }
-    });
-
-    _fadeController = AnimationController(duration: _fadeTime, vsync: this);
-    _fadeController.addStatusListener((status) {
-      if (status == AnimationStatus.dismissed) {
-        _fadeController.reset();
-      }
-    });
-
-    final displayTime = Duration(
-      milliseconds: _appConfig.slideshow.displayTimeMs,
-    );
-    _mediaItemLoopController = AnimationController(
-      duration: displayTime,
-      vsync: this,
-    );
-
-    _mediaItemLoopController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _fetchNextMediaItem();
-      }
-    });
-
-    final SlideshowStatusBloc bloc = injector();
-    _subs.add(
-      _frontendService.onScreenStateChangePreparation.listen(
-        _screenStateChangePreparation,
-      ),
-    );
-    if (bloc.state.isPaused) {
-      _currentWidget = slideShowEmptyScreenWidget;
-    }
-    _fetchNextMediaItem(reloadCurrent: bloc.state.isPaused);
-
-    _subs.add(
-      bloc.onPause.listen((isPausedNewValue) {
-        if (isPausedNewValue) {
-          _mediaItemLoopController.stop();
+    return BlocConsumer<SlideshowBloc, SlideshowState>(
+      listener: (context, state) {
+        // 1. Логика затемнения экрана (Screen Lock)
+        if (state.fadeOut) {
+          _fadeController.forward();
         } else {
-          _mediaItemLoopController.reset();
-          _mediaItemLoopController.forward();
+          _fadeController.reverse();
         }
-        _stateKey.currentState!.isPaused = isPausedNewValue;
-      }),
+
+        // 2. Логика Precache (Загрузка изображения)
+        if (state.phase == SlideshowPhase.precaching &&
+            state.nextItem != null) {
+          _handlePrecache(state.nextItem!, size);
+        }
+
+        // 3. Логика запуска Транзакции
+        if (state.phase == SlideshowPhase.transition) {
+          _startTransition(state, size);
+        }
+      },
+      buildWhen: (prev, curr) {
+        // Перерисовываем только если мы в фазе транзакции (чтобы показать transitionWidget)
+        // Или если это первоначальная загрузка
+        return prev.phase != curr.phase;
+      },
+      builder: (context, state) {
+        return Stack(
+          children: [
+            // Основной контент
+            SizedBox(
+              width: size.width,
+              height: size.height,
+              // Если идет транзакция, показываем transitionWidget (где крутится анимация),
+              // иначе просто текущий виджет.
+              child: state.phase == SlideshowPhase.transition
+                  ? _transitionWidget
+                  : _currentWidget,
+            ),
+
+            // Fade Widget (Черный экран поверх)
+            FadeWidget(animation: _fadeController),
+          ],
+        );
+      },
     );
   }
 
-  void _fetchNextMediaItem({bool reloadCurrent = false}) async {
-    _log.info('Change image');
-    if (!reloadCurrent) {
-      await _frontendService.storageNext();
-    }
-
-    final mediaItem = await _getCurrentMediaItem();
-    // ignore: use_build_context_synchronously
-    final size = MediaQuery.of(context).size;
+  // Создание виджета и прекэш
+  Future<void> _handlePrecache(MediaItem mediaItem, Size size) async {
     final itemWidget = mediaItem.isVideo
         ? VideoWidget(mediaItem)
         : ImageWidget(mediaItem, _appConfig.slideshow, size);
-    if (mediaItem.uri != null) {
-      _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
-    }
-    //_log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
-    final screenW = size.width;
-    final screenH = size.height;
     try {
       if (itemWidget is ImageWidget) {
-        // ignore: use_build_context_synchronously
         await itemWidget.precache(context);
       }
-      _nextWidget = SizedBox(
-        width: screenW,
-        height: screenH,
-        child: itemWidget,
-      );
+
+      if (mounted) {
+        setState(() {
+          _nextWidget = SizedBox(
+            width: size.width,
+            height: size.height,
+            child: itemWidget,
+          );
+        });
+        // Сообщаем блоку, что картинка готова к показу
+        context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
+      }
     } catch (e, st) {
       _log.warning(
-        'Error file: "${path.basename(mediaItem.uri!.toFilePath())}"',
+        'Error loading file: "${mediaItem.uri?.toFilePath()}"',
         e,
         st,
       );
-      _nextWidget = slideShowLoaderWidget;
+      // В случае ошибки загружаем лоадер как fallback
+      setState(() {
+        _nextWidget = slideShowLoaderWidget;
+      });
+      // Все равно сообщаем о готовности, чтобы не заблокировать очередь
+      // ignore: use_build_context_synchronously
+      context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
     }
+  }
 
-    _transitionWidget = AnimatedBuilder(
-      key: const Key('anim'),
-      animation: _effectController,
-      builder: (context, _) {
-        return _currentEffect.createTransformWidget(
-          context,
-          _currentWidget,
-          _nextWidget,
-          _effectController,
-          screenW,
-          screenH,
-        );
-      },
-      child: slideShowLoaderWidget,
-    );
+  // Создание виджета перехода (старая логика AnimatedBuilder + createTransformWidget)
+  void _startTransition(SlideshowState state, Size size) {
+    // Получаем эффект из стейта
+    MediaSliderItemEffect currentEffect = state.effect.createEffect();
 
-    _effectController.reset();
-    _mediaItemLoopController.reset();
-    if (_effectPool.isEmpty) {
-      _effectPool.addAll(_allowedEffects);
-      _effectPool.shuffle(_rnd);
-    }
-    if (!reloadCurrent) {
-      _currentEffect = _effectPool.removeLast().createEffect();
-    }
-    setState(() {});
+    setState(() {
+      _transitionWidget = AnimatedBuilder(
+        key: UniqueKey(), // Важно для пересоздания анимации
+        animation: _effectController,
+        builder: (context, _) {
+          return currentEffect.createTransformWidget(
+            context,
+            _currentWidget,
+            _nextWidget,
+            _effectController,
+            size.width,
+            size.height,
+          );
+        },
+      );
+    });
+
+    // Запускаем анимацию
     try {
-      await _effectController.forward().orCancel;
+      _effectController.forward();
     } catch (e) {
-      _log.info('Skip error', e);
-    }
-    try {
-      final SlideshowStatusBloc bloc = injector();
-
-      if (!bloc.state.isPaused) {
-        _mediaItemLoopController.forward();
-      }
-    } catch (e, st) {
-      _log.warning("_mediaItemLoopController.forward()", e, st);
-    }
-  }
-
-  Future<MediaItem> _getCurrentMediaItem() async {
-    var item = await _frontendService.getStorageCurrentItem();
-    return item;
-  }
-
-  void _restorePlayPauseState() {
-    final SlideshowStatusBloc bloc = injector();
-    if (bloc.state.isPaused) {
-      _mediaItemLoopController.stop();
-    } else {
-      _mediaItemLoopController.forward();
-    }
-  }
-
-  void _screenStateChangePreparation(bool enabled) async {
-    // Screen OFF
-    _screenState = enabled;
-    if (enabled == false) {
-      _mediaItemLoopController.stop();
-      _fadeController.forward();
-    } else {
-      await Future<void>.delayed(Duration(seconds: _fadeTime.inSeconds + 1));
-      // Double check, after delay
-      if (_screenState == enabled) {
-        _fadeController.reverse();
-        _restorePlayPauseState();
-      }
+      _log.info('Animation skip', e);
     }
   }
 }

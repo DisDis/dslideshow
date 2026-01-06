@@ -9,7 +9,8 @@ class StateNotify extends StatefulWidget {
   StateNotifyState createState() => StateNotifyState();
 }
 
-class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin {
+class StateNotifyState extends State<StateNotify>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late bool _isPaused;
 
@@ -18,14 +19,34 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
   @override
   void initState() {
     super.initState();
+    // Инициализируем локальное состояние из виджета
     _isPaused = widget.isPaused;
-    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    // Если изначально пауза - показываем анимацию
     if (_isPaused) {
       _controller.forward().orCancel.then((value) => _controller.reverse());
     }
   }
 
-  set isPaused(bool value) {
+  // --- ДОБАВЛЕНО: Реакция на изменение параметров извне ---
+  @override
+  void didUpdateWidget(StateNotify oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Если пришел новый статус паузы, обновляем состояние и запускаем анимацию
+    if (widget.isPaused != oldWidget.isPaused) {
+      // Используем сеттер или логику обновления напрямую
+      _updatePausedState(widget.isPaused);
+    }
+  }
+  // --------------------------------------------------------
+
+  // Логика обновления перенесена в отдельный метод (или можно оставить в сеттере)
+  void _updatePausedState(bool value) {
     if (_isPaused == value) {
       return;
     }
@@ -34,6 +55,10 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
     });
     play();
   }
+
+  // Сеттер оставляем для совместимости, если вдруг где-то еще используется GlobalKey,
+  // но теперь он вызывает _updatePausedState
+  set isPaused(bool value) => _updatePausedState(value);
 
   void play() {
     _controller.reset();
@@ -45,14 +70,6 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
     _controller.dispose();
     super.dispose();
   }
-//  Future<void> _playAnimation() async {
-//    try {
-//      await _controller.forward().orCancel;
-//      await _controller.reverse().orCancel;
-//    } on TickerCanceled {
-//      // the animation got canceled, probably because we were disposed
-//    }
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,63 +79,32 @@ class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin 
 
 class _StaggerAnimation extends StatelessWidget {
   final bool? isPaused;
-  // ignore: unused_element
+
   _StaggerAnimation({required this.controller, this.isPaused})
-      :
-
-        // Each animation defined here transforms its value during the subset
-        // of the controller's duration defined by the animation's interval.
-        // For example the opacity animation transforms its value during
-        // the first 10% of the controller's duration.
-
-        opacity = Tween<double>(
-          begin: 0.0,
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: controller,
-            curve: const Interval(
-              0.0,
-              0.3,
-              curve: Curves.ease,
-            ),
-          ),
+    : opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: controller,
+          curve: const Interval(0.0, 0.3, curve: Curves.ease),
         ),
-        opacityIcon = Tween<double>(
-          begin: 0.1,
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: controller,
-            curve: const Interval(
-              0.3,
-              0.500,
-              curve: Curves.ease,
-            ),
-          ),
+      ),
+      opacityIcon = Tween<double>(begin: 0.1, end: 1.0).animate(
+        CurvedAnimation(
+          parent: controller,
+          curve: const Interval(0.3, 0.500, curve: Curves.ease),
         ),
-        size = Tween<double>(
-          begin: 100.0,
-          end: 200.0,
-        ).animate(
-          CurvedAnimation(
-            parent: controller,
-            curve: const Interval(
-              0.4,
-              0.70,
-              curve: Curves.easeIn,
-            ),
-          ),
-        );
+      ),
+      size = Tween<double>(begin: 100.0, end: 200.0).animate(
+        CurvedAnimation(
+          parent: controller,
+          curve: const Interval(0.4, 0.70, curve: Curves.easeIn),
+        ),
+      );
 
   final Animation<double> controller;
   final Animation<double> opacity;
   final Animation<double> opacityIcon;
   final Animation<double> size;
 
-  // This function is called each time the controller "ticks" a new frame.
-  // When it runs, all of the animation's values will have been
-  // updated to reflect the controller's current value.
   Widget _buildAnimation(BuildContext context, Widget? child) {
     return Opacity(
       opacity: opacity.value,
@@ -128,7 +114,8 @@ class _StaggerAnimation extends StatelessWidget {
           opacity: opacityIcon.value,
           child: Center(
             child: Icon(
-              isPaused! ? Icons.pause : Icons.play_arrow,
+              // Используем isPaused для выбора иконки
+              (isPaused ?? false) ? Icons.pause : Icons.play_arrow,
               size: size.value,
               color: Colors.white,
             ),
@@ -140,9 +127,6 @@ class _StaggerAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      builder: _buildAnimation,
-      animation: controller,
-    );
+    return AnimatedBuilder(builder: _buildAnimation, animation: controller);
   }
 }

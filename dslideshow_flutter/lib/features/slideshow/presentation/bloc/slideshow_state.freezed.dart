@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SlideshowState {
 
- MediaItem get item;
+ MediaItem? get currentItem; MediaItem? get nextItem; Effect get effect;// Текущий эффект перехода
+ SlideshowPhase get phase; bool get isScreenLocked; bool get isPaused; bool get fadeOut;
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $SlideshowStateCopyWith<SlideshowState> get copyWith => _$SlideshowStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowState&&(identical(other.item, item) || other.item == item));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowState&&(identical(other.currentItem, currentItem) || other.currentItem == currentItem)&&(identical(other.nextItem, nextItem) || other.nextItem == nextItem)&&(identical(other.effect, effect) || other.effect == effect)&&(identical(other.phase, phase) || other.phase == phase)&&(identical(other.isScreenLocked, isScreenLocked) || other.isScreenLocked == isScreenLocked)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.fadeOut, fadeOut) || other.fadeOut == fadeOut));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,item);
+int get hashCode => Object.hash(runtimeType,currentItem,nextItem,effect,phase,isScreenLocked,isPaused,fadeOut);
 
 @override
 String toString() {
-  return 'SlideshowState(item: $item)';
+  return 'SlideshowState(currentItem: $currentItem, nextItem: $nextItem, effect: $effect, phase: $phase, isScreenLocked: $isScreenLocked, isPaused: $isPaused, fadeOut: $fadeOut)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $SlideshowStateCopyWith<$Res>  {
   factory $SlideshowStateCopyWith(SlideshowState value, $Res Function(SlideshowState) _then) = _$SlideshowStateCopyWithImpl;
 @useResult
 $Res call({
- MediaItem item
+ MediaItem? currentItem, MediaItem? nextItem, Effect effect, SlideshowPhase phase, bool isScreenLocked, bool isPaused, bool fadeOut
 });
 
 
@@ -62,10 +63,16 @@ class _$SlideshowStateCopyWithImpl<$Res>
 
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? item = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentItem = freezed,Object? nextItem = freezed,Object? effect = null,Object? phase = null,Object? isScreenLocked = null,Object? isPaused = null,Object? fadeOut = null,}) {
   return _then(_self.copyWith(
-item: null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
-as MediaItem,
+currentItem: freezed == currentItem ? _self.currentItem : currentItem // ignore: cast_nullable_to_non_nullable
+as MediaItem?,nextItem: freezed == nextItem ? _self.nextItem : nextItem // ignore: cast_nullable_to_non_nullable
+as MediaItem?,effect: null == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as Effect,phase: null == phase ? _self.phase : phase // ignore: cast_nullable_to_non_nullable
+as SlideshowPhase,isScreenLocked: null == isScreenLocked ? _self.isScreenLocked : isScreenLocked // ignore: cast_nullable_to_non_nullable
+as bool,isPaused: null == isPaused ? _self.isPaused : isPaused // ignore: cast_nullable_to_non_nullable
+as bool,fadeOut: null == fadeOut ? _self.fadeOut : fadeOut // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -86,10 +93,10 @@ extension SlideshowStatePatterns on SlideshowState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SlideshowWorkState value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SlideshowState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _SlideshowWorkState() when $default != null:
+case _SlideshowState() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -108,10 +115,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SlideshowWorkState value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SlideshowState value)  $default,){
 final _that = this;
 switch (_that) {
-case _SlideshowWorkState():
+case _SlideshowState():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -126,10 +133,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SlideshowWorkState value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SlideshowState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _SlideshowWorkState() when $default != null:
+case _SlideshowState() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -147,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MediaItem item)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MediaItem? currentItem,  MediaItem? nextItem,  Effect effect,  SlideshowPhase phase,  bool isScreenLocked,  bool isPaused,  bool fadeOut)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _SlideshowWorkState() when $default != null:
-return $default(_that.item);case _:
+case _SlideshowState() when $default != null:
+return $default(_that.currentItem,_that.nextItem,_that.effect,_that.phase,_that.isScreenLocked,_that.isPaused,_that.fadeOut);case _:
   return orElse();
 
 }
@@ -168,10 +175,10 @@ return $default(_that.item);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MediaItem item)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MediaItem? currentItem,  MediaItem? nextItem,  Effect effect,  SlideshowPhase phase,  bool isScreenLocked,  bool isPaused,  bool fadeOut)  $default,) {final _that = this;
 switch (_that) {
-case _SlideshowWorkState():
-return $default(_that.item);}
+case _SlideshowState():
+return $default(_that.currentItem,_that.nextItem,_that.effect,_that.phase,_that.isScreenLocked,_that.isPaused,_that.fadeOut);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,10 +192,10 @@ return $default(_that.item);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MediaItem item)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MediaItem? currentItem,  MediaItem? nextItem,  Effect effect,  SlideshowPhase phase,  bool isScreenLocked,  bool isPaused,  bool fadeOut)?  $default,) {final _that = this;
 switch (_that) {
-case _SlideshowWorkState() when $default != null:
-return $default(_that.item);case _:
+case _SlideshowState() when $default != null:
+return $default(_that.currentItem,_that.nextItem,_that.effect,_that.phase,_that.isScreenLocked,_that.isPaused,_that.fadeOut);case _:
   return null;
 
 }
@@ -199,43 +206,50 @@ return $default(_that.item);case _:
 /// @nodoc
 
 
-class _SlideshowWorkState implements SlideshowState {
-  const _SlideshowWorkState({required this.item});
+class _SlideshowState implements SlideshowState {
+  const _SlideshowState({required this.currentItem, required this.nextItem, required this.effect, this.phase = SlideshowPhase.initial, this.isScreenLocked = false, this.isPaused = false, this.fadeOut = false});
   
 
-@override final  MediaItem item;
+@override final  MediaItem? currentItem;
+@override final  MediaItem? nextItem;
+@override final  Effect effect;
+// Текущий эффект перехода
+@override@JsonKey() final  SlideshowPhase phase;
+@override@JsonKey() final  bool isScreenLocked;
+@override@JsonKey() final  bool isPaused;
+@override@JsonKey() final  bool fadeOut;
 
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SlideshowWorkStateCopyWith<_SlideshowWorkState> get copyWith => __$SlideshowWorkStateCopyWithImpl<_SlideshowWorkState>(this, _$identity);
+_$SlideshowStateCopyWith<_SlideshowState> get copyWith => __$SlideshowStateCopyWithImpl<_SlideshowState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideshowWorkState&&(identical(other.item, item) || other.item == item));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideshowState&&(identical(other.currentItem, currentItem) || other.currentItem == currentItem)&&(identical(other.nextItem, nextItem) || other.nextItem == nextItem)&&(identical(other.effect, effect) || other.effect == effect)&&(identical(other.phase, phase) || other.phase == phase)&&(identical(other.isScreenLocked, isScreenLocked) || other.isScreenLocked == isScreenLocked)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.fadeOut, fadeOut) || other.fadeOut == fadeOut));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,item);
+int get hashCode => Object.hash(runtimeType,currentItem,nextItem,effect,phase,isScreenLocked,isPaused,fadeOut);
 
 @override
 String toString() {
-  return 'SlideshowState(item: $item)';
+  return 'SlideshowState(currentItem: $currentItem, nextItem: $nextItem, effect: $effect, phase: $phase, isScreenLocked: $isScreenLocked, isPaused: $isPaused, fadeOut: $fadeOut)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SlideshowWorkStateCopyWith<$Res> implements $SlideshowStateCopyWith<$Res> {
-  factory _$SlideshowWorkStateCopyWith(_SlideshowWorkState value, $Res Function(_SlideshowWorkState) _then) = __$SlideshowWorkStateCopyWithImpl;
+abstract mixin class _$SlideshowStateCopyWith<$Res> implements $SlideshowStateCopyWith<$Res> {
+  factory _$SlideshowStateCopyWith(_SlideshowState value, $Res Function(_SlideshowState) _then) = __$SlideshowStateCopyWithImpl;
 @override @useResult
 $Res call({
- MediaItem item
+ MediaItem? currentItem, MediaItem? nextItem, Effect effect, SlideshowPhase phase, bool isScreenLocked, bool isPaused, bool fadeOut
 });
 
 
@@ -243,19 +257,25 @@ $Res call({
 
 }
 /// @nodoc
-class __$SlideshowWorkStateCopyWithImpl<$Res>
-    implements _$SlideshowWorkStateCopyWith<$Res> {
-  __$SlideshowWorkStateCopyWithImpl(this._self, this._then);
+class __$SlideshowStateCopyWithImpl<$Res>
+    implements _$SlideshowStateCopyWith<$Res> {
+  __$SlideshowStateCopyWithImpl(this._self, this._then);
 
-  final _SlideshowWorkState _self;
-  final $Res Function(_SlideshowWorkState) _then;
+  final _SlideshowState _self;
+  final $Res Function(_SlideshowState) _then;
 
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? item = null,}) {
-  return _then(_SlideshowWorkState(
-item: null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
-as MediaItem,
+@override @pragma('vm:prefer-inline') $Res call({Object? currentItem = freezed,Object? nextItem = freezed,Object? effect = null,Object? phase = null,Object? isScreenLocked = null,Object? isPaused = null,Object? fadeOut = null,}) {
+  return _then(_SlideshowState(
+currentItem: freezed == currentItem ? _self.currentItem : currentItem // ignore: cast_nullable_to_non_nullable
+as MediaItem?,nextItem: freezed == nextItem ? _self.nextItem : nextItem // ignore: cast_nullable_to_non_nullable
+as MediaItem?,effect: null == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as Effect,phase: null == phase ? _self.phase : phase // ignore: cast_nullable_to_non_nullable
+as SlideshowPhase,isScreenLocked: null == isScreenLocked ? _self.isScreenLocked : isScreenLocked // ignore: cast_nullable_to_non_nullable
+as bool,isPaused: null == isPaused ? _self.isPaused : isPaused // ignore: cast_nullable_to_non_nullable
+as bool,fadeOut: null == fadeOut ? _self.fadeOut : fadeOut // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
