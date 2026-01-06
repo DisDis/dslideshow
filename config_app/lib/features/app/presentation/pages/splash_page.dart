@@ -1,5 +1,6 @@
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
 import 'package:config_app/features/login/presentation/pages/login_page.dart';
+import 'package:config_app/features/uikit/presentation/widgets/photo_frame_config_logo.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,12 +12,18 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        LoginPage.route(context);
+        Future.delayed(const Duration(milliseconds: 1000), () {
+            if (context.mounted) {
+                 LoginPage.route(context);
+            }
+        });
       },
-      child: const Scaffold(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Center(
-          child: FlutterLogo(
-            size: 120,
+          child: PhotoFrameConfigLogo(
+            size: 150,
+            color: Theme.of(context).colorScheme.onSurface, 
           ),
         ),
       ),
