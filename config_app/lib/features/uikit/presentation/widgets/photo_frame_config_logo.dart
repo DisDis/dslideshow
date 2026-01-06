@@ -86,8 +86,8 @@ class _LogoPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          _kScreenStart.withOpacity(0.1),
-          _kScreenEnd.withOpacity(0.3)
+          _kScreenStart.withAlpha((255.0 * 0.1).round()),
+          _kScreenEnd.withAlpha((255.0 * 0.3).round()),
         ],
       ).createShader(screenRect);
     canvas.drawRect(screenRect, screenBgPaint);
@@ -136,7 +136,7 @@ class _LogoPainter extends CustomPainter {
     
     // Добавляем белый ободок для контраста акцента
     final accentBorderPaint = Paint()
-      ..color = Colors.white.withOpacity(0.4)
+      ..color = Colors.white.withAlpha((255.0 * 0.4).round())
       ..style = PaintingStyle.stroke
       ..strokeWidth = shortestSide * 0.02;
       

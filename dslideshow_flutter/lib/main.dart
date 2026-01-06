@@ -149,6 +149,7 @@ class MainApp extends StatelessWidget {
                 providers: [
                   BlocProvider<SlideshowBloc>(lazy: false, create: (context) => injector<SlideshowBloc>()),
                   BlocProvider<MainMenuBloc>(lazy: false, create: (context) => injector<MainMenuBloc>()),
+                  BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>()),
                 ],
                 child: const SlideShowPage(),
               );

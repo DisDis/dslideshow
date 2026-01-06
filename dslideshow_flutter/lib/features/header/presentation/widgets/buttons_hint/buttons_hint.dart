@@ -5,6 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ButtonsHintWidget extends StatelessWidget {
   final SlideShowButtons buttons;
+  
+  // Цвета HUD
+  static const Color _kHudColor = Colors.cyanAccent;
+  static const Color _kHudBg = Color(0xCC000000); // 80% Black
+
   const ButtonsHintWidget({
     required this.buttons,
     super.key,
@@ -12,33 +17,52 @@ class ButtonsHintWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ButtonsHintBloc, ButtonsHintState>(builder: (context, state) {
-      return state.isShow
-          ? Row(
-              children: [
-                Icon(
-                  state.button0Icon,
-                  size: 40.0,
-                  color: state.button0isPush ? state.pushColor : state.normalColor,
-                ),
-                Icon(
-                  state.button1Icon,
-                  size: 40.0,
-                  color: state.button1isPush ? state.pushColor : state.normalColor,
-                ),
-                Icon(
-                  state.button2Icon,
-                  size: 40.0,
-                  color: state.button2isPush ? state.pushColor : state.normalColor,
-                ),
-                Icon(
-                  state.button3Icon,
-                  size: 40.0,
-                  color: state.button3isPush ? state.pushColor : state.normalColor,
-                ),
-              ],
-            )
-          : Container();
-    });
+    return BlocBuilder<ButtonsHintBloc, ButtonsHintState>(
+      builder: (context, state) {
+        if (!state.isShow) return const SizedBox.shrink();
+
+        return Container(
+          decoration: BoxDecoration(
+            color: _kHudBg,
+            border: Border.all(color: _kHudColor.withAlpha((255.0 * 0.5).round()), width: 1),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHudButton(state.button0Icon, state.button0isPush),
+              const SizedBox(width: 12),
+              _buildHudButton(state.button1Icon, state.button1isPush),
+              const SizedBox(width: 12),
+              _buildHudButton(state.button2Icon, state.button2isPush),
+              const SizedBox(width: 12),
+              _buildHudButton(state.button3Icon, state.button3isPush),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHudButton(IconData icon, bool isPressed) {
+    final color = isPressed ? Colors.yellowAccent : _kHudColor;
+    
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isPressed ? color.withAlpha((255.0 * 0.2).round()): Colors.transparent,
+        border: Border.all(
+          color: isPressed ? color : color.withAlpha((255.0 * 0.3).round()),
+          width: 2
+        ),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        size: 40.0,
+        color: color,
+      ),
+    );
   }
 }
