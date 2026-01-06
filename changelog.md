@@ -1,3 +1,7 @@
+# 9.0.0
+Migrate SlideShowPage to StatelessWidget
+SlideshowPreview: displayTime = 1000ms
+
 # 8.4.6
 New UX for OTA page
 

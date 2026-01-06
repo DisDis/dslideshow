@@ -37,6 +37,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
   late Duration transitionTime;
   late Duration displayTime;
+  final int displayTimeMs = 1000;
 
   Widget _currentWidget = slideShowLoaderWidget;
   Widget _nextWidget = slideShowLoaderWidget;
@@ -47,7 +48,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     super.initState();
 
     transitionTime = Duration(milliseconds: widget.config.transitionTimeMs);
-    displayTime = Duration(milliseconds: widget.config.displayTimeMs);
+    displayTime = Duration(milliseconds: displayTimeMs);//widget.config.displayTimeMs
 
     _effectController =
         AnimationController(duration: transitionTime, vsync: this);
@@ -178,7 +179,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
               Text(
                 context.localizations.transition_display_times(
                   widget.config.transitionTimeMs,
-                  widget.config.displayTimeMs,
+                  displayTimeMs /*widget.config.displayTimeMs*/,
                 ),
                 textAlign: TextAlign.center,
               ),
