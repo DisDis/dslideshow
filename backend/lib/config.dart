@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_config.dart';
 import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
@@ -19,7 +20,6 @@ export 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.
 export 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
 export 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 export 'package:dslideshow_backend/src/web_server/web_server_config.dart';
-
 
 part 'config.g.dart';
 
@@ -91,13 +91,27 @@ class AppConfig {
     }
   }
 
+  static Map<String, dynamic>? _defaultJSON;
+  
   static final prettyPrintJSONEncode = new JsonEncoder.withIndent('  ');
   void toFile([String? filenameOutput]) {
     final fileName = filenameOutput ?? fullConfigFilename;
     _log.info('Saving to "$fileName"');
+    var json = this.toJson();
+    try {
+      if (_defaultJSON == null) {
+        _log.fine("Create default AppConfig json");
+        final defaultConfig = AppConfig.fromJson({});
+        defaultConfig.storages.fillEmptyStorages();
+        _defaultJSON = defaultConfig.toJson();
+      }
+      json = stripDefaults(json, _defaultJSON!);
+    } catch (e) {
+      _log.severe("Can'not delete default config value", e);
+    }
     File(fileName)
       ..openWrite()
-      ..writeAsStringSync(prettyPrintJSONEncode.convert(this.toJson()));
+      ..writeAsStringSync(prettyPrintJSONEncode.convert(json));
     _log.info('Saved to "$fileName"');
   }
 
@@ -156,6 +170,34 @@ class AppConfig {
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return WiFiConfig.fromJson(dataV);
   }
+}
+
+Map<String, dynamic> stripDefaults(
+  Map<String, dynamic> json,
+  Map<String, dynamic> defaults,
+) {
+  final result = Map<String, dynamic>.of(json);
+  const deepEq = DeepCollectionEquality();
+
+  for (final key in json.keys) {
+    if (!defaults.containsKey(key)) continue;
+
+    final jsonValue = json[key];
+    final defaultValue = defaults[key];
+
+    if (jsonValue is Map<String, dynamic> &&
+        defaultValue is Map<String, dynamic>) {
+      final strippedChild = stripDefaults(jsonValue, defaultValue);
+      if (strippedChild.isEmpty) {
+        result.remove(key);
+      } else {
+        result[key] = strippedChild;
+      }
+    } else if (deepEq.equals(jsonValue, defaultValue)) {
+      result.remove(key);
+    }
+  }
+  return result;
 }
 
 @JsonSerializable()

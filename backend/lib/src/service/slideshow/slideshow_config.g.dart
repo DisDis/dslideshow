@@ -52,7 +52,7 @@ SlideShowButtons _$SlideShowButtonsFromJson(Map<String, dynamic> json) =>
       button3: SlideShowButtonConfig.fromJson(
         json['button3'] as Map<String, dynamic>,
       ),
-      hintOffsetX: (json['hintOffsetX'] as num?)?.toInt() ?? 320,
+      hintOffsetX: (json['hintOffsetX'] as num?)?.toInt() ?? 2000,
       hintOffsetY: (json['hintOffsetY'] as num?)?.toInt() ?? 20,
     );
 

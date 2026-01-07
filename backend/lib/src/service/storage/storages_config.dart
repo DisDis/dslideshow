@@ -21,6 +21,10 @@ class StoragesConfig {
 
   Map<String, dynamic> toJson() => _$StoragesConfigToJson(this);
 
+  void fillEmptyStorages(){
+    StorageType.values.forEach(getOrCreateEmpty);
+  }
+
   T getOrCreateEmpty<T extends AbstractStorageConfig>(StorageType type) {
     return storages.putIfAbsent(type, () {
           switch (type) {

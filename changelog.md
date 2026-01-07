@@ -1,3 +1,9 @@
+# 9.2.0
+The settings save values ​​other than the default values.
+
+# 9.1.0
+Support web upload files
+
 # 9.0.1
 New menu UX
 

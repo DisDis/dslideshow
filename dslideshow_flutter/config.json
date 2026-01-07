@@ -1,72 +1,21 @@
 {
   "log": {
-    "web": "INFO",
-    "main": "INFO",
-    "ota": "INFO",
-    "hw_frame": "INFO"
+    "main": "ALL"
   },
   "hardware": {
-    "smoothingGPIOMs": 100,
-    "pinButton0": 17,
-    "pinButton1": 27,
-    "pinButton3": 23,
-    "pinButton2": 22,
-    "pinPIRSensor": 15,
-    "pinPowerLED": 14,
-    "systemDiskDev": "/dev/disk3s1s1",
-    "systemIfConfigScript": "ifconfig",
-    "sensorsScript": "./scripts/sensorsScript.sh",
-    "screenPowerOffScript": "./scripts/screenOff.sh",
-    "screenPowerOnScript": "./scripts/screenOn.sh",
-    "screenPowerOnTimerSec": 120
+    "systemDiskDev": "/dev/disk3s1s1"
   },
   "slideshow": {
-    "buttons": {
-      "button0": "SlideshowAction.pause",
-      "button1": "SlideshowAction.showMenu",
-      "button2": "SlideshowAction.toggleScreen",
-      "button3": "SlideshowAction.showInfo"
-    },
-    "displayTimeMs": 2000,
-    "fadeTimeMs": 2000,
-    "transitionTimeMs": 1000,
-    "allowedEffects": [],
-    "isBlurredBackground": true,
-    "backgroundBlurSigma": 20,
-    "backgroundOpacity": 0.9,
-    "backgroundColor": "ffffffff"
+    "allowedEffects": [
+      "Default"
+    ]
   },
   "welcome": {
-    "text": "Welcome",
-    "size": 100.0,
-    "delayMs": 2000
+    "text": "Привет"
   },
   "web": {
     "port": 8081,
     "alwaysEnabled": true,
     "permanentCode": "123"
-  },
-  "mqtt": {
-    "port": 1883,
-    "enabled": false,
-    "keepAlivePeriod": 600,
-    "deviceId": "dslideshow",
-    "user": "user",
-    "pass": "pass",
-    "server": "smarthome.local",
-    "clientId": "dslideshow",
-    "deviceName": "PhotoFrame1",
-    "discovery_prefix": "homeassistant",
-    "configuration_topic": "config",
-    "command_topic": "set",
-    "state_topic": "state"
-  },
-  "storages": {
-    "selected": "DiskStorage",
-    "storages": {}
-  },
-  "wifi": {
-    "devId": "wlan0",
-    "scanWiFiScript": "./scripts/scanWiFi.sh"
   }
 }
