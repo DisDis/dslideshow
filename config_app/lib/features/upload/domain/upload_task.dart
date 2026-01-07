@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'upload_task.freezed.dart';
@@ -10,6 +12,7 @@ sealed class UploadTask with _$UploadTask {
     required String id, // Уникальный ID (uuid)
     required String localPath, // Абсолютный путь на устройстве
     required String serverPath, // Путь на сервере (например subfolder/img.jpg)
+    Uint8List? bytes,
     @Default(UploadStatus.queued) UploadStatus status,
     @Default(0.0) double progress, // 0.0 to 1.0
     String? errorMessage,

@@ -17,6 +17,7 @@ mixin _$UploadTask {
   String get id; // Уникальный ID (uuid)
   String get localPath; // Абсолютный путь на устройстве
   String get serverPath; // Путь на сервере (например subfolder/img.jpg)
+  Uint8List? get bytes;
   UploadStatus get status;
   double get progress; // 0.0 to 1.0
   String? get errorMessage;
@@ -38,6 +39,7 @@ mixin _$UploadTask {
                 other.localPath == localPath) &&
             (identical(other.serverPath, serverPath) ||
                 other.serverPath == serverPath) &&
+            const DeepCollectionEquality().equals(other.bytes, bytes) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.progress, progress) ||
                 other.progress == progress) &&
@@ -47,11 +49,18 @@ mixin _$UploadTask {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, localPath, serverPath, status, progress, errorMessage);
+      runtimeType,
+      id,
+      localPath,
+      serverPath,
+      const DeepCollectionEquality().hash(bytes),
+      status,
+      progress,
+      errorMessage);
 
   @override
   String toString() {
-    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, status: $status, progress: $progress, errorMessage: $errorMessage)';
+    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, bytes: $bytes, status: $status, progress: $progress, errorMessage: $errorMessage)';
   }
 }
 
@@ -65,6 +74,7 @@ abstract mixin class $UploadTaskCopyWith<$Res> {
       {String id,
       String localPath,
       String serverPath,
+      Uint8List? bytes,
       UploadStatus status,
       double progress,
       String? errorMessage});
@@ -85,6 +95,7 @@ class _$UploadTaskCopyWithImpl<$Res> implements $UploadTaskCopyWith<$Res> {
     Object? id = null,
     Object? localPath = null,
     Object? serverPath = null,
+    Object? bytes = freezed,
     Object? status = null,
     Object? progress = null,
     Object? errorMessage = freezed,
@@ -102,6 +113,10 @@ class _$UploadTaskCopyWithImpl<$Res> implements $UploadTaskCopyWith<$Res> {
           ? _self.serverPath
           : serverPath // ignore: cast_nullable_to_non_nullable
               as String,
+      bytes: freezed == bytes
+          ? _self.bytes
+          : bytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -209,8 +224,14 @@ extension UploadTaskPatterns on UploadTask {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String id, String localPath, String serverPath,
-            UploadStatus status, double progress, String? errorMessage)?
+    TResult Function(
+            String id,
+            String localPath,
+            String serverPath,
+            Uint8List? bytes,
+            UploadStatus status,
+            double progress,
+            String? errorMessage)?
         $default, {
     required TResult orElse(),
   }) {
@@ -218,7 +239,7 @@ extension UploadTaskPatterns on UploadTask {
     switch (_that) {
       case _UploadTask() when $default != null:
         return $default(_that.id, _that.localPath, _that.serverPath,
-            _that.status, _that.progress, _that.errorMessage);
+            _that.bytes, _that.status, _that.progress, _that.errorMessage);
       case _:
         return orElse();
     }
@@ -239,15 +260,21 @@ extension UploadTaskPatterns on UploadTask {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String id, String localPath, String serverPath,
-            UploadStatus status, double progress, String? errorMessage)
+    TResult Function(
+            String id,
+            String localPath,
+            String serverPath,
+            Uint8List? bytes,
+            UploadStatus status,
+            double progress,
+            String? errorMessage)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _UploadTask():
         return $default(_that.id, _that.localPath, _that.serverPath,
-            _that.status, _that.progress, _that.errorMessage);
+            _that.bytes, _that.status, _that.progress, _that.errorMessage);
     }
   }
 
@@ -265,15 +292,21 @@ extension UploadTaskPatterns on UploadTask {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String id, String localPath, String serverPath,
-            UploadStatus status, double progress, String? errorMessage)?
+    TResult? Function(
+            String id,
+            String localPath,
+            String serverPath,
+            Uint8List? bytes,
+            UploadStatus status,
+            double progress,
+            String? errorMessage)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _UploadTask() when $default != null:
         return $default(_that.id, _that.localPath, _that.serverPath,
-            _that.status, _that.progress, _that.errorMessage);
+            _that.bytes, _that.status, _that.progress, _that.errorMessage);
       case _:
         return null;
     }
@@ -287,6 +320,7 @@ class _UploadTask implements UploadTask {
       {required this.id,
       required this.localPath,
       required this.serverPath,
+      this.bytes,
       this.status = UploadStatus.queued,
       this.progress = 0.0,
       this.errorMessage});
@@ -300,6 +334,8 @@ class _UploadTask implements UploadTask {
   @override
   final String serverPath;
 // Путь на сервере (например subfolder/img.jpg)
+  @override
+  final Uint8List? bytes;
   @override
   @JsonKey()
   final UploadStatus status;
@@ -328,6 +364,7 @@ class _UploadTask implements UploadTask {
                 other.localPath == localPath) &&
             (identical(other.serverPath, serverPath) ||
                 other.serverPath == serverPath) &&
+            const DeepCollectionEquality().equals(other.bytes, bytes) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.progress, progress) ||
                 other.progress == progress) &&
@@ -337,11 +374,18 @@ class _UploadTask implements UploadTask {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, localPath, serverPath, status, progress, errorMessage);
+      runtimeType,
+      id,
+      localPath,
+      serverPath,
+      const DeepCollectionEquality().hash(bytes),
+      status,
+      progress,
+      errorMessage);
 
   @override
   String toString() {
-    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, status: $status, progress: $progress, errorMessage: $errorMessage)';
+    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, bytes: $bytes, status: $status, progress: $progress, errorMessage: $errorMessage)';
   }
 }
 
@@ -357,6 +401,7 @@ abstract mixin class _$UploadTaskCopyWith<$Res>
       {String id,
       String localPath,
       String serverPath,
+      Uint8List? bytes,
       UploadStatus status,
       double progress,
       String? errorMessage});
@@ -377,6 +422,7 @@ class __$UploadTaskCopyWithImpl<$Res> implements _$UploadTaskCopyWith<$Res> {
     Object? id = null,
     Object? localPath = null,
     Object? serverPath = null,
+    Object? bytes = freezed,
     Object? status = null,
     Object? progress = null,
     Object? errorMessage = freezed,
@@ -394,6 +440,10 @@ class __$UploadTaskCopyWithImpl<$Res> implements _$UploadTaskCopyWith<$Res> {
           ? _self.serverPath
           : serverPath // ignore: cast_nullable_to_non_nullable
               as String,
+      bytes: freezed == bytes
+          ? _self.bytes
+          : bytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable

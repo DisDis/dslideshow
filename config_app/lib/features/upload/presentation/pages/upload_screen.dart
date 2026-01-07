@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 class UploadScreen extends StatelessWidget {
   static const _filesValue = 'files';
@@ -77,6 +77,14 @@ class UploadScreen extends StatelessWidget {
   }
 
   Future<void> _uploadFiles(UploadQueueBloc bloc) async {
+    if (kIsWeb) {
+      await _uploadFilesWeb(bloc);
+    } else {
+      await _uploadFilesNative(bloc);
+    }
+  }
+
+  Future<void> _uploadFilesNative(UploadQueueBloc bloc) async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       // Для одиночных файлов rootPath считаем как папку, где они лежат
@@ -85,6 +93,22 @@ class UploadScreen extends StatelessWidget {
       if (files.isNotEmpty) {
         final root = p.dirname(files.first.path);
         bloc.add(UploadQueueEvent.addFiles(files: files, rootPath: root));
+      }
+    }
+  }
+
+  Future<void> _uploadFilesWeb(UploadQueueBloc bloc) async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.any,
+    );
+    if (result != null && result.files.isNotEmpty) {
+      // В веб-сборке result.files содержит XFile объекты
+      final List<PlatformFile> xFiles = result.files;
+   
+      if (xFiles.isNotEmpty) {
+        // В веб-сборке используем временную директорию как корневую
+        bloc.add(UploadQueueEvent.addPlatformFiles(files: xFiles, rootPath: ''));
       }
     }
   }

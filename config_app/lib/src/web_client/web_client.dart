@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
@@ -47,6 +48,15 @@ class WebClient {
     final formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(localPath, filename: serverPath),
     });
-    return dio.post(url, data: formData);
+    return dio.post(url, data: formData, onSendProgress: onSendProgress);
+  }
+
+  Future<dynamic> uploadMediaBytes(Uint8List bytes, String serverPath, void Function(int sentBytes, int totalBytes) onSendProgress) async {
+    final dio = Dio();
+    final url = 'http://$host:$port/upload/$code/';
+    final formData = FormData.fromMap({
+      'file': MultipartFile.fromBytes(bytes, filename: serverPath),
+    });
+    return dio.post(url, data: formData, onSendProgress: onSendProgress);
   }
 }

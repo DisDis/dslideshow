@@ -13,6 +13,298 @@ part of 'upload_queue_bloc.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$UploadQueueState {
+  List<UploadTask> get tasks;
+
+  /// Create a copy of UploadQueueState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UploadQueueStateCopyWith<UploadQueueState> get copyWith =>
+      _$UploadQueueStateCopyWithImpl<UploadQueueState>(
+          this as UploadQueueState, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is UploadQueueState &&
+            const DeepCollectionEquality().equals(other.tasks, tasks));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(tasks));
+
+  @override
+  String toString() {
+    return 'UploadQueueState(tasks: $tasks)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UploadQueueStateCopyWith<$Res> {
+  factory $UploadQueueStateCopyWith(
+          UploadQueueState value, $Res Function(UploadQueueState) _then) =
+      _$UploadQueueStateCopyWithImpl;
+  @useResult
+  $Res call({List<UploadTask> tasks});
+}
+
+/// @nodoc
+class _$UploadQueueStateCopyWithImpl<$Res>
+    implements $UploadQueueStateCopyWith<$Res> {
+  _$UploadQueueStateCopyWithImpl(this._self, this._then);
+
+  final UploadQueueState _self;
+  final $Res Function(UploadQueueState) _then;
+
+  /// Create a copy of UploadQueueState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tasks = null,
+  }) {
+    return _then(_self.copyWith(
+      tasks: null == tasks
+          ? _self.tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<UploadTask>,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [UploadQueueState].
+extension UploadQueueStatePatterns on UploadQueueState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_UploadQueueState value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_UploadQueueState value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_UploadQueueState value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<UploadTask> tasks)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState() when $default != null:
+        return $default(_that.tasks);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<UploadTask> tasks) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState():
+        return $default(_that.tasks);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<UploadTask> tasks)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _UploadQueueState() when $default != null:
+        return $default(_that.tasks);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class _UploadQueueState implements UploadQueueState {
+  const _UploadQueueState({final List<UploadTask> tasks = const []})
+      : _tasks = tasks;
+
+  final List<UploadTask> _tasks;
+  @override
+  @JsonKey()
+  List<UploadTask> get tasks {
+    if (_tasks is EqualUnmodifiableListView) return _tasks;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tasks);
+  }
+
+  /// Create a copy of UploadQueueState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UploadQueueStateCopyWith<_UploadQueueState> get copyWith =>
+      __$UploadQueueStateCopyWithImpl<_UploadQueueState>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UploadQueueState &&
+            const DeepCollectionEquality().equals(other._tasks, _tasks));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
+
+  @override
+  String toString() {
+    return 'UploadQueueState(tasks: $tasks)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UploadQueueStateCopyWith<$Res>
+    implements $UploadQueueStateCopyWith<$Res> {
+  factory _$UploadQueueStateCopyWith(
+          _UploadQueueState value, $Res Function(_UploadQueueState) _then) =
+      __$UploadQueueStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call({List<UploadTask> tasks});
+}
+
+/// @nodoc
+class __$UploadQueueStateCopyWithImpl<$Res>
+    implements _$UploadQueueStateCopyWith<$Res> {
+  __$UploadQueueStateCopyWithImpl(this._self, this._then);
+
+  final _UploadQueueState _self;
+  final $Res Function(_UploadQueueState) _then;
+
+  /// Create a copy of UploadQueueState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? tasks = null,
+  }) {
+    return _then(_UploadQueueState(
+      tasks: null == tasks
+          ? _self._tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<UploadTask>,
+    ));
+  }
+}
+
+/// @nodoc
 mixin _$UploadQueueEvent {
   @override
   bool operator ==(Object other) {
@@ -52,6 +344,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_AddFiles value)? addFiles,
+    TResult Function(_AddPlatformFiles value)? addPlatformFiles,
     TResult Function(_RemoveTask value)? removeTask,
     TResult Function(_RetryTask value)? retryTask,
     TResult Function(_UpdateProgress value)? updateProgress,
@@ -63,6 +356,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles() when addFiles != null:
         return addFiles(_that);
+      case _AddPlatformFiles() when addPlatformFiles != null:
+        return addPlatformFiles(_that);
       case _RemoveTask() when removeTask != null:
         return removeTask(_that);
       case _RetryTask() when retryTask != null:
@@ -94,6 +389,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_AddFiles value) addFiles,
+    required TResult Function(_AddPlatformFiles value) addPlatformFiles,
     required TResult Function(_RemoveTask value) removeTask,
     required TResult Function(_RetryTask value) retryTask,
     required TResult Function(_UpdateProgress value) updateProgress,
@@ -104,6 +400,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles():
         return addFiles(_that);
+      case _AddPlatformFiles():
+        return addPlatformFiles(_that);
       case _RemoveTask():
         return removeTask(_that);
       case _RetryTask():
@@ -134,6 +432,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_AddFiles value)? addFiles,
+    TResult? Function(_AddPlatformFiles value)? addPlatformFiles,
     TResult? Function(_RemoveTask value)? removeTask,
     TResult? Function(_RetryTask value)? retryTask,
     TResult? Function(_UpdateProgress value)? updateProgress,
@@ -144,6 +443,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles() when addFiles != null:
         return addFiles(_that);
+      case _AddPlatformFiles() when addPlatformFiles != null:
+        return addPlatformFiles(_that);
       case _RemoveTask() when removeTask != null:
         return removeTask(_that);
       case _RetryTask() when retryTask != null:
@@ -174,6 +475,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<File> files, String rootPath)? addFiles,
+    TResult Function(List<PlatformFile> files, String rootPath)?
+        addPlatformFiles,
     TResult Function(String taskId)? removeTask,
     TResult Function(String taskId)? retryTask,
     TResult Function(String taskId, int sent, int total)? updateProgress,
@@ -185,6 +488,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles() when addFiles != null:
         return addFiles(_that.files, _that.rootPath);
+      case _AddPlatformFiles() when addPlatformFiles != null:
+        return addPlatformFiles(_that.files, _that.rootPath);
       case _RemoveTask() when removeTask != null:
         return removeTask(_that.taskId);
       case _RetryTask() when retryTask != null:
@@ -216,6 +521,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<File> files, String rootPath) addFiles,
+    required TResult Function(List<PlatformFile> files, String rootPath)
+        addPlatformFiles,
     required TResult Function(String taskId) removeTask,
     required TResult Function(String taskId) retryTask,
     required TResult Function(String taskId, int sent, int total)
@@ -227,6 +534,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles():
         return addFiles(_that.files, _that.rootPath);
+      case _AddPlatformFiles():
+        return addPlatformFiles(_that.files, _that.rootPath);
       case _RemoveTask():
         return removeTask(_that.taskId);
       case _RetryTask():
@@ -257,6 +566,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<File> files, String rootPath)? addFiles,
+    TResult? Function(List<PlatformFile> files, String rootPath)?
+        addPlatformFiles,
     TResult? Function(String taskId)? removeTask,
     TResult? Function(String taskId)? retryTask,
     TResult? Function(String taskId, int sent, int total)? updateProgress,
@@ -267,6 +578,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
     switch (_that) {
       case _AddFiles() when addFiles != null:
         return addFiles(_that.files, _that.rootPath);
+      case _AddPlatformFiles() when addPlatformFiles != null:
+        return addPlatformFiles(_that.files, _that.rootPath);
       case _RemoveTask() when removeTask != null:
         return removeTask(_that.taskId);
       case _RetryTask() when retryTask != null:
@@ -353,6 +666,87 @@ class __$AddFilesCopyWithImpl<$Res> implements _$AddFilesCopyWith<$Res> {
           ? _self._files
           : files // ignore: cast_nullable_to_non_nullable
               as List<File>,
+      rootPath: null == rootPath
+          ? _self.rootPath
+          : rootPath // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _AddPlatformFiles implements UploadQueueEvent {
+  const _AddPlatformFiles(
+      {required final List<PlatformFile> files, required this.rootPath})
+      : _files = files;
+
+  final List<PlatformFile> _files;
+  List<PlatformFile> get files {
+    if (_files is EqualUnmodifiableListView) return _files;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_files);
+  }
+
+  final String rootPath;
+
+  /// Create a copy of UploadQueueEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AddPlatformFilesCopyWith<_AddPlatformFiles> get copyWith =>
+      __$AddPlatformFilesCopyWithImpl<_AddPlatformFiles>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _AddPlatformFiles &&
+            const DeepCollectionEquality().equals(other._files, _files) &&
+            (identical(other.rootPath, rootPath) ||
+                other.rootPath == rootPath));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_files), rootPath);
+
+  @override
+  String toString() {
+    return 'UploadQueueEvent.addPlatformFiles(files: $files, rootPath: $rootPath)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$AddPlatformFilesCopyWith<$Res>
+    implements $UploadQueueEventCopyWith<$Res> {
+  factory _$AddPlatformFilesCopyWith(
+          _AddPlatformFiles value, $Res Function(_AddPlatformFiles) _then) =
+      __$AddPlatformFilesCopyWithImpl;
+  @useResult
+  $Res call({List<PlatformFile> files, String rootPath});
+}
+
+/// @nodoc
+class __$AddPlatformFilesCopyWithImpl<$Res>
+    implements _$AddPlatformFilesCopyWith<$Res> {
+  __$AddPlatformFilesCopyWithImpl(this._self, this._then);
+
+  final _AddPlatformFiles _self;
+  final $Res Function(_AddPlatformFiles) _then;
+
+  /// Create a copy of UploadQueueEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? files = null,
+    Object? rootPath = null,
+  }) {
+    return _then(_AddPlatformFiles(
+      files: null == files
+          ? _self._files
+          : files // ignore: cast_nullable_to_non_nullable
+              as List<PlatformFile>,
       rootPath: null == rootPath
           ? _self.rootPath
           : rootPath // ignore: cast_nullable_to_non_nullable
@@ -695,298 +1089,6 @@ class __$TaskFailedCopyWithImpl<$Res> implements _$TaskFailedCopyWith<$Res> {
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
-  }
-}
-
-/// @nodoc
-mixin _$UploadQueueState {
-  List<UploadTask> get tasks;
-
-  /// Create a copy of UploadQueueState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $UploadQueueStateCopyWith<UploadQueueState> get copyWith =>
-      _$UploadQueueStateCopyWithImpl<UploadQueueState>(
-          this as UploadQueueState, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is UploadQueueState &&
-            const DeepCollectionEquality().equals(other.tasks, tasks));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(tasks));
-
-  @override
-  String toString() {
-    return 'UploadQueueState(tasks: $tasks)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $UploadQueueStateCopyWith<$Res> {
-  factory $UploadQueueStateCopyWith(
-          UploadQueueState value, $Res Function(UploadQueueState) _then) =
-      _$UploadQueueStateCopyWithImpl;
-  @useResult
-  $Res call({List<UploadTask> tasks});
-}
-
-/// @nodoc
-class _$UploadQueueStateCopyWithImpl<$Res>
-    implements $UploadQueueStateCopyWith<$Res> {
-  _$UploadQueueStateCopyWithImpl(this._self, this._then);
-
-  final UploadQueueState _self;
-  final $Res Function(UploadQueueState) _then;
-
-  /// Create a copy of UploadQueueState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? tasks = null,
-  }) {
-    return _then(_self.copyWith(
-      tasks: null == tasks
-          ? _self.tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<UploadTask>,
-    ));
-  }
-}
-
-/// Adds pattern-matching-related methods to [UploadQueueState].
-extension UploadQueueStatePatterns on UploadQueueState {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_UploadQueueState value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
-
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_UploadQueueState value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState():
-        return $default(_that);
-    }
-  }
-
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_UploadQueueState value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<UploadTask> tasks)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState() when $default != null:
-        return $default(_that.tasks);
-      case _:
-        return orElse();
-    }
-  }
-
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(List<UploadTask> tasks) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState():
-        return $default(_that.tasks);
-    }
-  }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<UploadTask> tasks)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _UploadQueueState() when $default != null:
-        return $default(_that.tasks);
-      case _:
-        return null;
-    }
-  }
-}
-
-/// @nodoc
-
-class _UploadQueueState implements UploadQueueState {
-  const _UploadQueueState({final List<UploadTask> tasks = const []})
-      : _tasks = tasks;
-
-  final List<UploadTask> _tasks;
-  @override
-  @JsonKey()
-  List<UploadTask> get tasks {
-    if (_tasks is EqualUnmodifiableListView) return _tasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tasks);
-  }
-
-  /// Create a copy of UploadQueueState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$UploadQueueStateCopyWith<_UploadQueueState> get copyWith =>
-      __$UploadQueueStateCopyWithImpl<_UploadQueueState>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _UploadQueueState &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
-
-  @override
-  String toString() {
-    return 'UploadQueueState(tasks: $tasks)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$UploadQueueStateCopyWith<$Res>
-    implements $UploadQueueStateCopyWith<$Res> {
-  factory _$UploadQueueStateCopyWith(
-          _UploadQueueState value, $Res Function(_UploadQueueState) _then) =
-      __$UploadQueueStateCopyWithImpl;
-  @override
-  @useResult
-  $Res call({List<UploadTask> tasks});
-}
-
-/// @nodoc
-class __$UploadQueueStateCopyWithImpl<$Res>
-    implements _$UploadQueueStateCopyWith<$Res> {
-  __$UploadQueueStateCopyWithImpl(this._self, this._then);
-
-  final _UploadQueueState _self;
-  final $Res Function(_UploadQueueState) _then;
-
-  /// Create a copy of UploadQueueState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? tasks = null,
-  }) {
-    return _then(_UploadQueueState(
-      tasks: null == tasks
-          ? _self._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<UploadTask>,
     ));
   }
 }
