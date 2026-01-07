@@ -1,3 +1,6 @@
+# 
+Added http cache-control for media files
+
 # 9.3.0
 Added Single Item View in Gallery
 
