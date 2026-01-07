@@ -7,11 +7,14 @@ import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
 
 class UploadScreen extends StatelessWidget {
+  static const _filesValue = 'files';
+  static const _folderValue = 'folder';
   const UploadScreen({super.key});
 
   @override
@@ -26,8 +29,13 @@ class UploadScreen extends StatelessWidget {
             icon: const Icon(Icons.add),
             onSelected: (value) => _handleMenuSelection(context, value),
             itemBuilder: (context) => [
-              PopupMenuItem(value: 'files', child: Text(context.localizations.add_files_menu_item)),
-              PopupMenuItem(value: 'folder', child: Text(context.localizations.add_folder_menu_item)),
+              PopupMenuItem(
+                  value: _filesValue,
+                  child: Text(context.localizations.add_files_menu_item)),
+              if (!kIsWeb)
+                PopupMenuItem(
+                    value: _folderValue,
+                    child: Text(context.localizations.add_folder_menu_item)),
             ],
           )
         ],
@@ -57,39 +65,50 @@ class UploadScreen extends StatelessWidget {
 
   Future<void> _handleMenuSelection(BuildContext context, String value) async {
     final bloc = context.read<UploadQueueBloc>();
+    switch (value) {
+      case _filesValue:
+        await _uploadFiles(bloc);
+        break;
+      case _folderValue:
+        await _uploadFolder(bloc, context);
+        break;
+      default:
+    }
+  }
 
-    if (value == 'files') {
-      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-      if (result != null) {
-        // Для одиночных файлов rootPath считаем как папку, где они лежат
-        final files =
-            result.paths.whereType<String>().map((e) => File(e)).toList();
-        if (files.isNotEmpty) {
-          final root = p.dirname(files.first.path);
-          bloc.add(UploadQueueEvent.addFiles(files: files, rootPath: root));
-        }
+  Future<void> _uploadFiles(UploadQueueBloc bloc) async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      // Для одиночных файлов rootPath считаем как папку, где они лежат
+      final files =
+          result.paths.whereType<String>().map((e) => File(e)).toList();
+      if (files.isNotEmpty) {
+        final root = p.dirname(files.first.path);
+        bloc.add(UploadQueueEvent.addFiles(files: files, rootPath: root));
       }
-    } else if (value == 'folder') {
-      final String? selectedDirectory =
-          await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory != null) {
-        // Рекурсивно ищем файлы
-        final dir = Directory(selectedDirectory);
-        // Внимание: это может занять время, лучше вынести в compute или Future
-        final List<File> files = dir
-            .listSync(recursive: true)
-            .whereType<File>()
-            // Фильтр по расширениям
-            .where((f) => _isSupportFile(f.path))
-            .toList();
+    }
+  }
 
-        if (files.isNotEmpty) {
-          bloc.add(UploadQueueEvent.addFiles(
-              files: files, rootPath: selectedDirectory));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.localizations.no_images_found_in_folder)));
-        }
+  Future<void> _uploadFolder(UploadQueueBloc bloc, BuildContext context) async {
+    final String? selectedDirectory =
+        await FilePicker.platform.getDirectoryPath();
+    if (selectedDirectory != null) {
+      // Рекурсивно ищем файлы
+      final dir = Directory(selectedDirectory);
+      // Внимание: это может занять время, лучше вынести в compute или Future
+      final List<File> files = dir
+          .listSync(recursive: true)
+          .whereType<File>()
+          // Фильтр по расширениям
+          .where((f) => _isSupportFile(f.path))
+          .toList();
+
+      if (files.isNotEmpty) {
+        bloc.add(UploadQueueEvent.addFiles(
+            files: files, rootPath: selectedDirectory));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(context.localizations.no_images_found_in_folder)));
       }
     }
   }
@@ -113,12 +132,14 @@ class _UploadTaskTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(task.serverPath,
-              style: const TextStyle(fontSize: 10, color: AppColors.uploadText)),
+              style:
+                  const TextStyle(fontSize: 10, color: AppColors.uploadText)),
           if (task.status == UploadStatus.uploading)
             LinearProgressIndicator(value: task.progress),
           if (task.status == UploadStatus.error)
             Text(task.errorMessage ?? "Error",
-                style: const TextStyle(color: AppColors.uploadErrorText, fontSize: 12)),
+                style: const TextStyle(
+                    color: AppColors.uploadErrorText, fontSize: 12)),
         ],
       ),
       trailing: _buildAction(context),
@@ -129,7 +150,8 @@ class _UploadTaskTile extends StatelessWidget {
   Widget _buildLeadingIcon() {
     switch (task.status) {
       case UploadStatus.queued:
-        return const Icon(Icons.hourglass_empty, color: AppColors.uploadQueuedIcon);
+        return const Icon(Icons.hourglass_empty,
+            color: AppColors.uploadQueuedIcon);
       case UploadStatus.uploading:
         return Stack(
           alignment: Alignment.center,
@@ -140,7 +162,8 @@ class _UploadTaskTile extends StatelessWidget {
           ],
         );
       case UploadStatus.completed:
-        return const Icon(Icons.check_circle, color: AppColors.uploadCompletedIcon);
+        return const Icon(Icons.check_circle,
+            color: AppColors.uploadCompletedIcon);
       case UploadStatus.error:
         return const Icon(Icons.error, color: AppColors.uploadErrorIcon);
     }
