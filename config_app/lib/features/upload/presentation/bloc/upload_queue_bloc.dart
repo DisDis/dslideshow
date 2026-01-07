@@ -6,6 +6,7 @@ import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/src/web_client/web_client.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 // Замените на ваш реальный WebClient
@@ -23,6 +24,8 @@ sealed class UploadQueueState with _$UploadQueueState {
 
 // --- BLOC ---
 class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
+  static final _log = Logger('UploadQueueBloc');
+
   final RealtimeService client;
 
   static const int _maxConcurrentUploads = 2; // Константа параллелизма
@@ -41,6 +44,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
 
   Future<void> _onAddPlatformFiles(
       _AddPlatformFiles event, Emitter<UploadQueueState> emit) async {
+    _log.info("_onAddPlatformFiles: files = ${event.files.length}");
     final newTasks = event.files.map((file) {
       String serverPath = p.relative(file.name, from: '');
       return UploadTask(
@@ -197,27 +201,33 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       // Поэтому, визуально слот "занимается" только когда прилетит первый прогресс или мы сделаем событие Started.
       // Добавим специальный метод в bloc для старта, чтобы обновить UI.
       // Но для простоты примера, будем считать Uploading по первому байту.
-      
-      void onProgress (sent, total) {
-            final now = DateTime.now().millisecondsSinceEpoch;
-            // Обновляем, только если прошло время ИЛИ если загрузка завершена (100%)
-            if (now - lastUpdateTimestamp > throttleDuration || sent == total) {
-              lastUpdateTimestamp = now;
-              add(UploadQueueEvent.updateProgress(task.id, sent, total));
-            }
-          };
+
+      void onProgress(sent, total) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        // Обновляем, только если прошло время ИЛИ если загрузка завершена (100%)
+        if (now - lastUpdateTimestamp > throttleDuration || sent == total) {
+          lastUpdateTimestamp = now;
+          add(UploadQueueEvent.updateProgress(task.id, sent, total));
+        }
+      }
+
+      ;
       final wclient = WebClient(
           code: client.authCode,
           host: client.connectUri.host,
           port: client.connectUri.port);
 
       if (task.bytes != null) {
+        _log.info("_uploadFileRoutine ${task.id} is bytes");
+
         await wclient.uploadMediaBytes(
           task.bytes!,
           task.serverPath,
           onProgress,
         );
       } else {
+        _log.info("_uploadFileRoutine ${task.id} is file");
+
         // Читаем файл
         final file = File(task.localPath);
         if (!await file.exists()) {

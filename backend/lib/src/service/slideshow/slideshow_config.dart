@@ -36,7 +36,7 @@ class SlideShowConfig {
           action: SlideshowAction.pause,
           minPressingMs: 200,
         ),
-        hintOffsetX: 320,
+        hintOffsetX: 2000,
         hintOffsetY: 20,
       );
     }
@@ -123,7 +123,7 @@ class SlideShowButtons {
   SlideShowButtonConfig button2;
   SlideShowButtonConfig button3;
 
-  @JsonKey(defaultValue: 320)
+  @JsonKey(defaultValue: 2000)
   int hintOffsetX;
   @JsonKey(defaultValue: 20)
   int hintOffsetY;
