@@ -11,6 +11,7 @@ class SingleImageViewer extends StatelessWidget {
       minScale: 1.0,
       maxScale: 5.0,
       child: CachedNetworkImage(
+        filterQuality: FilterQuality.high,
         imageUrl: uri.toString(),
         fit: BoxFit.contain,
         placeholder: (context, url) => const CircularProgressIndicator(color: Colors.white),
