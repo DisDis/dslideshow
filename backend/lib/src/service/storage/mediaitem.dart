@@ -1,3 +1,4 @@
+import 'package:dslideshow_common/file_settings.dart';
 import 'package:path/path.dart' as path;
 
 class MediaItem {
@@ -14,7 +15,7 @@ class MediaItem {
   }
 
   bool get isVideo =>
-      uri == null ? false : path.extension(uri!.path).toLowerCase() == '.mp4';
+      uri == null ? false : FileSettings.isVideo(path.extension(uri!.path));
 
   int get hashCode => Object.hash(id, uri);
 }

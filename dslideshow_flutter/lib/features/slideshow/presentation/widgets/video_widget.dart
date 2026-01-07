@@ -16,7 +16,7 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
 
   VideoWidget(this.item)
       : mediaFile = File(item.uri!.toFilePath()),
-        super(key: Key('mp4:${item.uri!.toFilePath()}'));
+        super(key: Key('video:${item.uri!.toFilePath()}'));
 
   @override
   // ignore: library_private_types_in_public_api

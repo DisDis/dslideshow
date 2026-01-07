@@ -5,6 +5,7 @@ import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
 import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart';
+import 'package:dslideshow_common/file_settings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,16 +95,7 @@ class UploadScreen extends StatelessWidget {
   }
 
   bool _isSupportFile(String path) {
-    final ext = p.extension(path).toLowerCase();
-    return [
-      '.jpg',
-      '.jpeg',
-      '.png',
-      '.gif',
-      '.webp',
-      '.avi',
-      '.mp4',
-    ].contains(ext);
+    return FileSettings.isSupportFile(p.extension(path));
   }
 }
 

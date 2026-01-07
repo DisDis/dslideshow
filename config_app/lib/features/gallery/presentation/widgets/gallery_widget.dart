@@ -5,6 +5,7 @@ import 'package:config_app/features/gallery/presentation/widgets/video_grid_item
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:dslideshow_common/file_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
@@ -198,9 +199,9 @@ class _GalleryItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ext = path.extension(item.uri.path).toLowerCase();
+    final ext = path.extension(item.uri.path);
     final isFolder = ext == '';
-    final isVideo = ['.mp4', '.avi', '.mov'].contains(ext);
+    final isVideo = FileSettings.isVideo(ext);
 
     return GestureDetector(
       onTap: onTap,
