@@ -1,3 +1,6 @@
+# 9.3.0
+Added Single Item View in Gallery
+
 # 9.2.0
 The settings save values ​​other than the default values.
 

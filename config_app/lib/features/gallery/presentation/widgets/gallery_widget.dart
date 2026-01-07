@@ -1,4 +1,5 @@
 import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart';
 import 'package:config_app/features/gallery/presentation/widgets/folder_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
@@ -18,7 +19,7 @@ class GalleryWidget extends StatefulWidget {
 }
 
 class _GalleryWidgetState extends State<GalleryWidget> {
-  final Set<String> _selectedIds = {}; 
+  final Set<String> _selectedIds = {};
   bool get _isSelectionMode => _selectedIds.isNotEmpty;
 
   @override
@@ -43,11 +44,14 @@ class _GalleryWidgetState extends State<GalleryWidget> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: AppColors.errorRed),
+                  const Icon(Icons.error_outline,
+                      size: 48, color: AppColors.errorRed),
                   const SizedBox(height: 16),
                   Text(state.errorMessage),
                   TextButton(
-                    onPressed: () => context.read<GalleryBloc>().add(const GalleryLoadEvent()),
+                    onPressed: () => context
+                        .read<GalleryBloc>()
+                        .add(const GalleryLoadEvent()),
                     child: Text(context.localizations.retry_button),
                   ),
                 ],
@@ -61,38 +65,45 @@ class _GalleryWidgetState extends State<GalleryWidget> {
           return Scaffold(
             // ВАЖНО: Добавляем Drawer сюда
             drawer: const ConfigAppNavigationBar(),
-            
+
             body: RefreshIndicator(
               onRefresh: () async {
-                 context.read<GalleryBloc>().add(const GalleryLoadEvent());
+                context.read<GalleryBloc>().add(const GalleryLoadEvent());
               },
               child: CustomScrollView(
                 slivers: [
                   // SliverAppBar автоматически покажет кнопку меню (Drawer),
                   // потому что мы добавили drawer в Scaffold выше.
                   SliverAppBar(
-                    title: Text(_isSelectionMode 
-                        ? "${_selectedIds.length} selected" 
+                    title: Text(_isSelectionMode
+                        ? "${_selectedIds.length} selected"
                         : "${context.localizations.gallery_title} (${state.items.length})"),
                     floating: true,
                     pinned: true,
                     // Меняем цвет, если выбран режим выделения
-                    backgroundColor: _isSelectionMode ? AppColors.gallerySelectionModeHeader : null,
+                    backgroundColor: _isSelectionMode
+                        ? AppColors.gallerySelectionModeHeader
+                        : null,
                     // Если режим выбора - показываем кнопку "Назад" (закрыть выбор) вместо "Меню"
-                    leading: _isSelectionMode 
+                    leading: _isSelectionMode
                         ? IconButton(
                             icon: const Icon(Icons.close),
-                            onPressed: () => setState(() => _selectedIds.clear()),
+                            onPressed: () =>
+                                setState(() => _selectedIds.clear()),
                           )
                         : null, // Если null, Flutter сам поставит кнопку Drawer (бургер)
                     actions: [
                       if (_isSelectionMode) ...[
-                        IconButton(icon: const Icon(Icons.share), onPressed: () {}),
-                        IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
-                      ] else 
                         IconButton(
-                           icon: const Icon(Icons.refresh),
-                           onPressed: () => context.read<GalleryBloc>().add(const GalleryLoadEvent()),
+                            icon: const Icon(Icons.share), onPressed: () {}),
+                        IconButton(
+                            icon: const Icon(Icons.delete), onPressed: () {}),
+                      ] else
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () => context
+                              .read<GalleryBloc>()
+                              .add(const GalleryLoadEvent()),
                         )
                     ],
                   ),
@@ -168,12 +179,15 @@ class MediaGallerySliverGrid extends StatelessWidget {
               if (selectedIds.isNotEmpty) {
                 // Если режим выбора активен, обычный клик тоже выбирает
                 onToggleSelect(galleryItem.uri.toString());
-              } 
-              // else {
-              //   // Иначе открываем фуллскрин
-              //   print("Open Fullscreen: ${galleryItem.title}");
-              //   // Navigator.push(...)
-              // }
+              } else if (!galleryItem.isFolder){
+                // ОТКРЫТИЕ SINGLE VIEWER
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SingleItemViewerPage(item: galleryItem),
+                  ),
+                );
+              }
             },
             onLongPress: () => onToggleSelect(galleryItem.uri.toString()),
           );
@@ -200,7 +214,6 @@ class _GalleryItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ext = path.extension(item.uri.path);
-    final isFolder = ext == '';
     final isVideo = FileSettings.isVideo(ext);
 
     return GestureDetector(
@@ -213,7 +226,7 @@ class _GalleryItemWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: isSelected
               ? Border.all(width: 3, color: AppColors.gallerySelectionBorder)
-              : Border.all(width: 0, color:  AppColors.galleryUnSelectionBorder),
+              : Border.all(width: 0, color: AppColors.galleryUnSelectionBorder),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
@@ -221,15 +234,16 @@ class _GalleryItemWidget extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               // Контент
-              _buildContent(isFolder, isVideo),
+              _buildContent(item.isFolder, isVideo),
 
               // Затемнение при выборе
               if (isSelected)
                 Container(
-                  color: AppColors.selectionBackground.withAlpha((255.0 * 0.2).round()),
+                  color: AppColors.selectionBackground
+                      .withAlpha((255.0 * 0.2).round()),
                   child: const Center(
-                    child:
-                        Icon(Icons.check_circle, color: AppColors.selectionBackground, size: 36),
+                    child: Icon(Icons.check_circle,
+                        color: AppColors.selectionBackground, size: 36),
                   ),
                 ),
 
@@ -249,7 +263,7 @@ class _GalleryItemWidget extends StatelessWidget {
   }
 
   Widget _buildContent(bool isFolder, bool isVideo) {
-    if (isFolder){
+    if (isFolder) {
       return FolderGridItem(item: item);
     }
     if (isVideo) {
@@ -267,10 +281,11 @@ class GalleryItem {
   final Uri uri;
   final String title;
   bool selected;
+  final bool isFolder;
 
   GalleryItem({
     required this.uri,
     required this.title,
     this.selected = false,
-  });
+  }): isFolder = path.extension(uri.path)== '';
 }
