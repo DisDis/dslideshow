@@ -11,3 +11,8 @@ extension NetworkInfoExt on NetworkInfo {
       return interface;
   }
 }
+
+extension NetworkInterfaceInfoExt on NetworkInterfaceInfo {
+  // Определяем иконку по имени интерфейса (wlan0 -> wifi, eth0 -> кабель)
+ bool get isWifi => name.toLowerCase().startsWith('w');
+}
