@@ -1,4 +1,4 @@
-# 
+# 9.4.0
 Added http cache-control for media files
 Optimize LiquidMorphEffect
 Fix BlindsEffect
