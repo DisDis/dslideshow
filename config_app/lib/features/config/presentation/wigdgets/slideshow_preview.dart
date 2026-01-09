@@ -148,8 +148,6 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Stack(children: [
       // --- BACKGROUND ---
       Center(
