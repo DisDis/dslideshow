@@ -8,7 +8,6 @@ import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
 import 'package:path/path.dart' as path;
 import 'package:http_parser/http_parser.dart' as hp;
 import 'package:shelf_multipart/shelf_multipart.dart';
-import 'package:shelf_static/shelf_static.dart';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';

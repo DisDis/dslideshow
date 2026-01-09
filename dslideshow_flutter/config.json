@@ -7,8 +7,9 @@
   },
   "slideshow": {
     "allowedEffects": [
-      "Default"
-    ]
+      "LiquidMorph"
+    ],
+    "transitionTimeMs": 5000
   },
   "welcome": {
     "text": "Привет"
