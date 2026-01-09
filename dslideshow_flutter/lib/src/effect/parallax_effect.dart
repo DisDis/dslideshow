@@ -1,5 +1,4 @@
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
-import 'package:dslideshow_flutter/src/effect/rect_clipper.dart';
 import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,7 @@ class ParallaxEffect extends MediaSliderItemEffect  with TranslateEffect {
         ),
         // offset: Offset(-clipAmount * (1 - pageDelta), 0),
         child: ClipRect(
-          clipper: RectClipper(clipAmount * (1 - pageDelta)),
+          clipper: _RectClipper(clipAmount * (1 - pageDelta)),
           child: page,
         ),
       );
@@ -42,5 +41,21 @@ class ParallaxEffect extends MediaSliderItemEffect  with TranslateEffect {
         child: page,
       );
     }
+  }
+}
+
+class _RectClipper extends CustomClipper<Rect> {
+  final double leftClip;
+
+  _RectClipper(this.leftClip);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(leftClip, 0, size.width, size.height);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper oldClipper) {
+    return true;
   }
 }
