@@ -307,7 +307,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String transition_display_times(int transitionTime, int displayTime) {
-    return 'Transition: $transitionTime ms\\nDisplay: $displayTime ms';
+    return 'Transition: $transitionTime ms\nDisplay: $displayTime ms';
   }
 
   @override

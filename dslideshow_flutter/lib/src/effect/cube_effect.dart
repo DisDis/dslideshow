@@ -3,7 +3,7 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
-class CubeEffect extends MediaSliderItemEffect  with TranslateEffect {
+class CubeEffect extends MediaSliderItemEffect with TranslateEffect {
   final double perspectiveScale;
   final AlignmentGeometry rightPageAlignment;
   final AlignmentGeometry leftPageAlignment;
@@ -39,8 +39,7 @@ class CubeEffect extends MediaSliderItemEffect  with TranslateEffect {
         ),
         child: page,
       );
-    } else //if (!isCurrentPage /*index == currentPage + 1*/)
-    {
+    } else {
       return Transform(
         transformHitTests: false,
         alignment: rightPageAlignment,
@@ -54,18 +53,6 @@ class CubeEffect extends MediaSliderItemEffect  with TranslateEffect {
         ),
         child: page,
       );
-    } /*else if (index == 0 && currentPage == itemCount - 1) {
-      return Transform(
-          transformHitTests: false,
-          transformHitTests: false,
-        alignment: rightPageAlignment,
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, perspectiveScale)
-          ..rotateY(-rotationAngle * (1 - pageDelta)),
-        child: page,
-      );
-    }*/ /*else {
-      return Container();
-    }*/
+    }
   }
 }

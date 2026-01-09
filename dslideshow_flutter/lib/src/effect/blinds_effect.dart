@@ -78,7 +78,7 @@ class BlindsEffect extends MediaSliderItemEffect {
                   ? null // Оптимизация: не рисуем, если закрылось
                   : Transform(
                       // Сплющивание по вертикали
-                      transform: Matrix4.identity()..scale(1.0, 1.0 - progress),
+                      transform: Matrix4.identity()..scaleByDouble(1.0, 1.0 - progress,1.0, 1.0),
                       alignment: Alignment.topCenter,
                       child: ClipRect(
                         child: OverflowBox(

@@ -661,7 +661,7 @@ abstract class AppLocalizations {
   /// Display transition and display times
   ///
   /// In en, this message translates to:
-  /// **'Transition: {transitionTime} ms\\nDisplay: {displayTime} ms'**
+  /// **'Transition: {transitionTime} ms\nDisplay: {displayTime} ms'**
   String transition_display_times(int transitionTime, int displayTime);
 
   /// Label for 5GHz WiFi networks

@@ -367,7 +367,7 @@
       }
     }
   },
-  "transition_display_times": "Transition: {transitionTime} ms\\nDisplay: {displayTime} ms",
+  "transition_display_times": "Transition: {transitionTime} ms\nDisplay: {displayTime} ms",
   "@transition_display_times": {
     "description": "Display transition and display times",
     "placeholders": {

@@ -70,7 +70,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       }
     });
 
-    _mediaItemLoopController.forward();
+    // _mediaItemLoopController.forward();
     _fetchNextMediaItem();
   }
 
@@ -132,12 +132,13 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
     _effectController.reset();
     _mediaItemLoopController.reset();
+    _mediaItemLoopController.stop();
     setState(() {});
     try {
       await _effectController.forward().orCancel;
     } catch (_) {}
     try {
-      _mediaItemLoopController.forward();
+      await _mediaItemLoopController.forward();
     } catch (_) {}
     _currentEffect = currentEffect.createEffect();
   }
@@ -193,6 +194,5 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   void onChanged(Effect? value) {
     currentEffect = value!;
     setState(() {});
-    _fetchNextMediaItem();
-  }
+   }
 }
