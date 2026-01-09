@@ -1,10 +1,24 @@
+import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
+import 'package:dslideshow_flutter/src/effect/background_to_foreground_effect.dart';
 import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
 import 'package:dslideshow_flutter/src/effect/blure_fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
+import 'package:dslideshow_flutter/src/effect/default_effect.dart';
+import 'package:dslideshow_flutter/src/effect/depth_effect.dart';
+import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/flip_horizontal_effect.dart';
+import 'package:dslideshow_flutter/src/effect/flip_vertical_effect.dart';
+import 'package:dslideshow_flutter/src/effect/foreground_to_background_effect.dart';
 import 'package:dslideshow_flutter/src/effect/liquid_morph_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/parallax_effect.dart';
+import 'package:dslideshow_flutter/src/effect/rotate_down_effect.dart';
+import 'package:dslideshow_flutter/src/effect/rotate_up_effect.dart';
+import 'package:dslideshow_flutter/src/effect/stack_effect.dart';
+import 'package:dslideshow_flutter/src/effect/tablet_effect.dart';
+import 'package:dslideshow_flutter/src/effect/zoom_out_effect.dart';
 import 'package:dslideshow_flutter/src/effect/zoom_over_effect.dart';
 
-import 'media_slider_item_effects.dart';
 import 'media_slider_item_effect.dart';
 import 'mosaic_transition_effect.dart';
 
