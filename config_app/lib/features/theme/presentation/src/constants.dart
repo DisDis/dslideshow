@@ -107,4 +107,38 @@ abstract class AppColors {
   static const connectionNotProtected = Colors.green;
   static const noImageAvatar = Colors.amber;
   static const imageAvatar = Colors.blue;
+
+  // Новые цвета, добавленные из других частей приложения
+  // Цвета для логотипа Photo Frame Config
+  static const logoFrameDefault = Color(0xFF263238); // Темный индиго/серый
+  static const logoScreenStart = Color(0xFF26C6DA); // Циан
+  static const logoScreenEnd = Color(0xFF00ACC1); // Более глубокий циан
+  static const logoAccentColor = Color(0xFFFFB300); // Янтарный акцент
+
+  // Цвета с alpha-значениями
+  static const blackOpacity90 = Color(0xE6000000); // black.withAlpha((255.0 * 0.9).round())
+  static const whiteOpacity40 = Color(0x66FFFFFF); // white.withAlpha((255.0 * 0.4).round())
+  static const whiteOpacity10 = Color(0x1AFFFFFF); // white.withAlpha((255.0 * 0.1).round())
+  static const whiteOpacity20 = Color(0x33FFFFFF); // white.withAlpha((255.0 * 0.2).round())
+  static const whiteOpacity30 = Color(0x4DFFFFFF); // white.withAlpha((255.0 * 0.3).round())
+  static const whiteOpacity50 = Color(0x80FFFFFF); // white.withAlpha((255.0 * 0.5).round())
+  static const whiteOpacity70 = Color(0xB3FFFFFF); // white.withAlpha((255.0 * 0.7).round())
+  static const whiteOpacity80 = Color(0xCCFFFFFF); // white.withAlpha((255.0 * 0.8).round())
+  static const blackOpacity10 = Color(0x1A000000); // black.withAlpha((255.0 * 0.1).round())
+  static const blackOpacity20 = Color(0x33000000); // black.withAlpha((255.0 * 0.2).round())
+  static const blackOpacity30 = Color(0x4D000000); // black.withAlpha((255.0 * 0.3).round())
+  static const blackOpacity50 = Color(0x80000000); // black.withAlpha((255.0 * 0.5).round())
+  static const blackOpacity70 = Color(0xB3000000); // black.withAlpha((255.0 * 0.7).round())
+  
+  // Цвета для видео прогресса
+  static const videoProgressPlayedColor = Colors.cyanAccent;
+  static const videoProgressBufferedColor = Colors.white24;
+  static const videoProgressBackgroundColor = Colors.grey;
+
+  // Цвета для тегов
+  static const tagIconColor = Colors.cyanAccent;
+
+  // Цвета для различных компонентов интерфейса
+  static const appBarIconColor = Colors.white;
+  static const appBarIconColorDark = Colors.black;
 }

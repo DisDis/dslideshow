@@ -1,4 +1,5 @@
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
@@ -35,7 +36,7 @@ class MetadataPanel extends StatelessWidget {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            Colors.black.withAlpha((255.0 * 0.9).round()),
+            AppColors.blackOpacity90,
             Colors.transparent,
           ],
         ),
@@ -59,7 +60,7 @@ class MetadataPanel extends StatelessWidget {
           // Путь (Папка)
           Row(
             children: [
-              const Icon(Icons.folder_open_outlined, color: Colors.cyanAccent, size: 16),
+              const Icon(Icons.folder_open_outlined, color: AppColors.tagIconColor, size: 16),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -80,10 +81,7 @@ class MetadataPanel extends StatelessWidget {
           // Теги (Расширение, Тип)
           Row(
             children: [
-              _buildTag(extension, Colors.cyanAccent),
-              // const SizedBox(width: 8),
-              // _buildTag('MEDIA', Colors.white54),
-              // Если бы были размеры файла, добавили бы здесь: _buildTag('4.2 MB', Colors.white54),
+              _buildTag(extension, AppColors.tagIconColor),
             ],
           ),
         ],

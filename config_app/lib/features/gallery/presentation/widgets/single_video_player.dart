@@ -1,3 +1,4 @@
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -84,9 +85,9 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
             _controller, 
             allowScrubbing: true,
             colors: const VideoProgressColors(
-              playedColor: Colors.cyanAccent,
-              bufferedColor: Colors.white24,
-              backgroundColor: Colors.grey,
+              playedColor: AppColors.videoProgressPlayedColor,
+              bufferedColor: AppColors.videoProgressBufferedColor,
+              backgroundColor: AppColors.videoProgressBackgroundColor,
             ),
           ),
         ],

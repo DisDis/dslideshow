@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 
 /// Виджет логотипа приложения "Конфигуратор Фоторамки".
@@ -40,12 +41,6 @@ class _LogoPainter extends CustomPainter {
 
   _LogoPainter({this.baseColor});
 
-  // --- Цветовая палитра по умолчанию ---
-  static const Color _kFrameColorDefault = Color(0xFF263238); // Темный индиго/серый
-  static const Color _kScreenStart = Color(0xFF26C6DA); // Циан
-  static const Color _kScreenEnd = Color(0xFF00ACC1); // Более глубокий циан
-  static const Color _kAccentColor = Color(0xFFFFB300); // Янтарный акцент
-
   @override
   void paint(Canvas canvas, Size size) {
     // Базовые размеры и отступы для масштабирования
@@ -60,7 +55,7 @@ class _LogoPainter extends CustomPainter {
 
     // 1. Рисуем внешнюю рамку (корпус устройства)
     final framePaint = Paint()
-      ..color = baseColor ?? _kFrameColorDefault
+      ..color = baseColor ?? AppColors.logoFrameDefault
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(
@@ -86,8 +81,8 @@ class _LogoPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          _kScreenStart.withAlpha((255.0 * 0.1).round()),
-          _kScreenEnd.withAlpha((255.0 * 0.3).round()),
+          AppColors.logoScreenStart.withAlpha((255.0 * 0.1).round()),
+          AppColors.logoScreenEnd.withAlpha((255.0 * 0.3).round()),
         ],
       ).createShader(screenRect);
     canvas.drawRect(screenRect, screenBgPaint);
@@ -115,7 +110,7 @@ class _LogoPainter extends CustomPainter {
       ..shader = const LinearGradient(
          begin: Alignment.topCenter,
          end: Alignment.bottomCenter,
-         colors: [_kScreenStart, _kScreenEnd],
+         colors: [AppColors.logoScreenStart, AppColors.logoScreenEnd],
       ).createShader(screenRect);
 
     canvas.drawPath(mountainPath, mountainPaint);
@@ -127,7 +122,7 @@ class _LogoPainter extends CustomPainter {
     final accentRadius = shortestSide * 0.12;
 
     final accentPaint = Paint()
-      ..color = _kAccentColor
+      ..color = AppColors.logoAccentColor
       ..style = PaintingStyle.fill
       // Добавляем легкое свечение
       ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 2);
@@ -136,7 +131,7 @@ class _LogoPainter extends CustomPainter {
     
     // Добавляем белый ободок для контраста акцента
     final accentBorderPaint = Paint()
-      ..color = Colors.white.withAlpha((255.0 * 0.4).round())
+      ..color = AppColors.whiteOpacity40
       ..style = PaintingStyle.stroke
       ..strokeWidth = shortestSide * 0.02;
       
