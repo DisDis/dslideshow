@@ -1,6 +1,7 @@
 #
 Fix SlideshowPreview
 Fix CubeEffect
+Fix AccordionEffect
 # 9.4.0
 Added http cache-control for media files
 Optimize LiquidMorphEffect
