@@ -37,6 +37,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
   late Duration transitionTime;
   late Duration displayTime;
+  final Size size = Size(200, 200);
   final int displayTimeMs = 1000;
 
   Widget _currentWidget = slideShowLoaderWidget;
@@ -101,6 +102,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     var mediaItem = await _getNextItem();
     Widget itemWidget;
     itemWidget = CachedNetworkImage(
+      width: size.width,
+      height: size.height,
       imageUrl: mediaItem.uri.toString(),
       errorWidget: (BuildContext context, String url, error) {
         return Row(
@@ -117,7 +120,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       await itemWidget.precache(context);
     }
     // ignore: use_build_context_synchronously
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     final screenW = size.width;
     final screenH = size.height;
     _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);
@@ -149,11 +152,13 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
     return Stack(children: [
       // --- BACKGROUND ---
-      Container(
-        width: size.width,
-        height: size.height,
-        color: AppColors.slideshowBackground,
-        child: !isItemChanging ? _currentWidget : _transitionWidget,
+      Center(
+        child: Container(
+          width: 200,
+          height: 200,
+          color: AppColors.slideshowBackground,
+          child: !isItemChanging ? _currentWidget : _transitionWidget,
+        ),
       ),
       Positioned(
         bottom: 10,
