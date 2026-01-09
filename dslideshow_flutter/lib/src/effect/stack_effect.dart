@@ -13,11 +13,10 @@ class StackEffect extends MediaSliderItemEffect  with TranslateEffect {
     double screenH,
   ) {
     if (isCurrentPage) {
-      double width = MediaQuery.of(context).size.width;
       return Transform(
         transformHitTests: false,
         transform: translateCurrent(
-          Matrix4.identity()..translateByDouble(width * pageDelta, 0.0, 0.0, 1.0),
+          Matrix4.identity()..translateByDouble(screenW * pageDelta, 0.0, 0.0, 1.0),
           pageDelta,
           screenW,
           screenH,

@@ -17,7 +17,6 @@ class FlipVerticalEffect extends MediaSliderItemEffect  with TranslateEffect {
     double screenW,
     double screenH,
   ) {
-    final double width = MediaQuery.of(context).size.width;
     if ((!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/ ) &&
         pageDelta > 0.5) {
       return Transform(
@@ -27,7 +26,7 @@ class FlipVerticalEffect extends MediaSliderItemEffect  with TranslateEffect {
           Matrix4.identity()
             ..setEntry(3, 2, perspectiveScale)
             ..rotateX(math.pi * (pageDelta - 1))
-            ..leftTranslateByDouble(-width * (1 - pageDelta), 0.0, 0.0, 1.0),
+            ..leftTranslateByDouble(-screenW * (1 - pageDelta), 0.0, 0.0, 1.0),
           pageDelta,
           screenW,
           screenH,
@@ -42,7 +41,7 @@ class FlipVerticalEffect extends MediaSliderItemEffect  with TranslateEffect {
           Matrix4.identity()
             ..setEntry(3, 2, perspectiveScale)
             ..rotateX(math.pi * pageDelta)
-            ..leftTranslateByDouble(width * pageDelta, 0.0, 0.0, 1.0),
+            ..leftTranslateByDouble(screenW * pageDelta, 0.0, 0.0, 1.0),
           pageDelta,
           screenW,
           screenH,

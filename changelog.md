@@ -1,8 +1,11 @@
-#
+# 9.4.5
 Fix SlideshowPreview
 Fix CubeEffect
 Fix AccordionEffect
 Fix BackgroundToForegroundEffect
+Fix ForegroundToBackgroundEffect
+Revert LiquidMorphEffect
+
 # 9.4.0
 Added http cache-control for media files
 Optimize LiquidMorphEffect
