@@ -27,7 +27,24 @@ class BlindsEffect extends MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) {
+    // Высота одной полоски (для макета)
     final double stripHeight = screenH / stripCount;
+
+    // --- НАСТРОЙКИ АНИМАЦИИ ---
+    // Какую часть общего времени тратит одна полоска на свое закрытие?
+    // 0.4 означает, что полоска закрывается за 40% от общего времени перехода.
+    // Оставшиеся 60% времени распределяются на задержки (волну).
+    // Если хотите более быструю волну (меньше наложений), уменьшите это число (например до 0.3).
+    const double oneStripDuration = 0.5; 
+    
+    // Общее время, доступное для разброса задержек (stagger)
+    const double totalStaggerTime = 1.0 - oneStripDuration;
+
+    // Вычисляем шаг задержки между соседними полосками
+    // Защита от деления на 0, если вдруг stripCount = 1
+    final double delayStep = stripCount > 1 
+        ? totalStaggerTime / (stripCount - 1) 
+        : 0.0;
 
     return Stack(
       fit: StackFit.expand,
@@ -38,40 +55,41 @@ class BlindsEffect extends MediaSliderItemEffect {
         // 2. Жалюзи из старого изображения
         Column(
           children: List.generate(stripCount, (index) {
-            // Расчет прогресса для "волны"
-            final double delay = index * 0.05;
-            double progress = (controller.value - delay) * (1.0 + (stripCount * 0.05));
+            
+            // --- НОВАЯ МАТЕМАТИКА ---
+            
+            // Рассчитываем точную задержку для этого индекса
+            final double start = index * delayStep;
+            
+            // Считаем прогресс:
+            // (Текущее время - время старта) / длительность одной полоски
+            double progress = (controller.value - start) / oneStripDuration;
+            
+            // Загоняем в рамки от 0.0 до 1.0
             progress = progress.clamp(0.0, 1.0);
 
-            // Сдвиг контента:
-            // Для 0-й полоски сдвиг 0.
-            // Для 1-й полоски сдвиг = -stripHeight (поднимаем картинку вверх)
-            // Для 2-й полоски сдвиг = -2 * stripHeight
+            // Сдвиг контента (как в предыдущем рабочем решении)
             final double contentOffset = -1.0 * index * stripHeight;
 
             return SizedBox(
               width: screenW,
-              height: stripHeight,
+              height: stripHeight, // Жесткая высота
               child: progress >= 1.0
-                  ? null // Полоска исчезла
+                  ? null // Оптимизация: не рисуем, если закрылось
                   : Transform(
-                      // Анимация закрытия полоски (сплющивание по вертикали)
-                      transform: Matrix4.identity()..
-                      scaleByDouble(1.0, 1.0 - progress, 1.0, 1.0),
+                      // Сплющивание по вертикали
+                      transform: Matrix4.identity()..scale(1.0, 1.0 - progress),
                       alignment: Alignment.topCenter,
                       child: ClipRect(
                         child: OverflowBox(
-                          // !!! ГЛАВНОЕ ИСПРАВЛЕНИЕ !!!
-                          // Разрешаем (и заставляем) ребенку быть размером во весь экран,
-                          // несмотря на то, что родитель (SizedBox) маленький.
+                          // Разрешаем быть большим
                           minWidth: screenW,
                           maxWidth: screenW,
                           minHeight: screenH,
                           maxHeight: screenH,
-                          alignment: Alignment.topLeft, // Якорь слева сверху
+                          alignment: Alignment.topLeft,
                           child: Transform.translate(
-                            // Сдвигаем большую картинку вверх, чтобы в окошко
-                            // попал нужный фрагмент
+                            // Корректируем позицию большой картинки
                             offset: Offset(0, contentOffset),
                             child: currentWidget,
                           ),

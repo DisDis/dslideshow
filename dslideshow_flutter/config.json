@@ -7,7 +7,7 @@
   },
   "slideshow": {
     "allowedEffects": [
-      "LiquidMorph"
+      "Blinds"
     ],
     "transitionTimeMs": 5000
   },
