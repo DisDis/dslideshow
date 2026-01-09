@@ -1,3 +1,6 @@
+# 9.x.x
+Added display info
+
 # 9.4.5
 Fix SlideshowPreview
 Fix CubeEffect
