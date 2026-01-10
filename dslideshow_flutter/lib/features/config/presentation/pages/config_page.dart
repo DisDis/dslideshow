@@ -102,8 +102,12 @@ class _ConfigPageState extends State<ConfigPage> {
       backgroundColor: _backgroundColor,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
+          Column(
+            children: [
+              Expanded(
+                child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
+              ),
+            ],
           ),
           const CommonHeaderWidget(),
           // 2. DEBUG СЛОЙ (поверх основного)
