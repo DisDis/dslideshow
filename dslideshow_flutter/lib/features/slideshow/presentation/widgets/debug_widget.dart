@@ -32,56 +32,71 @@ class DebugWidget extends StatelessWidget {
         Positioned(
           top: 10.0,
           right: 70.0,
-          child: Row(
+          child: Column(
             children: [
-              ElevatedButton(
-                onPressed: () =>
-                    _frontendService.emulatePushButton(ButtonType.button0),
-                child: Icon(
-                  getIconDataBySlideshowAction(
-                    appConfig.slideshow.buttons.button0.action,
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        _frontendService.emulatePushButton(ButtonType.button0),
+                    child: Icon(
+                      getIconDataBySlideshowAction(
+                        appConfig.slideshow.buttons.button0.action,
+                      ),
+                      size: 40.0,
+                    ),
                   ),
-                  size: 40.0,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () =>
-                    _frontendService.emulatePushButton(ButtonType.button1),
-                child: Icon(
-                  getIconDataBySlideshowAction(
-                    appConfig.slideshow.buttons.button1.action,
+                  ElevatedButton(
+                    onPressed: () =>
+                        _frontendService.emulatePushButton(ButtonType.button1),
+                    child: Icon(
+                      getIconDataBySlideshowAction(
+                        appConfig.slideshow.buttons.button1.action,
+                      ),
+                      size: 40.0,
+                    ),
                   ),
-                  size: 40.0,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () =>
-                    _frontendService.emulatePushButton(ButtonType.button2),
-                child: Icon(
-                  getIconDataBySlideshowAction(
-                    appConfig.slideshow.buttons.button2.action,
+                  ElevatedButton(
+                    onPressed: () =>
+                        _frontendService.emulatePushButton(ButtonType.button2),
+                    child: Icon(
+                      getIconDataBySlideshowAction(
+                        appConfig.slideshow.buttons.button2.action,
+                      ),
+                      size: 40.0,
+                    ),
                   ),
-                  size: 40.0,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () =>
-                    _frontendService.emulatePushButton(ButtonType.button3),
-                child: Icon(
-                  getIconDataBySlideshowAction(
-                    appConfig.slideshow.buttons.button3.action,
+                  ElevatedButton(
+                    onPressed: () =>
+                        _frontendService.emulatePushButton(ButtonType.button3),
+                    child: Icon(
+                      getIconDataBySlideshowAction(
+                        appConfig.slideshow.buttons.button3.action,
+                      ),
+                      size: 40.0,
+                    ),
                   ),
-                  size: 40.0,
-                ),
+                  
+                ],
               ),
-              ElevatedButton(
-                child: const Icon(Icons.settings, size: 40.0),
-                onPressed: () {
-                  context.read<RouteBloc>().add(
-                    ChangePageEvent(RoutePage.config),
-                  );
-                },
-              ),
+              Row(children: [
+                   ElevatedButton(
+                    child: const Icon(Icons.settings, size: 40.0),
+                    onPressed: () {
+                      context.read<RouteBloc>().add(
+                        ChangePageEvent(RoutePage.config),
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Icon(Icons.update, size: 40.0),
+                    onPressed: () {
+                      context.read<RouteBloc>().add(
+                        ChangePageEvent(RoutePage.ota),
+                      );
+                    },
+                  ),
+                ],)
             ],
           ),
         ),

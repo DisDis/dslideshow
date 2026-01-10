@@ -2,6 +2,7 @@ import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart'
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/widgets/ota_view.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/src/theme_colors.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,7 @@ class OTAPage extends StatelessWidget {
     return BlocProvider(
         create: (_) => OtaBloc(frontendService: injector(), backend: backend, routeBloc: injector())..add(const OtaEvent.initialization()),
         child: Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: ThemeColors.configBackgroundColor,
             body: OTAView(
               terminal: terminal,
             )));

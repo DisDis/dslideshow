@@ -39,9 +39,9 @@ class _ConfigPageState extends State<ConfigPage> {
   SystemInfo? _systemInfo;
 
   // Цвета для дизайна
-  final Color _backgroundColor = const Color(0xFF1E1E1E);
-  final Color _cardColor = const Color(0xFF2C2C2C);
-  final Color _accentColor = const Color(0xFF64B5F6);
+  final Color _backgroundColor = ThemeColors.configBackgroundColor;
+  final Color _cardColor = ThemeColors.configCardColor;
+  final Color _accentColor = ThemeColors.configAccentColor;
 
   void createUrl() async {
     if (_systemInfo == null || _accessCode == INIT_CODE) {
@@ -156,7 +156,7 @@ class _ConfigPageState extends State<ConfigPage> {
       decoration: BoxDecoration(
         color: _cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: ThemeColors.configInputBorderColor),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -164,7 +164,7 @@ class _ConfigPageState extends State<ConfigPage> {
         children: [
           Text(
             "Device Setup",
-            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: ThemeSettings.configHeaderTextSize, fontWeight: FontWeight.bold),
+            style: TextStyle(color: ThemeColors.configHeaderTextColor, fontSize: ThemeSettings.configHeaderTextSize, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildStepRow(Icons.qr_code_scanner, "1. Scan the QR code to open settings"),
@@ -176,8 +176,8 @@ class _ConfigPageState extends State<ConfigPage> {
           Text(
             "Manual Connection",
             style: TextStyle(
-              color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: ThemeSettings.configTextSize,
+              color: ThemeColors.configSubheaderTextColor,
+              fontSize: ThemeSettings.configSubheaderTextSize,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -193,8 +193,8 @@ class _ConfigPageState extends State<ConfigPage> {
           Text(
             "Access Code",
             style: TextStyle(
-              color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: ThemeSettings.configTextSize ,
+              color: ThemeColors.configSubheaderTextColor,
+              fontSize: ThemeSettings.configSubheaderTextSize ,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -203,14 +203,14 @@ class _ConfigPageState extends State<ConfigPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black26,
+              color: ThemeColors.configAccessCodeBgColor,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _accentColor.withAlpha((255.0 * 0.3).round())),
+              border: Border.all(color: ThemeColors.configAccessCodeBorderColor),
             ),
             child: Text(
               _accessCode,
               style: const TextStyle(
-                color: Colors.white,
+                color: ThemeColors.configNormalTextColor,
                 fontSize: ThemeSettings.configAccessCodeSize,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 4,
@@ -229,7 +229,7 @@ class _ConfigPageState extends State<ConfigPage> {
         Icon(icon, color: _accentColor, size: ThemeSettings.configManualIconSize),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: ThemeSettings.configManualTextSize)),
+          child: Text(text, style: TextStyle(color: ThemeColors.configNormalTextColor, fontSize: ThemeSettings.configManualTextSize)),
         ),
       ],
     );

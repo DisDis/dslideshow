@@ -8,10 +8,10 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 
 class OtaReadyWidget extends StatelessWidget {
-  final Color _cardColor = const Color(0xFF2C2C2C);
-  final Color _accentColor = const Color(0xFF64B5F6);
+  // Colors are now defined in ThemeColors
 
   final OtaReadyState state;
   const OtaReadyWidget({super.key, required this.state});
@@ -56,11 +56,11 @@ class OtaReadyWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ThemeColors.QRCodeBackground,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withAlpha((255.0 * 0.3).round()), blurRadius: 15, offset: const Offset(0, 10))],
+        boxShadow: [BoxShadow(color: ThemeColors.QRCodeShadow, blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, backgroundColor: Colors.white),
+      child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, backgroundColor: ThemeColors.QRCodeBackground),
     );
   }
 
@@ -68,9 +68,9 @@ class OtaReadyWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: _cardColor,
+        color: ThemeColors.otaCardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: ThemeColors.otaReadyInputBorderColor),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -78,14 +78,14 @@ class OtaReadyWidget extends StatelessWidget {
         children: [
           Text(
             "Update firmware",
-            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(color: ThemeColors.otaReadyHeaderTextColor, fontSize: ThemeSettings.otaReadyTitleSize, fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
-              const Text("Current version: "),
+              const Text("Current version: ", style: TextStyle(fontSize:  ThemeSettings.otaReadyNormalTextSize),),
               Text(
                 "v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(color: Colors.red.withAlpha((255.0 * 0.9).round()), fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(color: ThemeColors.otaVersionCurrentColor, fontSize: ThemeSettings.otaReadyVersionSize, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -99,8 +99,8 @@ class OtaReadyWidget extends StatelessWidget {
           Text(
             "Manual Connection",
             style: TextStyle(
-              color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: 12,
+              color: ThemeColors.otaReadySubheaderTextColor,
+              fontSize: ThemeSettings.otaReadyNormalTextSize,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -108,7 +108,7 @@ class OtaReadyWidget extends StatelessWidget {
           const SizedBox(height: 8),
           SelectableText(
             state.otaStartUrl,
-            style: TextStyle(color: _accentColor, fontSize: 18, decoration: TextDecoration.underline),
+            style: TextStyle(color: ThemeColors.otaAccentColor, fontSize: ThemeSettings.otaReadyLinkSize, decoration: TextDecoration.underline),
           ),
 
           const SizedBox(height: 24),
@@ -116,8 +116,8 @@ class OtaReadyWidget extends StatelessWidget {
           Text(
             "Access Code",
             style: TextStyle(
-              color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: 12,
+              color: ThemeColors.otaReadySubheaderTextColor,
+              fontSize: ThemeSettings.otaReadyNormalTextSize,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -126,15 +126,15 @@ class OtaReadyWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black26,
+              color: ThemeColors.otaReadyAccessCodeBgColor,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _accentColor.withAlpha((255.0 * 0.3).round())),
+              border: Border.all(color: ThemeColors.otaReadyAccessCodeBorderColor),
             ),
             child: Text(
               state.info.code,
               style: const TextStyle(
-                color: Colors.white,
-                fontSize: 68,
+                color: ThemeColors.otaReadyNormalTextColor,
+                fontSize: ThemeSettings.otaReadyAccessCodeSize,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 4,
                 fontFamily: 'Courier', // Моноширинный шрифт для кода
@@ -149,10 +149,10 @@ class OtaReadyWidget extends StatelessWidget {
   Widget _buildStepRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: _accentColor, size: 20),
+        Icon(icon, color: ThemeColors.otaAccentColor, size: ThemeSettings.otaReadyInstructionIconSize),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: 16)),
+          child: Text(text, style: TextStyle(color: ThemeColors.otaReadyNormalTextColor, fontSize: ThemeSettings.otaReadyNormalTextSize)),
         ),
       ],
     );

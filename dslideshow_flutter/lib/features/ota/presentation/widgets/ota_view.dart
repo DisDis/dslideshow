@@ -11,10 +11,10 @@ import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xterm/xterm.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 
 // Цвета из OtaReadyWidget для консистентности
-const Color _kCardColor = Color(0xFF2C2C2C);
-const Color _kAccentColor = Color(0xFF64B5F6);
+// Цвета определены в ThemeColors
 
 class OTAView extends StatelessWidget {
   final Terminal terminal;
@@ -89,15 +89,15 @@ class _StatusPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: _kCardColor,
+        color: ThemeColors.otaCardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: ThemeColors.otaReadyInputBorderColor),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (state is OtaInitialState)
-            const CircularProgressIndicator(color: _kAccentColor),
+            const CircularProgressIndicator(color: ThemeColors.otaAccentColor),
 
           if (state is OtaProgressState)
             _buildProgress(state as OtaProgressState),
@@ -111,9 +111,9 @@ class _StatusPanel extends StatelessWidget {
            if (state is OtaExitState)
              const Column(
                children: [
-                 CircularProgressIndicator(color: _kAccentColor),
+                 CircularProgressIndicator(color: ThemeColors.otaAccentColor),
                  SizedBox(height: 20),
-                 Text("Rebooting system...", style: TextStyle(color: Colors.white70)),
+                 Text("Rebooting system...", style: TextStyle(color: ThemeColors.otaRebootTextColor)),
                ],
              )
         ],
@@ -132,19 +132,19 @@ class _StatusPanel extends StatelessWidget {
         Icon(
           isUploading ? Icons.cloud_upload_outlined : Icons.system_update_alt,
           size: 80,
-          color: _kAccentColor,
+          color: ThemeColors.otaProgressIconColor,
         ),
         const SizedBox(height: 24),
         
         // Текст статуса
         Text(
           isUploading ? "Uploading Firmware" : "Installing Update",
-          style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: ThemeColors.otaProgressTextColor, fontSize: ThemeSettings.otaProgressTitleSize, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           isUploading ? "Please do not turn off the device" : "This may take a few minutes",
-          style: const TextStyle(color: Colors.white54, fontSize: 14),
+          style: const TextStyle(color: ThemeColors.otaProgressSubtextColor, fontSize: ThemeSettings.otaProgressSubtitleSize),
         ),
         
         const SizedBox(height: 40),
@@ -153,8 +153,8 @@ class _StatusPanel extends StatelessWidget {
         Text(
           "${percent.toStringAsFixed(0)}%",
           style: const TextStyle(
-            color: _kAccentColor, 
-            fontSize: 64, 
+            color: ThemeColors.otaProgressPercentColor,
+            fontSize: ThemeSettings.otaProgressPercentSize,
             fontWeight: FontWeight.w900,
             fontFamily: 'Courier',
           ),
@@ -167,9 +167,9 @@ class _StatusPanel extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           child: LinearProgressIndicator(
             value: percent / 100,
-            minHeight: 12,
-            backgroundColor: Colors.black26,
-            color: _kAccentColor,
+            minHeight: ThemeSettings.otaProgressBarHeight,
+            backgroundColor: ThemeColors.otaProgressBgColor,
+            color: ThemeColors.otaProgressIconColor,
           ),
         ),
 
@@ -186,28 +186,28 @@ class _StatusPanel extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.error_outline, size: 80, color: Colors.redAccent),
+        Icon(Icons.error_outline, size: ThemeSettings.otaProgressIconSize, color: ThemeColors.otaErrorIconColor),
         const SizedBox(height: 24),
-        const Text(
+        Text(
           "Update Failed",
-          style: TextStyle(color: Colors.redAccent, fontSize: 32, fontWeight: FontWeight.bold),
+          style: TextStyle(color: ThemeColors.otaErrorTextColor, fontSize: ThemeSettings.otaErrorTitleSize, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.red.withAlpha((255.0 * 0.1).round()),
+            color: ThemeColors.otaErrorBgColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.red.withAlpha((255.0 * 0.3).round())),
+            border: Border.all(color: ThemeColors.otaErrorBorderColor),
           ),
           child: Text(
             state.info.errorText ?? "Unknown error occurred",
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
+            style: const TextStyle(color: ThemeColors.otaProgressTextColor, fontSize: ThemeSettings.otaErrorMessageSize),
           ),
         ),
         const SizedBox(height: 24),
-        const Text("Check the terminal log for details.", style: TextStyle(color: Colors.white38)),
+        Text("Check the terminal log for details.", style: TextStyle(color: ThemeColors.otaTerminalHeaderTextColor)),
       ],
     );
   }
@@ -216,16 +216,16 @@ class _StatusPanel extends StatelessWidget {
     return const Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.check_circle_outline, size: 90, color: Colors.greenAccent),
+        Icon(Icons.check_circle_outline, size: ThemeSettings.otaSuccessIconSize, color: ThemeColors.otaSuccessIconColor),
         SizedBox(height: 24),
         Text(
           "Update Complete",
-          style: TextStyle(color: Colors.greenAccent, fontSize: 32, fontWeight: FontWeight.bold),
+          style: TextStyle(color: ThemeColors.otaSuccessTextColor, fontSize: ThemeSettings.otaSuccessTitleSize, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
         Text(
           "The system is rebooting...",
-          style: TextStyle(color: Colors.white70, fontSize: 18),
+          style: TextStyle(color: ThemeColors.otaRebootTextColor, fontSize: ThemeSettings.otaRebootTextSize),
         ),
       ],
     );
@@ -247,19 +247,19 @@ class _TerminalPanel extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: const BoxDecoration(
-            color: Color(0xFF1E1E1E), // Чуть темнее карточки
+            color: ThemeColors.otaTerminalHeaderBgColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Row(
             children: [
-              const Icon(Icons.terminal, color: Colors.white38, size: 16),
+              Icon(Icons.terminal, color: ThemeColors.otaTerminalHeaderIconColor, size: ThemeSettings.otaTerminalHeaderIconSize),
               const SizedBox(width: 8),
-              const Text("SYSTEM LOG", style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+              Text("SYSTEM LOG", style: TextStyle(color: ThemeColors.otaTerminalHeaderTextColor, fontSize: ThemeSettings.otaTerminalHeaderSize, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
               const Spacer(),
               // Фейковые кнопки окна (просто для стиля)
               Row(
-                children: [Colors.red, Colors.amber, Colors.green]
-                    .map((c) => Container(margin: const EdgeInsets.only(left: 6), width: 8, height: 8, decoration: BoxDecoration(color: c.withAlpha((255.0 * 0.5).round()), shape: BoxShape.circle)))
+                children: [ThemeColors.otaTerminalBorderColor, ThemeColors.otaTerminalBorderAmberColor, ThemeColors.otaTerminalBorderGreenColor]
+                    .map((c) => Container(margin: const EdgeInsets.only(left: 6), width: ThemeSettings.otaTerminalDotSize, height: ThemeSettings.otaTerminalDotSize, decoration: BoxDecoration(color: c, shape: BoxShape.circle)))
                     .toList(),
               )
             ],
@@ -269,7 +269,7 @@ class _TerminalPanel extends StatelessWidget {
         Expanded(
           child: Container(
             decoration: const BoxDecoration(
-              color: Colors.black, // Черный фон внутри консоли
+              color: ThemeColors.otaTerminalBgColor, // Черный фон внутри консоли
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
             ),
             padding: const EdgeInsets.all(4), // Небольшой отступ от краев
@@ -281,41 +281,11 @@ class _TerminalPanel extends StatelessWidget {
                 readOnly: true,
                 autofocus: false,
                 textStyle: TerminalStyle(
-                   fontSize: 12,
+                   fontSize: ThemeSettings.otaTerminalFontSize,
                    fontFamily: 'Cascadia Mono',
                    fontFamilyFallback: ['Courier New', 'monospace'],
                 ),
-                theme: const TerminalTheme(
-                  cursor: Colors.transparent, // Скрываем курсор, так как readOnly
-                  selection: Color(0xFF264F78),
-                  foreground: Color(0xFFCCCCCC),
-                  background: Colors.black,
-                  
-                  // Обычные цвета (ANSI 0-7)
-                  black: Color(0xFF000000),
-                  red: Color(0xFFCD3131),
-                  green: Color(0xFF0DBC79),
-                  yellow: Color(0xFFE5E510),
-                  blue: Color(0xFF2472C8),
-                  magenta: Color(0xFFBC3FBC),
-                  cyan: Color(0xFF11A8CD),
-                  white: Color(0xFFE5E5E5),
-                  
-                  // Яркие цвета (ANSI 8-15)
-                  brightBlack: Color(0xFF666666),
-                  brightRed: Color(0xFFF14C4C),
-                  brightGreen: Color(0xFF23D18B),
-                  brightYellow: Color(0xFFF5F543),
-                  brightBlue: Color(0xFF3B8EEA),
-                  brightMagenta: Color(0xFFD670D6),
-                  brightCyan: Color(0xFF29B8DB),
-                  brightWhite: Color(0xFFFFFFFF),
-                  
-                  // Цвета поиска (обязательные поля)
-                  searchHitBackground: Color(0xFFF8C18C),
-                  searchHitBackgroundCurrent: Color(0xFF314365),
-                  searchHitForeground: Color(0xFF000000),
-                ),
+                theme: ThemeColors.terminaTheme,
               ),
             ),
           ),
@@ -331,7 +301,7 @@ class TestConfigButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      style: TextButton.styleFrom(foregroundColor: Colors.white38),
+      style: TextButton.styleFrom(foregroundColor: ThemeColors.otaDevButtonColor),
       onPressed: () {
         context.read<RouteBloc>().add(ChangePageEvent(RoutePage.config));
       },
