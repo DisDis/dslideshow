@@ -24,7 +24,10 @@ class SystemInfoWidgetState extends State<SystemInfoWidget> {
     if (_systemInfo == null) {
       return Container(color: Colors.transparent);
     }
-    return SystemInfoMetrics(model: _systemInfo!);
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SystemInfoMetrics(model: _systemInfo!),
+    );
   }
 
   @override

@@ -1,3 +1,6 @@
+# 9.5.x
+Fix SystemMetricsWidget padding
+
 # 9.5.0
 Added display info
 Fix Config, OTA screen
