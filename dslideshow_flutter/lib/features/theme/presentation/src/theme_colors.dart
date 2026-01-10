@@ -61,6 +61,17 @@ abstract class ThemeColors {
     0x4D64B5F6,
   ); // 0.3 alpha accent color
 
+  // Menu Page Colors
+  static const menuBorderColor = Color(0xFF00E5FF); // Cyan Accent
+  static const menuActiveBgColor = Color(0x3300E5FF); // Полупрозрачный Cyan
+  static const menuBgColor = Color(0xE6000000); // 90% Black
+  static const menuShadowColor = Color(0x80000000); // 50% Black
+  static const menuTextColor = Color(0xFFFFFFFF); // White
+  static const menuSubTextColor = Color(0x3DFFFFFF); // Colors.white24
+  static const menuInactiveIconColor = Color(0x61FFFFFF); // Colors.white38
+  static const menuInactiveTextColor = Color(0xB3FFFFFF); // Colors.white70
+  static const menuHintTextColor = Color(0x3DFFFFFF); // Colors.white24
+
   static const terminaTheme = TerminalTheme(
     cursor: Colors.transparent, // Скрываем курсор, так как readOnly
     selection: Color(0xFF264F78),

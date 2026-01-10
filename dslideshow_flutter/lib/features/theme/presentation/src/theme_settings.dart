@@ -39,4 +39,13 @@ abstract class ThemeSettings{
   static const double otaReadyLinkSize = 18 * scaleFactor;
   static const double otaReadyAccessCodeSize = 68 * scaleFactor;
   static const double otaReadyInstructionIconSize = 20 * scaleFactor;
+
+  // Menu Page Sizes
+  static const double menuIconSize = 40 * scaleFactor;
+  static const double menuHeaderTitleSize = 24 * scaleFactor;
+  static const double menuListItemTextSize = 20 * scaleFactor;
+  static const double menuHintTextSize = 10 * scaleFactor;
+  static const double menuItemIconSize = 20 * scaleFactor;
+  static const double menuSizeW = 400 * scaleFactor;
+  static const double menuSizeH = 280 * scaleFactor;
 }

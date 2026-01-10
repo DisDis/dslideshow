@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 
 enum MenuCommand { returnToSlideshow, update, config, powerOff, restartApp }
 
@@ -13,31 +14,31 @@ class Option {
 
 final options = [
   Option(
-    icon: const Icon(Icons.keyboard_backspace, size: 40.0),
+    icon: Icon(Icons.keyboard_backspace, size: ThemeSettings.menuIconSize),
     title: 'Return',
     subtitle: 'Return to slideshow.',
     command: MenuCommand.returnToSlideshow,
   ),
   Option(
-    icon: const Icon(Icons.system_update, size: 40.0),
+    icon: Icon(Icons.system_update, size: ThemeSettings.menuIconSize),
     title: 'OTA Update',
     subtitle: 'OTA Update.',
     command: MenuCommand.update,
   ),
   Option(
-    icon: const Icon(Icons.settings, size: 40.0),
+    icon: Icon(Icons.settings, size: ThemeSettings.menuIconSize),
     title: 'Сonfig',
     subtitle: 'Сonfig.',
     command: MenuCommand.config,
   ),
   Option(
-    icon: const Icon(Icons.reset_tv, size: 40.0),
+    icon: Icon(Icons.reset_tv, size: ThemeSettings.menuIconSize),
     title: 'Restart application',
     subtitle: 'Restart application.',
     command: MenuCommand.restartApp,
   ),
   Option(
-    icon: const Icon(Icons.power_settings_new, size: 40.0),
+    icon: Icon(Icons.power_settings_new, size: ThemeSettings.menuIconSize),
     title: 'Power off',
     subtitle: 'Shut down system.',
     command: MenuCommand.powerOff,

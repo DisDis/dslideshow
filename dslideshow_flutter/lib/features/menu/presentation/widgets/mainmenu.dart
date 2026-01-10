@@ -6,14 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'mainmenu_model.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 
 class MainMenuWidget extends StatelessWidget {
   const MainMenuWidget({super.key});
 
-  // HUD Стиль
-  static const Color _kBorderColor = Colors.cyanAccent;
-  static const Color _kActiveBgColor = Color(0x3300E5FF); // Полупрозрачный Cyan
-  static const Color _kBgColor = Color(0xE6000000); // 90% Black (Быстро рисуется)
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +32,14 @@ class MainMenuWidget extends StatelessWidget {
         // 2. МЕНЮ (По центру экрана)
         Center(
           child: Container(
-            width: 400,
-            height: 400, // Фиксированная высота или можно использовать Constraints
+            width: ThemeSettings.menuSizeW,
+            height: ThemeSettings.menuSizeH, // Фиксированная высота или можно использовать Constraints
             decoration: BoxDecoration(
-              color: _kBgColor,
-              border: Border.all(color: _kBorderColor.withAlpha((255.0 * 0.5).round()), width: 1),
+              color: ThemeColors.menuBgColor,
+              border: Border.all(color: ThemeColors.menuBorderColor.withOpacity(0.5), width: 1),
               // Убираем скругление для производительности и стиля "Терминал"
               boxShadow: [
-                 BoxShadow(color: Colors.black.withAlpha((255.0 * 0.5).round()), blurRadius: 20, spreadRadius: 5)
+                 BoxShadow(color: ThemeColors.menuShadowColor, blurRadius: 20, spreadRadius: 5)
               ]
             ),
             child: Column(
@@ -51,15 +48,15 @@ class MainMenuWidget extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  color: _kBorderColor.withAlpha((255.0 * 0.1).round()),
+                  color: ThemeColors.menuBorderColor.withOpacity(0.1),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         "MENU",
                         style: TextStyle(
-                          color: _kBorderColor,
-                          fontSize: 24,
+                          color: ThemeColors.menuBorderColor,
+                          fontSize: ThemeSettings.menuHeaderTitleSize,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2.0,
                         ),
@@ -67,15 +64,15 @@ class MainMenuWidget extends StatelessWidget {
                       // Декоративные элементы
                       Row(
                         children: [
-                          Container(width: 8, height: 8, color: _kBorderColor.withAlpha((255.0 * 0.5).round())),
+                          Container(width: 8, height: 8, color: ThemeColors.menuBorderColor.withOpacity(0.5)),
                           const SizedBox(width: 4),
-                          Container(width: 8, height: 8, color: _kBorderColor),
+                          Container(width: 8, height: 8, color: ThemeColors.menuBorderColor),
                         ],
                       )
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: _kBorderColor),
+                Divider(height: 1, color: ThemeColors.menuBorderColor),
 
                 // Список
                 Expanded(
@@ -99,7 +96,7 @@ class MainMenuWidget extends StatelessWidget {
                    padding: const EdgeInsets.all(8),
                    child: const Text(
                      "Use physical buttons to navigate",
-                     style: TextStyle(color: Colors.white24, fontSize: 10),
+                     style: TextStyle(color: ThemeColors.menuSubTextColor, fontSize: ThemeSettings.menuHintTextSize),
                    ),
                 )
               ],
@@ -113,29 +110,29 @@ class MainMenuWidget extends StatelessWidget {
   Widget _buildMenuItem(BuildContext context, Option item, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
-      color: isSelected ? _kActiveBgColor : Colors.transparent,
+      color: isSelected ? ThemeColors.menuActiveBgColor : Colors.transparent,
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         // Иконка
         leading: Icon(
           item.icon.icon,
-          color: isSelected ? Colors.white : Colors.white38,
-          size: 20,
+          color: isSelected ? ThemeColors.menuTextColor : ThemeColors.menuInactiveIconColor,
+          size: ThemeSettings.menuItemIconSize,
         ),
         // Текст
         title: Text(
           item.title.toUpperCase(),
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.white70,
+            color: isSelected ? ThemeColors.menuTextColor : ThemeColors.menuInactiveTextColor,
             fontWeight: isSelected ? FontWeight.w900 : FontWeight.normal,
-            fontSize: 20,
+            fontSize: ThemeSettings.menuListItemTextSize,
             letterSpacing: 1.2,
           ),
         ),
         // Правая часть (стрелка)
         trailing: isSelected 
-          ? const Icon(Icons.arrow_left, color: _kBorderColor) 
+          ? Icon(Icons.arrow_left, color: ThemeColors.menuBorderColor)
           : null,
         onTap: () {
           context.read<MainMenuBloc>().add(MainMenuEvent.execute(item.command));

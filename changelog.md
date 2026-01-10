@@ -1,5 +1,6 @@
-# 9.5.x
+# 9.5.1
 Fix SystemMetricsWidget padding
+Fix menu size
 
 # 9.5.0
 Added display info
