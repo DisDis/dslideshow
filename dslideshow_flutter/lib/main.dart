@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:device_preview/device_preview.dart';
+import 'package:dslideshow_flutter/environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +43,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+    ]);
   }
   try {
     late RemoteServiceImpl backendService;
@@ -75,18 +79,31 @@ void main() async {
     otaService.service.processing(frontendService, serializers);
 
     injector.registerLazySingleton<SlideshowStatusBloc>(() {
-      return SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
+      return SlideshowStatusBloc(
+        frontendService: frontendService,
+        config: config.slideshow,
+      );
     });
 
     injector.registerFactory<SlideshowBloc>(() {
-      return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
+      return SlideshowBloc(
+        frontendService: frontendService,
+        config: config.slideshow,
+        statusBloc: injector(),
+      );
     });
 
     injector.registerFactory<ButtonsHintBloc>(() {
-      return ButtonsHintBloc(frontendService: frontendService)..add(ButtonsHintEvent.show(isShow: true));
+      return ButtonsHintBloc(frontendService: frontendService)
+        ..add(ButtonsHintEvent.show(isShow: true));
     });
     injector.registerFactory<MainMenuBloc>(() {
-      return MainMenuBloc(frontendService: frontendService, routeBloc: injector(), config: config.slideshow.menu, slideshowStatusBloc: injector());
+      return MainMenuBloc(
+        frontendService: frontendService,
+        routeBloc: injector(),
+        config: config.slideshow.menu,
+        slideshowStatusBloc: injector(),
+      );
     });
 
     frontendService.onOTAReady.listen((isReady) {
@@ -123,7 +140,28 @@ void _runFlutter(FrontendService frontendService) {
         BlocProvider<RouteBloc>.value(value: injector()),
         BlocProvider<SlideshowStatusBloc>.value(value: injector()),
       ],
-      child: const MainApp(),
+      child: isLinuxEmbedded == true
+          ? const MainApp()
+          : DevicePreview(
+              enabled: true,
+              // Начальное устройство - ваше кастомное
+              defaultDevice: Devices.linux.wideMonitor,
+              tools: const [...DevicePreview.defaultTools],
+              // Определяем ваше специфическое устройство
+              devices: [
+                DeviceInfo.genericTablet(
+                  platform: TargetPlatform.linux,
+                  name: 'PhotoFrame',
+                  id: 'embedded-192x120mm',
+                  // windowPosition: Rect.fromLTWH(0, 0, 2560, 1600),
+                  screenSize: const Size(2560, 1600), // Логический размер
+                  pixelRatio: 1.0, // Ваш DPR
+                  safeAreas: EdgeInsets.zero,
+                  rotatedSafeAreas: EdgeInsets.zero,
+                ),
+              ],
+              builder: (context) => const MainApp(),
+            ),
     ),
   );
 }
@@ -135,7 +173,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: const ColorScheme.dark(surface: Colors.black)),
+      theme: ThemeData(
+        colorScheme: const ColorScheme.dark(surface: Colors.black),
+      ),
       localizationsDelegates: const [],
       supportedLocales: const [
         Locale('en'), // English
@@ -147,14 +187,25 @@ class MainApp extends StatelessWidget {
             case RoutePage.slideshow:
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider<SlideshowBloc>(lazy: false, create: (context) => injector<SlideshowBloc>()),
-                  BlocProvider<MainMenuBloc>(lazy: false, create: (context) => injector<MainMenuBloc>()),
-                  BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>()),
+                  BlocProvider<SlideshowBloc>(
+                    lazy: false,
+                    create: (context) => injector<SlideshowBloc>(),
+                  ),
+                  BlocProvider<MainMenuBloc>(
+                    lazy: false,
+                    create: (context) => injector<MainMenuBloc>(),
+                  ),
+                  BlocProvider<ButtonsHintBloc>(
+                    create: (context) => injector<ButtonsHintBloc>(),
+                  ),
                 ],
                 child: const SlideShowPage(),
               );
             case RoutePage.config:
-              return BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>(), child: const ConfigPage());
+              return BlocProvider<ButtonsHintBloc>(
+                create: (context) => injector<ButtonsHintBloc>(),
+                child: const ConfigPage(),
+              );
             case RoutePage.ota:
               return OTAPage();
             case RoutePage.welcome:

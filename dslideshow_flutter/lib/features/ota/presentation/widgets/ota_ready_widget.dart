@@ -20,12 +20,8 @@ class OtaReadyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Column(
-          children: [
-            const CommonHeaderWidget(),
-            Expanded(child: _buildOtaReadyContent()),
-          ],
-        ),
+        Expanded(child: _buildOtaReadyContent()),
+        const CommonHeaderWidget(),
 
         // 2. DEBUG СЛОЙ (поверх основного)
         if (!environment.isLinuxEmbedded)
@@ -43,7 +39,10 @@ class OtaReadyWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Левая часть - QR
-        Expanded(flex: 4, child: Center(child: _buildQrCode())),
+        Expanded(flex: 4, child: Padding(
+          padding: const EdgeInsets.fromLTRB(0,100.0,0,100.0),
+          child: Center(child: _buildQrCode()),
+        )),
         // Правая часть - Информация
         Expanded(
           flex: 2,

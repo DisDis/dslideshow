@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 9.4.5+2
+version: 9.4.5+3
 publish_to: none
 
 environment:
@@ -22,6 +22,7 @@ dependencies:
   # issue https://github.com/ardera/flutter_packages/issues/43
   video_player: 2.9.5
   duration: ^4.0.3
+  device_preview: ^1.3.1
 
   xterm: ^4.0.0
   dslideshow_backend: 

@@ -1,5 +1,7 @@
 # 9.x.x
 Added display info
+Fix Config, OTA screen QR code size
+Fix ButtonHint size
 
 # 9.4.5
 Fix SlideshowPreview

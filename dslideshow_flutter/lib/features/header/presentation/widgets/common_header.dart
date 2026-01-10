@@ -1,10 +1,12 @@
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/blink_animation.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommonHeaderWidget extends StatelessWidget {
+  static const iconSize = ThemeSettings.headerIconSize;
   const CommonHeaderWidget({super.key});
 
   @override
@@ -35,7 +37,7 @@ class CommonHeaderWidget extends StatelessWidget {
                     hideAfterBlink: false,
                     child: Icon(
                       Icons.cloud_off,
-                      size: 24.0,
+                      size: iconSize,
                       color: Colors.red,
                     ),
                   )
@@ -44,7 +46,7 @@ class CommonHeaderWidget extends StatelessWidget {
                     key: Key('cloud_download'),
                     child: Icon(
                       Icons.cloud_download,
-                      size: 24.0,
+                      size: iconSize,
                       color: Colors.green,
                     ),
                   )
@@ -53,7 +55,7 @@ class CommonHeaderWidget extends StatelessWidget {
                       key: Key('cloud_done'),
                       child: Icon(
                         Icons.cloud_done,
-                        size: 24.0,
+                        size: iconSize,
                         color: Colors.white,
                       )),
                 if (state.hasInternet)
@@ -61,7 +63,7 @@ class CommonHeaderWidget extends StatelessWidget {
                       key: Key('hasInternet'),
                       child: Icon(
                         Icons.signal_wifi_4_bar,
-                        size: 24.0,
+                        size: iconSize,
                         color: Colors.white,
                       ))
                 else
@@ -70,7 +72,7 @@ class CommonHeaderWidget extends StatelessWidget {
                     hideAfterBlink: false,
                     child: Icon(
                       Icons.signal_wifi_off,
-                      size: 24.0,
+                      size: iconSize,
                       color: Colors.red,
                     ),
                   ),
@@ -80,7 +82,7 @@ class CommonHeaderWidget extends StatelessWidget {
                     hideAfterBlink: false,
                     child: Icon(
                       Icons.pause_circle,
-                      size: 24.0,
+                      size: iconSize,
                       color: Colors.red,
                     ),
                   )

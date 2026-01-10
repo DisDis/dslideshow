@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 import 'package:dslideshow_flutter/src/extension/network_info_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,15 +102,10 @@ class _ConfigPageState extends State<ConfigPage> {
       backgroundColor: _backgroundColor,
       body: Stack(
         children: [
-          Column(
-            children: [
-              const CommonHeaderWidget(),
-              Expanded(
-                child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
-              ),
-            ],
+          Expanded(
+            child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
           ),
-
+          const CommonHeaderWidget(),
           // 2. DEBUG СЛОЙ (поверх основного)
           if (!isLinuxEmbedded)
             BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
@@ -127,7 +123,10 @@ class _ConfigPageState extends State<ConfigPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Левая часть - QR
-        Expanded(flex: 4, child: Center(child: _buildQrCode())),
+        Expanded(flex: 4, child: Padding(
+          padding: const EdgeInsets.fromLTRB(0,100.0,0,100.0),
+          child: Center(child: _buildQrCode()),
+        )),
         // Правая часть - Информация
         Expanded(
           flex: 2,
@@ -163,7 +162,7 @@ class _ConfigPageState extends State<ConfigPage> {
         children: [
           Text(
             "Device Setup",
-            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.9).round()), fontSize: ThemeSettings.configHeaderTextSize, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildStepRow(Icons.qr_code_scanner, "1. Scan the QR code to open settings"),
@@ -176,7 +175,7 @@ class _ConfigPageState extends State<ConfigPage> {
             "Manual Connection",
             style: TextStyle(
               color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: 12,
+              fontSize: ThemeSettings.configTextSize,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -184,7 +183,7 @@ class _ConfigPageState extends State<ConfigPage> {
           const SizedBox(height: 8),
           SelectableText(
             _urlData,
-            style: TextStyle(color: _accentColor, fontSize: 18, decoration: TextDecoration.underline),
+            style: TextStyle(color: _accentColor, fontSize: ThemeSettings.configLinkSize, decoration: TextDecoration.underline),
           ),
 
           const SizedBox(height: 24),
@@ -193,7 +192,7 @@ class _ConfigPageState extends State<ConfigPage> {
             "Access Code",
             style: TextStyle(
               color: Colors.white.withAlpha((255.0 * 0.5).round()),
-              fontSize: 12,
+              fontSize: ThemeSettings.configTextSize ,
               // uppercase: true,
               letterSpacing: 1.2,
             ),
@@ -210,7 +209,7 @@ class _ConfigPageState extends State<ConfigPage> {
               _accessCode,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 32,
+                fontSize: ThemeSettings.configAccessCodeSize,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 4,
                 fontFamily: 'Courier', // Моноширинный шрифт для кода
@@ -225,10 +224,10 @@ class _ConfigPageState extends State<ConfigPage> {
   Widget _buildStepRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: _accentColor, size: 20),
+        Icon(icon, color: _accentColor, size: ThemeSettings.configManualIconSize),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: 16)),
+          child: Text(text, style: TextStyle(color: Colors.white.withAlpha((255.0 * 0.8).round()), fontSize: ThemeSettings.configManualTextSize)),
         ),
       ],
     );
