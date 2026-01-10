@@ -1,7 +1,8 @@
-# 9.x.x
+# 9.5.0
 Added display info
 Fix Config, OTA screen
 Fix ButtonHint size
+Fix SystemMetricsWidget size
 
 # 9.4.5
 Fix SlideshowPreview
