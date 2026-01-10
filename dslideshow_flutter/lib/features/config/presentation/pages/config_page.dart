@@ -140,11 +140,13 @@ class _ConfigPageState extends State<ConfigPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ThemeColors.QRCodeBackground,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withAlpha((255.0 * 0.3).round()), blurRadius: 15, offset: const Offset(0, 10))],
+        boxShadow: [BoxShadow(color:
+        ThemeColors.QRCodeShadow
+         , blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(data: _urlData, version: QrVersions.auto, backgroundColor: Colors.white),
+      child: QrImageView(data: _urlData, version: QrVersions.auto, backgroundColor: ThemeColors.QRCodeBackground),
     );
   }
 
