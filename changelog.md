@@ -1,3 +1,6 @@
+# 
+Fix CurrentTimeWidget background
+
 # 9.5.1
 Fix SystemMetricsWidget padding
 Fix menu size

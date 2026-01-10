@@ -18,8 +18,9 @@ abstract class ThemeColors {
   static const systemMetricsDiskIconColor = Colors.greenAccent;
   static const systemMetricsNetworkIconColor = Colors.blueAccent;
   static const systemMetricsSensorIconColor = Colors.tealAccent;
-  static const systemMetricsClockBackgroundColor = Colors.black;
+  static const systemMetricsClockBackgroundColor = systemMetricsBackgroundColor;
   static const systemMetricsNetworkIpAddressColor = Colors.cyanAccent;
+  static const systemMetricsNetworkInterfaceIconColor = Colors.white38;
   static const systemMetricsSensorValueColor = Colors.cyanAccent;
   static const systemMetricsSensorAlertColor = Colors.deepOrangeAccent;
   static const systemMetricsUsageCriticalColor = Colors.redAccent;

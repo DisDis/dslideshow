@@ -1,6 +1,8 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
+import 'package:system_metrics_widget/src/theme/theme_settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 
 class NetworkUsageWidget extends StatelessWidget {
@@ -57,7 +59,7 @@ class NetworkUsageWidget extends StatelessWidget {
     return Row(
       children: [
         // 1. Иконка типа подключения (маленькая и тусклая)
-        Icon(typeIcon, color: Colors.white38, size: 14),
+        Icon(typeIcon, color: ThemeColors.systemMetricsNetworkInterfaceIconColor , size: ThemeSettings.systemMetricsNetworkInterfaceIconSize),
         
         const SizedBox(width: 8),
         

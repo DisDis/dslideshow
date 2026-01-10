@@ -23,6 +23,7 @@ abstract class ThemeSettings{
   static const double systemMetricsCpuLoadLabelFontSize = 9 * scaleFactor;
   static const double systemMetricsCpuCoresBadgeFontSize = 9 * scaleFactor;
   static const double systemMetricsNetworkInterfaceNameFontSize = 8 * scaleFactor;
+  static const double systemMetricsNetworkInterfaceIconSize = 14 * scaleFactor;
   static const double systemMetricsNetworkIpAddressFontSize = 14 * scaleFactor;
   static const double systemMetricsSensorNameFontSize = 10 * scaleFactor;
   static const double systemMetricsSensorValueFontSize = 16 * scaleFactor;
