@@ -62,17 +62,10 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
         emit(state.copyWith(info: event.info));
       }
     });
-
-    // on<OtaStartEvent>((event, emit) {
-    //   return emit.forEach<OtaState>(
-    //     event.applyAsync(currentState: state, bloc: this),
-    //     onData: (state) => state,
-    //     onError: (error, stackTrace) {
-    //       developer.log('$error', name: 'OtaBloc', error: error, stackTrace: stackTrace);
-    //       return ErrorOtaState(error.toString());
-    //     },
-    //   );
-    // });
+    on<OtaAddTextToTerminalEvent>((event, emit) {
+      backend.onWrite(event.message);
+      emit(state);
+    });
 
     _onButtonSubscription = frontendService.onButtonEvent.listen(_pushButton);
   }

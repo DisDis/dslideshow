@@ -24,7 +24,7 @@ abstract class ThemeColors {
   static const otaAccentColor = Color(0xFF64B5F6);
   static const otaProgressIconColor = Color(0xFF64B5F6);
   static const otaProgressTextColor = Colors.white;
-  static const otaProgressSubtextColor = Color(0xFF8A8A8A); // Colors.white54
+  static const otaProgressSubtextColor = otaSuccessSubtextColor;
   static const otaProgressPercentColor = Color(0xFF64B5F6);
   static const otaProgressBgColor = Color(0x40000000); // Colors.black26
   static const otaProgressBorderColor = Color(0x4D64B5F6); // 0.3 alpha accent
@@ -34,7 +34,7 @@ abstract class ThemeColors {
   static const otaErrorBorderColor = Color(0x4DFF0000); // 0.3 alpha red
   static const otaSuccessIconColor = Colors.greenAccent;
   static const otaSuccessTextColor = Colors.greenAccent;
-  static const otaRebootTextColor = Color(0xB3FFFFFF); // Colors.white70
+  static const otaSuccessSubtextColor = Color(0xB3FFFFFF); // Colors.white70
   static const otaTerminalHeaderBgColor = Color(0xFF1E1E1E);
   static const otaTerminalHeaderTextColor = Color(0xFF666666); // Colors.white38
   static const otaTerminalHeaderIconColor = Color(0xFF666666); // Colors.white38

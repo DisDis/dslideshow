@@ -1,5 +1,7 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -76,11 +78,11 @@ class DebugWidget extends StatelessWidget {
                       size: 40.0,
                     ),
                   ),
-                  
                 ],
               ),
-              Row(children: [
-                   ElevatedButton(
+              Row(
+                children: [
+                  ElevatedButton(
                     child: const Icon(Icons.settings, size: 40.0),
                     onPressed: () {
                       context.read<RouteBloc>().add(
@@ -96,11 +98,58 @@ class DebugWidget extends StatelessWidget {
                       );
                     },
                   ),
-                ],)
+                  ElevatedButton(
+                    child: const Icon(Icons.update_sharp, size: 40.0, color:Colors.blue),
+                    onPressed: () {
+                      _setOTAState(context.read<OtaBloc>(),
+                      OTAStatus.uploading, 50.0
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Icon(Icons.update_sharp, size: 40.0, color:Colors.yellow),
+                    onPressed: () {
+                      _setOTAState(context.read<OtaBloc>(),
+                      OTAStatus.instaling, 100.0
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Icon(Icons.update_sharp, size: 40.0, color: Colors.green,),
+                    onPressed: () {
+                      _setOTAState(context.read<OtaBloc>(),
+                      OTAStatus.finished, 100.0
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Icon(Icons.update_sharp, size: 40.0, color: Colors.red,),
+                    onPressed: () {
+                      _setOTAState(context.read<OtaBloc>(),
+                      OTAStatus.issue, 100.0
+                      );
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  void _setOTAState(OtaBloc bloc, OTAStatus status, double uploadingPercent) {
+    bloc.add(
+      OtaUpdateInfoEvent(
+        OTAInfo(
+          status: status,
+          uploadingPercent: uploadingPercent,
+          code: "123456",
+        ),
+      ),
+    );
+
+    bloc.add(OtaAddTextToTerminalEvent('Change state -> $status\n\r'));
   }
 }

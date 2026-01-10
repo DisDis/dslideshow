@@ -10,4 +10,5 @@ class OtaEvent with _$OtaEvent {
   const factory OtaEvent.ready() = OtaReadyEvent;
   const factory OtaEvent.exit() = OtaExitEvent;
   const factory OtaEvent.terminalUpdate() = OtaTerminalUpdateEvent;
+  const factory OtaEvent.addTextToTerminal(String message) = OtaAddTextToTerminalEvent;
 }

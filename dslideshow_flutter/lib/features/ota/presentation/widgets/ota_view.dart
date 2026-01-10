@@ -113,7 +113,7 @@ class _StatusPanel extends StatelessWidget {
                children: [
                  CircularProgressIndicator(color: ThemeColors.otaAccentColor),
                  SizedBox(height: 20),
-                 Text("Rebooting system...", style: TextStyle(color: ThemeColors.otaRebootTextColor)),
+                 Text("Rebooting system...", style: TextStyle(color: ThemeColors.otaSuccessSubtextColor)),
                ],
              )
         ],
@@ -131,7 +131,7 @@ class _StatusPanel extends StatelessWidget {
         // Иконка
         Icon(
           isUploading ? Icons.cloud_upload_outlined : Icons.system_update_alt,
-          size: 80,
+          size: ThemeSettings.otaMainStageIconSize,
           color: ThemeColors.otaProgressIconColor,
         ),
         const SizedBox(height: 24),
@@ -186,7 +186,7 @@ class _StatusPanel extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.error_outline, size: ThemeSettings.otaProgressIconSize, color: ThemeColors.otaErrorIconColor),
+        Icon(Icons.error_outline, size: ThemeSettings.otaMainStageIconSize, color: ThemeColors.otaErrorIconColor),
         const SizedBox(height: 24),
         Text(
           "Update Failed",
@@ -216,7 +216,7 @@ class _StatusPanel extends StatelessWidget {
     return const Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.check_circle_outline, size: ThemeSettings.otaSuccessIconSize, color: ThemeColors.otaSuccessIconColor),
+        Icon(Icons.check_circle_outline, size: ThemeSettings.otaMainStageIconSize, color: ThemeColors.otaSuccessIconColor),
         SizedBox(height: 24),
         Text(
           "Update Complete",
@@ -225,7 +225,7 @@ class _StatusPanel extends StatelessWidget {
         SizedBox(height: 16),
         Text(
           "The system is rebooting...",
-          style: TextStyle(color: ThemeColors.otaRebootTextColor, fontSize: ThemeSettings.otaRebootTextSize),
+          style: TextStyle(color: ThemeColors.otaSuccessSubtextColor, fontSize: ThemeSettings.otaRebootTextSize),
         ),
       ],
     );

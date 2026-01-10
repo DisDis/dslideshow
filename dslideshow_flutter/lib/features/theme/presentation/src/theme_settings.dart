@@ -21,10 +21,9 @@ abstract class ThemeSettings{
 
   // OTA Page Sizes
   static const double otaTerminalFontSize = 12 * scaleFactor;
-  static const double otaProgressIconSize = 80 * scaleFactor;
-  static const double otaSuccessIconSize = 90 * scaleFactor;
-  static const double otaProgressTitleSize = 24 * scaleFactor;
-  static const double otaProgressSubtitleSize = 14 * scaleFactor;
+  static const double otaMainStageIconSize = 90 * scaleFactor;
+  static const double otaProgressTitleSize = 32 * scaleFactor;
+  static const double otaProgressSubtitleSize = 16 * scaleFactor;
   static const double otaProgressPercentSize = 64 * scaleFactor;
   static const double otaProgressBarHeight = 12 * scaleFactor;
   static const double otaErrorTitleSize = 32 * scaleFactor;

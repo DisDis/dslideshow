@@ -1,6 +1,6 @@
 # 9.x.x
 Added display info
-Fix Config, OTA screen QR code size
+Fix Config, OTA screen
 Fix ButtonHint size
 
 # 9.4.5
