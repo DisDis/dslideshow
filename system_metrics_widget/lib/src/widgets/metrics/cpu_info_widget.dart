@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/circular_indicator/circular_indicator_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
+import 'package:system_metrics_widget/src/theme/theme_settings.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
 
 class CpuInfoWidget extends StatelessWidget {
   final CpuInfo cpu;
@@ -12,9 +14,9 @@ class CpuInfoWidget extends StatelessWidget {
   final double cpuLoad15;
 
   // Оптимальный размер для кружков внутри плитки
-  final double gaugeSize = 50.0; 
+  static const double gaugeSize = ThemeSettings.systemMetricsCpuGaugeSize;
 
-  const CpuInfoWidget({
+  CpuInfoWidget({
     required this.cpu,
     required this.cpuLoad1,
     required this.cpuLoad5,
@@ -30,7 +32,7 @@ class CpuInfoWidget extends StatelessWidget {
     
     return MetricsContainerWidget(
       iconData: FeatherIcons.cpu,
-      iconColor: Colors.purpleAccent, // Яркий акцент
+      iconColor: ThemeColors.systemMetricsCpuIconColor, // Яркий акцент
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -49,7 +51,7 @@ class CpuInfoWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.white10,
+                  color: ThemeColors.systemMetricsSeparatorColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -60,7 +62,7 @@ class CpuInfoWidget extends StatelessWidget {
             ],
           ),
           
-          const SizedBox(height: 12),
+          SizedBox(height: ThemeSettings.systemMetricsPaddingMedium),
           
           // 2. Индикаторы Load Average (1m, 5m, 15m)
           // Используем Row + MainAxisAlignment.spaceAround для красивого распределения
@@ -94,7 +96,7 @@ class CpuInfoWidget extends StatelessWidget {
             // В текущей реализации он покажет процент от нагрузки на все ядра.
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: ThemeSettings.systemMetricsPaddingSmall),
         Text(
           label,
           style: Settings.cpuLoadAverageLabelTextStyle,

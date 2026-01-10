@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
 
 class CurrentTimeWidget extends StatefulWidget {
   const CurrentTimeWidget({super.key});
@@ -26,7 +27,7 @@ class CurrentTimeWidgetState extends State<CurrentTimeWidget> {
     return MetricsContainerWidget(
       iconData: FeatherIcons.activity,
       child: Container(
-        color: Colors.black,
+        color: ThemeColors.systemMetricsClockBackgroundColor,
         child: Column(children: <Widget>[
           Row(children: [MetricsDetails(_timeFormatter.format(now), value: null, style: Settings.metricsClockTextDigitalStyle)]),
           Row(children: [MetricsDetails(_dateFormatter.format(now), value: null, style: Settings.metricsClockDateTextDigitalStyle)]),

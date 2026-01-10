@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_bar.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
+import 'package:system_metrics_widget/src/theme/theme_settings.dart';
 
 abstract class UsageIndicatorWidget extends StatelessWidget {
   final String title;
@@ -20,9 +22,9 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
 
   // Логика цветов "Светофор"
   Color _getStatusColor(int percent) {
-    if (percent > 85) return Colors.redAccent;    // Критично
-    if (percent > 60) return Colors.amberAccent;  // Внимание
-    return Colors.cyanAccent;                     // Норма (Техно-стиль)
+    if (percent > 85) return ThemeColors.systemMetricsUsageCriticalColor;    // Критично
+    if (percent > 60) return ThemeColors.systemMetricsUsageWarningColor;  // Внимание
+    return ThemeColors.systemMetricsUsageNormalColor;                     // Норма (Техно-стиль)
   }
 
   @override
@@ -48,11 +50,11 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
           ],
         ),
         
-        const SizedBox(height: 4),
+        SizedBox(height: ThemeSettings.systemMetricsPaddingSmall),
 
         // 2. Полоса загрузки
         SizedBox(
-          height: 6, // Тонкая, аккуратная полоска
+          height: ThemeSettings.systemMetricsUsageBarHeight, // Тонкая, аккуратная полоска
           child: UsageBar(
             usagePercent: usagePercent,
             primaryColor: statusColor,

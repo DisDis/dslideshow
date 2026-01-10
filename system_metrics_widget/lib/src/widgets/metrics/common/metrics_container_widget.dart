@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
+import 'package:system_metrics_widget/src/theme/theme_settings.dart';
 
 class MetricsContainerWidget extends StatelessWidget {
   final IconData iconData;
@@ -10,17 +12,17 @@ class MetricsContainerWidget extends StatelessWidget {
     required this.iconData,
     required this.child,
     super.key,
-    this.iconColor = Colors.white,
+    this.iconColor = ThemeColors.systemMetricsTextColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xDD000000), 
+        color: ThemeColors.systemMetricsBackgroundColor,
         borderRadius: BorderRadius.circular(8), 
         border: Border.all(
-          color: Colors.white24, 
+          color: ThemeColors.systemMetricsBorderColor,
           width: 1,
         ),
       ),
@@ -29,22 +31,22 @@ class MetricsContainerWidget extends StatelessWidget {
         children: <Widget>[
           // Левая часть с иконкой
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(ThemeSettings.systemMetricsPaddingLarge),
             decoration: const BoxDecoration(
               // Легкий разделитель справа
               border: Border(
-                right: BorderSide(color: Colors.white10),
+                right: BorderSide(color: ThemeColors.systemMetricsSeparatorColor),
               ),
             ),
             child: Icon(
               iconData,
               color: iconColor, 
-              size: 20.0,
+              size: ThemeSettings.systemMetricsIconSize,
             ),
           ),
           Expanded( // Expanded теперь безопасен, так как Row знает свою ширину от Grid
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: ThemeSettings.systemMetricsPaddingMedium, vertical: ThemeSettings.systemMetricsPaddingLarge / 2),
               // Принудительный стиль текста
               child: DefaultTextStyle.merge(
                 style: Settings.metricsContainerDefaultTextStyle,

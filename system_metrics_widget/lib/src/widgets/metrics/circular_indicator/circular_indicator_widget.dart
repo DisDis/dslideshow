@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
+import 'package:system_metrics_widget/src/theme/theme_settings.dart';
 
 class CircularIndicatorWidget extends StatefulWidget {
   final String? title;
@@ -44,9 +46,9 @@ class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with 
   }
 
   Color _getColor(double percent) {
-    if (percent > 1.0) return Colors.redAccent; // Перегрузка > 100%
-    if (percent > 0.8) return Colors.orangeAccent;
-    return Colors.cyanAccent; // Стандартный "Tech" цвет
+    if (percent > 1.0) return ThemeColors.systemMetricsErrorColor; // Перегрузка > 100%
+    if (percent > 0.8) return ThemeColors.systemMetricsAttentionColor;
+    return ThemeColors.systemMetricsSuccessColor; // Стандартный "Tech" цвет
   }
 
   @override
@@ -61,7 +63,7 @@ class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with 
           painter: CircularArcPainter(
             percent: animatedPercent,
             color: color,
-            strokeWidth: 4.0, // Тонкая линия для стиля HUD
+            strokeWidth: ThemeSettings.systemMetricsStrokeWidth, // Тонкая линия для стиля HUD
           ),
           child: Center(
             child: Column(
@@ -106,7 +108,7 @@ class CircularArcPainter extends CustomPainter {
 
     // 1. Рисуем фоновый трек (тусклое кольцо)
     final trackPaint = Paint()
-      ..color = Colors.white10
+      ..color = ThemeColors.systemMetricsSeparatorColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;

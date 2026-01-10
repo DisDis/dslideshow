@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/memory_usage_indicator_widget.dart';
+import 'package:system_metrics_widget/src/theme/theme_colors.dart';
 
 class MemoryUsageWidget extends StatelessWidget {
   final int totalMemory;
@@ -20,7 +21,7 @@ class MemoryUsageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
       iconData: Icons.memory,
-      iconColor: Colors.indigoAccent,
+      iconColor: ThemeColors.systemMetricsMemoryIconColor,
       child: Column(
         children: <Widget>[
           MemoryUsageIndicatorWidget(
