@@ -9,4 +9,5 @@ class ButtonsHintEvent with _$ButtonsHintEvent {
   const factory ButtonsHintEvent.pushButton({
     required ButtonType button,
   }) = ButtonsHintPushButtonEvent;
+   const factory ButtonsHintEvent.updateButtons() = ButtonsHintUpdateButtonsEvent;
 }

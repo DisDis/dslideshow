@@ -1,6 +1,7 @@
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/features/menu/presentation/widgets/mainmenu.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
@@ -56,11 +57,19 @@ class _SlideshowOverlays extends StatelessWidget {
   Widget build(BuildContext context) {
     final FrontendService frontendService = injector();
     final AppConfig appConfig = injector();
+ // Координаты для подсказок (под физическими кнопками)
+    final double hintLeft = appConfig.slideshow.buttons.hintOffsetX.toDouble();
+    final double hintTop = appConfig.slideshow.buttons.hintOffsetY.toDouble();
 
     return BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
       builder: (context, state) {
         return Stack(
           children: <Widget>[
+            Positioned(
+              left: hintLeft,
+              top: hintTop,
+              child: ButtonsHintWidget(buttons: appConfig.slideshow.buttons),
+            ),
             StateNotify(isPaused: state.isPaused),
             if (state.isInfo) const SystemInfoWidget(),
             if (state.isMenu) const MainMenuWidget(),

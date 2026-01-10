@@ -55,13 +55,14 @@ extension ButtonsHintEventPatterns on ButtonsHintEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)?  $default,{TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintPushButtonEvent value)?  pushButton,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)?  $default,{TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _ButtonsHintEvent() when $default != null:
 return $default(_that);case ButtonsHintShowEvent() when show != null:
 return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that);case _:
+return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+return updateButtons(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return pushButton(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)  $default,{required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintPushButtonEvent value)  pushButton,}){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)  $default,{required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintPushButtonEvent value)  pushButton,required TResult Function( ButtonsHintUpdateButtonsEvent value)  updateButtons,}){
 final _that = this;
 switch (_that) {
 case _ButtonsHintEvent():
 return $default(_that);case ButtonsHintShowEvent():
 return show(_that);case ButtonsHintPushButtonEvent():
-return pushButton(_that);case _:
+return pushButton(_that);case ButtonsHintUpdateButtonsEvent():
+return updateButtons(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return pushButton(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ButtonsHintEvent value)?  $default,{TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintPushButtonEvent value)?  pushButton,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ButtonsHintEvent value)?  $default,{TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult? Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,}){
 final _that = this;
 switch (_that) {
 case _ButtonsHintEvent() when $default != null:
 return $default(_that);case ButtonsHintShowEvent() when show != null:
 return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that);case _:
+return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+return updateButtons(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return pushButton(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( bool isShow)?  show,TResult Function( ButtonType button)?  pushButton,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( bool isShow)?  show,TResult Function( ButtonType button)?  pushButton,TResult Function()?  updateButtons,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ButtonsHintEvent() when $default != null:
 return $default();case ButtonsHintShowEvent() when show != null:
 return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that.button);case _:
+return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+return updateButtons();case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return pushButton(_that.button);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( bool isShow)  show,required TResult Function( ButtonType button)  pushButton,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( bool isShow)  show,required TResult Function( ButtonType button)  pushButton,required TResult Function()  updateButtons,}) {final _that = this;
 switch (_that) {
 case _ButtonsHintEvent():
 return $default();case ButtonsHintShowEvent():
 return show(_that.isShow);case ButtonsHintPushButtonEvent():
-return pushButton(_that.button);case _:
+return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent():
+return updateButtons();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return pushButton(_that.button);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button)?  pushButton,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button)?  pushButton,TResult? Function()?  updateButtons,}) {final _that = this;
 switch (_that) {
 case _ButtonsHintEvent() when $default != null:
 return $default();case ButtonsHintShowEvent() when show != null:
 return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that.button);case _:
+return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+return updateButtons();case _:
   return null;
 
 }
@@ -346,6 +352,38 @@ as ButtonType,
 
 
 }
+
+/// @nodoc
+
+
+class ButtonsHintUpdateButtonsEvent implements ButtonsHintEvent {
+  const ButtonsHintUpdateButtonsEvent();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintUpdateButtonsEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ButtonsHintEvent.updateButtons()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 mixin _$ButtonsHintState {

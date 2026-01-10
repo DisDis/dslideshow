@@ -7,11 +7,6 @@ import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 class ButtonsHintWidget extends StatelessWidget {
   final SlideShowButtons buttons;
   
-  // Цвета HUD
-  static const Color _kHudColor = ThemeColors.buttonsHintColor;
-  static const Color _kHudPressedColor = ThemeColors.buttonsHintPressedColor ;
-  static const Color _kHudBg = ThemeColors.buttonsHintBackgroundColor ;
-
   const ButtonsHintWidget({
     required this.buttons,
     super.key,
@@ -25,8 +20,8 @@ class ButtonsHintWidget extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-            color: _kHudBg,
-            border: Border.all(color: _kHudColor.withAlpha((255.0 * 0.5).round()), width: 1),
+            color: ThemeColors.buttonsHintBackgroundColor,
+            border: Border.all(color: ThemeColors.buttonsHintColor.withAlpha((255.0 * 0.5).round()), width: 1),
             borderRadius: BorderRadius.circular(4),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -48,7 +43,7 @@ class ButtonsHintWidget extends StatelessWidget {
   }
 
   Widget _buildHudButton(IconData icon, bool isPressed) {
-    final color = isPressed ? _kHudPressedColor : _kHudColor;
+    final color = isPressed ? ThemeColors.buttonsHintPressedColor : ThemeColors.buttonsHintColor;
     
     return Container(
       padding: const EdgeInsets.all(4),

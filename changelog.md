@@ -1,6 +1,7 @@
-# 
+# 9.5.2
 Fix CurrentTimeWidget background
 Fix ButtonsHint colors
+Add ButtonsHint on main screen
 
 # 9.5.1
 Fix SystemMetricsWidget padding
