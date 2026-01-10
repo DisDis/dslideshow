@@ -61,6 +61,11 @@ abstract class ThemeColors {
     0x4D64B5F6,
   ); // 0.3 alpha accent color
 
+  // Buttons hint
+  static const buttonsHintColor = Colors.cyanAccent;
+  static const buttonsHintPressedColor = Colors.yellowAccent;
+  static const buttonsHintBackgroundColor = ThemeColors.menuBgColor; // Cyan Accent
+
   // Menu Page Colors
   static const menuBorderColor = Color(0xFF00E5FF); // Cyan Accent
   static const menuActiveBgColor = Color(0x3300E5FF); // Полупрозрачный Cyan

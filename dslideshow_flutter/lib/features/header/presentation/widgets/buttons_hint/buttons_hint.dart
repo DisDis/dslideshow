@@ -8,9 +8,9 @@ class ButtonsHintWidget extends StatelessWidget {
   final SlideShowButtons buttons;
   
   // Цвета HUD
-  static const Color _kHudColor = Colors.cyanAccent;
-  static const Color _kHudPressedColor = Colors.yellowAccent;
-  static const Color _kHudBg = Color(0xCC000000); // 80% Black
+  static const Color _kHudColor = ThemeColors.buttonsHintColor;
+  static const Color _kHudPressedColor = ThemeColors.buttonsHintPressedColor ;
+  static const Color _kHudBg = ThemeColors.buttonsHintBackgroundColor ;
 
   const ButtonsHintWidget({
     required this.buttons,

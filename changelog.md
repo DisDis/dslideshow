@@ -1,5 +1,6 @@
 # 
 Fix CurrentTimeWidget background
+Fix ButtonsHint colors
 
 # 9.5.1
 Fix SystemMetricsWidget padding
