@@ -83,7 +83,9 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
         });
 
     _onPauseSubscription = statusBloc.onPause.listen((isPaused) {
-      add(SlideshowTogglePauseEvent(isPaused));
+      if (!isClosed){
+       add(SlideshowTogglePauseEvent(isPaused));
+      }
     });
 
     // Синхронизация начального состояния паузы

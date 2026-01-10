@@ -20,7 +20,7 @@ class OtaReadyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Expanded(child: _buildOtaReadyContent()),
+        Positioned.fill(child: _buildOtaReadyContent()),
         const CommonHeaderWidget(),
 
         // 2. DEBUG СЛОЙ (поверх основного)

@@ -93,7 +93,7 @@ void main() async {
       );
     });
 
-    injector.registerLazySingleton<ButtonsHintBloc>(() {
+    injector.registerFactory<ButtonsHintBloc>(() {
       return ButtonsHintBloc(frontendService: frontendService, statusBloc: injector(),appConfig: config)
         ..add(ButtonsHintEvent.show(isShow: true));
     });

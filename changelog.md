@@ -1,3 +1,6 @@
+# 9.5.3
+Fix critical issue in Config and OTA pages
+
 # 9.5.2
 Fix CurrentTimeWidget background
 Fix ButtonsHint colors

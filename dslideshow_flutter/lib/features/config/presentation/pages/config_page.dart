@@ -102,7 +102,7 @@ class _ConfigPageState extends State<ConfigPage> {
       backgroundColor: _backgroundColor,
       body: Stack(
         children: [
-          Expanded(
+          Positioned.fill(
             child: isReady ? _buildConfigContent() : Center(child: CircularProgressIndicator(color: _accentColor)),
           ),
           const CommonHeaderWidget(),

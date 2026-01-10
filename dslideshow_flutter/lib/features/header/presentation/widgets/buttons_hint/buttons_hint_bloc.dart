@@ -65,7 +65,9 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
   void _hideHint() {
     if (!_currentStatus.isMenu) {
       if ((DateTime.now().difference(_lastButtonActive).inSeconds > 5)) {
+        if (!isClosed){
         add(ButtonsHintShowEvent(isShow: false));
+        }
       } else {
         _startAutoHideHint(true);
       }
