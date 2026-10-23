@@ -6,7 +6,7 @@ import 'package:dpms/dpms.dart';
 
 class ScreenService {
   static final Logger _log = new Logger('ScreenService');
-  static final Dpms dpmsLinux = Dpms();
+  static final dpmsLinux = Dpms.instance;
   final HardwareConfig _config;
 
   // Property?
@@ -35,8 +35,8 @@ class ScreenService {
     try {
       if (!_screenOn) {
         io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
-        if (dpmsLinux.isAvailable()) {
-          dpmsLinux.setMode(PowerMode.on);
+        if (dpmsLinux != null) {
+          dpmsLinux!.setMode(PowerMode.on);
         }
         _screenOn = true;
         _stateChangePreparation.add(true);
@@ -54,13 +54,10 @@ class ScreenService {
       _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
-    _timerScreenOff = new Timer(
-      new Duration(seconds: _config.screenPowerOnTimerSec),
-      () {
-        _timerScreenOff = null;
-        screenOff();
-      },
-    );
+    _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec), () {
+      _timerScreenOff = null;
+      screenOff();
+    });
   }
 
   void screenOff() async {
@@ -73,8 +70,8 @@ class ScreenService {
       _stateChangePreparation.add(false);
       await Future<void>.delayed(_preparationOffTime);
       io.Process.run(_config.screenPowerOffScript, [], runInShell: true);
-      if (dpmsLinux.isAvailable()) {
-        dpmsLinux.setMode(PowerMode.off);
+      if (dpmsLinux != null) {
+        dpmsLinux!.setMode(PowerMode.off);
       }
       _screenOn = false;
     } catch (e, s) {

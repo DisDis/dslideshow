@@ -321,7 +321,7 @@ packages:
       path: "../../flutter_packages/packages/flutter_gpiod"
       relative: true
     source: path
-    version: "0.5.1+6"
+    version: "0.6.0"
   flutter_lints:
     dependency: "direct dev"
     description:
