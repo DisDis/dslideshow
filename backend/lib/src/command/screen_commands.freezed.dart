@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'screen_commands.dart';
@@ -9,6 +9,7 @@ part of 'screen_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $ScreenTurnCommandCopyWith<ScreenTurnCommand> get copyWith => _$ScreenTurnComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenTurnCommand&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as ScreenTurnCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenTurnCommand&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,id,type);
+int get hashCode {
+  final _this = this as ScreenTurnCommand;
+  return Object.hash(runtimeType,_this.enabled,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
+  final _this = this as ScreenTurnCommand;
+  return 'ScreenTurnCommand(enabled: ${_this.enabled}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ScreenTurnCommandCopyWithImpl<$Res>
 /// Create a copy of ScreenTurnCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(ScreenTurnCommand(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenTurnCommand&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenTurnCommand&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,enabled,id,type);
+}
 
 @override
 String toString() {
-  return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
+    return 'ScreenTurnCommand(enabled: $enabled, id: $id, type: $type)';
 }
 
 
@@ -291,16 +299,21 @@ $ScreenLockCommandCopyWith<ScreenLockCommand> get copyWith => _$ScreenLockComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenLockCommand&&(identical(other.isLock, isLock) || other.isLock == isLock)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as ScreenLockCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenLockCommand&&(identical(other.isLock, _this.isLock) || other.isLock == _this.isLock)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isLock,id,type);
+int get hashCode {
+  final _this = this as ScreenLockCommand;
+  return Object.hash(runtimeType,_this.isLock,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
+  final _this = this as ScreenLockCommand;
+  return 'ScreenLockCommand(isLock: ${_this.isLock}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -329,7 +342,7 @@ class _$ScreenLockCommandCopyWithImpl<$Res>
 /// Create a copy of ScreenLockCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isLock = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(ScreenLockCommand(
 isLock: null == isLock ? _self.isLock : isLock // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -488,16 +501,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenLockCommand&&(identical(other.isLock, isLock) || other.isLock == isLock)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenLockCommand&&(identical(other.isLock, isLock) || other.isLock == isLock)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isLock,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,isLock,id,type);
+}
 
 @override
 String toString() {
-  return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
+    return 'ScreenLockCommand(isLock: $isLock, id: $id, type: $type)';
 }
 
 

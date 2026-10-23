@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'wifi_commands.dart';
@@ -9,6 +9,7 @@ part of 'wifi_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WiFiRescanCommandCopyWith<WiFiRescanCommand> get copyWith => _$WiFiRescanComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiRescanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WiFiRescanCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiRescanCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as WiFiRescanCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WiFiRescanCommand(id: $id, type: $type)';
+  final _this = this as WiFiRescanCommand;
+  return 'WiFiRescanCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WiFiRescanCommandCopyWithImpl<$Res>
 /// Create a copy of WiFiRescanCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiRescanCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiRescanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiRescanCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'WiFiRescanCommand(id: $id, type: $type)';
+    return 'WiFiRescanCommand(id: $id, type: $type)';
 }
 
 
@@ -288,16 +296,21 @@ $WiFiListCommandCopyWith<WiFiListCommand> get copyWith => _$WiFiListCommandCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WiFiListCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as WiFiListCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WiFiListCommand(id: $id, type: $type)';
+  final _this = this as WiFiListCommand;
+  return 'WiFiListCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -326,7 +339,7 @@ class _$WiFiListCommandCopyWithImpl<$Res>
 /// Create a copy of WiFiListCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiListCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -483,16 +496,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'WiFiListCommand(id: $id, type: $type)';
+    return 'WiFiListCommand(id: $id, type: $type)';
 }
 
 
@@ -548,16 +563,21 @@ $WiFiListResultCopyWith<WiFiListResult> get copyWith => _$WiFiListResultCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListResult&&const DeepCollectionEquality().equals(other.networks, networks)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WiFiListResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiListResult&&const DeepCollectionEquality().equals(other.networks, _this.networks)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(networks),id);
+int get hashCode {
+  final _this = this as WiFiListResult;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.networks),_this.id);
+}
 
 @override
 String toString() {
-  return 'WiFiListResult(networks: $networks, id: $id)';
+  final _this = this as WiFiListResult;
+  return 'WiFiListResult(networks: ${_this.networks}, id: ${_this.id})';
 }
 
 
@@ -586,7 +606,7 @@ class _$WiFiListResultCopyWithImpl<$Res>
 /// Create a copy of WiFiListResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? networks = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiListResult(
 networks: null == networks ? _self.networks : networks // ignore: cast_nullable_to_non_nullable
 as List<WiFiNetworkInfo>,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -724,7 +744,7 @@ return $default(_that.networks,_that.id);case _:
 @JsonSerializable()
 
 class _WiFiListResult implements WiFiListResult {
-  const _WiFiListResult({required final  List<WiFiNetworkInfo> networks, required this.id}): _networks = networks;
+  const _WiFiListResult({required  List<WiFiNetworkInfo> networks, required this.id}): _networks = networks;
   factory _WiFiListResult.fromJson(Map<String, dynamic> json) => _$WiFiListResultFromJson(json);
 
  final  List<WiFiNetworkInfo> _networks;
@@ -749,16 +769,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListResult&&const DeepCollectionEquality().equals(other._networks, _networks)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiListResult&&const DeepCollectionEquality().equals(other.networks, _networks)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_networks),id);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_networks),id);
+}
 
 @override
 String toString() {
-  return 'WiFiListResult(networks: $networks, id: $id)';
+    return 'WiFiListResult(networks: $networks, id: $id)';
 }
 
 
@@ -814,16 +836,21 @@ $WiFiNetworkInfoCopyWith<WiFiNetworkInfo> get copyWith => _$WiFiNetworkInfoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiNetworkInfo&&(identical(other.BSSID, BSSID) || other.BSSID == BSSID)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.signal, signal) || other.signal == signal)&&(identical(other.channel, channel) || other.channel == channel)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.security, security) || other.security == security));
+  final _this = this as WiFiNetworkInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiNetworkInfo&&(identical(other.BSSID, _this.BSSID) || other.BSSID == _this.BSSID)&&(identical(other.SSID, _this.SSID) || other.SSID == _this.SSID)&&(identical(other.signal, _this.signal) || other.signal == _this.signal)&&(identical(other.channel, _this.channel) || other.channel == _this.channel)&&(identical(other.rate, _this.rate) || other.rate == _this.rate)&&(identical(other.security, _this.security) || other.security == _this.security));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,BSSID,SSID,signal,channel,rate,security);
+int get hashCode {
+  final _this = this as WiFiNetworkInfo;
+  return Object.hash(runtimeType,_this.BSSID,_this.SSID,_this.signal,_this.channel,_this.rate,_this.security);
+}
 
 @override
 String toString() {
-  return 'WiFiNetworkInfo(BSSID: $BSSID, SSID: $SSID, signal: $signal, channel: $channel, rate: $rate, security: $security)';
+  final _this = this as WiFiNetworkInfo;
+  return 'WiFiNetworkInfo(BSSID: ${_this.BSSID}, SSID: ${_this.SSID}, signal: ${_this.signal}, channel: ${_this.channel}, rate: ${_this.rate}, security: ${_this.security})';
 }
 
 
@@ -852,7 +879,7 @@ class _$WiFiNetworkInfoCopyWithImpl<$Res>
 /// Create a copy of WiFiNetworkInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? BSSID = null,Object? SSID = null,Object? signal = null,Object? channel = null,Object? rate = null,Object? security = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiNetworkInfo(
 BSSID: null == BSSID ? _self.BSSID : BSSID // ignore: cast_nullable_to_non_nullable
 as String,SSID: null == SSID ? _self.SSID : SSID // ignore: cast_nullable_to_non_nullable
 as String,signal: null == signal ? _self.signal : signal // ignore: cast_nullable_to_non_nullable
@@ -1017,16 +1044,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiNetworkInfo&&(identical(other.BSSID, BSSID) || other.BSSID == BSSID)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.signal, signal) || other.signal == signal)&&(identical(other.channel, channel) || other.channel == channel)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.security, security) || other.security == security));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiNetworkInfo&&(identical(other.BSSID, BSSID) || other.BSSID == BSSID)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.signal, signal) || other.signal == signal)&&(identical(other.channel, channel) || other.channel == channel)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.security, security) || other.security == security));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,BSSID,SSID,signal,channel,rate,security);
+int get hashCode {
+    return Object.hash(runtimeType,BSSID,SSID,signal,channel,rate,security);
+}
 
 @override
 String toString() {
-  return 'WiFiNetworkInfo(BSSID: $BSSID, SSID: $SSID, signal: $signal, channel: $channel, rate: $rate, security: $security)';
+    return 'WiFiNetworkInfo(BSSID: $BSSID, SSID: $SSID, signal: $signal, channel: $channel, rate: $rate, security: $security)';
 }
 
 
@@ -1086,16 +1115,21 @@ $WiFiConnectionInfoCopyWith<WiFiConnectionInfo> get copyWith => _$WiFiConnection
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiConnectionInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.UUID, UUID) || other.UUID == UUID)&&(identical(other.type, type) || other.type == type)&&(identical(other.device, device) || other.device == device));
+  final _this = this as WiFiConnectionInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiConnectionInfo&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.UUID, _this.UUID) || other.UUID == _this.UUID)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.device, _this.device) || other.device == _this.device));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,UUID,type,device);
+int get hashCode {
+  final _this = this as WiFiConnectionInfo;
+  return Object.hash(runtimeType,_this.name,_this.UUID,_this.type,_this.device);
+}
 
 @override
 String toString() {
-  return 'WiFiConnectionInfo(name: $name, UUID: $UUID, type: $type, device: $device)';
+  final _this = this as WiFiConnectionInfo;
+  return 'WiFiConnectionInfo(name: ${_this.name}, UUID: ${_this.UUID}, type: ${_this.type}, device: ${_this.device})';
 }
 
 
@@ -1124,7 +1158,7 @@ class _$WiFiConnectionInfoCopyWithImpl<$Res>
 /// Create a copy of WiFiConnectionInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? UUID = null,Object? type = null,Object? device = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiConnectionInfo(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,UUID: null == UUID ? _self.UUID : UUID // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -1285,16 +1319,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiConnectionInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.UUID, UUID) || other.UUID == UUID)&&(identical(other.type, type) || other.type == type)&&(identical(other.device, device) || other.device == device));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiConnectionInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.UUID, UUID) || other.UUID == UUID)&&(identical(other.type, type) || other.type == type)&&(identical(other.device, device) || other.device == device));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,UUID,type,device);
+int get hashCode {
+    return Object.hash(runtimeType,name,UUID,type,device);
+}
 
 @override
 String toString() {
-  return 'WiFiConnectionInfo(name: $name, UUID: $UUID, type: $type, device: $device)';
+    return 'WiFiConnectionInfo(name: $name, UUID: $UUID, type: $type, device: $device)';
 }
 
 
@@ -1352,16 +1388,21 @@ $WiFiRemoveCommandCopyWith<WiFiRemoveCommand> get copyWith => _$WiFiRemoveComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiRemoveCommand&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WiFiRemoveCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiRemoveCommand&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,id,type);
+int get hashCode {
+  final _this = this as WiFiRemoveCommand;
+  return Object.hash(runtimeType,_this.connectionId,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WiFiRemoveCommand(connectionId: $connectionId, id: $id, type: $type)';
+  final _this = this as WiFiRemoveCommand;
+  return 'WiFiRemoveCommand(connectionId: ${_this.connectionId}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1390,7 +1431,7 @@ class _$WiFiRemoveCommandCopyWithImpl<$Res>
 /// Create a copy of WiFiRemoveCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiRemoveCommand(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -1549,16 +1590,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiRemoveCommand&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiRemoveCommand&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,connectionId,id,type);
+}
 
 @override
 String toString() {
-  return 'WiFiRemoveCommand(connectionId: $connectionId, id: $id, type: $type)';
+    return 'WiFiRemoveCommand(connectionId: $connectionId, id: $id, type: $type)';
 }
 
 
@@ -1615,16 +1658,21 @@ $WiFiAddCommandCopyWith<WiFiAddCommand> get copyWith => _$WiFiAddCommandCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiAddCommand&&(identical(other.name, name) || other.name == name)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.psk, psk) || other.psk == psk)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WiFiAddCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiAddCommand&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.SSID, _this.SSID) || other.SSID == _this.SSID)&&(identical(other.psk, _this.psk) || other.psk == _this.psk)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,SSID,psk,id,type);
+int get hashCode {
+  final _this = this as WiFiAddCommand;
+  return Object.hash(runtimeType,_this.name,_this.SSID,_this.psk,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WiFiAddCommand(name: $name, SSID: $SSID, psk: $psk, id: $id, type: $type)';
+  final _this = this as WiFiAddCommand;
+  return 'WiFiAddCommand(name: ${_this.name}, SSID: ${_this.SSID}, psk: ${_this.psk}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1653,7 +1701,7 @@ class _$WiFiAddCommandCopyWithImpl<$Res>
 /// Create a copy of WiFiAddCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? SSID = null,Object? psk = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiAddCommand(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,SSID: null == SSID ? _self.SSID : SSID // ignore: cast_nullable_to_non_nullable
 as String,psk: null == psk ? _self.psk : psk // ignore: cast_nullable_to_non_nullable
@@ -1816,16 +1864,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiAddCommand&&(identical(other.name, name) || other.name == name)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.psk, psk) || other.psk == psk)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiAddCommand&&(identical(other.name, name) || other.name == name)&&(identical(other.SSID, SSID) || other.SSID == SSID)&&(identical(other.psk, psk) || other.psk == psk)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,SSID,psk,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,name,SSID,psk,id,type);
+}
 
 @override
 String toString() {
-  return 'WiFiAddCommand(name: $name, SSID: $SSID, psk: $psk, id: $id, type: $type)';
+    return 'WiFiAddCommand(name: $name, SSID: $SSID, psk: $psk, id: $id, type: $type)';
 }
 
 
@@ -1884,16 +1934,21 @@ $WiFiGetConnectionsCommandCopyWith<WiFiGetConnectionsCommand> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiGetConnectionsCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WiFiGetConnectionsCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiGetConnectionsCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as WiFiGetConnectionsCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WiFiGetConnectionsCommand(id: $id, type: $type)';
+  final _this = this as WiFiGetConnectionsCommand;
+  return 'WiFiGetConnectionsCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1922,7 +1977,7 @@ class _$WiFiGetConnectionsCommandCopyWithImpl<$Res>
 /// Create a copy of WiFiGetConnectionsCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiGetConnectionsCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -2079,16 +2134,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiGetConnectionsCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiGetConnectionsCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'WiFiGetConnectionsCommand(id: $id, type: $type)';
+    return 'WiFiGetConnectionsCommand(id: $id, type: $type)';
 }
 
 
@@ -2144,16 +2201,21 @@ $WiFiGetConnectionsResultCopyWith<WiFiGetConnectionsResult> get copyWith => _$Wi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiGetConnectionsResult&&const DeepCollectionEquality().equals(other.networks, networks)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WiFiGetConnectionsResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WiFiGetConnectionsResult&&const DeepCollectionEquality().equals(other.networks, _this.networks)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(networks),id);
+int get hashCode {
+  final _this = this as WiFiGetConnectionsResult;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.networks),_this.id);
+}
 
 @override
 String toString() {
-  return 'WiFiGetConnectionsResult(networks: $networks, id: $id)';
+  final _this = this as WiFiGetConnectionsResult;
+  return 'WiFiGetConnectionsResult(networks: ${_this.networks}, id: ${_this.id})';
 }
 
 
@@ -2182,7 +2244,7 @@ class _$WiFiGetConnectionsResultCopyWithImpl<$Res>
 /// Create a copy of WiFiGetConnectionsResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? networks = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WiFiGetConnectionsResult(
 networks: null == networks ? _self.networks : networks // ignore: cast_nullable_to_non_nullable
 as List<WiFiConnectionInfo>,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -2320,7 +2382,7 @@ return $default(_that.networks,_that.id);case _:
 @JsonSerializable()
 
 class _WiFiGetConnectionsResult implements WiFiGetConnectionsResult {
-  const _WiFiGetConnectionsResult({required final  List<WiFiConnectionInfo> networks, required this.id}): _networks = networks;
+  const _WiFiGetConnectionsResult({required  List<WiFiConnectionInfo> networks, required this.id}): _networks = networks;
   factory _WiFiGetConnectionsResult.fromJson(Map<String, dynamic> json) => _$WiFiGetConnectionsResultFromJson(json);
 
  final  List<WiFiConnectionInfo> _networks;
@@ -2345,16 +2407,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiGetConnectionsResult&&const DeepCollectionEquality().equals(other._networks, _networks)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WiFiGetConnectionsResult&&const DeepCollectionEquality().equals(other.networks, _networks)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_networks),id);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_networks),id);
+}
 
 @override
 String toString() {
-  return 'WiFiGetConnectionsResult(networks: $networks, id: $id)';
+    return 'WiFiGetConnectionsResult(networks: $networks, id: $id)';
 }
 
 

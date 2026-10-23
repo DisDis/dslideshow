@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'web_server_commands.dart';
@@ -9,6 +9,7 @@ part of 'web_server_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WebServerControlCommandCopyWith<WebServerControlCommand> get copyWith => _$WebS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebServerControlCommand&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WebServerControlCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebServerControlCommand&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enable,id,type);
+int get hashCode {
+  final _this = this as WebServerControlCommand;
+  return Object.hash(runtimeType,_this.enable,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
+  final _this = this as WebServerControlCommand;
+  return 'WebServerControlCommand(enable: ${_this.enable}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WebServerControlCommandCopyWithImpl<$Res>
 /// Create a copy of WebServerControlCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WebServerControlCommand(
 enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WebServerControlCommand&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WebServerControlCommand&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enable,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,enable,id,type);
+}
 
 @override
 String toString() {
-  return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
+    return 'WebServerControlCommand(enable: $enable, id: $id, type: $type)';
 }
 
 
@@ -291,16 +299,21 @@ $WebServerControlCommandResultCopyWith<WebServerControlCommandResult> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebServerControlCommandResult&&(identical(other.code, code) || other.code == code)&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WebServerControlCommandResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebServerControlCommandResult&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.enable, _this.enable) || other.enable == _this.enable)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,enable,id);
+int get hashCode {
+  final _this = this as WebServerControlCommandResult;
+  return Object.hash(runtimeType,_this.code,_this.enable,_this.id);
+}
 
 @override
 String toString() {
-  return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
+  final _this = this as WebServerControlCommandResult;
+  return 'WebServerControlCommandResult(code: ${_this.code}, enable: ${_this.enable}, id: ${_this.id})';
 }
 
 
@@ -329,7 +342,7 @@ class _$WebServerControlCommandResultCopyWithImpl<$Res>
 /// Create a copy of WebServerControlCommandResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? enable = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WebServerControlCommandResult(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -488,16 +501,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WebServerControlCommandResult&&(identical(other.code, code) || other.code == code)&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WebServerControlCommandResult&&(identical(other.code, code) || other.code == code)&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,enable,id);
+int get hashCode {
+    return Object.hash(runtimeType,code,enable,id);
+}
 
 @override
 String toString() {
-  return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
+    return 'WebServerControlCommandResult(code: $code, enable: $enable, id: $id)';
 }
 
 
@@ -554,16 +569,21 @@ $WSErrorResultCopyWith<WSErrorResult> get copyWith => _$WSErrorResultCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSErrorResult&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WSErrorResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSErrorResult&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,error,id);
+int get hashCode {
+  final _this = this as WSErrorResult;
+  return Object.hash(runtimeType,_this.error,_this.id);
+}
 
 @override
 String toString() {
-  return 'WSErrorResult(error: $error, id: $id)';
+  final _this = this as WSErrorResult;
+  return 'WSErrorResult(error: ${_this.error}, id: ${_this.id})';
 }
 
 
@@ -592,7 +612,7 @@ class _$WSErrorResultCopyWithImpl<$Res>
 /// Create a copy of WSErrorResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? error = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSErrorResult(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -749,16 +769,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSErrorResult&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSErrorResult&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,error,id);
+int get hashCode {
+    return Object.hash(runtimeType,error,id);
+}
 
 @override
 String toString() {
-  return 'WSErrorResult(error: $error, id: $id)';
+    return 'WSErrorResult(error: $error, id: $id)';
 }
 
 
@@ -814,16 +836,21 @@ $WSHelloCommandCopyWith<WSHelloCommand> get copyWith => _$WSHelloCommandCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSHelloCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSHelloCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSHelloCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as WSHelloCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSHelloCommand(id: $id, type: $type)';
+  final _this = this as WSHelloCommand;
+  return 'WSHelloCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -852,7 +879,7 @@ class _$WSHelloCommandCopyWithImpl<$Res>
 /// Create a copy of WSHelloCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSHelloCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -1009,16 +1036,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSHelloCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSHelloCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'WSHelloCommand(id: $id, type: $type)';
+    return 'WSHelloCommand(id: $id, type: $type)';
 }
 
 
@@ -1074,16 +1103,21 @@ $WSAuthCommandCopyWith<WSAuthCommand> get copyWith => _$WSAuthCommandCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSAuthCommand&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.code, code) || other.code == code)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSAuthCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSAuthCommand&&(identical(other.userName, _this.userName) || other.userName == _this.userName)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userName,code,id,type);
+int get hashCode {
+  final _this = this as WSAuthCommand;
+  return Object.hash(runtimeType,_this.userName,_this.code,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
+  final _this = this as WSAuthCommand;
+  return 'WSAuthCommand(userName: ${_this.userName}, code: ${_this.code}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1112,7 +1146,7 @@ class _$WSAuthCommandCopyWithImpl<$Res>
 /// Create a copy of WSAuthCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userName = null,Object? code = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSAuthCommand(
 userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -1273,16 +1307,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSAuthCommand&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.code, code) || other.code == code)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSAuthCommand&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.code, code) || other.code == code)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userName,code,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,userName,code,id,type);
+}
 
 @override
 String toString() {
-  return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
+    return 'WSAuthCommand(userName: $userName, code: $code, id: $id, type: $type)';
 }
 
 
@@ -1328,9 +1364,7 @@ as String,
 mixin _$WSSendRpcCommand {
 
 ///TODO: FIX it
-//required RpcCommand command,
- Object get commandData;//WebSocketCommand.generateId()
- int get id; String get type;
+ Object get commandData; int get id; String get type;
 /// Create a copy of WSSendRpcCommand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1343,16 +1377,21 @@ $WSSendRpcCommandCopyWith<WSSendRpcCommand> get copyWith => _$WSSendRpcCommandCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSSendRpcCommand&&const DeepCollectionEquality().equals(other.commandData, commandData)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSSendRpcCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSSendRpcCommand&&const DeepCollectionEquality().equals(other.commandData, _this.commandData)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(commandData),id,type);
+int get hashCode {
+  final _this = this as WSSendRpcCommand;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.commandData),_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
+  final _this = this as WSSendRpcCommand;
+  return 'WSSendRpcCommand(commandData: ${_this.commandData}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1381,7 +1420,7 @@ class _$WSSendRpcCommandCopyWithImpl<$Res>
 /// Create a copy of WSSendRpcCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? commandData = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSSendRpcCommand(
 commandData: null == commandData ? _self.commandData : commandData ,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -1523,9 +1562,7 @@ class _WSSendRpcCommand implements WSSendRpcCommand {
   factory _WSSendRpcCommand.fromJson(Map<String, dynamic> json) => _$WSSendRpcCommandFromJson(json);
 
 ///TODO: FIX it
-//required RpcCommand command,
 @override final  Object commandData;
-//WebSocketCommand.generateId()
 @override final  int id;
 @override@JsonKey() final  String type;
 
@@ -1542,16 +1579,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSSendRpcCommand&&const DeepCollectionEquality().equals(other.commandData, commandData)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSSendRpcCommand&&const DeepCollectionEquality().equals(other.commandData, commandData)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(commandData),id,type);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(commandData),id,type);
+}
 
 @override
 String toString() {
-  return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
+    return 'WSSendRpcCommand(commandData: $commandData, id: $id, type: $type)';
 }
 
 
@@ -1595,7 +1634,6 @@ as String,
 mixin _$WSRpcResult {
 
 ///TODO: FIX it
-//required RpcResult result,
  Object get resultData; int get id;
 /// Create a copy of WSRpcResult
 /// with the given fields replaced by the non-null parameter values.
@@ -1609,16 +1647,21 @@ $WSRpcResultCopyWith<WSRpcResult> get copyWith => _$WSRpcResultCopyWithImpl<WSRp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSRpcResult&&const DeepCollectionEquality().equals(other.resultData, resultData)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WSRpcResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSRpcResult&&const DeepCollectionEquality().equals(other.resultData, _this.resultData)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(resultData),id);
+int get hashCode {
+  final _this = this as WSRpcResult;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.resultData),_this.id);
+}
 
 @override
 String toString() {
-  return 'WSRpcResult(resultData: $resultData, id: $id)';
+  final _this = this as WSRpcResult;
+  return 'WSRpcResult(resultData: ${_this.resultData}, id: ${_this.id})';
 }
 
 
@@ -1647,7 +1690,7 @@ class _$WSRpcResultCopyWithImpl<$Res>
 /// Create a copy of WSRpcResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? resultData = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSRpcResult(
 resultData: null == resultData ? _self.resultData : resultData ,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -1788,7 +1831,6 @@ class _WSRpcResult implements WSRpcResult {
   factory _WSRpcResult.fromJson(Map<String, dynamic> json) => _$WSRpcResultFromJson(json);
 
 ///TODO: FIX it
-//required RpcResult result,
 @override final  Object resultData;
 @override final  int id;
 
@@ -1805,16 +1847,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSRpcResult&&const DeepCollectionEquality().equals(other.resultData, resultData)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSRpcResult&&const DeepCollectionEquality().equals(other.resultData, resultData)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(resultData),id);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(resultData),id);
+}
 
 @override
 String toString() {
-  return 'WSRpcResult(resultData: $resultData, id: $id)';
+    return 'WSRpcResult(resultData: $resultData, id: $id)';
 }
 
 
@@ -1869,16 +1913,21 @@ $WSConfigDownloadCommandCopyWith<WSConfigDownloadCommand> get copyWith => _$WSCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigDownloadCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSConfigDownloadCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigDownloadCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as WSConfigDownloadCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSConfigDownloadCommand(id: $id, type: $type)';
+  final _this = this as WSConfigDownloadCommand;
+  return 'WSConfigDownloadCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1907,7 +1956,7 @@ class _$WSConfigDownloadCommandCopyWithImpl<$Res>
 /// Create a copy of WSConfigDownloadCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSConfigDownloadCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -2064,16 +2113,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigDownloadCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigDownloadCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'WSConfigDownloadCommand(id: $id, type: $type)';
+    return 'WSConfigDownloadCommand(id: $id, type: $type)';
 }
 
 
@@ -2129,16 +2180,21 @@ $WSConfigUploadCommandCopyWith<WSConfigUploadCommand> get copyWith => _$WSConfig
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigUploadCommand&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSConfigUploadCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigUploadCommand&&(identical(other.content, _this.content) || other.content == _this.content)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,id,type);
+int get hashCode {
+  final _this = this as WSConfigUploadCommand;
+  return Object.hash(runtimeType,_this.content,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSConfigUploadCommand(content: $content, id: $id, type: $type)';
+  final _this = this as WSConfigUploadCommand;
+  return 'WSConfigUploadCommand(content: ${_this.content}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -2167,7 +2223,7 @@ class _$WSConfigUploadCommandCopyWithImpl<$Res>
 /// Create a copy of WSConfigUploadCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSConfigUploadCommand(
 content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -2326,16 +2382,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigUploadCommand&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigUploadCommand&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,content,id,type);
+}
 
 @override
 String toString() {
-  return 'WSConfigUploadCommand(content: $content, id: $id, type: $type)';
+    return 'WSConfigUploadCommand(content: $content, id: $id, type: $type)';
 }
 
 
@@ -2392,16 +2450,21 @@ $WSConfigDownloadResultCopyWith<WSConfigDownloadResult> get copyWith => _$WSConf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigDownloadResult&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WSConfigDownloadResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSConfigDownloadResult&&(identical(other.content, _this.content) || other.content == _this.content)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,id);
+int get hashCode {
+  final _this = this as WSConfigDownloadResult;
+  return Object.hash(runtimeType,_this.content,_this.id);
+}
 
 @override
 String toString() {
-  return 'WSConfigDownloadResult(content: $content, id: $id)';
+  final _this = this as WSConfigDownloadResult;
+  return 'WSConfigDownloadResult(content: ${_this.content}, id: ${_this.id})';
 }
 
 
@@ -2430,7 +2493,7 @@ class _$WSConfigDownloadResultCopyWithImpl<$Res>
 /// Create a copy of WSConfigDownloadResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSConfigDownloadResult(
 content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -2587,16 +2650,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigDownloadResult&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSConfigDownloadResult&&(identical(other.content, content) || other.content == content)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,id);
+int get hashCode {
+    return Object.hash(runtimeType,content,id);
+}
 
 @override
 String toString() {
-  return 'WSConfigDownloadResult(content: $content, id: $id)';
+    return 'WSConfigDownloadResult(content: $content, id: $id)';
 }
 
 
@@ -2652,16 +2717,21 @@ $WSResultOkCopyWith<WSResultOk> get copyWith => _$WSResultOkCopyWithImpl<WSResul
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSResultOk&&(identical(other.id, id) || other.id == id));
+  final _this = this as WSResultOk;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSResultOk&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+  final _this = this as WSResultOk;
+  return Object.hash(runtimeType,_this.id);
+}
 
 @override
 String toString() {
-  return 'WSResultOk(id: $id)';
+  final _this = this as WSResultOk;
+  return 'WSResultOk(id: ${_this.id})';
 }
 
 
@@ -2690,7 +2760,7 @@ class _$WSResultOkCopyWithImpl<$Res>
 /// Create a copy of WSResultOk
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSResultOk(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -2845,16 +2915,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSResultOk&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSResultOk&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString() {
-  return 'WSResultOk(id: $id)';
+    return 'WSResultOk(id: $id)';
 }
 
 
@@ -2909,16 +2981,21 @@ $WSEchoResultCopyWith<WSEchoResult> get copyWith => _$WSEchoResultCopyWithImpl<W
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSEchoResult&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id));
+  final _this = this as WSEchoResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSEchoResult&&(identical(other.msg, _this.msg) || other.msg == _this.msg)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,msg,id);
+int get hashCode {
+  final _this = this as WSEchoResult;
+  return Object.hash(runtimeType,_this.msg,_this.id);
+}
 
 @override
 String toString() {
-  return 'WSEchoResult(msg: $msg, id: $id)';
+  final _this = this as WSEchoResult;
+  return 'WSEchoResult(msg: ${_this.msg}, id: ${_this.id})';
 }
 
 
@@ -2947,7 +3024,7 @@ class _$WSEchoResultCopyWithImpl<$Res>
 /// Create a copy of WSEchoResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? msg = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSEchoResult(
 msg: null == msg ? _self.msg : msg // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -3104,16 +3181,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSEchoResult&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSEchoResult&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,msg,id);
+int get hashCode {
+    return Object.hash(runtimeType,msg,id);
+}
 
 @override
 String toString() {
-  return 'WSEchoResult(msg: $msg, id: $id)';
+    return 'WSEchoResult(msg: $msg, id: $id)';
 }
 
 
@@ -3169,16 +3248,21 @@ $WSEchoCommandCopyWith<WSEchoCommand> get copyWith => _$WSEchoCommandCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSEchoCommand&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as WSEchoCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WSEchoCommand&&(identical(other.msg, _this.msg) || other.msg == _this.msg)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,msg,id,type);
+int get hashCode {
+  final _this = this as WSEchoCommand;
+  return Object.hash(runtimeType,_this.msg,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
+  final _this = this as WSEchoCommand;
+  return 'WSEchoCommand(msg: ${_this.msg}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -3207,7 +3291,7 @@ class _$WSEchoCommandCopyWithImpl<$Res>
 /// Create a copy of WSEchoCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? msg = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(WSEchoCommand(
 msg: null == msg ? _self.msg : msg // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -3366,16 +3450,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSEchoCommand&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WSEchoCommand&&(identical(other.msg, msg) || other.msg == msg)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,msg,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,msg,id,type);
+}
 
 @override
 String toString() {
-  return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
+    return 'WSEchoCommand(msg: $msg, id: $id, type: $type)';
 }
 
 

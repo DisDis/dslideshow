@@ -7,6 +7,7 @@ analyzer:
   exclude:
     - lib/**/**.g.dart
     - tool/**.dart
+    - build/**
   errors:
     always_declare_return_types: error
     assignment_to_const: error

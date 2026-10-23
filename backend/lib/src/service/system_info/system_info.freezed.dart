@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'system_info.dart';
@@ -9,6 +9,7 @@ part of 'system_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $SystemInfoCopyWith<SystemInfo> get copyWith => _$SystemInfoCopyWithImpl<SystemI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SystemInfo&&(identical(other.cpuInfo, cpuInfo) || other.cpuInfo == cpuInfo)&&(identical(other.networkInfo, networkInfo) || other.networkInfo == networkInfo)&&(identical(other.osInfo, osInfo) || other.osInfo == osInfo)&&(identical(other.updateInfo, updateInfo) || other.updateInfo == updateInfo));
+  final _this = this as SystemInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SystemInfo&&(identical(other.cpuInfo, _this.cpuInfo) || other.cpuInfo == _this.cpuInfo)&&(identical(other.networkInfo, _this.networkInfo) || other.networkInfo == _this.networkInfo)&&(identical(other.osInfo, _this.osInfo) || other.osInfo == _this.osInfo)&&(identical(other.updateInfo, _this.updateInfo) || other.updateInfo == _this.updateInfo));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cpuInfo,networkInfo,osInfo,updateInfo);
+int get hashCode {
+  final _this = this as SystemInfo;
+  return Object.hash(runtimeType,_this.cpuInfo,_this.networkInfo,_this.osInfo,_this.updateInfo);
+}
 
 @override
 String toString() {
-  return 'SystemInfo(cpuInfo: $cpuInfo, networkInfo: $networkInfo, osInfo: $osInfo, updateInfo: $updateInfo)';
+  final _this = this as SystemInfo;
+  return 'SystemInfo(cpuInfo: ${_this.cpuInfo}, networkInfo: ${_this.networkInfo}, osInfo: ${_this.osInfo}, updateInfo: ${_this.updateInfo})';
 }
 
 
@@ -66,7 +72,7 @@ class _$SystemInfoCopyWithImpl<$Res>
 /// Create a copy of SystemInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? cpuInfo = null,Object? networkInfo = null,Object? osInfo = null,Object? updateInfo = null,}) {
-  return _then(_self.copyWith(
+  return _then(SystemInfo(
 cpuInfo: null == cpuInfo ? _self.cpuInfo : cpuInfo // ignore: cast_nullable_to_non_nullable
 as CpuInfo,networkInfo: null == networkInfo ? _self.networkInfo : networkInfo // ignore: cast_nullable_to_non_nullable
 as NetworkInfo,osInfo: null == osInfo ? _self.osInfo : osInfo // ignore: cast_nullable_to_non_nullable
@@ -263,16 +269,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SystemInfo&&(identical(other.cpuInfo, cpuInfo) || other.cpuInfo == cpuInfo)&&(identical(other.networkInfo, networkInfo) || other.networkInfo == networkInfo)&&(identical(other.osInfo, osInfo) || other.osInfo == osInfo)&&(identical(other.updateInfo, updateInfo) || other.updateInfo == updateInfo));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SystemInfo&&(identical(other.cpuInfo, cpuInfo) || other.cpuInfo == cpuInfo)&&(identical(other.networkInfo, networkInfo) || other.networkInfo == networkInfo)&&(identical(other.osInfo, osInfo) || other.osInfo == osInfo)&&(identical(other.updateInfo, updateInfo) || other.updateInfo == updateInfo));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cpuInfo,networkInfo,osInfo,updateInfo);
+int get hashCode {
+    return Object.hash(runtimeType,cpuInfo,networkInfo,osInfo,updateInfo);
+}
 
 @override
 String toString() {
-  return 'SystemInfo(cpuInfo: $cpuInfo, networkInfo: $networkInfo, osInfo: $osInfo, updateInfo: $updateInfo)';
+    return 'SystemInfo(cpuInfo: $cpuInfo, networkInfo: $networkInfo, osInfo: $osInfo, updateInfo: $updateInfo)';
 }
 
 

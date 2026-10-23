@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'login_bloc.dart';
@@ -9,7 +9,7 @@ part of 'login_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -99,7 +99,7 @@ extension LoginEventPatterns on LoginEvent {
     required TResult Function(LoginConnectUriChanged value) changedConnectUri,
     required TResult Function(LoginSubmitted value) submit,
     required TResult Function(LoginConnectUriAutoChanged value)
-        autoChangedConnectUri,
+    autoChangedConnectUri,
   }) {
     final _that = this;
     switch (_that) {
@@ -278,7 +278,9 @@ class LoginUsernameChanged with DiagnosticableTreeMixin implements LoginEvent {
   @pragma('vm:prefer-inline')
   $LoginUsernameChangedCopyWith<LoginUsernameChanged> get copyWith =>
       _$LoginUsernameChangedCopyWithImpl<LoginUsernameChanged>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -297,7 +299,9 @@ class LoginUsernameChanged with DiagnosticableTreeMixin implements LoginEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, username);
+  int get hashCode {
+    return Object.hash(runtimeType, username);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -308,9 +312,10 @@ class LoginUsernameChanged with DiagnosticableTreeMixin implements LoginEvent {
 /// @nodoc
 abstract mixin class $LoginUsernameChangedCopyWith<$Res>
     implements $LoginEventCopyWith<$Res> {
-  factory $LoginUsernameChangedCopyWith(LoginUsernameChanged value,
-          $Res Function(LoginUsernameChanged) _then) =
-      _$LoginUsernameChangedCopyWithImpl;
+  factory $LoginUsernameChangedCopyWith(
+    LoginUsernameChanged value,
+    $Res Function(LoginUsernameChanged) _then,
+  ) = _$LoginUsernameChangedCopyWithImpl;
   @useResult
   $Res call({String username});
 }
@@ -326,15 +331,15 @@ class _$LoginUsernameChangedCopyWithImpl<$Res>
   /// Create a copy of LoginEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? username = null,
-  }) {
-    return _then(LoginUsernameChanged(
-      null == username
-          ? _self.username
-          : username // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? username = null}) {
+    return _then(
+      LoginUsernameChanged(
+        null == username
+            ? _self.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -351,7 +356,9 @@ class LoginPasswordChanged with DiagnosticableTreeMixin implements LoginEvent {
   @pragma('vm:prefer-inline')
   $LoginPasswordChangedCopyWith<LoginPasswordChanged> get copyWith =>
       _$LoginPasswordChangedCopyWithImpl<LoginPasswordChanged>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -370,7 +377,9 @@ class LoginPasswordChanged with DiagnosticableTreeMixin implements LoginEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, password);
+  int get hashCode {
+    return Object.hash(runtimeType, password);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -381,9 +390,10 @@ class LoginPasswordChanged with DiagnosticableTreeMixin implements LoginEvent {
 /// @nodoc
 abstract mixin class $LoginPasswordChangedCopyWith<$Res>
     implements $LoginEventCopyWith<$Res> {
-  factory $LoginPasswordChangedCopyWith(LoginPasswordChanged value,
-          $Res Function(LoginPasswordChanged) _then) =
-      _$LoginPasswordChangedCopyWithImpl;
+  factory $LoginPasswordChangedCopyWith(
+    LoginPasswordChanged value,
+    $Res Function(LoginPasswordChanged) _then,
+  ) = _$LoginPasswordChangedCopyWithImpl;
   @useResult
   $Res call({String password});
 }
@@ -399,15 +409,15 @@ class _$LoginPasswordChangedCopyWithImpl<$Res>
   /// Create a copy of LoginEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? password = null,
-  }) {
-    return _then(LoginPasswordChanged(
-      null == password
-          ? _self.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? password = null}) {
+    return _then(
+      LoginPasswordChanged(
+        null == password
+            ? _self.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -426,7 +436,9 @@ class LoginConnectUriChanged
   @pragma('vm:prefer-inline')
   $LoginConnectUriChangedCopyWith<LoginConnectUriChanged> get copyWith =>
       _$LoginConnectUriChangedCopyWithImpl<LoginConnectUriChanged>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -445,7 +457,9 @@ class LoginConnectUriChanged
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, connectUri);
+  int get hashCode {
+    return Object.hash(runtimeType, connectUri);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -456,9 +470,10 @@ class LoginConnectUriChanged
 /// @nodoc
 abstract mixin class $LoginConnectUriChangedCopyWith<$Res>
     implements $LoginEventCopyWith<$Res> {
-  factory $LoginConnectUriChangedCopyWith(LoginConnectUriChanged value,
-          $Res Function(LoginConnectUriChanged) _then) =
-      _$LoginConnectUriChangedCopyWithImpl;
+  factory $LoginConnectUriChangedCopyWith(
+    LoginConnectUriChanged value,
+    $Res Function(LoginConnectUriChanged) _then,
+  ) = _$LoginConnectUriChangedCopyWithImpl;
   @useResult
   $Res call({String connectUri});
 }
@@ -474,15 +489,15 @@ class _$LoginConnectUriChangedCopyWithImpl<$Res>
   /// Create a copy of LoginEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? connectUri = null,
-  }) {
-    return _then(LoginConnectUriChanged(
-      null == connectUri
-          ? _self.connectUri
-          : connectUri // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? connectUri = null}) {
+    return _then(
+      LoginConnectUriChanged(
+        null == connectUri
+            ? _self.connectUri
+            : connectUri // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -557,52 +572,68 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    final _this = this as LoginState;
     properties
       ..add(DiagnosticsProperty('type', 'LoginState'))
-      ..add(DiagnosticsProperty('status', status))
-      ..add(DiagnosticsProperty('username', username))
-      ..add(DiagnosticsProperty('password', password))
-      ..add(DiagnosticsProperty('connectUri', connectUri))
-      ..add(DiagnosticsProperty('isValid', isValid));
+      ..add(DiagnosticsProperty('status', _this.status))
+      ..add(DiagnosticsProperty('username', _this.username))
+      ..add(DiagnosticsProperty('password', _this.password))
+      ..add(DiagnosticsProperty('connectUri', _this.connectUri))
+      ..add(DiagnosticsProperty('isValid', _this.isValid));
   }
 
   @override
   bool operator ==(Object other) {
+    final _this = this as LoginState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is LoginState &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
-            (identical(other.connectUri, connectUri) ||
-                other.connectUri == connectUri) &&
-            (identical(other.isValid, isValid) || other.isValid == isValid));
+            (identical(other.status, _this.status) ||
+                other.status == _this.status) &&
+            (identical(other.username, _this.username) ||
+                other.username == _this.username) &&
+            (identical(other.password, _this.password) ||
+                other.password == _this.password) &&
+            (identical(other.connectUri, _this.connectUri) ||
+                other.connectUri == _this.connectUri) &&
+            (identical(other.isValid, _this.isValid) ||
+                other.isValid == _this.isValid));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, username, password, connectUri, isValid);
+  int get hashCode {
+    final _this = this as LoginState;
+    return Object.hash(
+      runtimeType,
+      _this.status,
+      _this.username,
+      _this.password,
+      _this.connectUri,
+      _this.isValid,
+    );
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoginState(status: $status, username: $username, password: $password, connectUri: $connectUri, isValid: $isValid)';
+    final _this = this as LoginState;
+    return 'LoginState(status: ${_this.status}, username: ${_this.username}, password: ${_this.password}, connectUri: ${_this.connectUri}, isValid: ${_this.isValid})';
   }
 }
 
 /// @nodoc
 abstract mixin class $LoginStateCopyWith<$Res> {
   factory $LoginStateCopyWith(
-          LoginState value, $Res Function(LoginState) _then) =
-      _$LoginStateCopyWithImpl;
+    LoginState value,
+    $Res Function(LoginState) _then,
+  ) = _$LoginStateCopyWithImpl;
   @useResult
-  $Res call(
-      {FormzSubmissionStatus status,
-      Username username,
-      Password password,
-      ConnectUri connectUri,
-      bool isValid});
+  $Res call({
+    FormzSubmissionStatus status,
+    Username username,
+    Password password,
+    ConnectUri connectUri,
+    bool isValid,
+  });
 }
 
 /// @nodoc
@@ -623,28 +654,30 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
     Object? connectUri = null,
     Object? isValid = null,
   }) {
-    return _then(_self.copyWith(
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
-      username: null == username
-          ? _self.username
-          : username // ignore: cast_nullable_to_non_nullable
-              as Username,
-      password: null == password
-          ? _self.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as Password,
-      connectUri: null == connectUri
-          ? _self.connectUri
-          : connectUri // ignore: cast_nullable_to_non_nullable
-              as ConnectUri,
-      isValid: null == isValid
-          ? _self.isValid
-          : isValid // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      LoginState(
+        status: null == status
+            ? _self.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as FormzSubmissionStatus,
+        username: null == username
+            ? _self.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as Username,
+        password: null == password
+            ? _self.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as Password,
+        connectUri: null == connectUri
+            ? _self.connectUri
+            : connectUri // ignore: cast_nullable_to_non_nullable
+                  as ConnectUri,
+        isValid: null == isValid
+            ? _self.isValid
+            : isValid // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
@@ -739,16 +772,26 @@ extension LoginStatePatterns on LoginState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(FormzSubmissionStatus status, Username username,
-            Password password, ConnectUri connectUri, bool isValid)?
-        $default, {
+    TResult Function(
+      FormzSubmissionStatus status,
+      Username username,
+      Password password,
+      ConnectUri connectUri,
+      bool isValid,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _LoginState() when $default != null:
-        return $default(_that.status, _that.username, _that.password,
-            _that.connectUri, _that.isValid);
+        return $default(
+          _that.status,
+          _that.username,
+          _that.password,
+          _that.connectUri,
+          _that.isValid,
+        );
       case _:
         return orElse();
     }
@@ -769,15 +812,25 @@ extension LoginStatePatterns on LoginState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(FormzSubmissionStatus status, Username username,
-            Password password, ConnectUri connectUri, bool isValid)
-        $default,
+    TResult Function(
+      FormzSubmissionStatus status,
+      Username username,
+      Password password,
+      ConnectUri connectUri,
+      bool isValid,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _LoginState():
-        return $default(_that.status, _that.username, _that.password,
-            _that.connectUri, _that.isValid);
+        return $default(
+          _that.status,
+          _that.username,
+          _that.password,
+          _that.connectUri,
+          _that.isValid,
+        );
     }
   }
 
@@ -795,15 +848,25 @@ extension LoginStatePatterns on LoginState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(FormzSubmissionStatus status, Username username,
-            Password password, ConnectUri connectUri, bool isValid)?
-        $default,
+    TResult? Function(
+      FormzSubmissionStatus status,
+      Username username,
+      Password password,
+      ConnectUri connectUri,
+      bool isValid,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _LoginState() when $default != null:
-        return $default(_that.status, _that.username, _that.password,
-            _that.connectUri, _that.isValid);
+        return $default(
+          _that.status,
+          _that.username,
+          _that.password,
+          _that.connectUri,
+          _that.isValid,
+        );
       case _:
         return null;
     }
@@ -813,13 +876,15 @@ extension LoginStatePatterns on LoginState {
 /// @nodoc
 
 class _LoginState with DiagnosticableTreeMixin implements LoginState {
-  const _LoginState(
-      {this.status = FormzSubmissionStatus.initial,
-      this.username = const Username.pure(defaultValue: 'admin'),
-      this.password = const Password.pure(defaultValue: '123'),
-      this.connectUri =
-          const ConnectUri.pure(defaultValue: 'ws://192.168.50.xx:8080/ws'),
-      this.isValid = false});
+  const _LoginState({
+    this.status = FormzSubmissionStatus.initial,
+    this.username = const Username.pure(defaultValue: 'admin'),
+    this.password = const Password.pure(defaultValue: '123'),
+    this.connectUri = const ConnectUri.pure(
+      defaultValue: 'ws://192.168.50.xx:8080/ws',
+    ),
+    this.isValid = false,
+  });
 
   @override
   @JsonKey()
@@ -872,8 +937,16 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, username, password, connectUri, isValid);
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      status,
+      username,
+      password,
+      connectUri,
+      isValid,
+    );
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -885,16 +958,18 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
 abstract mixin class _$LoginStateCopyWith<$Res>
     implements $LoginStateCopyWith<$Res> {
   factory _$LoginStateCopyWith(
-          _LoginState value, $Res Function(_LoginState) _then) =
-      __$LoginStateCopyWithImpl;
+    _LoginState value,
+    $Res Function(_LoginState) _then,
+  ) = __$LoginStateCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {FormzSubmissionStatus status,
-      Username username,
-      Password password,
-      ConnectUri connectUri,
-      bool isValid});
+  $Res call({
+    FormzSubmissionStatus status,
+    Username username,
+    Password password,
+    ConnectUri connectUri,
+    bool isValid,
+  });
 }
 
 /// @nodoc
@@ -915,29 +990,29 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
     Object? connectUri = null,
     Object? isValid = null,
   }) {
-    return _then(_LoginState(
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as FormzSubmissionStatus,
-      username: null == username
-          ? _self.username
-          : username // ignore: cast_nullable_to_non_nullable
-              as Username,
-      password: null == password
-          ? _self.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as Password,
-      connectUri: null == connectUri
-          ? _self.connectUri
-          : connectUri // ignore: cast_nullable_to_non_nullable
-              as ConnectUri,
-      isValid: null == isValid
-          ? _self.isValid
-          : isValid // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _LoginState(
+        status: null == status
+            ? _self.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as FormzSubmissionStatus,
+        username: null == username
+            ? _self.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as Username,
+        password: null == password
+            ? _self.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as Password,
+        connectUri: null == connectUri
+            ? _self.connectUri
+            : connectUri // ignore: cast_nullable_to_non_nullable
+                  as ConnectUri,
+        isValid: null == isValid
+            ? _self.isValid
+            : isValid // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
-
-// dart format on

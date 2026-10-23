@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'network_info.dart';
@@ -9,6 +9,7 @@ part of 'network_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $NetworkInfoCopyWith<NetworkInfo> get copyWith => _$NetworkInfoCopyWithImpl<Netw
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkInfo&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&const DeepCollectionEquality().equals(other.interfaces, interfaces));
+  final _this = this as NetworkInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkInfo&&(identical(other.lastUpdate, _this.lastUpdate) || other.lastUpdate == _this.lastUpdate)&&(identical(other.hasInternet, _this.hasInternet) || other.hasInternet == _this.hasInternet)&&const DeepCollectionEquality().equals(other.interfaces, _this.interfaces));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lastUpdate,hasInternet,const DeepCollectionEquality().hash(interfaces));
+int get hashCode {
+  final _this = this as NetworkInfo;
+  return Object.hash(runtimeType,_this.lastUpdate,_this.hasInternet,const DeepCollectionEquality().hash(_this.interfaces));
+}
 
 @override
 String toString() {
-  return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
+  final _this = this as NetworkInfo;
+  return 'NetworkInfo(lastUpdate: ${_this.lastUpdate}, hasInternet: ${_this.hasInternet}, interfaces: ${_this.interfaces})';
 }
 
 
@@ -66,7 +72,7 @@ class _$NetworkInfoCopyWithImpl<$Res>
 /// Create a copy of NetworkInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? lastUpdate = null,Object? hasInternet = null,Object? interfaces = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NetworkInfo(
 lastUpdate: null == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as int,hasInternet: null == hasInternet ? _self.hasInternet : hasInternet // ignore: cast_nullable_to_non_nullable
 as bool,interfaces: freezed == interfaces ? _self.interfaces : interfaces // ignore: cast_nullable_to_non_nullable
@@ -205,7 +211,7 @@ return $default(_that.lastUpdate,_that.hasInternet,_that.interfaces);case _:
 @JsonSerializable()
 
 class _NetworkInfo implements NetworkInfo {
-  const _NetworkInfo({required this.lastUpdate, required this.hasInternet, required final  List<NetworkInterfaceInfo>? interfaces}): _interfaces = interfaces;
+  const _NetworkInfo({required this.lastUpdate, required this.hasInternet, required  List<NetworkInterfaceInfo>? interfaces}): _interfaces = interfaces;
   factory _NetworkInfo.fromJson(Map<String, dynamic> json) => _$NetworkInfoFromJson(json);
 
 @override final  int lastUpdate;
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkInfo&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&const DeepCollectionEquality().equals(other._interfaces, _interfaces));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkInfo&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&const DeepCollectionEquality().equals(other.interfaces, _interfaces));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lastUpdate,hasInternet,const DeepCollectionEquality().hash(_interfaces));
+int get hashCode {
+    return Object.hash(runtimeType,lastUpdate,hasInternet,const DeepCollectionEquality().hash(_interfaces));
+}
 
 @override
 String toString() {
-  return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
+    return 'NetworkInfo(lastUpdate: $lastUpdate, hasInternet: $hasInternet, interfaces: $interfaces)';
 }
 
 
@@ -299,16 +307,21 @@ $NetworkInterfaceInfoCopyWith<NetworkInterfaceInfo> get copyWith => _$NetworkInt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkInterfaceInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.ip4, ip4) || other.ip4 == ip4)&&(identical(other.ip6, ip6) || other.ip6 == ip6));
+  final _this = this as NetworkInterfaceInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkInterfaceInfo&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.ip4, _this.ip4) || other.ip4 == _this.ip4)&&(identical(other.ip6, _this.ip6) || other.ip6 == _this.ip6));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,status,ip4,ip6);
+int get hashCode {
+  final _this = this as NetworkInterfaceInfo;
+  return Object.hash(runtimeType,_this.name,_this.status,_this.ip4,_this.ip6);
+}
 
 @override
 String toString() {
-  return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
+  final _this = this as NetworkInterfaceInfo;
+  return 'NetworkInterfaceInfo(name: ${_this.name}, status: ${_this.status}, ip4: ${_this.ip4}, ip6: ${_this.ip6})';
 }
 
 
@@ -337,7 +350,7 @@ class _$NetworkInterfaceInfoCopyWithImpl<$Res>
 /// Create a copy of NetworkInterfaceInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? status = null,Object? ip4 = null,Object? ip6 = null,}) {
-  return _then(_self.copyWith(
+  return _then(NetworkInterfaceInfo(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as NetworkInterfaceStatus,ip4: null == ip4 ? _self.ip4 : ip4 // ignore: cast_nullable_to_non_nullable
@@ -498,16 +511,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkInterfaceInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.ip4, ip4) || other.ip4 == ip4)&&(identical(other.ip6, ip6) || other.ip6 == ip6));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkInterfaceInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.ip4, ip4) || other.ip4 == ip4)&&(identical(other.ip6, ip6) || other.ip6 == ip6));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,status,ip4,ip6);
+int get hashCode {
+    return Object.hash(runtimeType,name,status,ip4,ip6);
+}
 
 @override
 String toString() {
-  return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
+    return 'NetworkInterfaceInfo(name: $name, status: $status, ip4: $ip4, ip6: $ip6)';
 }
 
 

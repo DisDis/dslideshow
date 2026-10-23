@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_state.dart';
@@ -9,6 +9,7 @@ part of 'ota_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OtaStateCopyWith<OtaState> get copyWith => _$OtaStateCopyWithImpl<OtaState>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaState&&(identical(other.info, info) || other.info == info));
+  final _this = this as OtaState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaState&&(identical(other.info, _this.info) || other.info == _this.info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+  final _this = this as OtaState;
+  return Object.hash(runtimeType,_this.info);
+}
 
 @override
 String toString() {
-  return 'OtaState(info: $info)';
+  final _this = this as OtaState;
+  return 'OtaState(info: ${_this.info})';
 }
 
 
@@ -254,16 +260,18 @@ $OtaInitialStateCopyWith<OtaInitialState> get copyWith => _$OtaInitialStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaInitialState&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaInitialState&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaState.initial(info: $info)';
+    return 'OtaState.initial(info: $info)';
 }
 
 
@@ -330,16 +338,18 @@ $OtaReadyStateCopyWith<OtaReadyState> get copyWith => _$OtaReadyStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyState&&(identical(other.info, info) || other.info == info)&&(identical(other.otaStartUrl, otaStartUrl) || other.otaStartUrl == otaStartUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyState&&(identical(other.info, info) || other.info == info)&&(identical(other.otaStartUrl, otaStartUrl) || other.otaStartUrl == otaStartUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info,otaStartUrl);
+int get hashCode {
+    return Object.hash(runtimeType,info,otaStartUrl);
+}
 
 @override
 String toString() {
-  return 'OtaState.ready(info: $info, otaStartUrl: $otaStartUrl)';
+    return 'OtaState.ready(info: $info, otaStartUrl: $otaStartUrl)';
 }
 
 
@@ -406,16 +416,18 @@ $OtaProgressStateCopyWith<OtaProgressState> get copyWith => _$OtaProgressStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaProgressState&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaProgressState&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaState.progress(info: $info)';
+    return 'OtaState.progress(info: $info)';
 }
 
 
@@ -481,16 +493,18 @@ $OtaSuccessStateCopyWith<OtaSuccessState> get copyWith => _$OtaSuccessStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaSuccessState&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaSuccessState&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaState.success(info: $info)';
+    return 'OtaState.success(info: $info)';
 }
 
 
@@ -556,16 +570,18 @@ $OtaFailureStateCopyWith<OtaFailureState> get copyWith => _$OtaFailureStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaFailureState&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaFailureState&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaState.failure(info: $info)';
+    return 'OtaState.failure(info: $info)';
 }
 
 
@@ -631,16 +647,18 @@ $OtaExitStateCopyWith<OtaExitState> get copyWith => _$OtaExitStateCopyWithImpl<O
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaExitState&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaExitState&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaState.exit(info: $info)';
+    return 'OtaState.exit(info: $info)';
 }
 
 

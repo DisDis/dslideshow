@@ -279,8 +279,8 @@ class SystemInfoService {
     String currentIp6 = '';
 
     // Регулярные выражения для извлечения данных
-    // Имя интерфейса: берет первое слово в строке, убирает двоеточие на конце (en0: -> en0)
-    final nameRegex = RegExp(r'^([a-zA-Z0-9\-\.]+):?');
+    // Require an ifconfig header; error output must not become interfaces.
+    final nameRegex = RegExp(r'^([a-zA-Z0-9_.:@-]+):\s+flags=');
 
     // Вспомогательная функция для сохранения накопленных данных
     void saveCurrentInterface() {

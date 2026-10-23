@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'buttons_hint_bloc.dart';
@@ -9,6 +9,7 @@ part of 'buttons_hint_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ButtonsHintEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ButtonsHintEvent()';
+    return 'ButtonsHintEvent()';
 }
 
 
@@ -203,7 +204,7 @@ class _ButtonsHintEvent implements ButtonsHintEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonsHintEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonsHintEvent);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ButtonsHintEvent()';
+    return 'ButtonsHintEvent()';
 }
 
 
@@ -240,16 +241,18 @@ $ButtonsHintShowEventCopyWith<ButtonsHintShowEvent> get copyWith => _$ButtonsHin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintShowEvent&&(identical(other.isShow, isShow) || other.isShow == isShow));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintShowEvent&&(identical(other.isShow, isShow) || other.isShow == isShow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isShow);
+int get hashCode {
+    return Object.hash(runtimeType,isShow);
+}
 
 @override
 String toString() {
-  return 'ButtonsHintEvent.show(isShow: $isShow)';
+    return 'ButtonsHintEvent.show(isShow: $isShow)';
 }
 
 
@@ -306,16 +309,18 @@ $ButtonsHintPushButtonEventCopyWith<ButtonsHintPushButtonEvent> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintPushButtonEvent&&(identical(other.button, button) || other.button == button));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintPushButtonEvent&&(identical(other.button, button) || other.button == button));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,button);
+int get hashCode {
+    return Object.hash(runtimeType,button);
+}
 
 @override
 String toString() {
-  return 'ButtonsHintEvent.pushButton(button: $button)';
+    return 'ButtonsHintEvent.pushButton(button: $button)';
 }
 
 
@@ -367,7 +372,7 @@ class ButtonsHintUpdateButtonsEvent implements ButtonsHintEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintUpdateButtonsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintUpdateButtonsEvent);
 }
 
 
@@ -376,7 +381,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ButtonsHintEvent.updateButtons()';
+    return 'ButtonsHintEvent.updateButtons()';
 }
 
 
@@ -399,16 +404,21 @@ $ButtonsHintStateCopyWith<ButtonsHintState> get copyWith => _$ButtonsHintStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintState&&(identical(other.isShow, isShow) || other.isShow == isShow)&&(identical(other.normalColor, normalColor) || other.normalColor == normalColor)&&(identical(other.pushColor, pushColor) || other.pushColor == pushColor)&&(identical(other.button0Icon, button0Icon) || other.button0Icon == button0Icon)&&(identical(other.button0isPush, button0isPush) || other.button0isPush == button0isPush)&&(identical(other.button1Icon, button1Icon) || other.button1Icon == button1Icon)&&(identical(other.button1isPush, button1isPush) || other.button1isPush == button1isPush)&&(identical(other.button2Icon, button2Icon) || other.button2Icon == button2Icon)&&(identical(other.button2isPush, button2isPush) || other.button2isPush == button2isPush)&&(identical(other.button3Icon, button3Icon) || other.button3Icon == button3Icon)&&(identical(other.button3isPush, button3isPush) || other.button3isPush == button3isPush));
+  final _this = this as ButtonsHintState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintState&&(identical(other.isShow, _this.isShow) || other.isShow == _this.isShow)&&(identical(other.normalColor, _this.normalColor) || other.normalColor == _this.normalColor)&&(identical(other.pushColor, _this.pushColor) || other.pushColor == _this.pushColor)&&(identical(other.button0Icon, _this.button0Icon) || other.button0Icon == _this.button0Icon)&&(identical(other.button0isPush, _this.button0isPush) || other.button0isPush == _this.button0isPush)&&(identical(other.button1Icon, _this.button1Icon) || other.button1Icon == _this.button1Icon)&&(identical(other.button1isPush, _this.button1isPush) || other.button1isPush == _this.button1isPush)&&(identical(other.button2Icon, _this.button2Icon) || other.button2Icon == _this.button2Icon)&&(identical(other.button2isPush, _this.button2isPush) || other.button2isPush == _this.button2isPush)&&(identical(other.button3Icon, _this.button3Icon) || other.button3Icon == _this.button3Icon)&&(identical(other.button3isPush, _this.button3isPush) || other.button3isPush == _this.button3isPush));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isShow,normalColor,pushColor,button0Icon,button0isPush,button1Icon,button1isPush,button2Icon,button2isPush,button3Icon,button3isPush);
+int get hashCode {
+  final _this = this as ButtonsHintState;
+  return Object.hash(runtimeType,_this.isShow,_this.normalColor,_this.pushColor,_this.button0Icon,_this.button0isPush,_this.button1Icon,_this.button1isPush,_this.button2Icon,_this.button2isPush,_this.button3Icon,_this.button3isPush);
+}
 
 @override
 String toString() {
-  return 'ButtonsHintState(isShow: $isShow, normalColor: $normalColor, pushColor: $pushColor, button0Icon: $button0Icon, button0isPush: $button0isPush, button1Icon: $button1Icon, button1isPush: $button1isPush, button2Icon: $button2Icon, button2isPush: $button2isPush, button3Icon: $button3Icon, button3isPush: $button3isPush)';
+  final _this = this as ButtonsHintState;
+  return 'ButtonsHintState(isShow: ${_this.isShow}, normalColor: ${_this.normalColor}, pushColor: ${_this.pushColor}, button0Icon: ${_this.button0Icon}, button0isPush: ${_this.button0isPush}, button1Icon: ${_this.button1Icon}, button1isPush: ${_this.button1isPush}, button2Icon: ${_this.button2Icon}, button2isPush: ${_this.button2isPush}, button3Icon: ${_this.button3Icon}, button3isPush: ${_this.button3isPush})';
 }
 
 
@@ -437,7 +447,7 @@ class _$ButtonsHintStateCopyWithImpl<$Res>
 /// Create a copy of ButtonsHintState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isShow = null,Object? normalColor = null,Object? pushColor = null,Object? button0Icon = null,Object? button0isPush = null,Object? button1Icon = null,Object? button1isPush = null,Object? button2Icon = null,Object? button2isPush = null,Object? button3Icon = null,Object? button3isPush = null,}) {
-  return _then(_self.copyWith(
+  return _then(ButtonsHintState.display(
 isShow: null == isShow ? _self.isShow : isShow // ignore: cast_nullable_to_non_nullable
 as bool,normalColor: null == normalColor ? _self.normalColor : normalColor // ignore: cast_nullable_to_non_nullable
 as Color,pushColor: null == pushColor ? _self.pushColor : pushColor // ignore: cast_nullable_to_non_nullable
@@ -609,16 +619,18 @@ $ButtonsHintDisplayStateCopyWith<ButtonsHintDisplayState> get copyWith => _$Butt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintDisplayState&&(identical(other.isShow, isShow) || other.isShow == isShow)&&(identical(other.normalColor, normalColor) || other.normalColor == normalColor)&&(identical(other.pushColor, pushColor) || other.pushColor == pushColor)&&(identical(other.button0Icon, button0Icon) || other.button0Icon == button0Icon)&&(identical(other.button0isPush, button0isPush) || other.button0isPush == button0isPush)&&(identical(other.button1Icon, button1Icon) || other.button1Icon == button1Icon)&&(identical(other.button1isPush, button1isPush) || other.button1isPush == button1isPush)&&(identical(other.button2Icon, button2Icon) || other.button2Icon == button2Icon)&&(identical(other.button2isPush, button2isPush) || other.button2isPush == button2isPush)&&(identical(other.button3Icon, button3Icon) || other.button3Icon == button3Icon)&&(identical(other.button3isPush, button3isPush) || other.button3isPush == button3isPush));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintDisplayState&&(identical(other.isShow, isShow) || other.isShow == isShow)&&(identical(other.normalColor, normalColor) || other.normalColor == normalColor)&&(identical(other.pushColor, pushColor) || other.pushColor == pushColor)&&(identical(other.button0Icon, button0Icon) || other.button0Icon == button0Icon)&&(identical(other.button0isPush, button0isPush) || other.button0isPush == button0isPush)&&(identical(other.button1Icon, button1Icon) || other.button1Icon == button1Icon)&&(identical(other.button1isPush, button1isPush) || other.button1isPush == button1isPush)&&(identical(other.button2Icon, button2Icon) || other.button2Icon == button2Icon)&&(identical(other.button2isPush, button2isPush) || other.button2isPush == button2isPush)&&(identical(other.button3Icon, button3Icon) || other.button3Icon == button3Icon)&&(identical(other.button3isPush, button3isPush) || other.button3isPush == button3isPush));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isShow,normalColor,pushColor,button0Icon,button0isPush,button1Icon,button1isPush,button2Icon,button2isPush,button3Icon,button3isPush);
+int get hashCode {
+    return Object.hash(runtimeType,isShow,normalColor,pushColor,button0Icon,button0isPush,button1Icon,button1isPush,button2Icon,button2isPush,button3Icon,button3isPush);
+}
 
 @override
 String toString() {
-  return 'ButtonsHintState.display(isShow: $isShow, normalColor: $normalColor, pushColor: $pushColor, button0Icon: $button0Icon, button0isPush: $button0isPush, button1Icon: $button1Icon, button1isPush: $button1isPush, button2Icon: $button2Icon, button2isPush: $button2isPush, button3Icon: $button3Icon, button3isPush: $button3isPush)';
+    return 'ButtonsHintState.display(isShow: $isShow, normalColor: $normalColor, pushColor: $pushColor, button0Icon: $button0Icon, button0isPush: $button0isPush, button1Icon: $button1Icon, button1isPush: $button1isPush, button2Icon: $button2Icon, button2isPush: $button2isPush, button3Icon: $button3Icon, button3isPush: $button3isPush)';
 }
 
 

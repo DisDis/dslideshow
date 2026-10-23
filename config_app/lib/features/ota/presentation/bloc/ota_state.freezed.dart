@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_state.dart';
@@ -9,7 +9,7 @@ part of 'ota_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -306,7 +306,9 @@ class InitializedOtaState implements OtaState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, version);
+  int get hashCode {
+    return Object.hash(runtimeType, version);
+  }
 
   @override
   String toString() {
@@ -318,8 +320,9 @@ class InitializedOtaState implements OtaState {
 abstract mixin class $InitializedOtaStateCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
   factory $InitializedOtaStateCopyWith(
-          InitializedOtaState value, $Res Function(InitializedOtaState) _then) =
-      _$InitializedOtaStateCopyWithImpl;
+    InitializedOtaState value,
+    $Res Function(InitializedOtaState) _then,
+  ) = _$InitializedOtaStateCopyWithImpl;
   @useResult
   $Res call({String version});
 }
@@ -335,15 +338,15 @@ class _$InitializedOtaStateCopyWithImpl<$Res>
   /// Create a copy of OtaState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? version = null,
-  }) {
-    return _then(InitializedOtaState(
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? version = null}) {
+    return _then(
+      InitializedOtaState(
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -371,7 +374,9 @@ class UploadingOtaState implements OtaState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, progress);
+  int get hashCode {
+    return Object.hash(runtimeType, progress);
+  }
 
   @override
   String toString() {
@@ -383,8 +388,9 @@ class UploadingOtaState implements OtaState {
 abstract mixin class $UploadingOtaStateCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
   factory $UploadingOtaStateCopyWith(
-          UploadingOtaState value, $Res Function(UploadingOtaState) _then) =
-      _$UploadingOtaStateCopyWithImpl;
+    UploadingOtaState value,
+    $Res Function(UploadingOtaState) _then,
+  ) = _$UploadingOtaStateCopyWithImpl;
   @useResult
   $Res call({double progress});
 }
@@ -400,15 +406,15 @@ class _$UploadingOtaStateCopyWithImpl<$Res>
   /// Create a copy of OtaState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? progress = null,
-  }) {
-    return _then(UploadingOtaState(
-      progress: null == progress
-          ? _self.progress
-          : progress // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
+  $Res call({Object? progress = null}) {
+    return _then(
+      UploadingOtaState(
+        progress: null == progress
+            ? _self.progress
+            : progress // ignore: cast_nullable_to_non_nullable
+                  as double,
+      ),
+    );
   }
 }
 
@@ -456,7 +462,9 @@ class ErrorOtaState implements OtaState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, errorMessage);
+  int get hashCode {
+    return Object.hash(runtimeType, errorMessage);
+  }
 
   @override
   String toString() {
@@ -468,8 +476,9 @@ class ErrorOtaState implements OtaState {
 abstract mixin class $ErrorOtaStateCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
   factory $ErrorOtaStateCopyWith(
-          ErrorOtaState value, $Res Function(ErrorOtaState) _then) =
-      _$ErrorOtaStateCopyWithImpl;
+    ErrorOtaState value,
+    $Res Function(ErrorOtaState) _then,
+  ) = _$ErrorOtaStateCopyWithImpl;
   @useResult
   $Res call({String errorMessage});
 }
@@ -485,16 +494,14 @@ class _$ErrorOtaStateCopyWithImpl<$Res>
   /// Create a copy of OtaState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? errorMessage = null,
-  }) {
-    return _then(ErrorOtaState(
-      null == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? errorMessage = null}) {
+    return _then(
+      ErrorOtaState(
+        null == errorMessage
+            ? _self.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
-
-// dart format on

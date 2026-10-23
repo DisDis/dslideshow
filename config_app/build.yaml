@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          # Keep generated models formatted after raising the Dart SDK minimum.
+          format: true

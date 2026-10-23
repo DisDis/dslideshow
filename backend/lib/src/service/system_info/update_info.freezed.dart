@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'update_info.dart';
@@ -9,6 +9,7 @@ part of 'update_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $UpdateInfoCopyWith<UpdateInfo> get copyWith => _$UpdateInfoCopyWithImpl<UpdateI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateInfo&&(identical(other.cpuLoad1, cpuLoad1) || other.cpuLoad1 == cpuLoad1)&&(identical(other.cpuLoad15, cpuLoad15) || other.cpuLoad15 == cpuLoad15)&&(identical(other.cpuLoad5, cpuLoad5) || other.cpuLoad5 == cpuLoad5)&&(identical(other.diskAvailable, diskAvailable) || other.diskAvailable == diskAvailable)&&(identical(other.diskUsed, diskUsed) || other.diskUsed == diskUsed)&&(identical(other.diskUsedPercent, diskUsedPercent) || other.diskUsedPercent == diskUsedPercent)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.memTotal, memTotal) || other.memTotal == memTotal)&&(identical(other.memUsed, memUsed) || other.memUsed == memUsed)&&const DeepCollectionEquality().equals(other.sensors, sensors)&&(identical(other.swapTotal, swapTotal) || other.swapTotal == swapTotal)&&(identical(other.swapUsed, swapUsed) || other.swapUsed == swapUsed)&&(identical(other.uptime, uptime) || other.uptime == uptime));
+  final _this = this as UpdateInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateInfo&&(identical(other.cpuLoad1, _this.cpuLoad1) || other.cpuLoad1 == _this.cpuLoad1)&&(identical(other.cpuLoad15, _this.cpuLoad15) || other.cpuLoad15 == _this.cpuLoad15)&&(identical(other.cpuLoad5, _this.cpuLoad5) || other.cpuLoad5 == _this.cpuLoad5)&&(identical(other.diskAvailable, _this.diskAvailable) || other.diskAvailable == _this.diskAvailable)&&(identical(other.diskUsed, _this.diskUsed) || other.diskUsed == _this.diskUsed)&&(identical(other.diskUsedPercent, _this.diskUsedPercent) || other.diskUsedPercent == _this.diskUsedPercent)&&(identical(other.lastUpdate, _this.lastUpdate) || other.lastUpdate == _this.lastUpdate)&&(identical(other.memTotal, _this.memTotal) || other.memTotal == _this.memTotal)&&(identical(other.memUsed, _this.memUsed) || other.memUsed == _this.memUsed)&&const DeepCollectionEquality().equals(other.sensors, _this.sensors)&&(identical(other.swapTotal, _this.swapTotal) || other.swapTotal == _this.swapTotal)&&(identical(other.swapUsed, _this.swapUsed) || other.swapUsed == _this.swapUsed)&&(identical(other.uptime, _this.uptime) || other.uptime == _this.uptime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cpuLoad1,cpuLoad15,cpuLoad5,diskAvailable,diskUsed,diskUsedPercent,lastUpdate,memTotal,memUsed,const DeepCollectionEquality().hash(sensors),swapTotal,swapUsed,uptime);
+int get hashCode {
+  final _this = this as UpdateInfo;
+  return Object.hash(runtimeType,_this.cpuLoad1,_this.cpuLoad15,_this.cpuLoad5,_this.diskAvailable,_this.diskUsed,_this.diskUsedPercent,_this.lastUpdate,_this.memTotal,_this.memUsed,const DeepCollectionEquality().hash(_this.sensors),_this.swapTotal,_this.swapUsed,_this.uptime);
+}
 
 @override
 String toString() {
-  return 'UpdateInfo(cpuLoad1: $cpuLoad1, cpuLoad15: $cpuLoad15, cpuLoad5: $cpuLoad5, diskAvailable: $diskAvailable, diskUsed: $diskUsed, diskUsedPercent: $diskUsedPercent, lastUpdate: $lastUpdate, memTotal: $memTotal, memUsed: $memUsed, sensors: $sensors, swapTotal: $swapTotal, swapUsed: $swapUsed, uptime: $uptime)';
+  final _this = this as UpdateInfo;
+  return 'UpdateInfo(cpuLoad1: ${_this.cpuLoad1}, cpuLoad15: ${_this.cpuLoad15}, cpuLoad5: ${_this.cpuLoad5}, diskAvailable: ${_this.diskAvailable}, diskUsed: ${_this.diskUsed}, diskUsedPercent: ${_this.diskUsedPercent}, lastUpdate: ${_this.lastUpdate}, memTotal: ${_this.memTotal}, memUsed: ${_this.memUsed}, sensors: ${_this.sensors}, swapTotal: ${_this.swapTotal}, swapUsed: ${_this.swapUsed}, uptime: ${_this.uptime})';
 }
 
 
@@ -66,7 +72,7 @@ class _$UpdateInfoCopyWithImpl<$Res>
 /// Create a copy of UpdateInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? cpuLoad1 = null,Object? cpuLoad15 = null,Object? cpuLoad5 = null,Object? diskAvailable = null,Object? diskUsed = null,Object? diskUsedPercent = null,Object? lastUpdate = null,Object? memTotal = null,Object? memUsed = null,Object? sensors = null,Object? swapTotal = null,Object? swapUsed = null,Object? uptime = null,}) {
-  return _then(_self.copyWith(
+  return _then(UpdateInfo(
 cpuLoad1: null == cpuLoad1 ? _self.cpuLoad1 : cpuLoad1 // ignore: cast_nullable_to_non_nullable
 as double,cpuLoad15: null == cpuLoad15 ? _self.cpuLoad15 : cpuLoad15 // ignore: cast_nullable_to_non_nullable
 as double,cpuLoad5: null == cpuLoad5 ? _self.cpuLoad5 : cpuLoad5 // ignore: cast_nullable_to_non_nullable
@@ -215,7 +221,7 @@ return $default(_that.cpuLoad1,_that.cpuLoad15,_that.cpuLoad5,_that.diskAvailabl
 @JsonSerializable()
 
 class _UpdateInfo implements UpdateInfo {
-  const _UpdateInfo({required this.cpuLoad1, required this.cpuLoad15, required this.cpuLoad5, required this.diskAvailable, required this.diskUsed, required this.diskUsedPercent, required this.lastUpdate, required this.memTotal, required this.memUsed, required final  List<SensorInfo> sensors, required this.swapTotal, required this.swapUsed, required this.uptime}): _sensors = sensors;
+  const _UpdateInfo({required this.cpuLoad1, required this.cpuLoad15, required this.cpuLoad5, required this.diskAvailable, required this.diskUsed, required this.diskUsedPercent, required this.lastUpdate, required this.memTotal, required this.memUsed, required  List<SensorInfo> sensors, required this.swapTotal, required this.swapUsed, required this.uptime}): _sensors = sensors;
   factory _UpdateInfo.fromJson(Map<String, dynamic> json) => _$UpdateInfoFromJson(json);
 
 @override final  double cpuLoad1;
@@ -251,16 +257,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateInfo&&(identical(other.cpuLoad1, cpuLoad1) || other.cpuLoad1 == cpuLoad1)&&(identical(other.cpuLoad15, cpuLoad15) || other.cpuLoad15 == cpuLoad15)&&(identical(other.cpuLoad5, cpuLoad5) || other.cpuLoad5 == cpuLoad5)&&(identical(other.diskAvailable, diskAvailable) || other.diskAvailable == diskAvailable)&&(identical(other.diskUsed, diskUsed) || other.diskUsed == diskUsed)&&(identical(other.diskUsedPercent, diskUsedPercent) || other.diskUsedPercent == diskUsedPercent)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.memTotal, memTotal) || other.memTotal == memTotal)&&(identical(other.memUsed, memUsed) || other.memUsed == memUsed)&&const DeepCollectionEquality().equals(other._sensors, _sensors)&&(identical(other.swapTotal, swapTotal) || other.swapTotal == swapTotal)&&(identical(other.swapUsed, swapUsed) || other.swapUsed == swapUsed)&&(identical(other.uptime, uptime) || other.uptime == uptime));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateInfo&&(identical(other.cpuLoad1, cpuLoad1) || other.cpuLoad1 == cpuLoad1)&&(identical(other.cpuLoad15, cpuLoad15) || other.cpuLoad15 == cpuLoad15)&&(identical(other.cpuLoad5, cpuLoad5) || other.cpuLoad5 == cpuLoad5)&&(identical(other.diskAvailable, diskAvailable) || other.diskAvailable == diskAvailable)&&(identical(other.diskUsed, diskUsed) || other.diskUsed == diskUsed)&&(identical(other.diskUsedPercent, diskUsedPercent) || other.diskUsedPercent == diskUsedPercent)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.memTotal, memTotal) || other.memTotal == memTotal)&&(identical(other.memUsed, memUsed) || other.memUsed == memUsed)&&const DeepCollectionEquality().equals(other.sensors, _sensors)&&(identical(other.swapTotal, swapTotal) || other.swapTotal == swapTotal)&&(identical(other.swapUsed, swapUsed) || other.swapUsed == swapUsed)&&(identical(other.uptime, uptime) || other.uptime == uptime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cpuLoad1,cpuLoad15,cpuLoad5,diskAvailable,diskUsed,diskUsedPercent,lastUpdate,memTotal,memUsed,const DeepCollectionEquality().hash(_sensors),swapTotal,swapUsed,uptime);
+int get hashCode {
+    return Object.hash(runtimeType,cpuLoad1,cpuLoad15,cpuLoad5,diskAvailable,diskUsed,diskUsedPercent,lastUpdate,memTotal,memUsed,const DeepCollectionEquality().hash(_sensors),swapTotal,swapUsed,uptime);
+}
 
 @override
 String toString() {
-  return 'UpdateInfo(cpuLoad1: $cpuLoad1, cpuLoad15: $cpuLoad15, cpuLoad5: $cpuLoad5, diskAvailable: $diskAvailable, diskUsed: $diskUsed, diskUsedPercent: $diskUsedPercent, lastUpdate: $lastUpdate, memTotal: $memTotal, memUsed: $memUsed, sensors: $sensors, swapTotal: $swapTotal, swapUsed: $swapUsed, uptime: $uptime)';
+    return 'UpdateInfo(cpuLoad1: $cpuLoad1, cpuLoad15: $cpuLoad15, cpuLoad5: $cpuLoad5, diskAvailable: $diskAvailable, diskUsed: $diskUsed, diskUsedPercent: $diskUsedPercent, lastUpdate: $lastUpdate, memTotal: $memTotal, memUsed: $memUsed, sensors: $sensors, swapTotal: $swapTotal, swapUsed: $swapUsed, uptime: $uptime)';
 }
 
 

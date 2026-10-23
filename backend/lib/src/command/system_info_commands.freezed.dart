@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'system_info_commands.dart';
@@ -9,6 +9,7 @@ part of 'system_info_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $GetSystemInfoCommandCopyWith<GetSystemInfoCommand> get copyWith => _$GetSystemI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetSystemInfoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as GetSystemInfoCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetSystemInfoCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as GetSystemInfoCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'GetSystemInfoCommand(id: $id, type: $type)';
+  final _this = this as GetSystemInfoCommand;
+  return 'GetSystemInfoCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$GetSystemInfoCommandCopyWithImpl<$Res>
 /// Create a copy of GetSystemInfoCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetSystemInfoCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSystemInfoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSystemInfoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'GetSystemInfoCommand(id: $id, type: $type)';
+    return 'GetSystemInfoCommand(id: $id, type: $type)';
 }
 
 
@@ -288,16 +296,21 @@ $GetSystemInfoCommandResultCopyWith<GetSystemInfoCommandResult> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetSystemInfoCommandResult&&(identical(other.systemInfo, systemInfo) || other.systemInfo == systemInfo)&&(identical(other.id, id) || other.id == id));
+  final _this = this as GetSystemInfoCommandResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetSystemInfoCommandResult&&(identical(other.systemInfo, _this.systemInfo) || other.systemInfo == _this.systemInfo)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,systemInfo,id);
+int get hashCode {
+  final _this = this as GetSystemInfoCommandResult;
+  return Object.hash(runtimeType,_this.systemInfo,_this.id);
+}
 
 @override
 String toString() {
-  return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
+  final _this = this as GetSystemInfoCommandResult;
+  return 'GetSystemInfoCommandResult(systemInfo: ${_this.systemInfo}, id: ${_this.id})';
 }
 
 
@@ -326,7 +339,7 @@ class _$GetSystemInfoCommandResultCopyWithImpl<$Res>
 /// Create a copy of GetSystemInfoCommandResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? systemInfo = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetSystemInfoCommandResult(
 systemInfo: null == systemInfo ? _self.systemInfo : systemInfo // ignore: cast_nullable_to_non_nullable
 as SystemInfo,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -492,16 +505,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSystemInfoCommandResult&&(identical(other.systemInfo, systemInfo) || other.systemInfo == systemInfo)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSystemInfoCommandResult&&(identical(other.systemInfo, systemInfo) || other.systemInfo == systemInfo)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,systemInfo,id);
+int get hashCode {
+    return Object.hash(runtimeType,systemInfo,id);
+}
 
 @override
 String toString() {
-  return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
+    return 'GetSystemInfoCommandResult(systemInfo: $systemInfo, id: $id)';
 }
 
 

@@ -7,6 +7,10 @@
 *.pyc
 *.swp
 pubspec.lock
+!backend/pubspec.lock
+!config_app/pubspec.lock
+!dslideshow_flutter/pubspec.lock
+!autover/pubspec.lock
 
 .DS_Store
 .atom/

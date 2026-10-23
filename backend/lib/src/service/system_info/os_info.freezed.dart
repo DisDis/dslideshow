@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'os_info.dart';
@@ -9,6 +9,7 @@ part of 'os_info.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $OSInfoCopyWith<OSInfo> get copyWith => _$OSInfoCopyWithImpl<OSInfo>(this as OSI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OSInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.osType, osType) || other.osType == osType));
+  final _this = this as OSInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OSInfo&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.osType, _this.osType) || other.osType == _this.osType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,osType);
+int get hashCode {
+  final _this = this as OSInfo;
+  return Object.hash(runtimeType,_this.name,_this.osType);
+}
 
 @override
 String toString() {
-  return 'OSInfo(name: $name, osType: $osType)';
+  final _this = this as OSInfo;
+  return 'OSInfo(name: ${_this.name}, osType: ${_this.osType})';
 }
 
 
@@ -66,7 +72,7 @@ class _$OSInfoCopyWithImpl<$Res>
 /// Create a copy of OSInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? osType = null,}) {
-  return _then(_self.copyWith(
+  return _then(OSInfo(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,osType: null == osType ? _self.osType : osType // ignore: cast_nullable_to_non_nullable
 as OSType,
@@ -223,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OSInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.osType, osType) || other.osType == osType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OSInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.osType, osType) || other.osType == osType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,osType);
+int get hashCode {
+    return Object.hash(runtimeType,name,osType);
+}
 
 @override
 String toString() {
-  return 'OSInfo(name: $name, osType: $osType)';
+    return 'OSInfo(name: $name, osType: $osType)';
 }
 
 

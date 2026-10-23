@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'authentication_bloc.dart';
@@ -9,7 +9,7 @@ part of 'authentication_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -32,7 +32,9 @@ mixin _$AuthenticationEvent {
 /// @nodoc
 class $AuthenticationEventCopyWith<$Res> {
   $AuthenticationEventCopyWith(
-      AuthenticationEvent _, $Res Function(AuthenticationEvent) __);
+    AuthenticationEvent _,
+    $Res Function(AuthenticationEvent) __,
+  );
 }
 
 /// Adds pattern-matching-related methods to [AuthenticationEvent].
@@ -218,8 +220,11 @@ class _AuthenticationStatusChanged implements AuthenticationEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$AuthenticationStatusChangedCopyWith<_AuthenticationStatusChanged>
-      get copyWith => __$AuthenticationStatusChangedCopyWithImpl<
-          _AuthenticationStatusChanged>(this, _$identity);
+  get copyWith =>
+      __$AuthenticationStatusChangedCopyWithImpl<_AuthenticationStatusChanged>(
+        this,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -230,7 +235,9 @@ class _AuthenticationStatusChanged implements AuthenticationEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status);
+  int get hashCode {
+    return Object.hash(runtimeType, status);
+  }
 
   @override
   String toString() {
@@ -242,9 +249,9 @@ class _AuthenticationStatusChanged implements AuthenticationEvent {
 abstract mixin class _$AuthenticationStatusChangedCopyWith<$Res>
     implements $AuthenticationEventCopyWith<$Res> {
   factory _$AuthenticationStatusChangedCopyWith(
-          _AuthenticationStatusChanged value,
-          $Res Function(_AuthenticationStatusChanged) _then) =
-      __$AuthenticationStatusChangedCopyWithImpl;
+    _AuthenticationStatusChanged value,
+    $Res Function(_AuthenticationStatusChanged) _then,
+  ) = __$AuthenticationStatusChangedCopyWithImpl;
   @useResult
   $Res call({AuthenticationStatus status});
 }
@@ -260,15 +267,15 @@ class __$AuthenticationStatusChangedCopyWithImpl<$Res>
   /// Create a copy of AuthenticationEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? status = null,
-  }) {
-    return _then(_AuthenticationStatusChanged(
-      null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as AuthenticationStatus,
-    ));
+  $Res call({Object? status = null}) {
+    return _then(
+      _AuthenticationStatusChanged(
+        null == status
+            ? _self.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as AuthenticationStatus,
+      ),
+    );
   }
 }
 
@@ -299,18 +306,23 @@ mixin _$AuthenticationState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as AuthenticationState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is AuthenticationState &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.user, _this.user) || other.user == _this.user));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user);
+  int get hashCode {
+    final _this = this as AuthenticationState;
+    return Object.hash(runtimeType, _this.user);
+  }
 
   @override
   String toString() {
-    return 'AuthenticationState(user: $user)';
+    final _this = this as AuthenticationState;
+    return 'AuthenticationState(user: ${_this.user})';
   }
 }
 
@@ -365,7 +377,7 @@ extension AuthenticationStatePatterns on AuthenticationState {
   TResult map<TResult extends Object?>({
     required TResult Function(_unknown value) unknown,
     required TResult Function(AuthenticationAuthenticatedState value)
-        authenticated,
+    authenticated,
     required TResult Function(_unauthenticated value) unauthenticated,
   }) {
     final _that = this;
@@ -459,9 +471,9 @@ extension AuthenticationStatePatterns on AuthenticationState {
   TResult when<TResult extends Object?>({
     required TResult Function(AuthenticationStatus status, User user) unknown,
     required TResult Function(User user, AuthenticationStatus state)
-        authenticated,
+    authenticated,
     required TResult Function(AuthenticationStatus status, User user)
-        unauthenticated,
+    unauthenticated,
   }) {
     final _that = this;
     switch (_that) {
@@ -509,8 +521,10 @@ extension AuthenticationStatePatterns on AuthenticationState {
 /// @nodoc
 
 class _unknown implements AuthenticationState {
-  const _unknown(
-      [this.status = AuthenticationStatus.unknown, this.user = User.empty]);
+  const _unknown([
+    this.status = AuthenticationStatus.unknown,
+    this.user = User.empty,
+  ]);
 
   @JsonKey()
   final AuthenticationStatus status;
@@ -528,7 +542,9 @@ class _unknown implements AuthenticationState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, user);
+  int get hashCode {
+    return Object.hash(runtimeType, status, user);
+  }
 
   @override
   String toString() {
@@ -539,8 +555,10 @@ class _unknown implements AuthenticationState {
 /// @nodoc
 
 class AuthenticationAuthenticatedState implements AuthenticationState {
-  const AuthenticationAuthenticatedState(this.user,
-      [this.state = AuthenticationStatus.authenticated]);
+  const AuthenticationAuthenticatedState(
+    this.user, [
+    this.state = AuthenticationStatus.authenticated,
+  ]);
 
   @override
   final User user;
@@ -557,7 +575,9 @@ class AuthenticationAuthenticatedState implements AuthenticationState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user, state);
+  int get hashCode {
+    return Object.hash(runtimeType, user, state);
+  }
 
   @override
   String toString() {
@@ -568,9 +588,10 @@ class AuthenticationAuthenticatedState implements AuthenticationState {
 /// @nodoc
 
 class _unauthenticated implements AuthenticationState {
-  const _unauthenticated(
-      [this.status = AuthenticationStatus.unauthenticated,
-      this.user = User.empty]);
+  const _unauthenticated([
+    this.status = AuthenticationStatus.unauthenticated,
+    this.user = User.empty,
+  ]);
 
   @JsonKey()
   final AuthenticationStatus status;
@@ -588,12 +609,12 @@ class _unauthenticated implements AuthenticationState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, user);
+  int get hashCode {
+    return Object.hash(runtimeType, status, user);
+  }
 
   @override
   String toString() {
     return 'AuthenticationState.unauthenticated(status: $status, user: $user)';
   }
 }
-
-// dart format on

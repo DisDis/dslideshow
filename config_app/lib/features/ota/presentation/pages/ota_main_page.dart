@@ -22,7 +22,9 @@ class OtaMainPage extends StatelessWidget {
         providers: [
           BlocProvider<OtaBloc>(
             create: (BuildContext context) => OtaBloc(
-                initialState: const UninitializedOtaState(), client: sl()),
+              initialState: const UninitializedOtaState(),
+              client: sl(),
+            ),
           ),
         ],
         child: Builder(
@@ -64,7 +66,8 @@ class _OtaPageContentState extends State<OtaPageContent> {
           uploading: (progress) => _buildUploadingState(context, progress),
           uploadComplete: () => _buildUploadCompleteState(context),
           error: (errorMessage) => _buildErrorState(context, errorMessage),
-          orElse: () => Center(child: Text(context.localizations.unknown_state)),
+          orElse: () =>
+              Center(child: Text(context.localizations.unknown_state)),
         );
       },
     );
@@ -79,8 +82,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
           SelectableText(
             'http://${uri.host}:8282/ota_start',
             style: TextStyle(fontSize: 18),
-            onTap: () {
-            },
+            onTap: () {},
           ),
           const Text(
             'OTA Update',
@@ -116,7 +118,7 @@ class _OtaPageContentState extends State<OtaPageContent> {
             decoration: const InputDecoration(labelText: 'OTA Code'),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly,
             ], // Only numbers can be entered
           ),
           const SizedBox(height: 20),
@@ -129,9 +131,9 @@ class _OtaPageContentState extends State<OtaPageContent> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              context
-                  .read<OtaBloc>()
-                  .add(UploadFileOtaEvent(filePath!, tEdCode.value.text));
+              context.read<OtaBloc>().add(
+                UploadFileOtaEvent(filePath!, tEdCode.value.text),
+              );
             },
             child: Text(context.localizations.update_button),
           ),
@@ -146,15 +148,14 @@ class _OtaPageContentState extends State<OtaPageContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Uploading firmware...',
-            style: TextStyle(fontSize: 16),
-          ),
+          const Text('Uploading firmware...', style: TextStyle(fontSize: 16)),
           const SizedBox(height: 10),
           LinearProgressIndicator(
             value: progress,
             backgroundColor: AppColors.progressOta,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.progressOtaValue),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              AppColors.progressOtaValue,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
@@ -184,7 +185,10 @@ class _OtaPageContentState extends State<OtaPageContent> {
           // const SizedBox(height: 20),
           const Text(
             'Firmware upload completed successfully!',
-            style: TextStyle(fontSize: 16, color: AppColors.firmwareUploadSuccess),
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.firmwareUploadSuccess,
+            ),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -220,16 +224,11 @@ class _OtaPageContentState extends State<OtaPageContent> {
   }
 
   Future<String?> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: ['deb'], // распространенные форматы прошивок
     );
 
-    if (result != null) {
-      return result.files.single.path;
-    } else {
-      // Пользователь отменил выбор файла
-      return null;
-    }
+    return result?.path;
   }
 }

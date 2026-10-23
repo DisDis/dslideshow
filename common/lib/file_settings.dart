@@ -8,13 +8,13 @@ abstract class FileSettings {
     ...videoExtensions,
   ];
 
-  static bool isVideo(final String ext) {
+  static bool isVideo(String ext) {
     return videoExtensions.contains(ext.toLowerCase());
   }
-  static bool isImage(final String ext) {
+  static bool isImage(String ext) {
     return imageExtensions.contains(ext.toLowerCase());
   }
-  static bool isSupportFile(final String ext) {
+  static bool isSupportFile(String ext) {
     return supportFileExtensions.contains(ext.toLowerCase());
   }
 }

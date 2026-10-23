@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'power_state.dart';
@@ -9,7 +9,7 @@ part of 'power_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -271,7 +271,9 @@ class ErrorPowerState implements PowerState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, errorMessage);
+  int get hashCode {
+    return Object.hash(runtimeType, errorMessage);
+  }
 
   @override
   String toString() {
@@ -283,8 +285,9 @@ class ErrorPowerState implements PowerState {
 abstract mixin class $ErrorPowerStateCopyWith<$Res>
     implements $PowerStateCopyWith<$Res> {
   factory $ErrorPowerStateCopyWith(
-          ErrorPowerState value, $Res Function(ErrorPowerState) _then) =
-      _$ErrorPowerStateCopyWithImpl;
+    ErrorPowerState value,
+    $Res Function(ErrorPowerState) _then,
+  ) = _$ErrorPowerStateCopyWithImpl;
   @useResult
   $Res call({String errorMessage});
 }
@@ -300,15 +303,15 @@ class _$ErrorPowerStateCopyWithImpl<$Res>
   /// Create a copy of PowerState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? errorMessage = null,
-  }) {
-    return _then(ErrorPowerState(
-      null == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? errorMessage = null}) {
+    return _then(
+      ErrorPowerState(
+        null == errorMessage
+            ? _self.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -325,7 +328,9 @@ class InitializedPowerState implements PowerState {
   @pragma('vm:prefer-inline')
   $InitializedPowerStateCopyWith<InitializedPowerState> get copyWith =>
       _$InitializedPowerStateCopyWithImpl<InitializedPowerState>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -336,7 +341,9 @@ class InitializedPowerState implements PowerState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, config);
+  int get hashCode {
+    return Object.hash(runtimeType, config);
+  }
 
   @override
   String toString() {
@@ -347,9 +354,10 @@ class InitializedPowerState implements PowerState {
 /// @nodoc
 abstract mixin class $InitializedPowerStateCopyWith<$Res>
     implements $PowerStateCopyWith<$Res> {
-  factory $InitializedPowerStateCopyWith(InitializedPowerState value,
-          $Res Function(InitializedPowerState) _then) =
-      _$InitializedPowerStateCopyWithImpl;
+  factory $InitializedPowerStateCopyWith(
+    InitializedPowerState value,
+    $Res Function(InitializedPowerState) _then,
+  ) = _$InitializedPowerStateCopyWithImpl;
   @useResult
   $Res call({AppConfig config});
 }
@@ -365,16 +373,14 @@ class _$InitializedPowerStateCopyWithImpl<$Res>
   /// Create a copy of PowerState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? config = null,
-  }) {
-    return _then(InitializedPowerState(
-      null == config
-          ? _self.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as AppConfig,
-    ));
+  $Res call({Object? config = null}) {
+    return _then(
+      InitializedPowerState(
+        null == config
+            ? _self.config
+            : config // ignore: cast_nullable_to_non_nullable
+                  as AppConfig,
+      ),
+    );
   }
 }
-
-// dart format on

@@ -3,7 +3,6 @@
 *.log
 *.pyc
 *.swp
-pubspec.lock
 
 .DS_Store
 .atom/
@@ -86,6 +85,5 @@ pubspec.lock
 /firmwares/
 
 /web
-/linux
 /macos
 /android

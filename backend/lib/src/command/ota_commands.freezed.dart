@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_commands.dart';
@@ -9,6 +9,7 @@ part of 'ota_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $OTAReadyCommandCopyWith<OTAReadyCommand> get copyWith => _$OTAReadyCommandCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAReadyCommand&&(identical(other.ready, ready) || other.ready == ready)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as OTAReadyCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAReadyCommand&&(identical(other.ready, _this.ready) || other.ready == _this.ready)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ready,id,type);
+int get hashCode {
+  final _this = this as OTAReadyCommand;
+  return Object.hash(runtimeType,_this.ready,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
+  final _this = this as OTAReadyCommand;
+  return 'OTAReadyCommand(ready: ${_this.ready}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$OTAReadyCommandCopyWithImpl<$Res>
 /// Create a copy of OTAReadyCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ready = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(OTAReadyCommand(
 ready: null == ready ? _self.ready : ready // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAReadyCommand&&(identical(other.ready, ready) || other.ready == ready)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAReadyCommand&&(identical(other.ready, ready) || other.ready == ready)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ready,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,ready,id,type);
+}
 
 @override
 String toString() {
-  return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
+    return 'OTAReadyCommand(ready: $ready, id: $id, type: $type)';
 }
 
 
@@ -291,16 +299,21 @@ $OTAGetInfoCommandCopyWith<OTAGetInfoCommand> get copyWith => _$OTAGetInfoComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAGetInfoCommand&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as OTAGetInfoCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAGetInfoCommand&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,info,id,type);
+int get hashCode {
+  final _this = this as OTAGetInfoCommand;
+  return Object.hash(runtimeType,_this.info,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
+  final _this = this as OTAGetInfoCommand;
+  return 'OTAGetInfoCommand(info: ${_this.info}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -329,7 +342,7 @@ class _$OTAGetInfoCommandCopyWithImpl<$Res>
 /// Create a copy of OTAGetInfoCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? info = freezed,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(OTAGetInfoCommand(
 info: freezed == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
 as OTAInfo?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -500,16 +513,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAGetInfoCommand&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAGetInfoCommand&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,info,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,info,id,type);
+}
 
 @override
 String toString() {
-  return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
+    return 'OTAGetInfoCommand(info: $info, id: $id, type: $type)';
 }
 
 
@@ -578,16 +593,21 @@ $OTAGetInfoCommandResultCopyWith<OTAGetInfoCommandResult> get copyWith => _$OTAG
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAGetInfoCommandResult&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id));
+  final _this = this as OTAGetInfoCommandResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAGetInfoCommandResult&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,info,id);
+int get hashCode {
+  final _this = this as OTAGetInfoCommandResult;
+  return Object.hash(runtimeType,_this.info,_this.id);
+}
 
 @override
 String toString() {
-  return 'OTAGetInfoCommandResult(info: $info, id: $id)';
+  final _this = this as OTAGetInfoCommandResult;
+  return 'OTAGetInfoCommandResult(info: ${_this.info}, id: ${_this.id})';
 }
 
 
@@ -616,7 +636,7 @@ class _$OTAGetInfoCommandResultCopyWithImpl<$Res>
 /// Create a copy of OTAGetInfoCommandResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? info = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(OTAGetInfoCommandResult(
 info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
 as OTAInfo,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -782,16 +802,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAGetInfoCommandResult&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAGetInfoCommandResult&&(identical(other.info, info) || other.info == info)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,info,id);
+int get hashCode {
+    return Object.hash(runtimeType,info,id);
+}
 
 @override
 String toString() {
-  return 'OTAGetInfoCommandResult(info: $info, id: $id)';
+    return 'OTAGetInfoCommandResult(info: $info, id: $id)';
 }
 
 
@@ -856,16 +878,21 @@ $OTAOutputCommandCopyWith<OTAOutputCommand> get copyWith => _$OTAOutputCommandCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAOutputCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.output, output) || other.output == output)&&(identical(other.type, type) || other.type == type));
+  final _this = this as OTAOutputCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAOutputCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.output, _this.output) || other.output == _this.output)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,output,type);
+int get hashCode {
+  final _this = this as OTAOutputCommand;
+  return Object.hash(runtimeType,_this.id,_this.output,_this.type);
+}
 
 @override
 String toString() {
-  return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
+  final _this = this as OTAOutputCommand;
+  return 'OTAOutputCommand(id: ${_this.id}, output: ${_this.output}, type: ${_this.type})';
 }
 
 
@@ -894,7 +921,7 @@ class _$OTAOutputCommandCopyWithImpl<$Res>
 /// Create a copy of OTAOutputCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? output = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(OTAOutputCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,output: null == output ? _self.output : output // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -1053,16 +1080,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAOutputCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.output, output) || other.output == output)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAOutputCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.output, output) || other.output == output)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,output,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,output,type);
+}
 
 @override
 String toString() {
-  return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
+    return 'OTAOutputCommand(id: $id, output: $output, type: $type)';
 }
 
 
@@ -1119,16 +1148,21 @@ $OTAInfoCopyWith<OTAInfo> get copyWith => _$OTAInfoCopyWithImpl<OTAInfo>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAInfo&&(identical(other.status, status) || other.status == status)&&(identical(other.uploadingPercent, uploadingPercent) || other.uploadingPercent == uploadingPercent)&&(identical(other.code, code) || other.code == code)&&(identical(other.exitCode, exitCode) || other.exitCode == exitCode)&&(identical(other.errorText, errorText) || other.errorText == errorText));
+  final _this = this as OTAInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OTAInfo&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.uploadingPercent, _this.uploadingPercent) || other.uploadingPercent == _this.uploadingPercent)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.exitCode, _this.exitCode) || other.exitCode == _this.exitCode)&&(identical(other.errorText, _this.errorText) || other.errorText == _this.errorText));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,uploadingPercent,code,exitCode,errorText);
+int get hashCode {
+  final _this = this as OTAInfo;
+  return Object.hash(runtimeType,_this.status,_this.uploadingPercent,_this.code,_this.exitCode,_this.errorText);
+}
 
 @override
 String toString() {
-  return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
+  final _this = this as OTAInfo;
+  return 'OTAInfo(status: ${_this.status}, uploadingPercent: ${_this.uploadingPercent}, code: ${_this.code}, exitCode: ${_this.exitCode}, errorText: ${_this.errorText})';
 }
 
 
@@ -1157,7 +1191,7 @@ class _$OTAInfoCopyWithImpl<$Res>
 /// Create a copy of OTAInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? uploadingPercent = null,Object? code = null,Object? exitCode = freezed,Object? errorText = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(OTAInfo(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as OTAStatus,uploadingPercent: null == uploadingPercent ? _self.uploadingPercent : uploadingPercent // ignore: cast_nullable_to_non_nullable
 as double,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -1326,16 +1360,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAInfo&&(identical(other.status, status) || other.status == status)&&(identical(other.uploadingPercent, uploadingPercent) || other.uploadingPercent == uploadingPercent)&&(identical(other.code, code) || other.code == code)&&(identical(other.exitCode, exitCode) || other.exitCode == exitCode)&&(identical(other.errorText, errorText) || other.errorText == errorText));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OTAInfo&&(identical(other.status, status) || other.status == status)&&(identical(other.uploadingPercent, uploadingPercent) || other.uploadingPercent == uploadingPercent)&&(identical(other.code, code) || other.code == code)&&(identical(other.exitCode, exitCode) || other.exitCode == exitCode)&&(identical(other.errorText, errorText) || other.errorText == errorText));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,uploadingPercent,code,exitCode,errorText);
+int get hashCode {
+    return Object.hash(runtimeType,status,uploadingPercent,code,exitCode,errorText);
+}
 
 @override
 String toString() {
-  return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
+    return 'OTAInfo(status: $status, uploadingPercent: $uploadingPercent, code: $code, exitCode: $exitCode, errorText: $errorText)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'upload_queue_bloc.dart';
@@ -9,7 +9,7 @@ part of 'upload_queue_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -22,31 +22,41 @@ mixin _$UploadQueueState {
   @pragma('vm:prefer-inline')
   $UploadQueueStateCopyWith<UploadQueueState> get copyWith =>
       _$UploadQueueStateCopyWithImpl<UploadQueueState>(
-          this as UploadQueueState, _$identity);
+        this as UploadQueueState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
+    final _this = this as UploadQueueState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is UploadQueueState &&
-            const DeepCollectionEquality().equals(other.tasks, tasks));
+            const DeepCollectionEquality().equals(other.tasks, _this.tasks));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(tasks));
+  int get hashCode {
+    final _this = this as UploadQueueState;
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_this.tasks),
+    );
+  }
 
   @override
   String toString() {
-    return 'UploadQueueState(tasks: $tasks)';
+    final _this = this as UploadQueueState;
+    return 'UploadQueueState(tasks: ${_this.tasks})';
   }
 }
 
 /// @nodoc
 abstract mixin class $UploadQueueStateCopyWith<$Res> {
   factory $UploadQueueStateCopyWith(
-          UploadQueueState value, $Res Function(UploadQueueState) _then) =
-      _$UploadQueueStateCopyWithImpl;
+    UploadQueueState value,
+    $Res Function(UploadQueueState) _then,
+  ) = _$UploadQueueStateCopyWithImpl;
   @useResult
   $Res call({List<UploadTask> tasks});
 }
@@ -63,15 +73,15 @@ class _$UploadQueueStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? tasks = null,
-  }) {
-    return _then(_self.copyWith(
-      tasks: null == tasks
-          ? _self.tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<UploadTask>,
-    ));
+  $Res call({Object? tasks = null}) {
+    return _then(
+      UploadQueueState(
+        tasks: null == tasks
+            ? _self.tasks
+            : tasks // ignore: cast_nullable_to_non_nullable
+                  as List<UploadTask>,
+      ),
+    );
   }
 }
 
@@ -231,8 +241,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
 /// @nodoc
 
 class _UploadQueueState implements UploadQueueState {
-  const _UploadQueueState({final List<UploadTask> tasks = const []})
-      : _tasks = tasks;
+  const _UploadQueueState({List<UploadTask> tasks = const []}) : _tasks = tasks;
 
   final List<UploadTask> _tasks;
   @override
@@ -256,12 +265,16 @@ class _UploadQueueState implements UploadQueueState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _UploadQueueState &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks));
+            const DeepCollectionEquality().equals(other.tasks, _tasks));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_tasks),
+    );
+  }
 
   @override
   String toString() {
@@ -273,8 +286,9 @@ class _UploadQueueState implements UploadQueueState {
 abstract mixin class _$UploadQueueStateCopyWith<$Res>
     implements $UploadQueueStateCopyWith<$Res> {
   factory _$UploadQueueStateCopyWith(
-          _UploadQueueState value, $Res Function(_UploadQueueState) _then) =
-      __$UploadQueueStateCopyWithImpl;
+    _UploadQueueState value,
+    $Res Function(_UploadQueueState) _then,
+  ) = __$UploadQueueStateCopyWithImpl;
   @override
   @useResult
   $Res call({List<UploadTask> tasks});
@@ -292,15 +306,15 @@ class __$UploadQueueStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? tasks = null,
-  }) {
-    return _then(_UploadQueueState(
-      tasks: null == tasks
-          ? _self._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<UploadTask>,
-    ));
+  $Res call({Object? tasks = null}) {
+    return _then(
+      _UploadQueueState(
+        tasks: null == tasks
+            ? _self._tasks
+            : tasks // ignore: cast_nullable_to_non_nullable
+                  as List<UploadTask>,
+      ),
+    );
   }
 }
 
@@ -324,7 +338,9 @@ mixin _$UploadQueueEvent {
 /// @nodoc
 class $UploadQueueEventCopyWith<$Res> {
   $UploadQueueEventCopyWith(
-      UploadQueueEvent _, $Res Function(UploadQueueEvent) __);
+    UploadQueueEvent _,
+    $Res Function(UploadQueueEvent) __,
+  );
 }
 
 /// Adds pattern-matching-related methods to [UploadQueueEvent].
@@ -476,7 +492,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<File> files, String rootPath)? addFiles,
     TResult Function(List<PlatformFile> files, String rootPath)?
-        addPlatformFiles,
+    addPlatformFiles,
     TResult Function(String taskId)? removeTask,
     TResult Function(String taskId)? retryTask,
     TResult Function(String taskId, int sent, int total)? updateProgress,
@@ -522,11 +538,11 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   TResult when<TResult extends Object?>({
     required TResult Function(List<File> files, String rootPath) addFiles,
     required TResult Function(List<PlatformFile> files, String rootPath)
-        addPlatformFiles,
+    addPlatformFiles,
     required TResult Function(String taskId) removeTask,
     required TResult Function(String taskId) retryTask,
     required TResult Function(String taskId, int sent, int total)
-        updateProgress,
+    updateProgress,
     required TResult Function(String taskId) taskCompleted,
     required TResult Function(String taskId, String error) taskFailed,
   }) {
@@ -567,7 +583,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<File> files, String rootPath)? addFiles,
     TResult? Function(List<PlatformFile> files, String rootPath)?
-        addPlatformFiles,
+    addPlatformFiles,
     TResult? Function(String taskId)? removeTask,
     TResult? Function(String taskId)? retryTask,
     TResult? Function(String taskId, int sent, int total)? updateProgress,
@@ -599,8 +615,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 /// @nodoc
 
 class _AddFiles implements UploadQueueEvent {
-  const _AddFiles({required final List<File> files, required this.rootPath})
-      : _files = files;
+  const _AddFiles({required List<File> files, required this.rootPath})
+    : _files = files;
 
   final List<File> _files;
   List<File> get files {
@@ -623,14 +639,19 @@ class _AddFiles implements UploadQueueEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _AddFiles &&
-            const DeepCollectionEquality().equals(other._files, _files) &&
+            const DeepCollectionEquality().equals(other.files, _files) &&
             (identical(other.rootPath, rootPath) ||
                 other.rootPath == rootPath));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_files), rootPath);
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_files),
+      rootPath,
+    );
+  }
 
   @override
   String toString() {
@@ -657,29 +678,29 @@ class __$AddFilesCopyWithImpl<$Res> implements _$AddFilesCopyWith<$Res> {
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? files = null,
-    Object? rootPath = null,
-  }) {
-    return _then(_AddFiles(
-      files: null == files
-          ? _self._files
-          : files // ignore: cast_nullable_to_non_nullable
-              as List<File>,
-      rootPath: null == rootPath
-          ? _self.rootPath
-          : rootPath // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? files = null, Object? rootPath = null}) {
+    return _then(
+      _AddFiles(
+        files: null == files
+            ? _self._files
+            : files // ignore: cast_nullable_to_non_nullable
+                  as List<File>,
+        rootPath: null == rootPath
+            ? _self.rootPath
+            : rootPath // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _AddPlatformFiles implements UploadQueueEvent {
-  const _AddPlatformFiles(
-      {required final List<PlatformFile> files, required this.rootPath})
-      : _files = files;
+  const _AddPlatformFiles({
+    required List<PlatformFile> files,
+    required this.rootPath,
+  }) : _files = files;
 
   final List<PlatformFile> _files;
   List<PlatformFile> get files {
@@ -702,14 +723,19 @@ class _AddPlatformFiles implements UploadQueueEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _AddPlatformFiles &&
-            const DeepCollectionEquality().equals(other._files, _files) &&
+            const DeepCollectionEquality().equals(other.files, _files) &&
             (identical(other.rootPath, rootPath) ||
                 other.rootPath == rootPath));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_files), rootPath);
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_files),
+      rootPath,
+    );
+  }
 
   @override
   String toString() {
@@ -721,8 +747,9 @@ class _AddPlatformFiles implements UploadQueueEvent {
 abstract mixin class _$AddPlatformFilesCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$AddPlatformFilesCopyWith(
-          _AddPlatformFiles value, $Res Function(_AddPlatformFiles) _then) =
-      __$AddPlatformFilesCopyWithImpl;
+    _AddPlatformFiles value,
+    $Res Function(_AddPlatformFiles) _then,
+  ) = __$AddPlatformFilesCopyWithImpl;
   @useResult
   $Res call({List<PlatformFile> files, String rootPath});
 }
@@ -738,20 +765,19 @@ class __$AddPlatformFilesCopyWithImpl<$Res>
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? files = null,
-    Object? rootPath = null,
-  }) {
-    return _then(_AddPlatformFiles(
-      files: null == files
-          ? _self._files
-          : files // ignore: cast_nullable_to_non_nullable
-              as List<PlatformFile>,
-      rootPath: null == rootPath
-          ? _self.rootPath
-          : rootPath // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? files = null, Object? rootPath = null}) {
+    return _then(
+      _AddPlatformFiles(
+        files: null == files
+            ? _self._files
+            : files // ignore: cast_nullable_to_non_nullable
+                  as List<PlatformFile>,
+        rootPath: null == rootPath
+            ? _self.rootPath
+            : rootPath // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -778,7 +804,9 @@ class _RemoveTask implements UploadQueueEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId);
+  int get hashCode {
+    return Object.hash(runtimeType, taskId);
+  }
 
   @override
   String toString() {
@@ -790,8 +818,9 @@ class _RemoveTask implements UploadQueueEvent {
 abstract mixin class _$RemoveTaskCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$RemoveTaskCopyWith(
-          _RemoveTask value, $Res Function(_RemoveTask) _then) =
-      __$RemoveTaskCopyWithImpl;
+    _RemoveTask value,
+    $Res Function(_RemoveTask) _then,
+  ) = __$RemoveTaskCopyWithImpl;
   @useResult
   $Res call({String taskId});
 }
@@ -806,15 +835,15 @@ class __$RemoveTaskCopyWithImpl<$Res> implements _$RemoveTaskCopyWith<$Res> {
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_RemoveTask(
-      null == taskId
-          ? _self.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? taskId = null}) {
+    return _then(
+      _RemoveTask(
+        null == taskId
+            ? _self.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -841,7 +870,9 @@ class _RetryTask implements UploadQueueEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId);
+  int get hashCode {
+    return Object.hash(runtimeType, taskId);
+  }
 
   @override
   String toString() {
@@ -853,8 +884,9 @@ class _RetryTask implements UploadQueueEvent {
 abstract mixin class _$RetryTaskCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$RetryTaskCopyWith(
-          _RetryTask value, $Res Function(_RetryTask) _then) =
-      __$RetryTaskCopyWithImpl;
+    _RetryTask value,
+    $Res Function(_RetryTask) _then,
+  ) = __$RetryTaskCopyWithImpl;
   @useResult
   $Res call({String taskId});
 }
@@ -869,15 +901,15 @@ class __$RetryTaskCopyWithImpl<$Res> implements _$RetryTaskCopyWith<$Res> {
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_RetryTask(
-      null == taskId
-          ? _self.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? taskId = null}) {
+    return _then(
+      _RetryTask(
+        null == taskId
+            ? _self.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -908,7 +940,9 @@ class _UpdateProgress implements UploadQueueEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId, sent, total);
+  int get hashCode {
+    return Object.hash(runtimeType, taskId, sent, total);
+  }
 
   @override
   String toString() {
@@ -920,8 +954,9 @@ class _UpdateProgress implements UploadQueueEvent {
 abstract mixin class _$UpdateProgressCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$UpdateProgressCopyWith(
-          _UpdateProgress value, $Res Function(_UpdateProgress) _then) =
-      __$UpdateProgressCopyWithImpl;
+    _UpdateProgress value,
+    $Res Function(_UpdateProgress) _then,
+  ) = __$UpdateProgressCopyWithImpl;
   @useResult
   $Res call({String taskId, int sent, int total});
 }
@@ -942,20 +977,22 @@ class __$UpdateProgressCopyWithImpl<$Res>
     Object? sent = null,
     Object? total = null,
   }) {
-    return _then(_UpdateProgress(
-      null == taskId
-          ? _self.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == sent
-          ? _self.sent
-          : sent // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == total
-          ? _self.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+    return _then(
+      _UpdateProgress(
+        null == taskId
+            ? _self.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == sent
+            ? _self.sent
+            : sent // ignore: cast_nullable_to_non_nullable
+                  as int,
+        null == total
+            ? _self.total
+            : total // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
@@ -982,7 +1019,9 @@ class _TaskCompleted implements UploadQueueEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId);
+  int get hashCode {
+    return Object.hash(runtimeType, taskId);
+  }
 
   @override
   String toString() {
@@ -994,8 +1033,9 @@ class _TaskCompleted implements UploadQueueEvent {
 abstract mixin class _$TaskCompletedCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$TaskCompletedCopyWith(
-          _TaskCompleted value, $Res Function(_TaskCompleted) _then) =
-      __$TaskCompletedCopyWithImpl;
+    _TaskCompleted value,
+    $Res Function(_TaskCompleted) _then,
+  ) = __$TaskCompletedCopyWithImpl;
   @useResult
   $Res call({String taskId});
 }
@@ -1011,15 +1051,15 @@ class __$TaskCompletedCopyWithImpl<$Res>
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_TaskCompleted(
-      null == taskId
-          ? _self.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? taskId = null}) {
+    return _then(
+      _TaskCompleted(
+        null == taskId
+            ? _self.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -1048,7 +1088,9 @@ class _TaskFailed implements UploadQueueEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId, error);
+  int get hashCode {
+    return Object.hash(runtimeType, taskId, error);
+  }
 
   @override
   String toString() {
@@ -1060,8 +1102,9 @@ class _TaskFailed implements UploadQueueEvent {
 abstract mixin class _$TaskFailedCopyWith<$Res>
     implements $UploadQueueEventCopyWith<$Res> {
   factory _$TaskFailedCopyWith(
-          _TaskFailed value, $Res Function(_TaskFailed) _then) =
-      __$TaskFailedCopyWithImpl;
+    _TaskFailed value,
+    $Res Function(_TaskFailed) _then,
+  ) = __$TaskFailedCopyWithImpl;
   @useResult
   $Res call({String taskId, String error});
 }
@@ -1076,21 +1119,18 @@ class __$TaskFailedCopyWithImpl<$Res> implements _$TaskFailedCopyWith<$Res> {
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-    Object? error = null,
-  }) {
-    return _then(_TaskFailed(
-      null == taskId
-          ? _self.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? taskId = null, Object? error = null}) {
+    return _then(
+      _TaskFailed(
+        null == taskId
+            ? _self.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
-
-// dart format on

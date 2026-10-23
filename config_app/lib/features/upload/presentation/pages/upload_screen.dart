@@ -29,14 +29,16 @@ class UploadScreen extends StatelessWidget {
             onSelected: (value) => _handleMenuSelection(context, value),
             itemBuilder: (context) => [
               PopupMenuItem(
-                  value: _filesValue,
-                  child: Text(context.localizations.add_files_menu_item)),
+                value: _filesValue,
+                child: Text(context.localizations.add_files_menu_item),
+              ),
               if (!kIsWeb)
                 PopupMenuItem(
-                    value: _folderValue,
-                    child: Text(context.localizations.add_folder_menu_item)),
+                  value: _folderValue,
+                  child: Text(context.localizations.add_folder_menu_item),
+                ),
             ],
-          )
+          ),
         ],
       ),
       drawer: const ConfigAppNavigationBar(),
@@ -52,7 +54,7 @@ class UploadScreen extends StatelessWidget {
 
           return ListView.separated(
             itemCount: tasks.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               return _UploadTaskTile(task: tasks[index]);
             },
@@ -84,11 +86,14 @@ class UploadScreen extends StatelessWidget {
   }
 
   Future<void> _uploadFilesNative(UploadQueueBloc bloc) async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
+    final result = await FilePicker.pickFiles();
+    if (result.isNotEmpty) {
       // Для одиночных файлов rootPath считаем как папку, где они лежат
-      final files =
-          result.paths.whereType<String>().map((e) => File(e)).toList();
+      final files = result
+          .map((file) => file.path)
+          .whereType<String>()
+          .map((e) => File(e))
+          .toList();
       if (files.isNotEmpty) {
         final root = p.dirname(files.first.path);
         bloc.add(UploadQueueEvent.addFiles(files: files, rootPath: root));
@@ -97,24 +102,14 @@ class UploadScreen extends StatelessWidget {
   }
 
   Future<void> _uploadFilesWeb(UploadQueueBloc bloc) async {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.any,
-    );
-    if (result != null && result.files.isNotEmpty) {
-      // В веб-сборке result.files содержит XFile объекты
-      final List<PlatformFile> xFiles = result.files;
-   
-      if (xFiles.isNotEmpty) {
-        // В веб-сборке используем временную директорию как корневую
-        bloc.add(UploadQueueEvent.addPlatformFiles(files: xFiles, rootPath: ''));
-      }
+    final result = await FilePicker.pickFiles(type: FileType.any);
+    if (result.isNotEmpty) {
+      bloc.add(UploadQueueEvent.addPlatformFiles(files: result, rootPath: ''));
     }
   }
 
   Future<void> _uploadFolder(UploadQueueBloc bloc, BuildContext context) async {
-    final String? selectedDirectory =
-        await FilePicker.platform.getDirectoryPath();
+    final String? selectedDirectory = await FilePicker.getDirectoryPath();
     if (selectedDirectory != null) {
       // Рекурсивно ищем файлы
       final dir = Directory(selectedDirectory);
@@ -127,11 +122,15 @@ class UploadScreen extends StatelessWidget {
           .toList();
 
       if (files.isNotEmpty) {
-        bloc.add(UploadQueueEvent.addFiles(
-            files: files, rootPath: selectedDirectory));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(context.localizations.no_images_found_in_folder)));
+        bloc.add(
+          UploadQueueEvent.addFiles(files: files, rootPath: selectedDirectory),
+        );
+      } else if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.localizations.no_images_found_in_folder),
+          ),
+        );
       }
     }
   }
@@ -154,15 +153,20 @@ class _UploadTaskTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(task.serverPath,
-              style:
-                  const TextStyle(fontSize: 10, color: AppColors.uploadText)),
+          Text(
+            task.serverPath,
+            style: const TextStyle(fontSize: 10, color: AppColors.uploadText),
+          ),
           if (task.status == UploadStatus.uploading)
             LinearProgressIndicator(value: task.progress),
           if (task.status == UploadStatus.error)
-            Text(task.errorMessage ?? "Error",
-                style: const TextStyle(
-                    color: AppColors.uploadErrorText, fontSize: 12)),
+            Text(
+              task.errorMessage ?? "Error",
+              style: const TextStyle(
+                color: AppColors.uploadErrorText,
+                fontSize: 12,
+              ),
+            ),
         ],
       ),
       trailing: _buildAction(context),
@@ -173,20 +177,26 @@ class _UploadTaskTile extends StatelessWidget {
   Widget _buildLeadingIcon() {
     switch (task.status) {
       case UploadStatus.queued:
-        return const Icon(Icons.hourglass_empty,
-            color: AppColors.uploadQueuedIcon);
+        return const Icon(
+          Icons.hourglass_empty,
+          color: AppColors.uploadQueuedIcon,
+        );
       case UploadStatus.uploading:
         return Stack(
           alignment: Alignment.center,
           children: [
             const CircularProgressIndicator(),
-            Text("${(task.progress * 100).toInt()}",
-                style: const TextStyle(fontSize: 10)),
+            Text(
+              "${(task.progress * 100).toInt()}",
+              style: const TextStyle(fontSize: 10),
+            ),
           ],
         );
       case UploadStatus.completed:
-        return const Icon(Icons.check_circle,
-            color: AppColors.uploadCompletedIcon);
+        return const Icon(
+          Icons.check_circle,
+          color: AppColors.uploadCompletedIcon,
+        );
       case UploadStatus.error:
         return const Icon(Icons.error, color: AppColors.uploadErrorIcon);
     }
@@ -197,27 +207,27 @@ class _UploadTaskTile extends StatelessWidget {
       return IconButton(
         icon: const Icon(Icons.delete),
         onPressed: () {
-          context
-              .read<UploadQueueBloc>()
-              .add(UploadQueueEvent.removeTask(task.id));
+          context.read<UploadQueueBloc>().add(
+            UploadQueueEvent.removeTask(task.id),
+          );
         },
       );
     } else if (task.status == UploadStatus.queued) {
       return IconButton(
         icon: const Icon(Icons.delete),
         onPressed: () {
-          context
-              .read<UploadQueueBloc>()
-              .add(UploadQueueEvent.removeTask(task.id));
+          context.read<UploadQueueBloc>().add(
+            UploadQueueEvent.removeTask(task.id),
+          );
         },
       );
     } else if (task.status == UploadStatus.error) {
       return IconButton(
         icon: const Icon(Icons.refresh),
         onPressed: () {
-          context
-              .read<UploadQueueBloc>()
-              .add(UploadQueueEvent.retryTask(task.id));
+          context.read<UploadQueueBloc>().add(
+            UploadQueueEvent.retryTask(task.id),
+          );
         },
       );
     }

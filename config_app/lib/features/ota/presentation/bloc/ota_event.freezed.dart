@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_event.dart';
@@ -9,7 +9,7 @@ part of 'ota_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -309,7 +309,9 @@ class UploadFileOtaEvent implements OtaEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, filePath, code);
+  int get hashCode {
+    return Object.hash(runtimeType, filePath, code);
+  }
 
   @override
   String toString() {
@@ -321,8 +323,9 @@ class UploadFileOtaEvent implements OtaEvent {
 abstract mixin class $UploadFileOtaEventCopyWith<$Res>
     implements $OtaEventCopyWith<$Res> {
   factory $UploadFileOtaEventCopyWith(
-          UploadFileOtaEvent value, $Res Function(UploadFileOtaEvent) _then) =
-      _$UploadFileOtaEventCopyWithImpl;
+    UploadFileOtaEvent value,
+    $Res Function(UploadFileOtaEvent) _then,
+  ) = _$UploadFileOtaEventCopyWithImpl;
   @useResult
   $Res call({String filePath, String code});
 }
@@ -338,20 +341,19 @@ class _$UploadFileOtaEventCopyWithImpl<$Res>
   /// Create a copy of OtaEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? filePath = null,
-    Object? code = null,
-  }) {
-    return _then(UploadFileOtaEvent(
-      null == filePath
-          ? _self.filePath
-          : filePath // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == code
-          ? _self.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? filePath = null, Object? code = null}) {
+    return _then(
+      UploadFileOtaEvent(
+        null == filePath
+            ? _self.filePath
+            : filePath // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == code
+            ? _self.code
+            : code // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -368,7 +370,9 @@ class UploadProgressOtaEvent implements OtaEvent {
   @pragma('vm:prefer-inline')
   $UploadProgressOtaEventCopyWith<UploadProgressOtaEvent> get copyWith =>
       _$UploadProgressOtaEventCopyWithImpl<UploadProgressOtaEvent>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -380,7 +384,9 @@ class UploadProgressOtaEvent implements OtaEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, progress);
+  int get hashCode {
+    return Object.hash(runtimeType, progress);
+  }
 
   @override
   String toString() {
@@ -391,9 +397,10 @@ class UploadProgressOtaEvent implements OtaEvent {
 /// @nodoc
 abstract mixin class $UploadProgressOtaEventCopyWith<$Res>
     implements $OtaEventCopyWith<$Res> {
-  factory $UploadProgressOtaEventCopyWith(UploadProgressOtaEvent value,
-          $Res Function(UploadProgressOtaEvent) _then) =
-      _$UploadProgressOtaEventCopyWithImpl;
+  factory $UploadProgressOtaEventCopyWith(
+    UploadProgressOtaEvent value,
+    $Res Function(UploadProgressOtaEvent) _then,
+  ) = _$UploadProgressOtaEventCopyWithImpl;
   @useResult
   $Res call({double progress});
 }
@@ -409,15 +416,15 @@ class _$UploadProgressOtaEventCopyWithImpl<$Res>
   /// Create a copy of OtaEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? progress = null,
-  }) {
-    return _then(UploadProgressOtaEvent(
-      null == progress
-          ? _self.progress
-          : progress // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
+  $Res call({Object? progress = null}) {
+    return _then(
+      UploadProgressOtaEvent(
+        null == progress
+            ? _self.progress
+            : progress // ignore: cast_nullable_to_non_nullable
+                  as double,
+      ),
+    );
   }
 }
 
@@ -460,5 +467,3 @@ class ResetOtaEvent implements OtaEvent {
     return 'OtaEvent.reset()';
   }
 }
-
-// dart format on

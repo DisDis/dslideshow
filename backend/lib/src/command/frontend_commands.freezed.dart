@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'frontend_commands.dart';
@@ -9,6 +9,7 @@ part of 'frontend_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $UpdateFrontendStateCommandCopyWith<UpdateFrontendStateCommand> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateFrontendStateCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu));
+  final _this = this as UpdateFrontendStateCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateFrontendStateCommand&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.isPaused, _this.isPaused) || other.isPaused == _this.isPaused)&&(identical(other.isMenu, _this.isMenu) || other.isMenu == _this.isMenu));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id,isPaused,isMenu);
+int get hashCode {
+  final _this = this as UpdateFrontendStateCommand;
+  return Object.hash(runtimeType,_this.type,_this.id,_this.isPaused,_this.isMenu);
+}
 
 @override
 String toString() {
-  return 'UpdateFrontendStateCommand(type: $type, id: $id, isPaused: $isPaused, isMenu: $isMenu)';
+  final _this = this as UpdateFrontendStateCommand;
+  return 'UpdateFrontendStateCommand(type: ${_this.type}, id: ${_this.id}, isPaused: ${_this.isPaused}, isMenu: ${_this.isMenu})';
 }
 
 
@@ -66,7 +72,7 @@ class _$UpdateFrontendStateCommandCopyWithImpl<$Res>
 /// Create a copy of UpdateFrontendStateCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? id = null,Object? isPaused = freezed,Object? isMenu = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(UpdateFrontendStateCommand(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,isPaused: freezed == isPaused ? _self.isPaused : isPaused // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateFrontendStateCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateFrontendStateCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id,isPaused,isMenu);
+int get hashCode {
+    return Object.hash(runtimeType,type,id,isPaused,isMenu);
+}
 
 @override
 String toString() {
-  return 'UpdateFrontendStateCommand(type: $type, id: $id, isPaused: $isPaused, isMenu: $isMenu)';
+    return 'UpdateFrontendStateCommand(type: $type, id: $id, isPaused: $isPaused, isMenu: $isMenu)';
 }
 
 

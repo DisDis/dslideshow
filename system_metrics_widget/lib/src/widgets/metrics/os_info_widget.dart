@@ -12,21 +12,23 @@ class OSInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconData =switch (model.osType) {
-  OSType.linux => FontAwesomeIcons.linux,
-  OSType.ios => FontAwesomeIcons.apple,
-  OSType.windows => FontAwesomeIcons.windows,
-  OSType.macos => FontAwesomeIcons.apple,
-  OSType.android => Ionicons.logo_android,
-  _ => Icons.device_unknown, 
-};
+    final icon = switch (model.osType) {
+      OSType.linux => const FaIcon(FontAwesomeIcons.linux),
+      OSType.ios || OSType.macos => const FaIcon(FontAwesomeIcons.apple),
+      OSType.windows => const FaIcon(FontAwesomeIcons.windows),
+      OSType.android => const Icon(Ionicons.logoAndroid),
+      _ => const Icon(Icons.device_unknown),
+    };
     return MetricsContainerWidget(
-      iconData: iconData,
+      icon: icon,
       iconColor: Colors.deepPurpleAccent,
       child: Column(
         children: <Widget>[
           MetricsDetails('Os info', value: model.name),
-          Icon(iconData, color: Colors.white, size: 50.0),
+          IconTheme(
+            data: const IconThemeData(color: Colors.white, size: 50.0),
+            child: icon,
+          ),
         ],
       ),
     );

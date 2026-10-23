@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'slideshow_status_bloc.dart';
@@ -9,6 +9,7 @@ part of 'slideshow_status_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,16 +21,21 @@ mixin _$SlideshowStatusEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusEvent&&const DeepCollectionEquality().equals(other.value, value));
+  final _this = this as SlideshowStatusEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusEvent&&const DeepCollectionEquality().equals(other.value, _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+  final _this = this as SlideshowStatusEvent;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.value));
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent(value: $value)';
+  final _this = this as SlideshowStatusEvent;
+  return 'SlideshowStatusEvent(value: ${_this.value})';
 }
 
 
@@ -220,16 +226,18 @@ $SlideshowScreenLockEventCopyWith<SlideshowScreenLockEvent> get copyWith => _$Sl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowScreenLockEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowScreenLockEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.toggleScreenLock(value: $value)';
+    return 'SlideshowStatusEvent.toggleScreenLock(value: $value)';
 }
 
 
@@ -286,16 +294,18 @@ $SlideshowPauseEventCopyWith<SlideshowPauseEvent> get copyWith => _$SlideshowPau
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowPauseEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowPauseEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.pause(value: $value)';
+    return 'SlideshowStatusEvent.pause(value: $value)';
 }
 
 
@@ -352,16 +362,18 @@ $SlideshowMenuEventCopyWith<SlideshowMenuEvent> get copyWith => _$SlideshowMenuE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowMenuEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowMenuEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.showMenu(value: $value)';
+    return 'SlideshowStatusEvent.showMenu(value: $value)';
 }
 
 
@@ -418,16 +430,18 @@ $SlideshowSystemInfoEventCopyWith<SlideshowSystemInfoEvent> get copyWith => _$Sl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowSystemInfoEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowSystemInfoEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.showInfo(value: $value)';
+    return 'SlideshowStatusEvent.showInfo(value: $value)';
 }
 
 
@@ -484,16 +498,18 @@ $SlideshowInternetEventCopyWith<SlideshowInternetEvent> get copyWith => _$Slides
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowInternetEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowInternetEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.changeInternetConnection(value: $value)';
+    return 'SlideshowStatusEvent.changeInternetConnection(value: $value)';
 }
 
 
@@ -550,16 +566,18 @@ $SlideshowDebugEventCopyWith<SlideshowDebugEvent> get copyWith => _$SlideshowDeb
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowDebugEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowDebugEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.showDebug(value: $value)';
+    return 'SlideshowStatusEvent.showDebug(value: $value)';
 }
 
 
@@ -616,16 +634,18 @@ $SlideshowChangeStorageStatusEventCopyWith<SlideshowChangeStorageStatusEvent> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowChangeStorageStatusEvent&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowChangeStorageStatusEvent&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusEvent.changeStorageStatus(value: $value)';
+    return 'SlideshowStatusEvent.changeStorageStatus(value: $value)';
 }
 
 
@@ -677,16 +697,21 @@ $SlideshowStatusStateCopyWith<SlideshowStatusState> get copyWith => _$SlideshowS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusState&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenLock, isScreenLock) || other.isScreenLock == isScreenLock)&&(identical(other.storageStatus, storageStatus) || other.storageStatus == storageStatus)&&(identical(other.isDebug, isDebug) || other.isDebug == isDebug)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isInfo, isInfo) || other.isInfo == isInfo)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused));
+  final _this = this as SlideshowStatusState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusState&&(identical(other.hasInternet, _this.hasInternet) || other.hasInternet == _this.hasInternet)&&(identical(other.isScreenLock, _this.isScreenLock) || other.isScreenLock == _this.isScreenLock)&&(identical(other.storageStatus, _this.storageStatus) || other.storageStatus == _this.storageStatus)&&(identical(other.isDebug, _this.isDebug) || other.isDebug == _this.isDebug)&&(identical(other.isMenu, _this.isMenu) || other.isMenu == _this.isMenu)&&(identical(other.isInfo, _this.isInfo) || other.isInfo == _this.isInfo)&&(identical(other.isPaused, _this.isPaused) || other.isPaused == _this.isPaused));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasInternet,isScreenLock,storageStatus,isDebug,isMenu,isInfo,isPaused);
+int get hashCode {
+  final _this = this as SlideshowStatusState;
+  return Object.hash(runtimeType,_this.hasInternet,_this.isScreenLock,_this.storageStatus,_this.isDebug,_this.isMenu,_this.isInfo,_this.isPaused);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isInfo: $isInfo, isPaused: $isPaused)';
+  final _this = this as SlideshowStatusState;
+  return 'SlideshowStatusState(hasInternet: ${_this.hasInternet}, isScreenLock: ${_this.isScreenLock}, storageStatus: ${_this.storageStatus}, isDebug: ${_this.isDebug}, isMenu: ${_this.isMenu}, isInfo: ${_this.isInfo}, isPaused: ${_this.isPaused})';
 }
 
 
@@ -715,7 +740,7 @@ class _$SlideshowStatusStateCopyWithImpl<$Res>
 /// Create a copy of SlideshowStatusState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? hasInternet = null,Object? isScreenLock = null,Object? storageStatus = null,Object? isDebug = null,Object? isMenu = null,Object? isInfo = null,Object? isPaused = null,}) {
-  return _then(_self.copyWith(
+  return _then(SlideshowStatusState(
 hasInternet: null == hasInternet ? _self.hasInternet : hasInternet // ignore: cast_nullable_to_non_nullable
 as bool,isScreenLock: null == isScreenLock ? _self.isScreenLock : isScreenLock // ignore: cast_nullable_to_non_nullable
 as bool,storageStatus: null == storageStatus ? _self.storageStatus : storageStatus // ignore: cast_nullable_to_non_nullable
@@ -879,16 +904,18 @@ $SlideshowStatusInitialCopyWith<SlideshowStatusInitial> get copyWith => _$Slides
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusInitial&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenLock, isScreenLock) || other.isScreenLock == isScreenLock)&&(identical(other.storageStatus, storageStatus) || other.storageStatus == storageStatus)&&(identical(other.isDebug, isDebug) || other.isDebug == isDebug)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isInfo, isInfo) || other.isInfo == isInfo)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowStatusInitial&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenLock, isScreenLock) || other.isScreenLock == isScreenLock)&&(identical(other.storageStatus, storageStatus) || other.storageStatus == storageStatus)&&(identical(other.isDebug, isDebug) || other.isDebug == isDebug)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isInfo, isInfo) || other.isInfo == isInfo)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasInternet,isScreenLock,storageStatus,isDebug,isMenu,isInfo,isPaused);
+int get hashCode {
+    return Object.hash(runtimeType,hasInternet,isScreenLock,storageStatus,isDebug,isMenu,isInfo,isPaused);
+}
 
 @override
 String toString() {
-  return 'SlideshowStatusState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isInfo: $isInfo, isPaused: $isPaused)';
+    return 'SlideshowStatusState(hasInternet: $hasInternet, isScreenLock: $isScreenLock, storageStatus: $storageStatus, isDebug: $isDebug, isMenu: $isMenu, isInfo: $isInfo, isPaused: $isPaused)';
 }
 
 

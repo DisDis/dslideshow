@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'hardware_commands.dart';
@@ -9,6 +9,7 @@ part of 'hardware_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $AreYouReadyCommandCopyWith<AreYouReadyCommand> get copyWith => _$AreYouReadyCom
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AreYouReadyCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as AreYouReadyCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AreYouReadyCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as AreYouReadyCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'AreYouReadyCommand(id: $id, type: $type)';
+  final _this = this as AreYouReadyCommand;
+  return 'AreYouReadyCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$AreYouReadyCommandCopyWithImpl<$Res>
 /// Create a copy of AreYouReadyCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(AreYouReadyCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AreYouReadyCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AreYouReadyCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'AreYouReadyCommand(id: $id, type: $type)';
+    return 'AreYouReadyCommand(id: $id, type: $type)';
 }
 
 
@@ -288,16 +296,21 @@ $ButtonChangeStateCommandCopyWith<ButtonChangeStateCommand> get copyWith => _$Bu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonChangeStateCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.event, event) || other.event == event)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as ButtonChangeStateCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonChangeStateCommand&&(identical(other.button, _this.button) || other.button == _this.button)&&(identical(other.event, _this.event) || other.event == _this.event)&&(identical(other.durationMs, _this.durationMs) || other.durationMs == _this.durationMs)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,button,event,durationMs,id,type);
+int get hashCode {
+  final _this = this as ButtonChangeStateCommand;
+  return Object.hash(runtimeType,_this.button,_this.event,_this.durationMs,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'ButtonChangeStateCommand(button: $button, event: $event, durationMs: $durationMs, id: $id, type: $type)';
+  final _this = this as ButtonChangeStateCommand;
+  return 'ButtonChangeStateCommand(button: ${_this.button}, event: ${_this.event}, durationMs: ${_this.durationMs}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -326,7 +339,7 @@ class _$ButtonChangeStateCommandCopyWithImpl<$Res>
 /// Create a copy of ButtonChangeStateCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? button = null,Object? event = null,Object? durationMs = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(ButtonChangeStateCommand(
 button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
 as ButtonType,event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
 as ButtonEventType,durationMs: null == durationMs ? _self.durationMs : durationMs // ignore: cast_nullable_to_non_nullable
@@ -489,16 +502,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonChangeStateCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.event, event) || other.event == event)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonChangeStateCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.event, event) || other.event == event)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,button,event,durationMs,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,button,event,durationMs,id,type);
+}
 
 @override
 String toString() {
-  return 'ButtonChangeStateCommand(button: $button, event: $event, durationMs: $durationMs, id: $id, type: $type)';
+    return 'ButtonChangeStateCommand(button: $button, event: $event, durationMs: $durationMs, id: $id, type: $type)';
 }
 
 
@@ -557,16 +572,21 @@ $EmulatePushButtonCommandCopyWith<EmulatePushButtonCommand> get copyWith => _$Em
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmulatePushButtonCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as EmulatePushButtonCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmulatePushButtonCommand&&(identical(other.button, _this.button) || other.button == _this.button)&&(identical(other.durationMs, _this.durationMs) || other.durationMs == _this.durationMs)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,button,durationMs,id,type);
+int get hashCode {
+  final _this = this as EmulatePushButtonCommand;
+  return Object.hash(runtimeType,_this.button,_this.durationMs,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'EmulatePushButtonCommand(button: $button, durationMs: $durationMs, id: $id, type: $type)';
+  final _this = this as EmulatePushButtonCommand;
+  return 'EmulatePushButtonCommand(button: ${_this.button}, durationMs: ${_this.durationMs}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -595,7 +615,7 @@ class _$EmulatePushButtonCommandCopyWithImpl<$Res>
 /// Create a copy of EmulatePushButtonCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? button = null,Object? durationMs = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(EmulatePushButtonCommand(
 button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
 as ButtonType,durationMs: null == durationMs ? _self.durationMs : durationMs // ignore: cast_nullable_to_non_nullable
 as int,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -756,16 +776,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmulatePushButtonCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmulatePushButtonCommand&&(identical(other.button, button) || other.button == button)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,button,durationMs,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,button,durationMs,id,type);
+}
 
 @override
 String toString() {
-  return 'EmulatePushButtonCommand(button: $button, durationMs: $durationMs, id: $id, type: $type)';
+    return 'EmulatePushButtonCommand(button: $button, durationMs: $durationMs, id: $id, type: $type)';
 }
 
 
@@ -823,16 +845,21 @@ $ExecuteSSActionCommandCopyWith<ExecuteSSActionCommand> get copyWith => _$Execut
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExecuteSSActionCommand&&(identical(other.action, action) || other.action == action)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as ExecuteSSActionCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExecuteSSActionCommand&&(identical(other.action, _this.action) || other.action == _this.action)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,action,value,id,type);
+int get hashCode {
+  final _this = this as ExecuteSSActionCommand;
+  return Object.hash(runtimeType,_this.action,_this.value,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'ExecuteSSActionCommand(action: $action, value: $value, id: $id, type: $type)';
+  final _this = this as ExecuteSSActionCommand;
+  return 'ExecuteSSActionCommand(action: ${_this.action}, value: ${_this.value}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -861,7 +888,7 @@ class _$ExecuteSSActionCommandCopyWithImpl<$Res>
 /// Create a copy of ExecuteSSActionCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? action = null,Object? value = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExecuteSSActionCommand(
 action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
 as SlideshowAction,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -1022,16 +1049,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExecuteSSActionCommand&&(identical(other.action, action) || other.action == action)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExecuteSSActionCommand&&(identical(other.action, action) || other.action == action)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,action,value,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,action,value,id,type);
+}
 
 @override
 String toString() {
-  return 'ExecuteSSActionCommand(action: $action, value: $value, id: $id, type: $type)';
+    return 'ExecuteSSActionCommand(action: $action, value: $value, id: $id, type: $type)';
 }
 
 
@@ -1089,16 +1118,21 @@ $LEDControlCommandCopyWith<LEDControlCommand> get copyWith => _$LEDControlComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LEDControlCommand&&(identical(other.led, led) || other.led == led)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as LEDControlCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LEDControlCommand&&(identical(other.led, _this.led) || other.led == _this.led)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,led,value,id,type);
+int get hashCode {
+  final _this = this as LEDControlCommand;
+  return Object.hash(runtimeType,_this.led,_this.value,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'LEDControlCommand(led: $led, value: $value, id: $id, type: $type)';
+  final _this = this as LEDControlCommand;
+  return 'LEDControlCommand(led: ${_this.led}, value: ${_this.value}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -1127,7 +1161,7 @@ class _$LEDControlCommandCopyWithImpl<$Res>
 /// Create a copy of LEDControlCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? led = null,Object? value = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(LEDControlCommand(
 led: null == led ? _self.led : led // ignore: cast_nullable_to_non_nullable
 as LEDType,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -1288,16 +1322,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LEDControlCommand&&(identical(other.led, led) || other.led == led)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LEDControlCommand&&(identical(other.led, led) || other.led == led)&&(identical(other.value, value) || other.value == value)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,led,value,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,led,value,id,type);
+}
 
 @override
 String toString() {
-  return 'LEDControlCommand(led: $led, value: $value, id: $id, type: $type)';
+    return 'LEDControlCommand(led: $led, value: $value, id: $id, type: $type)';
 }
 
 
@@ -1355,16 +1391,21 @@ $PowerOffCommandCopyWith<PowerOffCommand> get copyWith => _$PowerOffCommandCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PowerOffCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
+  final _this = this as PowerOffCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PowerOffCommand&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id);
+int get hashCode {
+  final _this = this as PowerOffCommand;
+  return Object.hash(runtimeType,_this.type,_this.id);
+}
 
 @override
 String toString() {
-  return 'PowerOffCommand(type: $type, id: $id)';
+  final _this = this as PowerOffCommand;
+  return 'PowerOffCommand(type: ${_this.type}, id: ${_this.id})';
 }
 
 
@@ -1393,7 +1434,7 @@ class _$PowerOffCommandCopyWithImpl<$Res>
 /// Create a copy of PowerOffCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(PowerOffCommand(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -1550,16 +1591,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PowerOffCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PowerOffCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id);
+int get hashCode {
+    return Object.hash(runtimeType,type,id);
+}
 
 @override
 String toString() {
-  return 'PowerOffCommand(type: $type, id: $id)';
+    return 'PowerOffCommand(type: $type, id: $id)';
 }
 
 
@@ -1615,16 +1658,21 @@ $RestartAppCommandCopyWith<RestartAppCommand> get copyWith => _$RestartAppComman
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RestartAppCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
+  final _this = this as RestartAppCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RestartAppCommand&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id);
+int get hashCode {
+  final _this = this as RestartAppCommand;
+  return Object.hash(runtimeType,_this.type,_this.id);
+}
 
 @override
 String toString() {
-  return 'RestartAppCommand(type: $type, id: $id)';
+  final _this = this as RestartAppCommand;
+  return 'RestartAppCommand(type: ${_this.type}, id: ${_this.id})';
 }
 
 
@@ -1653,7 +1701,7 @@ class _$RestartAppCommandCopyWithImpl<$Res>
 /// Create a copy of RestartAppCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(RestartAppCommand(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
@@ -1810,16 +1858,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RestartAppCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RestartAppCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id);
+int get hashCode {
+    return Object.hash(runtimeType,type,id);
+}
 
 @override
 String toString() {
-  return 'RestartAppCommand(type: $type, id: $id)';
+    return 'RestartAppCommand(type: $type, id: $id)';
 }
 
 

@@ -17,9 +17,8 @@ part 'upload_queue_event.dart';
 // --- STATE ---
 @freezed
 sealed class UploadQueueState with _$UploadQueueState {
-  const factory UploadQueueState({
-    @Default([]) List<UploadTask> tasks,
-  }) = _UploadQueueState;
+  const factory UploadQueueState({@Default([]) List<UploadTask> tasks}) =
+      _UploadQueueState;
 }
 
 // --- BLOC ---
@@ -43,18 +42,23 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   }
 
   Future<void> _onAddPlatformFiles(
-      _AddPlatformFiles event, Emitter<UploadQueueState> emit) async {
+    _AddPlatformFiles event,
+    Emitter<UploadQueueState> emit,
+  ) async {
     _log.info("_onAddPlatformFiles: files = ${event.files.length}");
-    final newTasks = event.files.map((file) {
+    final newTasks = <UploadTask>[];
+    for (final file in event.files) {
       String serverPath = p.relative(file.name, from: '');
-      return UploadTask(
-        id: const Uuid().v4(),
-        localPath: file.name,
-        serverPath: serverPath,
-        bytes: file.bytes,
-        status: UploadStatus.queued,
+      newTasks.add(
+        UploadTask(
+          id: const Uuid().v4(),
+          localPath: file.name,
+          serverPath: serverPath,
+          bytes: await file.readAsBytes(),
+          status: UploadStatus.queued,
+        ),
       );
-    }).toList();
+    }
 
     emit(state.copyWith(tasks: [...state.tasks, ...newTasks]));
     _processQueue();
@@ -62,7 +66,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
 
   // Добавление файлов в очередь
   Future<void> _onAddFiles(
-      _AddFiles event, Emitter<UploadQueueState> emit) async {
+    _AddFiles event,
+    Emitter<UploadQueueState> emit,
+  ) async {
     final rootPath = p.dirname(event.rootPath);
     final newTasks = event.files.map((file) {
       // Вычисляем относительный путь для сервера
@@ -84,8 +90,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
 
   void _onRemoveTask(_RemoveTask event, Emitter<UploadQueueState> emit) {
     // Удаляем только если задача в очереди или ошибка
-    final updatedTasks =
-        state.tasks.where((t) => t.id != event.taskId).toList();
+    final updatedTasks = state.tasks
+        .where((t) => t.id != event.taskId)
+        .toList();
     emit(state.copyWith(tasks: updatedTasks));
   }
 
@@ -93,7 +100,10 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     final updatedTasks = state.tasks.map((t) {
       if (t.id == event.taskId) {
         return t.copyWith(
-            status: UploadStatus.queued, errorMessage: null, progress: 0);
+          status: UploadStatus.queued,
+          errorMessage: null,
+          progress: 0,
+        );
       }
       return t;
     }).toList();
@@ -103,15 +113,17 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   }
 
   void _onUpdateProgress(
-      _UpdateProgress event, Emitter<UploadQueueState> emit) {
+    _UpdateProgress event,
+    Emitter<UploadQueueState> emit,
+  ) {
     final updatedTasks = state.tasks.map((t) {
       if (t.id == event.taskId) {
         final progress = event.total == 0 ? 0.0 : event.sent / event.total;
         // Если пришел прогресс, значит задача точно загружается
         return t.copyWith(
-            progress: progress,
-            status: UploadStatus.uploading // Форсируем статус
-            );
+          progress: progress,
+          status: UploadStatus.uploading, // Форсируем статус
+        );
       }
       return t;
     }).toList();
@@ -137,7 +149,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     final updatedTasks = state.tasks.map((t) {
       if (t.id == event.taskId) {
         return t.copyWith(
-            status: UploadStatus.error, errorMessage: event.error);
+          status: UploadStatus.error,
+          errorMessage: event.error,
+        );
       }
       return t;
     }).toList();
@@ -151,8 +165,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   // Главный метод управления очередью
   void _processQueue() {
     // 1. Считаем сколько сейчас загружается
-    final activeCount =
-        state.tasks.where((t) => t.status == UploadStatus.uploading).length;
+    final activeCount = state.tasks
+        .where((t) => t.status == UploadStatus.uploading)
+        .length;
 
     if (activeCount >= _maxConcurrentUploads) return;
 
@@ -211,11 +226,11 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         }
       }
 
-      ;
       final wclient = WebClient(
-          code: client.authCode,
-          host: client.connectUri.host,
-          port: client.connectUri.port);
+        code: client.authCode,
+        host: client.connectUri.host,
+        port: client.connectUri.port,
+      );
 
       if (task.bytes != null) {
         _log.info("_uploadFileRoutine ${task.id} is bytes");
@@ -235,11 +250,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
           return;
         }
         // Вызываем WebClient
-        await wclient.uploadMedia(
-          task.localPath,
-          task.serverPath,
-          onProgress,
-        );
+        await wclient.uploadMedia(task.localPath, task.serverPath, onProgress);
       }
 
       add(UploadQueueEvent.taskCompleted(task.id));
@@ -254,8 +265,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   // См. метод _onUpdateProgress ниже (доработанный).
 
   List<UploadTask> _cleanupHistory(List<UploadTask> tasks) {
-    final completed =
-        tasks.where((t) => t.status == UploadStatus.completed).toList();
+    final completed = tasks
+        .where((t) => t.status == UploadStatus.completed)
+        .toList();
     if (completed.length <= _maxHistorySize) return tasks;
 
     // Сортируем или просто удаляем первые, если они добавлялись в конец

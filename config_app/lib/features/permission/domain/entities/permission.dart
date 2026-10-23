@@ -22,7 +22,7 @@ enum Permission {
 
   const Permission(this.id, this.scope, this.status, this.isApplicableToEntity);
 
-  static Permission byName(final String name) {
+  static Permission byName(String name) {
     final Permission? permission = NAME_IDX[name.toLowerCase()];
     if (permission == null) {
       throw ArgumentError("Not found permission with name $name");
@@ -30,7 +30,7 @@ enum Permission {
     return permission;
   }
 
-  static Permission byId(final int id) {
+  static Permission byId(int id) {
     final Permission? permission = ID_IDX[id];
     if (permission == null) {
       throw ArgumentError("Not found permission with id $id");

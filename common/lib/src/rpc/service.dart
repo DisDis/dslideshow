@@ -19,7 +19,7 @@ class Service {
     // events = StreamQueue<dynamic>(receivePort);
   }
 
-  Future processing(final RpcService service, final Serializers serializers) async {
+  Future processing(RpcService service, Serializers serializers) async {
     late StreamSubscription sub;
     final result = Completer();
     // Wait for messages from the main isolate.

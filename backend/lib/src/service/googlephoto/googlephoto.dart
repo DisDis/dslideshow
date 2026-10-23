@@ -23,8 +23,8 @@ class GooglePhotoService {
   String _tokenAccess;
   DateTime? _tokenAExpire;
   GooglePhotoService(
-    final String identifier,
-    final String secret,
+    String identifier,
+    String secret,
     this._refreshToken, [
     this._tokenAccess = "",
     this._tokenAExpire,

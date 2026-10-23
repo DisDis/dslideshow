@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'config_bloc_models.dart';
@@ -9,7 +9,7 @@ part of 'config_bloc_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -252,7 +252,9 @@ class ConfigSaveEvent implements ConfigEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, config);
+  int get hashCode {
+    return Object.hash(runtimeType, config);
+  }
 
   @override
   String toString() {
@@ -264,8 +266,9 @@ class ConfigSaveEvent implements ConfigEvent {
 abstract mixin class $ConfigSaveEventCopyWith<$Res>
     implements $ConfigEventCopyWith<$Res> {
   factory $ConfigSaveEventCopyWith(
-          ConfigSaveEvent value, $Res Function(ConfigSaveEvent) _then) =
-      _$ConfigSaveEventCopyWithImpl;
+    ConfigSaveEvent value,
+    $Res Function(ConfigSaveEvent) _then,
+  ) = _$ConfigSaveEventCopyWithImpl;
   @useResult
   $Res call({AppConfig config});
 }
@@ -281,15 +284,15 @@ class _$ConfigSaveEventCopyWithImpl<$Res>
   /// Create a copy of ConfigEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? config = null,
-  }) {
-    return _then(ConfigSaveEvent(
-      null == config
-          ? _self.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as AppConfig,
-    ));
+  $Res call({Object? config = null}) {
+    return _then(
+      ConfigSaveEvent(
+        null == config
+            ? _self.config
+            : config // ignore: cast_nullable_to_non_nullable
+                  as AppConfig,
+      ),
+    );
   }
 }
 
@@ -625,7 +628,9 @@ class ConfigLoadedState implements ConfigState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, config);
+  int get hashCode {
+    return Object.hash(runtimeType, config);
+  }
 
   @override
   String toString() {
@@ -637,8 +642,9 @@ class ConfigLoadedState implements ConfigState {
 abstract mixin class $ConfigLoadedStateCopyWith<$Res>
     implements $ConfigStateCopyWith<$Res> {
   factory $ConfigLoadedStateCopyWith(
-          ConfigLoadedState value, $Res Function(ConfigLoadedState) _then) =
-      _$ConfigLoadedStateCopyWithImpl;
+    ConfigLoadedState value,
+    $Res Function(ConfigLoadedState) _then,
+  ) = _$ConfigLoadedStateCopyWithImpl;
   @useResult
   $Res call({AppConfig config});
 }
@@ -654,15 +660,15 @@ class _$ConfigLoadedStateCopyWithImpl<$Res>
   /// Create a copy of ConfigState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? config = null,
-  }) {
-    return _then(ConfigLoadedState(
-      null == config
-          ? _self.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as AppConfig,
-    ));
+  $Res call({Object? config = null}) {
+    return _then(
+      ConfigLoadedState(
+        null == config
+            ? _self.config
+            : config // ignore: cast_nullable_to_non_nullable
+                  as AppConfig,
+      ),
+    );
   }
 }
 
@@ -689,7 +695,9 @@ class ConfigErrorState implements ConfigState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, message);
+  int get hashCode {
+    return Object.hash(runtimeType, message);
+  }
 
   @override
   String toString() {
@@ -701,8 +709,9 @@ class ConfigErrorState implements ConfigState {
 abstract mixin class $ConfigErrorStateCopyWith<$Res>
     implements $ConfigStateCopyWith<$Res> {
   factory $ConfigErrorStateCopyWith(
-          ConfigErrorState value, $Res Function(ConfigErrorState) _then) =
-      _$ConfigErrorStateCopyWithImpl;
+    ConfigErrorState value,
+    $Res Function(ConfigErrorState) _then,
+  ) = _$ConfigErrorStateCopyWithImpl;
   @useResult
   $Res call({String message});
 }
@@ -718,15 +727,15 @@ class _$ConfigErrorStateCopyWithImpl<$Res>
   /// Create a copy of ConfigState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? message = null,
-  }) {
-    return _then(ConfigErrorState(
-      null == message
-          ? _self.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? message = null}) {
+    return _then(
+      ConfigErrorState(
+        null == message
+            ? _self.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -769,5 +778,3 @@ class ConfigSavedState implements ConfigState {
     return 'ConfigState.saved()';
   }
 }
-
-// dart format on

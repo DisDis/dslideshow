@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ota_event.dart';
@@ -9,6 +9,7 @@ part of 'ota_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$OtaEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OtaEvent()';
+    return 'OtaEvent()';
 }
 
 
@@ -215,7 +216,7 @@ class OtaInitializationEvent implements OtaEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaInitializationEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaInitializationEvent);
 }
 
 
@@ -224,7 +225,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OtaEvent.initialization()';
+    return 'OtaEvent.initialization()';
 }
 
 
@@ -252,16 +253,18 @@ $OtaUpdateInfoEventCopyWith<OtaUpdateInfoEvent> get copyWith => _$OtaUpdateInfoE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaUpdateInfoEvent&&(identical(other.info, info) || other.info == info));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaUpdateInfoEvent&&(identical(other.info, info) || other.info == info));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,info);
+int get hashCode {
+    return Object.hash(runtimeType,info);
+}
 
 @override
 String toString() {
-  return 'OtaEvent.updateInfo(info: $info)';
+    return 'OtaEvent.updateInfo(info: $info)';
 }
 
 
@@ -322,7 +325,7 @@ class OtaReadyEvent implements OtaEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyEvent);
 }
 
 
@@ -331,7 +334,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OtaEvent.ready()';
+    return 'OtaEvent.ready()';
 }
 
 
@@ -354,7 +357,7 @@ class OtaExitEvent implements OtaEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaExitEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaExitEvent);
 }
 
 
@@ -363,7 +366,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OtaEvent.exit()';
+    return 'OtaEvent.exit()';
 }
 
 
@@ -386,7 +389,7 @@ class OtaTerminalUpdateEvent implements OtaEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaTerminalUpdateEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaTerminalUpdateEvent);
 }
 
 
@@ -395,7 +398,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OtaEvent.terminalUpdate()';
+    return 'OtaEvent.terminalUpdate()';
 }
 
 
@@ -423,16 +426,18 @@ $OtaAddTextToTerminalEventCopyWith<OtaAddTextToTerminalEvent> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaAddTextToTerminalEvent&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaAddTextToTerminalEvent&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'OtaEvent.addTextToTerminal(message: $message)';
+    return 'OtaEvent.addTextToTerminal(message: $message)';
 }
 
 

@@ -24,6 +24,11 @@ Features:
 More [info](https://github.com/DisDis/article-dslideshow)
 
 
+# Разработка
+
+* [Сборка Linux/Raspberry Pi и устранение ошибки GTK](dslideshow_flutter/README.md)
+* [Анализ проекта и предложения по улучшению](doc/project-review-2026-10.md)
+
 # TODO:
 
 * Выкачивать во временную папку.

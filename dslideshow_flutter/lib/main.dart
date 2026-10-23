@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
-import 'package:dslideshow_flutter/environment.dart';
+import 'package:device_preview/presets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +40,22 @@ void main() async {
     "Run f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}",
   );
 
+  if (!environment.isLinuxEmbedded && !kReleaseMode) {
+    DevicePreview.enable();
+    const photoFrame = DevicePreset(
+      id: 'embedded-192x120mm',
+      name: 'PhotoFrame',
+      platform: TargetPlatform.linux,
+      portraitSize: Size(1600, 2560),
+      devicePixelRatio: 1.0,
+      kind: DeviceKind.tablet,
+    );
+    DevicePreview.controller.registerPreset(photoFrame);
+    await DevicePreview.controller.applyPreset(
+      photoFrame,
+      orientation: Orientation.landscape,
+    );
+  }
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
@@ -140,28 +156,7 @@ void _runFlutter(FrontendService frontendService) {
         BlocProvider<RouteBloc>.value(value: injector()),
         BlocProvider<SlideshowStatusBloc>.value(value: injector()),
       ],
-      child: isLinuxEmbedded == true
-          ? const MainApp()
-          : DevicePreview(
-              enabled: true,
-              // Начальное устройство - ваше кастомное
-              defaultDevice: Devices.linux.wideMonitor,
-              tools: const [...DevicePreview.defaultTools],
-              // Определяем ваше специфическое устройство
-              devices: [
-                DeviceInfo.genericTablet(
-                  platform: TargetPlatform.linux,
-                  name: 'PhotoFrame',
-                  id: 'embedded-192x120mm',
-                  // windowPosition: Rect.fromLTWH(0, 0, 2560, 1600),
-                  screenSize: const Size(2560, 1600), // Логический размер
-                  pixelRatio: 1.0, // Ваш DPR
-                  safeAreas: EdgeInsets.zero,
-                  rotatedSafeAreas: EdgeInsets.zero,
-                ),
-              ],
-              builder: (context) => const MainApp(),
-            ),
+      child: const MainApp(),
     ),
   );
 }

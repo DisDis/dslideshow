@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'main_menu_bloc.dart';
@@ -9,6 +9,7 @@ part of 'main_menu_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$MainMenuEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'MainMenuEvent()';
+    return 'MainMenuEvent()';
 }
 
 
@@ -190,16 +191,18 @@ $MainMenuSelectEventCopyWith<MainMenuSelectEvent> get copyWith => _$MainMenuSele
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuSelectEvent&&(identical(other.index, index) || other.index == index));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuSelectEvent&&(identical(other.index, index) || other.index == index));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,index);
+int get hashCode {
+    return Object.hash(runtimeType,index);
+}
 
 @override
 String toString() {
-  return 'MainMenuEvent.select(index: $index)';
+    return 'MainMenuEvent.select(index: $index)';
 }
 
 
@@ -256,16 +259,18 @@ $MainMenuExecuteEventCopyWith<MainMenuExecuteEvent> get copyWith => _$MainMenuEx
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuExecuteEvent&&(identical(other.command, command) || other.command == command));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuExecuteEvent&&(identical(other.command, command) || other.command == command));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,command);
+int get hashCode {
+    return Object.hash(runtimeType,command);
+}
 
 @override
 String toString() {
-  return 'MainMenuEvent.execute(command: $command)';
+    return 'MainMenuEvent.execute(command: $command)';
 }
 
 
@@ -317,16 +322,21 @@ $MainMenuStateCopyWith<MainMenuState> get copyWith => _$MainMenuStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex));
+  final _this = this as MainMenuState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainMenuState&&(identical(other.selectedIndex, _this.selectedIndex) || other.selectedIndex == _this.selectedIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex);
+int get hashCode {
+  final _this = this as MainMenuState;
+  return Object.hash(runtimeType,_this.selectedIndex);
+}
 
 @override
 String toString() {
-  return 'MainMenuState(selectedIndex: $selectedIndex)';
+  final _this = this as MainMenuState;
+  return 'MainMenuState(selectedIndex: ${_this.selectedIndex})';
 }
 
 
@@ -355,7 +365,7 @@ class _$MainMenuStateCopyWithImpl<$Res>
 /// Create a copy of MainMenuState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? selectedIndex = null,}) {
-  return _then(_self.copyWith(
+  return _then(MainMenuState(
 selectedIndex: null == selectedIndex ? _self.selectedIndex : selectedIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -507,16 +517,18 @@ _$MainMenuStateStateCopyWith<_MainMenuStateState> get copyWith => __$MainMenuSta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MainMenuStateState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MainMenuStateState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex);
+int get hashCode {
+    return Object.hash(runtimeType,selectedIndex);
+}
 
 @override
 String toString() {
-  return 'MainMenuState(selectedIndex: $selectedIndex)';
+    return 'MainMenuState(selectedIndex: $selectedIndex)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'gallery_bloc.dart';
@@ -9,7 +9,7 @@ part of 'gallery_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -153,9 +153,7 @@ extension GalleryEventPatterns on GalleryEvent {
   /// ```
 
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() load,
-  }) {
+  TResult when<TResult extends Object?>({required TResult Function() load}) {
     final _that = this;
     switch (_that) {
       case GalleryLoadEvent():
@@ -178,9 +176,7 @@ extension GalleryEventPatterns on GalleryEvent {
   /// ```
 
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? load,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? load}) {
     final _that = this;
     switch (_that) {
       case GalleryLoadEvent() when load != null:
@@ -471,7 +467,9 @@ class ErrorGalleryState implements GalleryState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, errorMessage);
+  int get hashCode {
+    return Object.hash(runtimeType, errorMessage);
+  }
 
   @override
   String toString() {
@@ -483,8 +481,9 @@ class ErrorGalleryState implements GalleryState {
 abstract mixin class $ErrorGalleryStateCopyWith<$Res>
     implements $GalleryStateCopyWith<$Res> {
   factory $ErrorGalleryStateCopyWith(
-          ErrorGalleryState value, $Res Function(ErrorGalleryState) _then) =
-      _$ErrorGalleryStateCopyWithImpl;
+    ErrorGalleryState value,
+    $Res Function(ErrorGalleryState) _then,
+  ) = _$ErrorGalleryStateCopyWithImpl;
   @useResult
   $Res call({String errorMessage});
 }
@@ -500,23 +499,22 @@ class _$ErrorGalleryStateCopyWithImpl<$Res>
   /// Create a copy of GalleryState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? errorMessage = null,
-  }) {
-    return _then(ErrorGalleryState(
-      null == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? errorMessage = null}) {
+    return _then(
+      ErrorGalleryState(
+        null == errorMessage
+            ? _self.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class LoadedGalleryState implements GalleryState {
-  const LoadedGalleryState({required final List<String> items})
-      : _items = items;
+  const LoadedGalleryState({required List<String> items}) : _items = items;
 
   final List<String> _items;
   List<String> get items {
@@ -537,12 +535,16 @@ class LoadedGalleryState implements GalleryState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is LoadedGalleryState &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            const DeepCollectionEquality().equals(other.items, _items));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_items),
+    );
+  }
 
   @override
   String toString() {
@@ -554,8 +556,9 @@ class LoadedGalleryState implements GalleryState {
 abstract mixin class $LoadedGalleryStateCopyWith<$Res>
     implements $GalleryStateCopyWith<$Res> {
   factory $LoadedGalleryStateCopyWith(
-          LoadedGalleryState value, $Res Function(LoadedGalleryState) _then) =
-      _$LoadedGalleryStateCopyWithImpl;
+    LoadedGalleryState value,
+    $Res Function(LoadedGalleryState) _then,
+  ) = _$LoadedGalleryStateCopyWithImpl;
   @useResult
   $Res call({List<String> items});
 }
@@ -571,16 +574,14 @@ class _$LoadedGalleryStateCopyWithImpl<$Res>
   /// Create a copy of GalleryState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(LoadedGalleryState(
-      items: null == items
-          ? _self._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      LoadedGalleryState(
+        items: null == items
+            ? _self._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
-
-// dart format on

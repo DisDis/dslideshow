@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'wifi_tab_state.dart';
@@ -9,7 +9,7 @@ part of 'wifi_tab_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -146,9 +146,11 @@ extension WifiTabStatePatterns on WifiTabState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? uninitialized,
-    TResult Function(Iterable<WiFiNetworkInfo> availableNetworks,
-            Iterable<WiFiConnectionInfo> connections)?
-        initialized,
+    TResult Function(
+      Iterable<WiFiNetworkInfo> availableNetworks,
+      Iterable<WiFiConnectionInfo> connections,
+    )?
+    initialized,
     TResult Function(String errorMessage)? error,
     required TResult orElse(),
   }) {
@@ -181,9 +183,11 @@ extension WifiTabStatePatterns on WifiTabState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() uninitialized,
-    required TResult Function(Iterable<WiFiNetworkInfo> availableNetworks,
-            Iterable<WiFiConnectionInfo> connections)
-        initialized,
+    required TResult Function(
+      Iterable<WiFiNetworkInfo> availableNetworks,
+      Iterable<WiFiConnectionInfo> connections,
+    )
+    initialized,
     required TResult Function(String errorMessage) error,
   }) {
     final _that = this;
@@ -214,9 +218,11 @@ extension WifiTabStatePatterns on WifiTabState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? uninitialized,
-    TResult? Function(Iterable<WiFiNetworkInfo> availableNetworks,
-            Iterable<WiFiConnectionInfo> connections)?
-        initialized,
+    TResult? Function(
+      Iterable<WiFiNetworkInfo> availableNetworks,
+      Iterable<WiFiConnectionInfo> connections,
+    )?
+    initialized,
     TResult? Function(String errorMessage)? error,
   }) {
     final _that = this;
@@ -256,8 +262,10 @@ class UnWifiTabState implements WifiTabState {
 /// @nodoc
 
 class InWifiTabState implements WifiTabState {
-  const InWifiTabState(
-      {required this.availableNetworks, required this.connections});
+  const InWifiTabState({
+    required this.availableNetworks,
+    required this.connections,
+  });
 
   final Iterable<WiFiNetworkInfo> availableNetworks;
   final Iterable<WiFiConnectionInfo> connections;
@@ -274,17 +282,24 @@ class InWifiTabState implements WifiTabState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is InWifiTabState &&
-            const DeepCollectionEquality()
-                .equals(other.availableNetworks, availableNetworks) &&
-            const DeepCollectionEquality()
-                .equals(other.connections, connections));
+            const DeepCollectionEquality().equals(
+              other.availableNetworks,
+              availableNetworks,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other.connections,
+              connections,
+            ));
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode {
+    return Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(availableNetworks),
-      const DeepCollectionEquality().hash(connections));
+      const DeepCollectionEquality().hash(connections),
+    );
+  }
 
   @override
   String toString() {
@@ -296,12 +311,14 @@ class InWifiTabState implements WifiTabState {
 abstract mixin class $InWifiTabStateCopyWith<$Res>
     implements $WifiTabStateCopyWith<$Res> {
   factory $InWifiTabStateCopyWith(
-          InWifiTabState value, $Res Function(InWifiTabState) _then) =
-      _$InWifiTabStateCopyWithImpl;
+    InWifiTabState value,
+    $Res Function(InWifiTabState) _then,
+  ) = _$InWifiTabStateCopyWithImpl;
   @useResult
-  $Res call(
-      {Iterable<WiFiNetworkInfo> availableNetworks,
-      Iterable<WiFiConnectionInfo> connections});
+  $Res call({
+    Iterable<WiFiNetworkInfo> availableNetworks,
+    Iterable<WiFiConnectionInfo> connections,
+  });
 }
 
 /// @nodoc
@@ -315,20 +332,19 @@ class _$InWifiTabStateCopyWithImpl<$Res>
   /// Create a copy of WifiTabState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? availableNetworks = null,
-    Object? connections = null,
-  }) {
-    return _then(InWifiTabState(
-      availableNetworks: null == availableNetworks
-          ? _self.availableNetworks
-          : availableNetworks // ignore: cast_nullable_to_non_nullable
-              as Iterable<WiFiNetworkInfo>,
-      connections: null == connections
-          ? _self.connections
-          : connections // ignore: cast_nullable_to_non_nullable
-              as Iterable<WiFiConnectionInfo>,
-    ));
+  $Res call({Object? availableNetworks = null, Object? connections = null}) {
+    return _then(
+      InWifiTabState(
+        availableNetworks: null == availableNetworks
+            ? _self.availableNetworks
+            : availableNetworks // ignore: cast_nullable_to_non_nullable
+                  as Iterable<WiFiNetworkInfo>,
+        connections: null == connections
+            ? _self.connections
+            : connections // ignore: cast_nullable_to_non_nullable
+                  as Iterable<WiFiConnectionInfo>,
+      ),
+    );
   }
 }
 
@@ -356,7 +372,9 @@ class ErrorWifiTabState implements WifiTabState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, errorMessage);
+  int get hashCode {
+    return Object.hash(runtimeType, errorMessage);
+  }
 
   @override
   String toString() {
@@ -368,8 +386,9 @@ class ErrorWifiTabState implements WifiTabState {
 abstract mixin class $ErrorWifiTabStateCopyWith<$Res>
     implements $WifiTabStateCopyWith<$Res> {
   factory $ErrorWifiTabStateCopyWith(
-          ErrorWifiTabState value, $Res Function(ErrorWifiTabState) _then) =
-      _$ErrorWifiTabStateCopyWithImpl;
+    ErrorWifiTabState value,
+    $Res Function(ErrorWifiTabState) _then,
+  ) = _$ErrorWifiTabStateCopyWithImpl;
   @useResult
   $Res call({String errorMessage});
 }
@@ -385,16 +404,14 @@ class _$ErrorWifiTabStateCopyWithImpl<$Res>
   /// Create a copy of WifiTabState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? errorMessage = null,
-  }) {
-    return _then(ErrorWifiTabState(
-      null == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? errorMessage = null}) {
+    return _then(
+      ErrorWifiTabState(
+        null == errorMessage
+            ? _self.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
-
-// dart format on

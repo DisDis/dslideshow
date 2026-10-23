@@ -212,7 +212,7 @@ class WebService {
     })(request);
   }
 
-  Future<Response> _postUploadMedia(Request request, final String code) async {
+  Future<Response> _postUploadMedia(Request request, String code) async {
     if (code != _code) {
       return Response.forbidden('Code is incorrect');
     }

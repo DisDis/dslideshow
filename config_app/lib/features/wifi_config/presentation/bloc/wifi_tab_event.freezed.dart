@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'wifi_tab_event.dart';
@@ -9,7 +9,7 @@ part of 'wifi_tab_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -406,7 +406,9 @@ class AddWifiTabEvent implements WifiTabEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, SSID, psk);
+  int get hashCode {
+    return Object.hash(runtimeType, name, SSID, psk);
+  }
 
   @override
   String toString() {
@@ -418,8 +420,9 @@ class AddWifiTabEvent implements WifiTabEvent {
 abstract mixin class $AddWifiTabEventCopyWith<$Res>
     implements $WifiTabEventCopyWith<$Res> {
   factory $AddWifiTabEventCopyWith(
-          AddWifiTabEvent value, $Res Function(AddWifiTabEvent) _then) =
-      _$AddWifiTabEventCopyWithImpl;
+    AddWifiTabEvent value,
+    $Res Function(AddWifiTabEvent) _then,
+  ) = _$AddWifiTabEventCopyWithImpl;
   @useResult
   $Res call({String name, String SSID, String psk});
 }
@@ -435,25 +438,23 @@ class _$AddWifiTabEventCopyWithImpl<$Res>
   /// Create a copy of WifiTabEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? name = null,
-    Object? SSID = null,
-    Object? psk = null,
-  }) {
-    return _then(AddWifiTabEvent(
-      null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == SSID
-          ? _self.SSID
-          : SSID // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == psk
-          ? _self.psk
-          : psk // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? name = null, Object? SSID = null, Object? psk = null}) {
+    return _then(
+      AddWifiTabEvent(
+        null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == SSID
+            ? _self.SSID
+            : SSID // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == psk
+            ? _self.psk
+            : psk // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -481,7 +482,9 @@ class RemoveWifiTabEvent implements WifiTabEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, connectionId);
+  int get hashCode {
+    return Object.hash(runtimeType, connectionId);
+  }
 
   @override
   String toString() {
@@ -493,8 +496,9 @@ class RemoveWifiTabEvent implements WifiTabEvent {
 abstract mixin class $RemoveWifiTabEventCopyWith<$Res>
     implements $WifiTabEventCopyWith<$Res> {
   factory $RemoveWifiTabEventCopyWith(
-          RemoveWifiTabEvent value, $Res Function(RemoveWifiTabEvent) _then) =
-      _$RemoveWifiTabEventCopyWithImpl;
+    RemoveWifiTabEvent value,
+    $Res Function(RemoveWifiTabEvent) _then,
+  ) = _$RemoveWifiTabEventCopyWithImpl;
   @useResult
   $Res call({String connectionId});
 }
@@ -510,15 +514,15 @@ class _$RemoveWifiTabEventCopyWithImpl<$Res>
   /// Create a copy of WifiTabEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? connectionId = null,
-  }) {
-    return _then(RemoveWifiTabEvent(
-      null == connectionId
-          ? _self.connectionId
-          : connectionId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? connectionId = null}) {
+    return _then(
+      RemoveWifiTabEvent(
+        null == connectionId
+            ? _self.connectionId
+            : connectionId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -548,7 +552,9 @@ class EnableWifiTabEvent implements WifiTabEvent {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, connectionId, value);
+  int get hashCode {
+    return Object.hash(runtimeType, connectionId, value);
+  }
 
   @override
   String toString() {
@@ -560,8 +566,9 @@ class EnableWifiTabEvent implements WifiTabEvent {
 abstract mixin class $EnableWifiTabEventCopyWith<$Res>
     implements $WifiTabEventCopyWith<$Res> {
   factory $EnableWifiTabEventCopyWith(
-          EnableWifiTabEvent value, $Res Function(EnableWifiTabEvent) _then) =
-      _$EnableWifiTabEventCopyWithImpl;
+    EnableWifiTabEvent value,
+    $Res Function(EnableWifiTabEvent) _then,
+  ) = _$EnableWifiTabEventCopyWithImpl;
   @useResult
   $Res call({String connectionId, bool value});
 }
@@ -577,21 +584,18 @@ class _$EnableWifiTabEventCopyWithImpl<$Res>
   /// Create a copy of WifiTabEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? connectionId = null,
-    Object? value = null,
-  }) {
-    return _then(EnableWifiTabEvent(
-      null == connectionId
-          ? _self.connectionId
-          : connectionId // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == value
-          ? _self.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+  $Res call({Object? connectionId = null, Object? value = null}) {
+    return _then(
+      EnableWifiTabEvent(
+        null == connectionId
+            ? _self.connectionId
+            : connectionId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        null == value
+            ? _self.value
+            : value // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
-
-// dart format on

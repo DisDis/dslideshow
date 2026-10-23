@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'storage_commands.dart';
@@ -9,6 +9,7 @@ part of 'storage_commands.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $GetMediaItemCommandCopyWith<GetMediaItemCommand> get copyWith => _$GetMediaItem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommand&&(identical(other.isCurrent, isCurrent) || other.isCurrent == isCurrent)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as GetMediaItemCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommand&&(identical(other.isCurrent, _this.isCurrent) || other.isCurrent == _this.isCurrent)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isCurrent,id,type);
+int get hashCode {
+  final _this = this as GetMediaItemCommand;
+  return Object.hash(runtimeType,_this.isCurrent,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
+  final _this = this as GetMediaItemCommand;
+  return 'GetMediaItemCommand(isCurrent: ${_this.isCurrent}, id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$GetMediaItemCommandCopyWithImpl<$Res>
 /// Create a copy of GetMediaItemCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isCurrent = null,Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetMediaItemCommand(
 isCurrent: null == isCurrent ? _self.isCurrent : isCurrent // ignore: cast_nullable_to_non_nullable
 as bool,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommand&&(identical(other.isCurrent, isCurrent) || other.isCurrent == isCurrent)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommand&&(identical(other.isCurrent, isCurrent) || other.isCurrent == isCurrent)&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isCurrent,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,isCurrent,id,type);
+}
 
 @override
 String toString() {
-  return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
+    return 'GetMediaItemCommand(isCurrent: $isCurrent, id: $id, type: $type)';
 }
 
 
@@ -291,16 +299,21 @@ $GetMediaItemCommandResultCopyWith<GetMediaItemCommandResult> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommandResult&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.mediaUri, mediaUri) || other.mediaUri == mediaUri)&&(identical(other.id, id) || other.id == id));
+  final _this = this as GetMediaItemCommandResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMediaItemCommandResult&&(identical(other.mediaId, _this.mediaId) || other.mediaId == _this.mediaId)&&(identical(other.mediaUri, _this.mediaUri) || other.mediaUri == _this.mediaUri)&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,mediaId,mediaUri,id);
+int get hashCode {
+  final _this = this as GetMediaItemCommandResult;
+  return Object.hash(runtimeType,_this.mediaId,_this.mediaUri,_this.id);
+}
 
 @override
 String toString() {
-  return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
+  final _this = this as GetMediaItemCommandResult;
+  return 'GetMediaItemCommandResult(mediaId: ${_this.mediaId}, mediaUri: ${_this.mediaUri}, id: ${_this.id})';
 }
 
 
@@ -329,7 +342,7 @@ class _$GetMediaItemCommandResultCopyWithImpl<$Res>
 /// Create a copy of GetMediaItemCommandResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? mediaId = freezed,Object? mediaUri = freezed,Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetMediaItemCommandResult(
 mediaId: freezed == mediaId ? _self.mediaId : mediaId // ignore: cast_nullable_to_non_nullable
 as String?,mediaUri: freezed == mediaUri ? _self.mediaUri : mediaUri // ignore: cast_nullable_to_non_nullable
 as Uri?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -488,16 +501,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommandResult&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.mediaUri, mediaUri) || other.mediaUri == mediaUri)&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMediaItemCommandResult&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.mediaUri, mediaUri) || other.mediaUri == mediaUri)&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,mediaId,mediaUri,id);
+int get hashCode {
+    return Object.hash(runtimeType,mediaId,mediaUri,id);
+}
 
 @override
 String toString() {
-  return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
+    return 'GetMediaItemCommandResult(mediaId: $mediaId, mediaUri: $mediaUri, id: $id)';
 }
 
 
@@ -554,16 +569,21 @@ $StorageNextCommandCopyWith<StorageNextCommand> get copyWith => _$StorageNextCom
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StorageNextCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+  final _this = this as StorageNextCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StorageNextCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+  final _this = this as StorageNextCommand;
+  return Object.hash(runtimeType,_this.id,_this.type);
+}
 
 @override
 String toString() {
-  return 'StorageNextCommand(id: $id, type: $type)';
+  final _this = this as StorageNextCommand;
+  return 'StorageNextCommand(id: ${_this.id}, type: ${_this.type})';
 }
 
 
@@ -592,7 +612,7 @@ class _$StorageNextCommandCopyWithImpl<$Res>
 /// Create a copy of StorageNextCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(StorageNextCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,
@@ -749,16 +769,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StorageNextCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StorageNextCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,type);
+}
 
 @override
 String toString() {
-  return 'StorageNextCommand(id: $id, type: $type)';
+    return 'StorageNextCommand(id: $id, type: $type)';
 }
 
 

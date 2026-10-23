@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'slideshow_state.dart';
@@ -9,13 +9,13 @@ part of 'slideshow_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SlideshowState {
 
- MediaItem? get currentItem; MediaItem? get nextItem; Effect get effect;// Текущий эффект перехода
- SlideshowPhase get phase; bool get isScreenLocked; bool get isPaused; bool get fadeOut;
+ MediaItem? get currentItem; MediaItem? get nextItem; Effect get effect; SlideshowPhase get phase; bool get isScreenLocked; bool get isPaused; bool get fadeOut;
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,21 @@ $SlideshowStateCopyWith<SlideshowState> get copyWith => _$SlideshowStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowState&&(identical(other.currentItem, currentItem) || other.currentItem == currentItem)&&(identical(other.nextItem, nextItem) || other.nextItem == nextItem)&&(identical(other.effect, effect) || other.effect == effect)&&(identical(other.phase, phase) || other.phase == phase)&&(identical(other.isScreenLocked, isScreenLocked) || other.isScreenLocked == isScreenLocked)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.fadeOut, fadeOut) || other.fadeOut == fadeOut));
+  final _this = this as SlideshowState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowState&&(identical(other.currentItem, _this.currentItem) || other.currentItem == _this.currentItem)&&(identical(other.nextItem, _this.nextItem) || other.nextItem == _this.nextItem)&&(identical(other.effect, _this.effect) || other.effect == _this.effect)&&(identical(other.phase, _this.phase) || other.phase == _this.phase)&&(identical(other.isScreenLocked, _this.isScreenLocked) || other.isScreenLocked == _this.isScreenLocked)&&(identical(other.isPaused, _this.isPaused) || other.isPaused == _this.isPaused)&&(identical(other.fadeOut, _this.fadeOut) || other.fadeOut == _this.fadeOut));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentItem,nextItem,effect,phase,isScreenLocked,isPaused,fadeOut);
+int get hashCode {
+  final _this = this as SlideshowState;
+  return Object.hash(runtimeType,_this.currentItem,_this.nextItem,_this.effect,_this.phase,_this.isScreenLocked,_this.isPaused,_this.fadeOut);
+}
 
 @override
 String toString() {
-  return 'SlideshowState(currentItem: $currentItem, nextItem: $nextItem, effect: $effect, phase: $phase, isScreenLocked: $isScreenLocked, isPaused: $isPaused, fadeOut: $fadeOut)';
+  final _this = this as SlideshowState;
+  return 'SlideshowState(currentItem: ${_this.currentItem}, nextItem: ${_this.nextItem}, effect: ${_this.effect}, phase: ${_this.phase}, isScreenLocked: ${_this.isScreenLocked}, isPaused: ${_this.isPaused}, fadeOut: ${_this.fadeOut})';
 }
 
 
@@ -64,7 +69,7 @@ class _$SlideshowStateCopyWithImpl<$Res>
 /// Create a copy of SlideshowState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? currentItem = freezed,Object? nextItem = freezed,Object? effect = null,Object? phase = null,Object? isScreenLocked = null,Object? isPaused = null,Object? fadeOut = null,}) {
-  return _then(_self.copyWith(
+  return _then(SlideshowState(
 currentItem: freezed == currentItem ? _self.currentItem : currentItem // ignore: cast_nullable_to_non_nullable
 as MediaItem?,nextItem: freezed == nextItem ? _self.nextItem : nextItem // ignore: cast_nullable_to_non_nullable
 as MediaItem?,effect: null == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
@@ -213,7 +218,6 @@ class _SlideshowState implements SlideshowState {
 @override final  MediaItem? currentItem;
 @override final  MediaItem? nextItem;
 @override final  Effect effect;
-// Текущий эффект перехода
 @override@JsonKey() final  SlideshowPhase phase;
 @override@JsonKey() final  bool isScreenLocked;
 @override@JsonKey() final  bool isPaused;
@@ -229,16 +233,18 @@ _$SlideshowStateCopyWith<_SlideshowState> get copyWith => __$SlideshowStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideshowState&&(identical(other.currentItem, currentItem) || other.currentItem == currentItem)&&(identical(other.nextItem, nextItem) || other.nextItem == nextItem)&&(identical(other.effect, effect) || other.effect == effect)&&(identical(other.phase, phase) || other.phase == phase)&&(identical(other.isScreenLocked, isScreenLocked) || other.isScreenLocked == isScreenLocked)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.fadeOut, fadeOut) || other.fadeOut == fadeOut));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SlideshowState&&(identical(other.currentItem, currentItem) || other.currentItem == currentItem)&&(identical(other.nextItem, nextItem) || other.nextItem == nextItem)&&(identical(other.effect, effect) || other.effect == effect)&&(identical(other.phase, phase) || other.phase == phase)&&(identical(other.isScreenLocked, isScreenLocked) || other.isScreenLocked == isScreenLocked)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.fadeOut, fadeOut) || other.fadeOut == fadeOut));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentItem,nextItem,effect,phase,isScreenLocked,isPaused,fadeOut);
+int get hashCode {
+    return Object.hash(runtimeType,currentItem,nextItem,effect,phase,isScreenLocked,isPaused,fadeOut);
+}
 
 @override
 String toString() {
-  return 'SlideshowState(currentItem: $currentItem, nextItem: $nextItem, effect: $effect, phase: $phase, isScreenLocked: $isScreenLocked, isPaused: $isPaused, fadeOut: $fadeOut)';
+    return 'SlideshowState(currentItem: $currentItem, nextItem: $nextItem, effect: $effect, phase: $phase, isScreenLocked: $isScreenLocked, isPaused: $isPaused, fadeOut: $fadeOut)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'application_state_service.dart';
@@ -9,14 +9,13 @@ part of 'application_state_service.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ApplicationState {
 
- bool get hasInternet; bool get isScreenOn;// @Default(StorageStatusEnum.done) StorageStatusEnum storageStatus,
- bool get isMenu;// @Default(false) bool isInfo,
- bool get isPaused; bool get isMotion;
+ bool get hasInternet; bool get isScreenOn; bool get isMenu; bool get isPaused; bool get isMotion;
 /// Create a copy of ApplicationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +26,21 @@ $ApplicationStateCopyWith<ApplicationState> get copyWith => _$ApplicationStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApplicationState&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenOn, isScreenOn) || other.isScreenOn == isScreenOn)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMotion, isMotion) || other.isMotion == isMotion));
+  final _this = this as ApplicationState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApplicationState&&(identical(other.hasInternet, _this.hasInternet) || other.hasInternet == _this.hasInternet)&&(identical(other.isScreenOn, _this.isScreenOn) || other.isScreenOn == _this.isScreenOn)&&(identical(other.isMenu, _this.isMenu) || other.isMenu == _this.isMenu)&&(identical(other.isPaused, _this.isPaused) || other.isPaused == _this.isPaused)&&(identical(other.isMotion, _this.isMotion) || other.isMotion == _this.isMotion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasInternet,isScreenOn,isMenu,isPaused,isMotion);
+int get hashCode {
+  final _this = this as ApplicationState;
+  return Object.hash(runtimeType,_this.hasInternet,_this.isScreenOn,_this.isMenu,_this.isPaused,_this.isMotion);
+}
 
 @override
 String toString() {
-  return 'ApplicationState(hasInternet: $hasInternet, isScreenOn: $isScreenOn, isMenu: $isMenu, isPaused: $isPaused, isMotion: $isMotion)';
+  final _this = this as ApplicationState;
+  return 'ApplicationState(hasInternet: ${_this.hasInternet}, isScreenOn: ${_this.isScreenOn}, isMenu: ${_this.isMenu}, isPaused: ${_this.isPaused}, isMotion: ${_this.isMotion})';
 }
 
 
@@ -65,7 +69,7 @@ class _$ApplicationStateCopyWithImpl<$Res>
 /// Create a copy of ApplicationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? hasInternet = null,Object? isScreenOn = null,Object? isMenu = null,Object? isPaused = null,Object? isMotion = null,}) {
-  return _then(_self.copyWith(
+  return _then(ApplicationState(
 hasInternet: null == hasInternet ? _self.hasInternet : hasInternet // ignore: cast_nullable_to_non_nullable
 as bool,isScreenOn: null == isScreenOn ? _self.isScreenOn : isScreenOn // ignore: cast_nullable_to_non_nullable
 as bool,isMenu: null == isMenu ? _self.isMenu : isMenu // ignore: cast_nullable_to_non_nullable
@@ -211,9 +215,7 @@ class _ApplicationState implements ApplicationState {
 
 @override@JsonKey() final  bool hasInternet;
 @override@JsonKey() final  bool isScreenOn;
-// @Default(StorageStatusEnum.done) StorageStatusEnum storageStatus,
 @override@JsonKey() final  bool isMenu;
-// @Default(false) bool isInfo,
 @override@JsonKey() final  bool isPaused;
 @override@JsonKey() final  bool isMotion;
 
@@ -227,16 +229,18 @@ _$ApplicationStateCopyWith<_ApplicationState> get copyWith => __$ApplicationStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApplicationState&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenOn, isScreenOn) || other.isScreenOn == isScreenOn)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMotion, isMotion) || other.isMotion == isMotion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApplicationState&&(identical(other.hasInternet, hasInternet) || other.hasInternet == hasInternet)&&(identical(other.isScreenOn, isScreenOn) || other.isScreenOn == isScreenOn)&&(identical(other.isMenu, isMenu) || other.isMenu == isMenu)&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused)&&(identical(other.isMotion, isMotion) || other.isMotion == isMotion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasInternet,isScreenOn,isMenu,isPaused,isMotion);
+int get hashCode {
+    return Object.hash(runtimeType,hasInternet,isScreenOn,isMenu,isPaused,isMotion);
+}
 
 @override
 String toString() {
-  return 'ApplicationState(hasInternet: $hasInternet, isScreenOn: $isScreenOn, isMenu: $isMenu, isPaused: $isPaused, isMotion: $isMotion)';
+    return 'ApplicationState(hasInternet: $hasInternet, isScreenOn: $isScreenOn, isMenu: $isMenu, isPaused: $isPaused, isMotion: $isMotion)';
 }
 
 

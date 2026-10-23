@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'slideshow_event.dart';
@@ -9,6 +9,7 @@ part of 'slideshow_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent()';
+    return 'SlideshowEvent()';
 }
 
 
@@ -227,7 +228,7 @@ class SlideshowInitEvent implements SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowInitEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowInitEvent);
 }
 
 
@@ -236,7 +237,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent.init()';
+    return 'SlideshowEvent.init()';
 }
 
 
@@ -259,7 +260,7 @@ class SlideshowLoadNextEvent implements SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowLoadNextEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowLoadNextEvent);
 }
 
 
@@ -268,7 +269,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent.loadNext()';
+    return 'SlideshowEvent.loadNext()';
 }
 
 
@@ -291,7 +292,7 @@ class SlideshowImageReadyEvent implements SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowImageReadyEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowImageReadyEvent);
 }
 
 
@@ -300,7 +301,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent.imageReady()';
+    return 'SlideshowEvent.imageReady()';
 }
 
 
@@ -323,7 +324,7 @@ class SlideshowTransitionCompleteEvent implements SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTransitionCompleteEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTransitionCompleteEvent);
 }
 
 
@@ -332,7 +333,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent.transitionComplete()';
+    return 'SlideshowEvent.transitionComplete()';
 }
 
 
@@ -355,7 +356,7 @@ class SlideshowTimerCompleteEvent implements SlideshowEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTimerCompleteEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTimerCompleteEvent);
 }
 
 
@@ -364,7 +365,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SlideshowEvent.timerComplete()';
+    return 'SlideshowEvent.timerComplete()';
 }
 
 
@@ -392,16 +393,18 @@ $SlideshowTogglePauseEventCopyWith<SlideshowTogglePauseEvent> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTogglePauseEvent&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowTogglePauseEvent&&(identical(other.isPaused, isPaused) || other.isPaused == isPaused));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isPaused);
+int get hashCode {
+    return Object.hash(runtimeType,isPaused);
+}
 
 @override
 String toString() {
-  return 'SlideshowEvent.togglePause(isPaused: $isPaused)';
+    return 'SlideshowEvent.togglePause(isPaused: $isPaused)';
 }
 
 
@@ -458,16 +461,18 @@ $SlideshowToggleScreenLockEventCopyWith<SlideshowToggleScreenLockEvent> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowToggleScreenLockEvent&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowToggleScreenLockEvent&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLocked);
+int get hashCode {
+    return Object.hash(runtimeType,isLocked);
+}
 
 @override
 String toString() {
-  return 'SlideshowEvent.toggleScreenLock(isLocked: $isLocked)';
+    return 'SlideshowEvent.toggleScreenLock(isLocked: $isLocked)';
 }
 
 
@@ -524,16 +529,18 @@ $SlideshowScreenStatePreparationEventCopyWith<SlideshowScreenStatePreparationEve
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowScreenStatePreparationEvent&&(identical(other.enabled, enabled) || other.enabled == enabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowScreenStatePreparationEvent&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,enabled);
+int get hashCode {
+    return Object.hash(runtimeType,enabled);
+}
 
 @override
 String toString() {
-  return 'SlideshowEvent.screenStatePreparation(enabled: $enabled)';
+    return 'SlideshowEvent.screenStatePreparation(enabled: $enabled)';
 }
 
 

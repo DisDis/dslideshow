@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'echo.dart';
@@ -9,6 +9,7 @@ part of 'echo.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $EchoCommandCopyWith<EchoCommand> get copyWith => _$EchoCommandCopyWithImpl<Echo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EchoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.type, type) || other.type == type));
+  final _this = this as EchoCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EchoCommand&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,type);
+int get hashCode {
+  final _this = this as EchoCommand;
+  return Object.hash(runtimeType,_this.id,_this.text,_this.type);
+}
 
 @override
 String toString() {
-  return 'EchoCommand(id: $id, text: $text, type: $type)';
+  final _this = this as EchoCommand;
+  return 'EchoCommand(id: ${_this.id}, text: ${_this.text}, type: ${_this.type})';
 }
 
 
@@ -66,7 +72,7 @@ class _$EchoCommandCopyWithImpl<$Res>
 /// Create a copy of EchoCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = freezed,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(EchoCommand(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EchoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EchoCommand&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.type, type) || other.type == type));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,type);
+int get hashCode {
+    return Object.hash(runtimeType,id,text,type);
+}
 
 @override
 String toString() {
-  return 'EchoCommand(id: $id, text: $text, type: $type)';
+    return 'EchoCommand(id: $id, text: $text, type: $type)';
 }
 
 
@@ -291,16 +299,21 @@ $EchoCommandResultCopyWith<EchoCommandResult> get copyWith => _$EchoCommandResul
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EchoCommandResult&&(identical(other.id, id) || other.id == id)&&(identical(other.resultText, resultText) || other.resultText == resultText));
+  final _this = this as EchoCommandResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EchoCommandResult&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.resultText, _this.resultText) || other.resultText == _this.resultText));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,resultText);
+int get hashCode {
+  final _this = this as EchoCommandResult;
+  return Object.hash(runtimeType,_this.id,_this.resultText);
+}
 
 @override
 String toString() {
-  return 'EchoCommandResult(id: $id, resultText: $resultText)';
+  final _this = this as EchoCommandResult;
+  return 'EchoCommandResult(id: ${_this.id}, resultText: ${_this.resultText})';
 }
 
 
@@ -329,7 +342,7 @@ class _$EchoCommandResultCopyWithImpl<$Res>
 /// Create a copy of EchoCommandResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? resultText = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(EchoCommandResult(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,resultText: freezed == resultText ? _self.resultText : resultText // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -492,16 +505,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EchoCommandResult&&(identical(other.id, id) || other.id == id)&&(identical(other.resultText, resultText) || other.resultText == resultText));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EchoCommandResult&&(identical(other.id, id) || other.id == id)&&(identical(other.resultText, resultText) || other.resultText == resultText));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,resultText);
+int get hashCode {
+    return Object.hash(runtimeType,id,resultText);
+}
 
 @override
 String toString() {
-  return 'EchoCommandResult(id: $id, resultText: $resultText)';
+    return 'EchoCommandResult(id: $id, resultText: $resultText)';
 }
 
 
