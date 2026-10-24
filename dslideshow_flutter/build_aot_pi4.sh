@@ -5,7 +5,7 @@ OUTPUT_KERNEL_D=./build/kernel_snapshot.d
 OUTPUT_SO=./build/flutter_assets/app.so
 APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
 BUILD_PROFILE=release_64
-ENGINE_BINARIES=../deb_factory/source_arm64/engine-binaries
+#ENGINE_BINARIES=../deb_factory/source_arm64/engine-binaries
 
 
 error_exit()
@@ -14,11 +14,11 @@ error_exit()
     exit 1
 }
 
-echo "----------- README -----------"
-echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"
-echo "git clone --depth 1 --branch engine-binaries https://github.com/ardera/flutter-pi.git flutter_engine_binaries"
+#echo "----------- README -----------"
+#echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"
+#echo "git clone --depth 1 --branch engine-binaries https://github.com/ardera/flutter-pi.git flutter_engine_binaries"
 
-echo "------------------------"
+#echo "------------------------"
 
 # CMD="$FLUTTER_PATH/bin/cache/dart-sdk/bin/dart \
 #   $FLUTTER_PATH/bin/cache/dart-sdk/bin/snapshots/frontend_server.dart.snapshot \
