@@ -2,10 +2,15 @@
 
 Отдельное Flutter-приложение с path-зависимостью от `../dslideshow_flutter`.
 В основном приложении нет точки входа, телеметрии или переключателей для бенчмарков.
-Экран, мышь, клавиатура и действия пользователя для прогона не нужны.
+Мышь, клавиатура и действия пользователя для прогона не нужны.
+Аппаратные прогоны используют подключённый дисплей 2560×1600.
 При запуске тесты начинаются автоматически, отчёты записываются на диск,
 приложение завершает процесс. SSH-скрипт последовательно запускает **OpenGL и Vulkan**
 и упаковывает оба результата, включая нативные логи и результаты аварийного запуска.
+
+Пошаговое [руководство для RaPi5](../doc/raspberry-pi-benchmarks.md) содержит
+актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
+с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
 ## Сборка на рабочей машине
 
@@ -29,19 +34,22 @@ cd benchmarks
 
 ## Перенос и запуск через SSH
 
+Устройство: `pi@192.168.50.143`, каталог `/home/pi/workspace/benchmarks`.
+Ниже переносится распакованный пакет с рабочей машины; `XXXXXXXX` замените
+на суффикс конкретной сборки. Предыдущий benchmark должен быть завершён.
+
 ```bash
-rsync -av --partial --append-verify -e 'ssh -o ConnectTimeout=120 -o ServerAliveInterval=30 -o ServerAliveCountMax=10' build/benchmarks-pi5-release-XXXXXXXX.tar.gz pi@raspberrypi:/home/pi/
-ssh -o ConnectTimeout=120 -o ServerAliveInterval=30 -o ServerAliveCountMax=10 pi@raspberrypi
-mkdir -p /home/pi/benchmarks
-tar -xzf /home/pi/benchmarks-pi5-release-XXXXXXXX.tar.gz -C /home/pi/benchmarks
-cd /home/pi/benchmarks
-./run.sh --suite smoke
-./run.sh --suite standard
+rsync -a --checksum --partial --timeout=600 \
+  -e 'ssh -o BatchMode=yes -o ConnectTimeout=120 -o ServerAliveInterval=30 -o ServerAliveCountMax=10' \
+  build/package/benchmarks-pi5-release-XXXXXXXX/ \
+  pi@192.168.50.143:/home/pi/workspace/benchmarks/
 ```
 
-Перед запуском освободите DRM-вывод, остановив обычный slideshow привычным способом.
-На устройстве с сервисом фоторамки: `sudo service dslideshow stop`.
-После завершения: `sudo service dslideshow start`.
+Перед запуском освободите DRM-вывод: `sudo -n service dslideshow stop`.
+После завершения или ошибки восстановите `sudo -n service dslideshow start`.
+Для запуска используйте supervisor и команды из
+[руководства](../doc/raspberry-pi-benchmarks.md#3-запуск-независимый-от-ssh-с-восстановлением-фоторамки):
+они продолжают работу после обрыва SSH и восстанавливают службу.
 Скрипт не меняет сервисы, прошивку, частоты, governor или настройки системы.
 По умолчанию используется `/opt/dslideshow/flutter-pi`; путь можно передать:
 
@@ -57,21 +65,15 @@ cd /home/pi/benchmarks
 OpenGL запускается без `--vulkan`, Vulkan — с этим флагом; launcher не меняет
 запрошенный renderer. Внутренние fallback native runtime отдельно не проверяются.
 
-Длительный запуск без активного SSH:
-
-```bash
-nohup ./run.sh --suite soak > launcher.log 2>&1 < /dev/null &
-tail -f launcher.log
-```
-
-Один процесс `soak` работает 24 часа, включая первый полный проход; затем повторяет
-матрицу до окончания времени. Два renderer по умолчанию займут около **48 часов**.
-Для одного renderer или короткой проверки:
+24-часовой `soak` сейчас **отложен пользователем, не запускается**.
+При будущей отдельной приёмке один renderer по умолчанию работает 24 часа,
+два последовательно — около 48 часов. Для обычных проверок выбирайте smoke,
+визуальный набор или standard. Аргументы для одного renderer (передаются
+supervisor вместо аргументов визуального набора):
 
 ```bash
 ./run.sh --suite standard --renderers opengl
 ./run.sh --suite standard --renderers vulkan
-BENCHMARK_SOAK_SECONDS=3600 ./run.sh --suite soak
 ```
 
 Видео Vulkan по умолчанию выключено. Для явной проверки будущего runtime:
@@ -115,8 +117,11 @@ TERM/INT позволяют завершить текущий тест и сох
 последний активный случай отмечается как нативный сбой. Замеры сохраняются до
 освобождения плееров, поэтому падение при cleanup не уничтожает уже полученные данные.
 Каждая попытка хранится в `opengl/attempt-001/`, `vulkan/attempt-001/` и т. д.
-Поле `all_cases_attempted` показывает охват, `native_crashes` — число падений;
-нативные ошибки сохраняют `complete=false`, даже если оставшиеся случаи проверены.
+Поле `all_supported_cases_attempted` показывает охват поддерживаемых случаев,
+`all_cases_accounted_for` учитывает также допустимые `unsupported`;
+`all_cases_attempted` может быть false при пропуске видео Vulkan.
+`native_crashes` — число падений; нативные ошибки сохраняют `complete=false`,
+даже если оставшиеся случаи проверены.
 При ошибке до начала первого случая повтор прекращается, чтобы не зациклить старт.
 В soak нативное падение прерывает длительный прогон данного renderer и не маскируется перезапуском.
 
@@ -185,7 +190,9 @@ BENCHMARK_MEDIA_DIR=/home/pi/benchmark-originals ./run.sh --suite standard
 Скопировать архив обратно:
 
 ```bash
-rsync -av --partial --append-verify -e 'ssh -o ConnectTimeout=120 -o ServerAliveInterval=30 -o ServerAliveCountMax=10' pi@raspberrypi:/home/pi/benchmarks/reports/ИМЯ.tar.gz ./
+rsync -a --partial --append-verify --timeout=600 \
+  -e 'ssh -o BatchMode=yes -o ConnectTimeout=120 -o ServerAliveInterval=30 -o ServerAliveCountMax=10' \
+  pi@192.168.50.143:/home/pi/workspace/benchmarks/reports/ИМЯ.tar.gz ./
 ```
 
 Необходим Python 3 стандартной поставки Raspberry Pi OS, Bash, coreutils, `flock`, `tar`.

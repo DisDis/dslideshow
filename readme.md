@@ -26,7 +26,10 @@ More [info](https://github.com/DisDis/article-dslideshow)
 
 # Разработка
 
+* [Инструкции для агентов и карта проекта](AGENTS.md)
 * [Сборка Linux/Raspberry Pi и устранение ошибки GTK](dslideshow_flutter/README.md)
+* [Запуск бенчмарков и регрессионных проверок на RaPi5](doc/raspberry-pi-benchmarks.md)
+* [Версии, changelog и выпуск DEB](doc/releasing.md)
 * [Анализ проекта и предложения по улучшению](doc/project-review-2026-10.md)
 
 # TODO:

@@ -1,0 +1,78 @@
+# Версии и выпуск DEB
+
+Финальный пакет фоторамки собирается **через `deb_factory/build.sh`**.
+Это отдельная операция от сборки `benchmarks/build_aot_pi5.sh`: стенд не выпускает
+прошивку и не должен менять номера production-пакетов.
+
+## Источники версии
+
+* `backend/pubspec.yaml` и `dslideshow_flutter/pubspec.yaml` — синхронные версии
+  backend и frontend, включая build-суффикс `+N`.
+* `common/lib/version.dart.template` → `common/lib/version.dart` —
+  `ApplicationInfo`, используемый интерфейсом, HTTP/MQTT и OTA.
+* `dslideshow_flutter/autover.yaml` — конфиг генерации во время сборки DEB.
+* `deb_factory/template_build_arm64/DEBIAN/control.template` и
+  `opt/dslideshow/version.template` — шаблоны метаданных DEB и установленной версии;
+  в них остаются `_FRONT_`/`_BACK_`, а не конкретные номера.
+* `changelog.md` в корне — описание пользовательских изменений и исправлений.
+
+`deb_factory/build.sh` копирует шаблон пакета, затем из `dslideshow_flutter/`
+вызывает `autover` с `-v build --apply true`: **увеличивает build-номер обоих
+пакетов**, генерирует `ApplicationInfo`, DEB control и файл `version`. Далее
+собирает AOT, веб-панель и DEB. Сейчас production AOT настроен на arm64/CPU pi4.
+Например, исходные `9.6.0+3` станут `9.6.0+4` при следующей сборке этим скриптом.
+Даже неуспешная сборка могла уже увеличить номера — проверьте diff перед повтором.
+
+## Подготовка без выпуска
+
+Новые изменения записывайте наверху `changelog.md` в раздел **`Unreleased`**.
+Изменение номера в pubspec само по себе ещё не означает состоявшийся релиз.
+Если требуется изменить версию, держите backend/frontend равными и обновляйте
+связанные файлы. Для генерации только `ApplicationInfo` из текущих pubspec,
+**без увеличения номера** и без сборки DEB:
+
+```bash
+cd autover
+dart pub get
+dart run bin/main.dart -c autover.yaml -v none --apply true
+```
+
+После этого обновите метаданные path-зависимостей через `pub get` в использующих
+их пакетах: `backend`, `dslideshow_flutter`, `config_app`, `benchmarks`.
+Используйте согласованные SDK/lock-файлы; `pub upgrade` ради изменения номера
+не нужен. Не редактируйте `benchmarks/assets/build-info.json` и старые отчёты
+задним числом: они описывают уже собранные артефакты.
+
+## Выпуск
+
+После проверок затронутого кода и, для потенциально влияющих на производительность
+изменений, [аппаратного A/B](raspberry-pi-benchmarks.md):
+
+```bash
+cd deb_factory
+./build.sh
+```
+
+Скрипт требует подготовленный `source_arm64`, включая предназначенный для DEB
+native binary, и инструменты из [README упаковки](../deb_factory/readme.md).
+Наличие экспериментальной сборки flutter-pi на RaPi5 не является основанием
+включать её в DEB. Изменение рабочего native runtime сейчас отложено пользователем.
+
+По точному имени созданного файла выполните:
+
+```bash
+dpkg-deb -f ./dslideshow-ВЕРСИЯ-arm64-pi4.deb Package Version Architecture Description
+cat dslideshow_arm64/opt/dslideshow/version
+```
+
+Сверьте фактическую версию DEB с обоими pubspec, `common/lib/version.dart` и
+сгенерированным `dslideshow_arm64/DEBIAN/control`. Затем:
+
+1. В `changelog.md` замените `Unreleased` с накопленными изменениями на
+   **реальную версию полученного выпуска и дату**.
+2. Добавьте сверху новый пустой раздел `Unreleased` для дальнейшей работы.
+3. Обновите lock-файлы локальных path-зависимостей под полученные номера,
+   проверьте diff и запишите результаты приёмки/ссылки на аппаратные отчёты.
+
+Не выдавайте изменение changelog или локальную сборку за установку пакета
+на фоторамку. Установка DEB и выпуск в канал OTA — отдельные действия.

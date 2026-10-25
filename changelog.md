@@ -1,3 +1,20 @@
+# Unreleased
+
+* Update Flutter/Dart dependencies and Linux desktop build support, including
+  GTK dependency checks and the Snap VS Code environment fix.
+* Improve image/video resource handling and transition rendering; preserve
+  FixedAnimationController behaviour, original image quality and dense mosaic grids.
+* Correct Cube, Tablet, Flip and Zoom Out transforms for the 2560×1600 display.
+* Add the standalone automatic Raspberry Pi benchmark app with OpenGL/Vulkan
+  suites, large media fixtures, telemetry, visual audits and portable reports.
+* Skip unsupported Vulkan video by default, with an explicit opt-in for future
+  runtimes. Preserve native crash and cleanup errors in aggregated reports.
+* Document RaPi5 deployment, unattended test runs, flutter-pi source locations,
+  performance validation, agent workflow and DEB release/version handling.
+* Synchronize backend/frontend development versions to 9.6.0+3. Native OpenGL
+  video-to-video crashes remain under investigation; flutter-pi changes,
+  device firmware updates and the 24-hour soak test are deferred.
+
 # 9.5.3+2
 Fix QRCode in Config and OTA pages
 

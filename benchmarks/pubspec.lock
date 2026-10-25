@@ -222,7 +222,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "9.6.0+2"
+    version: "9.6.0+3"
   dslideshow_common:
     dependency: transitive
     description:
@@ -236,7 +236,7 @@ packages:
       path: "../dslideshow_flutter"
       relative: true
     source: path
-    version: "9.6.0+2"
+    version: "9.6.0+3"
   duration:
     dependency: transitive
     description:
