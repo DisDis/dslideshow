@@ -1,0 +1,11 @@
+{
+  "suite": "smoke",
+  "effects": ["Baseline", "Mosaic", "MosaicFade"],
+  "media_cases": ["photo-video", "video-photo"],
+  "grids": [100, 200],
+  "backends": ["canvas"],
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false
+}

@@ -13,7 +13,9 @@ Future<ui.FragmentProgram> loadMosaicProgram() =>
     _program ??= ui.FragmentProgram.fromAsset(mosaicShaderAsset);
 
 /// A compositing mask, including Texture/RepaintBoundary descendants.
-/// Canvas fallback batches all cells into one atlas draw on a grid-sized image.
+/// Canvas groups cells with identical alpha into point draws on a grid-sized
+/// image. Sorting the immutable schedule keeps per-frame lookup independent of
+/// the number of cells except for binary searches (at most 256 alpha groups).
 class MosaicMask extends SingleChildRenderObjectWidget {
   final MosaicSchedule schedule;
   final double progress;
@@ -51,26 +53,43 @@ class _RenderMosaicMask extends RenderProxyBox {
   ui.Shader? _shader;
   Size? _shaderSize;
   bool _dirty = true;
-  late Float32List _transforms;
-  late Float32List _rects;
-  late Int32List _colors;
+  List<int> _sortedCells = const [];
+  Float32List _points = Float32List(0);
 
   _RenderMosaicMask(this._schedule, this._progress, this._program) {
     _geometry();
   }
 
   void _geometry() {
-    final count = _schedule.startTimes.length;
-    _transforms = Float32List(count * 4);
-    _rects = Float32List(count * 4);
-    _colors = Int32List(count);
-    for (var i = 0; i < count; i++) {
-      _transforms[i * 4] = 1;
-      _transforms[i * 4 + 2] = (i % _schedule.gridSize).toDouble();
-      _transforms[i * 4 + 3] = (i ~/ _schedule.gridSize).toDouble();
-      _rects[i * 4 + 2] = 1;
-      _rects[i * 4 + 3] = 1;
+    if (_program != null) {
+      _sortedCells = const [];
+      _points = Float32List(0);
+      return;
     }
+    final starts = _schedule.startTimes;
+    _sortedCells = _schedule.prepareCanvasOrder();
+    _points = Float32List(starts.length * 2);
+    for (var i = 0; i < _sortedCells.length; i++) {
+      final cell = _sortedCells[i];
+      _points[i * 2] = cell % _schedule.gridSize + .5;
+      _points[i * 2 + 1] = (cell ~/ _schedule.gridSize) + .5;
+    }
+  }
+
+  // alphaAt is monotone in the sorted start times. Use the original function,
+  // including its rounding/tie rules, instead of quantizing either progress or
+  // the schedule. Reverse progress and duplicate thresholds work identically.
+  int _afterAlpha(int alpha, int low) {
+    var high = _sortedCells.length;
+    while (low < high) {
+      final middle = (low + high) >> 1;
+      if (_schedule.alphaAt(_sortedCells[middle], _progress) <= alpha) {
+        low = middle + 1;
+      } else {
+        high = middle;
+      }
+    }
+    return low;
   }
 
   void update(
@@ -111,20 +130,25 @@ class _RenderMosaicMask extends RenderProxyBox {
   }
 
   ui.Shader _canvasMask() {
-    _white ??= _whitePixel();
-    for (var i = 0; i < _colors.length; i++) {
-      _colors[i] = (_schedule.alphaAt(i, _progress) << 24) | 0xffffff;
-    }
     final recorder = ui.PictureRecorder();
-    Canvas(recorder).drawRawAtlas(
-      _white!,
-      _transforms,
-      _rects,
-      _colors,
-      BlendMode.modulate,
-      null,
-      Paint()..filterQuality = FilterQuality.none,
-    );
+    final canvas = Canvas(recorder);
+    final paint = Paint()
+      ..isAntiAlias = false
+      ..strokeWidth = 1;
+    var first = _afterAlpha(0, 0); // Transparent cells require no draw.
+    while (first < _sortedCells.length) {
+      final alpha = _schedule.alphaAt(_sortedCells[first], _progress);
+      final end = alpha == 255
+          ? _sortedCells.length
+          : _afterAlpha(alpha, first + 1);
+      paint.color = Color((alpha << 24) | 0xffffff);
+      canvas.drawRawPoints(
+        ui.PointMode.points,
+        Float32List.sublistView(_points, first * 2, end * 2),
+        paint,
+      );
+      first = end;
+    }
     final picture = recorder.endRecording();
     final old = _mask;
     try {
@@ -153,8 +177,17 @@ class _RenderMosaicMask extends RenderProxyBox {
     if (_thresholds == null) {
       final recorder = ui.PictureRecorder();
       final bytes = _schedule.encodeThresholds();
-      for (var i = 0; i < _schedule.startTimes.length; i++) {
-        _colors[i] =
+      final count = _schedule.startTimes.length;
+      final transforms = Float32List(count * 4);
+      final rects = Float32List(count * 4);
+      final colors = Int32List(count);
+      for (var i = 0; i < count; i++) {
+        transforms[i * 4] = 1;
+        transforms[i * 4 + 2] = (i % _schedule.gridSize).toDouble();
+        transforms[i * 4 + 3] = (i ~/ _schedule.gridSize).toDouble();
+        rects[i * 4 + 2] = 1;
+        rects[i * 4 + 3] = 1;
+        colors[i] =
             0xff000000 |
             (bytes[i * 4] << 16) |
             (bytes[i * 4 + 1] << 8) |
@@ -163,9 +196,9 @@ class _RenderMosaicMask extends RenderProxyBox {
       _white ??= _whitePixel();
       Canvas(recorder).drawRawAtlas(
         _white!,
-        _transforms,
-        _rects,
-        _colors,
+        transforms,
+        rects,
+        colors,
         BlendMode.modulate,
         null,
         Paint()..filterQuality = FilterQuality.none,

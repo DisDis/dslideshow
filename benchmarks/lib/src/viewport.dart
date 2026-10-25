@@ -17,6 +17,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'config.dart';
 import 'blur_probes.dart';
+import 'mosaic_probes.dart';
 import 'driver.dart';
 import 'media.dart';
 import 'metrics.dart';
@@ -186,11 +187,18 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
 
     final from = await load(test.media.from);
     final to = await load(test.media.to);
-    _effect = test.effect?.createEffect(
-      seed: widget.config.seed,
-      mosaicGridSize: test.grid,
-      mosaicBackend: test.backend,
-    );
+    _effect = test.mosaicProbe != null
+        ? MosaicProbeEffect(
+            test.mosaicProbe!,
+            grid: test.grid,
+            binary: test.effect == Effect.mosaicEffect,
+            seed: widget.config.seed,
+          )
+        : test.effect?.createEffect(
+            seed: widget.config.seed,
+            mosaicGridSize: test.grid,
+            mosaicBackend: test.backend,
+          );
     final effectWatch = Stopwatch()..start();
     await _effect?.prepare();
     effectWatch.stop();
@@ -491,11 +499,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       }
     }
 
-    if (_videos.isNotEmpty ||
-        test.media.name != 'photo-photo' ||
-        test.injectStall ||
-        test.effect?.isMosaic == true &&
-            test.grid != widget.config.grids.first) {
+    if (_videos.isNotEmpty || !test.supportsCapture(widget.config)) {
       return [];
     }
     if (!mounted) throw StateError('Viewport detached');

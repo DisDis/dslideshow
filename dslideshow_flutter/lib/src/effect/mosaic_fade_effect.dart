@@ -31,7 +31,11 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
 
   @override
   Future<void> prepare() async {
-    if (backend == MosaicBackend.shader) _program = await loadMosaicProgram();
+    if (backend == MosaicBackend.shader) {
+      _program = await loadMosaicProgram();
+    } else {
+      schedule.prepareCanvasOrder();
+    }
   }
 
   @override

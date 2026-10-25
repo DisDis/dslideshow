@@ -1,5 +1,10 @@
 # Unreleased
 
+* Reduce Canvas Mosaic/MosaicFade mask work by sorting thresholds during
+  preparation and drawing exact alpha groups as points. Preserve dense grids,
+  cell boundaries, original schedules and FixedAnimationController behaviour.
+* Add opt-in mosaic drawing probes and focused RaPi5 OpenGL photo/GIF/video
+  suites; audit every selected grid with full-resolution RGBA fingerprints.
 * Add an explicit, cancellable fadingIn screen phase after hardware wake and
   fade-out reversal. Preserve manual sleep priority and the original reveal
   deadline across brief presence changes; initialize sleeping renderers black.

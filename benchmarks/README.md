@@ -13,6 +13,16 @@
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
 с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
+## Диагностика Mosaic / MosaicFade
+
+[Исследование Canvas-маски на RaPi5](../doc/mosaic-optimization-2026-10.md)
+описывает `mosaic-diagnostics.json`, `mosaic-confirm.json`, `mosaic-visual.json`,
+`mosaic-media.json`, `mosaic-video.json` и `mosaic-video-confirm.json`. Пробы `MosaicProbe-points-*` и
+`MosaicProbe-vertices-*` включаются только явно; обычные smoke/standard их
+не запускают. Сетки 100/150/200 сохраняются. В visual audit проверяются
+**все выбранные сетки**, с SHA-256 полного кадра 2560×1600 в каждой позиции.
+Обычные captures 0/50/100% сохраняют только первую сетку.
+
 ## Диагностика BlurFade
 
 Точечные сценарии `blur-diagnostics.json`, `blur-confirm.json`,

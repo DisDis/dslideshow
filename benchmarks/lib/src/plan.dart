@@ -2,6 +2,7 @@ import 'package:dslideshow_flutter/effect.dart';
 
 import 'config.dart';
 import 'blur_probes.dart';
+import 'mosaic_probes.dart';
 
 class MediaPair {
   final String name;
@@ -28,6 +29,7 @@ class BenchmarkCase {
   final MosaicBackend backend;
   final bool injectStall;
   final BlurFadeProbe? blurProbe;
+  final MosaicProbe? mosaicProbe;
   const BenchmarkCase(
     this.effect,
     this.media, {
@@ -35,13 +37,26 @@ class BenchmarkCase {
     this.backend = MosaicBackend.canvas,
     this.injectStall = false,
     this.blurProbe,
+    this.mosaicProbe,
   });
 
-  String get name => blurProbe?.effectName ?? effect?.name ?? 'Baseline';
+  String get name =>
+      mosaicProbe?.effectName(effect!) ??
+      blurProbe?.effectName ??
+      effect?.name ??
+      'Baseline';
   String get id =>
       '${name.replaceAll(' ', '_')}--${media.name}'
       '${effect?.isMosaic == true ? '--$grid--${backend.name}' : ''}'
       '${injectStall ? '--stall80ms' : ''}';
+
+  bool supportsCapture(BenchmarkConfig config) =>
+      !media.hasVideo &&
+      media.name == 'photo-photo' &&
+      !injectStall &&
+      (effect?.isMosaic != true ||
+          config.visualAudit ||
+          grid == config.grids.first);
   Map<String, Object?> toJson() => {
     'id': id,
     'effect': name,
@@ -52,12 +67,18 @@ class BenchmarkCase {
     'backend': effect?.isMosaic == true ? backend.name : null,
     'injected_stall_ms': injectStall ? 80 : 0,
     if (blurProbe != null) 'blur_probe': blurProbe!.name,
+    if (mosaicProbe != null) 'mosaic_probe': mosaicProbe!.name,
   };
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   final names = Effect.values.map((e) => e.name).toSet()..add('Baseline');
   names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
+  for (final probe in MosaicProbe.values) {
+    for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
+      names.add(probe.effectName(effect));
+    }
+  }
   for (final name in config.effects ?? <String>[]) {
     if (!names.contains(name)) throw ArgumentError('Unknown effect: $name');
   }
@@ -76,6 +97,18 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
         config.effects!.contains(e?.name ?? 'Baseline'),
   );
   for (final pair in pairs) {
+    for (final probe in MosaicProbe.values) {
+      for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
+        if (config.effects?.contains(probe.effectName(effect)) != true) {
+          continue;
+        }
+        for (final grid in config.grids.toSet()) {
+          result.add(
+            BenchmarkCase(effect, pair, grid: grid, mosaicProbe: probe),
+          );
+        }
+      }
+    }
     for (final probe in BlurFadeProbe.values) {
       if (config.effects?.contains(probe.effectName) == true &&
           probe.supports(pair.from, pair.to)) {

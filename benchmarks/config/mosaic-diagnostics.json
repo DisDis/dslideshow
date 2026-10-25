@@ -1,0 +1,11 @@
+{
+  "suite": "smoke",
+  "effects": ["Baseline", "Mosaic", "MosaicFade", "MosaicProbe-vertices-Mosaic", "MosaicProbe-vertices-MosaicFade", "MosaicProbe-points-Mosaic", "MosaicProbe-points-MosaicFade"],
+  "media_cases": ["photo-photo"],
+  "grids": [100, 150, 200],
+  "backends": ["canvas", "shader"],
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false
+}

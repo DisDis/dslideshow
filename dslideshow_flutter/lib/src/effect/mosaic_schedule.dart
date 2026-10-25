@@ -12,6 +12,14 @@ class MosaicSchedule {
   final int gridSize;
   final double fadeFraction;
   final List<double> startTimes;
+  late final List<int> _canvasOrder = List.unmodifiable(
+    List.generate(startTimes.length, (i) => i)
+      ..sort((a, b) => startTimes[a].compareTo(startTimes[b])),
+  );
+
+  /// Reused by Canvas masks; callers can warm the order before animation starts.
+  /// Shader masks need no sorted CPU data and leave it unallocated.
+  List<int> prepareCanvasOrder() => _canvasOrder;
 
   MosaicSchedule({
     int gridSize = 100,
