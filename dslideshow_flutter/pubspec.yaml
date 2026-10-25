@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 10.0.0+5
+version: 10.1.0+1
 publish_to: none
 
 environment:
@@ -55,3 +55,5 @@ flutter:
   uses-material-design: true
   shaders:
     - packages/dslideshow_flutter/src/effect/shaders/mosaic_mask.frag
+    - packages/dslideshow_flutter/src/effect/shaders/procedural_reveal.frag
+    - packages/dslideshow_flutter/src/effect/shaders/water_refraction.frag

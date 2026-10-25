@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'directional_slide_effect.dart';
 import 'fade_through_color_effect.dart';
 import 'reveal_effect.dart';
+import 'procedural_reveal_effect.dart';
+import 'water_refraction_effect.dart';
+import 'transition_media.dart';
+export 'transition_media.dart';
 
 import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
 import 'package:dslideshow_flutter/src/effect/background_to_foreground_effect.dart';
@@ -31,6 +35,18 @@ import 'mosaic_transition_effect.dart';
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
 class Effect {
+  static const Effect noiseDissolveEffect = Effect._(
+    'Noise Dissolve',
+    _createNoiseDissolve,
+  );
+  static const Effect rippleRevealEffect = Effect._(
+    'Ripple Reveal',
+    _createRippleReveal,
+  );
+  static const Effect waterRefractionEffect = Effect._(
+    'Water Refraction',
+    _createWaterRefraction,
+  );
   static const Effect cubeEffect = Effect._('Cube', _createCubeEffect);
   static const Effect accordionEffect = Effect._(
     'Accordion',
@@ -178,6 +194,9 @@ class Effect {
   );
 
   static const Iterable<Effect> values = [
+    noiseDissolveEffect,
+    rippleRevealEffect,
+    waterRefractionEffect,
     cubeEffect,
     accordionEffect,
     backgroundToForegroundEffect,
@@ -252,11 +271,21 @@ class Effect {
       this == mosaicBLFadeEffect ||
       this == mosaicBRFadeEffect;
 
+  bool supportsMedia(TransitionMedia from, TransitionMedia to) =>
+      this != waterRefractionEffect ||
+      (from == TransitionMedia.photo && to == TransitionMedia.photo);
+
   MediaSliderItemEffect createEffect({
     int? seed,
     int mosaicGridSize = 100,
     MosaicBackend mosaicBackend = MosaicBackend.canvas,
   }) {
+    if (this == noiseDissolveEffect) {
+      return ProceduralRevealEffect(
+        ProceduralRevealKind.noiseDissolve,
+        seed: seed,
+      );
+    }
     if (!isMosaic) return _implementor();
     if (this == mosaicEffect) {
       return MosaicTransitionEffect(
@@ -286,6 +315,12 @@ class Effect {
   String toString() => name;
 
   static MediaSliderItemEffect _createAccordionEffect() => AccordionEffect();
+  static MediaSliderItemEffect _createNoiseDissolve() =>
+      ProceduralRevealEffect(ProceduralRevealKind.noiseDissolve);
+  static MediaSliderItemEffect _createRippleReveal() =>
+      ProceduralRevealEffect(ProceduralRevealKind.rippleReveal);
+  static MediaSliderItemEffect _createWaterRefraction() =>
+      WaterRefractionEffect();
   static MediaSliderItemEffect _createBackgroundToForegroundEffect() =>
       BackgroundToForegroundEffect();
   static MediaSliderItemEffect _createCubeEffect() => CubeEffect();

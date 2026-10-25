@@ -24,6 +24,9 @@ import 'metrics.dart';
 import 'plan.dart';
 import 'telemetry.dart';
 import 'visual_audit.dart';
+import 'photo_motion_probe.dart';
+
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart';
 
 class BenchmarkViewport extends StatefulWidget {
   final BenchmarkConfig config;
@@ -158,9 +161,19 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         view = VideoWidget(item, session: session);
         videoViews.add((name, session, view));
       } else {
-        final image = ImageWidget(item, slideshow, size, pixelRatio: ratio);
+        final image = ImageWidget(
+          item,
+          slideshow,
+          size,
+          pixelRatio:
+              ratio * (test.photoMotion ? PhotoMotionPath.preparationScale : 1),
+        );
         _images.add(image);
         await image.precache(context);
+        videoInfo = {
+          'prepared_width': image.preparedBitmap?.width,
+          'prepared_height': image.preparedBitmap?.height,
+        };
         view = image;
       }
       if (generation != _generation || !mounted) {
@@ -187,7 +200,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
 
     final from = await load(test.media.from);
     final to = await load(test.media.to);
-    _effect = test.compositionProbe != null
+    _effect = test.photoMotion
+        ? PhotoMotionProbe()
+        : test.compositionProbe != null
         ? test.compositionProbe!.createEffect()
         : test.mosaicProbe != null
         ? MosaicProbeEffect(
@@ -203,6 +218,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
           );
     final effectWatch = Stopwatch()..start();
     await _effect?.prepare();
+    if (_effect case WaterRefractionEffect water) {
+      water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
+    }
     effectWatch.stop();
     if (generation != _generation) throw StateError('Preparation cancelled');
     _from = from;
@@ -628,7 +646,8 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         frames,
         from,
         to,
-        baseline: test.effect == null,
+        baseline: test.effect == null && !test.photoMotion,
+        photoMotion: test.photoMotion,
       );
       final relative = 'audit/${test.id}.json';
       await File('${widget.reportDirectory.path}/$relative').writeAsString(

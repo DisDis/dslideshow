@@ -54,7 +54,7 @@ ClockScreenOptions _$ClockScreenOptionsFromJson(Map<String, dynamic> json) =>
           ) ??
           ClockDateFormat.dayMonthYear,
       timeFontSizePercent: json['timeFontSizePercent'] == null
-          ? 20
+          ? 50
           : _parseTimeSize(json['timeFontSizePercent']),
       dateFontSizePercent: json['dateFontSizePercent'] == null
           ? 5

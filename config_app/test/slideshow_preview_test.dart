@@ -65,4 +65,82 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     },
   );
+  testWidgets(
+    'preview renders both waves, camera and safely discards rapid selections',
+    (tester) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
+      final picture = recorder.endRecording();
+      final bitmap = (await tester.runAsync(() => picture.toImage(160, 100)))!;
+      final data = (await tester.runAsync(
+        () => bitmap.toByteData(format: ui.ImageByteFormat.png),
+      ))!;
+      final image = MemoryImage(Uint8List.fromList(data.buffer.asUint8List()));
+      bitmap.dispose();
+      picture.dispose();
+      final config = SlideShowConfig.fromJson({
+        'transitionTimeMs': 100,
+        'displayTimeMs': 5000,
+        'photoMotion': {'mode': 'kenBurns'},
+      });
+      final key = GlobalKey<SlideshowPreviewState>();
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          home: Scaffold(
+            body: SizedBox(
+              height: 500,
+              child: SlideshowPreview(
+                key: key,
+                config: config,
+                images: [image],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.runAsync(() => precacheImage(image, key.currentContext!));
+      Future<void> advance() async {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        for (var i = 0; i < 25; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+      }
+
+      await advance();
+      key.currentState!.onChanged(Effect.rippleRevealEffect);
+      await advance();
+      key.currentState!.onChanged(Effect.waterRefractionEffect);
+      await advance();
+      expect(find.textContaining('requires two static photos'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('preview-video-url')))
+            .enabled,
+        isFalse,
+      );
+      expect(find.byType(RawImage), findsWidgets);
+      tester.widget<DropdownButton<double>>(
+        find.byKey(const ValueKey('preview-aspect')),
+      ).onChanged!(1.0);
+      await tester.pump();
+      await advance();
+      expect(tester.takeException(), isNull);
+      key.currentState!.onChanged(Effect.noiseDissolveEffect);
+      key.currentState!.onChanged(Effect.waterRefractionEffect);
+      await tester.pumpWidget(const SizedBox());
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 30)),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

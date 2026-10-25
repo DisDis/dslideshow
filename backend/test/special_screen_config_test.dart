@@ -5,6 +5,37 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('clock defaults survive JSON and compact storage without size drift', () {
+    final defaults = ClockScreenOptions();
+    expect(defaults.timeFontSizePercent, 50);
+    for (final json in <Map<String, dynamic>>[
+      {},
+      {'timeFontSizePercent': null},
+      {'timeFontSizePercent': -1},
+    ]) {
+      expect(ClockScreenOptions.fromJson(json).toJson(), defaults.toJson());
+    }
+    final screen = SpecialScreenConfig(
+      id: 'clock',
+      type: SpecialScreenType.clock,
+      options: defaults,
+    );
+    final compact = screen.toStorageJson(stripDefaults);
+    expect(compact, {'id': 'clock', 'type': 'clock'});
+    expect(SpecialScreenConfig.fromJson(compact).toJson(), screen.toJson());
+
+    final explicit = SpecialScreenConfig.fromJson({
+      'id': 'small-clock',
+      'type': 'clock',
+      'options': {'timeFontSizePercent': 20},
+    });
+    final explicitCompact = explicit.toStorageJson(stripDefaults);
+    expect(explicitCompact['options'], {'timeFontSizePercent': 20.0});
+    expect(
+      SpecialScreenConfig.fromJson(explicitCompact).toJson(),
+      explicit.toJson(),
+    );
+  });
   test(
     'storage serialization is pure and removes values reset to defaults',
     () {
@@ -214,7 +245,7 @@ void main() {
       });
       expect(screen.displayTimeMs, 10000);
       expect(screen.schedule.count, 10);
-      expect((screen.options as ClockScreenOptions).timeFontSizePercent, 20);
+      expect((screen.options as ClockScreenOptions).timeFontSizePercent, 50);
       expect(
         CameraConfig(id: 'x', url: 'rtsp://camera/live').hasValidUrl,
         false,

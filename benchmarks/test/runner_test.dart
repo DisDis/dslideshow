@@ -107,6 +107,45 @@ void main() {
     }
   });
   test(
+    'photo-only effects report unsupported before loading GIF/video',
+    () async {
+      final directory = await Directory.systemTemp.createTemp('photo-policy-');
+      final store = ReportStore(directory);
+      await store.open();
+      try {
+        final driver = FailingDriver()..failFirst = false;
+        final runner = BenchmarkRunner(
+          BenchmarkConfig(
+            effects: ['Water Refraction', 'PhotoMotion-KenBurns'],
+            mediaCases: [
+              'photo-photo',
+              'gif-photo',
+              'photo-gif',
+              'photo-video',
+              'video-photo',
+            ],
+            warmups: 0,
+            repeats: 1,
+            captureFrames: false,
+          ),
+          store,
+          LinuxTelemetry(onSample: store.telemetry, stage: () => 'test'),
+          renderer: 'opengl',
+        );
+        expect(await runner.execute(driver), 0);
+        expect(driver.preparations, 2);
+        expect(driver.runs, 2);
+        final summary = jsonDecode(
+          await File('${directory.path}/summary.json').readAsString(),
+        ) as Map;
+        expect(summary['unsupported_cases'], 8);
+      } finally {
+        await store.close();
+        await directory.delete(recursive: true);
+      }
+    },
+  );
+  test(
     'Vulkan video is unsupported before preparation, and can be enabled',
     () async {
       for (final enabled in [false, true]) {

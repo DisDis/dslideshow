@@ -65,7 +65,7 @@
 | `showSeconds` | `false` | Показывать секунды |
 | `showDate` | `true` | Показывать дату |
 | `dateFormat` | `dd.MM.yyyy` | Также `yyyy-MM-dd`, `dd/MM/yyyy` |
-| `timeFontSizePercent` | `20` | Процент от меньшей стороны экрана, 0 < значение ≤ 100 |
+| `timeFontSizePercent` | `50` | Процент от меньшей стороны экрана, 0 < значение ≤ 100 |
 | `dateFontSizePercent` | `5` | Независимый размер даты, в тех же единицах |
 | `textColor` | `ffffffff` | ARGB, восемь шестнадцатеричных цифр |
 | `backgroundColor` | `ff000000` | ARGB |

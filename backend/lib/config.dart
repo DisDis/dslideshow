@@ -15,6 +15,7 @@ import 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
 import 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 
 export 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
+export 'package:dslideshow_backend/src/service/slideshow/photo_motion_config.dart';
 export 'package:dslideshow_backend/src/service/slideshow/special_screen_config.dart';
 export 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 export 'package:dslideshow_backend/src/service/storage/storages_config.dart';

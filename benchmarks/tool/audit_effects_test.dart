@@ -63,11 +63,39 @@ void main() {
         }))!;
       }
 
+      Future<ui.Image> bitmap(List<Color> colors) async {
+        final recorder = ui.PictureRecorder();
+        Canvas(recorder).drawRect(
+          const Rect.fromLTWH(0, 0, 160, 100),
+          Paint()
+            ..shader = ui.Gradient.linear(
+              const Offset(0, 50),
+              const Offset(160, 50),
+              colors,
+            ),
+        );
+        final picture = recorder.endRecording();
+        final image = (await tester.runAsync(() => picture.toImage(160, 100)))!;
+        picture.dispose();
+        return image;
+      }
+
+      final a = await bitmap([
+        const Color(0xffff4000),
+        const Color(0xff902060),
+      ]);
+      final b = await bitmap([
+        const Color(0xff20d040),
+        const Color(0xff2060e0),
+      ]);
+      addTearDown(a.dispose);
+      addTearDown(b.dispose);
       final from = await snapshot(slideA), to = await snapshot(slideB);
       for (final size in [const Size(160, 100), const Size(2560, 1600)]) {
         for (final descriptor in Effect.values) {
           final effect = descriptor.createEffect(seed: 42);
           await tester.runAsync(effect.prepare);
+          if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
           final frames = <Uint8List>[];
           for (var i = 0; i <= 20; i++) {
             frames.add(
@@ -127,6 +155,7 @@ void main() {
         await File('build/effects/visual-audit.json')
             .writeAsString(const JsonEncoder.withIndent('  ').convert(results));
       });
+      await tester.pumpWidget(const SizedBox());
       final failed = results.where((r) => r['status'] != 'passed').toList();
       expect(failed, isEmpty, reason: jsonEncode(failed));
     },

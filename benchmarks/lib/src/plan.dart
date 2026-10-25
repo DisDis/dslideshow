@@ -4,12 +4,20 @@ import 'config.dart';
 import 'blur_probes.dart';
 import 'mosaic_probes.dart';
 import 'composition_probes.dart';
+import 'photo_motion_probe.dart';
 
 class MediaPair {
   final String name;
   final String from;
   final String to;
   const MediaPair(this.name, this.from, this.to);
+  TransitionMedia type(String name) => name.endsWith('.mp4')
+      ? TransitionMedia.video
+      : name.endsWith('.gif')
+      ? TransitionMedia.animatedImage
+      : TransitionMedia.photo;
+  bool get staticPhotos =>
+      type(from) == TransitionMedia.photo && type(to) == TransitionMedia.photo;
   bool get hasVideo => from.endsWith('.mp4') || to.endsWith('.mp4');
 }
 
@@ -25,6 +33,7 @@ const mediaPairs = [
 
 class BenchmarkCase {
   final Effect? effect;
+  final bool photoMotion;
   final MediaPair media;
   final int grid;
   final MosaicBackend backend;
@@ -35,6 +44,7 @@ class BenchmarkCase {
   const BenchmarkCase(
     this.effect,
     this.media, {
+    this.photoMotion = false,
     this.grid = 100,
     this.backend = MosaicBackend.canvas,
     this.injectStall = false,
@@ -43,12 +53,20 @@ class BenchmarkCase {
     this.compositionProbe,
   });
 
-  String get name =>
-      mosaicProbe?.effectName(effect!) ??
-      compositionProbe?.effectName ??
-      blurProbe?.effectName ??
-      effect?.name ??
-      'Baseline';
+  String? get unsupportedReason =>
+      photoMotion && !media.staticPhotos ||
+          effect?.supportsMedia(media.type(media.from), media.type(media.to)) ==
+              false
+      ? 'This effect requires two static photos'
+      : null;
+
+  String get name => photoMotion
+      ? photoMotionProbeName
+      : mosaicProbe?.effectName(effect!) ??
+            compositionProbe?.effectName ??
+            blurProbe?.effectName ??
+            effect?.name ??
+            'Baseline';
   String get id =>
       '${name.replaceAll(' ', '_')}--${media.name}'
       '${effect?.isMosaic == true ? '--$grid--${backend.name}' : ''}'
@@ -66,6 +84,7 @@ class BenchmarkCase {
     'effect': name,
     'media': media.name,
     'from': media.from,
+    if (photoMotion) 'photo_motion': 'kenBurns',
     'to': media.to,
     'grid': effect?.isMosaic == true ? grid : null,
     'backend': effect?.isMosaic == true ? backend.name : null,
@@ -77,7 +96,9 @@ class BenchmarkCase {
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
-  final names = Effect.values.map((e) => e.name).toSet()..add('Baseline');
+  final names = Effect.values.map((e) => e.name).toSet()
+    ..add('Baseline')
+    ..add(photoMotionProbeName);
   names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
   names.addAll(CompositionProbe.values.map((probe) => probe.effectName));
   for (final probe in MosaicProbe.values) {
@@ -103,6 +124,9 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
         config.effects!.contains(e?.name ?? 'Baseline'),
   );
   for (final pair in pairs) {
+    if (config.effects?.contains(photoMotionProbeName) == true) {
+      result.add(BenchmarkCase(null, pair, photoMotion: true));
+    }
     for (final probe in CompositionProbe.values) {
       if (config.effects?.contains(probe.effectName) == true) {
         result.add(BenchmarkCase(probe.effect, pair, compositionProbe: probe));

@@ -1,0 +1,19 @@
+{
+  "suite": "smoke",
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false,
+  "media_cases": [
+    "photo-photo",
+    "large-photo"
+  ],
+  "effects": [
+    "Baseline",
+    "Fade",
+    "Noise Dissolve",
+    "Ripple Reveal",
+    "Water Refraction",
+    "PhotoMotion-KenBurns"
+  ]
+}

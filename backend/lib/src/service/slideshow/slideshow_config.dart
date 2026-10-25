@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 
 import 'special_screen_config.dart';
+import 'photo_motion_config.dart';
 
 part 'slideshow_config.g.dart';
 
@@ -17,6 +18,14 @@ class SlideShowConfig {
 
   @JsonKey(fromJson: _parseSpecialScreens)
   List<SpecialScreenConfig> specialScreens;
+
+  @JsonKey(fromJson: _parsePhotoMotion)
+  PhotoMotionConfig photoMotion;
+
+  static PhotoMotionConfig _parsePhotoMotion(dynamic value) =>
+      PhotoMotionConfig.fromJson(
+        value is Map ? Map<String, dynamic>.from(value) : <String, dynamic>{},
+      );
 
   static List<SpecialScreenConfig> _parseSpecialScreens(dynamic value) {
     final result = <SpecialScreenConfig>[];
@@ -134,7 +143,9 @@ class SlideShowConfig {
     required this.buttons,
     required this.menu,
     List<SpecialScreenConfig>? specialScreens,
-  }) : specialScreens = specialScreens ?? [];
+    PhotoMotionConfig? photoMotion,
+  }) : specialScreens = specialScreens ?? [],
+       photoMotion = photoMotion ?? PhotoMotionConfig();
 
   factory SlideShowConfig.fromJson(Map<String, dynamic> json) =>
       _$SlideShowConfigFromJson(json);

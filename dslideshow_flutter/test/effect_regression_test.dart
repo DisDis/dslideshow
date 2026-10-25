@@ -10,6 +10,7 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_mask.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_transition_effect.dart';
+import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -396,8 +397,16 @@ void main() {
   testWidgets(
     'Every registered effect renders endpoints and intermediate frames',
     (tester) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(Colors.white, BlendMode.src);
+      final picture = recorder.endRecording();
+      final photo = picture.toImageSync(160, 90);
+      picture.dispose();
+      addTearDown(photo.dispose);
       for (final descriptor in Effect.values) {
         final effect = descriptor.createEffect();
+        await tester.runAsync(effect.prepare);
+        if (effect is WaterRefractionEffect) effect.bindPhotos(photo, photo);
         for (final t in [0.0, 0.25, 0.5, 0.75, 1.0]) {
           await tester.pumpWidget(frame(effect, t));
           expect(

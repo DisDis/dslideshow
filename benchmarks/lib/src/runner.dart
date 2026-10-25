@@ -49,9 +49,10 @@ class BenchmarkRunner {
     final unsupported = fullPlan
         .where(
           (test) =>
+              test.unsupportedReason != null ||
               renderer == 'vulkan' &&
-              !config.vulkanVideo &&
-              test.media.hasVideo,
+                  !config.vulkanVideo &&
+                  test.media.hasVideo,
         )
         .toList();
     final unsupportedIds = unsupported.map((test) => test.id).toSet();
@@ -87,7 +88,7 @@ class BenchmarkRunner {
         'case': test.toJson(),
         'phase': 'capability',
         'status': 'unsupported',
-        'reason': 'Vulkan video disabled; enable vulkan_video explicitly to probe support',
+        'reason': test.unsupportedReason ?? 'Vulkan video disabled; enable vulkan_video explicitly to probe support',
       }, []);
     }
     final expectedCases = plan.length + unsupported.length;

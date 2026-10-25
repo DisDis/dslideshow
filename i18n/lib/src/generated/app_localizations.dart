@@ -1137,6 +1137,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs.'**
   String get special_browser_camera_help;
+
+  /// No description provided for @photo_motion_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo motion'**
+  String get photo_motion_title;
+
+  /// No description provided for @photo_motion_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get photo_motion_off;
+
+  /// No description provided for @photo_motion_ken_burns.
+  ///
+  /// In en, this message translates to:
+  /// **'Ken Burns (slow pan and zoom)'**
+  String get photo_motion_ken_burns;
+
+  /// No description provided for @photo_motion_zoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum zoom'**
+  String get photo_motion_zoom;
+
+  /// No description provided for @water_photo_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Refraction requires two static photos. GIF and video use another allowed transition.'**
+  String get water_photo_only;
+
+  /// No description provided for @preview_video_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Video URL (optional)'**
+  String get preview_video_url;
+
+  /// No description provided for @preview_play.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview_play;
+
+  /// No description provided for @effect_noise_dissolve.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise Dissolve'**
+  String get effect_noise_dissolve;
+
+  /// No description provided for @effect_ripple_reveal.
+  ///
+  /// In en, this message translates to:
+  /// **'Ripple Reveal'**
+  String get effect_ripple_reveal;
+
+  /// No description provided for @effect_water_refraction.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Refraction'**
+  String get effect_water_refraction;
 }
 
 class _AppLocalizationsDelegate

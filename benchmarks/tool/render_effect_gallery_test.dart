@@ -37,6 +37,53 @@ void main() {
     tester.view.physicalSize = const Size(1000, 1300);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
+    final sourceKey = GlobalKey(), targetKey = GlobalKey();
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: [
+            RepaintBoundary(
+              key: sourceKey,
+              child: SizedBox(
+                width: 160,
+                height: 96,
+                child: slide('A', [Colors.orange, Colors.deepPurple]),
+              ),
+            ),
+            RepaintBoundary(
+              key: targetKey,
+              child: SizedBox(
+                width: 160,
+                height: 96,
+                child: slide('B', [Colors.cyan, Colors.indigo]),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    final from = (await tester.runAsync(
+      () =>
+          (sourceKey.currentContext!.findRenderObject()!
+                  as RenderRepaintBoundary)
+              .toImage(),
+    ))!;
+    final to = (await tester.runAsync(
+      () =>
+          (targetKey.currentContext!.findRenderObject()!
+                  as RenderRepaintBoundary)
+              .toImage(),
+    ))!;
+    addTearDown(from.dispose);
+    addTearDown(to.dispose);
+    final prepared = <Effect, MediaSliderItemEffect>{};
+    for (final descriptor in Effect.values) {
+      final effect = descriptor.createEffect(seed: 42);
+      await tester.runAsync(effect.prepare);
+      if (effect is WaterRefractionEffect) effect.bindPhotos(from, to);
+      prepared[descriptor] = effect;
+    }
     final all = Effect.values.toList();
     for (var offset = 0; offset < all.length; offset += 12) {
       final key = GlobalKey();
@@ -63,7 +110,7 @@ void main() {
                     for (final descriptor in effects)
                       Builder(
                         builder: (context) {
-                          final effect = descriptor.createEffect(seed: 42);
+                          final effect = prepared[descriptor]!;
                           return Row(
                             children: [
                               SizedBox(
@@ -122,5 +169,6 @@ void main() {
       });
       expect(tester.takeException(), isNull);
     }
+    await tester.pumpWidget(const SizedBox());
   });
 }

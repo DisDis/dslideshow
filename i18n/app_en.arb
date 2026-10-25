@@ -541,5 +541,15 @@
   "special_unsupported": "Unsupported screen type",
   "special_auth": "Authentication (optional)",
   "special_save_hint": "Use Save on the main settings page to write changes to the device.",
-  "special_browser_camera_help": "Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs."
+  "special_browser_camera_help": "Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs.",
+  "photo_motion_title": "Photo motion",
+  "photo_motion_off": "Off",
+  "photo_motion_ken_burns": "Ken Burns (slow pan and zoom)",
+  "photo_motion_zoom": "Maximum zoom",
+  "water_photo_only": "Water Refraction requires two static photos. GIF and video use another allowed transition.",
+  "preview_video_url": "Video URL (optional)",
+  "preview_play": "Preview",
+  "effect_noise_dissolve": "Noise Dissolve",
+  "effect_ripple_reveal": "Ripple Reveal",
+  "effect_water_refraction": "Water Refraction"
 }

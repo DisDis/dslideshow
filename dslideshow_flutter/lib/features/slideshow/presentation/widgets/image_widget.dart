@@ -25,6 +25,10 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
 
   bool get isGif => path.extension(item.uri!.path).toLowerCase() == '.gif';
 
+  /// Borrowed prepared pixels for static-photo effects. The owner keeps them
+  /// alive until every transition view has detached, then calls dispose().
+  ui.Image? get preparedBitmap => _bitmap;
+
   ImageWidget(this.item, this._config, this.size, {this.pixelRatio = 1})
     : assert(pixelRatio > 0),
       super(key: ValueKey('img:${item.uri!.toFilePath()}'));

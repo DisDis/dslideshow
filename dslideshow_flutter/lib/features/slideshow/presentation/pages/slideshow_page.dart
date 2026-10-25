@@ -20,6 +20,8 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
+import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
+import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ import '../bloc/slideshow_slide.dart';
 import '../sessions/cameras_screen_session.dart';
 import '../sessions/special_screen_session.dart';
 import '../widgets/special_screen_renderers.dart';
+import '../widgets/photo_motion.dart';
 
 class SlideShowPage extends StatelessWidget {
   const SlideShowPage({super.key});
@@ -110,6 +113,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   VideoSession? _nextVideo;
   ImageWidget? _currentImage;
   ImageWidget? _nextImage;
+  PhotoMotionSession? _currentPhotoMotion;
+  PhotoMotionSession? _nextPhotoMotion;
   SpecialScreenSession? _currentSpecial;
   SpecialScreenSession? _nextSpecial;
   SlideshowPhase? _lastPhase;
@@ -137,12 +142,15 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         final oldVideo = _currentVideo;
         final oldImage = _currentImage;
         final oldSpecial = _currentSpecial;
+        final oldMotion = _currentPhotoMotion;
         // Меняем виджеты местами
         setState(() {
           _currentWidget = _nextWidget;
           _currentVideo = _nextVideo;
           _currentImage = _nextImage;
           _currentSpecial = _nextSpecial;
+          _currentPhotoMotion = _nextPhotoMotion;
+          _nextPhotoMotion = null;
           _nextSpecial = null;
           _nextVideo = null;
           _nextImage = null;
@@ -152,6 +160,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
           if (oldVideo != null) _releaseVideo(oldVideo);
           oldImage?.dispose();
           oldSpecial?.dispose();
+          oldMotion?.dispose();
         });
 
         // Сообщаем блоку, что переход завершен
@@ -176,6 +185,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     if (_nextVideo != null) _releaseVideo(_nextVideo!);
     _currentImage?.dispose();
     _nextImage?.dispose();
+    _currentPhotoMotion?.dispose();
+    _nextPhotoMotion?.dispose();
     _currentSpecial?.dispose();
     _nextSpecial?.dispose();
     _effectController.dispose();
@@ -202,6 +213,9 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
           _nextSpecial = null;
         }
         final playing = !state.isPaused && !state.isScreenLocked;
+        _currentPhotoMotion?.setPlaying(
+          playing && state.phase != SlideshowPhase.transition,
+        );
         final animate =
             !state.isScreenLocked &&
             (!state.isPaused || state.currentSlide == null);
@@ -312,9 +326,11 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
       }
       if (_nextVideo != null) _releaseVideo(_nextVideo!);
       _nextImage?.dispose();
+      _nextPhotoMotion?.dispose();
       setState(() {
         _nextVideo = null;
         _nextImage = null;
+        _nextPhotoMotion = null;
         _nextEffect = effect;
         _nextWidget = SizedBox(
           width: size.width,
@@ -353,7 +369,12 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
             mediaItem,
             _appConfig.slideshow,
             size,
-            pixelRatio: MediaQuery.devicePixelRatioOf(context),
+            pixelRatio:
+                MediaQuery.devicePixelRatioOf(context) *
+                (_appConfig.slideshow.photoMotion.mode ==
+                        PhotoMotionMode.kenBurns
+                    ? PhotoMotionPath.preparationScale
+                    : 1),
           );
 
     try {
@@ -366,14 +387,32 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
       if (mounted && generation == _loadGeneration) {
         if (_nextVideo != null) _releaseVideo(_nextVideo!);
         _nextImage?.dispose();
+        _nextPhotoMotion?.dispose();
+        final motion =
+            itemWidget is ImageWidget &&
+                !itemWidget.isGif &&
+                _appConfig.slideshow.photoMotion.mode ==
+                    PhotoMotionMode.kenBurns
+            ? PhotoMotionSession(
+                vsync: this,
+                duration: Duration(
+                  milliseconds: _appConfig.slideshow.displayTimeMs,
+                ),
+                config: _appConfig.slideshow.photoMotion,
+                seed: PhotoMotionPath.seedFor(
+                  mediaItem.id ?? mediaItem.uri.toString(),
+                ),
+              )
+            : null;
         setState(() {
           _nextVideo = video;
           _nextImage = itemWidget is ImageWidget ? itemWidget : null;
+          _nextPhotoMotion = motion;
           _nextEffect = effect;
           _nextWidget = SizedBox(
             width: size.width,
             height: size.height,
-            child: itemWidget,
+            child: motion?.view(itemWidget) ?? itemWidget,
           );
         });
         // Сообщаем блоку, что картинка готова к показу
@@ -395,8 +434,10 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
       setState(() {
         if (_nextVideo != null) _releaseVideo(_nextVideo!);
         _nextImage?.dispose();
+        _nextPhotoMotion?.dispose();
         _nextVideo = null;
         _nextImage = null;
+        _nextPhotoMotion = null;
         _nextEffect = effect;
         _nextWidget = slideShowLoaderWidget;
       });
@@ -409,8 +450,28 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   // Создание виджета перехода (старая логика AnimatedBuilder + createTransformWidget)
   void _startTransition(SlideshowState state, Size size) {
     // Получаем эффект из стейта
-    final currentEffect = _nextEffect ?? state.effect.createEffect();
+    var currentEffect = _nextEffect ?? state.effect.createEffect();
     _nextEffect = null;
+    _currentPhotoMotion?.setPlaying(false);
+    if (currentEffect is WaterRefractionEffect) {
+      final from = _currentImage?.preparedBitmap;
+      final to = _nextImage?.preparedBitmap;
+      if (from == null || to == null) {
+        _log.warning(
+          'Water Refraction requires two prepared photos; using Fade.',
+        );
+        currentEffect = FadeEffect();
+      } else {
+        currentEffect.bindPhotos(
+          from,
+          to,
+          fromCamera: _currentPhotoMotion?.path.transform(
+            size,
+            _currentPhotoMotion!.progress,
+          ),
+        );
+      }
+    }
     // Capture both slides: completion promotes _nextWidget before Bloc rebuilds.
     final outgoing = _currentWidget;
     final incoming = _nextWidget;

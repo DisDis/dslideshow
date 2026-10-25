@@ -20,6 +20,7 @@ Map<String, Object?> assessVisualFrames(
   Uint8List from,
   Uint8List to, {
   bool baseline = false,
+  bool photoMotion = false,
 }) {
   if (frames.length < 2) {
     throw ArgumentError('At least two frames are required');
@@ -38,7 +39,9 @@ Map<String, Object?> assessVisualFrames(
     if (streak > longestStatic) longestStatic = streak;
   }
   final initialError = pixelDifference(frames.first, from);
-  final finalError = baseline ? null : pixelDifference(frames.last, to);
+  final finalError = baseline || photoMotion
+      ? null
+      : pixelDifference(frames.last, to);
   final issues = <String>[
     if (!baseline && hashes.toSet().length < 5)
       'Fewer than five distinct control frames',
@@ -66,6 +69,7 @@ Map<String, Object?> assessVisualFrames(
     'final_error': finalError,
     'adjacent_mean_abs_changes': changes,
     'sha256': hashes,
+    'kind': photoMotion ? 'photo_motion' : 'transition',
     'note': 'Static composition captures, not physical scanout; motion timing is measured separately',
   };
 }

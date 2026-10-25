@@ -558,4 +558,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get special_browser_camera_help =>
       'Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs.';
+
+  @override
+  String get photo_motion_title => 'Photo motion';
+
+  @override
+  String get photo_motion_off => 'Off';
+
+  @override
+  String get photo_motion_ken_burns => 'Ken Burns (slow pan and zoom)';
+
+  @override
+  String get photo_motion_zoom => 'Maximum zoom';
+
+  @override
+  String get water_photo_only =>
+      'Water Refraction requires two static photos. GIF and video use another allowed transition.';
+
+  @override
+  String get preview_video_url => 'Video URL (optional)';
+
+  @override
+  String get preview_play => 'Preview';
+
+  @override
+  String get effect_noise_dissolve => 'Noise Dissolve';
+
+  @override
+  String get effect_ripple_reveal => 'Ripple Reveal';
+
+  @override
+  String get effect_water_refraction => 'Water Refraction';
 }

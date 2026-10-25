@@ -1,5 +1,18 @@
 # Unreleased
 
+# 10.1.0+1 — 2026-10-25
+
+* Align generated clock JSON defaults with the configured 50% time font size;
+  preserve explicit sizes and cover compact save/reload without default drift.
+* Add Noise Dissolve, circular Ripple Reveal and photo-only Water Refraction
+  with localized wave-front displacement and full-quality image sampling.
+  Filter transitions by media capability before selection/preparation.
+* Add opt-in Ken Burns photo motion, bounded pause/sleep/resume and stable camera
+  ownership across transitions; retain extra prepared pixels for zoom quality.
+  Add typed configuration, localized controls, previews and lifecycle regressions.
+* Add focused OpenGL photo/GIF/video and visual suites in the separate benchmark
+  application, including camera-specific audits and explicit unsupported media.
+
 * Batch LiquidMorph path vertices without changing wave geometry, sampling or
   source lifetimes; verify lower UI cost with reverse-order RaPi5 OpenGL A/B.
   Retain the original Accordion after its grouped-transform experiment failed
@@ -22,6 +35,9 @@
   deadline across brief presence changes; initialize sleeping renderers black.
 * Add backend and widget regressions for full wake, reverse transitions, duplicate
   ON events, stale completion and cleanup. Physical frame validation is pending.
+
+Build verification and remaining hardware limitations are recorded in
+[the release record](doc/release-10.1.0.md).
 
 # 10.0.0+2 — 2026-10-25
 

@@ -141,7 +141,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
       emit(
         state.copyWith(
           nextSlide: special,
-          effect: _nextEffect(),
+          effect: _nextEffect(special),
           phase: SlideshowPhase.precaching,
         ),
       );
@@ -163,22 +163,33 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     }
 
     // Выбор эффекта
-    final nextEffect = _nextEffect();
+    final nextSlide = MediaSlide(mediaItem);
+    final nextEffect = _nextEffect(nextSlide);
 
     emit(
       state.copyWith(
-        nextSlide: MediaSlide(mediaItem),
+        nextSlide: nextSlide,
         effect: nextEffect,
         phase: SlideshowPhase.precaching, // Теперь ждем UI для precache
       ),
     );
   }
 
-  Effect _nextEffect() {
+  Effect _nextEffect(SlideshowSlide incoming) {
+    final compatible =
+        (_allowedEffects.isEmpty ? Effect.values : _allowedEffects)
+            .where(
+              (effect) => effect.supportsMedia(
+                state.currentSlide?.transitionMedia ?? TransitionMedia.special,
+                incoming.transitionMedia,
+              ),
+            )
+            .toList();
+    // A photo-only selection must still allow videos, GIFs and clocks to play.
+    if (compatible.isEmpty) return Effect.fadeEffect;
+    _effectPool.removeWhere((effect) => !compatible.contains(effect));
     if (_effectPool.isEmpty) {
-      _effectPool.addAll(
-        _allowedEffects.isEmpty ? Effect.values : _allowedEffects,
-      );
+      _effectPool.addAll(compatible);
       _effectPool.shuffle(_rnd);
     }
     return _effectPool.removeLast();

@@ -22,6 +22,7 @@ SlideShowConfig _$SlideShowConfigFromJson(
   buttons: SlideShowConfig._parseButtons(json['buttons']),
   menu: SlideShowConfig._parseMenu(json['menu']),
   specialScreens: SlideShowConfig._parseSpecialScreens(json['specialScreens']),
+  photoMotion: SlideShowConfig._parsePhotoMotion(json['photoMotion']),
 );
 
 Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
@@ -29,6 +30,7 @@ Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
       'buttons': instance.buttons.toJson(),
       'menu': instance.menu.toJson(),
       'specialScreens': instance.specialScreens.map((e) => e.toJson()).toList(),
+      'photoMotion': instance.photoMotion.toJson(),
       'displayTimeMs': instance.displayTimeMs,
       'fadeTimeMs': instance.fadeTimeMs,
       'transitionTimeMs': instance.transitionTimeMs,

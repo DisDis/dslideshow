@@ -344,3 +344,6 @@ flutter test --no-pub tool/render_effect_gallery_test.dart
 Методика: [FrameTiming Flutter](https://api.flutter.dev/flutter/scheduler/SchedulerBinding/addTimingsCallback.html),
 [/proc Linux](https://docs.kernel.org/filesystems/proc.html),
 [flutter-pi: build/run/--vulkan](https://github.com/ardera/flutter-pi).
+
+[Новые эффекты и Ken Burns](../doc/new-visuals-2026-10.md): настройка, совместимость,
+предпросмотр, тесты и измерения на RaPi5.
