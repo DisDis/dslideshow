@@ -20,6 +20,7 @@ enum ScreenPhase {
 enum ScreenTransitionResult { applied, cancelled, failed }
 
 class ScreenService {
+  static const Duration wakeUpDelay = Duration(milliseconds: 500);
   static final _log = Logger('ScreenService');
   final HardwareConfig _config;
   final ScreenPower _power;
@@ -46,6 +47,8 @@ class ScreenService {
   int _generation = 0;
   Timer? _timerScreenOff;
   Timer? _fadeOutTimer;
+  Timer? _wakeUpTimer;
+  Completer<void>? _wakeUpCompletion;
   Timer? _fadeInTimer;
   Completer<void>? _fadeInCompletion;
   Completer<ScreenTransitionResult>? _transition;
@@ -72,7 +75,7 @@ class ScreenService {
     final completion = _beginTransition(true);
     final generation = _generation;
     if (_confirmedPower == true && !_powerBusy) {
-      _startFadeIn(generation, completion);
+      _waitForDisplay(generation, completion);
     } else {
       _phase = ScreenPhase.wakingUp;
       _enqueuePower(true, generation, completion);
@@ -177,6 +180,48 @@ class ScreenService {
     );
   }
 
+  void _waitForDisplay(
+    int generation,
+    Completer<ScreenTransitionResult> completion,
+  ) {
+    if (!_isCurrent(generation)) return;
+    final ready = _wakeUpCompletion;
+    if (ready == null) {
+      _startFadeIn(generation, completion);
+      return;
+    }
+    _phase = ScreenPhase.wakingUp;
+    unawaited(
+      ready.future.then((_) {
+        if (!_isCurrent(generation) || !_desiredOn) return;
+        _startFadeIn(generation, completion);
+      }),
+    );
+  }
+
+  void _startWakeUpDelay() {
+    _cancelWakeUpDelay();
+    if (_disposed) return;
+    final ready = Completer<void>();
+    _wakeUpCompletion = ready;
+    // Keep black until the physical display has had time to wake. This deadline
+    // belongs to the successful hardware ON, so new intentions cannot skip it.
+    _wakeUpTimer = Timer(wakeUpDelay, () {
+      if (!identical(_wakeUpCompletion, ready)) return;
+      _wakeUpTimer = null;
+      _wakeUpCompletion = null;
+      ready.complete();
+    });
+  }
+
+  void _cancelWakeUpDelay() {
+    _wakeUpTimer?.cancel();
+    _wakeUpTimer = null;
+    final ready = _wakeUpCompletion;
+    _wakeUpCompletion = null;
+    if (ready != null && !ready.isCompleted) ready.complete();
+  }
+
   void _cancelFadeIn() {
     _fadeInTimer?.cancel();
     _fadeInTimer = null;
@@ -200,15 +245,17 @@ class ScreenService {
       try {
         if (_confirmedPower != enabled) {
           _powerBusy = true;
+          if (!enabled) _cancelWakeUpDelay();
           _log.info('Screen hardware $generation: ${enabled ? "ON" : "OFF"}');
           await _power.setPower(enabled);
           // Record the actual effect even if the request became stale. The next
           // queued request must reconcile this effect with the latest intention.
           _confirmedPower = enabled;
+          if (enabled) _startWakeUpDelay();
         }
         if (_isCurrent(generation)) {
           if (enabled) {
-            _startFadeIn(generation, completion);
+            _waitForDisplay(generation, completion);
           } else {
             _phase = ScreenPhase.off;
             _publish(false);
@@ -255,6 +302,7 @@ class ScreenService {
     _phase = ScreenPhase.disposed;
     _timerScreenOff?.cancel();
     _fadeOutTimer?.cancel();
+    _cancelWakeUpDelay();
     _cancelFadeIn();
     final completion = _transition;
     if (completion != null) {

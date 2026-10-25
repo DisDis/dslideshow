@@ -68,10 +68,21 @@ void main() {
       expect(f.screen.phase, ScreenPhase.wakingUp);
       time.flushMicrotasks();
       expect(f.events, [false]);
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.wakingUp);
+      expect(f.events, [false]);
       f.power.pending.single.complete();
       time.flushMicrotasks();
-      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(f.screen.phase, ScreenPhase.wakingUp);
       expect(f.screen.isScreenOn, isTrue);
+      time.elapse(const Duration(milliseconds: 250));
+      expect(identical(f.screen.screenOn(), wake), isTrue);
+      time.elapse(const Duration(milliseconds: 249));
+      expect(f.screen.phase, ScreenPhase.wakingUp);
+      expect(f.events, [false]);
+      expect(results, isEmpty);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.screen.phase, ScreenPhase.fadingIn);
       expect(f.events, [false, true]);
       expect(results, isEmpty);
       time.elapse(const Duration(milliseconds: 1000));
@@ -100,6 +111,157 @@ void main() {
       time.elapse(const Duration(milliseconds: 1));
       expect(f.screen.phase, ScreenPhase.on);
       expect(f.events, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  for (final manualLock in [false, true]) {
+    test(
+      '${manualLock ? "manual lock" : "new OFF"} cancels reveal during wake delay',
+      () {
+        fakeAsync((time) {
+          final f = Fixture();
+          f.screen.screenOff();
+          time.elapse(const Duration(seconds: 2));
+          final results = <ScreenTransitionResult>[];
+          f.screen.screenOn().then(results.add);
+          time.elapse(const Duration(milliseconds: 250));
+          expect(f.screen.phase, ScreenPhase.wakingUp);
+          if (manualLock) {
+            f.screen.isScreenOffLock = true;
+            f.screen.screenOn();
+          } else {
+            f.screen.screenOff();
+          }
+          time.elapse(const Duration(milliseconds: 250));
+          expect(f.events, [false]);
+          expect(results, [ScreenTransitionResult.cancelled]);
+          expect(f.screen.phase, ScreenPhase.fadingOut);
+          time.elapse(const Duration(milliseconds: 1750));
+          expect(f.screen.phase, ScreenPhase.off);
+          expect(f.power.calls, [false, true, false]);
+          f.dispose(time);
+        });
+      },
+    );
+  }
+
+  test('cancelling a new OFF cannot bypass the hardware wake deadline', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.screen.screenOn();
+      time.elapse(const Duration(milliseconds: 250));
+      f.screen.screenOff();
+      f.screen.screenOn();
+      time.elapse(const Duration(milliseconds: 249));
+      expect(f.events, [false]);
+      expect(f.screen.phase, ScreenPhase.wakingUp);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.events, [false, true]);
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(f.power.calls, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('brief absence during wake delay neither bypasses nor restarts it', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.screen.screenOn();
+      time.elapse(const Duration(milliseconds: 250));
+      f.screen.scheduleScreenOff();
+      time.elapse(const Duration(milliseconds: 50));
+      f.screen.screenOn();
+      time.elapse(const Duration(milliseconds: 199));
+      expect(f.events, [false]);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.events, [false, true]);
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(f.power.calls, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('new hardware ON gets its own full delay after OFF during warm-up', () {
+    fakeAsync((time) {
+      final f = Fixture(fade: Duration.zero);
+      f.screen.screenOff();
+      time.elapse(Duration.zero);
+      f.screen.screenOn();
+      time.flushMicrotasks();
+      time.elapse(const Duration(milliseconds: 250));
+      f.screen.screenOff();
+      time.elapse(Duration.zero);
+      expect(f.screen.phase, ScreenPhase.off);
+      expect(f.power.calls, [false, true, false]);
+      f.screen.screenOn();
+      time.flushMicrotasks();
+      time.elapse(const Duration(milliseconds: 499));
+      expect(f.screen.phase, ScreenPhase.wakingUp);
+      expect(f.events, [false]);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(f.events, [false, true]);
+      expect(f.power.calls, [false, true, false, true]);
+      expect(f.power.maxActive, 1);
+      f.dispose(time);
+    });
+  });
+
+  test('dispose during wake delay cancels its timer and later reveal', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      final results = <ScreenTransitionResult>[];
+      f.screen.screenOn().then(results.add);
+      time.elapse(const Duration(milliseconds: 250));
+      f.dispose(time);
+      time.elapse(const Duration(seconds: 3));
+      expect(results, [ScreenTransitionResult.cancelled]);
+      expect(f.events, [false]);
+      expect(f.screen.phase, ScreenPhase.disposed);
+      expect(f.power.calls, [false, true]);
+    });
+  });
+
+  test('ON finishing after dispose cannot create a wake-delay timer', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.power.automatic = false;
+      f.screen.screenOn();
+      time.flushMicrotasks();
+      var done = false;
+      f.screen.dispose().then((_) => done = true);
+      time.flushMicrotasks();
+      expect(done, isFalse);
+      f.power.pending.single.complete();
+      time.flushMicrotasks();
+      expect(done, isTrue);
+      expect(time.pendingTimers, isEmpty);
+      expect(f.events, [false]);
+      expect(f.screen.phase, ScreenPhase.disposed);
+    });
+  });
+
+  test('failed hardware wake never schedules a later reveal', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.power.fail = true;
+      final results = <ScreenTransitionResult>[];
+      f.screen.screenOn().then(results.add);
+      time.elapse(const Duration(seconds: 3));
+      expect(results, [ScreenTransitionResult.failed]);
+      expect(f.screen.phase, ScreenPhase.failed);
+      expect(f.events, [false]);
       f.dispose(time);
     });
   });
@@ -169,6 +331,7 @@ void main() {
       f.screen.screenOff();
       time.elapse(const Duration(seconds: 2));
       f.screen.screenOn();
+      time.elapse(ScreenService.wakeUpDelay);
       time.elapse(const Duration(seconds: 1));
       f.screen.scheduleScreenOff();
       time.elapse(const Duration(milliseconds: 250));
@@ -194,6 +357,7 @@ void main() {
       final results = <ScreenTransitionResult>[];
       f.screen.screenOn().then(results.add);
       time.flushMicrotasks();
+      time.elapse(ScreenService.wakeUpDelay);
       expect(f.screen.phase, ScreenPhase.fadingIn);
       f.dispose(time);
       time.elapse(const Duration(seconds: 3));
@@ -358,6 +522,8 @@ void main() {
       expect(f.events, [false]);
       f.power.pending[1].complete();
       time.flushMicrotasks();
+      expect(f.events, [false]);
+      time.elapse(ScreenService.wakeUpDelay);
       expect(f.events, [false, true]);
       expect(f.screen.phase, ScreenPhase.fadingIn);
       time.elapse(const Duration(seconds: 2));
@@ -381,6 +547,7 @@ void main() {
       expect(f.events, [false]);
       f.power.pending[1].complete();
       time.flushMicrotasks();
+      time.elapse(ScreenService.wakeUpDelay);
       expect(f.screen.phase, ScreenPhase.fadingIn);
       time.elapse(const Duration(seconds: 2));
       expect(f.screen.phase, ScreenPhase.on);
@@ -424,6 +591,8 @@ void main() {
       f.screen.screenOn();
       time.flushMicrotasks();
       expect(f.power.calls, [false, true]);
+      expect(f.events, [false]);
+      time.elapse(ScreenService.wakeUpDelay);
       expect(f.events, [false, true]);
       f.dispose(time);
     });
@@ -468,6 +637,8 @@ void main() {
         f.power.fail = false;
         f.screen.screenOn().then(results.add);
         time.flushMicrotasks();
+        expect(f.screen.phase, ScreenPhase.wakingUp);
+        time.elapse(ScreenService.wakeUpDelay);
         expect(f.screen.phase, ScreenPhase.fadingIn);
         expect(results, [ScreenTransitionResult.failed]);
         time.elapse(const Duration(seconds: 2));

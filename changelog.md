@@ -1,5 +1,9 @@
 # Unreleased
 
+* Hold the screen black for 500 ms after a successful hardware ON before fading
+  in. Keep the delay in ScreenService.wakeUpDelay; preserve cancellation,
+  duplicate-event handling and manual sleep priority during display warm-up.
+
 * Reduce Canvas Mosaic/MosaicFade mask work by sorting thresholds during
   preparation and drawing exact alpha groups as points. Preserve dense grids,
   cell boundaries, original schedules and FixedAnimationController behaviour.

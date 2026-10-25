@@ -191,6 +191,8 @@ void main() {
         f.hardware.executeCommand(ScreenTurnCommand(id: 4, enabled: true));
         time.flushMicrotasks();
         expect(f.power.calls, [false, true]);
+        expect(f.remote.screenCommands.map((c) => c.enabled), [false]);
+        time.elapse(ScreenService.wakeUpDelay);
         expect(f.remote.screenCommands.map((c) => c.enabled), [false, true]);
         f.dispose(time);
       });
