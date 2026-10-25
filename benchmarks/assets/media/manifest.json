@@ -1,0 +1,65 @@
+{
+  "seed": 42,
+  "files": [
+    {
+      "name": "photo_a.jpg",
+      "kind": "image",
+      "width": 4032,
+      "height": 3024,
+      "role": "photo_a",
+      "bytes": 3624485,
+      "sha256": "ed6957d4c861e20c55354d43ea10a0ad134c6d33f87f2edc712fedcf1d4b8d81"
+    },
+    {
+      "name": "photo_b.jpg",
+      "kind": "image",
+      "width": 6000,
+      "height": 4000,
+      "role": "photo_b",
+      "bytes": 5278781,
+      "sha256": "3c2acb883f9054d27a1b27455e82f54bfacb551d8e0d348cb254951667b8dc37"
+    },
+    {
+      "name": "photo_large.jpg",
+      "kind": "image",
+      "width": 8000,
+      "height": 6000,
+      "role": "photo_large",
+      "bytes": 10192467,
+      "sha256": "0b7688046e557c4a4d2e20306ec118e6330b607d59f3d14ab9948bca51cbbf84"
+    },
+    {
+      "name": "animation.gif",
+      "kind": "gif",
+      "width": 480,
+      "height": 270,
+      "frames": 24,
+      "bytes": 61539,
+      "sha256": "3b53d0572684f70ebf5bb325d17bcb15c37dd060576f5e6055ab320b7fa89807"
+    },
+    {
+      "name": "video_a.mp4",
+      "kind": "video",
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "duration_seconds": 8,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "bytes": 4176542,
+      "sha256": "d5daf11ae8f94eb20ddfce234b9ae362f1515eacc725b023826c9a90b5bf702a"
+    },
+    {
+      "name": "video_b.mp4",
+      "kind": "video",
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "duration_seconds": 8,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "bytes": 4104985,
+      "sha256": "db0484e76ae435f44444233279aff662028f39743b17c4335f385257f960e2ea"
+    }
+  ]
+}

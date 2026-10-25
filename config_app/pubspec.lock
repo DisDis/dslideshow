@@ -302,7 +302,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "10.0.0+3"
+    version: "10.0.0+5"
   dslideshow_common:
     dependency: "direct main"
     description:
@@ -316,7 +316,7 @@ packages:
       path: "../dslideshow_flutter"
       relative: true
     source: path
-    version: "10.0.0+3"
+    version: "10.0.0+5"
   dslideshow_i18n:
     dependency: "direct main"
     description:

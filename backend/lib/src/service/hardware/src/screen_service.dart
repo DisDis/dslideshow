@@ -5,34 +5,21 @@ import 'package:logging/logging.dart';
 import 'hardware_service_config.dart';
 import 'screen_power.dart';
 
-enum ScreenPhase {
-  on,
-  waitingOff,
-  fadingOut,
-  poweringOff,
-  off,
-  wakingUp,
-  fadingIn,
-  failed,
-  disposed,
-}
+enum ScreenPhase { on, waitingOff, fadingOut, poweringOff, off, wakingUp, fadingIn, failed, disposed }
 
 enum ScreenTransitionResult { applied, cancelled, failed }
 
 class ScreenService {
-  static const Duration wakeUpDelay = Duration(milliseconds: 500);
+  static const Duration wakeUpDelay = Duration(milliseconds: 2000);
   static final _log = Logger('ScreenService');
   final HardwareConfig _config;
   final ScreenPower _power;
   final Duration _fadeDuration;
   final _stateChangePreparation = StreamController<bool>.broadcast();
 
-  ScreenService(
-    this._config, {
-    ScreenPower? power,
-    Duration preparationOffTime = const Duration(milliseconds: 2000),
-  }) : _power = power ?? SystemScreenPower(_config),
-       _fadeDuration = preparationOffTime;
+  ScreenService(this._config, {ScreenPower? power, Duration preparationOffTime = const Duration(milliseconds: 2000)})
+    : _power = power ?? SystemScreenPower(_config),
+      _fadeDuration = preparationOffTime;
 
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
   bool get isScreenOn => _confirmedPower == true;
@@ -69,8 +56,7 @@ class ScreenService {
       return Future.value(ScreenTransitionResult.cancelled);
     }
     if (_desiredOn && _phase != ScreenPhase.failed) {
-      return _transition?.future ??
-          Future.value(ScreenTransitionResult.applied);
+      return _transition?.future ?? Future.value(ScreenTransitionResult.applied);
     }
     final completion = _beginTransition(true);
     final generation = _generation;
@@ -88,23 +74,17 @@ class ScreenService {
     final completion = _beginTransition(false);
     final generation = _generation;
     _phase = ScreenPhase.waitingOff;
-    _timerScreenOff = Timer(
-      Duration(seconds: _config.screenPowerOnTimerSec),
-      () {
-        if (!_isCurrent(generation)) return;
-        _timerScreenOff = null;
-        _startFadeOut(generation, completion);
-      },
-    );
+    _timerScreenOff = Timer(Duration(seconds: _config.screenPowerOnTimerSec), () {
+      if (!_isCurrent(generation)) return;
+      _timerScreenOff = null;
+      _startFadeOut(generation, completion);
+    });
   }
 
   Future<ScreenTransitionResult> screenOff() {
     if (_disposed) return Future.value(ScreenTransitionResult.cancelled);
-    if (!_desiredOn &&
-        _phase != ScreenPhase.waitingOff &&
-        _phase != ScreenPhase.failed) {
-      return _transition?.future ??
-          Future.value(ScreenTransitionResult.applied);
+    if (!_desiredOn && _phase != ScreenPhase.waitingOff && _phase != ScreenPhase.failed) {
+      return _transition?.future ?? Future.value(ScreenTransitionResult.applied);
     }
     final completion = _beginTransition(false);
     _startFadeOut(_generation, completion);
@@ -128,10 +108,7 @@ class ScreenService {
 
   bool _isCurrent(int generation) => !_disposed && generation == _generation;
 
-  void _startFadeOut(
-    int generation,
-    Completer<ScreenTransitionResult> completion,
-  ) {
+  void _startFadeOut(int generation, Completer<ScreenTransitionResult> completion) {
     if (!_isCurrent(generation)) return;
     _cancelFadeIn();
     _phase = ScreenPhase.fadingOut;
@@ -144,10 +121,7 @@ class ScreenService {
     });
   }
 
-  void _startFadeIn(
-    int generation,
-    Completer<ScreenTransitionResult> completion,
-  ) {
+  void _startFadeIn(int generation, Completer<ScreenTransitionResult> completion) {
     if (!_isCurrent(generation)) return;
     if (!_visible) {
       final animation = Completer<void>();
@@ -180,10 +154,7 @@ class ScreenService {
     );
   }
 
-  void _waitForDisplay(
-    int generation,
-    Completer<ScreenTransitionResult> completion,
-  ) {
+  void _waitForDisplay(int generation, Completer<ScreenTransitionResult> completion) {
     if (!_isCurrent(generation)) return;
     final ready = _wakeUpCompletion;
     if (ready == null) {
@@ -230,11 +201,7 @@ class ScreenService {
     if (animation != null && !animation.isCompleted) animation.complete();
   }
 
-  void _enqueuePower(
-    bool enabled,
-    int generation,
-    Completer<ScreenTransitionResult> completion,
-  ) {
+  void _enqueuePower(bool enabled, int generation, Completer<ScreenTransitionResult> completion) {
     // Only hardware work is queued. New intentions and fade cancellation remain
     // synchronous, so they never wait behind a modeset or a script.
     _powerQueue = _powerQueue.then((_) async {
@@ -286,10 +253,7 @@ class ScreenService {
     _stateChangePreparation.add(enabled);
   }
 
-  void _complete(
-    Completer<ScreenTransitionResult> completion,
-    ScreenTransitionResult result,
-  ) {
+  void _complete(Completer<ScreenTransitionResult> completion, ScreenTransitionResult result) {
     if (!completion.isCompleted) completion.complete(result);
     if (identical(_transition, completion)) _transition = null;
   }
