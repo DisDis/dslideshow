@@ -1,81 +1,215 @@
 import 'dart:async';
-import 'dart:io' as io;
-import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
+
 import 'package:logging/logging.dart';
-import 'package:dpms/dpms.dart';
+
+import 'hardware_service_config.dart';
+import 'screen_power.dart';
+
+enum ScreenPhase {
+  on,
+  waitingOff,
+  fadingOut,
+  poweringOff,
+  off,
+  wakingUp,
+  failed,
+  disposed,
+}
+
+enum ScreenTransitionResult { applied, cancelled, failed }
 
 class ScreenService {
-  static final Logger _log = new Logger('ScreenService');
-  static final dpmsLinux = Dpms.instance;
+  static final _log = Logger('ScreenService');
   final HardwareConfig _config;
+  final ScreenPower _power;
+  final Duration _preparationOffTime;
+  final _stateChangePreparation = StreamController<bool>.broadcast();
 
-  // Property?
-  bool isScreenOffLock = false;
+  ScreenService(
+    this._config, {
+    ScreenPower? power,
+    Duration preparationOffTime = const Duration(milliseconds: 2000),
+  }) : _power = power ?? SystemScreenPower(_config),
+       _preparationOffTime = preparationOffTime;
 
-  final _stateChangePreparation = new StreamController<bool>.broadcast();
-
-  final Duration _preparationOffTime = const Duration(milliseconds: 2000);
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
-
-  ScreenService(this._config);
+  bool get isScreenOn => _confirmedPower == true;
+  ScreenPhase get phase => _phase;
+  ScreenPhase _phase = ScreenPhase.on;
+  bool? _confirmedPower = true;
+  bool _desiredOn = true;
+  bool _visible = true;
+  bool _powerBusy = false;
+  bool _disposed = false;
+  bool _isScreenOffLock = false;
+  int _generation = 0;
   Timer? _timerScreenOff;
-  bool get isScreenOn => _screenOn;
-  bool _screenOn = true;
+  Timer? _fadeTimer;
+  Completer<ScreenTransitionResult>? _transition;
+  Future<void> _powerQueue = Future.value();
+  Future<void>? _disposeFuture;
 
-  void screenOn() async {
-    _log.info('screenOn');
-    if (isScreenOffLock) {
-      _log.info('"screenOn" is canceled because the screen is lock');
-      return;
+  bool get isScreenOffLock => _isScreenOffLock;
+  set isScreenOffLock(bool value) {
+    if (_disposed || value == _isScreenOffLock) return;
+    _isScreenOffLock = value;
+    // Locking takes effect before the separate ScreenTurnCommand can arrive,
+    // including when a wake command is already in flight.
+    if (value) unawaited(screenOff());
+  }
+
+  Future<ScreenTransitionResult> screenOn() {
+    if (_disposed || _isScreenOffLock) {
+      return Future.value(ScreenTransitionResult.cancelled);
     }
-    if (_timerScreenOff != null) {
-      _timerScreenOff!.cancel();
-      _timerScreenOff = null;
+    if (_desiredOn && _phase != ScreenPhase.failed) {
+      return _transition?.future ??
+          Future.value(ScreenTransitionResult.applied);
     }
-    try {
-      if (!_screenOn) {
-        io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
-        if (dpmsLinux != null) {
-          dpmsLinux!.setMode(PowerMode.on);
-        }
-        _screenOn = true;
-        _stateChangePreparation.add(true);
-      } else {
-        _log.info('"screenOn" is skipped because the screen was turned on');
-      }
-    } catch (e, s) {
-      _log.severe('screenOn', e, s);
+    final completion = _beginTransition(true);
+    final generation = _generation;
+    if (_confirmedPower == true && !_powerBusy) {
+      _phase = ScreenPhase.on;
+      _publish(true); // Also undo a fade while the panel is still powered on.
+      _complete(completion, ScreenTransitionResult.applied);
+    } else {
+      _phase = ScreenPhase.wakingUp;
+      _enqueuePower(true, generation, completion);
     }
+    return completion.future;
   }
 
   void scheduleScreenOff() {
-    _log.info('scheduleScreenOff');
-    if (_timerScreenOff != null) {
-      _timerScreenOff!.cancel();
-      _timerScreenOff = null;
+    if (_disposed || _isScreenOffLock || !_desiredOn) return;
+    final completion = _beginTransition(false);
+    final generation = _generation;
+    _phase = ScreenPhase.waitingOff;
+    _timerScreenOff = Timer(
+      Duration(seconds: _config.screenPowerOnTimerSec),
+      () {
+        if (!_isCurrent(generation)) return;
+        _timerScreenOff = null;
+        _startFade(generation, completion);
+      },
+    );
+  }
+
+  Future<ScreenTransitionResult> screenOff() {
+    if (_disposed) return Future.value(ScreenTransitionResult.cancelled);
+    if (!_desiredOn &&
+        _phase != ScreenPhase.waitingOff &&
+        _phase != ScreenPhase.failed) {
+      return _transition?.future ??
+          Future.value(ScreenTransitionResult.applied);
     }
-    _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec), () {
-      _timerScreenOff = null;
-      screenOff();
+    final completion = _beginTransition(false);
+    _startFade(_generation, completion);
+    return completion.future;
+  }
+
+  Completer<ScreenTransitionResult> _beginTransition(bool enabled) {
+    _generation++;
+    _timerScreenOff?.cancel();
+    _timerScreenOff = null;
+    _fadeTimer?.cancel();
+    _fadeTimer = null;
+    final previous = _transition;
+    if (previous != null) _complete(previous, ScreenTransitionResult.cancelled);
+    _desiredOn = enabled;
+    final completion = Completer<ScreenTransitionResult>();
+    _transition = completion;
+    _log.info('Screen transition $_generation: ${enabled ? "ON" : "OFF"}');
+    return completion;
+  }
+
+  bool _isCurrent(int generation) => !_disposed && generation == _generation;
+
+  void _startFade(
+    int generation,
+    Completer<ScreenTransitionResult> completion,
+  ) {
+    if (!_isCurrent(generation)) return;
+    _phase = ScreenPhase.fadingOut;
+    _publish(false);
+    _fadeTimer = Timer(_preparationOffTime, () {
+      if (!_isCurrent(generation) || _desiredOn) return;
+      _fadeTimer = null;
+      _phase = ScreenPhase.poweringOff;
+      _enqueuePower(false, generation, completion);
     });
   }
 
-  void screenOff() async {
-    _log.info('screenOff');
-    if (_timerScreenOff != null) {
-      _timerScreenOff!.cancel();
-      _timerScreenOff = null;
-    }
-    try {
-      _stateChangePreparation.add(false);
-      await Future<void>.delayed(_preparationOffTime);
-      io.Process.run(_config.screenPowerOffScript, [], runInShell: true);
-      if (dpmsLinux != null) {
-        dpmsLinux!.setMode(PowerMode.off);
+  void _enqueuePower(
+    bool enabled,
+    int generation,
+    Completer<ScreenTransitionResult> completion,
+  ) {
+    // Only hardware work is queued. New intentions and fade cancellation remain
+    // synchronous, so they never wait behind a modeset or a script.
+    _powerQueue = _powerQueue.then((_) async {
+      if (!_isCurrent(generation)) {
+        _complete(completion, ScreenTransitionResult.cancelled);
+        return;
       }
-      _screenOn = false;
-    } catch (e, s) {
-      _log.severe('screenOff', e, s);
+      try {
+        if (_confirmedPower != enabled) {
+          _powerBusy = true;
+          _log.info('Screen hardware $generation: ${enabled ? "ON" : "OFF"}');
+          await _power.setPower(enabled);
+          // Record the actual effect even if the request became stale. The next
+          // queued request must reconcile this effect with the latest intention.
+          _confirmedPower = enabled;
+        }
+        if (_isCurrent(generation)) {
+          _phase = enabled ? ScreenPhase.on : ScreenPhase.off;
+          _publish(enabled);
+          _complete(completion, ScreenTransitionResult.applied);
+        } else {
+          _complete(completion, ScreenTransitionResult.cancelled);
+        }
+      } catch (error, stack) {
+        // A partial script/modeset may have changed power.
+        _confirmedPower = null;
+        _log.severe('Screen hardware $generation failed', error, stack);
+        if (_isCurrent(generation)) {
+          _phase = ScreenPhase.failed;
+          _complete(completion, ScreenTransitionResult.failed);
+        } else {
+          _complete(completion, ScreenTransitionResult.cancelled);
+        }
+      } finally {
+        _powerBusy = false;
+      }
+    });
+  }
+
+  void _publish(bool enabled) {
+    if (_disposed || _visible == enabled) return;
+    _visible = enabled;
+    _stateChangePreparation.add(enabled);
+  }
+
+  void _complete(
+    Completer<ScreenTransitionResult> completion,
+    ScreenTransitionResult result,
+  ) {
+    if (!completion.isCompleted) completion.complete(result);
+    if (identical(_transition, completion)) _transition = null;
+  }
+
+  Future<void> dispose() => _disposeFuture ??= _dispose();
+
+  Future<void> _dispose() async {
+    _disposed = true;
+    _generation++;
+    _phase = ScreenPhase.disposed;
+    _timerScreenOff?.cancel();
+    _fadeTimer?.cancel();
+    final completion = _transition;
+    if (completion != null) {
+      _complete(completion, ScreenTransitionResult.cancelled);
     }
+    await _powerQueue;
+    await _stateChangePreparation.close();
   }
 }

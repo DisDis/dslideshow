@@ -4,7 +4,7 @@ set -euo pipefail
 ulimit -c 0
 app_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 suite=${BENCHMARK_SUITE:-}
-renderers=${BENCHMARK_RENDERERS:-both}
+renderers=${BENCHMARK_RENDERERS:-opengl}
 bundle=${BENCHMARK_BUNDLE:-$app_dir/bundle}
 runtime=${FLUTTER_PI:-/opt/dslideshow/flutter-pi}
 output=${BENCHMARK_REPORT_ROOT:-$app_dir/reports}
@@ -25,7 +25,7 @@ while (($#)); do
     --vulkan-video) vulkan_video=true; shift;;
     --no-vulkan-video) vulkan_video=false; shift;;
     --) shift; extra=("$@"); break;;
-    -h|--help) echo 'run.sh [--suite smoke|standard|soak] [--renderers both|opengl|vulkan] [--vulkan-video|--no-vulkan-video] [--bundle DIR] [--flutter-pi FILE] [--output DIR] [--config JSON] [--timeout SECONDS] [-- ENGINE_ARGS]'; exit 0;;
+    -h|--help) echo 'run.sh [--suite smoke|standard|soak] [--renderers opengl|vulkan|both (default: opengl)] [--vulkan-video|--no-vulkan-video] [--bundle DIR] [--flutter-pi FILE] [--output DIR] [--config JSON] [--timeout SECONDS] [-- ENGINE_ARGS]'; exit 0;;
     *) echo "Unknown argument: $1" >&2; exit 2;;
   esac
 done

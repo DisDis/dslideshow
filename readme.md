@@ -30,6 +30,7 @@ More [info](https://github.com/DisDis/article-dslideshow)
 * [Сборка Linux/Raspberry Pi и устранение ошибки GTK](dslideshow_flutter/README.md)
 * [Запуск бенчмарков и регрессионных проверок на RaPi5](doc/raspberry-pi-benchmarks.md)
 * [Версии, changelog и выпуск DEB](doc/releasing.md)
+* [Сон экрана, датчик присутствия и регрессионные проверки](doc/screen-presence.md)
 * [Анализ проекта и предложения по улучшению](doc/project-review-2026-10.md)
 
 # TODO:

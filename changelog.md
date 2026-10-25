@@ -1,5 +1,14 @@
 # Unreleased
 
+* Use OpenGL as the default benchmark renderer; defer Vulkan device runs until
+  the native runtime supports video. Add focused ZoomOver/BlurFade photo/GIF,
+  video and visual regression configurations.
+* Cancel screen sleep and reverse fading immediately when presence returns;
+  serialize hardware power changes and ignore superseded asynchronous results.
+  Preserve manual sleep priority and handle stale manual lock RPC responses.
+* Replace dropped GPIO edges with immediate presence and confirmed absence;
+  dispose screen timers/subscriptions and add Linux backend/Flutter regressions.
+  Physical display/GPIO acceptance remains pending.
 * Update Flutter/Dart dependencies and Linux desktop build support, including
   GTK dependency checks and the Snap VS Code environment fix.
 * Improve image/video resource handling and transition rendering; preserve

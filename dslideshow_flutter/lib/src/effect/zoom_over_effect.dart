@@ -39,9 +39,12 @@ class ZoomOverEffect extends MediaSliderItemEffect {
         // 2. Новое изображение (появляется сверху)
         Opacity(
           opacity: Curves.easeIn.transform(controller.value),
-          child: Transform.scale(
-            scale: startScale - (startScale - 1.0) * controller.value,
-            child: nextWidget,
+          // Bound the opacity surface before the incoming slide is enlarged.
+          child: ClipRect(
+            child: Transform.scale(
+              scale: startScale - (startScale - 1.0) * controller.value,
+              child: nextWidget,
+            ),
           ),
         ),
       ],

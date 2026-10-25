@@ -14,6 +14,9 @@ class ApplicationStateService {
   ApplicationState get state => _state;
   // Timer to manage debounce duration
   Timer? _debounce;
+  final _subscriptions = <StreamSubscription<dynamic>>[];
+  bool _disposed = false;
+  Future<void>? _disposeFuture;
   final ScreenService screenService;
   final GPIOService gpioService;
 
@@ -21,11 +24,14 @@ class ApplicationStateService {
     required this.screenService,
     required this.gpioService,
   }) {
-    screenService.onStateChangePreparation.listen(_onScreenChanged);
-    gpioService.onMotion.listen(_onMotion);
+    _subscriptions.add(
+      screenService.onStateChangePreparation.listen(_onScreenChanged),
+    );
+    _subscriptions.add(gpioService.onMotion.listen(_onMotion));
   }
 
-  update(ApplicationState newState) {
+  void update(ApplicationState newState) {
+    if (_disposed) return;
     _state = newState;
 
     // Cancel the previous timer
@@ -46,6 +52,17 @@ class ApplicationStateService {
 
   void _onMotion(bool value) {
     update(state.copyWith(isMotion: value));
+  }
+
+  Future<void> dispose() => _disposeFuture ??= _dispose();
+
+  Future<void> _dispose() async {
+    _disposed = true;
+    _debounce?.cancel();
+    await Future.wait(
+      _subscriptions.map((subscription) => subscription.cancel()),
+    );
+    await _scApplicationState.close();
   }
 }
 

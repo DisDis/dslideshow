@@ -6,6 +6,8 @@ import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_con
 import 'package:flutter_gpiod/flutter_gpiod.dart';
 import 'package:logging/logging.dart';
 
+import 'presence_filter.dart';
+
 class GPIOServiceImpl extends GPIOService {
   static final int maxButtonDetectTimeMs = 5000;
   static final Logger _log = new Logger('GPIOFlutterService');
@@ -29,7 +31,15 @@ class GPIOServiceImpl extends GPIOService {
 
   Stream<ButtonEvent> get onButtonEvent => _scButtonEvent.stream;
 
-  GPIOServiceImpl(this._config) {}
+  final _subscriptions = <StreamSubscription<dynamic>>[];
+  final _requestedLines = <GpioLine>[];
+  PresenceFilter? _presenceFilter;
+  Timer? _initialSample;
+  bool _initialized = false;
+  bool _released = false;
+  Future<void>? _releaseFuture;
+
+  GPIOServiceImpl(this._config);
 
   void _status() async {
     _log.info('GPIO Status:');
@@ -55,9 +65,10 @@ class GPIOServiceImpl extends GPIOService {
     }
   }
 
-  DateTime _lastPIRTime = new DateTime.now();
-
-  Future init() async {
+  Future<void> init() async {
+    if (_released) throw StateError('GPIO service has been released');
+    if (_initialized) return;
+    _initialized = true;
     _log.info('init...');
     try {
       /// Retrieve the list of GPIO chips.
@@ -89,6 +100,7 @@ class GPIOServiceImpl extends GPIOService {
       _lineButton3 = _chip.lines[_config.pinButton3];
 
       _linePowerLED.requestOutput(consumer: "PowerLED", initialValue: true);
+      _requestedLines.add(_linePowerLED);
 
       _linePeopleSensor.requestInput(
         consumer: "People Sensor",
@@ -96,6 +108,7 @@ class GPIOServiceImpl extends GPIOService {
         activeState: ActiveState.high,
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
+      _requestedLines.add(_linePeopleSensor);
 
       _lineButton0.requestInput(
         consumer: "Button0",
@@ -103,35 +116,44 @@ class GPIOServiceImpl extends GPIOService {
         activeState: ActiveState.low,
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
+      _requestedLines.add(_lineButton0);
       _lineButton1.requestInput(
         consumer: "Button1",
         bias: Bias.pullUp,
         activeState: ActiveState.low,
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
+      _requestedLines.add(_lineButton1);
       _lineButton2.requestInput(
         consumer: "Button2",
         bias: Bias.pullUp,
         activeState: ActiveState.low,
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
+      _requestedLines.add(_lineButton2);
       _lineButton3.requestInput(
         consumer: "Button3",
         bias: Bias.pullUp,
         activeState: ActiveState.low,
         triggers: {SignalEdge.falling, SignalEdge.rising},
       );
+      _requestedLines.add(_lineButton3);
 
-      _linePeopleSensor.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
+      _presenceFilter = PresenceFilter(
+        absenceDelay: Duration(milliseconds: _config.smoothingGPIOMs),
+        readLevel: _linePeopleSensor.getValue,
+        onChanged: _scMotion.add,
+      );
+      _subscriptions.add(
+        _linePeopleSensor.onEvent.listen((event) {
           _log.info('People Sensor: $event');
-          _lastPIRTime = DateTime.now();
-          _scMotion.add(event.edge == SignalEdge.rising);
-        }
+          _presenceFilter!.onLevel(event.edge == SignalEdge.rising);
+        }),
+      );
+      _initialSample = Timer(const Duration(milliseconds: 200), () {
+        _initialSample = null;
+        _presenceFilter!.sample();
       });
-      Future.delayed(
-        Duration(milliseconds: 200),
-      ).then((_) => _scMotion.add(_linePeopleSensor.getValue()));
 
       final button0Filter = InputLineFilter(
         button: ButtonType.button0,
@@ -157,10 +179,10 @@ class GPIOServiceImpl extends GPIOService {
         maxDetectTimeMs: maxButtonDetectTimeMs,
         scButtonEvent: _scButtonEvent,
       );
-      _lineButton0.onEvent.listen(button0Filter.execute);
-      _lineButton1.onEvent.listen(button1Filter.execute);
-      _lineButton2.onEvent.listen(button2Filter.execute);
-      _lineButton3.onEvent.listen(button3Filter.execute);
+      _subscriptions.add(_lineButton0.onEvent.listen(button0Filter.execute));
+      _subscriptions.add(_lineButton1.onEvent.listen(button1Filter.execute));
+      _subscriptions.add(_lineButton2.onEvent.listen(button2Filter.execute));
+      _subscriptions.add(_lineButton3.onEvent.listen(button3Filter.execute));
 
       _log.info('initialization completed');
     } catch (e, s) {
@@ -169,17 +191,32 @@ class GPIOServiceImpl extends GPIOService {
     _status();
   }
 
-  Future release() async {
-    _linePowerLED.release();
-    _linePeopleSensor.release();
-    _lineButton0.release();
-    _lineButton3.release();
-    _lineButton1.release();
-    _lineButton2.release();
+  Future<void> release() => _releaseFuture ??= _release();
+
+  Future<void> _release() async {
+    _released = true;
+    _initialSample?.cancel();
+    _presenceFilter?.dispose();
+    await Future.wait(
+      _subscriptions.map((subscription) => subscription.cancel()),
+    );
+    for (final line in _requestedLines.reversed) {
+      try {
+        line.release();
+      } catch (error, stack) {
+        _log.warning('GPIO release failed', error, stack);
+      }
+    }
+    _requestedLines.clear();
+    await _scMotion.close();
+    await _scButtonEvent.close();
   }
 
   set powerLED(bool? value) {
-    if (_powerLEDStatus == value) {
+    if (_released ||
+        !_initialized ||
+        _requestedLines.isEmpty ||
+        _powerLEDStatus == value) {
       return;
     }
     _powerLEDStatus = value;

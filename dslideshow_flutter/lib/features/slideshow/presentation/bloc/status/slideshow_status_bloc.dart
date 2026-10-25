@@ -6,23 +6,25 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 
 part 'slideshow_status_bloc.freezed.dart';
 part 'slideshow_status_event.dart';
 part 'slideshow_status_state.dart';
 
-class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusState> {
+class SlideshowStatusBloc
+    extends Bloc<SlideshowStatusEvent, SlideshowStatusState> {
   final FrontendService frontendService;
   final SlideShowConfig config;
   StreamSubscription? _onActionSubscription;
+  int _screenLockGeneration = 0;
+  final _waits = CancellableWaits();
 
   final _scPause = StreamController<bool>.broadcast();
   Stream<bool> get onPause => _scPause.stream;
 
-  SlideshowStatusBloc({
-    required this.frontendService,
-    required this.config,
-  }) : super(const SlideshowStatusState()) {
+  SlideshowStatusBloc({required this.frontendService, required this.config})
+    : super(const SlideshowStatusState()) {
     on<SlideshowChangeStorageStatusEvent>((event, emit) {
       emit(state.copyWith(storageStatus: event.value));
     });
@@ -40,22 +42,25 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     });
 
     on<SlideshowPauseEvent>((event, emit) {
+      if (_waits.isClosed) return;
       emit(state.copyWith(isPaused: event.value));
       _scPause.add(event.value);
     });
     on<SlideshowScreenLockEvent>((event, emit) async {
+      if (_waits.isClosed) return;
+      final generation = ++_screenLockGeneration;
       emit(state.copyWith(isScreenLock: event.value));
-      await frontendService.changeScreenLock(event.value);
-      if (event.value) {
-        frontendService.screenTurn(false);
-      } else {
-        frontendService.screenTurn(true);
-      }
+      await _waits.wait(frontendService.changeScreenLock(event.value));
+      if (emit.isDone || generation != _screenLockGeneration) return;
+      await _waits.wait(frontendService.screenTurn(!event.value));
     });
-    _onActionSubscription = frontendService.onAction.listen((actionP) => executeAction(actionP.action, actionP.param));
+    _onActionSubscription = frontendService.onAction.listen(
+      (actionP) => executeAction(actionP.action, actionP.param),
+    );
   }
 
   void executeAction(SlideshowAction action, [bool? value]) {
+    if (_waits.isClosed) return;
     switch (action) {
       case SlideshowAction.pause:
         _pause(value);
@@ -95,10 +100,11 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   }
 
   @override
-  Future<void> close() {
-    _onActionSubscription?.cancel();
-    _onActionSubscription = null;
-
-    return super.close();
+  Future<void> close() async {
+    _screenLockGeneration++;
+    _waits.close();
+    await _onActionSubscription?.cancel();
+    await _scPause.close();
+    await super.close();
   }
 }

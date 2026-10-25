@@ -156,7 +156,7 @@ p=pathlib.Path(os.environ['BENCHMARK_OUTPUT'])
             self.assertIn("&lt;unsafe&gt;", document)
             self.assertNotIn("<unsafe>", document)
 
-    def test_ssh_launcher_automatically_runs_both_and_archives_native_crash(self):
+    def test_ssh_launcher_explicit_both_archives_native_crash(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             bundle = root / "bundle with spaces"
@@ -177,6 +177,7 @@ if renderer == 'vulkan':
 ''')
             runtime.chmod(0o755)
             process = subprocess.run(["bash", str(APP / "run.sh"), "--suite", "smoke",
+                "--renderers", "both",
                 "--flutter-pi", str(runtime), "--bundle", str(bundle),
                 "--output", str(root / "reports")], text=True, capture_output=True, timeout=20,
                 env={**os.environ, "XDG_RUNTIME_DIR":str(root)})

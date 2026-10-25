@@ -9,6 +9,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slidesho
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
@@ -26,6 +27,8 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
 
   // Таймер отображения слайда
   Timer? _displayTimer;
+  bool _closing = false;
+  final _waits = CancellableWaits();
 
   // Подписки
   late StreamSubscription<ButtonEvent> _onButtonEventSubscription;
@@ -66,6 +69,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     SlideshowInitEvent event,
     Emitter<SlideshowState> emit,
   ) async {
+    if (_closing || emit.isDone) return;
     // Настройка эффектов
     final allowedETmp = config.allowedEffects;
     if (allowedETmp.isNotEmpty) {
@@ -79,12 +83,14 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     // Подписки
     _onScreenStateSubscription = frontendService.onScreenStateChangePreparation
         .listen((enabled) {
-          add(SlideshowScreenStatePreparationEvent(enabled));
+          if (!_closing && !isClosed) {
+            add(SlideshowScreenStatePreparationEvent(enabled));
+          }
         });
 
     _onPauseSubscription = statusBloc.onPause.listen((isPaused) {
-      if (!isClosed){
-       add(SlideshowTogglePauseEvent(isPaused));
+      if (!_closing && !isClosed) {
+        add(SlideshowTogglePauseEvent(isPaused));
       }
     });
 
@@ -101,6 +107,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     SlideshowLoadNextEvent event,
     Emitter<SlideshowState> emit,
   ) async {
+    if (_closing) return;
     if (state.isPaused && state.currentItem != null) {
       return;
     }
@@ -109,10 +116,14 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
 
     // Логика загрузки
     if (!state.isPaused) {
-      await frontendService.storageNext();
+      await _waits.wait(frontendService.storageNext());
+      if (emit.isDone || _closing) return;
     }
 
-    final mediaItem = await frontendService.getStorageCurrentItem();
+    final mediaItem = await _waits.wait(
+      frontendService.getStorageCurrentItem(),
+    );
+    if (emit.isDone || _closing || mediaItem == null) return;
     if (mediaItem.uri != null) {
       _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
@@ -167,10 +178,11 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
 
   void _startDisplayTimer() {
     _displayTimer?.cancel();
-    if (state.isPaused || state.isScreenLocked) return;
+    if (_closing || state.isPaused || state.isScreenLocked) return;
 
     final displayTimeMs = config.displayTimeMs;
     _displayTimer = Timer(Duration(milliseconds: displayTimeMs), () {
+      if (_closing || isClosed) return;
       add(const SlideshowTimerCompleteEvent());
     });
   }
@@ -189,44 +201,28 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     }
   }
 
-  // Та самая сложная логика Fade Out / Screen Lock
-  Future<void> _onScreenStatePreparation(
+  void _onScreenStatePreparation(
     SlideshowScreenStatePreparationEvent event,
     Emitter<SlideshowState> emit,
-  ) async {
-    final enabled = event.enabled;
-    // _screenState = enabled;
-
-    if (enabled == false) {
-      // Screen OFF preparation
+  ) {
+    final locked = !event.enabled;
+    if (state.isScreenLocked == locked && state.fadeOut == locked) return;
+    if (locked) {
       _displayTimer?.cancel();
-      // Включаем fadeOut анимацию
-      emit(state.copyWith(fadeOut: true));
-      // Саму блокировку можно выставить чуть позже или сразу, зависит от FrontendService,
-      // но для UI главное начать fadeOut.
-      emit(state.copyWith(isScreenLocked: true));
-    } else {
-      // Screen ON preparation
-      final fadeTimeMs = config.fadeTimeMs;
-      // Ждем, как в оригинале: delay(fadeTime + 1 sec)
-      // В блоке нельзя делать delay внутри обработчика блокируя его, но async работает.
-      await Future<void>.delayed(Duration(milliseconds: fadeTimeMs + 1000));
+      emit(state.copyWith(fadeOut: true, isScreenLocked: true));
+      return;
+    }
 
-      // Double check (через current state) - в оригинале проверялось поле _screenState
-      // Здесь мы полагаем, что если бы пришло событие OFF, isScreenLocked был бы true
-      // Но событие ON приходит для подготовки.
-
-      // Инвертируем fadeOut -> fadeIn
-      emit(state.copyWith(fadeOut: false, isScreenLocked: false));
-
-      if (!state.isPaused) {
-        if (state.phase == SlideshowPhase.display) {
-          _startDisplayTimer();
-        } else {
-          // Если застряли на переходе, перезагружаем
-          add(const SlideshowLoadNextEvent());
-        }
+    // ON means either fade cancellation or a completed hardware wake. Never
+    // delay this reversal: an old delayed ON could override a newer OFF.
+    emit(state.copyWith(fadeOut: false, isScreenLocked: false));
+    if (!state.isPaused) {
+      if (state.phase == SlideshowPhase.display) {
+        _startDisplayTimer();
+      } else if (state.phase == SlideshowPhase.initial) {
+        add(const SlideshowLoadNextEvent());
       }
+      // Loading, precaching and transitions already have their own completion.
     }
   }
 
@@ -260,11 +256,16 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   }
 
   @override
-  Future<void> close() {
-    _onButtonEventSubscription.cancel();
-    _onScreenStateSubscription?.cancel();
-    _onPauseSubscription?.cancel();
+  Future<void> close() async {
+    _closing = true;
+    _waits.close();
     _displayTimer?.cancel();
-    return super.close();
+    await Future.wait([
+      _onButtonEventSubscription.cancel(),
+      if (_onScreenStateSubscription != null)
+        _onScreenStateSubscription!.cancel(),
+      if (_onPauseSubscription != null) _onPauseSubscription!.cancel(),
+    ]);
+    await super.close();
   }
 }

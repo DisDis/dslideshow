@@ -1,11 +1,11 @@
 {
   "application": "benchmarks",
-  "built_utc": "2026-10-25T07:42:26.724825+00:00",
+  "built_utc": "2026-10-25T08:20:04.065785+00:00",
   "cpu": "pi5",
   "mode": "release",
-  "source_sha256": "b6cd45eab70c5fcb24e721dcdccc88bac5be923b800945ed5757258601fbbb8d",
-  "git_commit": "54686228415c88a8f95bc1eedf7edfe62c854ff2",
-  "git_status": "M benchmarks/README.md\n M benchmarks/assets/build-info.json\n M benchmarks/build_aot_pi5.sh\n M benchmarks/lib/main.dart\n M benchmarks/lib/src/config.dart\n M benchmarks/lib/src/metrics.dart\n M benchmarks/lib/src/plan.dart\n M benchmarks/lib/src/report.dart\n M benchmarks/lib/src/runner.dart\n M benchmarks/lib/src/telemetry.dart\n M benchmarks/lib/src/viewport.dart\n M benchmarks/run.sh\n M benchmarks/test/config_metrics_test.dart\n M benchmarks/test/runner_test.dart\n M benchmarks/tool/collect_reports.py\n M benchmarks/tool/resume_plan.py\n M benchmarks/tool/test_reports.py\n M config_app/.gitignore\n M config_app/README.md\n M doc/effects-work.md\n M doc/hw_test/LD2410\n M dslideshow_flutter/README.md\n M dslideshow_flutter/lib/src/effect/cube_effect.dart\n M dslideshow_flutter/lib/src/effect/flip_horizontal_effect.dart\n M dslideshow_flutter/lib/src/effect/flip_vertical_effect.dart\n M dslideshow_flutter/lib/src/effect/tablet_effect.dart\n M dslideshow_flutter/lib/src/effect/zoom_out_effect.dart\n M dslideshow_flutter/tool/test_linux_dependencies.py\n M dslideshow_flutter/tool/test_linux_host_environment.py\n?? benchmarks/config/visual.json\n?? benchmarks/lib/src/visual_audit.dart\n?? benchmarks/tool/audit_effects_test.dart\n?? benchmarks/tool/visual_report.py\n?? config_app/build_linux.sh\n?? config_app/linux/\n?? doc/linux-build-troubleshooting.md",
+  "source_sha256": "888a33b96ed2d74027215a0c235ad97e8e4b476bb6e6c4df85848ccc02513fb4",
+  "git_commit": "3e04a96f8a2e246e398702a290f259979353beef",
+  "git_status": "M backend/lib/hw_frame.dart\n M backend/lib/src/service/hardware/src/application_state_service.dart\n M backend/lib/src/service/hardware/src/gpio_service_impl.dart\n M backend/lib/src/service/hardware/src/gpio_service_instance_web.dart\n M backend/lib/src/service/hardware/src/hardware_service.dart\n M backend/lib/src/service/hardware/src/screen_service.dart\n M backend/pubspec.lock\n M backend/pubspec.yaml\n M benchmarks/assets/build-info.json\n M doc/hw_test/LD2410\n M dslideshow_flutter/lib/features/slideshow/presentation/bloc/slideshow_bloc.dart\n M dslideshow_flutter/lib/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart\n M dslideshow_flutter/lib/src/effect/blure_fade_effect.dart\n M dslideshow_flutter/lib/src/effect/zoom_over_effect.dart\n?? backend/lib/src/service/hardware/src/presence_filter.dart\n?? backend/lib/src/service/hardware/src/screen_power.dart\n?? backend/test/hardware_screen_test.dart\n?? backend/test/presence_filter_test.dart\n?? backend/test/screen_power_test.dart\n?? backend/test/screen_service_test.dart\n?? benchmarks/config/zoom-blur-visual.json\n?? benchmarks/config/zoom-blur.json\n?? dslideshow_flutter/test/zoom_blur_effect_test.dart",
   "flutter": {
     "frameworkVersion": "3.47.7",
     "channel": "stable",

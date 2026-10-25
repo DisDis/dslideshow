@@ -24,11 +24,11 @@ import 'src/service/hardware/src/gpio_service_instance_stub.dart'
 import 'web_server.dart' as web_server;
 
 final Logger _log = new Logger('main');
-late HardwareService _service;
 
 void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("hw_frame");
   _log.info("Run. Spawned isolate started.");
+  HardwareService? service;
   try {
     final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
     _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
@@ -69,7 +69,12 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<ScreenService>(() {
       final _config = injector.get<AppConfig>();
-      return ScreenService(_config.hardware);
+      return ScreenService(
+        _config.hardware,
+        preparationOffTime: Duration(
+          milliseconds: _config.slideshow.fadeTimeMs,
+        ),
+      );
     });
     injector.registerLazySingleton<WiFiService>(() {
       final _config = injector.get<AppConfig>();
@@ -109,17 +114,17 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;
 
-    _service = injector.get<HardwareService>();
+    service = injector.get<HardwareService>();
 
     await Future.wait([
-      _remoteWebServer.service.processing(_service, serializers),
-      _remoteFrontendService.service.processing(_service, serializers),
+      _remoteWebServer.service.processing(service, serializers),
+      _remoteFrontendService.service.processing(service, serializers),
     ]);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
     _log.info("Spawned isolate finished with error.");
-    // exit(1);
-    Isolate.exit();
+  } finally {
+    await service?.dispose();
   }
   _log.info("Spawned isolate finished.");
   Isolate.exit();

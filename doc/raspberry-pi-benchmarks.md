@@ -180,13 +180,13 @@ chmod +x run-managed.sh
 bash -n run-managed.sh
 ```
 
-Запуск короткой проверки всех эффектов на фото в обоих renderer:
+Запуск короткой проверки всех эффектов на фото в OpenGL:
 
 ```bash
 cd /home/pi/workspace/benchmarks
 job="$(date -u +%Y%m%dT%H%M%SZ)-visual"
 mkdir -p "managed/$job"
-nohup ./run-managed.sh "$job" --config config/visual.json --renderers both --timeout 3600 \
+nohup ./run-managed.sh "$job" --config config/visual.json --renderers opengl --timeout 3600 \
   > "managed/$job/launcher.log" 2>&1 < /dev/null &
 printf '%s\n' "$job" > managed/latest-job
 ```
@@ -238,16 +238,17 @@ Supervisor передаст TERM launcher, дождётся завершения
 
 | Изменение / задача | Проверка |
 | --- | --- |
-| Сборка, запуск, конфиг, сбор телеметрии | `--suite smoke --renderers both --timeout 3600` |
-| Эффекты, clipping/transform, полигональные артефакты | `--config config/visual.json --renderers both --timeout 3600` и просмотр `visual-report.html` |
-| Общие изменения, влияющие на производительность | `--suite standard --renderers both --timeout 21600`, baseline и candidate в одинаковых условиях |
+| Сборка, запуск, конфиг, сбор телеметрии | `--suite smoke --renderers opengl --timeout 3600` |
+| Эффекты, clipping/transform, полигональные артефакты | `--config config/visual.json --renderers opengl --timeout 3600` и просмотр `visual-report.html` |
+| Общие изменения, влияющие на производительность | `--suite standard --renderers opengl --timeout 21600`, baseline и candidate в одинаковых условиях |
 | Уточнение одного пути/эффекта | Свой JSON с `--config /полный/путь.json`; примеры ниже |
 | Подготовка больших оригиналов | `large-photo` и `photo-photo`, затем реальные фото через `BENCHMARK_MEDIA_DIR` |
 | Жизненный цикл видео | `photo-video`, `video-photo`, `video-video` в OpenGL, отдельно от фото |
 
 `--timeout` — предел **для каждого renderer**, не длительность всего набора.
-`standard` содержит 486 сценариев, один прогрев и три измерения. Дефолтный Vulkan
-пропускает 237 видеосценариев до создания плеера; остаются 249 поддерживаемых.
+`standard` содержит 486 сценариев, один прогрев и три измерения. По умолчанию
+запускается только OpenGL. При будущем явном выборе Vulkan без видеоподдержки
+будут пропущены 237 видеосценариев до создания плеера; останутся 249 поддерживаемых.
 OpenGL video→video сейчас имеет известные native-падения: полный проход может
 продолжаться с новыми процессами, но такие случаи остаются ошибками в отчёте.
 Не используйте полный проход как утверждение о стабильности текущего runtime.
@@ -269,7 +270,7 @@ OpenGL video→video сейчас имеет известные native-паде�
 }
 ```
 
-Аргументы supervisor: `--config config/local-effects.json --renderers both
+Аргументы supervisor: `--config config/local-effects.json --renderers opengl
 --timeout 7200`. Имена эффектов берутся из
 [`Effect`](../dslideshow_flutter/lib/src/effect/effect.dart), поля JSON — из
 [`BenchmarkConfig`](../benchmarks/lib/src/config.dart). Неизвестные имена и поля
@@ -307,7 +308,9 @@ Vulkan callback, находится в [плане](effects-work.md#native-openg
 
 ### Vulkan и реальные оригиналы
 
-Видео Vulkan **выключено по умолчанию**. `--no-vulkan-video` принудительно
+Аппаратные проверки Vulkan сейчас отложены: default renderer — **OpenGL**.
+Переход на Vulkan планируется после поддержки видео в native runtime.
+Видео Vulkan также **выключено по умолчанию**. `--no-vulkan-video` принудительно
 отключает его даже поверх `vulkan_video: true` в JSON. После будущей реализации
 поддержки в native runtime есть явный opt-in `--vulkan-video`; сейчас его не
 нужно добавлять к обычным прогонам. Flutter API и текущая реализация flutter-pi
@@ -321,7 +324,7 @@ Vulkan callback, находится в [плане](effects-work.md#native-openg
 
 ```bash
 BENCHMARK_MEDIA_DIR=/home/pi/workspace/benchmark-originals \
-  nohup ./run-managed.sh "$job" --suite standard --renderers both --timeout 21600 \
+  nohup ./run-managed.sh "$job" --suite standard --renderers opengl --timeout 21600 \
   > "managed/$job/launcher.log" 2>&1 < /dev/null &
 ```
 
@@ -352,7 +355,7 @@ python3 tool/collect_reports.py reports/device-downloads/extracted/ИМЯ
 сохраняйте неизменным, повторную агрегацию выполняйте в распакованной копии.
 Большой архив после разрыва rsync можно докачать той же командой.
 
-* `report.html`, `collection-summary.json` — итог обоих renderer, coverage и ошибки.
+* `report.html`, `collection-summary.json` — итог выбранных renderer, coverage и ошибки.
 * `visual-report.html` — контрольные кадры всех эффектов, если включён visual audit.
 * `opengl/`, `vulkan/` — сводки и `attempt-NNN/` каждой попытки.
 * В попытках: `runs.jsonl`, `frames.jsonl`, `telemetry.jsonl`, `errors.jsonl`,

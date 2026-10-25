@@ -45,6 +45,11 @@ class HardwareService implements RpcService {
   }
 
   final List<Future> _initFutures = <Future>[];
+  final _subscriptions = <StreamSubscription<dynamic>>[];
+  bool _disposed = false;
+  Future<void>? _disposeFuture;
+  Future<void> _screenNotifications = Future.value();
+  Completer<void>? _notificationWait;
   void _init() {
     _initFutures.add(_storage.init());
     if (Platform.isLinux) {
@@ -52,41 +57,96 @@ class HardwareService implements RpcService {
     } else {
       _log.warning('GPIO does not support except Linux');
     }
-    _gpioService.onButtonEvent.listen((event) {
-      _log.info('onButtonEvent button${event.button.index} = $event');
-      _sendButtonEvent(event);
-    });
-    _screenService.onStateChangePreparation.listen((newState) {
-      screenConfigure(newState);
-    });
-    _gpioService.onMotion.listen((event) {
-      _log.info('Motion = $event');
-      if (event) {
-        _screenService.screenOn();
-      } else {
-        _screenService.scheduleScreenOff();
-      }
-    });
-    _mqttService.onPause.listen((event) {
-      _log.info("MQTT: onPause, $event");
-      _executeAction(SlideshowAction.pause, event);
-    });
-    _mqttService.onScreen.listen((event) {
-      _log.info("MQTT: onScreenToggle, $event");
-      // Because toggleScreen has invert logic :(
-      _executeAction(SlideshowAction.toggleScreen, !event);
-    });
-    _mqttService.onMenu.listen((event) {
-      _log.info("MQTT: onMenu, $event");
-      _executeAction(SlideshowAction.showMenu, event);
-    });
+    _subscriptions.add(
+      _gpioService.onButtonEvent.listen((event) {
+        _log.info('onButtonEvent button${event.button.index} = $event');
+        _sendButtonEvent(event);
+      }),
+    );
+    _subscriptions.add(
+      _screenService.onStateChangePreparation.listen((newState) {
+        screenConfigure(newState);
+      }),
+    );
+    _subscriptions.add(
+      _gpioService.onMotion.listen((event) {
+        _log.info('Motion = $event');
+        if (event) {
+          unawaited(_screenService.screenOn());
+        } else {
+          _screenService.scheduleScreenOff();
+        }
+      }),
+    );
+    _subscriptions.add(
+      _mqttService.onPause.listen((event) {
+        _log.info("MQTT: onPause, $event");
+        _executeAction(SlideshowAction.pause, event);
+      }),
+    );
+    _subscriptions.add(
+      _mqttService.onScreen.listen((event) {
+        _log.info("MQTT: onScreenToggle, $event");
+        // Because toggleScreen has invert logic :(
+        _executeAction(SlideshowAction.toggleScreen, !event);
+      }),
+    );
+    _subscriptions.add(
+      _mqttService.onMenu.listen((event) {
+        _log.info("MQTT: onMenu, $event");
+        _executeAction(SlideshowAction.showMenu, event);
+      }),
+    );
     _initFutures.add(_systemInfoService.init());
   }
 
   void screenConfigure(bool enabled) {
-    _frontendService.send(
-      ScreenTurnCommand(enabled: enabled, id: RpcCommand.generateId()),
+    _screenNotifications = _screenNotifications.then((_) async {
+      if (_disposed) return;
+      try {
+        final completion = Completer<void>();
+        _notificationWait = completion;
+        unawaited(
+          _frontendService
+              .send(
+                ScreenTurnCommand(
+                  enabled: enabled,
+                  id: RpcCommand.generateId(),
+                ),
+              )
+              .then<void>(
+                (_) {
+                  if (!completion.isCompleted) completion.complete();
+                },
+                onError: (Object error, StackTrace stack) {
+                  if (!completion.isCompleted)
+                    completion.completeError(error, stack);
+                },
+              ),
+        );
+        await completion.future;
+      } catch (error, stack) {
+        _log.warning('Screen notification failed', error, stack);
+      } finally {
+        _notificationWait = null;
+      }
+    });
+  }
+
+  Future<void> dispose() => _disposeFuture ??= _dispose();
+
+  Future<void> _dispose() async {
+    _disposed = true;
+    final notification = _notificationWait;
+    if (notification != null && !notification.isCompleted)
+      notification.complete();
+    await Future.wait(
+      _subscriptions.map((subscription) => subscription.cancel()),
     );
+    await _applicationStateService.dispose();
+    await _screenService.dispose();
+    await _gpioService.release();
+    await _screenNotifications;
   }
 
   void testEcho(String text) async {
@@ -98,6 +158,11 @@ class HardwareService implements RpcService {
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
+    if (_disposed)
+      return _generateErrorResult(
+        StateError('Hardware service disposed'),
+        command,
+      );
     //    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
     Stopwatch work = new Stopwatch()
       ..reset()
@@ -243,9 +308,9 @@ class HardwareService implements RpcService {
 
   Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
     if (command.enabled) {
-      _screenService.screenOn();
+      unawaited(_screenService.screenOn());
     } else {
-      _screenService.screenOff();
+      unawaited(_screenService.screenOff());
     }
     return EmptyResult.respond(command);
   }
@@ -298,7 +363,6 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  
   Future<WiFiListResult> _executeWiFiListCommand(
     WiFiListCommand command,
   ) async {
@@ -306,9 +370,7 @@ class HardwareService implements RpcService {
     return new WiFiListResult(id: command.id, networks: result);
   }
 
-  Future<RpcResult> _executeWiFiRescanCommand(
-    WiFiRescanCommand command,
-  ) async {
+  Future<RpcResult> _executeWiFiRescanCommand(WiFiRescanCommand command) async {
     _wifiService.rescan();
     return EmptyResult.respond(command);
   }

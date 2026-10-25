@@ -15,8 +15,15 @@ class GPIOServiceImpl extends GPIOService {
   @override
   Stream<bool> get onMotion => _fake.stream;
 
+  Future<void>? _releaseFuture;
+
   @override
-  Future release() async {}
+  Future<void> release() => _releaseFuture ??= _release();
+
+  Future<void> _release() async {
+    await _fake.close();
+    await _fake1.close();
+  }
 
   @override
   set powerLED(bool? value) {}
