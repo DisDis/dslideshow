@@ -187,7 +187,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
 
     final from = await load(test.media.from);
     final to = await load(test.media.to);
-    _effect = test.mosaicProbe != null
+    _effect = test.compositionProbe != null
+        ? test.compositionProbe!.createEffect()
+        : test.mosaicProbe != null
         ? MosaicProbeEffect(
             test.mosaicProbe!,
             grid: test.grid,

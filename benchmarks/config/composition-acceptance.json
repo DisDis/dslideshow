@@ -1,0 +1,16 @@
+{
+  "suite": "smoke",
+  "effects": [
+    "Baseline",
+    "Accordion",
+    "LiquidMorph"
+  ],
+  "media_cases": [
+    "photo-photo",
+    "large-photo"
+  ],
+  "warmups": 1,
+  "repeats": 5,
+  "transition_ms": 1000,
+  "capture_frames": false
+}

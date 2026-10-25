@@ -1,11 +1,11 @@
 {
   "application": "benchmarks",
-  "built_utc": "2026-10-25T11:14:45.826187+00:00",
+  "built_utc": "2026-10-25T14:59:40.141617+00:00",
   "cpu": "pi5",
   "mode": "release",
-  "source_sha256": "1c5a34f91e1bcd0206d7d53e3a4e906629174d3d152a085544ef50757baf2a76",
-  "git_commit": "4ca6342480260fa403cf180dec05b263f281e80e",
-  "git_status": "M backend/pubspec.yaml\n M benchmarks/assets/build-info.json\n M benchmarks/lib/src/plan.dart\n M benchmarks/lib/src/viewport.dart\n M benchmarks/pubspec.lock\n M common/lib/version.dart\n M config_app/pubspec.lock\n M doc/hw_test/LD2410\n M dslideshow_flutter/lib/src/effect/mosaic_fade_effect.dart\n M dslideshow_flutter/lib/src/effect/mosaic_mask.dart\n M dslideshow_flutter/lib/src/effect/mosaic_schedule.dart\n M dslideshow_flutter/pubspec.yaml\n?? benchmarks/config/mosaic-confirm.json\n?? benchmarks/config/mosaic-diagnostics.json\n?? benchmarks/config/mosaic-media.json\n?? benchmarks/config/mosaic-video.json\n?? benchmarks/config/mosaic-visual.json\n?? benchmarks/lib/src/mosaic_probes.dart\n?? benchmarks/test/mosaic_probes_test.dart\n?? benchmarks/tool/audit_mosaic_probes_test.dart\n?? dslideshow_flutter/test/mosaic_optimization_test.dart\n?? dslideshow_flutter/test/support/",
+  "source_sha256": "0d24abf7f91ef7da4fdda1665bcf16c2e437c3a015fb8aeaadb9272e67d74560",
+  "git_commit": "f3256e73c7b82af8ae70c7d5808c4d600fef3f5d",
+  "git_status": "M backend/test/screen_service_test.dart\n M benchmarks/README.md\n M benchmarks/assets/build-info.json\n M benchmarks/lib/src/plan.dart\n M benchmarks/lib/src/viewport.dart\n M benchmarks/pubspec.lock\n M changelog.md\n M doc/effects-work.md\n M doc/hw_test/LD2410\n M doc/screen-presence.md\n M dslideshow_flutter/lib/src/effect/liquid_morph_effect.dart\n?? benchmarks/config/composition-acceptance.json\n?? benchmarks/config/composition-confirm.json\n?? benchmarks/config/composition-diagnostics-visual.json\n?? benchmarks/config/composition-diagnostics.json\n?? benchmarks/config/composition-final-visual.json\n?? benchmarks/config/composition-final.json\n?? benchmarks/config/composition-media.json\n?? benchmarks/config/composition-video.json\n?? benchmarks/config/composition-visual.json\n?? benchmarks/lib/src/composition_probes.dart\n?? benchmarks/lib/src/composition_reference.dart\n?? benchmarks/test/composition_probes_test.dart\n?? benchmarks/tool/audit_composition_probes_test.dart\n?? doc/accordion-liquid-optimization-2026-10.md\n?? dslideshow_flutter/test/composition_effect_test.dart\n?? dslideshow_flutter/test/support/composition_reference.dart",
   "flutter": {
     "frameworkVersion": "3.47.7",
     "channel": "stable",

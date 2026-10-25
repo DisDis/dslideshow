@@ -80,18 +80,21 @@ class _LiquidRevealClipper extends CustomClipper<Path> {
     final phaseSin = math.sin(phase);
     final phaseCos = math.cos(phase);
     final amplitude = intensity * (1 - progress);
+    final points = <Offset>[];
     for (var i = 0; i < geometry.unit.length; i++) {
       final wave =
           geometry.waveSin[i] * phaseCos + geometry.waveCos[i] * phaseSin;
-      final point =
-          center + geometry.unit[i] * math.max(0.0, radius + wave * amplitude);
-      if (i == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
-      }
+      final distance = math.max(0.0, radius + wave * amplitude);
+      points.add(
+        Offset(
+          center.dx + geometry.unit[i].dx * distance,
+          center.dy + geometry.unit[i].dy * distance,
+        ),
+      );
     }
-    return path..close();
+    // Submit the same float coordinates in one native call instead of a call
+    // for each edge. Keep every vertex and the original anti-aliased clip.
+    return path..addPolygon(points, true);
   }
 
   @override

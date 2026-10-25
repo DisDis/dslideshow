@@ -3,6 +3,7 @@ import 'package:dslideshow_flutter/effect.dart';
 import 'config.dart';
 import 'blur_probes.dart';
 import 'mosaic_probes.dart';
+import 'composition_probes.dart';
 
 class MediaPair {
   final String name;
@@ -30,6 +31,7 @@ class BenchmarkCase {
   final bool injectStall;
   final BlurFadeProbe? blurProbe;
   final MosaicProbe? mosaicProbe;
+  final CompositionProbe? compositionProbe;
   const BenchmarkCase(
     this.effect,
     this.media, {
@@ -38,10 +40,12 @@ class BenchmarkCase {
     this.injectStall = false,
     this.blurProbe,
     this.mosaicProbe,
+    this.compositionProbe,
   });
 
   String get name =>
       mosaicProbe?.effectName(effect!) ??
+      compositionProbe?.effectName ??
       blurProbe?.effectName ??
       effect?.name ??
       'Baseline';
@@ -68,12 +72,14 @@ class BenchmarkCase {
     'injected_stall_ms': injectStall ? 80 : 0,
     if (blurProbe != null) 'blur_probe': blurProbe!.name,
     if (mosaicProbe != null) 'mosaic_probe': mosaicProbe!.name,
+    if (compositionProbe != null) 'composition_probe': compositionProbe!.name,
   };
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   final names = Effect.values.map((e) => e.name).toSet()..add('Baseline');
   names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
+  names.addAll(CompositionProbe.values.map((probe) => probe.effectName));
   for (final probe in MosaicProbe.values) {
     for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
       names.add(probe.effectName(effect));
@@ -97,6 +103,11 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
         config.effects!.contains(e?.name ?? 'Baseline'),
   );
   for (final pair in pairs) {
+    for (final probe in CompositionProbe.values) {
+      if (config.effects?.contains(probe.effectName) == true) {
+        result.add(BenchmarkCase(probe.effect, pair, compositionProbe: probe));
+      }
+    }
     for (final probe in MosaicProbe.values) {
       for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
         if (config.effects?.contains(probe.effectName(effect)) != true) {

@@ -13,6 +13,23 @@
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
 с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
+## Диагностика Accordion / LiquidMorph
+
+Наборы `composition-confirm.json`, `composition-visual.json`,
+`composition-media.json`, `composition-video.json` сравнивают штатные эффекты
+с замороженными `CompositionProbe-accordionReference` / `liquidReference`.
+`CompositionProbe-accordionGrouped` сохраняет отклонённый эксперимент с общими
+трансформациями; production Accordion оставлен исходным после обратного A/B.
+Пробы включаются только явно через `effects`. В `composition-diagnostics.json`
+компонентные `accordionNoShadow`, `liquidNoScale`, `liquidNoClip` намеренно меняют
+картинку и нужны только для локализации затрат. `liquidBounded` / `liquidRectTail`
+проходят отдельный пиксельный контроль; их наличие в стенде не означает приёмку
+оптимизации. Все наборы выполняются в OpenGL; видео→видео сюда не входит.
+Методика и выводы — в [разборе RaPi5](../doc/accordion-liquid-optimization-2026-10.md).
+`composition-acceptance.json` задаёт пять повторов на обычных/48 Мп фото;
+`composition-final.json` и `composition-final-visual.json` проверяют окончательный
+код после исключения неподтверждённого изменения Accordion.
+
 ## Диагностика Mosaic / MosaicFade
 
 [Исследование Canvas-маски на RaPi5](../doc/mosaic-optimization-2026-10.md)

@@ -1,0 +1,22 @@
+{
+  "suite": "smoke",
+  "media_cases": [
+    "photo-photo"
+  ],
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false,
+  "effects": [
+    "Baseline",
+    "Accordion",
+    "LiquidMorph",
+    "CompositionProbe-accordionReference",
+    "CompositionProbe-liquidReference",
+    "CompositionProbe-accordionNoShadow",
+    "CompositionProbe-liquidNoScale",
+    "CompositionProbe-liquidNoClip",
+    "CompositionProbe-liquidBounded",
+    "CompositionProbe-liquidRectTail"
+  ]
+}

@@ -1,8 +1,16 @@
 # Unreleased
 
-* Hold the screen black for 500 ms after a successful hardware ON before fading
+* Batch LiquidMorph path vertices without changing wave geometry, sampling or
+  source lifetimes; verify lower UI cost with reverse-order RaPi5 OpenGL A/B.
+  Retain the original Accordion after its grouped-transform experiment failed
+  to show a repeatable gain. Add opt-in composition controls, pixel regressions
+  and focused photo/GIF/video suites; report raster bottlenecks separately.
+
+* Hold the screen black for 2000 ms after a successful hardware ON before fading
   in. Keep the delay in ScreenService.wakeUpDelay; preserve cancellation,
   duplicate-event handling and manual sleep priority during display warm-up.
+  Derive wake-delay regression timings from the constant so it can be tuned
+  without retaining assumptions about the earlier 500 ms delay.
 
 * Reduce Canvas Mosaic/MosaicFade mask work by sorting thresholds during
   preparation and drawing exact alpha groups as points. Preserve dense grids,
