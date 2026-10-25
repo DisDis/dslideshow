@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:flutter/material.dart';
 
@@ -8,8 +9,14 @@ class BlurFadeEffect extends MediaSliderItemEffect {
   BlurFadeEffect({this.maxSigma = 10.0});
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage,
-      double pageDelta, double screenW, double screenH) {
+  Widget transform(
+    BuildContext context,
+    Widget page,
+    bool isCurrentPage,
+    double pageDelta,
+    double screenW,
+    double screenH,
+  ) {
     return page;
   }
 
@@ -18,7 +25,7 @@ class BlurFadeEffect extends MediaSliderItemEffect {
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
   ) {
@@ -29,22 +36,16 @@ class BlurFadeEffect extends MediaSliderItemEffect {
         nextWidget,
 
         // 2. Старое изображение (сверху) с эффектами
-        AnimatedBuilder(
-          animation: controller,
-          builder: (context, child) {
-            // Размытие усиливается от 0 до maxSigma
-            final double sigma = controller.value * maxSigma;
-            // Прозрачность падает от 1.0 до 0.0
-            final double opacity = 1.0 - controller.value;
-
-            return Opacity(
-              opacity: opacity,
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
-                child: currentWidget,
-              ),
-            );
-          },
+        Opacity(
+          opacity: 1.0 - controller.value,
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: controller.value * maxSigma,
+              sigmaY: controller.value * maxSigma,
+            ),
+            enabled: controller.value > 0 && maxSigma > 0,
+            child: currentWidget,
+          ),
         ),
       ],
     );

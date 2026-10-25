@@ -1,0 +1,6 @@
+.dart_tool/
+.flutter-plugins*
+build/
+reports/
+__pycache__/
+assets/media

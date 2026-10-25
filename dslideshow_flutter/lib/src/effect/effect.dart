@@ -1,3 +1,9 @@
+import 'package:flutter/material.dart';
+
+import 'directional_slide_effect.dart';
+import 'fade_through_color_effect.dart';
+import 'reveal_effect.dart';
+
 import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
 import 'package:dslideshow_flutter/src/effect/background_to_foreground_effect.dart';
 import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
@@ -85,9 +91,91 @@ class Effect {
     _createLiquidMorphEffect,
   );
   static const Effect blindsEffect = Effect._('Blinds', _createBlindsEffect);
-  static const Effect blurFadeEffect = Effect._('BlurFade', _createBlurFadeEffect);
-  static const Effect zoomOverEffect = Effect._('ZoomOver', _createZoomOverEffect);  
-  
+  static const Effect blurFadeEffect = Effect._(
+    'BlurFade',
+    _createBlurFadeEffect,
+  );
+  static const Effect zoomOverEffect = Effect._(
+    'ZoomOver',
+    _createZoomOverEffect,
+  );
+
+  static const Effect mosaicTRFadeEffect = Effect._(
+    'MosaicTRFade',
+    _createMosaicTRFade,
+  );
+  static const Effect mosaicBLFadeEffect = Effect._(
+    'MosaicBLFade',
+    _createMosaicBLFade,
+  );
+  static const Effect wipeLeftEffect = Effect._('Wipe Left', _createWipeLeft);
+  static const Effect wipeRightEffect = Effect._(
+    'Wipe Right',
+    _createWipeRight,
+  );
+  static const Effect wipeUpEffect = Effect._('Wipe Up', _createWipeUp);
+  static const Effect wipeDownEffect = Effect._('Wipe Down', _createWipeDown);
+  static const Effect curtainHorizontalEffect = Effect._(
+    'Curtain Horizontal',
+    _createCurtainHorizontal,
+  );
+  static const Effect curtainVerticalEffect = Effect._(
+    'Curtain Vertical',
+    _createCurtainVertical,
+  );
+  static const Effect diagonalTopLeftEffect = Effect._(
+    'Diagonal topLeft',
+    _createDiagonalTopLeft,
+  );
+  static const Effect diagonalTopRightEffect = Effect._(
+    'Diagonal topRight',
+    _createDiagonalTopRight,
+  );
+  static const Effect diagonalBottomLeftEffect = Effect._(
+    'Diagonal bottomLeft',
+    _createDiagonalBottomLeft,
+  );
+  static const Effect diagonalBottomRightEffect = Effect._(
+    'Diagonal bottomRight',
+    _createDiagonalBottomRight,
+  );
+  static const Effect irisEffect = Effect._('Iris', _createIris);
+  static const Effect fadeThroughBlackEffect = Effect._(
+    'Fade Through Black',
+    _createFadeThroughBlack,
+  );
+  static const Effect fadeThroughWhiteEffect = Effect._(
+    'Fade Through White',
+    _createFadeThroughWhite,
+  );
+  static const Effect pushRightEffect = Effect._(
+    'Push Right',
+    _createPushRight,
+  );
+  static const Effect pushUpEffect = Effect._('Push Up', _createPushUp);
+  static const Effect pushDownEffect = Effect._('Push Down', _createPushDown);
+  static const Effect coverRightEffect = Effect._(
+    'Cover Right',
+    _createCoverRight,
+  );
+  static const Effect coverUpEffect = Effect._('Cover Up', _createCoverUp);
+  static const Effect coverDownEffect = Effect._(
+    'Cover Down',
+    _createCoverDown,
+  );
+  static const Effect revealLeftEffect = Effect._(
+    'Reveal Left',
+    _createRevealLeft,
+  );
+  static const Effect revealRightEffect = Effect._(
+    'Reveal Right',
+    _createRevealRight,
+  );
+  static const Effect revealUpEffect = Effect._('Reveal Up', _createRevealUp);
+  static const Effect revealDownEffect = Effect._(
+    'Reveal Down',
+    _createRevealDown,
+  );
 
   static const Iterable<Effect> values = [
     cubeEffect,
@@ -113,6 +201,31 @@ class Effect {
     blindsEffect,
     blurFadeEffect,
     zoomOverEffect,
+    mosaicTRFadeEffect,
+    mosaicBLFadeEffect,
+    wipeLeftEffect,
+    wipeRightEffect,
+    wipeUpEffect,
+    wipeDownEffect,
+    curtainHorizontalEffect,
+    curtainVerticalEffect,
+    diagonalTopLeftEffect,
+    diagonalTopRightEffect,
+    diagonalBottomLeftEffect,
+    diagonalBottomRightEffect,
+    irisEffect,
+    fadeThroughBlackEffect,
+    fadeThroughWhiteEffect,
+    pushRightEffect,
+    pushUpEffect,
+    pushDownEffect,
+    coverRightEffect,
+    coverUpEffect,
+    coverDownEffect,
+    revealLeftEffect,
+    revealRightEffect,
+    revealUpEffect,
+    revealDownEffect,
   ];
   final String name;
 
@@ -131,7 +244,43 @@ class Effect {
           name == other.name &&
           _implementor == other._implementor;
 
-  MediaSliderItemEffect createEffect() => _implementor();
+  bool get isMosaic =>
+      this == mosaicEffect ||
+      this == mosaicFadeEffect ||
+      this == mosaicTLFadeEffect ||
+      this == mosaicTRFadeEffect ||
+      this == mosaicBLFadeEffect ||
+      this == mosaicBRFadeEffect;
+
+  MediaSliderItemEffect createEffect({
+    int? seed,
+    int mosaicGridSize = 100,
+    MosaicBackend mosaicBackend = MosaicBackend.canvas,
+  }) {
+    if (!isMosaic) return _implementor();
+    if (this == mosaicEffect) {
+      return MosaicTransitionEffect(
+        gridSize: mosaicGridSize,
+        seed: seed,
+        backend: mosaicBackend,
+      );
+    }
+    final direction = this == mosaicTLFadeEffect
+        ? MosaicDirection.topLeft
+        : this == mosaicTRFadeEffect
+        ? MosaicDirection.topRight
+        : this == mosaicBLFadeEffect
+        ? MosaicDirection.bottomLeft
+        : this == mosaicBRFadeEffect
+        ? MosaicDirection.bottomRight
+        : MosaicDirection.random;
+    return MosaicFadeEffect(
+      gridSize: mosaicGridSize,
+      seed: seed,
+      direction: direction,
+      backend: mosaicBackend,
+    );
+  }
 
   @override
   String toString() => name;
@@ -167,7 +316,76 @@ class Effect {
   static MediaSliderItemEffect _createBlindsEffect() => BlindsEffect();
   static MediaSliderItemEffect _createBlurFadeEffect() => BlurFadeEffect();
   static MediaSliderItemEffect _createZoomOverEffect() => ZoomOverEffect();
-  
+
+  static MediaSliderItemEffect _createMosaicTRFade() =>
+      MosaicFadeEffect(direction: MosaicDirection.topRight);
+  static MediaSliderItemEffect _createMosaicBLFade() =>
+      MosaicFadeEffect(direction: MosaicDirection.bottomLeft);
+  static MediaSliderItemEffect _createWipeLeft() =>
+      RevealEffect(direction: AxisDirection.left);
+  static MediaSliderItemEffect _createWipeRight() =>
+      RevealEffect(direction: AxisDirection.right);
+  static MediaSliderItemEffect _createWipeUp() =>
+      RevealEffect(direction: AxisDirection.up);
+  static MediaSliderItemEffect _createWipeDown() =>
+      RevealEffect(direction: AxisDirection.down);
+  static MediaSliderItemEffect _createCurtainHorizontal() =>
+      RevealEffect(shape: RevealShape.curtain, direction: AxisDirection.left);
+  static MediaSliderItemEffect _createCurtainVertical() =>
+      RevealEffect(shape: RevealShape.curtain, direction: AxisDirection.up);
+  static MediaSliderItemEffect _createDiagonalTopLeft() =>
+      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.topLeft);
+  static MediaSliderItemEffect _createDiagonalTopRight() =>
+      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.topRight);
+  static MediaSliderItemEffect _createDiagonalBottomLeft() =>
+      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.bottomLeft);
+  static MediaSliderItemEffect _createDiagonalBottomRight() =>
+      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.bottomRight);
+  static MediaSliderItemEffect _createIris() =>
+      RevealEffect(shape: RevealShape.iris, origin: Alignment.center);
+  static MediaSliderItemEffect _createFadeThroughBlack() =>
+      FadeThroughColorEffect();
+  static MediaSliderItemEffect _createFadeThroughWhite() =>
+      FadeThroughColorEffect(color: Colors.white);
+  static MediaSliderItemEffect _createPushRight() => DirectionalSlideEffect(
+    mode: SlideMode.push,
+    direction: AxisDirection.right,
+  );
+  static MediaSliderItemEffect _createPushUp() =>
+      DirectionalSlideEffect(mode: SlideMode.push, direction: AxisDirection.up);
+  static MediaSliderItemEffect _createPushDown() => DirectionalSlideEffect(
+    mode: SlideMode.push,
+    direction: AxisDirection.down,
+  );
+  static MediaSliderItemEffect _createCoverRight() => DirectionalSlideEffect(
+    mode: SlideMode.cover,
+    direction: AxisDirection.right,
+  );
+  static MediaSliderItemEffect _createCoverUp() => DirectionalSlideEffect(
+    mode: SlideMode.cover,
+    direction: AxisDirection.up,
+  );
+  static MediaSliderItemEffect _createCoverDown() => DirectionalSlideEffect(
+    mode: SlideMode.cover,
+    direction: AxisDirection.down,
+  );
+  static MediaSliderItemEffect _createRevealLeft() => DirectionalSlideEffect(
+    mode: SlideMode.reveal,
+    direction: AxisDirection.left,
+  );
+  static MediaSliderItemEffect _createRevealRight() => DirectionalSlideEffect(
+    mode: SlideMode.reveal,
+    direction: AxisDirection.right,
+  );
+  static MediaSliderItemEffect _createRevealUp() => DirectionalSlideEffect(
+    mode: SlideMode.reveal,
+    direction: AxisDirection.up,
+  );
+  static MediaSliderItemEffect _createRevealDown() => DirectionalSlideEffect(
+    mode: SlideMode.reveal,
+    direction: AxisDirection.down,
+  );
+
   static Effect parse(String name) {
     return values.firstWhere(
       (element) => element.name == name,

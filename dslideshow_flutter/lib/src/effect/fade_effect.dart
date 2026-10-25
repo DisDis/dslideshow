@@ -11,8 +11,11 @@ class FadeEffect extends MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) {
+    // Include letterboxing in the blend, so transparent video/GIF margins
+    // cannot reveal the old slide until it is detached at completion.
+    final opaquePage = ColoredBox(color: Colors.black, child: page);
     return isCurrentPage
-        ? Opacity(opacity: 1 - pageDelta, child: page)
-        : Opacity(opacity: pageDelta, child: page);
-   }
+        ? opaquePage
+        : Opacity(opacity: pageDelta, child: opaquePage);
+  }
 }

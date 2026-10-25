@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class BlindsEffect extends MediaSliderItemEffect {
   final int stripCount;
 
-  BlindsEffect({this.stripCount = 10});
+  BlindsEffect({this.stripCount = 10}) : assert(stripCount > 0);
 
   @override
   Widget transform(
@@ -23,7 +23,7 @@ class BlindsEffect extends MediaSliderItemEffect {
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
   ) {
@@ -35,36 +35,35 @@ class BlindsEffect extends MediaSliderItemEffect {
     // 0.4 означает, что полоска закрывается за 40% от общего времени перехода.
     // Оставшиеся 60% времени распределяются на задержки (волну).
     // Если хотите более быструю волну (меньше наложений), уменьшите это число (например до 0.3).
-    const double oneStripDuration = 0.5; 
-    
+    const double oneStripDuration = 0.5;
+
     // Общее время, доступное для разброса задержек (stagger)
     const double totalStaggerTime = 1.0 - oneStripDuration;
 
     // Вычисляем шаг задержки между соседними полосками
     // Защита от деления на 0, если вдруг stripCount = 1
-    final double delayStep = stripCount > 1 
-        ? totalStaggerTime / (stripCount - 1) 
+    final double delayStep = stripCount > 1
+        ? totalStaggerTime / (stripCount - 1)
         : 0.0;
 
     return Stack(
       fit: StackFit.expand,
       children: [
         // 1. Новое изображение (лежит на дне)
-        nextWidget, 
+        nextWidget,
 
         // 2. Жалюзи из старого изображения
         Column(
           children: List.generate(stripCount, (index) {
-            
             // --- НОВАЯ МАТЕМАТИКА ---
-            
+
             // Рассчитываем точную задержку для этого индекса
             final double start = index * delayStep;
-            
+
             // Считаем прогресс:
             // (Текущее время - время старта) / длительность одной полоски
             double progress = (controller.value - start) / oneStripDuration;
-            
+
             // Загоняем в рамки от 0.0 до 1.0
             progress = progress.clamp(0.0, 1.0);
 
@@ -78,7 +77,8 @@ class BlindsEffect extends MediaSliderItemEffect {
                   ? null // Оптимизация: не рисуем, если закрылось
                   : Transform(
                       // Сплющивание по вертикали
-                      transform: Matrix4.identity()..scaleByDouble(1.0, 1.0 - progress,1.0, 1.0),
+                      transform: Matrix4.identity()
+                        ..scaleByDouble(1.0, 1.0 - progress, 1.0, 1.0),
                       alignment: Alignment.topCenter,
                       child: ClipRect(
                         child: OverflowBox(

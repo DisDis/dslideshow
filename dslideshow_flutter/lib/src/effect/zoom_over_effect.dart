@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 
 class ZoomOverEffect extends MediaSliderItemEffect {
   final double startScale; // С какого масштаба начинать (например, 1.5)
-  
+
   ZoomOverEffect({this.startScale = 1.5});
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage,
-      double pageDelta, double screenW, double screenH) {
+  Widget transform(
+    BuildContext context,
+    Widget page,
+    bool isCurrentPage,
+    double pageDelta,
+    double screenW,
+    double screenH,
+  ) {
     return page;
   }
 
@@ -17,7 +23,7 @@ class ZoomOverEffect extends MediaSliderItemEffect {
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
   ) {
@@ -31,25 +37,12 @@ class ZoomOverEffect extends MediaSliderItemEffect {
         ),
 
         // 2. Новое изображение (появляется сверху)
-        AnimatedBuilder(
-          animation: controller,
-          builder: (context, child) {
-            // Интерполяция масштаба: от 1.5 до 1.0
-            final double scale =
-                startScale - ((startScale - 1.0) * controller.value);
-            
-            // Интерполяция прозрачности: от 0.0 до 1.0
-            // Используем Curves.easeIn для мягкости
-            final double opacity = Curves.easeIn.transform(controller.value);
-
-            return Opacity(
-              opacity: opacity,
-              child: Transform.scale(
-                scale: scale,
-                child: nextWidget,
-              ),
-            );
-          },
+        Opacity(
+          opacity: Curves.easeIn.transform(controller.value),
+          child: Transform.scale(
+            scale: startScale - (startScale - 1.0) * controller.value,
+            child: nextWidget,
+          ),
         ),
       ],
     );

@@ -1,0 +1,33 @@
+name: benchmarks
+description: Unattended Raspberry Pi effect and media benchmarks for DSlideShow.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: '^3.13.0'
+  flutter: '>=3.47.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dslideshow_flutter:
+    path: ../dslideshow_flutter
+  dslideshow_backend:
+    path: ../backend
+  crypto: ^3.0.7
+  path: ^1.9.1
+  video_player: ^2.14.1
+  flutterpi_gstreamer_video_player: ^0.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  config:
+    enable-native-assets: true
+  uses-material-design: true
+  assets:
+    - assets/media/
+    - assets/build-info.json

@@ -1,201 +1,306 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
-import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:flutter/material.dart';
 import 'package:dslideshow_flutter/effect.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class SlideshowPreview extends StatefulWidget {
   final SlideShowConfig config;
-  const SlideshowPreview({super.key, required this.config});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+  final List<ImageProvider>? images;
+  const SlideshowPreview({super.key, required this.config, this.images});
   @override
-  SlideshowPreviewState createState() => SlideshowPreviewState();
+  State<SlideshowPreview> createState() => SlideshowPreviewState();
 }
 
 class SlideshowPreviewState extends State<SlideshowPreview>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
+  static final _log = Logger('SlideshowPreview');
+  static final List<ImageProvider> _samples = [
+    for (final id in [1, 6, 2])
+      CachedNetworkImageProvider(
+        'https://yavuzceliker.github.io/sample-images/image-$id.jpg',
+      ),
+  ];
+  late final FixedAnimationController _controller;
+  final _videoUrl = TextEditingController();
+  Timer? _hold;
+  Effect currentEffect = Effect.fadeEffect;
+  late MediaSliderItemEffect _effect;
+  Widget _current = const ColoredBox(color: Colors.black);
+  Widget _next = const ColoredBox(color: Colors.black);
+  VideoSession? _currentVideo;
+  VideoSession? _nextVideo;
+  bool _transitioning = false;
+  bool _loading = false;
+  String? _error;
+  int _index = 0;
+  int _generation = 0;
+  double _aspect = 16 / 9;
 
-  bool get isItemChanging => _currentWidget != _nextWidget;
-  late AnimationController _mediaItemLoopController;
-  late AnimationController _effectController;
-
-  late Effect currentEffect = Effect.fadeEffect;
-  late MediaSliderItemEffect _currentEffect = currentEffect.createEffect(); // =
-
-  late Duration transitionTime;
-  late Duration displayTime;
-  final Size size = Size(200, 200);
-  final int displayTimeMs = 1000;
-
-  Widget _currentWidget = slideShowLoaderWidget;
-  Widget _nextWidget = slideShowLoaderWidget;
-  Widget _transitionWidget = slideShowLoaderWidget;
+  Duration get _transitionTime =>
+      Duration(milliseconds: widget.config.transitionTimeMs.clamp(1, 3600000));
+  Duration get _displayTime =>
+      Duration(milliseconds: widget.config.displayTimeMs.clamp(1, 3600000));
 
   @override
   void initState() {
     super.initState();
-
-    transitionTime = Duration(milliseconds: widget.config.transitionTimeMs);
-    displayTime = Duration(milliseconds: displayTimeMs);//widget.config.displayTimeMs
-
-    _effectController =
-        AnimationController(duration: transitionTime, vsync: this);
-
-    _effectController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          _currentWidget = _nextWidget;
-        });
-      }
+    _effect = currentEffect.createEffect(seed: 42);
+    _controller = FixedAnimationController(
+      vsync: this,
+      duration: _transitionTime,
+      animationBehavior: AnimationBehavior.preserve,
+    )..addStatusListener(_onStatus);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadNext();
     });
+  }
 
-    _mediaItemLoopController =
-        AnimationController(duration: displayTime, vsync: this);
+  @override
+  void didUpdateWidget(covariant SlideshowPreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.duration = _transitionTime;
+    if (!_loading && !_transitioning) _scheduleNext();
+  }
 
-    _mediaItemLoopController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _fetchNextMediaItem();
-      }
+  void _release(VideoSession? session) {
+    if (session != null) {
+      unawaited(
+        session.dispose().catchError((Object e, StackTrace st) {
+          _log.warning('Preview video disposal failed', e, st);
+        }),
+      );
+    }
+  }
+
+  void _onStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed || !mounted) return;
+    final old = _currentVideo;
+    setState(() {
+      _current = _next;
+      _currentVideo = _nextVideo;
+      _nextVideo = null;
+      _transitioning = false;
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _release(old);
+    });
+    _scheduleNext();
+  }
 
-    // _mediaItemLoopController.forward();
-    _fetchNextMediaItem();
+  void _scheduleNext() {
+    _hold?.cancel();
+    _hold = Timer(_displayTime, _loadNext);
+  }
+
+  Future<void> _loadNext() async {
+    final generation = ++_generation;
+    _hold?.cancel();
+    _controller.stop();
+    _release(_nextVideo);
+    _nextVideo = null;
+    setState(() {
+      _loading = true;
+      _error = null;
+      _transitioning = false;
+    });
+    VideoSession? video;
+    try {
+      final url = _videoUrl.text.trim();
+      final index = _index++;
+      Widget next;
+      if (url.isNotEmpty && index.isOdd) {
+        final uri = Uri.tryParse(url);
+        if (uri == null ||
+            !['http', 'https'].contains(uri.scheme) ||
+            uri.host.isEmpty) {
+          throw const FormatException('Enter an HTTP(S) video URL');
+        }
+        video = VideoSession.network(uri);
+        await video.prepare();
+        next = VideoWidget(MediaItem('preview-video', uri), session: video);
+      } else {
+        final images = widget.images ?? _samples;
+        if (images.isEmpty) throw StateError('No preview images');
+        final provider = images[index % images.length];
+        Object? imageError;
+        if (!mounted) return;
+        await precacheImage(
+          provider,
+          context,
+          onError: (error, stack) {
+            imageError = error;
+          },
+        );
+        if (imageError != null) throw imageError!;
+        next = Image(
+          image: provider,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+        );
+      }
+      if (!mounted || generation != _generation) {
+        _release(video);
+        return;
+      }
+      final effect = currentEffect.createEffect(seed: 42);
+      await effect.prepare();
+      if (!mounted || generation != _generation) {
+        _release(video);
+        return;
+      }
+      _nextVideo = video;
+      setState(() {
+        _next = SizedBox.expand(child: next);
+        _effect = effect;
+        _loading = false;
+        _transitioning = true;
+      });
+      if (video != null) await video.setPlaying(true);
+      if (!mounted || generation != _generation) return;
+      _controller.forward(from: 0);
+    } catch (e) {
+      _release(video);
+      if (!mounted || generation != _generation) return;
+      _nextVideo = null;
+      setState(() {
+        _loading = false;
+        _error = e.toString();
+      });
+      _scheduleNext();
+    }
+  }
+
+  void onChanged(Effect? effect) {
+    if (effect == null) return;
+    _hold?.cancel();
+    _controller.stop();
+    setState(() {
+      currentEffect = effect;
+      _effect = effect.createEffect(seed: 42);
+    });
+    // Start a fresh pair immediately, including when the old pair completed.
+    _loadNext();
   }
 
   @override
   void dispose() {
-    _effectController.dispose();
-    _mediaItemLoopController.dispose();
+    ++_generation;
+    _hold?.cancel();
+    _controller.dispose();
+    _release(_currentVideo);
+    _release(_nextVideo);
+    _videoUrl.dispose();
     super.dispose();
   }
 
-  final List<MediaItem> _mediaItems = [];
-
-  Future<MediaItem> _getNextItem() async {
-    if (_mediaItems.isEmpty) {
-      final items = [
-        Uri.parse('https://yavuzceliker.github.io/sample-images/image-1.jpg'),
-        Uri.parse('https://yavuzceliker.github.io/sample-images/image-6.jpg'),
-        Uri.parse('https://yavuzceliker.github.io/sample-images/image-2.jpg'),
-      ];
-      _mediaItems.addAll(items.map((e) => MediaItem(e.path, e)));
-    }
-    return _mediaItems
-        .removeLast(); //removeAt(_rnd.nextInt(_mediaItems.length));
-  }
-
-//
-  void _fetchNextMediaItem() async {
-    var mediaItem = await _getNextItem();
-    Widget itemWidget;
-    itemWidget = CachedNetworkImage(
-      width: size.width,
-      height: size.height,
-      imageUrl: mediaItem.uri.toString(),
-      errorWidget: (BuildContext context, String url, error) {
-        return Row(
-          children: [
-            Text(context.localizations.not_found_with_id(mediaItem.id!)),
-            const Icon(Icons.error)
-          ],
-        );
-      },
-    );
-
-    if (itemWidget is ImageWidget) {
-      // ignore: use_build_context_synchronously
-      await itemWidget.precache(context);
-    }
-    // ignore: use_build_context_synchronously
-    // final size = MediaQuery.of(context).size;
-    final screenW = size.width;
-    final screenH = size.height;
-    _nextWidget = SizedBox(width: screenW, height: screenH, child: itemWidget);
-    _transitionWidget = AnimatedBuilder(
-        key: const Key('anim'),
-        animation: _effectController,
-        builder: (_, __) {
-          return _currentEffect.createTransformWidget(context, _currentWidget,
-              _nextWidget, _effectController, screenW, screenH);
-        },
-        child: slideShowLoaderWidget);
-
-    _effectController.reset();
-    _mediaItemLoopController.reset();
-    _mediaItemLoopController.stop();
-    setState(() {});
-    try {
-      await _effectController.forward().orCancel;
-    } catch (_) {}
-    try {
-      await _mediaItemLoopController.forward();
-    } catch (_) {}
-    _currentEffect = currentEffect.createEffect();
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return Stack(children: [
-      // --- BACKGROUND ---
-      Center(
-        child: Container(
-          width: 200,
-          height: 200,
-          color: AppColors.slideshowBackground,
-          child: !isItemChanging ? _currentWidget : _transitionWidget,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          color: AppColors.slideshowInfoPanel,
-          child: Column(
-            children: [
-              DropdownButtonHideUnderline(
-                child: DropdownButton<Effect>(
-                  value: currentEffect,
-                  onChanged: onChanged,
-                  items: Effect.values.map((item) {
-                    return DropdownMenuItem<Effect>(
-                      value: item,
-                      child: Text(
-                        item.name,
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    );
-                  }).toList(),
+  Widget build(BuildContext context) => Column(
+    children: [
+      Expanded(
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: _aspect,
+            child: ClipRect(
+              child: ColoredBox(
+                color: Colors.black,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) => _transitioning
+                        ? _effect.createTransformWidget(
+                            context,
+                            _current,
+                            _next,
+                            _controller,
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          )
+                        : _current,
+                  ),
                 ),
               ),
-              Text(
-                context.localizations.transition_display_times(
-                  widget.config.transitionTimeMs,
-                  displayTimeMs /*widget.config.displayTimeMs*/,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+            ),
           ),
         ),
-      )
-    ]);
-  }
-
-  void onChanged(Effect? value) {
-    currentEffect = value!;
-    setState(() {});
-   }
+      ),
+      Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        children: [
+          SizedBox(
+            width: 240,
+            child: DropdownButton<Effect>(
+              key: const ValueKey('preview-effect'),
+              isExpanded: true,
+              value: currentEffect,
+              onChanged: onChanged,
+              items: [
+                for (final effect in Effect.values)
+                  DropdownMenuItem(
+                    value: effect,
+                    child: Text(effect.name, overflow: TextOverflow.ellipsis),
+                  ),
+              ],
+            ),
+          ),
+          DropdownButton<double>(
+            key: const ValueKey('preview-aspect'),
+            value: _aspect,
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _aspect = value;
+                });
+              }
+            },
+            items: [
+              for (final entry in {
+                '16:9': 16 / 9,
+                '9:16': 9 / 16,
+                '1:1': 1.0,
+              }.entries)
+                DropdownMenuItem(value: entry.value, child: Text(entry.key)),
+            ],
+          ),
+        ],
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _videoUrl,
+              key: const ValueKey('preview-video-url'),
+              decoration: const InputDecoration(
+                labelText: 'Video URL (optional)',
+                isDense: true,
+              ),
+              onSubmitted: (_) => _loadNext(),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Preview',
+            onPressed: _loadNext,
+            icon: const Icon(Icons.play_arrow),
+          ),
+        ],
+      ),
+      if (_loading) const LinearProgressIndicator(),
+      if (_error != null)
+        Text(_error!, maxLines: 1, overflow: TextOverflow.ellipsis),
+      Text(
+        context.localizations.transition_display_times(
+          widget.config.transitionTimeMs,
+          widget.config.displayTimeMs,
+        ),
+      ),
+    ],
+  );
 }

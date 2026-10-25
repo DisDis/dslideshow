@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class CubeEffect extends MediaSliderItemEffect {
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
   ) {
@@ -35,6 +36,7 @@ class CubeEffect extends MediaSliderItemEffect {
 
     // Вспомогательный метод для построения грани
     Widget buildFace({
+      required Key key,
       required Widget child,
       required double translateOffset,
       required AlignmentGeometry alignment,
@@ -42,6 +44,7 @@ class CubeEffect extends MediaSliderItemEffect {
       required double opacity, // Значение затемнения (0.0 - 1.0)
     }) {
       return Transform.translate(
+        key: key,
         offset: Offset(translateOffset, 0),
         child: Transform(
           alignment: alignment,
@@ -52,12 +55,14 @@ class CubeEffect extends MediaSliderItemEffect {
             fit: StackFit.expand,
             children: [
               ClipRect(child: child),
-              
+
               // РИСУЕМ ТЕНЬ ТОЛЬКО ЕСЛИ ОНА НУЖНА
               if (shadowIntensity > 0 && opacity > 0)
                 Container(
                   // Используем умножение для плавной настройки силы тени
-                  color: Colors.black.withAlpha((255.0 * (opacity * shadowIntensity)).round()),
+                  color: Colors.black.withAlpha(
+                    (255.0 * (opacity * shadowIntensity)).round(),
+                  ),
                 ),
             ],
           ),
@@ -67,15 +72,17 @@ class CubeEffect extends MediaSliderItemEffect {
 
     // 1. Current (Уходит, становится темнее)
     final currentFace = buildFace(
+      key: const ValueKey('cube-current'),
       child: currentWidget,
       translateOffset: -screenW * progress,
       alignment: Alignment.centerRight,
-      rotateAngle: angle, 
+      rotateAngle: angle,
       opacity: progress, // Тень нарастает
     );
 
     // 2. Next (Приходит, становится светлее)
     final nextFace = buildFace(
+      key: const ValueKey('cube-next'),
       child: nextWidget,
       translateOffset: screenW * (1 - progress),
       alignment: Alignment.centerLeft,
@@ -85,15 +92,9 @@ class CubeEffect extends MediaSliderItemEffect {
 
     // Z-Order
     if (progress < 0.5) {
-      return Stack(
-        fit: StackFit.expand,
-        children: [nextFace, currentFace],
-      );
+      return Stack(fit: StackFit.expand, children: [nextFace, currentFace]);
     } else {
-      return Stack(
-        fit: StackFit.expand,
-        children: [currentFace, nextFace],
-      );
+      return Stack(fit: StackFit.expand, children: [currentFace, nextFace]);
     }
   }
 }

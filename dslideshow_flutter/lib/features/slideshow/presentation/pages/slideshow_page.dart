@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
@@ -28,9 +31,6 @@ class SlideShowPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Инициализация Блока при входе на страницу
-    context.read<SlideshowBloc>().add(const SlideshowInitEvent());
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -57,7 +57,7 @@ class _SlideshowOverlays extends StatelessWidget {
   Widget build(BuildContext context) {
     final FrontendService frontendService = injector();
     final AppConfig appConfig = injector();
- // Координаты для подсказок (под физическими кнопками)
+    // Координаты для подсказок (под физическими кнопками)
     final double hintLeft = appConfig.slideshow.buttons.hintOffsetX.toDouble();
     final double hintTop = appConfig.slideshow.buttons.hintOffsetY.toDouble();
 
@@ -101,12 +101,20 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   Widget _currentWidget = slideShowLoaderWidget;
   Widget _nextWidget = slideShowLoaderWidget;
   Widget _transitionWidget = slideShowLoaderWidget;
+  VideoSession? _currentVideo;
+  VideoSession? _nextVideo;
+  ImageWidget? _currentImage;
+  ImageWidget? _nextImage;
+  SlideshowPhase? _lastPhase;
+  int _loadGeneration = 0;
+  MediaSliderItemEffect? _nextEffect;
 
   final AppConfig _appConfig = injector();
 
   @override
   void initState() {
     super.initState();
+    context.read<SlideshowBloc>().add(const SlideshowInitEvent());
 
     _effectController = FixedAnimationController(
       duration: Duration(milliseconds: _appConfig.slideshow.transitionTimeMs),
@@ -116,17 +124,26 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
+        final oldVideo = _currentVideo;
+        final oldImage = _currentImage;
         // Меняем виджеты местами
         setState(() {
           _currentWidget = _nextWidget;
+          _currentVideo = _nextVideo;
+          _currentImage = _nextImage;
+          _nextVideo = null;
+          _nextImage = null;
+          _nextWidget = slideShowLoaderWidget;
         });
-        imageCache.clear();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (oldVideo != null) _releaseVideo(oldVideo);
+          oldImage?.dispose();
+        });
 
         // Сообщаем блоку, что переход завершен
         context.read<SlideshowBloc>().add(
           const SlideshowTransitionCompleteEvent(),
         );
-        _effectController.reset();
       }
     });
 
@@ -138,6 +155,11 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
   @override
   void dispose() {
+    _loadGeneration++;
+    if (_currentVideo != null) _releaseVideo(_currentVideo!);
+    if (_nextVideo != null) _releaseVideo(_nextVideo!);
+    _currentImage?.dispose();
+    _nextImage?.dispose();
     _effectController.dispose();
     _fadeController.dispose();
     super.dispose();
@@ -149,6 +171,13 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     return BlocConsumer<SlideshowBloc, SlideshowState>(
       listener: (context, state) {
+        final phaseChanged = _lastPhase != state.phase;
+        _lastPhase = state.phase;
+        final playing = !state.isPaused && !state.isScreenLocked;
+        if (_currentVideo != null) _playVideo(_currentVideo!, playing);
+        if (_nextVideo != null && state.phase == SlideshowPhase.transition) {
+          _playVideo(_nextVideo!, playing);
+        }
         // 1. Логика затемнения экрана (Screen Lock)
         if (state.fadeOut) {
           _fadeController.forward();
@@ -157,14 +186,18 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         }
 
         // 2. Логика Precache (Загрузка изображения)
-        if (state.phase == SlideshowPhase.precaching &&
+        if (phaseChanged &&
+            state.phase == SlideshowPhase.precaching &&
             state.nextItem != null) {
-          _handlePrecache(state.nextItem!, size);
+          _handlePrecache(state.nextItem!, size, state.effect.createEffect());
         }
 
         // 3. Логика запуска Транзакции
-        if (state.phase == SlideshowPhase.transition) {
+        if (phaseChanged && state.phase == SlideshowPhase.transition) {
           _startTransition(state, size);
+        }
+        if (state.phase == SlideshowPhase.display) {
+          _transitionWidget = slideShowLoaderWidget;
         }
       },
       buildWhen: (prev, curr) {
@@ -195,18 +228,38 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   }
 
   // Создание виджета и прекэш
-  Future<void> _handlePrecache(MediaItem mediaItem, Size size) async {
+  Future<void> _handlePrecache(
+    MediaItem mediaItem,
+    Size size,
+    MediaSliderItemEffect effect,
+  ) async {
+    final generation = ++_loadGeneration;
+    final video = mediaItem.isVideo
+        ? VideoSession(File(mediaItem.uri!.toFilePath()))
+        : null;
     final itemWidget = mediaItem.isVideo
-        ? VideoWidget(mediaItem)
-        : ImageWidget(mediaItem, _appConfig.slideshow, size);
+        ? VideoWidget(mediaItem, session: video)
+        : ImageWidget(
+            mediaItem,
+            _appConfig.slideshow,
+            size,
+            pixelRatio: MediaQuery.devicePixelRatioOf(context),
+          );
 
     try {
       if (itemWidget is ImageWidget) {
         await itemWidget.precache(context);
       }
+      await video?.prepare();
+      await effect.prepare();
 
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
+        if (_nextVideo != null) _releaseVideo(_nextVideo!);
+        _nextImage?.dispose();
         setState(() {
+          _nextVideo = video;
+          _nextImage = itemWidget is ImageWidget ? itemWidget : null;
+          _nextEffect = effect;
           _nextWidget = SizedBox(
             width: size.width,
             height: size.height,
@@ -215,8 +268,14 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         });
         // Сообщаем блоку, что картинка готова к показу
         context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
+      } else {
+        if (video != null) _releaseVideo(video);
+        if (itemWidget is ImageWidget) itemWidget.dispose();
       }
     } catch (e, st) {
+      if (video != null) _releaseVideo(video);
+      if (itemWidget is ImageWidget) itemWidget.dispose();
+      if (!mounted || generation != _loadGeneration) return;
       _log.warning(
         'Error loading file: "${mediaItem.uri?.toFilePath()}"',
         e,
@@ -224,6 +283,11 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
       );
       // В случае ошибки загружаем лоадер как fallback
       setState(() {
+        if (_nextVideo != null) _releaseVideo(_nextVideo!);
+        _nextImage?.dispose();
+        _nextVideo = null;
+        _nextImage = null;
+        _nextEffect = effect;
         _nextWidget = slideShowLoaderWidget;
       });
       // Все равно сообщаем о готовности, чтобы не заблокировать очередь
@@ -235,7 +299,11 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   // Создание виджета перехода (старая логика AnimatedBuilder + createTransformWidget)
   void _startTransition(SlideshowState state, Size size) {
     // Получаем эффект из стейта
-    MediaSliderItemEffect currentEffect = state.effect.createEffect();
+    final currentEffect = _nextEffect ?? state.effect.createEffect();
+    _nextEffect = null;
+    // Capture both slides: completion promotes _nextWidget before Bloc rebuilds.
+    final outgoing = _currentWidget;
+    final incoming = _nextWidget;
 
     setState(() {
       _transitionWidget = AnimatedBuilder(
@@ -244,8 +312,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         builder: (context, _) {
           return currentEffect.createTransformWidget(
             context,
-            _currentWidget,
-            _nextWidget,
+            outgoing,
+            incoming,
             _effectController,
             size.width,
             size.height,
@@ -256,9 +324,25 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     // Запускаем анимацию
     try {
-      _effectController.forward();
+      _effectController.forward(from: 0);
     } catch (e) {
       _log.info('Animation skip', e);
     }
+  }
+
+  void _playVideo(VideoSession session, bool playing) {
+    unawaited(
+      session.setPlaying(playing).catchError((Object e, StackTrace st) {
+        _log.warning('Video playback failed', e, st);
+      }),
+    );
+  }
+
+  void _releaseVideo(VideoSession session) {
+    unawaited(
+      session.dispose().catchError((Object e, StackTrace st) {
+        _log.warning('Video disposal failed', e, st);
+      }),
+    );
   }
 }

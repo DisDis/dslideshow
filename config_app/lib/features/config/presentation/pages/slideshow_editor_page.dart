@@ -18,12 +18,13 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.localizations.slideshow_settings_title)),
+      appBar: AppBar(
+        title: Text(context.localizations.slideshow_settings_title),
+      ),
       body: Column(
         children: [
           // --- PREVIEW AREA ---
-          SizedBox(
-              height: 200, child: SlideshowPreview(config: widget.config)),
+          SizedBox(height: 360, child: SlideshowPreview(config: widget.config)),
 
           // --- SETTINGS LIST ---
           Expanded(
@@ -96,8 +97,9 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
                         },
                       ),
                       trailing: Text(
-                          widget.config.backgroundOpacity.toStringAsFixed(2)),
-                    )
+                        widget.config.backgroundOpacity.toStringAsFixed(2),
+                      ),
+                    ),
                   ],
                 ),
               ],

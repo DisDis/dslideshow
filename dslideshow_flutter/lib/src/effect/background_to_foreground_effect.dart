@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class BackgroundToForegroundEffect extends MediaSliderItemEffect {
   final double startScale;
-  final double shadowIntensity; 
+  final double shadowIntensity;
 
   BackgroundToForegroundEffect({
-    this.startScale = 0.5, 
-    this.shadowIntensity = 0.5 // Интенсивность затенения
+    this.startScale = 0.5,
+    this.shadowIntensity = 0.5, // Интенсивность затенения
   });
 
   @override
@@ -27,7 +27,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
   ) {
@@ -36,7 +36,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
     // --- 1. NEXT WIDGET (Задний план -> Передний план) ---
     // Появляется из глубины (Zoom In).
     final double nextScale = startScale + (1.0 - startScale) * progress;
-    
+
     Widget buildNext() {
       return Stack(
         fit: StackFit.expand,
@@ -53,7 +53,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
             Container(
               color: Colors.black.withOpacity(
                 // Используем (1 - progress), чтобы тень исчезала
-                (1.0 - progress).clamp(0.0, 1.0) * shadowIntensity
+                (1.0 - progress).clamp(0.0, 1.0) * shadowIntensity,
               ),
             ),
         ],
@@ -76,7 +76,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
               Container(
                 color: Colors.black.withOpacity(
                   // ИСПРАВЛЕНИЕ: Используем progress, чтобы тень появлялась плавно
-                  progress.clamp(0.0, 1.0) * shadowIntensity
+                  progress.clamp(0.0, 1.0) * shadowIntensity,
                 ),
               ),
           ],
@@ -90,7 +90,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
     return Stack(
       fit: StackFit.expand,
       children: [
-        buildNext(),    // Снизу
+        buildNext(), // Снизу
         buildCurrent(), // Сверху
       ],
     );

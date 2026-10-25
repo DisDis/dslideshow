@@ -1,129 +1,102 @@
-import 'dart:math';
-import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
-// --- Эффект Жидкого Морфинга ---
-class LiquidMorphEffect extends MediaSliderItemEffect {
-  final int waveCount; // Количество "волн" по окружности
-  final double waveIntensity; // Насколько глубокие волны
+import 'media_slider_item_effect.dart';
 
-  LiquidMorphEffect({
-    this.waveCount = 12,
-    this.waveIntensity = 15.0, 
-  });
+class LiquidMorphEffect extends MediaSliderItemEffect {
+  final int waveCount;
+  final double waveIntensity;
+  final _WaveGeometry _geometry;
+  LiquidMorphEffect({this.waveCount = 12, this.waveIntensity = 15})
+    : assert(waveCount > 0),
+      assert(waveIntensity >= 0),
+      _geometry = _WaveGeometry(waveCount);
 
   @override
-  Widget transform(BuildContext context, Widget page, bool isCurrentPage,
-      double pageDelta, double screenW, double screenH) {
-    return page;
-  }
+  Widget transform(
+    BuildContext context,
+    Widget page,
+    bool isCurrentPage,
+    double pageDelta,
+    double screenW,
+    double screenH,
+  ) => page;
 
   @override
   Widget createTransformWidget(
     BuildContext context,
     Widget currentWidget,
     Widget nextWidget,
-    AnimationController controller,
+    Animation<double> controller,
     double screenW,
     double screenH,
-  ) {
-    // ВАЖНО: В отличие от прошлых эффектов, здесь
-    // currentWidget лежит ВНИЗУ, а nextWidget появляется СВЕРХУ.
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // 1. Старое изображение на фоне.
-        // Можно добавить легкий эффект отдаления для глубины.
-        Transform.scale(
-           scale: 1.0 + (0.1 * controller.value), // Немного увеличивается пока исчезает
-           child: currentWidget
+  ) => Stack(
+    fit: StackFit.expand,
+    children: [
+      Transform.scale(scale: 1 + 0.1 * controller.value, child: currentWidget),
+      ClipPath(
+        clipper: _LiquidRevealClipper(
+          controller.value,
+          waveIntensity,
+          _geometry,
         ),
+        child: nextWidget,
+      ),
+    ],
+  );
+}
 
-        // 2. Новое изображение, которое "вливается" через волнистую маску.
-        ClipPath(
-          clipper: _LiquidRevealClipper(
-            progress: controller.value,
-            waveCount: waveCount,
-            waveIntensity: waveIntensity,
-          ),
-          child: nextWidget,
-        ),
-      ],
-    );
+class _WaveGeometry {
+  final List<Offset> unit = [];
+  final List<double> waveSin = [];
+  final List<double> waveCos = [];
+  _WaveGeometry(int count) {
+    for (var angle = 0.0; angle < math.pi * 2; angle += 0.05) {
+      unit.add(Offset(math.cos(angle), math.sin(angle)));
+      waveSin.add(math.sin(angle * count));
+      waveCos.add(math.cos(angle * count));
+    }
   }
 }
 
-// --- Клиппер для создания волнистой круговой формы ---
 class _LiquidRevealClipper extends CustomClipper<Path> {
   final double progress;
-  final int waveCount;
-  final double waveIntensity;
-
-  _LiquidRevealClipper({
-    required this.progress,
-    required this.waveCount,
-    required this.waveIntensity,
-  });
-
-  static const angleInc = 0.05;
-
+  final double intensity;
+  final _WaveGeometry geometry;
+  _LiquidRevealClipper(this.progress, this.intensity, this.geometry);
   @override
   Path getClip(Size size) {
-    final Path path = Path();
-    final Offset center = Offset(size.width / 2, size.height / 2);
-
-    // Максимальный радиус - это диагональ экрана (чтобы точно все покрыть)
-    final double maxRadius = sqrt(size.width * size.width + size.height * size.height) / 1.8;
-    
-    // Текущий базовый радиус круга, который растет с прогрессом
-    final double currentBaseRadius = maxRadius * progress;
-
-    // Если прогресс 0, ничего не показываем
-    if (progress <= 0.0) {
-      return path; 
+    final path = Path();
+    if (progress <= 0) return path;
+    if (progress >= 1) return path..addRect(Offset.zero & size);
+    final center = size.center(Offset.zero);
+    final radius = size.longestSide == 0
+        ? 0.0
+        : math.sqrt(size.width * size.width + size.height * size.height) /
+              1.8 *
+              progress;
+    final phase = progress * math.pi * 4;
+    final phaseSin = math.sin(phase);
+    final phaseCos = math.cos(phase);
+    final amplitude = intensity * (1 - progress);
+    for (var i = 0; i < geometry.unit.length; i++) {
+      final wave =
+          geometry.waveSin[i] * phaseCos + geometry.waveCos[i] * phaseSin;
+      final point =
+          center + geometry.unit[i] * math.max(0.0, radius + wave * amplitude);
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
     }
-    // Если прогресс 1, показываем все (простой прямоугольник быстрее сложного пути)
-    if (progress >= 1.0) {
-      path.addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-      return path;
-    }
-
-    // Рисуем волнистый круг по точкам
-    path.moveTo(center.dx + currentBaseRadius, center.dy); // Начальная точка справа
-
-    // Проходим по окружности (360 градусов = 2*pi радиан) с небольшим шагом
-    for (double angle = 0.0; angle <= pi * (2 + angleInc); angle += angleInc) {
-      // 1. Базовое искажение синусоидой для создания волн
-      // waveCount определяет сколько горбов будет на круге.
-      double waveOffset = sin(angle * waveCount);
-      
-      // 2. Добавляем "вращение" волн.
-      // Сдвигаем фазу синусоиды в зависимости от прогресса анимации.
-      // Умножаем progress на константу (напр. 4*pi), чтобы волны сделали пару оборотов за время перехода.
-      double phaseShift = progress * pi * 4;
-      waveOffset = sin((angle * waveCount) + phaseShift);
-
-      // 3. Итоговая вариация радиуса в этой точке.
-      // waveIntensity * (1.0 - progress) делает так, что в начале волны сильные, 
-      // а к концу анимации, когда круг заполняет экран, волны сглаживаются в ровный край.
-      final double currentIntensity = waveIntensity * (1.0 - progress);
-      final double radiusVariation = waveOffset * currentIntensity;
-
-      final double finalRadius = currentBaseRadius + radiusVariation;
-
-      // Переводим полярные координаты (угол, радиус) в декартовы (x, y)
-      final double x = center.dx + finalRadius * cos(angle);
-      final double y = center.dy + finalRadius * sin(angle);
-
-      path.lineTo(x, y);
-    }
-
-    path.close();
-    return path;
+    return path..close();
   }
 
   @override
-  bool shouldReclip(covariant _LiquidRevealClipper oldClipper) {
-    return oldClipper.progress != progress;
-  }
+  bool shouldReclip(covariant _LiquidRevealClipper old) =>
+      old.progress != progress ||
+      old.intensity != intensity ||
+      !identical(old.geometry, geometry);
 }

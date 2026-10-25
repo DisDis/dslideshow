@@ -22,25 +22,14 @@ class DepthEffect extends MediaSliderItemEffect with TranslateEffect {
   ) {
     if (isCurrentPage) {
       // --- ТЕКУЩАЯ СТРАНИЦА (Уходит в глубину) ---
-      
+
       // 1. Рассчитываем масштаб (от 1.0 до startScale)
       final double scale = startScale + (1 - startScale) * (1 - pageDelta);
-      
+
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center, // Сжимается к центру
-        transform: translateCurrent(
-          Matrix4.identity()
-            // ВАЖНО: translateCurrent сдвигает слайд влево на (screenW * pageDelta).
-            // Чтобы слайд оставался ПО ЦЕНТРУ и просто уменьшался, 
-            // нам нужно компенсировать этот сдвиг, сдвинув его обратно вправо.
-            // Используем screenW вместо MediaQuery!
-            ..translate(screenW * pageDelta, 0.0, 0.0)
-            ..scale(scale, scale, 1.0),
-          pageDelta,
-          screenW,
-          screenH,
-        ),
+        transform: Matrix4.diagonal3Values(scale, scale, 1.0),
         // Оборачиваем в Stack для добавления тени "глубины"
         child: Stack(
           fit: StackFit.expand,
@@ -51,8 +40,8 @@ class DepthEffect extends MediaSliderItemEffect with TranslateEffect {
             // В конце (1.0), когда слайд глубоко, тень максимальна.
             if (shadowIntensity > 0)
               Container(
-                color: Colors.black.withOpacity(
-                  (pageDelta * shadowIntensity).clamp(0.0, 1.0),
+                color: Colors.black.withValues(
+                  alpha: (pageDelta * shadowIntensity).clamp(0.0, 1.0),
                 ),
               ),
           ],
@@ -60,8 +49,8 @@ class DepthEffect extends MediaSliderItemEffect with TranslateEffect {
       );
     } else {
       // --- СЛЕДУЮЩАЯ СТРАНИЦА (Выезжает справа) ---
-      
-      // Просто стандартный выезд (Slide In). 
+
+      // Просто стандартный выезд (Slide In).
       // Она перекрывает старую (уменьшенную) страницу.
       return Transform(
         transformHitTests: false,
