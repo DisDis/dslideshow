@@ -56,6 +56,153 @@ class Fixture {
 }
 
 void main() {
+  test('wake waits for hardware, then fades in before becoming on', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      expect(f.screen.phase, ScreenPhase.off);
+      f.power.automatic = false;
+      final results = <ScreenTransitionResult>[];
+      final wake = f.screen.screenOn()..then(results.add);
+      expect(f.screen.phase, ScreenPhase.wakingUp);
+      time.flushMicrotasks();
+      expect(f.events, [false]);
+      f.power.pending.single.complete();
+      time.flushMicrotasks();
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(f.screen.isScreenOn, isTrue);
+      expect(f.events, [false, true]);
+      expect(results, isEmpty);
+      time.elapse(const Duration(milliseconds: 1000));
+      expect(identical(f.screen.screenOn(), wake), isTrue);
+      time.elapse(const Duration(milliseconds: 999));
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(results, isEmpty);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(results, [ScreenTransitionResult.applied]);
+      expect(f.power.calls, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('reversing fade-out enters fadingIn without another hardware call', () {
+    fakeAsync((time) {
+      final f = Fixture(fade: const Duration(milliseconds: 3500));
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 1));
+      f.screen.screenOn();
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      time.elapse(const Duration(milliseconds: 3499));
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      expect(f.power.calls, isEmpty);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(f.events, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('new OFF cancels fade-in and ignores its old completion', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(milliseconds: 500));
+      final results = <ScreenTransitionResult>[];
+      f.screen.screenOn().then(results.add);
+      time.elapse(const Duration(seconds: 1));
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 1));
+      expect(results, [ScreenTransitionResult.cancelled]);
+      expect(f.screen.phase, ScreenPhase.fadingOut);
+      expect(f.power.calls, isEmpty);
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.off);
+      expect(f.power.calls, [false]);
+      expect(f.events, [false, true, false]);
+      f.dispose(time);
+    });
+  });
+
+  test('manual lock interrupts fade-in and keeps priority over presence', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.screen.screenOn();
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      f.screen.isScreenOffLock = true;
+      f.screen.screenOn();
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.fadingOut);
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.off);
+      expect(f.power.calls, [false, true, false]);
+      f.dispose(time);
+    });
+  });
+
+  test('absence during fade-in keeps its own grace deadline', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.screen.screenOn();
+      time.elapse(const Duration(seconds: 1));
+      f.screen.scheduleScreenOff();
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.waitingOff);
+      time.elapse(const Duration(seconds: 9));
+      expect(f.screen.phase, ScreenPhase.fadingOut);
+      time.elapse(const Duration(seconds: 2));
+      expect(f.screen.phase, ScreenPhase.off);
+      expect(f.power.calls, [false, true, false]);
+      f.dispose(time);
+    });
+  });
+
+  test('presence after a brief absence reuses the unfinished fade-in', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      f.screen.screenOn();
+      time.elapse(const Duration(seconds: 1));
+      f.screen.scheduleScreenOff();
+      time.elapse(const Duration(milliseconds: 250));
+      final results = <ScreenTransitionResult>[];
+      f.screen.screenOn().then(results.add);
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      time.elapse(const Duration(milliseconds: 749));
+      expect(results, isEmpty);
+      time.elapse(const Duration(milliseconds: 1));
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(results, [ScreenTransitionResult.applied]);
+      expect(f.events, [false, true]);
+      expect(f.power.calls, [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('disposing during fade-in cancels the pending ON completion', () {
+    fakeAsync((time) {
+      final f = Fixture();
+      f.screen.screenOff();
+      time.elapse(const Duration(seconds: 2));
+      final results = <ScreenTransitionResult>[];
+      f.screen.screenOn().then(results.add);
+      time.flushMicrotasks();
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      f.dispose(time);
+      time.elapse(const Duration(seconds: 3));
+      expect(results, [ScreenTransitionResult.cancelled]);
+      expect(f.screen.phase, ScreenPhase.disposed);
+      expect(f.power.calls, [false, true]);
+    });
+  });
+
   for (final milliseconds in [0, 500, 1999]) {
     test(
       'presence at ${milliseconds}ms cancels fade and restores visibility',
@@ -212,6 +359,8 @@ void main() {
       f.power.pending[1].complete();
       time.flushMicrotasks();
       expect(f.events, [false, true]);
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      time.elapse(const Duration(seconds: 2));
       expect(f.screen.phase, ScreenPhase.on);
       expect(f.screen.isScreenOn, isTrue);
       expect(f.power.maxActive, 1);
@@ -232,6 +381,8 @@ void main() {
       expect(f.events, [false]);
       f.power.pending[1].complete();
       time.flushMicrotasks();
+      expect(f.screen.phase, ScreenPhase.fadingIn);
+      time.elapse(const Duration(seconds: 2));
       expect(f.screen.phase, ScreenPhase.on);
       expect(f.events, [false, true]);
       expect(f.power.maxActive, 1);
@@ -317,6 +468,9 @@ void main() {
         f.power.fail = false;
         f.screen.screenOn().then(results.add);
         time.flushMicrotasks();
+        expect(f.screen.phase, ScreenPhase.fadingIn);
+        expect(results, [ScreenTransitionResult.failed]);
+        time.elapse(const Duration(seconds: 2));
         expect(results.last, ScreenTransitionResult.applied);
         expect(f.screen.phase, ScreenPhase.on);
         expect(f.events, [false, true]);

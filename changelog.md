@@ -1,5 +1,11 @@
 # Unreleased
 
+* Add an explicit, cancellable fadingIn screen phase after hardware wake and
+  fade-out reversal. Preserve manual sleep priority and the original reveal
+  deadline across brief presence changes; initialize sleeping renderers black.
+* Add backend and widget regressions for full wake, reverse transitions, duplicate
+  ON events, stale completion and cleanup. Physical frame validation is pending.
+
 # 10.0.0+2 — 2026-10-25
 
 * Fix DEB checksum manifests to use paths relative to the package root;

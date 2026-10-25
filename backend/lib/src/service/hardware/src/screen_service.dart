@@ -12,6 +12,7 @@ enum ScreenPhase {
   poweringOff,
   off,
   wakingUp,
+  fadingIn,
   failed,
   disposed,
 }
@@ -22,7 +23,7 @@ class ScreenService {
   static final _log = Logger('ScreenService');
   final HardwareConfig _config;
   final ScreenPower _power;
-  final Duration _preparationOffTime;
+  final Duration _fadeDuration;
   final _stateChangePreparation = StreamController<bool>.broadcast();
 
   ScreenService(
@@ -30,7 +31,7 @@ class ScreenService {
     ScreenPower? power,
     Duration preparationOffTime = const Duration(milliseconds: 2000),
   }) : _power = power ?? SystemScreenPower(_config),
-       _preparationOffTime = preparationOffTime;
+       _fadeDuration = preparationOffTime;
 
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
   bool get isScreenOn => _confirmedPower == true;
@@ -44,7 +45,9 @@ class ScreenService {
   bool _isScreenOffLock = false;
   int _generation = 0;
   Timer? _timerScreenOff;
-  Timer? _fadeTimer;
+  Timer? _fadeOutTimer;
+  Timer? _fadeInTimer;
+  Completer<void>? _fadeInCompletion;
   Completer<ScreenTransitionResult>? _transition;
   Future<void> _powerQueue = Future.value();
   Future<void>? _disposeFuture;
@@ -69,9 +72,7 @@ class ScreenService {
     final completion = _beginTransition(true);
     final generation = _generation;
     if (_confirmedPower == true && !_powerBusy) {
-      _phase = ScreenPhase.on;
-      _publish(true); // Also undo a fade while the panel is still powered on.
-      _complete(completion, ScreenTransitionResult.applied);
+      _startFadeIn(generation, completion);
     } else {
       _phase = ScreenPhase.wakingUp;
       _enqueuePower(true, generation, completion);
@@ -89,7 +90,7 @@ class ScreenService {
       () {
         if (!_isCurrent(generation)) return;
         _timerScreenOff = null;
-        _startFade(generation, completion);
+        _startFadeOut(generation, completion);
       },
     );
   }
@@ -103,7 +104,7 @@ class ScreenService {
           Future.value(ScreenTransitionResult.applied);
     }
     final completion = _beginTransition(false);
-    _startFade(_generation, completion);
+    _startFadeOut(_generation, completion);
     return completion.future;
   }
 
@@ -111,8 +112,8 @@ class ScreenService {
     _generation++;
     _timerScreenOff?.cancel();
     _timerScreenOff = null;
-    _fadeTimer?.cancel();
-    _fadeTimer = null;
+    _fadeOutTimer?.cancel();
+    _fadeOutTimer = null;
     final previous = _transition;
     if (previous != null) _complete(previous, ScreenTransitionResult.cancelled);
     _desiredOn = enabled;
@@ -124,19 +125,64 @@ class ScreenService {
 
   bool _isCurrent(int generation) => !_disposed && generation == _generation;
 
-  void _startFade(
+  void _startFadeOut(
     int generation,
     Completer<ScreenTransitionResult> completion,
   ) {
     if (!_isCurrent(generation)) return;
+    _cancelFadeIn();
     _phase = ScreenPhase.fadingOut;
     _publish(false);
-    _fadeTimer = Timer(_preparationOffTime, () {
+    _fadeOutTimer = Timer(_fadeDuration, () {
       if (!_isCurrent(generation) || _desiredOn) return;
-      _fadeTimer = null;
+      _fadeOutTimer = null;
       _phase = ScreenPhase.poweringOff;
       _enqueuePower(false, generation, completion);
     });
+  }
+
+  void _startFadeIn(
+    int generation,
+    Completer<ScreenTransitionResult> completion,
+  ) {
+    if (!_isCurrent(generation)) return;
+    if (!_visible) {
+      final animation = Completer<void>();
+      _fadeInCompletion = animation;
+      _fadeInTimer = Timer(_fadeDuration, () {
+        if (!identical(_fadeInCompletion, animation)) return;
+        _fadeInTimer = null;
+        _fadeInCompletion = null;
+        animation.complete();
+      });
+    }
+    final animation = _fadeInCompletion;
+    if (animation == null) {
+      // Cancelling only the absence timeout needs no visual transition.
+      _phase = ScreenPhase.on;
+      _complete(completion, ScreenTransitionResult.applied);
+      return;
+    }
+    _phase = ScreenPhase.fadingIn;
+    _log.info('Screen transition $generation: ${ScreenPhase.fadingIn.name}');
+    // Reverse immediately. A new grace period does not reverse the overlay, so
+    // presence returning during it must reuse this reveal, not restart it.
+    _publish(true);
+    unawaited(
+      animation.future.then((_) {
+        if (!_isCurrent(generation) || !_desiredOn) return;
+        _phase = ScreenPhase.on;
+        _complete(completion, ScreenTransitionResult.applied);
+      }),
+    );
+  }
+
+  void _cancelFadeIn() {
+    _fadeInTimer?.cancel();
+    _fadeInTimer = null;
+    final animation = _fadeInCompletion;
+    _fadeInCompletion = null;
+    if (animation != null && !animation.isCompleted) animation.complete();
   }
 
   void _enqueuePower(
@@ -161,9 +207,13 @@ class ScreenService {
           _confirmedPower = enabled;
         }
         if (_isCurrent(generation)) {
-          _phase = enabled ? ScreenPhase.on : ScreenPhase.off;
-          _publish(enabled);
-          _complete(completion, ScreenTransitionResult.applied);
+          if (enabled) {
+            _startFadeIn(generation, completion);
+          } else {
+            _phase = ScreenPhase.off;
+            _publish(false);
+            _complete(completion, ScreenTransitionResult.applied);
+          }
         } else {
           _complete(completion, ScreenTransitionResult.cancelled);
         }
@@ -204,7 +254,8 @@ class ScreenService {
     _generation++;
     _phase = ScreenPhase.disposed;
     _timerScreenOff?.cancel();
-    _fadeTimer?.cancel();
+    _fadeOutTimer?.cancel();
+    _cancelFadeIn();
     final completion = _transition;
     if (completion != null) {
       _complete(completion, ScreenTransitionResult.cancelled);

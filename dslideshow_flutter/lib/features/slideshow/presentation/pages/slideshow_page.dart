@@ -122,7 +122,9 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   @override
   void initState() {
     super.initState();
-    context.read<SlideshowBloc>().add(const SlideshowInitEvent());
+    final slideshow = context.read<SlideshowBloc>();
+    _screenLocked = slideshow.state.isScreenLocked;
+    slideshow.add(const SlideshowInitEvent());
 
     _effectController = FixedAnimationController(
       duration: Duration(milliseconds: _appConfig.slideshow.transitionTimeMs),
@@ -161,6 +163,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     _fadeController = AnimationController(
       duration: Duration(milliseconds: _appConfig.slideshow.fadeTimeMs),
+      // A renderer created while asleep must wake from black, not opacity 0.
+      value: slideshow.state.fadeOut ? 1 : 0,
       vsync: this,
     );
   }

@@ -120,6 +120,82 @@ class Fixture {
 }
 
 void main() {
+  for (final initiallyAsleep in [false, true]) {
+    testWidgets(
+      'full wake fades from black${initiallyAsleep ? " when mounted asleep" : ""}',
+      (tester) async {
+        final f = Fixture();
+        f.frontend.media = Completer<MediaItem>();
+        if (initiallyAsleep) {
+          f.slideshow.add(const SlideshowScreenStatePreparationEvent(false));
+          await tester.pump();
+        }
+        injector.registerSingleton<AppConfig>(f.config);
+        injector.registerSingleton<FrontendService>(f.frontend);
+        final hints = HiddenHints();
+        await tester.pumpWidget(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<SlideshowBloc>.value(value: f.slideshow),
+              BlocProvider<SlideshowStatusBloc>.value(value: f.status),
+              BlocProvider<ButtonsHintBloc>.value(value: hints),
+            ],
+            child: const MaterialApp(home: SlideShowPage()),
+          ),
+        );
+        await tester.pump();
+        final fade = tester.widget<FadeWidget>(find.byType(FadeWidget));
+        final animation = fade.listenable as Animation<double>;
+        if (initiallyAsleep) {
+          expect(animation.value, 1);
+        } else {
+          expect(animation.value, 0);
+          f.frontend.screens.add(false);
+          await tester.pump();
+          await tester.pump(const Duration(seconds: 2));
+          expect(animation.value, 1);
+        }
+
+        f.frontend.screens.add(true);
+        await tester.pump();
+        expect(animation.value, 1);
+        await tester.pump(const Duration(milliseconds: 1000));
+        expect(animation.value, closeTo(0.5, 0.01));
+        f.frontend.screens.add(
+          true,
+        ); // A duplicate must not restart the reveal.
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 1000));
+        expect(animation.value, 0);
+        expect(f.slideshow.state.isScreenLocked, isFalse);
+
+        // A new sleep can also reverse an unfinished fade-in smoothly.
+        f.frontend.screens.add(false);
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 2));
+        f.frontend.screens.add(true);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        final before = animation.value;
+        f.frontend.screens.add(false);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(animation.value, greaterThan(before));
+        await tester.pump(const Duration(seconds: 2));
+        expect(animation.value, 1);
+        expect(f.slideshow.state.isScreenLocked, isTrue);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        f.frontend.media!.complete(MediaItem.empty);
+        await tester.pump();
+        await tester.runAsync(hints.close);
+        await tester.runAsync(f.close);
+        await injector.reset();
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'ON immediately reverses fade and stale work never overrides a later OFF',
     (tester) async {
