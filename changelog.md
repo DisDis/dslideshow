@@ -1,5 +1,9 @@
 # Unreleased
 
+# 10.0.0+2 — 2026-10-25
+
+* Fix DEB checksum manifests to use paths relative to the package root;
+  add a regression check that builds and extracts a fixture package.
 * Add extensible special slideshow screens with clocks and direct HTTP/HTTPS
   JPEG/PNG cameras, grid/round-robin playback, scheduling and lifecycle cleanup.
 * Add config_app screen editors/previews and per-type default stripping on save;
@@ -37,9 +41,12 @@
   runtimes. Preserve native crash and cleanup errors in aggregated reports.
 * Document RaPi5 deployment, unattended test runs, flutter-pi source locations,
   performance validation, agent workflow and DEB release/version handling.
-* Synchronize backend/frontend development versions to 9.6.0+3. Native OpenGL
+* Synchronize backend/frontend release versions to 10.0.0+2. Native OpenGL
   video-to-video crashes remain under investigation; flutter-pi changes,
   device firmware updates and the 24-hour soak test are deferred.
+
+Build verification and remaining hardware limitations are recorded in
+[the release record](doc/release-10.0.0.md).
 
 # 9.5.3+2
 Fix QRCode in Config and OTA pages

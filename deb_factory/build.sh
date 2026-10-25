@@ -37,7 +37,7 @@ cp -r ../config_app/build/web $DEST/ || error_exit "copy config_app web"
 rm $DEST/version.template
 
 cd ./$DIR
-md5deep -r opt > DEBIAN/md5sums || error_exit "md5deep"
+md5deep -r -l opt > DEBIAN/md5sums || error_exit "md5deep"
 cd ..
 
 dpkg-deb -Zxz --build --root-owner-group ./$DIR || error_exit "Deb"

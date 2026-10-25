@@ -10,3 +10,19 @@
 * Put special 'flutter-pi' in 'source_arm64/flutter-pi/'
     with dpms support
 * Run build.sh
+
+## Проверка упаковки
+
+Из корня репозитория:
+
+```bash
+python3 -m unittest discover -s deb_factory -p 'test_*.py' -v
+sh -n deb_factory/build.sh
+```
+
+Тест использует небольшие готовые assets вместо Flutter-компиляции и вызывает
+настоящие `build.sh`, `md5deep` и `dpkg-deb`. После распаковки проверяются полнота
+и значения контрольных сумм, относительные пути в `DEBIAN/md5sums`, сохранность
+native runtime и файла версии. Пути в `md5sums` должны быть относительными:
+список используется для проверки файлов на устройстве, где каталога машины
+сборки нет.
