@@ -13,7 +13,9 @@ class BenchmarkRunner {
   final LinuxTelemetry telemetry;
   final int Function() runtimeErrorCount;
   final Set<String> skipCaseIds;
+  final String renderer;
   String stage = 'preflight';
+  String? activeCaseId;
   bool cancelled = false;
   int _cleanupFailures = 0;
   BenchmarkRunner(
@@ -22,13 +24,43 @@ class BenchmarkRunner {
     this.telemetry, {
     int Function()? runtimeErrorCount,
     this.skipCaseIds = const {},
+    this.renderer = 'unspecified',
   }) : runtimeErrorCount = runtimeErrorCount ?? (() => 0);
+
+  Future<void> videoOperation(String operation, String file) async {
+    final marker = {
+      'utc': DateTime.now().toUtc().toIso8601String(),
+      'case_id': activeCaseId,
+      'stage': stage,
+      'operation': operation,
+      'file': file,
+    };
+    await store.flush();
+    await atomicJson(
+      File('${store.directory.path}/active-operation.json'),
+      marker,
+    );
+    stdout.writeln('BENCHMARK_VIDEO $marker');
+  }
 
   Future<int> execute(BenchmarkDriver driver) async {
     final watch = Stopwatch()..start();
     final fullPlan = buildPlan(config);
+    final unsupported = fullPlan
+        .where(
+          (test) =>
+              renderer == 'vulkan' &&
+              !config.vulkanVideo &&
+              test.media.hasVideo,
+        )
+        .toList();
+    final unsupportedIds = unsupported.map((test) => test.id).toSet();
     final plan = fullPlan
-        .where((test) => !skipCaseIds.contains(test.id))
+        .where(
+          (test) =>
+              !skipCaseIds.contains(test.id) &&
+              !unsupportedIds.contains(test.id),
+        )
         .toList();
     store.metadata['display'] = driver.display;
     final matches =
@@ -44,7 +76,22 @@ class BenchmarkRunner {
     store.metadata['plan'] = fullPlan.map((c) => c.toJson()).toList();
     store.metadata['executed_case_ids'] = plan.map((c) => c.id).toList();
     store.metadata['skipped_case_ids'] = skipCaseIds.toList();
-    await store.checkpoint('running', telemetry, expectedCases: plan.length);
+    store.metadata['unsupported_case_ids'] = unsupportedIds.toList();
+    store.metadata['eligible_case_ids'] = fullPlan
+        .where((test) => !unsupportedIds.contains(test.id))
+        .map((test) => test.id)
+        .toList();
+    for (final test in unsupported) {
+      store.record({
+        'case_id': test.id,
+        'case': test.toJson(),
+        'phase': 'capability',
+        'status': 'unsupported',
+        'reason': 'Vulkan video disabled; enable vulkan_video explicitly to probe support',
+      }, []);
+    }
+    final expectedCases = plan.length + unsupported.length;
+    await store.checkpoint('running', telemetry, expectedCases: expectedCases);
     var cycle = 0;
     try {
       do {
@@ -57,7 +104,7 @@ class BenchmarkRunner {
           await store.checkpoint(
             'running',
             telemetry,
-            expectedCases: plan.length,
+            expectedCases: expectedCases,
           );
         }
         cycle++;
@@ -81,19 +128,20 @@ class BenchmarkRunner {
         store.cases.values.any((c) => c.failed > 0) ||
         runtimeErrorCount() > 0 ||
         _cleanupFailures > 0;
+    final hasErrors = failed || store.errorCounts.isNotEmpty;
     await store.checkpoint(
       cancelled
           ? 'interrupted'
-          : failed
+          : hasErrors
           ? 'completed_with_failures'
           : 'completed',
       telemetry,
-      expectedCases: plan.length,
+      expectedCases: expectedCases,
       finalReport: true,
     );
     return cancelled
         ? 130
-        : failed
+        : hasErrors
         ? 2
         : 0;
   }
@@ -103,6 +151,7 @@ class BenchmarkRunner {
     BenchmarkCase test,
     int cycle,
   ) async {
+    activeCaseId = test.id;
     stage = 'prepare:${test.id}';
     await atomicJson(File('${store.directory.path}/active-case.json'), {
       'id': test.id,
@@ -185,14 +234,20 @@ class BenchmarkRunner {
             index[test.id] = captures;
           }
         } catch (error, stack) {
-          store.error(error, stack, caseId: test.id);
+          store.error(
+            error,
+            stack,
+            caseId: test.id,
+            stage: stage,
+            kind: 'capture',
+          );
           store.warnings.add(
             'Не удалось снять контрольные кадры ${test.id}: $error',
           );
         }
       }
     } catch (error, stack) {
-      store.error(error, stack, caseId: test.id);
+      store.error(error, stack, caseId: test.id, stage: stage);
       store.record({
         'case_id': test.id,
         'case': test.toJson(),
@@ -211,7 +266,9 @@ class BenchmarkRunner {
       await store.checkpoint(
         'running',
         telemetry,
-        expectedCases: (store.metadata['executed_case_ids'] as List).length,
+        expectedCases:
+            (store.metadata['executed_case_ids'] as List).length +
+            (store.metadata['unsupported_case_ids'] as List).length,
       );
       await _release(driver, test: test, cycle: cycle);
     }
@@ -223,22 +280,17 @@ class BenchmarkRunner {
     int? cycle,
   }) async {
     try {
+      stage = 'cleanup:${test?.id ?? 'final'}';
       await driver.release().timeout(const Duration(seconds: 10));
     } catch (error, stack) {
       _cleanupFailures++;
-      store.error(error, stack);
-      if (test != null) {
-        store.record({
-          'case_id': test.id,
-          'case': test.toJson(),
-          'phase': 'measured',
-          'cycle': cycle,
-          'repeat': null,
-          'status': 'failed',
-          'failed_stage': 'cleanup',
-          'error': '$error',
-        }, []);
-      }
+      store.error(
+        error,
+        stack,
+        caseId: test?.id ?? activeCaseId,
+        stage: stage,
+        kind: 'cleanup',
+      );
     }
   }
 }

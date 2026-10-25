@@ -2,7 +2,7 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
-class ZoomOutEffect extends MediaSliderItemEffect  with TranslateEffect {
+class ZoomOutEffect extends MediaSliderItemEffect with TranslateEffect {
   final double zoomOutScale;
   final bool enableOpacity;
 
@@ -17,6 +17,7 @@ class ZoomOutEffect extends MediaSliderItemEffect  with TranslateEffect {
     double screenW,
     double screenH,
   ) {
+    // Scaling a translation would expose slide B before the transition starts.
     if (isCurrentPage) {
       double scale = 1 - pageDelta < zoomOutScale
           ? zoomOutScale
@@ -25,11 +26,11 @@ class ZoomOutEffect extends MediaSliderItemEffect  with TranslateEffect {
         transformHitTests: false,
         alignment: Alignment.center,
         transform: translateCurrent(
-          Matrix4.identity()..scaleByDouble(scale, scale, scale, 1.0),
+          Matrix4.identity(),
           pageDelta,
           screenW,
           screenH,
-        ),
+        )..scaleByDouble(scale, scale, scale, 1.0),
         child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
       );
     } else if (!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/ ) {
@@ -40,11 +41,11 @@ class ZoomOutEffect extends MediaSliderItemEffect  with TranslateEffect {
         transformHitTests: false,
         alignment: Alignment.center,
         transform: translateNext(
-          Matrix4.identity()..scaleByDouble(scale, scale, scale, 1.0),
+          Matrix4.identity(),
           pageDelta,
           screenW,
           screenH,
-        ),
+        )..scaleByDouble(scale, scale, scale, 1.0),
         child: enableOpacity ? Opacity(opacity: scale, child: page) : page,
       );
     } else {

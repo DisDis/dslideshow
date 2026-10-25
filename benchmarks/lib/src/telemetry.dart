@@ -73,6 +73,7 @@ int? processTicks(String text) {
 
 class LinuxTelemetry {
   final void Function(Map<String, Object?>) onSample;
+  final void Function(Object, StackTrace)? onError;
   final Stopwatch clock = Stopwatch()..start();
   final String Function() stage;
   Timer? _timer;
@@ -92,7 +93,7 @@ class LinuxTelemetry {
   int? peakRss;
   double? peakTemperature;
 
-  LinuxTelemetry({required this.onSample, required this.stage});
+  LinuxTelemetry({required this.onSample, required this.stage, this.onError});
 
   Future<Map<String, Object?>> initialize() async {
     ticksPerSecond = int.tryParse(await command('getconf', ['CLK_TCK']) ?? '');
@@ -150,7 +151,12 @@ class LinuxTelemetry {
 
   void start(int milliseconds) {
     _timer = Timer.periodic(Duration(milliseconds: milliseconds), (_) {
-      _pending ??= sample().whenComplete(() => _pending = null);
+      _pending ??= sample()
+          .catchError((Object error, StackTrace stack) {
+            if (onError == null) Error.throwWithStackTrace(error, stack);
+            onError!(error, stack);
+          })
+          .whenComplete(() => _pending = null);
     });
   }
 

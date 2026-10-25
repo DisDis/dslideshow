@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
@@ -89,6 +90,11 @@ class ReportStore {
   final Map<String, CaseAggregate> cases = {};
   final Map<String, Object?> metadata = {};
   final List<String> warnings = [];
+  final Map<String, int> errorCounts = {};
+  final Map<String, Map<String, int>> caseErrorCounts = {};
+  Future<void> _writes = Future.value();
+  AsyncError? _writeError;
+  bool _closed = false;
   int warmups = 0;
   ReportStore(this.directory);
 
@@ -106,26 +112,68 @@ class ReportStore {
     _errors = File('${directory.path}/errors.jsonl').openWrite();
   }
 
-  void telemetry(Map<String, Object?> row) =>
-      _telemetry.writeln(jsonEncode(row));
-  void error(Object error, StackTrace stack, {String? caseId}) {
-    _errors.writeln(
-      jsonEncode({
-        'utc': DateTime.now().toUtc().toIso8601String(),
-        'case_id': caseId,
-        'error': '$error',
-        'stack': '$stack',
-      }),
-    );
+  // IOSink cannot accept writes while flush is bound to its stream. Timer
+  // samples and error callbacks therefore share the same queue as flush.
+  void _enqueue(FutureOr<void> Function() write) {
+    if (_closed) return;
+    _writes = _writes.then((_) async {
+      try {
+        await write();
+      } catch (error, stack) {
+        _writeError ??= AsyncError(error, stack);
+      }
+    });
+  }
+
+  void telemetry(Map<String, Object?> row) {
+    final line = jsonEncode(row);
+    _enqueue(() => _telemetry.writeln(line));
+  }
+
+  void error(
+    Object error,
+    StackTrace stack, {
+    String? caseId,
+    String? stage,
+    String kind = 'case',
+  }) {
+    errorCounts.update(kind, (n) => n + 1, ifAbsent: () => 1);
+    if (caseId != null) {
+      (caseErrorCounts[caseId] ??= {}).update(
+        kind,
+        (n) => n + 1,
+        ifAbsent: () => 1,
+      );
+    }
+    final line = jsonEncode({
+      'utc': DateTime.now().toUtc().toIso8601String(),
+      'case_id': caseId,
+      'stage': stage,
+      'kind': kind,
+      'error': '$error',
+      'stack': '$stack',
+    });
+    _enqueue(() => _errors.writeln(line));
   }
 
   void record(
     Map<String, Object?> row,
     Iterable<Map<String, Object?>> frameRows,
   ) {
-    _runs.writeln(jsonEncode(row));
-    for (final frame in frameRows) {
-      _frames.writeln(jsonEncode(frame));
+    final line = jsonEncode(row);
+    final frames = frameRows.map(jsonEncode).toList();
+    _enqueue(() {
+      _runs.writeln(line);
+      for (final frame in frames) {
+        _frames.writeln(frame);
+      }
+    });
+    if (row['status'] == 'unsupported') {
+      cases.putIfAbsent(
+        row['case_id']! as String,
+        () => CaseAggregate((row['case']! as Map).cast<String, Object?>()),
+      );
+      return;
     }
     if (row['phase'] == 'warmup') {
       warmups++;
@@ -144,12 +192,19 @@ class ReportStore {
   }
 
   Future<void> flush() async {
-    await Future.wait([
-      _runs.flush(),
-      _frames.flush(),
-      _telemetry.flush(),
-      _errors.flush(),
-    ]);
+    _enqueue(() async {
+      await Future.wait([
+        _runs.flush(),
+        _frames.flush(),
+        _telemetry.flush(),
+        _errors.flush(),
+      ]);
+    });
+    await _writes;
+    final failure = _writeError;
+    if (failure != null) {
+      Error.throwWithStackTrace(failure.error, failure.stackTrace);
+    }
   }
 
   Future<Map<String, Object?>> checkpoint(
@@ -159,10 +214,24 @@ class ReportStore {
     bool finalReport = false,
   }) async {
     await flush();
-    final rows = cases.values.map((v) => v.toJson()).toList();
+    final unsupported =
+        (metadata['unsupported_case_ids'] as List?)?.cast<String>().toSet() ??
+        <String>{};
+    final rows = cases.entries
+        .map(
+          (entry) => {
+            ...entry.value.toJson(),
+            if (unsupported.contains(entry.key)) 'status': 'unsupported',
+            'error_counts': caseErrorCounts[entry.key] ?? <String, int>{},
+            'has_errors':
+                entry.value.failed > 0 ||
+                (caseErrorCounts[entry.key]?.isNotEmpty ?? false),
+          },
+        )
+        .toList();
     final failed = cases.values.fold(0, (n, c) => n + c.failed);
     final summary = <String, Object?>{
-      'schema_version': 1,
+      'schema_version': 2,
       'status': status,
       'updated_utc': DateTime.now().toUtc().toIso8601String(),
       'metadata': metadata,
@@ -171,6 +240,9 @@ class ReportStore {
       'observed_cases': cases.length,
       'measured_runs': cases.values.fold<int>(0, (n, c) => n + c.runs),
       'failed_runs': failed,
+      'error_counts': Map.of(errorCounts),
+      'error_events': errorCounts.values.fold<int>(0, (a, b) => a + b),
+      'unsupported_cases': unsupported.length,
       'warmup_runs': warmups,
       'telemetry_samples': telemetry.samples,
       'rss_peak_sampled_bytes': telemetry.peakRss,
@@ -193,6 +265,8 @@ class ReportStore {
       'media',
       'grid',
       'backend',
+      'status',
+      'error_counts',
       'runs',
       'passed',
       'failed',
@@ -210,13 +284,15 @@ class ReportStore {
     for (final row in rows) {
       csv.writeln(columns.map((c) => csvCell(row[c])).join(','));
       table.write(
-        '<tr>${['id', 'runs', 'failed', 'frames', 'actual_mean_ms', 'stretch_mean', 'raster_p95_mean_ms', 'raster_p95_worst_ms', 'interval_worst_ms', 'rss_peak_sampled_bytes'].map((c) => '<td>${html(row[c] is double ? (row[c] as double).toStringAsFixed(3) : row[c])}</td>').join()}</tr>',
+        '<tr>${['id', 'status', 'error_counts', 'runs', 'failed', 'frames', 'actual_mean_ms', 'stretch_mean', 'raster_p95_mean_ms', 'raster_p95_worst_ms', 'interval_worst_ms', 'rss_peak_sampled_bytes'].map((c) => '<td>${html(row[c] is double ? (row[c] as double).toStringAsFixed(3) : row[c])}</td>').join()}</tr>',
       );
     }
     await File('${directory.path}/summary.csv').writeAsString(csv.toString());
     final notes = '''FixedAnimationController сохранён. Увеличение времени перехода допустимо: stretch = фактическое / заданное время.
 Плавность прогресса и интервалы кадров анализируются отдельно. Сетка мозаики не уменьшается.
 FPS и пропущенные vsync — оценка по представленным Flutter кадрам, не счётчик дисплея или декодера.
+При несовпадении интервалов timestamp с периодом дисплея estimated_missed_vsyncs=null.
+unsupported — пропуск до подготовки медиа; runtime/cleanup/capture/telemetry ошибки считаются отдельно от failed_runs.
 Raster p95 mean/worst — среднее/максимум p95 отдельных прогонов, не общий p95 всех кадров.
 Подготовка фото использует полные оригиналы; размеры исходников и реального экрана записаны в metadata.
 null/— означает отсутствие метрики. HWM в runs — максимум RSS процесса с запуска, не максимум отдельного теста.
@@ -225,7 +301,9 @@ null/— означает отсутствие метрики. HWM в runs — �
 ''';
     final overview =
         'Статус: ${summary['status']}. Тестов: ${rows.length}/${summary['expected_cases']}. '
-        'Измерений: ${summary['measured_runs']}. Ошибок: ${summary['failed_runs']}.';
+        'Измерений: ${summary['measured_runs']}. Ошибок прогонов: ${summary['failed_runs']}. '
+        'Событий ошибок: ${summary['error_events']}; типы: ${summary['error_counts']}. '
+        'Неподдерживаемых: ${summary['unsupported_cases']}.';
     await File('${directory.path}/report.md').writeAsString(
       '# DSlideShow — RaPi benchmark\n\n$overview\n\n'
       '${warnings.map((w) => '- $w').join('\n')}\n\n$notes\n'
@@ -244,7 +322,7 @@ th{position:sticky;top:0;background:#243447}pre{white-space:pre-wrap}svg{backgro
 <h2>Температура CPU, °C</h2>${_chart(telemetry, 'cpu_temperature_c', 1)}
 <h2>CPU процесса, % (может превышать 100 на нескольких ядрах)</h2>${_chart(telemetry, 'process_cpu_percent', 1)}
 <h2>Измерения</h2><p>Все времена — ms. RSS — bytes. Таблица прокручивается по горизонтали.</p><div style="overflow:auto"><table><thead><tr>
-${['Случай', 'Прогоны', 'Ошибки', 'Кадры', 'Время mean', 'Stretch mean', 'Raster p95 mean', 'Raster p95 worst', 'Интервал max', 'RSS sample max'].map((v) => '<th>$v</th>').join()}
+${['Случай', 'Статус', 'События ошибок', 'Прогоны', 'Ошибки', 'Кадры', 'Время mean', 'Stretch mean', 'Raster p95 mean', 'Raster p95 worst', 'Интервал max', 'RSS sample max'].map((v) => '<th>$v</th>').join()}
 </tr></thead><tbody>$table</tbody></table></div><h2>Методика</h2><pre>${html(notes)}</pre>
 <h2>Окружение и входные данные</h2><pre>${html(const JsonEncoder.withIndent('  ').convert(metadata))}</pre></html>''',
     );
@@ -270,6 +348,9 @@ ${['Случай', 'Прогоны', 'Ошибки', 'Кадры', 'Время m
   }
 
   Future<void> close() async {
+    await flush();
+    _closed = true;
+    await _writes;
     await Future.wait([
       _runs.close(),
       _frames.close(),

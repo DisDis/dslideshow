@@ -62,8 +62,22 @@ Map<String, Object?> frameMetrics(
     intervals.add((sorted[i].vsyncUs - sorted[i - 1].vsyncUs) / 1000);
   }
   final budget = 1000 / refreshRate;
+  final clockMatches = intervals.isEmpty
+      ? null
+      : intervals
+                    .where(
+                      (interval) =>
+                          (interval - (interval / budget).round() * budget)
+                              .abs() <=
+                          math.max(.5, budget * .04),
+                    )
+                    .length /
+                intervals.length >=
+            .9;
   return {
     'frames': frames.length, 'refresh_hz': refreshRate, 'budget_ms': budget,
+    'vsync_clock_matches_display': clockMatches,
+    if (clockMatches == false) 'vsync_clock_note': 'Flutter timestamps do not align with display refresh; missed-vsync estimate unavailable',
     'ui_ms': distribution(frames.map((f) => f.buildUs / 1000)),
     'raster_ms': distribution(frames.map((f) => f.rasterUs / 1000)),
     'total_span_ms': distribution(frames.map((f) => f.totalUs / 1000)),
@@ -76,7 +90,7 @@ Map<String, Object?> frameMetrics(
         .where((f) => f.rasterUs / 1000 > budget)
         .length,
     // An estimate from submitted Flutter frames, not a hardware display counter.
-    'estimated_missed_vsyncs': intervals.isEmpty
+    'estimated_missed_vsyncs': intervals.isEmpty || clockMatches != true
         ? null
         : intervals.fold<int>(
             0,

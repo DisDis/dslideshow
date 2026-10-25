@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dslideshow_backend/config.dart';
@@ -18,18 +20,21 @@ import 'media.dart';
 import 'metrics.dart';
 import 'plan.dart';
 import 'telemetry.dart';
+import 'visual_audit.dart';
 
 class BenchmarkViewport extends StatefulWidget {
   final BenchmarkConfig config;
   final MediaCatalog catalog;
   final Directory reportDirectory;
   final Future<void> Function(BenchmarkDriver driver) onReady;
+  final Future<void> Function(String operation, String file)? onVideoOperation;
   const BenchmarkViewport({
     super.key,
     required this.config,
     required this.catalog,
     required this.reportDirectory,
     required this.onReady,
+    this.onVideoOperation,
   });
 
   @override
@@ -44,9 +49,11 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
   Widget _from = const SizedBox.expand(), _to = const SizedBox.expand();
   final List<ImageWidget> _images = [];
   final List<VideoSession> _videos = [];
+  final Map<VideoSession, String> _videoNames = {};
   final GlobalKey _captureKey = GlobalKey();
   List<FrameSample>? _frames;
   String _status = 'Подготовка автоматического прогона…';
+  String? _captureLabel;
   bool _scene = false;
   int _generation = 0;
   int _windowStart = 0;
@@ -129,7 +136,10 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       if (name.endsWith('.mp4')) {
         final session = VideoSession(widget.catalog.file(name));
         _videos.add(session);
+        _videoNames[session] = name;
+        await widget.onVideoOperation?.call('initialize', name);
         await session.prepare();
+        await widget.onVideoOperation?.call('initialized', name);
         final player = session.controller;
         if (player == null || !player.value.isInitialized) {
           throw StateError('Video decoder unavailable: $name');
@@ -337,8 +347,10 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       player.addListener(observe);
     }
     for (final video in _videos) {
+      await widget.onVideoOperation?.call('seek', _videoNames[video]!);
       await video.controller!.seekTo(Duration.zero);
       ensureActive();
+      await widget.onVideoOperation?.call('play', _videoNames[video]!);
       await video.setPlaying(true);
       ensureActive();
     }
@@ -459,12 +471,15 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       return [];
     }
     if (!mounted) throw StateError('Viewport detached');
+    if (widget.config.visualAudit) return _audit(test);
     final pixelRatio = View.of(context).devicePixelRatio;
     final result = <String>[];
     final folder = Directory('${widget.reportDirectory.path}/captures');
     await folder.create(recursive: true);
     for (final value in [0.0, .5, 1.0]) {
       ensureActive();
+      _captureLabel =
+          'КОНТРОЛЬНЫЙ КАДР · ${Platform.environment['BENCHMARK_RENDERER'] ?? ''} · ${test.id} · ${(value * 100).round()}% · анимация остановлена';
       _controller.value = value;
       await _paint();
       ensureActive();
@@ -482,7 +497,111 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         image.dispose();
       }
     }
+    _captureLabel = null;
+    await _paint();
     return result;
+  }
+
+  Future<List<String>> _audit(BenchmarkCase test) async {
+    final generation = _generation;
+    final folder = Directory('${widget.reportDirectory.path}/audit');
+    await folder.create(recursive: true);
+    final files = <String>[];
+    final originalEffect = _effect;
+    final originalFrom = _from;
+    Future<Uint8List> capture(String suffix) async {
+      if (!mounted || generation != _generation) {
+        throw StateError('Audit cancelled');
+      }
+      _captureLabel =
+          'КОНТРОЛЬНЫЙ КАДР · ${Platform.environment['BENCHMARK_RENDERER'] ?? ''} · ${test.id} · $suffix · анимация остановлена';
+      await _paint();
+      if (!mounted || generation != _generation) {
+        throw StateError('Audit cancelled');
+      }
+      final boundary =
+          _captureKey.currentContext!.findRenderObject()!
+              as RenderRepaintBoundary;
+      final full = await boundary.toImage(
+        pixelRatio: View.of(context).devicePixelRatio,
+      );
+      try {
+        final recorder = ui.PictureRecorder();
+        final canvas = Canvas(recorder);
+        canvas.drawImageRect(
+          full,
+          Rect.fromLTWH(0, 0, full.width.toDouble(), full.height.toDouble()),
+          const Rect.fromLTWH(0, 0, 320, 200),
+          Paint()..filterQuality = FilterQuality.high,
+        );
+        final picture = recorder.endRecording();
+        late ui.Image preview;
+        try {
+          preview = await picture.toImage(320, 200);
+        } finally {
+          picture.dispose();
+        }
+        try {
+          final rgba = await preview.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          );
+          final png = await preview.toByteData(format: ui.ImageByteFormat.png);
+          final relative = 'audit/${test.id}--$suffix.png';
+          await File('${widget.reportDirectory.path}/$relative')
+              .writeAsBytes(png!.buffer.asUint8List());
+          files.add(relative);
+          return Uint8List.fromList(rgba!.buffer.asUint8List());
+        } finally {
+          preview.dispose();
+        }
+      } finally {
+        full.dispose();
+      }
+    }
+
+    try {
+      _effect = null;
+      final from = await capture('source-A');
+      _from = _to;
+      final to = await capture('source-B');
+      _from = originalFrom;
+      _effect = originalEffect;
+      final frames = <Uint8List>[];
+      for (var i = 0; i <= 20; i++) {
+        _controller.value = i / 20;
+        frames.add(await capture('p${i.toString().padLeft(2, '0')}'));
+      }
+      final assessment = assessVisualFrames(
+        frames,
+        from,
+        to,
+        baseline: test.effect == null,
+      );
+      final relative = 'audit/${test.id}.json';
+      await File('${widget.reportDirectory.path}/$relative').writeAsString(
+        jsonEncode({
+          'case': test.toJson(),
+          'renderer': Platform.environment['BENCHMARK_RENDERER'],
+          'progress': List.generate(21, (i) => i / 20),
+          'files': files,
+          ...assessment,
+        }),
+      );
+      files.add(relative);
+      if (assessment['status'] == 'failed') {
+        throw StateError(
+          'Visual audit: ${assessment['issues']}; see $relative',
+        );
+      }
+      return files;
+    } finally {
+      if (generation == _generation) {
+        _effect = originalEffect;
+        _from = originalFrom;
+        _captureLabel = null;
+        if (mounted) await _paint();
+      }
+    }
   }
 
   @override
@@ -491,6 +610,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _controller.stop();
     _frames = null;
     _scene = false;
+    _captureLabel = null;
     _from = const SizedBox.expand();
     _to = const SizedBox.expand();
     _effect = null;
@@ -502,7 +622,31 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     for (final image in images) {
       image.dispose();
     }
-    await Future.wait(videos.map((video) => video.dispose()));
+    // Await each native teardown and record which player was being destroyed.
+    Object? failure;
+    StackTrace? failureStack;
+    for (final video in videos) {
+      final name = _videoNames.remove(video)!;
+      for (final operation in <Future<void> Function()>[
+        () async {
+          await widget.onVideoOperation?.call('dispose', name);
+        },
+        video.dispose,
+        () async {
+          await widget.onVideoOperation?.call('disposed', name);
+        },
+      ]) {
+        try {
+          await operation();
+        } catch (error, stack) {
+          failure ??= error;
+          failureStack ??= stack;
+        }
+      }
+    }
+    if (failure != null) {
+      Error.throwWithStackTrace(failure, failureStack!);
+    }
   }
 
   @override
@@ -523,25 +667,43 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
   Widget build(BuildContext context) => ColoredBox(
     color: Colors.black,
     child: _scene
-        ? RepaintBoundary(
-            key: _captureKey,
-            child: ClipRect(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) {
-                  final size = MediaQuery.sizeOf(context);
-                  return _effect?.createTransformWidget(
-                        context,
-                        _from,
-                        _to,
-                        _controller,
-                        size.width,
-                        size.height,
-                      ) ??
-                      _from;
-                },
+        ? Stack(
+            fit: StackFit.expand,
+            children: [
+              RepaintBoundary(
+                key: _captureKey,
+                child: ClipRect(
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, _) {
+                      final size = MediaQuery.sizeOf(context);
+                      return _effect?.createTransformWidget(
+                            context,
+                            _from,
+                            _to,
+                            _controller,
+                            size.width,
+                            size.height,
+                          ) ??
+                          _from;
+                    },
+                  ),
+                ),
               ),
-            ),
+              if (_captureLabel != null)
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: ColoredBox(
+                    color: Colors.black87,
+                    child: Text(
+                      _captureLabel!,
+                      style: const TextStyle(color: Colors.white, fontSize: 22),
+                      textDirection: TextDirection.ltr,
+                    ),
+                  ),
+                ),
+            ],
           )
         : Center(
             child: Text(

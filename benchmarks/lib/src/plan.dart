@@ -7,6 +7,7 @@ class MediaPair {
   final String from;
   final String to;
   const MediaPair(this.name, this.from, this.to);
+  bool get hasVideo => from.endsWith('.mp4') || to.endsWith('.mp4');
 }
 
 const mediaPairs = [

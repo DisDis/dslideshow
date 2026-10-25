@@ -54,7 +54,102 @@ class HangingDriver extends FailingDriver {
   }
 }
 
+class RuntimeErrorOnReleaseDriver extends FailingDriver {
+  final ReportStore store;
+  bool reported = false;
+  RuntimeErrorOnReleaseDriver(this.store) {
+    failFirst = false;
+  }
+  @override
+  Future<void> release() async {
+    await super.release();
+    if (!reported) {
+      reported = true;
+      store.error(
+        StateError('late cancel'),
+        StackTrace.current,
+        caseId: 'Baseline--photo-photo',
+        stage: 'cleanup',
+        kind: 'runtime',
+      );
+    }
+  }
+}
+
 void main() {
+  test('late cleanup runtime error fails acceptance without inventing a failed measurement', () async {
+    final directory = await Directory.systemTemp.createTemp('late-runtime-');
+    final store = ReportStore(directory);
+    await store.open();
+    try {
+      final runner = BenchmarkRunner(
+        BenchmarkConfig(
+          effects: ['Baseline'],
+          mediaCases: ['photo-photo'],
+          warmups: 0,
+          repeats: 1,
+          captureFrames: false,
+        ),
+        store,
+        LinuxTelemetry(onSample: store.telemetry, stage: () => 'test'),
+      );
+      expect(await runner.execute(RuntimeErrorOnReleaseDriver(store)), 2);
+      final summary = jsonDecode(
+        await File('${directory.path}/summary.json').readAsString(),
+      ) as Map;
+      expect(summary['failed_runs'], 0);
+      expect(summary['error_counts'], {'runtime': 1});
+      expect((summary['cases'] as List).single['has_errors'], true);
+      expect(summary['status'], 'completed_with_failures');
+    } finally {
+      await store.close();
+      await directory.delete(recursive: true);
+    }
+  });
+  test(
+    'Vulkan video is unsupported before preparation, and can be enabled',
+    () async {
+      for (final enabled in [false, true]) {
+        final directory = await Directory.systemTemp.createTemp(
+          'vulkan-policy-',
+        );
+        final store = ReportStore(directory);
+        await store.open();
+        try {
+          final driver = FailingDriver()..failFirst = false;
+          final runner = BenchmarkRunner(
+            BenchmarkConfig(
+              effects: ['Baseline'],
+              mediaCases: ['video-video'],
+              warmups: 0,
+              repeats: 1,
+              captureFrames: false,
+              vulkanVideo: enabled,
+            ),
+            store,
+            LinuxTelemetry(onSample: store.telemetry, stage: () => 'test'),
+            renderer: 'vulkan',
+          );
+          expect(await runner.execute(driver), 0);
+          expect(driver.preparations, enabled ? 1 : 0);
+          expect(driver.runs, enabled ? 1 : 0);
+          final summary = jsonDecode(
+            await File('${directory.path}/summary.json').readAsString(),
+          ) as Map;
+          expect(summary['unsupported_cases'], enabled ? 0 : 1);
+          expect(summary['failed_runs'], 0);
+          expect(summary['measured_runs'], enabled ? 1 : 0);
+          expect(
+            (summary['cases'] as List).single['status'],
+            enabled ? null : 'unsupported',
+          );
+        } finally {
+          await store.close();
+          await directory.delete(recursive: true);
+        }
+      }
+    },
+  );
   test(
     'resume excludes previous cases while retaining the original plan',
     () async {

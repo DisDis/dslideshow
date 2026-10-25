@@ -28,10 +28,17 @@ Future<void> main() async {
     await store.open();
     final config = await BenchmarkConfig.load(Platform.environment);
     var runtimeErrors = 0;
-    var stage = 'preflight';
+    BenchmarkRunner? activeRunner;
+    String currentStage() => activeRunner?.stage ?? 'preflight';
     void error(Object error, StackTrace stack) {
       runtimeErrors++;
-      store!.error(error, stack, caseId: stage);
+      store!.error(
+        error,
+        stack,
+        caseId: activeRunner?.activeCaseId,
+        stage: currentStage(),
+        kind: 'runtime',
+      );
       stderr.writeln('BENCHMARK_ERROR $error\n$stack');
     }
 
@@ -45,7 +52,14 @@ Future<void> main() async {
     };
     final telemetry = LinuxTelemetry(
       onSample: store.telemetry,
-      stage: () => stage,
+      stage: currentStage,
+      onError: (exception, stack) => store!.error(
+        exception,
+        stack,
+        caseId: activeRunner?.activeCaseId,
+        stage: currentStage(),
+        kind: 'telemetry',
+      ),
     );
     store.metadata.addAll({
       'started_utc': DateTime.now().toUtc().toIso8601String(),
@@ -99,11 +113,9 @@ Future<void> main() async {
       telemetry,
       runtimeErrorCount: () => runtimeErrors,
       skipCaseIds: skipCaseIds,
+      renderer: Platform.environment['BENCHMARK_RENDERER'] ?? 'unspecified',
     );
-    final stageTimer = Timer.periodic(
-      const Duration(milliseconds: 100),
-      (_) => stage = runner.stage,
-    );
+    activeRunner = runner;
     final subscriptions = <StreamSubscription<ProcessSignal>>[];
     for (final signal in [ProcessSignal.sigint, ProcessSignal.sigterm]) {
       subscriptions.add(
@@ -121,6 +133,7 @@ Future<void> main() async {
             config: config,
             catalog: catalog,
             reportDirectory: output,
+            onVideoOperation: runner.videoOperation,
             onReady: (driver) async {
               var code = 2;
               try {
@@ -134,7 +147,6 @@ Future<void> main() async {
                   finalReport: true,
                 );
               } finally {
-                stageTimer.cancel();
                 for (final subscription in subscriptions) {
                   await subscription.cancel();
                 }

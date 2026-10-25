@@ -15,6 +15,8 @@ def checkpoint(renderer, attempt, exit_code):
     full_plan = metadata.get('plan') or state.get('plan', [])
     ids = [row['id'] for row in full_plan]
     skipped = set(state['skipped_case_ids'])
+    unsupported = set(metadata.get('unsupported_case_ids', []))
+    skipped.update(unsupported)
     remaining = [name for name in ids if name not in skipped]
     last = None
     try:
@@ -34,11 +36,14 @@ def checkpoint(renderer, attempt, exit_code):
     elif last in remaining:
         skipped.update(remaining[:remaining.index(last) + 1])
     progressed = len(skipped) > len(state['skipped_case_ids'])
+    covered = bool(ids) and len(skipped) == len(ids)
     state.update(plan=full_plan, skipped_case_ids=[name for name in ids if name in skipped],
-                 all_cases_attempted=bool(ids) and len(skipped) == len(ids))
+                 unsupported_case_ids=[name for name in ids if name in unsupported],
+                 all_cases_accounted_for=covered, all_supported_cases_attempted=covered,
+                 all_cases_attempted=covered and not unsupported)
     state['attempts'].append(dict(path=attempt.name, exit_code=exit_code,
         last_case_id=last, native_failure=native_failure, completed=completed,
-        resume_progress=progressed))
+        last_video_operation=read_json(attempt / 'active-operation.json'), resume_progress=progressed))
     (renderer / 'renderer-status.json').write_text(json.dumps(state, indent=2))
     (renderer / 'skip.json').write_text(json.dumps(state['skipped_case_ids']))
     # An error before BENCHMARK_CASE cannot be repaired by skipping a test.

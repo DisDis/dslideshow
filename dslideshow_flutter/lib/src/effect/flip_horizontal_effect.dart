@@ -1,11 +1,10 @@
 import 'dart:math' as math;
+
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
-class FlipHorizontalEffect
-    extends MediaSliderItemEffect  with TranslateEffect
-    {
+class FlipHorizontalEffect extends MediaSliderItemEffect with TranslateEffect {
   final double perspectiveScale;
 
   FlipHorizontalEffect({this.perspectiveScale = 0.002});
@@ -19,6 +18,7 @@ class FlipHorizontalEffect
     double screenW,
     double screenH,
   ) {
+    // Perspective is relative to the rotating extent, with a 320px reference.
     if ((!isCurrentPage /*index == currentPage + 1 || index == 0 && currentPage == itemCount - 1*/ ) &&
         pageDelta > 0.5) {
       return Transform(
@@ -26,7 +26,7 @@ class FlipHorizontalEffect
         alignment: Alignment.center,
         transform: translateNext(
           Matrix4.identity()
-            ..setEntry(3, 2, perspectiveScale)
+            ..setEntry(3, 2, perspectiveScale * 320 / screenW)
             ..rotateY(math.pi * (pageDelta - 1))
             ..leftTranslateByDouble(-screenW * (1 - pageDelta), 0.0, 0.0, 1.0),
           pageDelta,
@@ -41,7 +41,7 @@ class FlipHorizontalEffect
         alignment: Alignment.center,
         transform: translateCurrent(
           Matrix4.identity()
-            ..setEntry(3, 2, perspectiveScale)
+            ..setEntry(3, 2, perspectiveScale * 320 / screenW)
             ..rotateY(math.pi * pageDelta)
             ..leftTranslateByDouble(screenW * pageDelta, 0.0, 0.0, 1.0),
           pageDelta,

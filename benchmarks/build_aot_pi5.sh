@@ -20,7 +20,7 @@ mkdir -p "$package/bundle" "$package/tool"
 cp -a "$bundle/." "$package/bundle/"
 cp run.sh README.md "$package/"
 cp -a config "$package/"
-cp tool/collect_reports.py tool/resume_plan.py "$package/tool/"
+cp tool/collect_reports.py tool/resume_plan.py tool/visual_report.py "$package/tool/"
 cp assets/build-info.json "$package/build-info.json"
 archive="$PWD/build/$(basename "$package").tar.gz"
 tar -czf "$archive" -C "$package" .

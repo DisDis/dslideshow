@@ -11,6 +11,7 @@ output=${BENCHMARK_REPORT_ROOT:-$app_dir/reports}
 config=${BENCHMARK_CONFIG:-}
 timeout_s=${BENCHMARK_TIMEOUT_SECONDS:-172800}
 video_mode=${BENCHMARK_VIDEO_MODE:-2560x1600}
+vulkan_video=${BENCHMARK_VULKAN_VIDEO:-}
 extra=()
 while (($#)); do
   case "$1" in
@@ -21,8 +22,10 @@ while (($#)); do
     --output) output=$2; shift 2;;
     --config) config=$2; shift 2;;
     --timeout) timeout_s=$2; shift 2;;
+    --vulkan-video) vulkan_video=true; shift;;
+    --no-vulkan-video) vulkan_video=false; shift;;
     --) shift; extra=("$@"); break;;
-    -h|--help) echo 'run.sh [--suite smoke|standard|soak] [--renderers both|opengl|vulkan] [--bundle DIR] [--flutter-pi FILE] [--output DIR] [--config JSON] [--timeout SECONDS] [-- ENGINE_ARGS]'; exit 0;;
+    -h|--help) echo 'run.sh [--suite smoke|standard|soak] [--renderers both|opengl|vulkan] [--vulkan-video|--no-vulkan-video] [--bundle DIR] [--flutter-pi FILE] [--output DIR] [--config JSON] [--timeout SECONDS] [-- ENGINE_ARGS]'; exit 0;;
     *) echo "Unknown argument: $1" >&2; exit 2;;
   esac
 done
@@ -36,6 +39,7 @@ fi
 case "$suite" in smoke|standard|soak) ;; *) echo 'Invalid suite' >&2; exit 2;; esac
 case "$renderers" in both) renderer_list=(opengl vulkan);; opengl|vulkan) renderer_list=("$renderers");; *) echo 'Invalid renderers' >&2; exit 2;; esac
 [[ "$timeout_s" =~ ^[1-9][0-9]*$ ]] || { echo 'timeout must be a positive integer' >&2; exit 2; }
+case "$vulkan_video" in '') unset BENCHMARK_VULKAN_VIDEO;; true|false) export BENCHMARK_VULKAN_VIDEO="$vulkan_video";; *) echo 'BENCHMARK_VULKAN_VIDEO must be true or false' >&2; exit 2;; esac
 for dependency in python3 timeout flock tar tee sha256sum; do command -v "$dependency" >/dev/null; done
 if [[ ! -d "$bundle" && -d "$app_dir/build/flutter-pi/pi5-64" ]]; then bundle="$app_dir/build/flutter-pi/pi5-64"; fi
 bundle=$(realpath "$bundle")
@@ -67,10 +71,11 @@ export BENCHMARK_SKIP_FILE
 child=''
 interrupted=0
 finished=0
+collection_result=0
 finish() {
   ((finished)) && return
   finished=1
-  python3 "$app_dir/tool/collect_reports.py" "$collection" || true
+  python3 "$app_dir/tool/collect_reports.py" "$collection" --fail-on-errors || collection_result=$?
   tar -czf "$collection.tar.gz" -C "$output" "$(basename "$collection")"
   echo "BENCHMARK_ARCHIVE=$collection.tar.gz"
 }
@@ -130,5 +135,7 @@ PY
   echo "BENCHMARK_RESUME renderer=$renderer after=$attempt_name"
   done
 done
+finish
+((collection_result == 0)) || result=2
 ((interrupted == 0)) || result=130
 exit "$result"

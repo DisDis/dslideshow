@@ -14,6 +14,86 @@ APP = Path(__file__).resolve().parents[1]
 
 
 class ReportTests(unittest.TestCase):
+    def test_vulkan_video_cli_reaches_runtime_as_explicit_policy(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);bundle=root/'bundle';bundle.mkdir();(bundle/'app.so').touch()
+            runtime=root/'runtime'
+            runtime.write_text("""#!/usr/bin/env python3
+import os,sys,pathlib,json
+if '--help' in sys.argv:sys.exit(0)
+p=pathlib.Path(os.environ['BENCHMARK_OUTPUT'])
+(p/'policy.txt').write_text(os.environ.get('BENCHMARK_VULKAN_VIDEO','default-false'))
+(p/'summary.json').write_text(json.dumps(dict(status='completed',expected_cases=1,observed_cases=1,metadata={},cases=[])))
+""")
+            runtime.chmod(0o755)
+            for index,(flags,expected) in enumerate([([], 'default-false'),(['--vulkan-video'],'true'),(['--vulkan-video','--no-vulkan-video'],'false')]):
+                output=root/f'reports-{index}'
+                env={**os.environ,'XDG_RUNTIME_DIR':str(root)}
+                env.pop('BENCHMARK_VULKAN_VIDEO',None)
+                run=subprocess.run(['bash',str(APP/'run.sh'),'--renderers','vulkan','--suite','smoke',
+                    '--bundle',str(bundle),'--flutter-pi',str(runtime),'--output',str(output),*flags],capture_output=True,text=True,timeout=20,env=env)
+                self.assertEqual(run.returncode,0,run.stdout+run.stderr)
+                self.assertEqual(next(output.glob('*/vulkan/attempt-001/policy.txt')).read_text(),expected)
+
+    def test_unverified_visual_capture_is_not_successful_acceptance(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);renderer=root/'vulkan';attempt=renderer/'attempt-001';(attempt/'audit').mkdir(parents=True)
+            plan=[dict(id='photo',effect='Fade',media='photo-photo')]
+            (attempt/'summary.json').write_text(json.dumps(dict(status='completed',expected_cases=1,observed_cases=1,
+                metadata=dict(plan=plan,executed_case_ids=['photo'],config=dict(visual_audit=True)),
+                cases=[dict(id='photo',failed=0,passed=1,runs=1)])))
+            (attempt/'launcher-status.json').write_text('{"exit_code":0}')
+            (attempt/'audit/photo.json').write_text(json.dumps(dict(case=plan[0],status='unverified_capture')))
+            checkpoint(renderer,attempt,0)
+            result=collect(root)['renderers']['vulkan']
+            self.assertEqual(result['visual_verification'],'unverified_capture')
+            self.assertFalse(result['successful'])
+            self.assertTrue(result['complete'])
+            self.assertEqual(result['status'],'completed_with_unverified_visuals')
+
+    def test_raw_repeats_after_checkpoint_survive_native_crash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);renderer=root/'opengl';attempt=renderer/'attempt-001'
+            attempt.mkdir(parents=True)
+            plan=[dict(id='Cube--video-video',effect='Cube',media='video-video')]
+            (attempt/'summary.json').write_text(json.dumps(dict(status='running',metadata=dict(plan=plan),cases=[])))
+            (attempt/'active-case.json').write_text(json.dumps(dict(id=plan[0]['id'])))
+            (attempt/'launcher-status.json').write_text('{"exit_code":139}')
+            samples=[dict(case_id=plan[0]['id'],case=plan[0],phase='measured',repeat=i,status='passed',
+                          frames=100,actual_ms=2000+i,raster_ms=dict(p95=20+i)) for i in range(2)]
+            (attempt/'runs.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in samples)+'{"truncated":')
+            checkpoint(renderer,attempt,139)
+            result=collect(root)['renderers']['opengl'];row=result['cases'][0]
+            self.assertEqual(row['passed'],2)
+            self.assertEqual(row['frames'],200)
+            self.assertEqual(row['actual_mean_ms'],2000.5)
+            self.assertEqual(row['native_failures'],1)
+            self.assertEqual(result['measured_runs'],2)
+            self.assertFalse(result['successful'])
+            self.assertTrue(result['warnings'])
+
+    def test_unsupported_cases_and_late_runtime_errors_are_separate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);renderer=root/'vulkan';attempt=renderer/'attempt-001'
+            attempt.mkdir(parents=True)
+            plan=[dict(id='photo',effect='Fade',media='photo-photo'),dict(id='video',effect='Fade',media='video-video')]
+            meta=dict(plan=plan,executed_case_ids=['photo'],unsupported_case_ids=['video'])
+            (attempt/'summary.json').write_text(json.dumps(dict(status='completed',metadata=meta,cases=[dict(id='photo',passed=1,runs=1,failed=0)])))
+            (attempt/'launcher-status.json').write_text('{"exit_code":0}')
+            (attempt/'errors.jsonl').write_text(json.dumps(dict(case_id='photo',kind='runtime',stage='cleanup',error='late cancel'))+'\n')
+            checkpoint(renderer,attempt,0)
+            result=collect(root)['renderers']['vulkan']
+            self.assertEqual(result['unsupported_cases'],1)
+            self.assertEqual(result['supported_cases'],1)
+            self.assertEqual(result['failed_runs'],0)
+            self.assertEqual(result['error_counts'],{'runtime':1})
+            self.assertEqual(result['status'],'completed_with_failures')
+            self.assertTrue(result['all_supported_cases_attempted'])
+            self.assertFalse(result['all_cases_attempted'])
+            self.assertFalse(result['successful'])
+            self.assertTrue(next(r for r in result['cases'] if r['id']=='photo')['has_errors'])
+            self.assertEqual(next(r for r in result['cases'] if r['id']=='video')['status'],'unsupported')
+
     def test_resume_advances_past_native_failure_and_preserves_its_metrics(self):
         with tempfile.TemporaryDirectory() as temporary:
             renderer = Path(temporary) / 'opengl'

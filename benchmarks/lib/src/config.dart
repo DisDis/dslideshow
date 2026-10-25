@@ -19,6 +19,8 @@ class BenchmarkConfig {
   final bool captureFrames;
   final bool exitWhenDone;
   final bool requireTimings;
+  final bool vulkanVideo;
+  final bool visualAudit;
   final String? mediaDirectory;
   final int expectedWidth;
   final int expectedHeight;
@@ -41,6 +43,8 @@ class BenchmarkConfig {
     bool? captureFrames,
     this.exitWhenDone = true,
     this.requireTimings = true,
+    this.vulkanVideo = false,
+    this.visualAudit = false,
     this.mediaDirectory,
     this.expectedWidth = 2560,
     this.expectedHeight = 1600,
@@ -103,6 +107,8 @@ class BenchmarkConfig {
       'capture_frames',
       'exit_when_done',
       'require_timings',
+      'vulkan_video',
+      'visual_audit',
       'media_directory',
       'expected_width',
       'expected_height',
@@ -132,6 +138,8 @@ class BenchmarkConfig {
       captureFrames: json['capture_frames'] as bool?,
       exitWhenDone: json['exit_when_done'] as bool? ?? true,
       requireTimings: json['require_timings'] as bool? ?? true,
+      vulkanVideo: json['vulkan_video'] as bool? ?? false,
+      visualAudit: json['visual_audit'] as bool? ?? false,
       mediaDirectory: json['media_directory'] as String?,
       expectedWidth: json['expected_width'] as int? ?? 2560,
       expectedHeight: json['expected_height'] as int? ?? 1600,
@@ -154,6 +162,12 @@ class BenchmarkConfig {
     if (environment['BENCHMARK_SOAK_SECONDS'] case final String value) {
       json['soak_seconds'] = int.parse(value);
     }
+    if (environment['BENCHMARK_VULKAN_VIDEO'] case final String value) {
+      if (!['true', 'false'].contains(value)) {
+        throw FormatException('BENCHMARK_VULKAN_VIDEO must be true or false');
+      }
+      json['vulkan_video'] = value == 'true';
+    }
     return BenchmarkConfig.fromJson(json);
   }
 
@@ -175,6 +189,8 @@ class BenchmarkConfig {
     'capture_frames': captureFrames,
     'exit_when_done': exitWhenDone,
     'require_timings': requireTimings,
+    'vulkan_video': vulkanVideo,
+    'visual_audit': visualAudit,
     'media_directory': mediaDirectory,
     'expected_width': expectedWidth,
     'expected_height': expectedHeight,

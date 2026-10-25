@@ -1,0 +1,11 @@
+{
+  "suite": "smoke",
+  "warmups": 0,
+  "repeats": 1,
+  "transition_ms": 500,
+  "media_cases": ["photo-photo"],
+  "grids": [100],
+  "backends": ["canvas", "shader"],
+  "capture_frames": true,
+  "visual_audit": true
+}

@@ -48,8 +48,9 @@ class CubeEffect extends MediaSliderItemEffect {
         offset: Offset(translateOffset, 0),
         child: Transform(
           alignment: alignment,
+          // Keep the same relative camera distance as the viewport grows.
           transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.0015)
+            ..setEntry(3, 2, 0.0015 * 320 / screenW)
             ..rotateY(rotateAngle),
           child: Stack(
             fit: StackFit.expand,

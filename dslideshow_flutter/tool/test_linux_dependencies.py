@@ -7,7 +7,9 @@ import tempfile
 import unittest
 
 
-DEPENDENCIES = Path(__file__).resolve().parents[1] / "linux/cmake/LinuxDependencies.cmake"
+PROJECT_ROOT = Path(os.environ.get(
+    "DS_LINUX_PROJECT_ROOT", Path(__file__).resolve().parents[1]))
+DEPENDENCIES = PROJECT_ROOT.resolve() / "linux/cmake/LinuxDependencies.cmake"
 
 
 class LinuxDependenciesTest(unittest.TestCase):

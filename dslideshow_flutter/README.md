@@ -20,6 +20,9 @@ Backend использует локальные версии библиотек 
 
 ## Linux desktop
 
+Общая [инструкция по диагностике Linux-сборки](../doc/linux-build-troubleshooting.md)
+содержит способы исправления GTK/GSettings и переноса решения в другое приложение.
+
 На Debian/Ubuntu установите инструменты и development-пакеты:
 
 ```sh

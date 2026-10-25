@@ -8,7 +8,9 @@ import tempfile
 import unittest
 
 
-RUNNER = Path(__file__).resolve().parents[1] / "linux/runner"
+PROJECT_ROOT = Path(os.environ.get(
+    "DS_LINUX_PROJECT_ROOT", Path(__file__).resolve().parents[1]))
+RUNNER = PROJECT_ROOT.resolve() / "linux/runner"
 SNAP_GTK_PATHS = (
     "GSETTINGS_SCHEMA_DIR", "GTK_PATH", "GTK_EXE_PREFIX", "GTK_IM_MODULE_FILE",
     "GDK_PIXBUF_MODULE_FILE", "GDK_PIXBUF_MODULEDIR",
