@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 
+import 'special_screen_config.dart';
+
 part 'slideshow_config.g.dart';
 
 @JsonSerializable()
@@ -12,6 +14,29 @@ class SlideShowConfig {
 
   @JsonKey(fromJson: _parseMenu)
   SlideShowMenuConfig menu;
+
+  @JsonKey(fromJson: _parseSpecialScreens)
+  List<SpecialScreenConfig> specialScreens;
+
+  static List<SpecialScreenConfig> _parseSpecialScreens(dynamic value) {
+    final result = <SpecialScreenConfig>[];
+    if (value is! List) return result;
+    for (final item in value) {
+      if (item is! Map) continue;
+      final screen = SpecialScreenConfig.fromJson(
+        Map<String, dynamic>.from(item),
+      );
+      if (screen.id.isEmpty || result.any((s) => s.id == screen.id)) {
+        var index = result.length + 1;
+        while (result.any((s) => s.id == 'screen-$index')) {
+          index++;
+        }
+        screen.id = 'screen-$index';
+      }
+      result.add(screen);
+    }
+    return result;
+  }
 
   static SlideShowButtons _parseButtons(dynamic data) {
     _log.info("- parsing 'buttons' bind");
@@ -108,12 +133,21 @@ class SlideShowConfig {
     required this.transitionTimeMs,
     required this.buttons,
     required this.menu,
-  });
+    List<SpecialScreenConfig>? specialScreens,
+  }) : specialScreens = specialScreens ?? [];
 
   factory SlideShowConfig.fromJson(Map<String, dynamic> json) =>
       _$SlideShowConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
+
+  /// The slideshow owns the storage representation of its typed screen list.
+  Map<String, dynamic> toStorageJson(JsonStripper strip) => {
+    ...toJson(),
+    'specialScreens': specialScreens
+        .map((screen) => screen.toStorageJson(strip))
+        .toList(),
+  };
 }
 
 @JsonSerializable()

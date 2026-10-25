@@ -8,7 +8,8 @@
    "fadeTimeMs": 2000,
    "transitionTimeMs": 1000,
    "allowedEffects": ["Fade"],
-   "isBlurredBackground": false
+   "isBlurredBackground": false,
+   "specialScreens": []
   },
   "storage": {
     "GPhotoStorage": {

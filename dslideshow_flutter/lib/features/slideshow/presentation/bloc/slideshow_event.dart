@@ -11,6 +11,8 @@ class SlideshowEvent with _$SlideshowEvent {
   const factory SlideshowEvent.loadNext() = SlideshowLoadNextEvent;
   const factory SlideshowEvent.imageReady() =
       SlideshowImageReadyEvent; // Вызывается UI после precache
+  const factory SlideshowEvent.specialUnavailable(String screenId) =
+      SlideshowSpecialUnavailableEvent;
   const factory SlideshowEvent.transitionComplete() =
       SlideshowTransitionCompleteEvent; // Вызывается UI после анимации
   const factory SlideshowEvent.timerComplete() =

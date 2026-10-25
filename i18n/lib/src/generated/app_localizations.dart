@@ -795,6 +795,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'example@gmail.com'**
   String get example_email_address;
+
+  /// No description provided for @special_screens_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Special screens'**
+  String get special_screens_title;
+
+  /// No description provided for @special_screen_clock.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time'**
+  String get special_screen_clock;
+
+  /// No description provided for @special_screen_cameras.
+  ///
+  /// In en, this message translates to:
+  /// **'Cameras'**
+  String get special_screen_cameras;
+
+  /// No description provided for @special_add_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Add screen'**
+  String get special_add_screen;
+
+  /// No description provided for @special_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a clock or a camera screen to the slideshow.'**
+  String get special_empty;
+
+  /// No description provided for @special_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get special_name;
+
+  /// No description provided for @special_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get special_enabled;
+
+  /// No description provided for @special_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get special_delete;
+
+  /// No description provided for @special_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get special_done;
+
+  /// No description provided for @special_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get special_cancel;
+
+  /// No description provided for @special_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get special_preview;
+
+  /// No description provided for @special_preview_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview unavailable. Check the camera URL and network access.'**
+  String get special_preview_unavailable;
+
+  /// No description provided for @special_next_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Next camera'**
+  String get special_next_camera;
+
+  /// No description provided for @special_common.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback'**
+  String get special_common;
+
+  /// No description provided for @special_frequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get special_frequency;
+
+  /// No description provided for @special_after_slides.
+  ///
+  /// In en, this message translates to:
+  /// **'After media slides'**
+  String get special_after_slides;
+
+  /// No description provided for @special_interval.
+  ///
+  /// In en, this message translates to:
+  /// **'At an active playback interval'**
+  String get special_interval;
+
+  /// No description provided for @special_slide_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of photos / videos'**
+  String get special_slide_count;
+
+  /// No description provided for @special_interval_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval (minutes)'**
+  String get special_interval_minutes;
+
+  /// No description provided for @special_duration_seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Display duration (seconds)'**
+  String get special_duration_seconds;
+
+  /// No description provided for @special_seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get special_seconds;
+
+  /// No description provided for @special_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get special_minutes;
+
+  /// No description provided for @special_clock_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock appearance'**
+  String get special_clock_settings;
+
+  /// No description provided for @special_time_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Time format'**
+  String get special_time_format;
+
+  /// No description provided for @special_24h.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours'**
+  String get special_24h;
+
+  /// No description provided for @special_12h.
+  ///
+  /// In en, this message translates to:
+  /// **'12 hours (AM/PM)'**
+  String get special_12h;
+
+  /// No description provided for @special_show_seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Show seconds'**
+  String get special_show_seconds;
+
+  /// No description provided for @special_show_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Show date'**
+  String get special_show_date;
+
+  /// No description provided for @special_date_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get special_date_format;
+
+  /// No description provided for @special_time_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Time font (% of shorter screen side)'**
+  String get special_time_size;
+
+  /// No description provided for @special_date_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Date font (% of shorter screen side)'**
+  String get special_date_size;
+
+  /// No description provided for @special_text_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Text color (AARRGGBB)'**
+  String get special_text_color;
+
+  /// No description provided for @special_background_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Background color (AARRGGBB)'**
+  String get special_background_color;
+
+  /// No description provided for @special_camera_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera display'**
+  String get special_camera_settings;
+
+  /// No description provided for @special_camera_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Display mode'**
+  String get special_camera_mode;
+
+  /// No description provided for @special_grid.
+  ///
+  /// In en, this message translates to:
+  /// **'All cameras in a grid'**
+  String get special_grid;
+
+  /// No description provided for @special_sequence.
+  ///
+  /// In en, this message translates to:
+  /// **'One camera per appearance'**
+  String get special_sequence;
+
+  /// No description provided for @special_sequence_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Each appearance shows the next camera in list order.'**
+  String get special_sequence_help;
+
+  /// No description provided for @special_columns.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid columns (0 = automatic)'**
+  String get special_columns;
+
+  /// No description provided for @special_fit.
+  ///
+  /// In en, this message translates to:
+  /// **'Image placement'**
+  String get special_fit;
+
+  /// No description provided for @special_contain.
+  ///
+  /// In en, this message translates to:
+  /// **'Entire image'**
+  String get special_contain;
+
+  /// No description provided for @special_cover.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill and crop'**
+  String get special_cover;
+
+  /// No description provided for @special_show_names.
+  ///
+  /// In en, this message translates to:
+  /// **'Show camera names'**
+  String get special_show_names;
+
+  /// No description provided for @special_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh (seconds; 0 = on appearance only)'**
+  String get special_refresh;
+
+  /// No description provided for @special_add_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Add camera'**
+  String get special_add_camera;
+
+  /// No description provided for @special_camera_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot URL (HTTP/HTTPS, JPEG/PNG)'**
+  String get special_camera_url;
+
+  /// No description provided for @special_check_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Check snapshot'**
+  String get special_check_camera;
+
+  /// No description provided for @special_move_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get special_move_up;
+
+  /// No description provided for @special_move_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get special_move_down;
+
+  /// No description provided for @special_invalid_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number in the allowed range.'**
+  String get special_invalid_number;
+
+  /// No description provided for @special_invalid_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an HTTP/HTTPS URL.'**
+  String get special_invalid_url;
+
+  /// No description provided for @special_invalid_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 8 hexadecimal digits (AARRGGBB).'**
+  String get special_invalid_color;
+
+  /// No description provided for @special_camera_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one camera.'**
+  String get special_camera_required;
+
+  /// No description provided for @special_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported screen type'**
+  String get special_unsupported;
+
+  /// No description provided for @special_auth.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication (optional)'**
+  String get special_auth;
+
+  /// No description provided for @special_save_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Save on the main settings page to write changes to the device.'**
+  String get special_save_hint;
+
+  /// No description provided for @special_browser_camera_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs.'**
+  String get special_browser_camera_help;
 }
 
 class _AppLocalizationsDelegate

@@ -382,4 +382,180 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get example_email_address => 'example@gmail.com';
+
+  @override
+  String get special_screens_title => 'Special screens';
+
+  @override
+  String get special_screen_clock => 'Date and time';
+
+  @override
+  String get special_screen_cameras => 'Cameras';
+
+  @override
+  String get special_add_screen => 'Add screen';
+
+  @override
+  String get special_empty =>
+      'Add a clock or a camera screen to the slideshow.';
+
+  @override
+  String get special_name => 'Name';
+
+  @override
+  String get special_enabled => 'Enabled';
+
+  @override
+  String get special_delete => 'Delete';
+
+  @override
+  String get special_done => 'Done';
+
+  @override
+  String get special_cancel => 'Cancel';
+
+  @override
+  String get special_preview => 'Preview';
+
+  @override
+  String get special_preview_unavailable =>
+      'Preview unavailable. Check the camera URL and network access.';
+
+  @override
+  String get special_next_camera => 'Next camera';
+
+  @override
+  String get special_common => 'Playback';
+
+  @override
+  String get special_frequency => 'Show';
+
+  @override
+  String get special_after_slides => 'After media slides';
+
+  @override
+  String get special_interval => 'At an active playback interval';
+
+  @override
+  String get special_slide_count => 'Number of photos / videos';
+
+  @override
+  String get special_interval_minutes => 'Interval (minutes)';
+
+  @override
+  String get special_duration_seconds => 'Display duration (seconds)';
+
+  @override
+  String get special_seconds => 's';
+
+  @override
+  String get special_minutes => 'min';
+
+  @override
+  String get special_clock_settings => 'Clock appearance';
+
+  @override
+  String get special_time_format => 'Time format';
+
+  @override
+  String get special_24h => '24 hours';
+
+  @override
+  String get special_12h => '12 hours (AM/PM)';
+
+  @override
+  String get special_show_seconds => 'Show seconds';
+
+  @override
+  String get special_show_date => 'Show date';
+
+  @override
+  String get special_date_format => 'Date format';
+
+  @override
+  String get special_time_size => 'Time font (% of shorter screen side)';
+
+  @override
+  String get special_date_size => 'Date font (% of shorter screen side)';
+
+  @override
+  String get special_text_color => 'Text color (AARRGGBB)';
+
+  @override
+  String get special_background_color => 'Background color (AARRGGBB)';
+
+  @override
+  String get special_camera_settings => 'Camera display';
+
+  @override
+  String get special_camera_mode => 'Display mode';
+
+  @override
+  String get special_grid => 'All cameras in a grid';
+
+  @override
+  String get special_sequence => 'One camera per appearance';
+
+  @override
+  String get special_sequence_help =>
+      'Each appearance shows the next camera in list order.';
+
+  @override
+  String get special_columns => 'Grid columns (0 = automatic)';
+
+  @override
+  String get special_fit => 'Image placement';
+
+  @override
+  String get special_contain => 'Entire image';
+
+  @override
+  String get special_cover => 'Fill and crop';
+
+  @override
+  String get special_show_names => 'Show camera names';
+
+  @override
+  String get special_refresh => 'Refresh (seconds; 0 = on appearance only)';
+
+  @override
+  String get special_add_camera => 'Add camera';
+
+  @override
+  String get special_camera_url => 'Snapshot URL (HTTP/HTTPS, JPEG/PNG)';
+
+  @override
+  String get special_check_camera => 'Check snapshot';
+
+  @override
+  String get special_move_up => 'Move up';
+
+  @override
+  String get special_move_down => 'Move down';
+
+  @override
+  String get special_invalid_number => 'Enter a number in the allowed range.';
+
+  @override
+  String get special_invalid_url => 'Enter an HTTP/HTTPS URL.';
+
+  @override
+  String get special_invalid_color => 'Enter 8 hexadecimal digits (AARRGGBB).';
+
+  @override
+  String get special_camera_required => 'Add at least one camera.';
+
+  @override
+  String get special_unsupported => 'Unsupported screen type';
+
+  @override
+  String get special_auth => 'Authentication (optional)';
+
+  @override
+  String get special_save_hint =>
+      'Use Save on the main settings page to write changes to the device.';
+
+  @override
+  String get special_browser_camera_help =>
+      'Previews load cameras directly from this browser. The camera must allow browser access (CORS); HTTPS pages also require HTTPS camera URLs.';
 }

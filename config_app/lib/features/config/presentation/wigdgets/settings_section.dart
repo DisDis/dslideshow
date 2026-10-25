@@ -28,10 +28,10 @@ class SettingsSection extends StatelessWidget {
             child: Row(
               children: [
                 if (icon != null) ...[Icon(icon, color: Theme.of(context).primaryColor), const SizedBox(width: 8)],
-                Text(
+                Expanded(child: Text(
                   title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
+                )),
               ],
             ),
           ),

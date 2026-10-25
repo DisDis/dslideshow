@@ -1,0 +1,9 @@
+{
+  "suite": "smoke",
+  "effects": ["Baseline", "BlurFade", "BlurProbe-reference"],
+  "media_cases": ["photo-photo", "large-photo", "gif-photo", "photo-gif"],
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false
+}

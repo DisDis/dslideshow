@@ -1,6 +1,7 @@
 import 'package:dslideshow_flutter/effect.dart';
 
 import 'config.dart';
+import 'blur_probes.dart';
 
 class MediaPair {
   final String name;
@@ -26,15 +27,17 @@ class BenchmarkCase {
   final int grid;
   final MosaicBackend backend;
   final bool injectStall;
+  final BlurFadeProbe? blurProbe;
   const BenchmarkCase(
     this.effect,
     this.media, {
     this.grid = 100,
     this.backend = MosaicBackend.canvas,
     this.injectStall = false,
+    this.blurProbe,
   });
 
-  String get name => effect?.name ?? 'Baseline';
+  String get name => blurProbe?.effectName ?? effect?.name ?? 'Baseline';
   String get id =>
       '${name.replaceAll(' ', '_')}--${media.name}'
       '${effect?.isMosaic == true ? '--$grid--${backend.name}' : ''}'
@@ -48,11 +51,13 @@ class BenchmarkCase {
     'grid': effect?.isMosaic == true ? grid : null,
     'backend': effect?.isMosaic == true ? backend.name : null,
     'injected_stall_ms': injectStall ? 80 : 0,
+    if (blurProbe != null) 'blur_probe': blurProbe!.name,
   };
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   final names = Effect.values.map((e) => e.name).toSet()..add('Baseline');
+  names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
   for (final name in config.effects ?? <String>[]) {
     if (!names.contains(name)) throw ArgumentError('Unknown effect: $name');
   }
@@ -71,6 +76,14 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
         config.effects!.contains(e?.name ?? 'Baseline'),
   );
   for (final pair in pairs) {
+    for (final probe in BlurFadeProbe.values) {
+      if (config.effects?.contains(probe.effectName) == true &&
+          probe.supports(pair.from, pair.to)) {
+        result.add(
+          BenchmarkCase(Effect.blurFadeEffect, pair, blurProbe: probe),
+        );
+      }
+    }
     for (final effect in effects) {
       if (config.suite == 'smoke' &&
           pair.name != 'photo-photo' &&

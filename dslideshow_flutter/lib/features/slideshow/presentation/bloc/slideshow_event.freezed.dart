@@ -56,13 +56,14 @@ extension SlideshowEventPatterns on SlideshowEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SlideshowInitEvent value)?  init,TResult Function( SlideshowLoadNextEvent value)?  loadNext,TResult Function( SlideshowImageReadyEvent value)?  imageReady,TResult Function( SlideshowTransitionCompleteEvent value)?  transitionComplete,TResult Function( SlideshowTimerCompleteEvent value)?  timerComplete,TResult Function( SlideshowTogglePauseEvent value)?  togglePause,TResult Function( SlideshowToggleScreenLockEvent value)?  toggleScreenLock,TResult Function( SlideshowScreenStatePreparationEvent value)?  screenStatePreparation,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SlideshowInitEvent value)?  init,TResult Function( SlideshowLoadNextEvent value)?  loadNext,TResult Function( SlideshowImageReadyEvent value)?  imageReady,TResult Function( SlideshowSpecialUnavailableEvent value)?  specialUnavailable,TResult Function( SlideshowTransitionCompleteEvent value)?  transitionComplete,TResult Function( SlideshowTimerCompleteEvent value)?  timerComplete,TResult Function( SlideshowTogglePauseEvent value)?  togglePause,TResult Function( SlideshowToggleScreenLockEvent value)?  toggleScreenLock,TResult Function( SlideshowScreenStatePreparationEvent value)?  screenStatePreparation,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SlideshowInitEvent() when init != null:
 return init(_that);case SlideshowLoadNextEvent() when loadNext != null:
 return loadNext(_that);case SlideshowImageReadyEvent() when imageReady != null:
-return imageReady(_that);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
+return imageReady(_that);case SlideshowSpecialUnavailableEvent() when specialUnavailable != null:
+return specialUnavailable(_that);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
 return transitionComplete(_that);case SlideshowTimerCompleteEvent() when timerComplete != null:
 return timerComplete(_that);case SlideshowTogglePauseEvent() when togglePause != null:
 return togglePause(_that);case SlideshowToggleScreenLockEvent() when toggleScreenLock != null:
@@ -85,13 +86,14 @@ return screenStatePreparation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SlideshowInitEvent value)  init,required TResult Function( SlideshowLoadNextEvent value)  loadNext,required TResult Function( SlideshowImageReadyEvent value)  imageReady,required TResult Function( SlideshowTransitionCompleteEvent value)  transitionComplete,required TResult Function( SlideshowTimerCompleteEvent value)  timerComplete,required TResult Function( SlideshowTogglePauseEvent value)  togglePause,required TResult Function( SlideshowToggleScreenLockEvent value)  toggleScreenLock,required TResult Function( SlideshowScreenStatePreparationEvent value)  screenStatePreparation,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SlideshowInitEvent value)  init,required TResult Function( SlideshowLoadNextEvent value)  loadNext,required TResult Function( SlideshowImageReadyEvent value)  imageReady,required TResult Function( SlideshowSpecialUnavailableEvent value)  specialUnavailable,required TResult Function( SlideshowTransitionCompleteEvent value)  transitionComplete,required TResult Function( SlideshowTimerCompleteEvent value)  timerComplete,required TResult Function( SlideshowTogglePauseEvent value)  togglePause,required TResult Function( SlideshowToggleScreenLockEvent value)  toggleScreenLock,required TResult Function( SlideshowScreenStatePreparationEvent value)  screenStatePreparation,}){
 final _that = this;
 switch (_that) {
 case SlideshowInitEvent():
 return init(_that);case SlideshowLoadNextEvent():
 return loadNext(_that);case SlideshowImageReadyEvent():
-return imageReady(_that);case SlideshowTransitionCompleteEvent():
+return imageReady(_that);case SlideshowSpecialUnavailableEvent():
+return specialUnavailable(_that);case SlideshowTransitionCompleteEvent():
 return transitionComplete(_that);case SlideshowTimerCompleteEvent():
 return timerComplete(_that);case SlideshowTogglePauseEvent():
 return togglePause(_that);case SlideshowToggleScreenLockEvent():
@@ -113,13 +115,14 @@ return screenStatePreparation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SlideshowInitEvent value)?  init,TResult? Function( SlideshowLoadNextEvent value)?  loadNext,TResult? Function( SlideshowImageReadyEvent value)?  imageReady,TResult? Function( SlideshowTransitionCompleteEvent value)?  transitionComplete,TResult? Function( SlideshowTimerCompleteEvent value)?  timerComplete,TResult? Function( SlideshowTogglePauseEvent value)?  togglePause,TResult? Function( SlideshowToggleScreenLockEvent value)?  toggleScreenLock,TResult? Function( SlideshowScreenStatePreparationEvent value)?  screenStatePreparation,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SlideshowInitEvent value)?  init,TResult? Function( SlideshowLoadNextEvent value)?  loadNext,TResult? Function( SlideshowImageReadyEvent value)?  imageReady,TResult? Function( SlideshowSpecialUnavailableEvent value)?  specialUnavailable,TResult? Function( SlideshowTransitionCompleteEvent value)?  transitionComplete,TResult? Function( SlideshowTimerCompleteEvent value)?  timerComplete,TResult? Function( SlideshowTogglePauseEvent value)?  togglePause,TResult? Function( SlideshowToggleScreenLockEvent value)?  toggleScreenLock,TResult? Function( SlideshowScreenStatePreparationEvent value)?  screenStatePreparation,}){
 final _that = this;
 switch (_that) {
 case SlideshowInitEvent() when init != null:
 return init(_that);case SlideshowLoadNextEvent() when loadNext != null:
 return loadNext(_that);case SlideshowImageReadyEvent() when imageReady != null:
-return imageReady(_that);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
+return imageReady(_that);case SlideshowSpecialUnavailableEvent() when specialUnavailable != null:
+return specialUnavailable(_that);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
 return transitionComplete(_that);case SlideshowTimerCompleteEvent() when timerComplete != null:
 return timerComplete(_that);case SlideshowTogglePauseEvent() when togglePause != null:
 return togglePause(_that);case SlideshowToggleScreenLockEvent() when toggleScreenLock != null:
@@ -141,12 +144,13 @@ return screenStatePreparation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loadNext,TResult Function()?  imageReady,TResult Function()?  transitionComplete,TResult Function()?  timerComplete,TResult Function( bool isPaused)?  togglePause,TResult Function( bool isLocked)?  toggleScreenLock,TResult Function( bool enabled)?  screenStatePreparation,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loadNext,TResult Function()?  imageReady,TResult Function( String screenId)?  specialUnavailable,TResult Function()?  transitionComplete,TResult Function()?  timerComplete,TResult Function( bool isPaused)?  togglePause,TResult Function( bool isLocked)?  toggleScreenLock,TResult Function( bool enabled)?  screenStatePreparation,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SlideshowInitEvent() when init != null:
 return init();case SlideshowLoadNextEvent() when loadNext != null:
 return loadNext();case SlideshowImageReadyEvent() when imageReady != null:
-return imageReady();case SlideshowTransitionCompleteEvent() when transitionComplete != null:
+return imageReady();case SlideshowSpecialUnavailableEvent() when specialUnavailable != null:
+return specialUnavailable(_that.screenId);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
 return transitionComplete();case SlideshowTimerCompleteEvent() when timerComplete != null:
 return timerComplete();case SlideshowTogglePauseEvent() when togglePause != null:
 return togglePause(_that.isPaused);case SlideshowToggleScreenLockEvent() when toggleScreenLock != null:
@@ -169,12 +173,13 @@ return screenStatePreparation(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loadNext,required TResult Function()  imageReady,required TResult Function()  transitionComplete,required TResult Function()  timerComplete,required TResult Function( bool isPaused)  togglePause,required TResult Function( bool isLocked)  toggleScreenLock,required TResult Function( bool enabled)  screenStatePreparation,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loadNext,required TResult Function()  imageReady,required TResult Function( String screenId)  specialUnavailable,required TResult Function()  transitionComplete,required TResult Function()  timerComplete,required TResult Function( bool isPaused)  togglePause,required TResult Function( bool isLocked)  toggleScreenLock,required TResult Function( bool enabled)  screenStatePreparation,}) {final _that = this;
 switch (_that) {
 case SlideshowInitEvent():
 return init();case SlideshowLoadNextEvent():
 return loadNext();case SlideshowImageReadyEvent():
-return imageReady();case SlideshowTransitionCompleteEvent():
+return imageReady();case SlideshowSpecialUnavailableEvent():
+return specialUnavailable(_that.screenId);case SlideshowTransitionCompleteEvent():
 return transitionComplete();case SlideshowTimerCompleteEvent():
 return timerComplete();case SlideshowTogglePauseEvent():
 return togglePause(_that.isPaused);case SlideshowToggleScreenLockEvent():
@@ -196,12 +201,13 @@ return screenStatePreparation(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loadNext,TResult? Function()?  imageReady,TResult? Function()?  transitionComplete,TResult? Function()?  timerComplete,TResult? Function( bool isPaused)?  togglePause,TResult? Function( bool isLocked)?  toggleScreenLock,TResult? Function( bool enabled)?  screenStatePreparation,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loadNext,TResult? Function()?  imageReady,TResult? Function( String screenId)?  specialUnavailable,TResult? Function()?  transitionComplete,TResult? Function()?  timerComplete,TResult? Function( bool isPaused)?  togglePause,TResult? Function( bool isLocked)?  toggleScreenLock,TResult? Function( bool enabled)?  screenStatePreparation,}) {final _that = this;
 switch (_that) {
 case SlideshowInitEvent() when init != null:
 return init();case SlideshowLoadNextEvent() when loadNext != null:
 return loadNext();case SlideshowImageReadyEvent() when imageReady != null:
-return imageReady();case SlideshowTransitionCompleteEvent() when transitionComplete != null:
+return imageReady();case SlideshowSpecialUnavailableEvent() when specialUnavailable != null:
+return specialUnavailable(_that.screenId);case SlideshowTransitionCompleteEvent() when transitionComplete != null:
 return transitionComplete();case SlideshowTimerCompleteEvent() when timerComplete != null:
 return timerComplete();case SlideshowTogglePauseEvent() when togglePause != null:
 return togglePause(_that.isPaused);case SlideshowToggleScreenLockEvent() when toggleScreenLock != null:
@@ -309,6 +315,74 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class SlideshowSpecialUnavailableEvent implements SlideshowEvent {
+  const SlideshowSpecialUnavailableEvent(this.screenId);
+  
+
+ final  String screenId;
+
+/// Create a copy of SlideshowEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SlideshowSpecialUnavailableEventCopyWith<SlideshowSpecialUnavailableEvent> get copyWith => _$SlideshowSpecialUnavailableEventCopyWithImpl<SlideshowSpecialUnavailableEvent>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SlideshowSpecialUnavailableEvent&&(identical(other.screenId, screenId) || other.screenId == screenId));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,screenId);
+}
+
+@override
+String toString() {
+    return 'SlideshowEvent.specialUnavailable(screenId: $screenId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SlideshowSpecialUnavailableEventCopyWith<$Res> implements $SlideshowEventCopyWith<$Res> {
+  factory $SlideshowSpecialUnavailableEventCopyWith(SlideshowSpecialUnavailableEvent value, $Res Function(SlideshowSpecialUnavailableEvent) _then) = _$SlideshowSpecialUnavailableEventCopyWithImpl;
+@useResult
+$Res call({
+ String screenId
+});
+
+
+
+
+}
+/// @nodoc
+class _$SlideshowSpecialUnavailableEventCopyWithImpl<$Res>
+    implements $SlideshowSpecialUnavailableEventCopyWith<$Res> {
+  _$SlideshowSpecialUnavailableEventCopyWithImpl(this._self, this._then);
+
+  final SlideshowSpecialUnavailableEvent _self;
+  final $Res Function(SlideshowSpecialUnavailableEvent) _then;
+
+/// Create a copy of SlideshowEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? screenId = null,}) {
+  return _then(SlideshowSpecialUnavailableEvent(
+null == screenId ? _self.screenId : screenId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

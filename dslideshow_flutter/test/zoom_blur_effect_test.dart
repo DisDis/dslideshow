@@ -127,13 +127,42 @@ Widget slide(ui.Image image) => RepaintBoundary(
 );
 
 void main() {
+  testWidgets('BlurFade keeps outgoing state mounted through both endpoints', (
+    tester,
+  ) async {
+    for (final sigma in [0.0, 10.0]) {
+      var mounts = 0;
+      final source = _MountProbe(() => mounts++);
+      final effect = BlurFadeEffect(maxSigma: sigma);
+      for (final t in [0.0, .01, .5, .99, 1.0, 0.0]) {
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Builder(
+              builder: (context) => effect.createTransformWidget(
+                context,
+                source,
+                const SizedBox.expand(),
+                AlwaysStoppedAnimation(t),
+                160,
+                100,
+              ),
+            ),
+          ),
+        );
+        expect(mounts, 1, reason: 'sigma=$sigma t=$t');
+      }
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
   for (final blur in [true, false]) {
     testWidgets(
       '${blur ? 'BlurFade' : 'ZoomOver'} preserves reference pixels',
       (tester) async {
         final a = bitmap(false), b = bitmap(true);
         try {
-          for (final parameter in blur ? [0.0, 2.5, 10.0] : [1.0, 1.5, 2.0]) {
+          for (final parameter
+              in blur ? [0.0, .01, .1, 1.0, 2.5, 10.0] : [1.0, 1.5, 2.0]) {
             final MediaSliderItemEffect effect = blur
                 ? BlurFadeEffect(maxSigma: parameter)
                 : ZoomOverEffect(startScale: parameter);
@@ -240,4 +269,23 @@ void main() {
       }
     },
   );
+}
+
+class _MountProbe extends StatefulWidget {
+  final VoidCallback onMount;
+  const _MountProbe(this.onMount);
+
+  @override
+  State<_MountProbe> createState() => _MountProbeState();
+}
+
+class _MountProbeState extends State<_MountProbe> {
+  @override
+  void initState() {
+    super.initState();
+    widget.onMount();
+  }
+
+  @override
+  Widget build(BuildContext context) => const ColoredBox(color: Colors.red);
 }

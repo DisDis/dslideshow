@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:logging/logging.dart';
+import 'special_screens_page.dart';
 
 
 class ConfigScreen extends StatelessWidget {
@@ -51,9 +52,7 @@ class _ConfigViewState extends State<_ConfigView> {
             // При первой загрузке или после сохранения обновляем локальную копию
             // Внимание: если вы хотите сохранять стейт при перерисовках,
             // лучше делать это аккуратнее, но для примера сойдет.
-            if (_editingConfig == null) {
-              _editingConfig = config;
-            }
+            _editingConfig ??= config;
           },
           saved: () {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -131,6 +130,15 @@ class _ConfigViewState extends State<_ConfigView> {
               subtitle: _editingConfig!.welcome.text,
               icon: Icons.waving_hand,
               onTap: () => _navigateToWelcomeEditor(context),
+            ),
+            SettingsTileNavigation(
+              title: context.localizations.special_screens_title,
+              subtitle: '${_editingConfig!.slideshow.specialScreens.where((s) => s.enabled).length} / ${_editingConfig!.slideshow.specialScreens.length}',
+              icon: Icons.dashboard_customize,
+              onTap: () async {
+                await Navigator.of(context).push(MaterialPageRoute(builder: (_) => SpecialScreensPage(config: _editingConfig!.slideshow)));
+                if (mounted) setState(() {});
+              },
             ),
           ],
         ),

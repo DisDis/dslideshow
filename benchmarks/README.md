@@ -13,6 +13,21 @@
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
 с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
+## Диагностика BlurFade
+
+Точечные сценарии `blur-diagnostics.json`, `blur-confirm.json`,
+`blur-confirm-photos.json`, `blur-visual.json` и `blur-video.json` описаны
+в [исследовании BlurFade на RaPi5](../doc/blur-fade-optimization-2026-10.md).
+Диагностические `BlurProbe-*` включаются только явно через `effects`;
+обычные матрицы их не запускают. `fadeOnly` / `blurOnly` намеренно меняют
+картинку, bitmap-пробы доступны только для статического исходящего слайда.
+Это инструменты исследования, а не дополнительные пользовательские эффекты.
+
+Визуальный аудит дополнительно сохраняет `full_frames` в `audit/*.json`:
+размеры и SHA-256 raw RGBA полного кадра до уменьшения до PNG-превью.
+Сравнивайте эти хеши между эталоном и кандидатом; успешная эвристическая
+проверка движения сама по себе не подтверждает точное совпадение пикселей.
+
 ## Сборка на рабочей машине
 
 Используется установленный Flutter SDK и `flutterpi_tool`, как в
@@ -265,6 +280,7 @@ readback даёт `unverified_capture`, а не ложный успех. Отк�
 
 ```bash
 ./run.sh --config config/zoom-blur.json --renderers opengl --timeout 2400
+./run.sh --config config/zoom-blur-confirm.json --renderers opengl --timeout 2400
 ./run.sh --config config/zoom-blur-visual.json --renderers opengl --timeout 1800
 ./run.sh --config config/zoom-blur-video.json --renderers opengl --timeout 2400
 ```
@@ -276,6 +292,9 @@ GIF — 16 сценариев, один прогрев и три измерен�
 сбой video→video остаётся отдельным дефектом, этот набор его не проверяет.
 Для A/B используйте одинаковые конфиги/оригиналы, исходную и новую release-сборки;
 переходить на Vulkan для этого сравнения не нужно.
+`zoom-blur-confirm.json` оставляет восемь случаев на обычных/48 Мп фото для
+повторной пары в обратном порядке. Результаты и принятая оптимизация описаны
+в [аппаратном разборе ZoomOver/BlurFade](../doc/zoom-blur-optimization-2026-10.md).
 
 Агрегация использует сырые `runs.jsonl`, включая повторы после последнего checkpoint.
 `error_counts` отдельно показывает runtime/cleanup/capture/telemetry ошибки;

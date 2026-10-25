@@ -13,6 +13,9 @@ import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
+import 'slideshow_slide.dart';
+import 'special_screen_scheduler.dart';
+
 class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   static final _log = Logger('SlideshowBloc');
   static final _rnd = Random(DateTime.now().millisecondsSinceEpoch);
@@ -29,6 +32,10 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   Timer? _displayTimer;
   bool _closing = false;
   final _waits = CancellableWaits();
+  late final SpecialScreenScheduler scheduler = SpecialScreenScheduler(
+    config.specialScreens,
+  );
+  bool _initialized = false;
 
   // Подписки
   late StreamSubscription<ButtonEvent> _onButtonEventSubscription;
@@ -39,19 +46,25 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     required this.frontendService,
     required this.config,
     required this.statusBloc,
-  }) : super(
-         const SlideshowState(
-           currentItem: null,
-           nextItem: null,
-           effect: Effect.fadeEffect,
-         ),
-       ) {
+  }) : super(const SlideshowState(effect: Effect.fadeEffect)) {
     // 1. Инициализация
     on<SlideshowInitEvent>(_onInit);
 
     // 2. Цикл слайдшоу
     on<SlideshowLoadNextEvent>(_onLoadNext);
     on<SlideshowImageReadyEvent>(_onImageReady);
+    on<SlideshowSpecialUnavailableEvent>((event, emit) {
+      final slide = state.nextSlide;
+      if (slide is! SpecialSlide ||
+          slide.config.id != event.screenId ||
+          state.isScreenLocked ||
+          state.phase != SlideshowPhase.precaching) {
+        return;
+      }
+      scheduler.skipped(slide);
+      emit(state.copyWith(nextSlide: null, phase: SlideshowPhase.display));
+      add(const SlideshowLoadNextEvent());
+    });
     on<SlideshowTransitionCompleteEvent>(_onTransitionComplete);
     on<SlideshowTimerCompleteEvent>(_onTimerComplete);
 
@@ -69,7 +82,8 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     SlideshowInitEvent event,
     Emitter<SlideshowState> emit,
   ) async {
-    if (_closing || emit.isDone) return;
+    if (_closing || emit.isDone || _initialized) return;
+    _initialized = true;
     // Настройка эффектов
     final allowedETmp = config.allowedEffects;
     if (allowedETmp.isNotEmpty) {
@@ -98,6 +112,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     if (statusBloc.state.isPaused) {
       emit(state.copyWith(isPaused: true));
     }
+    scheduler.setActive(!state.isPaused && !state.isScreenLocked);
 
     // Запуск первого кадра (reloadCurrent: true если пауза)
     add(const SlideshowLoadNextEvent());
@@ -108,11 +123,30 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     Emitter<SlideshowState> emit,
   ) async {
     if (_closing) return;
-    if (state.isPaused && state.currentItem != null) {
+    if ((state.isPaused || state.isScreenLocked) &&
+        state.currentSlide != null) {
+      return;
+    }
+    if (state.phase == SlideshowPhase.loadingNext ||
+        state.phase == SlideshowPhase.precaching ||
+        state.phase == SlideshowPhase.ready ||
+        state.phase == SlideshowPhase.transition) {
       return;
     }
 
     emit(state.copyWith(phase: SlideshowPhase.loadingNext));
+
+    final special = scheduler.next();
+    if (special != null) {
+      emit(
+        state.copyWith(
+          nextSlide: special,
+          effect: _nextEffect(),
+          phase: SlideshowPhase.precaching,
+        ),
+      );
+      return;
+    }
 
     // Логика загрузки
     if (!state.isPaused) {
@@ -129,39 +163,59 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     }
 
     // Выбор эффекта
-    if (_effectPool.isEmpty) {
-      _effectPool.addAll(_allowedEffects);
-      _effectPool.shuffle(_rnd);
-    }
-    final nextEffect = _effectPool.removeLast();
+    final nextEffect = _nextEffect();
 
     emit(
       state.copyWith(
-        nextItem: mediaItem,
+        nextSlide: MediaSlide(mediaItem),
         effect: nextEffect,
         phase: SlideshowPhase.precaching, // Теперь ждем UI для precache
       ),
     );
   }
 
+  Effect _nextEffect() {
+    if (_effectPool.isEmpty) {
+      _effectPool.addAll(
+        _allowedEffects.isEmpty ? Effect.values : _allowedEffects,
+      );
+      _effectPool.shuffle(_rnd);
+    }
+    return _effectPool.removeLast();
+  }
+
   void _onImageReady(
     SlideshowImageReadyEvent event,
     Emitter<SlideshowState> emit,
   ) {
+    if (state.phase != SlideshowPhase.precaching) return;
+    // A sleeping renderer cancels camera preparation and retries on wake.
+    // Ignore a readiness event that was queued just before that cancellation.
+    if (state.isScreenLocked && state.nextSlide is SpecialSlide) return;
     // Картинка готова, начинаем анимацию
-    emit(state.copyWith(phase: SlideshowPhase.transition));
+    emit(
+      state.copyWith(
+        phase:
+            (state.isPaused && state.currentSlide != null) ||
+                state.isScreenLocked
+            ? SlideshowPhase.ready
+            : SlideshowPhase.transition,
+      ),
+    );
   }
 
   void _onTransitionComplete(
     SlideshowTransitionCompleteEvent event,
     Emitter<SlideshowState> emit,
   ) {
+    final slide = state.nextSlide;
+    if (slide != null) scheduler.shown(slide);
     // Анимация завершена
     // imageCache.clear() должен вызываться в UI, здесь мы просто обновляем стейт
     emit(
       state.copyWith(
-        currentItem: state.nextItem,
-        nextItem: null,
+        currentSlide: state.nextSlide,
+        nextSlide: null,
         phase: SlideshowPhase.display,
       ),
     );
@@ -180,7 +234,10 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     _displayTimer?.cancel();
     if (_closing || state.isPaused || state.isScreenLocked) return;
 
-    final displayTimeMs = config.displayTimeMs;
+    final current = state.currentSlide;
+    final displayTimeMs = current is SpecialSlide
+        ? current.config.displayTimeMs
+        : config.displayTimeMs;
     _displayTimer = Timer(Duration(milliseconds: displayTimeMs), () {
       if (_closing || isClosed) return;
       add(const SlideshowTimerCompleteEvent());
@@ -191,10 +248,15 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     SlideshowTogglePauseEvent event,
     Emitter<SlideshowState> emit,
   ) {
+    if (state.isPaused == event.isPaused) return;
     emit(state.copyWith(isPaused: event.isPaused));
+    scheduler.setActive(!state.isPaused && !state.isScreenLocked);
     if (event.isPaused) {
       _displayTimer?.cancel();
-    } else {
+    } else if (!state.isScreenLocked) {
+      if (state.phase == SlideshowPhase.ready) {
+        emit(state.copyWith(phase: SlideshowPhase.transition));
+      }
       if (state.phase == SlideshowPhase.display) {
         _startDisplayTimer();
       }
@@ -208,6 +270,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     final locked = !event.enabled;
     if (state.isScreenLocked == locked && state.fadeOut == locked) return;
     if (locked) {
+      scheduler.setActive(false);
       _displayTimer?.cancel();
       emit(state.copyWith(fadeOut: true, isScreenLocked: true));
       return;
@@ -216,8 +279,11 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     // ON means either fade cancellation or a completed hardware wake. Never
     // delay this reversal: an old delayed ON could override a newer OFF.
     emit(state.copyWith(fadeOut: false, isScreenLocked: false));
-    if (!state.isPaused) {
-      if (state.phase == SlideshowPhase.display) {
+    scheduler.setActive(!state.isPaused);
+    if (!state.isPaused || state.currentSlide == null) {
+      if (state.phase == SlideshowPhase.ready) {
+        emit(state.copyWith(phase: SlideshowPhase.transition));
+      } else if (state.phase == SlideshowPhase.display) {
         _startDisplayTimer();
       } else if (state.phase == SlideshowPhase.initial) {
         add(const SlideshowLoadNextEvent());
@@ -258,6 +324,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   @override
   Future<void> close() async {
     _closing = true;
+    scheduler.close();
     _waits.close();
     _displayTimer?.cancel();
     await Future.wait([

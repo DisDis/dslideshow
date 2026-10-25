@@ -1,0 +1,9 @@
+{
+  "suite": "smoke",
+  "effects": ["Baseline", "BlurFade", "BlurProbe-fadeOnly", "BlurProbe-blurOnly", "BlurProbe-composeDecal", "BlurProbe-opacityInside", "BlurProbe-noBoundary", "BlurProbe-directImage", "BlurProbe-imageLayer"],
+  "media_cases": ["photo-photo", "large-photo"],
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "capture_frames": false
+}

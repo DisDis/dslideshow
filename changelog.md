@@ -1,5 +1,22 @@
 # Unreleased
 
+* Add extensible special slideshow screens with clocks and direct HTTP/HTTPS
+  JPEG/PNG cameras, grid/round-robin playback, scheduling and lifecycle cleanup.
+* Add config_app screen editors/previews and per-type default stripping on save;
+  use enums and JsonSerializable configuration models with round-trip tests.
+* Fix camera cursor advancement, refresh deadlines and snapshot cancellation;
+  retain pending screens and freeze transitions during pause/sleep. Keep compact
+  serialization in the owning configuration models and add regression tests.
+* Split clock/camera widgets, playback sessions and the renderer registry into
+  separate files.
+
+* Reduce ZoomOver opacity-layer bounds to the viewport while preserving visible
+  pixels and animation curves; verify the improvement with OpenGL A/B on RaPi5.
+* Reduce BlurFade compositing overhead with a composed Gaussian/alpha filter
+  and explicit decal edges; preserve the original fade for zero sigma and verify
+  exact full-resolution RGBA frames and smooth progress on RaPi5 OpenGL.
+* Add opt-in BlurFade component/composition probes, focused photo/GIF/video
+  configurations and full-frame RGBA fingerprints to the separate benchmark app.
 * Use OpenGL as the default benchmark renderer; defer Vulkan device runs until
   the native runtime supports video. Add focused ZoomOver/BlurFade photo/GIF,
   video and visual regression configurations.

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_config.dart';
@@ -14,6 +15,7 @@ import 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
 import 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 
 export 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
+export 'package:dslideshow_backend/src/service/slideshow/special_screen_config.dart';
 export 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 export 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 export 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
@@ -92,27 +94,26 @@ class AppConfig {
   }
 
   static Map<String, dynamic>? _defaultJSON;
-  
+
   static final prettyPrintJSONEncode = new JsonEncoder.withIndent('  ');
   void toFile([String? filenameOutput]) {
     final fileName = filenameOutput ?? fullConfigFilename;
     _log.info('Saving to "$fileName"');
-    var json = this.toJson();
-    try {
-      if (_defaultJSON == null) {
-        _log.fine("Create default AppConfig json");
-        final defaultConfig = AppConfig.fromJson({});
-        defaultConfig.storages.fillEmptyStorages();
-        _defaultJSON = defaultConfig.toJson();
-      }
-      json = stripDefaults(json, _defaultJSON!);
-    } catch (e) {
-      _log.severe("Can'not delete default config value", e);
-    }
-    File(fileName)
-      ..openWrite()
-      ..writeAsStringSync(prettyPrintJSONEncode.convert(json));
+    final content = prettyPrintJSONEncode.convert(toStorageJson());
+    File(fileName).writeAsStringSync(content);
     _log.info('Saved to "$fileName"');
+  }
+
+  Map<String, dynamic> toStorageJson() {
+    if (_defaultJSON == null) {
+      final defaults = AppConfig.fromJson({});
+      defaults.storages.fillEmptyStorages();
+      _defaultJSON = defaults.toJson();
+    }
+    return stripDefaults({
+      ...toJson(),
+      'slideshow': slideshow.toStorageJson(stripDefaults),
+    }, _defaultJSON!);
   }
 
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);

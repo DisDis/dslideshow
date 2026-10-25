@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'config.dart';
+import 'blur_probes.dart';
 import 'driver.dart';
 import 'media.dart';
 import 'metrics.dart';
@@ -48,6 +50,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
   MediaSliderItemEffect? _effect;
   Widget _from = const SizedBox.expand(), _to = const SizedBox.expand();
   final List<ImageWidget> _images = [];
+  final List<ui.Image> _probeBitmaps = [];
   final List<VideoSession> _videos = [];
   final Map<VideoSession, String> _videoNames = {};
   final GlobalKey _captureKey = GlobalKey();
@@ -127,6 +130,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final size = MediaQuery.sizeOf(context);
     final ratio = View.of(context).devicePixelRatio;
     final slideshow = SlideShowConfig.fromJson({});
+    final sourceKey = GlobalKey();
     Future<Widget> load(String name) async {
       final watch = Stopwatch()..start();
       final rssBefore = ProcessInfo.currentRss;
@@ -171,8 +175,12 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         )['VmHWM'],
         ...videoInfo,
       });
-      return RepaintBoundary(
-        child: ColoredBox(color: Colors.black, child: view),
+      final slide = ColoredBox(color: Colors.black, child: view);
+      return KeyedSubtree(
+        key: name == test.media.from ? sourceKey : null,
+        child: test.blurProbe == BlurFadeProbe.noBoundary
+            ? slide
+            : RepaintBoundary(child: slide),
       );
     }
 
@@ -192,6 +200,26 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _controller.value = 0;
     _scene = true;
     await _paint();
+    if (test.blurProbe case final probe?) {
+      ui.Image? bitmap;
+      if (probe.needsBitmap) {
+        void visit(Element element) {
+          final render = element.renderObject;
+          if (render is RenderImage && bitmap == null) {
+            bitmap = render.image?.clone();
+          }
+          if (bitmap == null) element.visitChildElements(visit);
+        }
+
+        visit(sourceKey.currentContext! as Element);
+        if (bitmap == null) {
+          throw StateError('Prepared photo bitmap unavailable');
+        }
+        _probeBitmaps.add(bitmap!);
+      }
+      _effect = BlurProbeEffect(probe, bitmap: bitmap);
+      await _paint();
+    }
     // Functional pause/resume intent uses the same shared sessions as production.
     for (final video in _videos) {
       await video.setPlaying(false);
@@ -507,6 +535,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final folder = Directory('${widget.reportDirectory.path}/audit');
     await folder.create(recursive: true);
     final files = <String>[];
+    final fullFrames = <String, Map<String, Object>>{};
     final originalEffect = _effect;
     final originalFrom = _from;
     Future<Uint8List> capture(String suffix) async {
@@ -526,6 +555,24 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         pixelRatio: View.of(context).devicePixelRatio,
       );
       try {
+        // Compare every native-resolution channel between builds, not just the
+        // 320x200 previews. This readback stays outside performance windows.
+        final pixels = await full.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        );
+        if (pixels == null) throw StateError('Full-frame readback unavailable');
+        fullFrames[suffix] = {
+          'width': full.width,
+          'height': full.height,
+          'rgba_sha256': sha256
+              .convert(
+                pixels.buffer.asUint8List(
+                  pixels.offsetInBytes,
+                  pixels.lengthInBytes,
+                ),
+              )
+              .toString(),
+        };
         final recorder = ui.PictureRecorder();
         final canvas = Canvas(recorder);
         canvas.drawImageRect(
@@ -584,6 +631,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
           'renderer': Platform.environment['BENCHMARK_RENDERER'],
           'progress': List.generate(21, (i) => i / 20),
           'files': files,
+          'full_frames': fullFrames,
           ...assessment,
         }),
       );
@@ -619,6 +667,10 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final images = [..._images];
     _images.clear();
     if (mounted) await _paint();
+    for (final bitmap in _probeBitmaps) {
+      bitmap.dispose();
+    }
+    _probeBitmaps.clear();
     for (final image in images) {
       image.dispose();
     }
@@ -654,6 +706,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _generation++;
     SchedulerBinding.instance.removeTimingsCallback(_timings);
     _controller.dispose();
+    for (final bitmap in _probeBitmaps) {
+      bitmap.dispose();
+    }
     for (final image in _images) {
       image.dispose();
     }

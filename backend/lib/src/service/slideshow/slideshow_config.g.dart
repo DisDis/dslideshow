@@ -6,28 +6,29 @@ part of 'slideshow_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
-    SlideShowConfig(
-      allowedEffects: SlideShowConfig._parseAllowedEffects(
-        json['allowedEffects'],
-      ),
-      backgroundBlurSigma: (json['backgroundBlurSigma'] as num?)?.toInt() ?? 20,
-      backgroundColor: json['backgroundColor'] == null
-          ? 4294967295
-          : SlideShowConfig._parseColor(json['backgroundColor']),
-      backgroundOpacity: (json['backgroundOpacity'] as num?)?.toDouble() ?? 0.9,
-      displayTimeMs: (json['displayTimeMs'] as num?)?.toInt() ?? 5000,
-      fadeTimeMs: (json['fadeTimeMs'] as num?)?.toInt() ?? 2000,
-      isBlurredBackground: json['isBlurredBackground'] as bool? ?? true,
-      transitionTimeMs: (json['transitionTimeMs'] as num?)?.toInt() ?? 1000,
-      buttons: SlideShowConfig._parseButtons(json['buttons']),
-      menu: SlideShowConfig._parseMenu(json['menu']),
-    );
+SlideShowConfig _$SlideShowConfigFromJson(
+  Map<String, dynamic> json,
+) => SlideShowConfig(
+  allowedEffects: SlideShowConfig._parseAllowedEffects(json['allowedEffects']),
+  backgroundBlurSigma: (json['backgroundBlurSigma'] as num?)?.toInt() ?? 20,
+  backgroundColor: json['backgroundColor'] == null
+      ? 4294967295
+      : SlideShowConfig._parseColor(json['backgroundColor']),
+  backgroundOpacity: (json['backgroundOpacity'] as num?)?.toDouble() ?? 0.9,
+  displayTimeMs: (json['displayTimeMs'] as num?)?.toInt() ?? 5000,
+  fadeTimeMs: (json['fadeTimeMs'] as num?)?.toInt() ?? 2000,
+  isBlurredBackground: json['isBlurredBackground'] as bool? ?? true,
+  transitionTimeMs: (json['transitionTimeMs'] as num?)?.toInt() ?? 1000,
+  buttons: SlideShowConfig._parseButtons(json['buttons']),
+  menu: SlideShowConfig._parseMenu(json['menu']),
+  specialScreens: SlideShowConfig._parseSpecialScreens(json['specialScreens']),
+);
 
 Map<String, dynamic> _$SlideShowConfigToJson(SlideShowConfig instance) =>
     <String, dynamic>{
       'buttons': instance.buttons.toJson(),
       'menu': instance.menu.toJson(),
+      'specialScreens': instance.specialScreens.map((e) => e.toJson()).toList(),
       'displayTimeMs': instance.displayTimeMs,
       'fadeTimeMs': instance.fadeTimeMs,
       'transitionTimeMs': instance.transitionTimeMs,
