@@ -1,6 +1,7 @@
 import 'package:config_app/app.dart';
 import 'package:config_app/environment.dart';
 import 'package:config_app/injection_container.dart';
+import 'package:config_app/src/video_backend.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -20,6 +21,7 @@ void main() async {
   initLog('f_config');
   _log.info("Run");
   WidgetsFlutterBinding.ensureInitialized();
+  initializeConfigAppVideoBackend();
   initEnvironment();
   await _setup();
   runApp(const App());

@@ -23,6 +23,16 @@
    Также нужны development-заголовки libstdc++, подходящие компилятору и
    дистрибутиву. Конкретную проблему с toolchain показывает `flutter doctor -v`.
 
+   Для видео в `config_app` дополнительно нужны libmpv и libepoxy:
+
+   ```sh
+   sudo apt-get install libmpv-dev libepoxy-dev
+   pkg-config --modversion mpv epoxy
+   ```
+
+   Linux-плеер и [его функциональная проверка](../config_app/README.md#проверки-видео)
+   относятся к desktop-панели. Они не меняют video backend фоторамки.
+
 2. Из корня репозитория перейдите в приложение и пересоберите его:
 
    ```sh

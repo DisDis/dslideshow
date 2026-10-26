@@ -771,5 +771,8 @@
   "special_weekday_thursday": "Thursday",
   "special_weekday_friday": "Friday",
   "special_weekday_saturday": "Saturday",
-  "special_weekday_sunday": "Sunday"
+  "special_weekday_sunday": "Sunday",
+  "video_platform_unavailable": "Video playback is unavailable here. Open the panel in a supported browser.",
+  "video_load_failed": "Could not load video.",
+  "video_seek": "Video position"
 }

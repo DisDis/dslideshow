@@ -2245,6 +2245,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sunday'**
   String get special_weekday_sunday;
+
+  /// No description provided for @video_platform_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Video playback is unavailable here. Open the panel in a supported browser.'**
+  String get video_platform_unavailable;
+
+  /// No description provided for @video_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load video.'**
+  String get video_load_failed;
+
+  /// No description provided for @video_seek.
+  ///
+  /// In en, this message translates to:
+  /// **'Video position'**
+  String get video_seek;
 }
 
 class _AppLocalizationsDelegate

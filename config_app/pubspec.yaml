@@ -43,6 +43,10 @@ dependencies:
   dio: ^5.11.1
   http: ^1.6.0
   video_player: ^2.14.1
+  media_kit: ^1.2.6
+  media_kit_video: ^2.0.1
+  media_kit_libs_linux: ^1.2.1
+  video_player_platform_interface: ^6.9.0
   cached_network_image: ^4.0.5
   get_it: ^9.3.0
   path_provider: ^2.1.6
@@ -74,6 +78,8 @@ dev_dependencies:
   freezed: ^4.0.3
   build_runner: ^2.17.1
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

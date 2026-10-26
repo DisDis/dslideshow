@@ -83,46 +83,52 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
             top: 0,
             left: 0,
             right: 0,
-            child: FadeTransition(
-              opacity: _controlsOpacity,
-              child: Container(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Theme.of(context).colorScheme.surface
-                          .withValues(alpha: 0.95),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  leading: IconButton(
-                    tooltip: MaterialLocalizations.of(context)
-                        .backButtonTooltip,
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.onSurface,
+            child: ExcludeFocus(
+              excluding: !_showControls,
+              child: IgnorePointer(
+                ignoring: !_showControls,
+                child: FadeTransition(
+                  opacity: _controlsOpacity,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  actions: [
-                    // Тут можно добавить кнопки "Скачать", "Удалить"
-                    IconButton(
-                      tooltip: context.localizations.media_info,
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: Theme.of(context).colorScheme.onSurface,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Theme.of(context).colorScheme.surface
+                              .withValues(alpha: 0.95),
+                          Colors.transparent,
+                        ],
                       ),
-                      onPressed: _toggleControls, // Просто акцентируем внимание на инфо
                     ),
-                  ],
+                    child: AppBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      leading: IconButton(
+                        tooltip: MaterialLocalizations.of(context)
+                            .backButtonTooltip,
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      actions: [
+                        // Тут можно добавить кнопки "Скачать", "Удалить"
+                        IconButton(
+                          tooltip: context.localizations.media_info,
+                          icon: Icon(
+                            Icons.info_outline,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          onPressed: _toggleControls, // Просто акцентируем внимание на инфо
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -133,9 +139,15 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
             bottom: 0,
             left: 0,
             right: 0,
-            child: FadeTransition(
-              opacity: _controlsOpacity,
-              child: MetadataPanel(item: widget.item),
+            child: ExcludeFocus(
+              excluding: !_showControls,
+              child: IgnorePointer(
+                ignoring: !_showControls,
+                child: FadeTransition(
+                  opacity: _controlsOpacity,
+                  child: MetadataPanel(item: widget.item),
+                ),
+              ),
             ),
           ),
         ],

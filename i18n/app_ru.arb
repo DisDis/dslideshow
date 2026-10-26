@@ -771,5 +771,8 @@
   "special_weekday_thursday": "Четверг",
   "special_weekday_friday": "Пятница",
   "special_weekday_saturday": "Суббота",
-  "special_weekday_sunday": "Воскресенье"
+  "special_weekday_sunday": "Воскресенье",
+  "video_platform_unavailable": "Воспроизведение видео здесь недоступно. Откройте панель в поддерживаемом браузере.",
+  "video_load_failed": "Не удалось загрузить видео.",
+  "video_seek": "Позиция видео"
 }

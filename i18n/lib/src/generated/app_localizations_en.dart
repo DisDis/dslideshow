@@ -1158,4 +1158,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get special_weekday_sunday => 'Sunday';
+
+  @override
+  String get video_platform_unavailable =>
+      'Video playback is unavailable here. Open the panel in a supported browser.';
+
+  @override
+  String get video_load_failed => 'Could not load video.';
+
+  @override
+  String get video_seek => 'Video position';
 }

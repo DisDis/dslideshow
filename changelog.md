@@ -1,5 +1,11 @@
 # Unreleased
 
+* Add Linux desktop video playback to config_app with a media_kit/libmpv
+  backend while retaining video_player_web for browsers. Handle gallery player
+  errors, bounded initialization, seeking, late results and controller cleanup;
+  stop failed video previews and guard them when a backend is unavailable.
+  Hidden gallery overlays no longer intercept player controls.
+
 * Fix replaying the welcome preview throwing a Flutter assertion with an
   explicitly synchronous replay handler that keeps TickerFuture out of setState;
   cover replay during forward/reverse playback and after completion.

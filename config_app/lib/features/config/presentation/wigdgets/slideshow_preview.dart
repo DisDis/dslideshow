@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:config_app/features/config/presentation/wigdgets/effect_label.dart';
 import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:config_app/src/video_playback_support.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -50,6 +51,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   Widget _current = const ColoredBox(color: Colors.black);
   Widget _next = const ColoredBox(color: Colors.black);
   VideoSession? _currentVideo, _nextVideo, _preparingVideo;
+  final _videoListeners = <VideoSession, VoidCallback>{};
   ui.Image? _currentPhoto, _nextPhoto;
   PhotoMotionSession? _currentMotion, _nextMotion;
   late String _configSignature;
@@ -57,6 +59,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   bool _active = false, _routeActive = true, _resumed = true, _paused = false;
   int _index = 0, _generation = 0;
   PreviewAspectRatio _aspect = PreviewAspectRatio.frame;
+  bool get _supportsVideo =>
+      supportsConfigAppVideo || widget.videoFactory != null;
   Size get _deviceSize => Size(2560, 2560 / _aspect.ratio);
   Duration get _transitionTime =>
       Duration(milliseconds: widget.config.transitionTimeMs.clamp(1, 3600000));
@@ -146,7 +150,47 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   void _afterFrame(VoidCallback callback) =>
       WidgetsBinding.instance.addPostFrameCallback((_) => callback());
   void _release(VideoSession? session) {
-    if (session != null) unawaited(session.dispose().catchError((Object _) {}));
+    if (session == null) return;
+    final listener = _videoListeners.remove(session);
+    if (listener != null) session.controller?.removeListener(listener);
+    unawaited(_disposeVideo(session));
+  }
+
+  Future<void> _disposeVideo(VideoSession session) async {
+    // Error notifications may arrive inside a controller listener.
+    await Future<void>.value();
+    try {
+      await session.dispose();
+    } catch (_) {}
+  }
+
+  bool _ownsVideo(VideoSession session) =>
+      identical(session, _currentVideo) ||
+      identical(session, _nextVideo) ||
+      identical(session, _preparingVideo);
+
+  void _watchVideo(VideoSession session) {
+    final controller = session.controller;
+    if (controller == null) return;
+    void listener() {
+      if (!mounted || !_active || !_ownsVideo(session)) return;
+      if (!controller.value.hasError) return;
+      final currentFailed = identical(session, _currentVideo);
+      // This invalidates all pending preparation/transition generations and
+      // cancels automatic advancement of the failing sequence.
+      _cancelPending();
+      if (currentFailed) _currentVideo = null;
+      setState(() {
+        if (currentFailed) _current = const ColoredBox(color: Colors.black);
+        _failed = true;
+      });
+      if (currentFailed) _afterFrame(() => _release(session));
+      if (!_paused) _currentMotion?.setPlaying(true);
+    }
+
+    _videoListeners[session] = listener;
+    controller.addListener(listener);
+    listener();
   }
 
   void _cancelPending() {
@@ -323,7 +367,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       final url = _videoUrl.text.trim();
       final index = _index++;
       Widget next;
-      if (currentEffect != Effect.waterRefractionEffect &&
+      if (_supportsVideo &&
+          currentEffect != Effect.waterRefractionEffect &&
           url.isNotEmpty &&
           index.isOdd) {
         final uri = Uri.tryParse(url);
@@ -334,7 +379,9 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         }
         video = widget.videoFactory?.call(uri) ?? VideoSession.network(uri);
         _preparingVideo = video;
-        await video.prepare();
+        _watchVideo(video);
+        if (stale()) return;
+        await video.prepare().timeout(const Duration(seconds: 15));
         next = VideoWidget(MediaItem('preview-video', uri), session: video);
       } else {
         final images = widget.images;
@@ -428,6 +475,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       _controller.forward(from: 0);
     } catch (e) {
       photo?.dispose();
+      if (identical(_preparingVideo, video)) _preparingVideo = null;
       _release(video);
       motion?.dispose();
       if (stale() || e is _PreviewCancelled) return;
@@ -575,7 +623,9 @@ class SlideshowPreviewState extends State<SlideshowPreview>
               child: TextField(
                 controller: _videoUrl,
                 key: const ValueKey('preview-video-url'),
-                enabled: currentEffect != Effect.waterRefractionEffect,
+                enabled:
+                    _supportsVideo &&
+                    currentEffect != Effect.waterRefractionEffect,
                 decoration: InputDecoration(labelText: l.preview_video_url),
                 onSubmitted: (_) => _loadNext(),
               ),
@@ -587,7 +637,12 @@ class SlideshowPreviewState extends State<SlideshowPreview>
             ),
           ],
         ),
-        if (currentEffect == Effect.waterRefractionEffect)
+        if (!_supportsVideo)
+          Text(
+            l.video_platform_unavailable,
+            key: const ValueKey('preview-video-unavailable'),
+          )
+        else if (currentEffect == Effect.waterRefractionEffect)
           Text(l.water_photo_only),
         if (_loading) const LinearProgressIndicator(),
         if (_failed)

@@ -18,6 +18,12 @@ if ! pkg-config --exists gtk+-3.0 glib-2.0 gio-2.0; then
   exit 1
 fi
 
+if ! pkg-config --exists mpv epoxy; then
+  echo "Linux video development libraries are missing (mpv/epoxy)." >&2
+  echo "Debian/Ubuntu: sudo apt-get install libmpv-dev libepoxy-dev" >&2
+  exit 1
+fi
+
 # Only discard the native CMake cache; keep Dart assets and downloaded packages.
 # It can contain include paths that no longer exist after a system upgrade.
 if [ -d build/linux ]; then

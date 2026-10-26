@@ -1166,4 +1166,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get special_weekday_sunday => 'Воскресенье';
+
+  @override
+  String get video_platform_unavailable =>
+      'Воспроизведение видео здесь недоступно. Откройте панель в поддерживаемом браузере.';
+
+  @override
+  String get video_load_failed => 'Не удалось загрузить видео.';
+
+  @override
+  String get video_seek => 'Позиция видео';
 }
