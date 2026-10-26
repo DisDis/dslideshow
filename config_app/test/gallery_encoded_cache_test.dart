@@ -158,6 +158,96 @@ void main() {
   });
 
   test(
+    'warm hits leave durable metadata unchanged until graceful close',
+    () async {
+      final value = cache();
+      await value.write('warm', body('complete'));
+      final metadata = File(
+        (await root.list().toList())
+            .singleWhere((file) => file.path.endsWith('.json'))
+            .path,
+      );
+      final before = await metadata.readAsString();
+      final modified = await metadata.lastModified();
+      for (var index = 0; index < 63; index++) {
+        final image = await value.get('warm');
+        expect(await File(image!.filePath!).readAsString(), 'complete');
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(await metadata.readAsString(), before);
+      expect(await metadata.lastModified(), modified);
+      expect(
+        (await root.list().toList()).where(
+          (file) => file.path.endsWith('.part'),
+        ),
+        isEmpty,
+      );
+      await value.close();
+      final persisted =
+          jsonDecode(await metadata.readAsString()) as Map<String, dynamic>;
+      final original = jsonDecode(before) as Map<String, dynamic>;
+      expect(persisted['accessed'], greaterThan(original['accessed'] as int));
+      expect(persisted['file'], original['file']);
+      expect(persisted['identity'], original['identity']);
+    },
+  );
+
+  test(
+    'in-memory hits protect LRU order and removed touches never resurrect',
+    () async {
+      final value = cache(objects: 2);
+      await value.write('a', body('a'));
+      await value.write('b', body('b'));
+      await value.get('a');
+      await value.write('c', body('c'));
+      expect(await value.get('b'), isNull);
+      expect(await value.get('a'), isNotNull);
+      await value.remove('a');
+      await value.close();
+      final reopened = cache(objects: 2);
+      expect(await reopened.get('a'), isNull);
+      expect(await reopened.get('b'), isNull);
+      expect(await reopened.get('c'), isNotNull);
+    },
+  );
+
+  test(
+    'warm hits and ownership cleanup work with read-only metadata directory',
+    () async {
+      final value = GalleryNativeImageCache(directory: root);
+      addTearDown(value.close);
+      final image = await value.write('warm', body('complete'));
+      final metadata = File(
+        (await root.list().toList())
+            .singleWhere((file) => file.path.endsWith('.json'))
+            .path,
+      );
+      final before = await metadata.readAsString();
+      expect((await Process.run('chmod', ['500', root.path])).exitCode, 0);
+      addTearDown(() async {
+        await Process.run('chmod', ['700', root.path]);
+      });
+      for (var index = 0; index < 3; index++) {
+        expect((await value.get('warm'))!.filePath, image.filePath);
+      }
+      await value.close().timeout(const Duration(seconds: 3));
+      expect(await metadata.readAsString(), before);
+      await Process.run('chmod', ['700', root.path]);
+      final reopened = GalleryNativeImageCache(directory: root);
+      addTearDown(reopened.close);
+      expect(
+        (await reopened.write('new', body('disk'))).filePath,
+        isNotNull,
+        reason: 'advisory recency failure must not retain the directory lock',
+      );
+      expect(await File(image.filePath!).readAsString(), 'complete');
+    },
+    skip: Platform.isLinux
+        ? false
+        : 'POSIX read-only metadata regression is Linux-only',
+  );
+
+  test(
     'eviction/replacement keep retained payloads until their last release',
     () async {
       final value = cache(bytes: 5, objects: 1);

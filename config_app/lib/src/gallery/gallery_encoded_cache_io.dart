@@ -214,6 +214,8 @@ final class _DiskEntry {
 /// Only complete bodies are published. Evicted files remain usable while any
 /// image/decoder lease retains their payload. Those active leases and incoming
 /// bodies are additionally limited by MediaImageLoader's transfer budgets.
+/// Access recency changes in memory; close coalesces surviving touched entries
+/// into atomic metadata updates. After a crash, persisted LRU is approximate.
 final class GalleryDiskImageCache implements GalleryEncodedCache {
   GalleryDiskImageCache({
     required Directory directory,
@@ -240,6 +242,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
   final int maxBytes;
   final int maxObjects;
   final _entries = <String, _DiskEntry>{};
+  final _accessedEntries = <String>{};
   final _retired = <GalleryEncodedImage>{};
   final _handoffs = <GalleryEncodedImage>{};
   final _handoffTimers = <GalleryEncodedImage, Timer>{};
@@ -385,7 +388,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
     return image;
   }
 
-  Future<void> _writeMetadata(_DiskEntry entry) async {
+  Future<void> _writeMetadata(_DiskEntry entry, {bool flush = true}) async {
     final staging = File(path.join(_directory.path, '${_uuid.v4()}.part'));
     try {
       await staging.writeAsString(
@@ -396,7 +399,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
           'bytes': entry.image.byteLength,
           'accessed': entry.accessed,
         }),
-        flush: true,
+        flush: flush,
       );
       await staging.rename(_metadata(entry.id).path);
     } finally {
@@ -423,7 +426,10 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
       _entries.remove(id);
       _entries[id] = entry;
       entry.accessed = DateTime.now().microsecondsSinceEpoch;
-      await _writeMetadata(entry);
+      // A warm hit must not wait for a durable write (or queue one ahead of the
+      // next hit). Publication metadata is already complete; only LRU recency
+      // changed. Multiple hits of the same live entry coalesce until close.
+      _accessedEntries.add(id);
       return _handoff(entry.image);
     });
   }
@@ -486,6 +492,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
             _retire(previous.image);
           }
           _entries[id] = entry;
+          _accessedEntries.remove(id);
           _bytes += length;
           _handoffs.add(image);
           await _trim();
@@ -527,6 +534,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
   Future<void> _removeEntry(String id) async {
     final previous = _entries.remove(id);
     if (previous == null) return;
+    _accessedEntries.remove(id);
     _bytes -= previous.image.byteLength;
     await _delete(_metadata(id));
     _retire(previous.image);
@@ -628,6 +636,20 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
       }
       _handoffTimers.clear();
       _handoffs.clear();
+      for (final id in _accessedEntries) {
+        final entry = _entries[id];
+        if (entry == null) continue;
+        try {
+          // Recency is advisory, so close must not fsync once per touched file.
+          // Publication still uses the durable default above.
+          await _writeMetadata(entry, flush: false);
+        } on FileSystemException catch (error, stack) {
+          // Touch persistence is advisory. A read-only/full disk must not turn
+          // a valid warm hit into an error or prevent resource/lock cleanup.
+          _log.warning('Unable to persist gallery cache recency', error, stack);
+        }
+      }
+      _accessedEntries.clear();
       for (final entry in _entries.values) {
         final image = entry.image;
         if (image.references > 0) {

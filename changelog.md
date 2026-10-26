@@ -1,5 +1,12 @@
 # Unreleased
 
+* Increase the default server thumbnail disk cache to 512 MiB / 2048 objects.
+
+* Remove synchronous metadata rewrites/fsync from Linux gallery cache hits.
+  Keep live LRU updates in memory and coalesce advisory recency at backing close,
+  preserving atomic payload publication, bounded storage and decoder pins.
+  Add warm-hit/read-only metadata regressions and a frozen native-cache probe.
+
 * Add RPC telemetry per direction: occupied slots, waiting requests, peaks,
   counters/rates, durations, oldest requests and receiver handlers. Collect
   snapshots through ordinary shared RPC slots, coalesce slow reads and retain

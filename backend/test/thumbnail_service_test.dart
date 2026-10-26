@@ -115,6 +115,24 @@ void main() {
   });
 
   test(
+    'default disk cache retains 2048 derivatives and evicts overflow',
+    () async {
+      await cache.create();
+      final bytes = [1, 2, 3, 4];
+      final digest = sha256.convert(bytes).toString();
+      for (var index = 0; index < 2049; index++) {
+        final key = index.toRadixString(16).padLeft(64, '0');
+        await File('${cache.path}/$key-$digest.jpg').writeAsBytes(bytes);
+      }
+      final service = create();
+      expect(service.policy.maxCacheBytes, 512 * 1024 * 1024);
+      await service.initialize();
+      expect(await cache.list().length, 2048);
+      expect(worker.requests, isEmpty);
+    },
+  );
+
+  test(
     'cold result is atomic, has content ETag, warm hit does not decode',
     () async {
       final service = create();

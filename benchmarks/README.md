@@ -118,6 +118,12 @@ python3 benchmarks/tool/gallery_browser_probe.py \
 сохранены в [итоговом HTTP/Chrome-отчёте](reports/gallery-implementation-2026-10-26/report.md).
 Отдельный [прототип scaled JPEG decode](reports/gallery-thumbnail-local-2026-10-26/report.md)
 описывает `gallery_thumbnail_probe.dart`, время, RSS и неизменность оригиналов.
+Для повторного показа в Linux отдельно сохранён
+[before/after native warm cache](reports/gallery-native-cache-warm-2026-10-26/report.md):
+`tool/gallery_native_cache_probe.py` запускает одинаковые 63 попадания через
+настоящий кеш в Flutter VM против замороженных исходников. Он проверяет время
+пути hit и отсутствие перезаписи metadata; сеть, декодирование и UI FPS в этот
+probe не входят. Наблюдения работающей панели и LAN отделены в отчёте.
 Wi-Fi, Flutter FrameTiming, визуальная проверка устройства и аппаратный A/B
 не выполняются этими командами; для них требуется отдельное окно по
 [руководству RaPi5](../doc/raspberry-pi-benchmarks.md).
