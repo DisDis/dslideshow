@@ -23,6 +23,8 @@ class ScreenService {
 
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
   bool get isScreenOn => _confirmedPower == true;
+  /// Last successfully commanded power; a failed command may have partly run.
+  bool? get confirmedPower => _confirmedPower;
   ScreenPhase get phase => _phase;
   ScreenPhase _phase = ScreenPhase.on;
   bool? _confirmedPower = true;

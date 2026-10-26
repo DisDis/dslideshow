@@ -12,6 +12,12 @@ class ApplicationStateService {
   Stream<ApplicationState> get onChangedState => _scApplicationState.stream;
   ApplicationState _state = ApplicationState();
   ApplicationState get state => _state;
+  // Keep MQTT's existing initial isMotion value. Telemetry remains unknown until
+  // GPIO has actually reported a sample, rather than inferring presence at boot.
+  bool? get observedPresence => _observedPresence;
+  bool? _observedPresence;
+  DateTime? get presenceObservedAt => _presenceObservedAt;
+  DateTime? _presenceObservedAt;
   // Timer to manage debounce duration
   Timer? _debounce;
   final _subscriptions = <StreamSubscription<dynamic>>[];
@@ -51,6 +57,9 @@ class ApplicationStateService {
   }
 
   void _onMotion(bool value) {
+    if (_disposed) return;
+    _observedPresence = value;
+    _presenceObservedAt = DateTime.now().toUtc();
     update(state.copyWith(isMotion: value));
   }
 

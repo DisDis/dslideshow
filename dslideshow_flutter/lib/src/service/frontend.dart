@@ -6,12 +6,14 @@ import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = Logger('FrontendService');
   late final RemoteService _backendService;
   late final RemoteService _otaService;
+  late final FrameFrontendController _frameController;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = StreamController<SystemInfo>.broadcast();
   // final _onPushButton = StreamController<ButtonType>.broadcast();
@@ -34,6 +36,10 @@ class FrontendService implements RpcService {
   Stream<ActionWithParam> get onAction => _onAction.stream;
 
   FrontendService(AppConfig config, this._backendService, this._otaService) {
+    _frameController = FrameFrontendController(
+      statusBloc: () => injector(),
+      routeBloc: () => injector(),
+    );
     Timer.periodic(const Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
     _updateSystemInfo();
   }
@@ -82,6 +88,10 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case GetFrameFrontendStateCommand.TYPE:
+        return _executeFrameStateCommand(command as GetFrameFrontendStateCommand);
+      case SetFrameControlCommand.TYPE:
+        return _executeFrameControlCommand(command as SetFrameControlCommand);
       case ExecuteSSActionCommand.TYPE:
         return _executeSSActionCommand(command as ExecuteSSActionCommand);
       case ButtonChangeStateCommand.TYPE:
@@ -99,6 +109,30 @@ class FrontendService implements RpcService {
 
       default:
         return Future.value(_generateErrorResult(Exception("Unknown command: ${command.type}"), command));
+    }
+  }
+
+  Future<RpcResult> _executeFrameStateCommand(
+    GetFrameFrontendStateCommand command,
+  ) async {
+    try {
+      return GetFrameFrontendStateResult(
+        id: command.id,
+        state: _frameController.readState(),
+      );
+    } catch (error) {
+      return _generateErrorResult(error, command);
+    }
+  }
+
+  Future<RpcResult> _executeFrameControlCommand(
+    SetFrameControlCommand command,
+  ) async {
+    try {
+      await _frameController.setControl(command.control, command.enabled);
+      return EmptyResult.respond(command);
+    } catch (error) {
+      return _generateErrorResult(error, command);
     }
   }
 

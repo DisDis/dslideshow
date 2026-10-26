@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 
 enum AppDestination {
   home('/home', Icons.home_outlined),
+  telemetry('/telemetry', Icons.monitor_heart_outlined),
+  control('/device_control', Icons.settings_remote_outlined),
   gallery('/gallery', Icons.photo_library_outlined),
   upload('/upload', Icons.upload_file_outlined),
   config('/config', Icons.tune),
@@ -25,6 +27,8 @@ enum AppDestination {
     final l = context.localizations;
     return switch (this) {
       home => l.home_menu_item,
+      telemetry => l.device_telemetry_title,
+      control => l.device_controls_title,
       gallery => l.gallery_menu_item,
       upload => l.upload_media_menu_item,
       config => l.configuration_menu_item,

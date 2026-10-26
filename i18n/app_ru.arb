@@ -774,5 +774,109 @@
   "special_weekday_sunday": "Воскресенье",
   "video_platform_unavailable": "Воспроизведение видео здесь недоступно. Откройте панель в поддерживаемом браузере.",
   "video_load_failed": "Не удалось загрузить видео.",
-  "video_seek": "Позиция видео"
+  "video_seek": "Позиция видео",
+  "device_telemetry_title": "Телеметрия",
+  "device_controls_title": "Управление фоторамкой",
+  "device_telemetry_subtitle": "Показатели системы и присутствие с фоторамки",
+  "device_controls_subtitle": "Пауза, питание экрана и меню",
+  "device_refresh": "Обновить",
+  "device_stale": "Последние полученные данные устарели.",
+  "device_load_failed": "Не удалось получить состояние рамки. Проверьте подключение и версию ПО рамки.",
+  "device_metrics_failed": "Не удалось обновить системные показатели.",
+  "device_command_failed": "Не удалось подтвердить команду. Обновите состояние перед повтором.",
+  "device_disconnected": "Соединение с фоторамкой потеряно.",
+  "device_no_data": "Нет данных",
+  "device_frontend_unavailable": "Приложение показа рамки недоступно. Управление и сведения о дисплее недоступны.",
+  "device_controls_context": "Пауза и меню доступны, когда рамка показывает слайд-шоу.",
+  "device_sample_time": "Снимок состояния рамки (UTC)",
+  "device_metrics_time": "Системные показатели обновлены",
+  "device_network_time": "Сетевые данные обновлены",
+  "device_presence": "Присутствие человека",
+  "device_presence_present": "Человек рядом",
+  "device_presence_absent": "Никого нет",
+  "device_presence_unknown": "Неизвестно",
+  "device_presence_time": "Последнее наблюдение присутствия",
+  "device_playback": "Слайд-шоу",
+  "device_paused": "Пауза",
+  "device_playing": "Воспроизведение",
+  "device_screen": "Экран",
+  "device_screen_on": "Включён",
+  "device_screen_off": "Выключен",
+  "device_screen_phase": "Состояние экрана",
+  "device_screen_waiting": "Ожидание автоматического сна",
+  "device_screen_fading_out": "Затухание",
+  "device_screen_powering_off": "Выключение питания",
+  "device_screen_waking": "Пробуждение",
+  "device_screen_fading_in": "Проявление",
+  "device_screen_failed": "Ошибка управления экраном",
+  "device_screen_power_help": "Питание отражает последнюю успешную команду устройства, а не физическое измерение дисплея.",
+  "device_screen_lock": "Ручная блокировка экрана",
+  "device_turn_on": "Включить экран",
+  "device_turn_off": "Выключить экран",
+  "device_menu": "Меню фоторамки",
+  "device_menu_open": "Открыто",
+  "device_menu_closed": "Закрыто",
+  "device_open_menu": "Открыть меню",
+  "device_close_menu": "Закрыть меню",
+  "device_current_page": "Текущий экран рамки",
+  "device_page_welcome": "Приветствие",
+  "device_page_config": "Настройка",
+  "device_page_ota": "Обновление ПО",
+  "device_cpu": "Процессор",
+  "device_cpu_model": "Модель",
+  "device_cpu_hardware": "Аппаратная платформа",
+  "device_cpu_revision": "Ревизия",
+  "device_cpu_cores": "Ядра",
+  "device_cpu_load": "Средняя нагрузка: 1 / 5 / 15 мин",
+  "device_os": "Операционная система",
+  "device_uptime": "Время работы",
+  "device_memory": "Память",
+  "device_ram": "RAM: занято / всего",
+  "device_swap": "Swap: занято / всего",
+  "device_disk": "Диск",
+  "device_disk_usage": "Занято / всего",
+  "device_disk_percent": "Заполнено",
+  "device_network": "Сеть",
+  "device_internet": "Интернет",
+  "device_online": "Доступен",
+  "device_offline": "Недоступен",
+  "device_interface_running": "Активен",
+  "device_interface_offline": "Неактивен",
+  "device_sensors": "Датчики",
+  "device_versions_display": "ПО и дисплей фоторамки",
+  "device_frontend_version": "Версия приложения показа",
+  "device_backend_version": "Версия backend",
+  "device_physical_size": "Физический размер",
+  "device_logical_size": "Логический размер",
+  "device_pixel_ratio": "Масштаб пикселей",
+  "device_mib": "{value} МиБ",
+  "@device_mib": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "device_pixels": "{width} × {height} пикс.",
+  "@device_pixels": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "device_logical_pixels": "{width} × {height} лог. пикс.",
+  "@device_logical_pixels": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  }
 }

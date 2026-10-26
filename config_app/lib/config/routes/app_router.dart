@@ -18,6 +18,8 @@ import 'package:config_app/features/gallery/config/router.dart' as gallery;
 import 'package:config_app/features/ota/config/router.dart' as ota;
 import 'package:config_app/features/config/config/router.dart' as config;
 import 'package:config_app/features/upload/config/router.dart' as upload;
+import 'package:config_app/features/device/config/router.dart' as device;
+import 'package:config_app/features/device/presentation/pages/device_page.dart';
 
 const _defaultPath = '/splash';
 const _loginPath = '/login';
@@ -30,6 +32,8 @@ GoRouter createAppRouter(BuildContext context) {
       GoRoute(path: _loginPath, builder: (context, state) => const LoginPage()),
       GoRoute(path: _homePath, builder: (context, state) => const HomePage()),
       GoRoute(path: '/', builder: (context, state) => const HomePage()),
+      device.createDeviceRoute(DeviceSection.telemetry),
+      device.createDeviceRoute(DeviceSection.controls),
       ota.createRoute(context),
       web_config.createRoute(context),
       wifi_config.createRoute(context),

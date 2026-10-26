@@ -12,6 +12,17 @@ class _SerializersImpl implements Serializers {
   Object? serialize<T>(T object) {
     if (object is ErrorResult) return ["ErrorResult", object.toJson()];
 
+    if (object is GetFrameStateCommand)
+      return ["GetFrameStateCommand", object.toJson()];
+    if (object is GetFrameStateResult)
+      return ["GetFrameStateResult", object.toJson()];
+    if (object is GetFrameFrontendStateCommand)
+      return ["GetFrameFrontendStateCommand", object.toJson()];
+    if (object is GetFrameFrontendStateResult)
+      return ["GetFrameFrontendStateResult", object.toJson()];
+    if (object is SetFrameControlCommand)
+      return ["SetFrameControlCommand", object.toJson()];
+
     if (object is EchoCommand) return ["EchoCommand", object.toJson()];
 
     if (object is EchoCommandResult)
@@ -152,6 +163,17 @@ class _SerializersImpl implements Serializers {
     switch (typeName) {
       case 'ErrorResult':
         return ErrorResult.fromJson(object);
+
+      case 'GetFrameStateCommand':
+        return GetFrameStateCommand.fromJson(object);
+      case 'GetFrameStateResult':
+        return GetFrameStateResult.fromJson(object);
+      case 'GetFrameFrontendStateCommand':
+        return GetFrameFrontendStateCommand.fromJson(object);
+      case 'GetFrameFrontendStateResult':
+        return GetFrameFrontendStateResult.fromJson(object);
+      case 'SetFrameControlCommand':
+        return SetFrameControlCommand.fromJson(object);
 
       case 'EchoCommand':
         return EchoCommand.fromJson(object);

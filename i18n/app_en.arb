@@ -774,5 +774,109 @@
   "special_weekday_sunday": "Sunday",
   "video_platform_unavailable": "Video playback is unavailable here. Open the panel in a supported browser.",
   "video_load_failed": "Could not load video.",
-  "video_seek": "Video position"
+  "video_seek": "Video position",
+  "device_telemetry_title": "Telemetry",
+  "device_controls_title": "Frame control",
+  "device_telemetry_subtitle": "System readings and presence from the frame",
+  "device_controls_subtitle": "Pause, screen power and menu",
+  "device_refresh": "Refresh",
+  "device_stale": "The last received data is out of date.",
+  "device_load_failed": "Could not read the frame state. Check the connection and frame software version.",
+  "device_metrics_failed": "Could not update system readings.",
+  "device_command_failed": "Could not confirm the command. Refresh the state before trying again.",
+  "device_disconnected": "Connection to the frame was lost.",
+  "device_no_data": "No data",
+  "device_frontend_unavailable": "The frame display app is unavailable. Controls and display details cannot be read.",
+  "device_controls_context": "Pause and menu are available while the frame is showing a slideshow.",
+  "device_sample_time": "Frame snapshot (UTC)",
+  "device_metrics_time": "System readings updated",
+  "device_network_time": "Network readings updated",
+  "device_presence": "Human presence",
+  "device_presence_present": "Present",
+  "device_presence_absent": "Absent",
+  "device_presence_unknown": "Unknown",
+  "device_presence_time": "Presence last observed",
+  "device_playback": "Slideshow",
+  "device_paused": "Paused",
+  "device_playing": "Playing",
+  "device_screen": "Screen",
+  "device_screen_on": "On",
+  "device_screen_off": "Off",
+  "device_screen_phase": "Screen transition",
+  "device_screen_waiting": "Waiting for automatic sleep",
+  "device_screen_fading_out": "Fading out",
+  "device_screen_powering_off": "Powering off",
+  "device_screen_waking": "Waking up",
+  "device_screen_fading_in": "Fading in",
+  "device_screen_failed": "Screen operation failed",
+  "device_screen_power_help": "Power status reflects the last successful device command, not a physical display measurement.",
+  "device_screen_lock": "Manual screen lock",
+  "device_turn_on": "Turn screen on",
+  "device_turn_off": "Turn screen off",
+  "device_menu": "Frame menu",
+  "device_menu_open": "Open",
+  "device_menu_closed": "Closed",
+  "device_open_menu": "Open menu",
+  "device_close_menu": "Close menu",
+  "device_current_page": "Frame screen",
+  "device_page_welcome": "Welcome",
+  "device_page_config": "Configuration",
+  "device_page_ota": "Firmware update",
+  "device_cpu": "CPU",
+  "device_cpu_model": "Model",
+  "device_cpu_hardware": "Hardware",
+  "device_cpu_revision": "Revision",
+  "device_cpu_cores": "Cores",
+  "device_cpu_load": "Load average: 1 / 5 / 15 min",
+  "device_os": "Operating system",
+  "device_uptime": "Uptime",
+  "device_memory": "Memory",
+  "device_ram": "RAM: used / total",
+  "device_swap": "Swap: used / total",
+  "device_disk": "Disk",
+  "device_disk_usage": "Used / total",
+  "device_disk_percent": "Used",
+  "device_network": "Network",
+  "device_internet": "Internet",
+  "device_online": "Connected",
+  "device_offline": "Disconnected",
+  "device_interface_running": "Running",
+  "device_interface_offline": "Offline",
+  "device_sensors": "Sensors",
+  "device_versions_display": "Frame software and display",
+  "device_frontend_version": "Display app version",
+  "device_backend_version": "Backend version",
+  "device_physical_size": "Physical size",
+  "device_logical_size": "Logical size",
+  "device_pixel_ratio": "Device pixel ratio",
+  "device_mib": "{value} MiB",
+  "@device_mib": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "device_pixels": "{width} × {height} px",
+  "@device_pixels": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "device_logical_pixels": "{width} × {height} logical px",
+  "@device_logical_pixels": {
+    "placeholders": {
+      "width": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  }
 }

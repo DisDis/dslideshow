@@ -34,6 +34,9 @@ class TestFrontend implements FrontendService {
   @override
   Stream<ActionWithParam> get onAction => actions.stream;
   @override
+  Future<void> updateFrontendState({bool? isPaused, bool? isMenu}) async {}
+
+  @override
   Future<void> storageNext() async {
     loads++;
   }
@@ -53,9 +56,10 @@ class TestFrontend implements FrontendService {
   }
 
   @override
-  Future<void> screenTurn(bool value) async {
+  Future<RpcResult> screenTurn(bool value) async {
     screenTurns.add(value);
     await turn?.future;
+    return const EmptyResult(id: 1);
   }
 
   Future<void> close() async {

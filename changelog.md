@@ -1,5 +1,12 @@
 # Unreleased
 
+* Add authenticated frame telemetry and remote pause/resume, menu and screen
+  controls to config_app. Read presence from the MQTT source and report actual
+  frame software/display details, screen transitions and stale samples. Bound
+  polling to visible pages, confirm control intent, handle timeouts without
+  replaying commands, and cover protocol, lifecycle and localized adaptive UI
+  with local tests. Hardware checks are excluded by agreement.
+
 * Report measured Raspberry Pi 5 fan RPM through the existing sensor script,
   DTOs and widget. Discover the board tachometer without a fixed hwmon index;
   omit unavailable readings, preserve valid zero RPM and other sensors, and

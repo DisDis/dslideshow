@@ -66,6 +66,10 @@ class HomePage extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 6),
                                         Text(switch (destination) {
+                                          AppDestination.telemetry =>
+                                            l.device_telemetry_subtitle,
+                                          AppDestination.control =>
+                                            l.device_controls_subtitle,
                                           AppDestination.gallery =>
                                             l.view_media_subtitle,
                                           AppDestination.upload =>

@@ -1176,4 +1176,248 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get video_seek => 'Позиция видео';
+
+  @override
+  String get device_telemetry_title => 'Телеметрия';
+
+  @override
+  String get device_controls_title => 'Управление фоторамкой';
+
+  @override
+  String get device_telemetry_subtitle =>
+      'Показатели системы и присутствие с фоторамки';
+
+  @override
+  String get device_controls_subtitle => 'Пауза, питание экрана и меню';
+
+  @override
+  String get device_refresh => 'Обновить';
+
+  @override
+  String get device_stale => 'Последние полученные данные устарели.';
+
+  @override
+  String get device_load_failed =>
+      'Не удалось получить состояние рамки. Проверьте подключение и версию ПО рамки.';
+
+  @override
+  String get device_metrics_failed =>
+      'Не удалось обновить системные показатели.';
+
+  @override
+  String get device_command_failed =>
+      'Не удалось подтвердить команду. Обновите состояние перед повтором.';
+
+  @override
+  String get device_disconnected => 'Соединение с фоторамкой потеряно.';
+
+  @override
+  String get device_no_data => 'Нет данных';
+
+  @override
+  String get device_frontend_unavailable =>
+      'Приложение показа рамки недоступно. Управление и сведения о дисплее недоступны.';
+
+  @override
+  String get device_controls_context =>
+      'Пауза и меню доступны, когда рамка показывает слайд-шоу.';
+
+  @override
+  String get device_sample_time => 'Снимок состояния рамки (UTC)';
+
+  @override
+  String get device_metrics_time => 'Системные показатели обновлены';
+
+  @override
+  String get device_network_time => 'Сетевые данные обновлены';
+
+  @override
+  String get device_presence => 'Присутствие человека';
+
+  @override
+  String get device_presence_present => 'Человек рядом';
+
+  @override
+  String get device_presence_absent => 'Никого нет';
+
+  @override
+  String get device_presence_unknown => 'Неизвестно';
+
+  @override
+  String get device_presence_time => 'Последнее наблюдение присутствия';
+
+  @override
+  String get device_playback => 'Слайд-шоу';
+
+  @override
+  String get device_paused => 'Пауза';
+
+  @override
+  String get device_playing => 'Воспроизведение';
+
+  @override
+  String get device_screen => 'Экран';
+
+  @override
+  String get device_screen_on => 'Включён';
+
+  @override
+  String get device_screen_off => 'Выключен';
+
+  @override
+  String get device_screen_phase => 'Состояние экрана';
+
+  @override
+  String get device_screen_waiting => 'Ожидание автоматического сна';
+
+  @override
+  String get device_screen_fading_out => 'Затухание';
+
+  @override
+  String get device_screen_powering_off => 'Выключение питания';
+
+  @override
+  String get device_screen_waking => 'Пробуждение';
+
+  @override
+  String get device_screen_fading_in => 'Проявление';
+
+  @override
+  String get device_screen_failed => 'Ошибка управления экраном';
+
+  @override
+  String get device_screen_power_help =>
+      'Питание отражает последнюю успешную команду устройства, а не физическое измерение дисплея.';
+
+  @override
+  String get device_screen_lock => 'Ручная блокировка экрана';
+
+  @override
+  String get device_turn_on => 'Включить экран';
+
+  @override
+  String get device_turn_off => 'Выключить экран';
+
+  @override
+  String get device_menu => 'Меню фоторамки';
+
+  @override
+  String get device_menu_open => 'Открыто';
+
+  @override
+  String get device_menu_closed => 'Закрыто';
+
+  @override
+  String get device_open_menu => 'Открыть меню';
+
+  @override
+  String get device_close_menu => 'Закрыть меню';
+
+  @override
+  String get device_current_page => 'Текущий экран рамки';
+
+  @override
+  String get device_page_welcome => 'Приветствие';
+
+  @override
+  String get device_page_config => 'Настройка';
+
+  @override
+  String get device_page_ota => 'Обновление ПО';
+
+  @override
+  String get device_cpu => 'Процессор';
+
+  @override
+  String get device_cpu_model => 'Модель';
+
+  @override
+  String get device_cpu_hardware => 'Аппаратная платформа';
+
+  @override
+  String get device_cpu_revision => 'Ревизия';
+
+  @override
+  String get device_cpu_cores => 'Ядра';
+
+  @override
+  String get device_cpu_load => 'Средняя нагрузка: 1 / 5 / 15 мин';
+
+  @override
+  String get device_os => 'Операционная система';
+
+  @override
+  String get device_uptime => 'Время работы';
+
+  @override
+  String get device_memory => 'Память';
+
+  @override
+  String get device_ram => 'RAM: занято / всего';
+
+  @override
+  String get device_swap => 'Swap: занято / всего';
+
+  @override
+  String get device_disk => 'Диск';
+
+  @override
+  String get device_disk_usage => 'Занято / всего';
+
+  @override
+  String get device_disk_percent => 'Заполнено';
+
+  @override
+  String get device_network => 'Сеть';
+
+  @override
+  String get device_internet => 'Интернет';
+
+  @override
+  String get device_online => 'Доступен';
+
+  @override
+  String get device_offline => 'Недоступен';
+
+  @override
+  String get device_interface_running => 'Активен';
+
+  @override
+  String get device_interface_offline => 'Неактивен';
+
+  @override
+  String get device_sensors => 'Датчики';
+
+  @override
+  String get device_versions_display => 'ПО и дисплей фоторамки';
+
+  @override
+  String get device_frontend_version => 'Версия приложения показа';
+
+  @override
+  String get device_backend_version => 'Версия backend';
+
+  @override
+  String get device_physical_size => 'Физический размер';
+
+  @override
+  String get device_logical_size => 'Логический размер';
+
+  @override
+  String get device_pixel_ratio => 'Масштаб пикселей';
+
+  @override
+  String device_mib(String value) {
+    return '$value МиБ';
+  }
+
+  @override
+  String device_pixels(String width, String height) {
+    return '$width × $height пикс.';
+  }
+
+  @override
+  String device_logical_pixels(String width, String height) {
+    return '$width × $height лог. пикс.';
+  }
 }

@@ -2263,6 +2263,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Video position'**
   String get video_seek;
+
+  /// No description provided for @device_telemetry_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry'**
+  String get device_telemetry_title;
+
+  /// No description provided for @device_controls_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame control'**
+  String get device_controls_title;
+
+  /// No description provided for @device_telemetry_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System readings and presence from the frame'**
+  String get device_telemetry_subtitle;
+
+  /// No description provided for @device_controls_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause, screen power and menu'**
+  String get device_controls_subtitle;
+
+  /// No description provided for @device_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get device_refresh;
+
+  /// No description provided for @device_stale.
+  ///
+  /// In en, this message translates to:
+  /// **'The last received data is out of date.'**
+  String get device_stale;
+
+  /// No description provided for @device_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the frame state. Check the connection and frame software version.'**
+  String get device_load_failed;
+
+  /// No description provided for @device_metrics_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update system readings.'**
+  String get device_metrics_failed;
+
+  /// No description provided for @device_command_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not confirm the command. Refresh the state before trying again.'**
+  String get device_command_failed;
+
+  /// No description provided for @device_disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection to the frame was lost.'**
+  String get device_disconnected;
+
+  /// No description provided for @device_no_data.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get device_no_data;
+
+  /// No description provided for @device_frontend_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame display app is unavailable. Controls and display details cannot be read.'**
+  String get device_frontend_unavailable;
+
+  /// No description provided for @device_controls_context.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause and menu are available while the frame is showing a slideshow.'**
+  String get device_controls_context;
+
+  /// No description provided for @device_sample_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame snapshot (UTC)'**
+  String get device_sample_time;
+
+  /// No description provided for @device_metrics_time.
+  ///
+  /// In en, this message translates to:
+  /// **'System readings updated'**
+  String get device_metrics_time;
+
+  /// No description provided for @device_network_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Network readings updated'**
+  String get device_network_time;
+
+  /// No description provided for @device_presence.
+  ///
+  /// In en, this message translates to:
+  /// **'Human presence'**
+  String get device_presence;
+
+  /// No description provided for @device_presence_present.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get device_presence_present;
+
+  /// No description provided for @device_presence_absent.
+  ///
+  /// In en, this message translates to:
+  /// **'Absent'**
+  String get device_presence_absent;
+
+  /// No description provided for @device_presence_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get device_presence_unknown;
+
+  /// No description provided for @device_presence_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Presence last observed'**
+  String get device_presence_time;
+
+  /// No description provided for @device_playback.
+  ///
+  /// In en, this message translates to:
+  /// **'Slideshow'**
+  String get device_playback;
+
+  /// No description provided for @device_paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get device_paused;
+
+  /// No description provided for @device_playing.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing'**
+  String get device_playing;
+
+  /// No description provided for @device_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen'**
+  String get device_screen;
+
+  /// No description provided for @device_screen_on.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get device_screen_on;
+
+  /// No description provided for @device_screen_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get device_screen_off;
+
+  /// No description provided for @device_screen_phase.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen transition'**
+  String get device_screen_phase;
+
+  /// No description provided for @device_screen_waiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for automatic sleep'**
+  String get device_screen_waiting;
+
+  /// No description provided for @device_screen_fading_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Fading out'**
+  String get device_screen_fading_out;
+
+  /// No description provided for @device_screen_powering_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Powering off'**
+  String get device_screen_powering_off;
+
+  /// No description provided for @device_screen_waking.
+  ///
+  /// In en, this message translates to:
+  /// **'Waking up'**
+  String get device_screen_waking;
+
+  /// No description provided for @device_screen_fading_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Fading in'**
+  String get device_screen_fading_in;
+
+  /// No description provided for @device_screen_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen operation failed'**
+  String get device_screen_failed;
+
+  /// No description provided for @device_screen_power_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Power status reflects the last successful device command, not a physical display measurement.'**
+  String get device_screen_power_help;
+
+  /// No description provided for @device_screen_lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual screen lock'**
+  String get device_screen_lock;
+
+  /// No description provided for @device_turn_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn screen on'**
+  String get device_turn_on;
+
+  /// No description provided for @device_turn_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn screen off'**
+  String get device_turn_off;
+
+  /// No description provided for @device_menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame menu'**
+  String get device_menu;
+
+  /// No description provided for @device_menu_open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get device_menu_open;
+
+  /// No description provided for @device_menu_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get device_menu_closed;
+
+  /// No description provided for @device_open_menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Open menu'**
+  String get device_open_menu;
+
+  /// No description provided for @device_close_menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Close menu'**
+  String get device_close_menu;
+
+  /// No description provided for @device_current_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame screen'**
+  String get device_current_page;
+
+  /// No description provided for @device_page_welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get device_page_welcome;
+
+  /// No description provided for @device_page_config.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration'**
+  String get device_page_config;
+
+  /// No description provided for @device_page_ota.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware update'**
+  String get device_page_ota;
+
+  /// No description provided for @device_cpu.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU'**
+  String get device_cpu;
+
+  /// No description provided for @device_cpu_model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get device_cpu_model;
+
+  /// No description provided for @device_cpu_hardware.
+  ///
+  /// In en, this message translates to:
+  /// **'Hardware'**
+  String get device_cpu_hardware;
+
+  /// No description provided for @device_cpu_revision.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision'**
+  String get device_cpu_revision;
+
+  /// No description provided for @device_cpu_cores.
+  ///
+  /// In en, this message translates to:
+  /// **'Cores'**
+  String get device_cpu_cores;
+
+  /// No description provided for @device_cpu_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Load average: 1 / 5 / 15 min'**
+  String get device_cpu_load;
+
+  /// No description provided for @device_os.
+  ///
+  /// In en, this message translates to:
+  /// **'Operating system'**
+  String get device_os;
+
+  /// No description provided for @device_uptime.
+  ///
+  /// In en, this message translates to:
+  /// **'Uptime'**
+  String get device_uptime;
+
+  /// No description provided for @device_memory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get device_memory;
+
+  /// No description provided for @device_ram.
+  ///
+  /// In en, this message translates to:
+  /// **'RAM: used / total'**
+  String get device_ram;
+
+  /// No description provided for @device_swap.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap: used / total'**
+  String get device_swap;
+
+  /// No description provided for @device_disk.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk'**
+  String get device_disk;
+
+  /// No description provided for @device_disk_usage.
+  ///
+  /// In en, this message translates to:
+  /// **'Used / total'**
+  String get device_disk_usage;
+
+  /// No description provided for @device_disk_percent.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get device_disk_percent;
+
+  /// No description provided for @device_network.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get device_network;
+
+  /// No description provided for @device_internet.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet'**
+  String get device_internet;
+
+  /// No description provided for @device_online.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get device_online;
+
+  /// No description provided for @device_offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get device_offline;
+
+  /// No description provided for @device_interface_running.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get device_interface_running;
+
+  /// No description provided for @device_interface_offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get device_interface_offline;
+
+  /// No description provided for @device_sensors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensors'**
+  String get device_sensors;
+
+  /// No description provided for @device_versions_display.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame software and display'**
+  String get device_versions_display;
+
+  /// No description provided for @device_frontend_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Display app version'**
+  String get device_frontend_version;
+
+  /// No description provided for @device_backend_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend version'**
+  String get device_backend_version;
+
+  /// No description provided for @device_physical_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical size'**
+  String get device_physical_size;
+
+  /// No description provided for @device_logical_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Logical size'**
+  String get device_logical_size;
+
+  /// No description provided for @device_pixel_ratio.
+  ///
+  /// In en, this message translates to:
+  /// **'Device pixel ratio'**
+  String get device_pixel_ratio;
+
+  /// No description provided for @device_mib.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} MiB'**
+  String device_mib(String value);
+
+  /// No description provided for @device_pixels.
+  ///
+  /// In en, this message translates to:
+  /// **'{width} × {height} px'**
+  String device_pixels(String width, String height);
+
+  /// No description provided for @device_logical_pixels.
+  ///
+  /// In en, this message translates to:
+  /// **'{width} × {height} logical px'**
+  String device_logical_pixels(String width, String height);
 }
 
 class _AppLocalizationsDelegate

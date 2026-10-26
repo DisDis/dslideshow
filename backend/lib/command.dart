@@ -17,3 +17,4 @@ export 'package:dslideshow_backend/src/service/system_info/update_info.dart';
 export 'package:dslideshow_backend/src/command/ota_commands.dart';
 export 'package:dslideshow_backend/src/command/wifi_commands.dart';
 export 'package:dslideshow_backend/src/command/frontend_commands.dart';
+export 'package:dslideshow_backend/src/command/frame_commands.dart';

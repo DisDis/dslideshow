@@ -1168,4 +1168,247 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get video_seek => 'Video position';
+
+  @override
+  String get device_telemetry_title => 'Telemetry';
+
+  @override
+  String get device_controls_title => 'Frame control';
+
+  @override
+  String get device_telemetry_subtitle =>
+      'System readings and presence from the frame';
+
+  @override
+  String get device_controls_subtitle => 'Pause, screen power and menu';
+
+  @override
+  String get device_refresh => 'Refresh';
+
+  @override
+  String get device_stale => 'The last received data is out of date.';
+
+  @override
+  String get device_load_failed =>
+      'Could not read the frame state. Check the connection and frame software version.';
+
+  @override
+  String get device_metrics_failed => 'Could not update system readings.';
+
+  @override
+  String get device_command_failed =>
+      'Could not confirm the command. Refresh the state before trying again.';
+
+  @override
+  String get device_disconnected => 'Connection to the frame was lost.';
+
+  @override
+  String get device_no_data => 'No data';
+
+  @override
+  String get device_frontend_unavailable =>
+      'The frame display app is unavailable. Controls and display details cannot be read.';
+
+  @override
+  String get device_controls_context =>
+      'Pause and menu are available while the frame is showing a slideshow.';
+
+  @override
+  String get device_sample_time => 'Frame snapshot (UTC)';
+
+  @override
+  String get device_metrics_time => 'System readings updated';
+
+  @override
+  String get device_network_time => 'Network readings updated';
+
+  @override
+  String get device_presence => 'Human presence';
+
+  @override
+  String get device_presence_present => 'Present';
+
+  @override
+  String get device_presence_absent => 'Absent';
+
+  @override
+  String get device_presence_unknown => 'Unknown';
+
+  @override
+  String get device_presence_time => 'Presence last observed';
+
+  @override
+  String get device_playback => 'Slideshow';
+
+  @override
+  String get device_paused => 'Paused';
+
+  @override
+  String get device_playing => 'Playing';
+
+  @override
+  String get device_screen => 'Screen';
+
+  @override
+  String get device_screen_on => 'On';
+
+  @override
+  String get device_screen_off => 'Off';
+
+  @override
+  String get device_screen_phase => 'Screen transition';
+
+  @override
+  String get device_screen_waiting => 'Waiting for automatic sleep';
+
+  @override
+  String get device_screen_fading_out => 'Fading out';
+
+  @override
+  String get device_screen_powering_off => 'Powering off';
+
+  @override
+  String get device_screen_waking => 'Waking up';
+
+  @override
+  String get device_screen_fading_in => 'Fading in';
+
+  @override
+  String get device_screen_failed => 'Screen operation failed';
+
+  @override
+  String get device_screen_power_help =>
+      'Power status reflects the last successful device command, not a physical display measurement.';
+
+  @override
+  String get device_screen_lock => 'Manual screen lock';
+
+  @override
+  String get device_turn_on => 'Turn screen on';
+
+  @override
+  String get device_turn_off => 'Turn screen off';
+
+  @override
+  String get device_menu => 'Frame menu';
+
+  @override
+  String get device_menu_open => 'Open';
+
+  @override
+  String get device_menu_closed => 'Closed';
+
+  @override
+  String get device_open_menu => 'Open menu';
+
+  @override
+  String get device_close_menu => 'Close menu';
+
+  @override
+  String get device_current_page => 'Frame screen';
+
+  @override
+  String get device_page_welcome => 'Welcome';
+
+  @override
+  String get device_page_config => 'Configuration';
+
+  @override
+  String get device_page_ota => 'Firmware update';
+
+  @override
+  String get device_cpu => 'CPU';
+
+  @override
+  String get device_cpu_model => 'Model';
+
+  @override
+  String get device_cpu_hardware => 'Hardware';
+
+  @override
+  String get device_cpu_revision => 'Revision';
+
+  @override
+  String get device_cpu_cores => 'Cores';
+
+  @override
+  String get device_cpu_load => 'Load average: 1 / 5 / 15 min';
+
+  @override
+  String get device_os => 'Operating system';
+
+  @override
+  String get device_uptime => 'Uptime';
+
+  @override
+  String get device_memory => 'Memory';
+
+  @override
+  String get device_ram => 'RAM: used / total';
+
+  @override
+  String get device_swap => 'Swap: used / total';
+
+  @override
+  String get device_disk => 'Disk';
+
+  @override
+  String get device_disk_usage => 'Used / total';
+
+  @override
+  String get device_disk_percent => 'Used';
+
+  @override
+  String get device_network => 'Network';
+
+  @override
+  String get device_internet => 'Internet';
+
+  @override
+  String get device_online => 'Connected';
+
+  @override
+  String get device_offline => 'Disconnected';
+
+  @override
+  String get device_interface_running => 'Running';
+
+  @override
+  String get device_interface_offline => 'Offline';
+
+  @override
+  String get device_sensors => 'Sensors';
+
+  @override
+  String get device_versions_display => 'Frame software and display';
+
+  @override
+  String get device_frontend_version => 'Display app version';
+
+  @override
+  String get device_backend_version => 'Backend version';
+
+  @override
+  String get device_physical_size => 'Physical size';
+
+  @override
+  String get device_logical_size => 'Logical size';
+
+  @override
+  String get device_pixel_ratio => 'Device pixel ratio';
+
+  @override
+  String device_mib(String value) {
+    return '$value MiB';
+  }
+
+  @override
+  String device_pixels(String width, String height) {
+    return '$width × $height px';
+  }
+
+  @override
+  String device_logical_pixels(String width, String height) {
+    return '$width × $height logical px';
+  }
 }
