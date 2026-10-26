@@ -46,6 +46,7 @@ class ControlledRequest {
   ControlledRequest(this.request, this.onFinish) {
     body = StreamController<List<int>>(
       onCancel: () async {
+        cancelStarted = true;
         await cancelGate?.future;
         finish();
       },
@@ -58,6 +59,7 @@ class ControlledRequest {
   late final StreamController<List<int>> body;
   Completer<void>? cancelGate;
   bool aborted = false;
+  bool cancelStarted = false;
   bool done = false;
   void respond({int status = 200}) {
     headers.complete(http.StreamedResponse(body.stream, status));
@@ -111,6 +113,38 @@ class _FilePayloadCache implements GalleryEncodedCache {
 
   @override
   Future<void> close() async => images.clear();
+}
+
+class _BeforeListenFailureCache implements GalleryEncodedCache {
+  final cache = GalleryMemoryImageCache();
+  var failWrites = true;
+
+  @override
+  Future<GalleryEncodedImage?> get(String key) => cache.get(key);
+
+  @override
+  Future<GalleryEncodedImage> write(String key, Stream<List<int>> body) async {
+    if (failWrites) throw StateError('Cache staging could not be opened');
+    return cache.write(key, body);
+  }
+
+  @override
+  Future<void> remove(String key) => cache.remove(key);
+
+  @override
+  Future<void> close() => cache.close();
+}
+
+class _GatedFailureCache extends _BeforeListenFailureCache {
+  final writeStarted = Completer<void>();
+  final failedWrite = Completer<GalleryEncodedImage>();
+
+  @override
+  Future<GalleryEncodedImage> write(String key, Stream<List<int>> body) {
+    if (!failWrites) return super.write(key, body);
+    writeStarted.complete();
+    return failedWrite.future;
+  }
 }
 
 void main() {
@@ -198,6 +232,183 @@ void main() {
       client.requests.last.complete([7]);
       expect((await next.result).bytes, [7]);
       expect(client.peak, 1);
+      next.dispose();
+      await loader.close();
+    },
+  );
+
+  test(
+    'late reacquire during failed-write cleanup receives a fresh attempt',
+    () async {
+      final client = ControlledClient();
+      final cache = _GatedFailureCache();
+      final loader = MediaImageLoader(
+        client: client,
+        cache: cache,
+        maxActive: 1,
+        maxPrefetch: 0,
+      );
+      final first = loader.acquire(request('same'));
+      await flush();
+      final pending = client.requests.single;
+      final gate = pending.cancelGate = Completer<void>();
+      pending.respond();
+      await cache.writeStarted.future;
+      first.dispose();
+      cache.failedWrite.completeError(StateError('staging failed'));
+      await flush();
+      expect(pending.aborted, isTrue);
+      expect(pending.cancelStarted, isTrue);
+      expect(pending.done, isFalse);
+      // The writer has already failed and real cancellation is awaiting the
+      // gate. Returning now must not attach to that attempt's stale error.
+      final next = loader.acquire(request('same'));
+      await flush();
+      expect(loader.activeCount, 1);
+      expect(client.requests, hasLength(1));
+      cache.failWrites = false;
+      gate.complete();
+      await flush();
+      expect(client.requests, hasLength(2));
+      client.requests.last.respond();
+      client.requests.last.complete([7]);
+      expect((await next.result).bytes, [7]);
+      expect(client.peak, 1);
+      next.dispose();
+      await loader.close();
+      expect(loader.pendingCount, 0);
+    },
+  );
+
+  test(
+    'normal EOF keeps its slot until asynchronous source cleanup finishes',
+    () async {
+      final client = ControlledClient();
+      final loader = MediaImageLoader(
+        client: client,
+        maxActive: 1,
+        maxPrefetch: 0,
+      );
+      final first = loader.acquire(request('first'));
+      final queued = loader.acquire(request('queued'));
+      await flush();
+      final pending = client.requests.single;
+      final gate = pending.cancelGate = Completer<void>();
+      pending.respond();
+      pending.complete([1]);
+      await flush();
+      expect(pending.done, isFalse);
+      expect(loader.activeCount, 1);
+      expect(client.requests, hasLength(1));
+      gate.complete();
+      expect((await first.result).bytes, [1]);
+      await flush();
+      expect(pending.done, isTrue);
+      expect(client.requests, hasLength(2));
+      client.requests.last.respond();
+      client.requests.last.complete([2]);
+      expect((await queued.result).bytes, [2]);
+      expect(client.peak, 1);
+      first.dispose();
+      queued.dispose();
+      await loader.close();
+    },
+  );
+
+  test(
+    'a cache failure before body subscription aborts and waits for cleanup',
+    () async {
+      final client = ControlledClient();
+      final cache = _BeforeListenFailureCache();
+      final loader = MediaImageLoader(
+        client: client,
+        cache: cache,
+        maxActive: 1,
+        maxPrefetch: 0,
+      );
+      final failed = loader.acquire(request('failed'));
+      final queued = loader.acquire(request('queued'));
+      await flush();
+      final pending = client.requests.single;
+      final gate = pending.cancelGate = Completer<void>();
+      pending.respond();
+      await flush();
+      expect(pending.aborted, isTrue);
+      expect(pending.done, isFalse);
+      expect(loader.activeCount, 1);
+      expect(client.requests, hasLength(1));
+      var failureDelivered = false;
+      final failure = expectLater(failed.result, throwsStateError).then((_) {
+        failureDelivered = true;
+      });
+      await flush();
+      expect(failureDelivered, isFalse);
+      cache.failWrites = false;
+      gate.complete();
+      await failure;
+      await flush();
+      expect(pending.done, isTrue);
+      expect(client.requests, hasLength(2));
+      expect(client.requests.last.request.url.path, '/queued');
+      client.requests.last.respond();
+      client.requests.last.complete([1, 2]);
+      expect((await queued.result).bytes, [1, 2]);
+      await flush();
+      expect(client.requests, hasLength(2), reason: 'no automatic retry');
+      expect(client.active, 0);
+      expect(client.peak, 1);
+      expect(loader.inFlightBytes, 0);
+      expect(loader.pendingCount, 0);
+      failed.dispose();
+      queued.dispose();
+      await loader.close();
+      expect(loader.leasedEncodedBytes, 0);
+    },
+  );
+
+  test(
+    'cancelling prefetch retains its reservation until source cleanup finishes',
+    () async {
+      final client = ControlledClient();
+      final loader = MediaImageLoader(
+        client: client,
+        maxActive: 4,
+        maxPrefetch: 1,
+      );
+      final first = loader.acquire(
+        request('prefetch-first'),
+        priority: GalleryImagePriority.prefetch,
+      );
+      await flush();
+      final pending = client.requests.single;
+      final gate = pending.cancelGate = Completer<void>();
+      pending.respond();
+      await flush();
+      first.dispose();
+      final next = loader.acquire(
+        request('prefetch-next'),
+        priority: GalleryImagePriority.prefetch,
+      );
+      final visible = loader.acquire(request('visible'));
+      await flush();
+      expect(pending.cancelStarted, isTrue);
+      expect(pending.done, isFalse);
+      expect(client.requests, hasLength(2));
+      expect(client.requests.last.request.url.path, '/visible');
+      expect(loader.activeCount, 2);
+      gate.complete();
+      await flush();
+      expect(pending.done, isTrue);
+      expect(client.requests, hasLength(3));
+      expect(client.requests.last.request.url.path, '/prefetch-next');
+      client.requests[1].respond();
+      client.requests[1].complete([1]);
+      client.requests[2].respond();
+      client.requests[2].complete([2]);
+      await visible.result;
+      await next.result;
+      expect(client.peak, 2);
+      visible.dispose();
       next.dispose();
       await loader.close();
     },

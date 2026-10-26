@@ -60,8 +60,8 @@ final class _SessionCache implements GalleryEncodedCache {
 final class GalleryNativeImageCache implements GalleryEncodedCache {
   GalleryNativeImageCache({
     Directory? directory,
-    this.maxBytes = 128 << 20,
-    this.maxObjects = 512,
+    this.maxBytes = 512 << 20,
+    this.maxObjects = 2048,
     this.memoryMaxBytes = 24 << 20,
     this.memoryMaxObjects = 128,
   }) : _requestedDirectory = directory {
@@ -216,11 +216,14 @@ final class _DiskEntry {
 /// bodies are additionally limited by MediaImageLoader's transfer budgets.
 /// Access recency changes in memory; close coalesces surviving touched entries
 /// into atomic metadata updates. After a crash, persisted LRU is approximate.
+/// This reconstructible cache awaits complete writes/close and atomic renames,
+/// without fsync durability. Startup validates identity/type/length, not content;
+/// power loss can discard entries or leave undetected same-length corruption.
 final class GalleryDiskImageCache implements GalleryEncodedCache {
   GalleryDiskImageCache({
     required Directory directory,
-    this.maxBytes = 128 << 20,
-    this.maxObjects = 512,
+    this.maxBytes = 512 << 20,
+    this.maxObjects = 2048,
   }) : _requestedDirectory = directory {
     if (maxBytes < 0 || maxObjects < 0) {
       throw ArgumentError('Gallery cache budgets must not be negative');
@@ -388,7 +391,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
     return image;
   }
 
-  Future<void> _writeMetadata(_DiskEntry entry, {bool flush = true}) async {
+  Future<void> _writeMetadata(_DiskEntry entry) async {
     final staging = File(path.join(_directory.path, '${_uuid.v4()}.part'));
     try {
       await staging.writeAsString(
@@ -399,7 +402,6 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
           'bytes': entry.image.byteLength,
           'accessed': entry.accessed,
         }),
-        flush: flush,
       );
       await staging.rename(_metadata(entry.id).path);
     } finally {
@@ -469,7 +471,8 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
         length += chunk.length;
       }
       _checkOpen();
-      await output.flush();
+      // Await completion and descriptor close before atomic publication. The
+      // payload is reconstructible, so its handoff does not wait for fsync.
       await output.close();
       output = null;
       return await _exclusive(() async {
@@ -640,9 +643,7 @@ final class GalleryDiskImageCache implements GalleryEncodedCache {
         final entry = _entries[id];
         if (entry == null) continue;
         try {
-          // Recency is advisory, so close must not fsync once per touched file.
-          // Publication still uses the durable default above.
-          await _writeMetadata(entry, flush: false);
+          await _writeMetadata(entry);
         } on FileSystemException catch (error, stack) {
           // Touch persistence is advisory. A read-only/full disk must not turn
           // a valid warm hit into an error or prevent resource/lock cleanup.

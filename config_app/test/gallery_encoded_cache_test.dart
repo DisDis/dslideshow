@@ -158,7 +158,54 @@ void main() {
   });
 
   test(
-    'warm hits leave durable metadata unchanged until graceful close',
+    'default native disk budget retains 2048 objects and evicts overflow',
+    () async {
+      final value = GalleryDiskImageCache(
+        directory: Directory('${root.path}/store'),
+      );
+      caches.add(value);
+      expect(value.maxBytes, 512 << 20);
+      expect(value.maxObjects, 2048);
+      final native = GalleryNativeImageCache(
+        directory: Directory('${root.path}/native'),
+      );
+      expect(native.maxBytes, value.maxBytes);
+      expect(native.maxObjects, value.maxObjects);
+      await native.close();
+      for (var index = 0; index < 2049; index++) {
+        await value.write('object-$index', body('$index'));
+      }
+      expect(value.cachedObjects, 2048);
+      expect(await value.get('object-0'), isNull);
+      expect(await value.get('object-1'), isNotNull);
+      expect(await value.get('object-2048'), isNotNull);
+    },
+  );
+
+  test(
+    'reopen drops a truncated published body and allows complete replacement',
+    () async {
+      final first = cache();
+      final image = await first.write('revisioned', body('complete-body'));
+      await first.close();
+      await File(image.filePath!).writeAsString('partial');
+      final reopened = cache();
+      expect(await reopened.get('revisioned'), isNull);
+      expect(await File(image.filePath!).exists(), isFalse);
+      final replacement = await reopened.write(
+        'revisioned',
+        body('complete-body'),
+      );
+      expect(await File(replacement.filePath!).readAsString(), 'complete-body');
+      expect(
+        (await reopened.get('revisioned'))!.filePath,
+        replacement.filePath,
+      );
+    },
+  );
+
+  test(
+    'warm hits leave published metadata unchanged until graceful close',
     () async {
       final value = cache();
       await value.write('warm', body('complete'));

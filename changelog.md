@@ -1,5 +1,12 @@
 # Unreleased
 
+* Speed up new Linux gallery cache entries by completing writes and atomic
+  publication without per-file durability flushes. Increase the native encoded
+  cache to 512 MiB / 2048 objects and document power-loss recovery limits.
+  Abort failed HTTP-to-cache transfers and cover corruption recovery, capacity
+  and cleanup. Keep returning consumers and cancelling prefetches behind actual
+  transport cleanup; preserve original media and server thumbnail generation.
+
 * Increase the default server thumbnail disk cache to 512 MiB / 2048 objects.
 
 * Remove synchronous metadata rewrites/fsync from Linux gallery cache hits.

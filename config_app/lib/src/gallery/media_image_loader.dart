@@ -208,6 +208,55 @@ final class _ImageJob {
       );
 }
 
+/// Own the response immediately, even if a cache writer never listens to its
+/// input. Pausing the source preserves backpressure while staging is opened.
+final class _ImageResponseBody {
+  _ImageResponseBody(Stream<List<int>> source) {
+    _controller = StreamController<List<int>>(
+      sync: true,
+      onListen: () => _subscription.resume(),
+      onPause: () => _subscription.pause(),
+      onResume: () => _subscription.resume(),
+      onCancel: cancel,
+    );
+    _subscription = source.listen(
+      _controller.add,
+      onError: _controller.addError,
+      onDone: () {
+        _finished = true;
+        unawaited(_controller.close());
+      },
+    )..pause();
+  }
+
+  late final StreamController<List<int>> _controller;
+  late final StreamSubscription<List<int>> _subscription;
+  bool _finished = false;
+  Future<void>? _cleanup;
+  Stream<List<int>> get stream => _controller.stream;
+
+  Future<void> cancel() {
+    final previous = _cleanup;
+    if (previous != null) return previous;
+    final completion = Completer<void>();
+    _cleanup = completion.future;
+    Future<void> finish() async {
+      try {
+        if (!_finished) await _subscription.cancel();
+        completion.complete();
+      } catch (error, stack) {
+        completion.completeError(error, stack);
+      } finally {
+        _finished = true;
+        unawaited(_controller.close());
+      }
+    }
+
+    unawaited(finish());
+    return completion.future;
+  }
+}
+
 /// Shared bounded transport for thumbnails and fullscreen originals.
 /// Limits include cache reads and cancelling operations, through complete body
 /// consumption. This conservative accounting cannot exceed the network cap.
@@ -319,7 +368,8 @@ final class MediaImageLoader {
       var prefetch = _jobs.values
           .where(
             (job) =>
-                job.phase == GalleryImageTaskPhase.fetching &&
+                (job.phase == GalleryImageTaskPhase.fetching ||
+                    job.phase == GalleryImageTaskPhase.cancelling) &&
                 job.priority == GalleryImagePriority.prefetch,
           )
           .length;
@@ -345,6 +395,7 @@ final class MediaImageLoader {
       if (!job.abort.isCompleted) job.abort.complete();
     });
     var receivedBytes = 0;
+    _ImageResponseBody? responseBody;
     try {
       var image = await _cache.get(job.request.key.storageKey);
       if (job.abort.isCompleted || _closed) throw const GalleryImageCancelled();
@@ -356,20 +407,18 @@ final class MediaImageLoader {
             abortTrigger: job.abort.future,
           ),
         );
+        final source = responseBody = _ImageResponseBody(response.stream);
         if (response.statusCode != 200) {
-          await response.stream.listen((_) {}).cancel();
           throw GalleryImageHttpException(
             response.statusCode,
             retryAfter: _retryAfter(response.headers['retry-after']),
           );
         }
         if ((response.contentLength ?? 0) > maxBodyBytes) {
-          if (!job.abort.isCompleted) job.abort.complete();
-          await response.stream.listen((_) {}).cancel();
           throw const GalleryImageBudgetException();
         }
         Stream<List<int>> boundedBody() async* {
-          await for (final chunk in response.stream) {
+          await for (final chunk in source.stream) {
             if (job.abort.isCompleted || _closed) {
               throw const GalleryImageCancelled();
             }
@@ -385,6 +434,7 @@ final class MediaImageLoader {
         }
 
         image = await _cache.write(job.request.key.storageKey, boundedBody());
+        await source.cancel();
       }
       if (job.abort.isCompleted || _closed) throw const GalleryImageCancelled();
       // Completed bodies move from in-flight ownership to an encoded source
@@ -402,6 +452,16 @@ final class MediaImageLoader {
         lease._complete(image);
       }
     } catch (error, stack) {
+      if (!job.abort.isCompleted) job.abort.complete();
+      try {
+        // Keep the slot until real source cancellation settles. Neither a
+        // failed cache writer nor its unstarted generator owns that lifetime.
+        if (responseBody != null) await responseBody.cancel();
+      } catch (_) {
+        // Preserve the useful transport/cache failure after requesting abort.
+      }
+      // Demand may return while source cleanup is pending. Preserve cancelling
+      // until that handoff is safe so the new lease waits for a fresh attempt.
       job.phase = GalleryImageTaskPhase.failed;
       final failure = job.timedOut
           ? TimeoutException('Image request timed out')

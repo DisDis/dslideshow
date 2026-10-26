@@ -124,6 +124,32 @@ python3 benchmarks/tool/gallery_browser_probe.py \
 настоящий кеш в Flutter VM против замороженных исходников. Он проверяет время
 пути hit и отсутствие перезаписи metadata; сеть, декодирование и UI FPS в этот
 probe не входят. Наблюдения работающей панели и LAN отделены в отчёте.
+Тот же инструмент с `--scenario cold` проверяет первые записи JPEG в native-кеш:
+
+```sh
+python3 benchmarks/tool/gallery_native_cache_probe.py \
+  --freeze-current --snapshot benchmarks/reports/gallery-cold-EXPERIMENT/baseline \
+  --scenario cold --fixture-parent /path/on/client/cache/filesystem \
+  --payload /path/to/thumbnail.jpg --concurrency 4
+# После production-правки — та же команда с новым snapshot candidate,
+# теми же payload, filesystem и concurrency.
+```
+
+`fixture-parent` должен существовать; инструмент создаёт и удаляет только свои
+свежие `gallery-cold-probe-*` каталоги, не открывая действующий кеш панели.
+Пять серий по 63 записи проверяют полные байты до возврата, отсутствие `.part`
+и попадания после close/reopen. Хранятся frozen sources, хеши harness/payload,
+сырые времена и provenance. `--run-name NAME` повторяет frozen вариант в новом
+каталоге. [Сравнение cold native cache](reports/gallery-native-cache-cold-2026-10-26/report.md)
+отделено от [cold/warm LAN](reports/gallery-live-2026-10-26/lan-cold.json):
+запись клиента не измеряет создание производной на сервере.
+Отдельный [Linux release A/B](reports/gallery-native-cache-cold-2026-10-26/linux-release-report.md)
+использует `tool/gallery_native_cache_release.py` и Dart-template из `tool/`:
+runner генерирует entry point внутри ignored report и собирает frozen snapshots,
+сохраняя bundles и manifests. Нужны исходные baseline/production snapshots из
+этого эксперимента и уже установленные Linux build dependencies/Xvfb. Это
+вспомогательные сборки: после них production bundle следует восстановить обычной
+`flutter build linux --release --no-pub --target lib/main.dart` из `config_app`.
 Wi-Fi, Flutter FrameTiming, визуальная проверка устройства и аппаратный A/B
 не выполняются этими командами; для них требуется отдельное окно по
 [руководству RaPi5](../doc/raspberry-pi-benchmarks.md).

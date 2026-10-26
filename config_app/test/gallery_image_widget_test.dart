@@ -59,6 +59,70 @@ void main() {
   }
 
   testWidgets(
+    'malformed encoded hit is invalidated and explicit retry fetches a valid image',
+    (tester) async {
+      final client = ControlledClient();
+      final cache = GalleryMemoryImageCache();
+      final imageRequest = request('corrupt');
+      await cache.write(
+        imageRequest.key.storageKey,
+        Stream.value(List.filled(png.length, 0)),
+      );
+      final loader = MediaImageLoader(client: client, cache: cache);
+      final pool = GalleryDecodePool();
+      final imageCache = PaintingBinding.instance.imageCache;
+      imageCache.clear();
+      imageCache.clearLiveImages();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GalleryImage(
+            loader: loader,
+            decodePool: pool,
+            request: imageRequest,
+            errorBuilder: (_, retry) =>
+                TextButton(onPressed: retry, child: const Text('Retry image')),
+          ),
+        ),
+      );
+      for (
+        var i = 0;
+        i < 20 && find.text('Retry image').evaluate().isEmpty;
+        i++
+      ) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      expect(find.text('Retry image'), findsOneWidget);
+      expect(client.requests, isEmpty, reason: 'the initial source was a hit');
+      expect(await cache.get(imageRequest.key.storageKey), isNull);
+      await tester.tap(find.text('Retry image'));
+      await tester.pump();
+      expect(client.requests, hasLength(1));
+      client.requests.single.respond();
+      client.requests.single.complete(png);
+      for (var i = 0; i < 20 && find.byType(RawImage).evaluate().isEmpty; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      expect(find.byType(RawImage), findsOneWidget);
+      expect(find.text('Retry image'), findsNothing);
+      expect(client.requests, hasLength(1));
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      pool.close();
+      await loader.close();
+      expect(loader.leasedEncodedBytes, 0);
+      imageCache.clear();
+      imageCache.clearLiveImages();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'decoded local payload is reused after rebuild and closing releases source leases',
     (tester) async {
       final client = ControlledClient();
