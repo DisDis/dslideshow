@@ -1,5 +1,11 @@
 # Unreleased
 
+# 12.0.0+2 — 2026-10-27
+
+* Run production package and build-tool tests automatically before DEB staging,
+  version increments and compilation. Stop on failure, preserving previous
+  staging and versions; add failure-propagation and packaging regressions.
+
 * Speed up new Linux gallery cache entries by completing writes and atomic
   publication without per-file durability flushes. Increase the native encoded
   cache to 512 MiB / 2048 objects and document power-loss recovery limits.
@@ -93,6 +99,9 @@
   handshake/request timeouts and cleanup. Cancel stale authentication attempts,
   handle network-operation failures, and remove sensitive payloads from client
   diagnostics. Add lifecycle/error regressions and the staged improvement plan.
+
+Build verification and remaining hardware limitations are recorded in
+[the release record](doc/release-12.0.0.md).
 
 # 10.1.0+1 — 2026-10-25
 

@@ -787,16 +787,35 @@ void main() {
     () async {
       final updates = <(int, int?)>[];
       final bytes = _multipart([_Part.file('x', 'a' * 1000)]);
+      final watch = Stopwatch()..start();
       final batch = await StreamingUploadReceiver().receiveMultipart(
         _request(bytes, chunkSize: 1),
         destinationFor: destination,
         onProgress: (received, total) => updates.add((received, total)),
       );
-      expect(updates.length, lessThan(5));
+      // Real disk writes can take several progress intervals under load.
+      // Allow the first and forced final report, plus at most four per second.
+      final maximumUpdates =
+          watch.elapsedMicroseconds * 4 ~/ Duration.microsecondsPerSecond + 2;
+      expect(updates.length, inInclusiveRange(2, maximumUpdates));
       expect(updates.last, (bytes.length, null));
       await batch.cleanup();
     },
   );
+
+  test('progress coalesces rapid updates but always reports final bytes', () {
+    final updates = <(int, int?)>[];
+    final throttle = UploadProgressThrottle(
+      (received, total) => updates.add((received, total)),
+      interval: const Duration(days: 1),
+    );
+    for (var received = 1; received <= 1000; received++) {
+      throttle.update(received, 1000);
+    }
+    expect(updates, [(1, 1000)]);
+    throttle.update(1000, 1000, force: true);
+    expect(updates, [(1, 1000), (1000, 1000)]);
+  });
 
   test('error mapping hides paths and distinguishes storage exhaustion', () {
     expect(

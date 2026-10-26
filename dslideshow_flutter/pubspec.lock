@@ -238,7 +238,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "11.0.0"
+    version: "12.0.0+2"
   dslideshow_common:
     dependency: "direct main"
     description:

@@ -17,8 +17,9 @@ class _UnusedRemote implements RemoteService {
 }
 
 Future<void> main(List<String> arguments) async {
-  if (arguments.length != 1)
+  if (arguments.length != 1) {
     throw ArgumentError('Pass a temporary fixture root');
+  }
   final root = Directory(arguments.single).absolute;
   final media = Directory('${root.path}/media');
   if (!media.existsSync() || !Directory('${root.path}/web').existsSync()) {

@@ -1,25 +1,32 @@
 #!/bin/sh
+set -eu
+
+cd -- "$(dirname -- "$0")"
+
+error_exit()
+{
+    echo "Error: $1" >&2
+    exit 1
+}
+
 PROFILE_ARC=arm64
 DIR="dslideshow_$PROFILE_ARC"
 CPU_TYPE=pi4
 DEST=$DIR/opt/dslideshow/
 SOURCE_BIN=./source_$PROFILE_ARC
+
+# Keep versions and the previous staging directory intact if tests fail.
+./run_tests.sh || error_exit "pre-build tests"
+
 if [ -d "$DIR" ]; then
   echo "Folder '${DIR}' is exist"
   rm -r -f ./$DIR
 fi
 
-error_exit()
-{
-    echo "Error: $1"
-    exit 1
-}
-
-
 cp -r ./template_build_$PROFILE_ARC ./$DIR || error_exit "copy"
 
 cd ../dslideshow_flutter
-dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
+dart ../autover/bin/main.dart -c autover.yaml -v build --apply true || error_exit "version generation"
 echo "--- Build 'DSlideshow' ---"
 ./build_aot_$CPU_TYPE.sh || error_exit "DSlideshow AOT '$CPU_TYPE'"
 

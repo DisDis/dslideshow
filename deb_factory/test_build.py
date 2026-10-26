@@ -33,10 +33,12 @@ class DebBuildTest(unittest.TestCase):
                 path.write_text("#!/bin/sh\nset -eu\n" + content)
                 path.chmod(0o755)
 
-            # Only compilation/version generation are stubbed. The production
+            script("deb_factory/run_tests.sh", "touch tests-passed\n")
+            # Tests and compilation/version generation are stubbed. The production
             # copy, checksum and dpkg-deb steps run unchanged.
             script(
                 "bin/dart",
+                "test -f ../deb_factory/tests-passed\n"
                 "sed 's/_FRONT_/1.0.0+1/g; s/_BACK_/1.0.0+1/g' "
                 "../deb_factory/dslideshow_arm64/DEBIAN/control.template "
                 "> ../deb_factory/dslideshow_arm64/DEBIAN/control\n"
@@ -84,6 +86,47 @@ class DebBuildTest(unittest.TestCase):
                 (extracted / "opt/dslideshow/flutter-pi").read_bytes(), runtime.read_bytes()
             )
             self.assertEqual((extracted / "opt/dslideshow/version").read_text(), "1.0.0+1\n")
+
+
+class DebPreflightTest(unittest.TestCase):
+    def test_failed_tests_preserve_versions_and_staging_without_starting_build(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            factory = root / "deb_factory"
+            staging = factory / "dslideshow_arm64"
+            staging.mkdir(parents=True)
+            sentinel = staging / "previous-build"
+            sentinel.write_text("keep me\n")
+            shutil.copy2(FACTORY / "build.sh", factory / "build.sh")
+            runner = factory / "run_tests.sh"
+            runner.write_text("#!/bin/sh\nexit 7\n")
+            runner.chmod(0o755)
+            versions = []
+            for package in ("backend", "dslideshow_flutter"):
+                version = root / package / "pubspec.yaml"
+                version.parent.mkdir()
+                version.write_text("version: 1.0.0+3\n")
+                versions.append(version)
+            forbidden = root / "build-started"
+            binary_dir = root / "bin"
+            binary_dir.mkdir()
+            for command in ("dart", "flutter", "dpkg-deb"):
+                executable = binary_dir / command
+                executable.write_text(f'#!/bin/sh\ntouch "{forbidden}"\nexit 99\n')
+                executable.chmod(0o755)
+            env = dict(os.environ, PATH=f"{binary_dir}{os.pathsep}{os.environ['PATH']}")
+            # Also verify that build.sh can be invoked outside deb_factory.
+            result = subprocess.run(
+                [str(factory / "build.sh")], cwd=root, env=env, capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("pre-build tests", result.stderr)
+            self.assertEqual(sentinel.read_text(), "keep me\n")
+            for version in versions:
+                self.assertEqual(version.read_text(), "version: 1.0.0+3\n")
+            self.assertFalse(forbidden.exists())
+            self.assertEqual(list(factory.glob("*.deb")), [])
 
 
 if __name__ == "__main__":

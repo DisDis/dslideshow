@@ -57,6 +57,13 @@
 
 ## Локальные проверки backend без Flutter и устройства
 
+`flutter analyze --no-pub` проверяет живые исходники стенда. Каталоги `build/`
+и `reports/` исключены: они содержат сгенерированные targets и замороженные
+копии чужих пакетов. Отдельная `tool/gallery_browser_probe.dart` также исключена
+из контекста пакета benchmarks: её зависимости принадлежат config_app.
+Проверка этой пробы — компиляция с замороженным package config панели и запуск
+настоящего Chrome через `gallery_browser_probe.py`, как описано ниже.
+
 Исследовательские `tool/camera_rpc_probe.dart` и `tool/rpc_timeout_probe.dart`
 проверяют настоящий HTTP при отказах камер и удержание межизолятных RPC-слотов.
 `tool/camera_device_probe.dart` и `tool/camera_socket_probe.py` сопоставляют

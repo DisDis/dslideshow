@@ -2,3 +2,6 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - build/**
+    - reports/**
+    # Compiled with config_app's frozen package config by gallery_browser_probe.py.
+    - tool/gallery_browser_probe.dart
