@@ -2737,6 +2737,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{width} × {height} logical px'**
   String device_logical_pixels(String width, String height);
+
+  /// No description provided for @rpc_title.
+  ///
+  /// In en, this message translates to:
+  /// **'RPC queues'**
+  String get rpc_title;
+
+  /// No description provided for @rpc_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Counters and peaks since service startup. Rates cover up to the last 10 seconds and include telemetry requests.'**
+  String get rpc_description;
+
+  /// No description provided for @rpc_node_frontend.
+  ///
+  /// In en, this message translates to:
+  /// **'Slideshow'**
+  String get rpc_node_frontend;
+
+  /// No description provided for @rpc_node_backend.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend'**
+  String get rpc_node_backend;
+
+  /// No description provided for @rpc_node_web.
+  ///
+  /// In en, this message translates to:
+  /// **'Web server'**
+  String get rpc_node_web;
+
+  /// No description provided for @rpc_node_ota.
+  ///
+  /// In en, this message translates to:
+  /// **'Updater'**
+  String get rpc_node_ota;
+
+  /// No description provided for @rpc_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No RPC data'**
+  String get rpc_unavailable;
+
+  /// No description provided for @rpc_peak_inflight.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak occupied slots'**
+  String get rpc_peak_inflight;
+
+  /// No description provided for @rpc_peak_queued.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak waiting for a slot'**
+  String get rpc_peak_queued;
+
+  /// No description provided for @rpc_submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests submitted'**
+  String get rpc_submitted;
+
+  /// No description provided for @rpc_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests sent'**
+  String get rpc_sent;
+
+  /// No description provided for @rpc_responses.
+  ///
+  /// In en, this message translates to:
+  /// **'Responses received'**
+  String get rpc_responses;
+
+  /// No description provided for @rpc_errors.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait and RPC result errors'**
+  String get rpc_errors;
+
+  /// No description provided for @rpc_slot_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot wait: mean / maximum'**
+  String get rpc_slot_wait;
+
+  /// No description provided for @rpc_response_wait.
+  ///
+  /// In en, this message translates to:
+  /// **'Response wait: mean / maximum'**
+  String get rpc_response_wait;
+
+  /// No description provided for @rpc_oldest_queued.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest waiting for a slot'**
+  String get rpc_oldest_queued;
+
+  /// No description provided for @rpc_oldest_inflight.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest waiting for a response'**
+  String get rpc_oldest_inflight;
+
+  /// No description provided for @rpc_no_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get rpc_no_pending;
+
+  /// No description provided for @rpc_unknown_command.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown command'**
+  String get rpc_unknown_command;
+
+  /// No description provided for @rpc_handlers_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Handlers running at receiver'**
+  String get rpc_handlers_active;
+
+  /// No description provided for @rpc_handlers_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Handlers completed'**
+  String get rpc_handlers_completed;
+
+  /// No description provided for @rpc_handlers_errors.
+  ///
+  /// In en, this message translates to:
+  /// **'Handler errors'**
+  String get rpc_handlers_errors;
+
+  /// No description provided for @rpc_handler_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Handler duration: mean / maximum'**
+  String get rpc_handler_duration;
+
+  /// No description provided for @rpc_receiver_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiver metrics unavailable'**
+  String get rpc_receiver_unavailable;
+
+  /// No description provided for @rpc_ws_timeouts.
+  ///
+  /// In en, this message translates to:
+  /// **'WebSocket request timeouts since panel startup'**
+  String get rpc_ws_timeouts;
+
+  /// No description provided for @rpc_occupancy.
+  ///
+  /// In en, this message translates to:
+  /// **'Slots: {used}/{capacity} · Waiting: {queued}'**
+  String rpc_occupancy(int used, int capacity, int queued);
+
+  /// No description provided for @rpc_rate_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent: {sent}/s · Responses: {responses}/s'**
+  String rpc_rate_summary(String sent, String responses);
+
+  /// No description provided for @rpc_duration_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'{mean} / {maximum}'**
+  String rpc_duration_summary(String mean, String maximum);
+
+  /// No description provided for @rpc_pending_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{command} · {age}'**
+  String rpc_pending_value(String command, String age);
+
+  /// No description provided for @rpc_milliseconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ms'**
+  String rpc_milliseconds(String value);
+
+  /// No description provided for @rpc_receiver_stale.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiver handler metrics are out of date.'**
+  String get rpc_receiver_stale;
 }
 
 class _AppLocalizationsDelegate

@@ -21,38 +21,70 @@ class RemoteServiceImpl implements RemoteService {
   late Service service;
   late RemoteServiceTransport _transport;
   final Serializers serializers;
+  final RpcTelemetry? telemetry;
+  final RpcNode peer;
+  late final RpcConnectionMetrics? _metrics;
   final results = <StreamQueue<dynamic>>[];
   late Pool _pool;
   final _freeResultStream = <bool>[];
 
-  Future<T> getFreeResultPort<T>(Future<T> Function(int portIndex, StreamQueue<dynamic> resultStream) callback) {
-    return _pool.withResource(() async {
-      var i = 0;
-      for (i = 0; i < _freeResultStream.length; i++) {
+  Future<T> getFreeResultPort<T>(
+    Future<T> Function(int portIndex, StreamQueue<dynamic> resultStream)
+    callback, {
+    String? commandType,
+  }) async {
+    final measurement = _metrics?.enqueue(commandType);
+    try {
+      return await _pool.withResource(() async {
+        measurement?.dispatch();
+        var i = 0;
+        for (i = 0; i < _freeResultStream.length; i++) {
+          if (_freeResultStream[i]) {
+            break;
+          }
+        }
         if (_freeResultStream[i]) {
-          break;
+          _freeResultStream[i] = false;
+          try {
+            final result = await callback(i, results[i]);
+            measurement?.response();
+            return result;
+          } finally {
+            _freeResultStream[i] = true;
+            measurement?.finish();
+          }
         }
-      }
-      if (_freeResultStream[i]) {
-        _freeResultStream[i] = false;
-        try {
-          return await callback(i, results[i]);
-        } finally {
-          _freeResultStream[i] = true;
-        }
-      }
-      throw Exception('No free resources');
-    });
+        throw Exception('No free resources');
+      });
+    } catch (_) {
+      measurement?.failed();
+      rethrow;
+    } finally {
+      measurement?.finish();
+    }
   }
 
   RemoteServiceImpl({
     required this.serializers,
     RemoteServiceTransport? transport,
+    this.telemetry,
+    this.peer = RpcNode.unknown,
+    bool collectPeerTelemetry = false,
   }) {
     _transport = transport ?? new DirectSpawnTransport();
+    _metrics = telemetry?.addConnection(peer);
+    if (collectPeerTelemetry) {
+      telemetry?.addPeer(() async {
+        final result = await send(
+          GetRpcTelemetryCommand(id: RpcCommand.generateId()),
+        );
+        return (result as GetRpcTelemetryResult).snapshot;
+      });
+    }
   }
 
-  void connect(HandshakeMessage message, [int resultIPortCount = 5]) {
+  void connect(HandshakeMessage message, [int resultIPortCount = 25]) {
+    _metrics?.capacity = resultIPortCount;
     final commandIPort = ReceivePort();
     final resultIPorts = <ReceivePort>[];
 
@@ -71,15 +103,27 @@ class RemoteServiceImpl implements RemoteService {
       resultOPorts: resultOPorts,
       commandIPort: commandIPort,
       resultIPorts: resultIPorts,
+      telemetry: telemetry,
+      metrics: _metrics,
     );
-    service.resultOPorts.first.send(HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap());
+    service.resultOPorts.first.send(
+      HandshakeMessage(
+        commanOPort: commandIPort.sendPort,
+        resultOPorts: resultIPorts.map((e) => e.sendPort).toList(),
+      ).toMap(),
+    );
   }
 
-  Future<void> spawn(void entryPoint(Map<String, dynamic> handshakeMessage), {String? debugName, int resultIPortCount = 5}) async {
+  Future<void> spawn(
+    void entryPoint(Map<String, dynamic> handshakeMessage), {
+    String? debugName,
+    int resultIPortCount = 25,
+  }) async {
     if (resultIPortCount <= 0) {
       resultIPortCount = 1;
     }
     _pool = Pool(resultIPortCount);
+    _metrics?.capacity = resultIPortCount;
     final commandIPort = ReceivePort();
     final resultIPorts = <ReceivePort>[];
     for (var i = 0; i < resultIPortCount; i++) {
@@ -88,14 +132,24 @@ class RemoteServiceImpl implements RemoteService {
       _freeResultStream.add(true);
       results.add(StreamQueue<dynamic>(port));
     }
-    await Isolate.spawn(entryPoint, HandshakeMessage(commanOPort: commandIPort.sendPort, resultOPorts: resultIPorts.map((e) => e.sendPort).toList()).toMap(),
-        debugName: debugName);
-    final handshakeMessageO = HandshakeMessage.fromMap(await results.first.next);
+    await Isolate.spawn(
+      entryPoint,
+      HandshakeMessage(
+        commanOPort: commandIPort.sendPort,
+        resultOPorts: resultIPorts.map((e) => e.sendPort).toList(),
+      ).toMap(),
+      debugName: debugName,
+    );
+    final handshakeMessageO = HandshakeMessage.fromMap(
+      await results.first.next,
+    );
     service = Service(
       commanOPort: handshakeMessageO.commanOPort,
       resultOPorts: handshakeMessageO.resultOPorts,
       commandIPort: commandIPort,
       resultIPorts: resultIPorts,
+      telemetry: telemetry,
+      metrics: _metrics,
     );
   }
 
@@ -111,9 +165,13 @@ class RemoteServiceImpl implements RemoteService {
   }
 
   Future<RpcResult> sendStr<T extends RpcCommand>(T cmd) async {
-    final jsonO = await transparentSendStr(json.encode(serializers.serialize(cmd)));
-    RpcResult result = serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
+    final jsonO = await transparentSendStr(
+      json.encode(serializers.serialize(cmd)),
+    );
+    RpcResult result =
+        serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
     if (result is RpcErrorResult) {
+      _metrics?.recordResponseError();
       throw new RpcErrorResultException(result);
     }
     return result;
@@ -123,6 +181,7 @@ class RemoteServiceImpl implements RemoteService {
     final jsonO = await transparentSend(serializers.serialize(cmd)!);
     RpcResult result = serializers.deserialize(jsonO) as RpcResult;
     if (result is RpcErrorResult) {
+      _metrics?.recordResponseError();
       throw new RpcErrorResultException(result);
     }
     return result;
@@ -148,6 +207,17 @@ class DirectSpawnTransport implements RemoteServiceTransport {
     return service.getFreeResultPort((index, result) async {
       service.service.commanOPort.send([index, cmd]);
       return await result.next;
-    });
+    }, commandType: _commandType(cmd));
+  }
+
+  // Payload inspection is confined to the serialization boundary. Custom/raw
+  // encodings and JSON strings remain unknown; never retain their contents.
+  String? _commandType(Object payload) {
+    if (payload is RpcCommand) return payload.type;
+    if (payload is List && payload.length == 2 && payload[1] is Map) {
+      final type = (payload[1] as Map)['type'];
+      if (type is String) return type;
+    }
+    return null;
   }
 }

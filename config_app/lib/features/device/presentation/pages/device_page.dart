@@ -1,5 +1,6 @@
 import 'package:config_app/features/device/data/device_repository.dart';
 import 'package:config_app/features/device/presentation/device_monitor.dart';
+import 'package:config_app/features/device/presentation/widgets/rpc_telemetry_section.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
@@ -169,6 +170,13 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                   const SizedBox(height: 12),
                   _metrics(metrics),
                 ],
+                const SizedBox(height: 24),
+                RpcTelemetrySection(
+                  snapshot: _monitor.rpc,
+                  stale: _monitor.rpcStale,
+                  rates: _monitor.rpcRates,
+                  webSocketTimeouts: _monitor.webSocketTimeouts,
+                ),
               ],
             ],
           ),

@@ -1418,4 +1418,109 @@ class AppLocalizationsEn extends AppLocalizations {
   String device_logical_pixels(String width, String height) {
     return '$width × $height logical px';
   }
+
+  @override
+  String get rpc_title => 'RPC queues';
+
+  @override
+  String get rpc_description =>
+      'Counters and peaks since service startup. Rates cover up to the last 10 seconds and include telemetry requests.';
+
+  @override
+  String get rpc_node_frontend => 'Slideshow';
+
+  @override
+  String get rpc_node_backend => 'Backend';
+
+  @override
+  String get rpc_node_web => 'Web server';
+
+  @override
+  String get rpc_node_ota => 'Updater';
+
+  @override
+  String get rpc_unavailable => 'No RPC data';
+
+  @override
+  String get rpc_peak_inflight => 'Peak occupied slots';
+
+  @override
+  String get rpc_peak_queued => 'Peak waiting for a slot';
+
+  @override
+  String get rpc_submitted => 'Requests submitted';
+
+  @override
+  String get rpc_sent => 'Requests sent';
+
+  @override
+  String get rpc_responses => 'Responses received';
+
+  @override
+  String get rpc_errors => 'Wait and RPC result errors';
+
+  @override
+  String get rpc_slot_wait => 'Slot wait: mean / maximum';
+
+  @override
+  String get rpc_response_wait => 'Response wait: mean / maximum';
+
+  @override
+  String get rpc_oldest_queued => 'Oldest waiting for a slot';
+
+  @override
+  String get rpc_oldest_inflight => 'Oldest waiting for a response';
+
+  @override
+  String get rpc_no_pending => 'None';
+
+  @override
+  String get rpc_unknown_command => 'Unknown command';
+
+  @override
+  String get rpc_handlers_active => 'Handlers running at receiver';
+
+  @override
+  String get rpc_handlers_completed => 'Handlers completed';
+
+  @override
+  String get rpc_handlers_errors => 'Handler errors';
+
+  @override
+  String get rpc_handler_duration => 'Handler duration: mean / maximum';
+
+  @override
+  String get rpc_receiver_unavailable => 'Receiver metrics unavailable';
+
+  @override
+  String get rpc_ws_timeouts =>
+      'WebSocket request timeouts since panel startup';
+
+  @override
+  String rpc_occupancy(int used, int capacity, int queued) {
+    return 'Slots: $used/$capacity · Waiting: $queued';
+  }
+
+  @override
+  String rpc_rate_summary(String sent, String responses) {
+    return 'Sent: $sent/s · Responses: $responses/s';
+  }
+
+  @override
+  String rpc_duration_summary(String mean, String maximum) {
+    return '$mean / $maximum';
+  }
+
+  @override
+  String rpc_pending_value(String command, String age) {
+    return '$command · $age';
+  }
+
+  @override
+  String rpc_milliseconds(String value) {
+    return '$value ms';
+  }
+
+  @override
+  String get rpc_receiver_stale => 'Receiver handler metrics are out of date.';
 }

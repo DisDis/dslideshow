@@ -19,6 +19,17 @@ class DeviceRepository {
 
   Stream get onDisconnect => client.onDisconnect;
 
+  int? get webSocketTimeouts => client is RealtimeDiagnostics
+      ? (client as RealtimeDiagnostics).requestTimeouts
+      : null;
+
+  Future<RpcTelemetrySnapshot> getRpcTelemetry() async {
+    final result = await _request<GetRpcTelemetryResult>(
+      GetRpcTelemetryCommand(id: RpcCommand.generateId()),
+    );
+    return result.snapshot;
+  }
+
   Future<FrameState> getState() async {
     final result = await _request<GetFrameStateResult>(
       GetFrameStateCommand(id: RpcCommand.generateId()),

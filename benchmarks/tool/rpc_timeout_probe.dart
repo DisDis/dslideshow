@@ -148,7 +148,7 @@ Future<Map<String, Object?>> _probe() async {
       'probe': 'rpc_external_timeout',
       'status': 'observed',
       'result_port_count': _portCount,
-      'production_default_result_port_count': 5,
+      'production_default_result_port_count': 25,
       'caller_timeout_ms': _callerTimeout.inMilliseconds,
       'one_held_request_allows_concurrent_echo': true,
       'caller_timeout_observed': true,

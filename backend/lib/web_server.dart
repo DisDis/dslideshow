@@ -18,6 +18,8 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   try {
     final _remoteBackendService = new RemoteServiceImpl(
       serializers: serializers,
+      telemetry: RpcTelemetry(RpcNode.web),
+      peer: RpcNode.backend,
     );
     _remoteBackendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 

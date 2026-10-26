@@ -15,7 +15,11 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("ota");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
+    final _remoteFrontendService = RemoteServiceImpl(
+      serializers: serializers,
+      telemetry: RpcTelemetry(RpcNode.ota),
+      peer: RpcNode.frontend,
+    );
     _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     // Use this static instance
@@ -25,7 +29,10 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     Logger.root.level = config.log.levelOTA;
 
     injector.registerLazySingleton<OTAService>(() {
-      return OTAService(config:injector(), frontendService: _remoteFrontendService );
+      return OTAService(
+        config: injector(),
+        frontendService: _remoteFrontendService,
+      );
     });
 
     _service = injector.get<OTAService>();

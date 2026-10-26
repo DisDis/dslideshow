@@ -85,10 +85,13 @@ void main() async {
     final AppConfig config = injector();
     Logger.root.level = config.log.levelMain;
 
-    otaService = RemoteServiceImpl(serializers: serializers);
+    final rpcTelemetry = RpcTelemetry(RpcNode.frontend);
+    otaService = RemoteServiceImpl(serializers: serializers,
+      telemetry: rpcTelemetry, peer: RpcNode.ota, collectPeerTelemetry: true);
     await otaService.spawn(ota.serviceMain, debugName: "ota");
 
-    backendService = RemoteServiceImpl(serializers: serializers);
+    backendService = RemoteServiceImpl(serializers: serializers,
+      telemetry: rpcTelemetry, peer: RpcNode.backend);
     await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
 
     final FrontendService frontendService = injector();

@@ -243,10 +243,13 @@ void main() {
       );
       await connect(tester, client, channel);
       final expired = client.send(const WSConfigDownloadCommand(id: 22002));
+      expect(client.requestTimeouts, 0);
       final failed = expectLater(expired, throwsA(isA<TimeoutException>()));
       await tester.pump();
       await tester.pump(const Duration(seconds: 3));
       await failed;
+
+      expect(client.requestTimeouts, 1);
 
       final next = client.send(const WSConfigDownloadCommand(id: 22003));
       await tester.pump();
@@ -254,6 +257,11 @@ void main() {
       channel.receive(const WSResultOk(id: 22003));
       await tester.pump();
       expect(await next, const WSResultOk(id: 22003));
+      expect(
+        client.requestTimeouts,
+        1,
+        reason: 'late and successful replies do not increment timeouts',
+      );
       expect(client.channel, same(channel));
       expect(channel.sink.closeCount, 0);
     });

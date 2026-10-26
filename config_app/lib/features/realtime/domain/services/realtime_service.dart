@@ -1,5 +1,10 @@
 import 'package:dslideshow_backend/command.dart';
 
+/// Optional diagnostics supported by the panel's WebSocket client.
+abstract interface class RealtimeDiagnostics {
+  int get requestTimeouts;
+}
+
 abstract class RealtimeService {
   String get authCode;
   Uri get connectUri;

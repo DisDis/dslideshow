@@ -880,5 +880,86 @@
         "type": "String"
       }
     }
-  }
+  },
+  "rpc_title": "RPC queues",
+  "rpc_description": "Counters and peaks since service startup. Rates cover up to the last 10 seconds and include telemetry requests.",
+  "rpc_node_frontend": "Slideshow",
+  "rpc_node_backend": "Backend",
+  "rpc_node_web": "Web server",
+  "rpc_node_ota": "Updater",
+  "rpc_unavailable": "No RPC data",
+  "rpc_peak_inflight": "Peak occupied slots",
+  "rpc_peak_queued": "Peak waiting for a slot",
+  "rpc_submitted": "Requests submitted",
+  "rpc_sent": "Requests sent",
+  "rpc_responses": "Responses received",
+  "rpc_errors": "Wait and RPC result errors",
+  "rpc_slot_wait": "Slot wait: mean / maximum",
+  "rpc_response_wait": "Response wait: mean / maximum",
+  "rpc_oldest_queued": "Oldest waiting for a slot",
+  "rpc_oldest_inflight": "Oldest waiting for a response",
+  "rpc_no_pending": "None",
+  "rpc_unknown_command": "Unknown command",
+  "rpc_handlers_active": "Handlers running at receiver",
+  "rpc_handlers_completed": "Handlers completed",
+  "rpc_handlers_errors": "Handler errors",
+  "rpc_handler_duration": "Handler duration: mean / maximum",
+  "rpc_receiver_unavailable": "Receiver metrics unavailable",
+  "rpc_ws_timeouts": "WebSocket request timeouts since panel startup",
+  "rpc_occupancy": "Slots: {used}/{capacity} · Waiting: {queued}",
+  "@rpc_occupancy": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      },
+      "queued": {
+        "type": "int"
+      }
+    }
+  },
+  "rpc_rate_summary": "Sent: {sent}/s · Responses: {responses}/s",
+  "@rpc_rate_summary": {
+    "placeholders": {
+      "sent": {
+        "type": "String"
+      },
+      "responses": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_duration_summary": "{mean} / {maximum}",
+  "@rpc_duration_summary": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "maximum": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_pending_value": "{command} · {age}",
+  "@rpc_pending_value": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_milliseconds": "{value} ms",
+  "@rpc_milliseconds": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_receiver_stale": "Receiver handler metrics are out of date."
 }

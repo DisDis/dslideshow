@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:config_app/features/device/data/device_repository.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_common/rpc.dart';
 import 'package:flutter/foundation.dart';
+
+import 'rpc_rates.dart';
 
 /// Own one monitor per visible device page and dispose it when leaving the page.
 class DeviceMonitor extends ChangeNotifier {
@@ -13,6 +16,10 @@ class DeviceMonitor extends ChangeNotifier {
 
   FrameState? frame;
   SystemInfo? metrics;
+  RpcTelemetrySnapshot? rpc;
+  bool rpcStale = true;
+  final rpcRates = RpcRates();
+  int? get webSocketTimeouts => repository.webSocketTimeouts;
   DateTime? metricsSampledAt;
   bool loading = false;
   bool stale = true;
@@ -26,6 +33,9 @@ class DeviceMonitor extends ChangeNotifier {
   StreamSubscription? _disconnectSubscription;
   Future<void>? _stateFuture;
   Future<void>? _metricsFuture;
+  Future<void>? _rpcFuture;
+  int? _rpcGeneration;
+  bool _rpcQueued = false;
   int? _stateGeneration;
   int? _metricsGeneration;
   bool _commandPending = false;
@@ -89,7 +99,42 @@ class DeviceMonitor extends ChangeNotifier {
     if (!telemetry) return state;
     // Explicit refresh waits for both results, while each polling lane owns its
     // own request so slow system metrics never delay state polling or actions.
-    return Future.wait([state, _refreshMetrics(queue: true)]).then((_) {});
+    return Future.wait([
+      state,
+      _refreshMetrics(queue: true),
+      _refreshRpc(queue: true),
+    ]).then((_) {});
+  }
+
+  Future<void> _refreshRpc({bool queue = false}) {
+    if (!_canUpdate || !telemetry) return Future<void>.value();
+    if (_rpcFuture != null) {
+      if (queue && _rpcGeneration != _generation) _rpcQueued = true;
+      return _rpcFuture!;
+    }
+    _rpcQueued = false;
+    final generation = _generation;
+    _rpcGeneration = generation;
+    _rpcFuture = _loadRpc(generation).whenComplete(() {
+      _rpcFuture = null;
+      _rpcGeneration = null;
+      if (_canUpdate && _rpcQueued) _refreshRpc();
+    });
+    return _rpcFuture!;
+  }
+
+  Future<void> _loadRpc(int generation) async {
+    try {
+      final snapshot = await repository.getRpcTelemetry();
+      if (!_isCurrent(generation)) return;
+      rpc = snapshot;
+      rpcStale = false;
+      rpcRates.update(snapshot);
+    } catch (_) {
+      if (!_isCurrent(generation)) return;
+      rpcStale = true;
+    }
+    if (_isCurrent(generation)) notifyListeners();
   }
 
   Future<void> _refreshState({bool queue = false}) {
@@ -212,6 +257,7 @@ class DeviceMonitor extends ChangeNotifier {
   void _startTimers() {
     _stateTimer = Timer.periodic(stateInterval, (_) {
       unawaited(_refreshState());
+      if (telemetry) _refreshRpc();
     });
     if (telemetry) {
       _metricsTimer = Timer.periodic(metricsInterval, (_) {
@@ -228,6 +274,9 @@ class DeviceMonitor extends ChangeNotifier {
     _metricsTimer = null;
     _stateQueued = false;
     _metricsQueued = false;
+    _rpcQueued = false;
+    rpcStale = true;
+    rpcRates.clear();
     loading = false;
     pendingControl = null;
     stale = true;

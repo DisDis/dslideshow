@@ -30,10 +30,24 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   _log.info("Run. Spawned isolate started.");
   HardwareService? service;
   try {
-    final _remoteFrontendService = RemoteServiceImpl(serializers: serializers);
+    final rpcTelemetry = RpcTelemetry(
+      RpcNode.backend,
+      collectionTimeout: const Duration(seconds: 3),
+    );
+    final _remoteFrontendService = RemoteServiceImpl(
+      serializers: serializers,
+      telemetry: rpcTelemetry,
+      peer: RpcNode.frontend,
+      collectPeerTelemetry: true,
+    );
     _remoteFrontendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
-    final _remoteWebServer = RemoteServiceImpl(serializers: serializers);
+    final _remoteWebServer = RemoteServiceImpl(
+      serializers: serializers,
+      telemetry: rpcTelemetry,
+      peer: RpcNode.web,
+      collectPeerTelemetry: true,
+    );
     await _remoteWebServer.spawn(
       web_server.serviceMain,
       debugName: "webServer",

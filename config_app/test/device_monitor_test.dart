@@ -129,7 +129,66 @@ void main() {
     await tester.pump(const Duration(seconds: 10));
     await monitor.refresh();
     expect(client.metricCalls, 0);
+    expect(client.commands.whereType<GetRpcTelemetryCommand>(), isEmpty);
     monitor.dispose();
+  });
+
+  testWidgets(
+    'RPC polling coalesces, keeps stale data and stops while hidden',
+    (tester) async {
+      final monitor = DeviceMonitor(repository, telemetry: true)..start();
+      await tester.pump();
+      final original = monitor.rpc;
+      expect(original, isNotNull);
+      expect(monitor.rpcStale, isFalse);
+      final pending = Completer<WebSocketResult>();
+      client.handle = (envelope, command) {
+        if (command is GetRpcTelemetryCommand) return pending.future;
+        return client.respond(envelope, command);
+      };
+      await tester.pump(const Duration(seconds: 1));
+      final calls = client.commands.whereType<GetRpcTelemetryCommand>().length;
+      await tester.pump(const Duration(seconds: 5));
+      expect(
+        client.commands.whereType<GetRpcTelemetryCommand>(),
+        hasLength(calls),
+      );
+      expect(monitor.frame, isNotNull);
+      expect(monitor.canControl, isTrue);
+      await monitor.setControl(FrameControl.menu, true);
+      expect(client.actionCalls, 1);
+      expect(pending.isCompleted, isFalse);
+      pending.completeError(TimeoutException('expected timeout'));
+      await tester.pump();
+      expect(monitor.rpc, same(original));
+      expect(monitor.rpcStale, isTrue);
+      monitor.setActive(false);
+      await tester.pump(const Duration(seconds: 20));
+      expect(
+        client.commands.whereType<GetRpcTelemetryCommand>(),
+        hasLength(calls),
+      );
+      client.handle = client.respond;
+      monitor.setActive(true);
+      await tester.pump();
+      expect(monitor.rpcStale, isFalse);
+      monitor.dispose();
+    },
+  );
+
+  testWidgets('late RPC metrics cannot update a disposed page', (tester) async {
+    final pending = Completer<WebSocketResult>();
+    client.handle = (envelope, command) {
+      if (command is GetRpcTelemetryCommand) return pending.future;
+      return client.respond(envelope, command);
+    };
+    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    await tester.pump();
+    monitor.dispose();
+    pending.completeError(StateError('late RPC error'));
+    await tester.pump();
+    expect(monitor.rpc, isNull);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
@@ -642,6 +701,11 @@ class _Client implements RealtimeService {
       result = GetSystemInfoCommandResult(
         id: command.id,
         systemInfo: _metrics(),
+      );
+    } else if (command is GetRpcTelemetryCommand) {
+      result = GetRpcTelemetryResult(
+        id: command.id,
+        snapshot: const RpcTelemetrySnapshot(),
       );
     } else {
       result = GetFrameStateResult(

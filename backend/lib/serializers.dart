@@ -1,7 +1,7 @@
 library dslideshow.serializers;
 
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_common/rpc.dart' show ErrorResult;
+import 'package:dslideshow_common/rpc.dart' show ErrorResult, GetRpcTelemetryCommand, GetRpcTelemetryResult;
 import 'package:dslideshow_common/serializers.dart';
 
 // @SerializersFor()
@@ -11,6 +11,8 @@ Serializers serializers = _SerializersImpl();
 class _SerializersImpl implements Serializers {
   Object? serialize<T>(T object) {
     if (object is ErrorResult) return ["ErrorResult", object.toJson()];
+    if (object is GetRpcTelemetryCommand) return ["GetRpcTelemetryCommand", object.toJson()];
+    if (object is GetRpcTelemetryResult) return ["GetRpcTelemetryResult", object.toJson()];
 
     if (object is GetFrameStateCommand)
       return ["GetFrameStateCommand", object.toJson()];
@@ -161,6 +163,10 @@ class _SerializersImpl implements Serializers {
 
   Object? _deserializeByType(String typeName, Map<String, dynamic> object) {
     switch (typeName) {
+      case 'GetRpcTelemetryCommand':
+        return GetRpcTelemetryCommand.fromJson(object);
+      case 'GetRpcTelemetryResult':
+        return GetRpcTelemetryResult.fromJson(object);
       case 'ErrorResult':
         return ErrorResult.fromJson(object);
 

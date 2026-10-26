@@ -1,5 +1,14 @@
 # Unreleased
 
+* Add RPC telemetry per direction: occupied slots, waiting requests, peaks,
+  counters/rates, durations, oldest requests and receiver handlers. Collect
+  snapshots through ordinary shared RPC slots, coalesce slow reads and retain
+  stale data. Add localized telemetry details and panel WebSocket timeout counts.
+
+* Increase the default inter-isolate RPC capacity from 5 to 25 outstanding
+  requests per direction, preserving explicit limits and existing timeout
+  behavior. Add a regression for saturation and slot reuse.
+
 * Add lazy server gallery thumbnails and a revisioned catalog while preserving
   originals for fullscreen and the frame. Share a viewport-prioritized image
   queue with cancellation, single-flight, bounded encoded caches and decode

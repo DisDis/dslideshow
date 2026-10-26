@@ -880,5 +880,86 @@
         "type": "String"
       }
     }
-  }
+  },
+  "rpc_title": "Очереди RPC",
+  "rpc_description": "Счётчики и максимумы с запуска сервиса. Скорости — за последние 10 секунд или доступную часть окна, включая запросы телеметрии.",
+  "rpc_node_frontend": "Приложение показа",
+  "rpc_node_backend": "Сервисы рамки",
+  "rpc_node_web": "Веб-сервер",
+  "rpc_node_ota": "Обновление",
+  "rpc_unavailable": "Нет данных RPC",
+  "rpc_peak_inflight": "Максимум занятых слотов",
+  "rpc_peak_queued": "Максимум ожидающих слот",
+  "rpc_submitted": "Всего запросов",
+  "rpc_sent": "Отправлено запросов",
+  "rpc_responses": "Получено ответов",
+  "rpc_errors": "Ошибки ожидания и RPC-ответов",
+  "rpc_slot_wait": "Ожидание слота: среднее / максимум",
+  "rpc_response_wait": "Ожидание ответа: среднее / максимум",
+  "rpc_oldest_queued": "Самый старый ожидающий слот",
+  "rpc_oldest_inflight": "Самый старый ожидающий ответ",
+  "rpc_no_pending": "Нет",
+  "rpc_unknown_command": "Неизвестная команда",
+  "rpc_handlers_active": "Выполняется обработчиков у получателя",
+  "rpc_handlers_completed": "Завершено обработчиков",
+  "rpc_handlers_errors": "Ошибки обработчиков",
+  "rpc_handler_duration": "Обработчик: среднее / максимум",
+  "rpc_receiver_unavailable": "Метрики получателя недоступны",
+  "rpc_ws_timeouts": "Timeout запросов WebSocket с запуска панели",
+  "rpc_occupancy": "Слоты: {used}/{capacity} · Ожидают: {queued}",
+  "@rpc_occupancy": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      },
+      "queued": {
+        "type": "int"
+      }
+    }
+  },
+  "rpc_rate_summary": "Отправлено: {sent}/с · Ответы: {responses}/с",
+  "@rpc_rate_summary": {
+    "placeholders": {
+      "sent": {
+        "type": "String"
+      },
+      "responses": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_duration_summary": "{mean} / {maximum}",
+  "@rpc_duration_summary": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "maximum": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_pending_value": "{command} · {age}",
+  "@rpc_pending_value": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_milliseconds": "{value} мс",
+  "@rpc_milliseconds": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "rpc_receiver_stale": "Данные обработчиков получателя устарели."
 }

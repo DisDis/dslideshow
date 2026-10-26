@@ -1427,4 +1427,108 @@ class AppLocalizationsRu extends AppLocalizations {
   String device_logical_pixels(String width, String height) {
     return '$width × $height лог. пикс.';
   }
+
+  @override
+  String get rpc_title => 'Очереди RPC';
+
+  @override
+  String get rpc_description =>
+      'Счётчики и максимумы с запуска сервиса. Скорости — за последние 10 секунд или доступную часть окна, включая запросы телеметрии.';
+
+  @override
+  String get rpc_node_frontend => 'Приложение показа';
+
+  @override
+  String get rpc_node_backend => 'Сервисы рамки';
+
+  @override
+  String get rpc_node_web => 'Веб-сервер';
+
+  @override
+  String get rpc_node_ota => 'Обновление';
+
+  @override
+  String get rpc_unavailable => 'Нет данных RPC';
+
+  @override
+  String get rpc_peak_inflight => 'Максимум занятых слотов';
+
+  @override
+  String get rpc_peak_queued => 'Максимум ожидающих слот';
+
+  @override
+  String get rpc_submitted => 'Всего запросов';
+
+  @override
+  String get rpc_sent => 'Отправлено запросов';
+
+  @override
+  String get rpc_responses => 'Получено ответов';
+
+  @override
+  String get rpc_errors => 'Ошибки ожидания и RPC-ответов';
+
+  @override
+  String get rpc_slot_wait => 'Ожидание слота: среднее / максимум';
+
+  @override
+  String get rpc_response_wait => 'Ожидание ответа: среднее / максимум';
+
+  @override
+  String get rpc_oldest_queued => 'Самый старый ожидающий слот';
+
+  @override
+  String get rpc_oldest_inflight => 'Самый старый ожидающий ответ';
+
+  @override
+  String get rpc_no_pending => 'Нет';
+
+  @override
+  String get rpc_unknown_command => 'Неизвестная команда';
+
+  @override
+  String get rpc_handlers_active => 'Выполняется обработчиков у получателя';
+
+  @override
+  String get rpc_handlers_completed => 'Завершено обработчиков';
+
+  @override
+  String get rpc_handlers_errors => 'Ошибки обработчиков';
+
+  @override
+  String get rpc_handler_duration => 'Обработчик: среднее / максимум';
+
+  @override
+  String get rpc_receiver_unavailable => 'Метрики получателя недоступны';
+
+  @override
+  String get rpc_ws_timeouts => 'Timeout запросов WebSocket с запуска панели';
+
+  @override
+  String rpc_occupancy(int used, int capacity, int queued) {
+    return 'Слоты: $used/$capacity · Ожидают: $queued';
+  }
+
+  @override
+  String rpc_rate_summary(String sent, String responses) {
+    return 'Отправлено: $sent/с · Ответы: $responses/с';
+  }
+
+  @override
+  String rpc_duration_summary(String mean, String maximum) {
+    return '$mean / $maximum';
+  }
+
+  @override
+  String rpc_pending_value(String command, String age) {
+    return '$command · $age';
+  }
+
+  @override
+  String rpc_milliseconds(String value) {
+    return '$value мс';
+  }
+
+  @override
+  String get rpc_receiver_stale => 'Данные обработчиков получателя устарели.';
 }

@@ -8,7 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-class ClientServiceImpl implements RealtimeService {
+class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
   static final _log = Logger('ClientService');
 
   final WebSocketChannel Function(Uri) _channelFactory;
@@ -19,6 +19,7 @@ class ClientServiceImpl implements RealtimeService {
   _Connection? _connection;
   bool _isAuth = false;
   bool _disposed = false;
+  int _requestTimeouts = 0;
   Future<void>? _disposal;
   String _authCode = '';
   Uri _connectUri = Uri.parse('http://127.0.0.1');
@@ -34,6 +35,8 @@ class ClientServiceImpl implements RealtimeService {
   }
 
   WebSocketChannel? get channel => _connection?.channel;
+  @override
+  int get requestTimeouts => _requestTimeouts;
   bool get isAuth => _isAuth;
 
   @override
@@ -208,6 +211,7 @@ class ClientServiceImpl implements RealtimeService {
     connection.pending[cmd.id] = request;
     request.timer = Timer(requestTimeout, () {
       if (connection.pending.remove(cmd.id) != request) return;
+      _requestTimeouts++;
       _log.warning('RPC timed out id=${cmd.id}');
       request.result.completeError(
         TimeoutException('RPC request timed out', requestTimeout),
