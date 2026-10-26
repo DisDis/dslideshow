@@ -1,74 +1,133 @@
+import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
+import 'package:dslideshow_backend/src/service/system_info/system_command_runner.dart';
 import 'package:logging/logging.dart';
 
 class SystemInfoService {
-  static final Logger _log = new Logger('SystemInfoService');
+  static final Logger _log = Logger('SystemInfoService');
   static final _environment = {'LC_ALL': 'C'};
+  static final _findHardware = RegExp(r'Hardware *[^ ]*([^\n]*)');
+  static final _findRevision = RegExp(r'Revision *[^ ]*([^\n]*)');
+  static final _findModel = RegExp(r'Model *[^ ]*([^\n]*)');
+  static final _findMem = RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final _findSwap = RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static const _updatePeriod = Duration(seconds: 1);
+  static const _networkInfoUpdatePeriod = Duration(minutes: 1);
 
-  static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
-  static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
-  static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
-  static final RegExp _findMem = new RegExp(
-    'Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)',
-  );
-  static final RegExp _findSwap = new RegExp(
-    'Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)',
-  );
-
-  SystemInfo? _lastInfo;
-
-  final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
-  // Флаги: ищет текст внутри <...> после flags=
   static final flagsRegex = RegExp(r'flags=\d+<([^>]+)>');
-
-  // IPv4: ищет "inet 192.168.1.1"
   static final ip4Regex = RegExp(r'inet\s+([0-9\.]+)');
-
-  // IPv6: ищет "inet6 fe80::..."
-  // Исключаем % (zone index), если он приклеен к адресу, хотя обычно там пробел
   static final ip6Regex = RegExp(r'inet6\s+([a-fA-F0-9:]+)');
+
   final HardwareConfig _config;
+  final SystemCommandRunner _commands;
+  final Future<String> Function(String) _readFile;
+  final Duration Function()? _monotonicClock;
+  final DateTime Function() _wallClock;
+  final Stopwatch _clock = Stopwatch()..start();
+  SystemInfo? _lastInfo;
+  UpdateInfo? _lastUpdate;
+  Duration? _updateAt;
+  Duration? _networkAt;
+  Future<SystemInfo>? _fullInFlight;
+  Future<UpdateInfo>? _updateInFlight;
+  bool _released = false;
+  Future<void>? _releaseFuture;
 
-  SystemInfoService(this._config);
+  SystemInfoService(
+    this._config, {
+    SystemCommandRunner? commandRunner,
+    Future<String> Function(String)? readFile,
+    Duration Function()? monotonicClock,
+    DateTime Function()? wallClock,
+  }) : _commands = commandRunner ?? BoundedSystemCommandRunner(),
+       _readFile = readFile ?? ((path) => io.File(path).readAsString()),
+       _monotonicClock = monotonicClock,
+       _wallClock = wallClock ?? DateTime.now;
 
-  Future<SystemInfo> getFullInfo() async {
-    UpdateInfo updateInfo = await getUpdateInfo();
-    if (_lastInfo == null) {
-      final _cpuInfo = await _getCpuInfo();
-      final _osInfo = await _getOSInfo();
-      final _networkInfo = await _getNetworkInfo();
-      _lastInfo = new SystemInfo(
+  Duration get _tick => _monotonicClock?.call() ?? _clock.elapsed;
+
+  void _checkOpen() {
+    if (_released) throw StateError('System information service is released');
+  }
+
+  Future<SystemInfo> getFullInfo() {
+    _checkOpen();
+    return _fullInFlight ??= _observe(
+      _collectFullInfo().whenComplete(() {
+        _fullInFlight = null;
+      }),
+    );
+  }
+
+  // init() can still be held in HardwareService's readiness list when that
+  // service is released. Observe failures even if readiness is never awaited.
+  Future<T> _observe<T>(Future<T> future) {
+    unawaited(future.then<void>((_) {}, onError: (Object _, StackTrace __) {}));
+    return future;
+  }
+
+  Future<SystemInfo> _collectFullInfo() async {
+    final updateInfo = await getUpdateInfo();
+    _checkOpen();
+    final previous = _lastInfo;
+    if (previous == null) {
+      final cpuInfo = await _getCpuInfo();
+      final osInfo = await _getOSInfo();
+      final networkInfo = await _getNetworkInfo();
+      _checkOpen();
+      _networkAt = _tick;
+      return _lastInfo = SystemInfo(
         updateInfo: updateInfo,
-        cpuInfo: _cpuInfo,
-        osInfo: _osInfo,
-        networkInfo: _networkInfo,
+        cpuInfo: cpuInfo,
+        osInfo: osInfo,
+        networkInfo: networkInfo,
       );
-    } else {
-      var delta = new DateTime.now().difference(
-        new DateTime.fromMillisecondsSinceEpoch(
-          _lastInfo!.networkInfo.lastUpdate,
-        ),
-      );
-      if (delta > _networkInfoUpdatePeriod) {
-        final _networkInfo = await _getNetworkInfo();
-        _lastInfo = _lastInfo?.copyWith(networkInfo: _networkInfo);
-      }
-      _lastInfo = _lastInfo?.copyWith(updateInfo: updateInfo);
     }
-    return _lastInfo!;
+    var networkInfo = previous.networkInfo;
+    if (_networkAt == null || _tick - _networkAt! >= _networkInfoUpdatePeriod) {
+      networkInfo = await _getNetworkInfo();
+      _checkOpen();
+      _networkAt = _tick;
+    }
+    _checkOpen();
+    return _lastInfo = previous.copyWith(
+      updateInfo: updateInfo,
+      networkInfo: networkInfo,
+    );
+  }
+
+  Future<io.ProcessResult> _run(
+    String executable,
+    List<String> arguments,
+  ) async {
+    _checkOpen();
+    final result = await _commands.run(
+      executable,
+      arguments,
+      environment: _environment,
+    );
+    _checkOpen();
+    if (result.exitCode != 0) {
+      _log.warning(
+        'System command $executable exited ${result.exitCode}: ${result.stderr}',
+      );
+    }
+    return result;
+  }
+
+  Future<String> _read(String path) async {
+    _checkOpen();
+    final result = await _readFile(path);
+    _checkOpen();
+    return result;
   }
 
   Future<List<NetworkInterfaceInfo>> getNetworkInterfaces() async {
-    //    _log.info('getNetworkInterfaces');
     try {
-      var result = await io.Process.run(
-        _config.systemIfConfigScript,
-        [],
-        environment: _environment,
-      );
+      final result = await _run(_config.systemIfConfigScript, []);
       if (result.exitCode == 0) {
         return parseIfconfigOutput(result.stdout.toString());
       }
@@ -78,9 +137,33 @@ class SystemInfoService {
     return <NetworkInterfaceInfo>[];
   }
 
-  Future<UpdateInfo> getUpdateInfo() async {
+  Future<UpdateInfo> getUpdateInfo() {
+    _checkOpen();
+    final previous = _lastUpdate;
+    if (previous != null &&
+        _updateAt != null &&
+        _tick - _updateAt! < _updatePeriod) {
+      return Future.value(previous);
+    }
+    return _updateInFlight ??= _observe(
+      _collectUpdateInfo()
+          .then((info) {
+            _checkOpen();
+            _lastUpdate = info;
+            _updateAt = _tick;
+            return info;
+          })
+          .whenComplete(() {
+            _updateInFlight = null;
+          }),
+    );
+  }
+
+  Future<UpdateInfo> _collectUpdateInfo() async {
+    // Keep the established DTO, defaults and timestamp semantics. A cache hit
+    // returns this snapshot without pretending that it was collected again.
     var b = UpdateInfo(
-      lastUpdate: DateTime.now().millisecondsSinceEpoch,
+      lastUpdate: _wallClock().millisecondsSinceEpoch,
       cpuLoad1: 1,
       cpuLoad5: 1,
       cpuLoad15: 1,
@@ -96,21 +179,19 @@ class SystemInfoService {
     );
 
     try {
-      var result = await io.Process.run('df', [], environment: _environment);
+      var result = await _run('df', []);
       if (result.exitCode == 0) {
-        var str = result.stdout.toString();
-        var strArr = str.split('\n');
-        var diskInfo = strArr.firstWhere(
-          (element) => element.startsWith(_config.systemDiskDev),
-          orElse: () => '',
-        );
+        final diskInfo = result.stdout
+            .toString()
+            .split('\n')
+            .firstWhere(
+              (element) => element.startsWith(_config.systemDiskDev),
+              orElse: () => '',
+            );
         if (diskInfo.isNotEmpty) {
-          var parseDiskInfo = RegExp(
-            '${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)',
-          );
-          //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
-
-          var info = parseDiskInfo.firstMatch(diskInfo)!;
+          final info = RegExp(
+            '${RegExp.escape(_config.systemDiskDev)} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)',
+          ).firstMatch(diskInfo)!;
           b = b.copyWith(
             diskUsed: int.tryParse(info.group(2)!) ?? 0,
             diskAvailable: int.tryParse(info.group(3)!) ?? 0,
@@ -118,57 +199,97 @@ class SystemInfoService {
           );
         }
       }
-      result = await io.Process.run('uptime', [
-        '-p',
-      ], environment: _environment);
+      // Keep procps' pretty formatting, including weeks and the final newline.
+      result = await _run('uptime', ['-p']);
       if (result.exitCode == 0) {
         b = b.copyWith(uptime: result.stdout.toString());
       }
 
-      //LC_ALL=C free
-      result = await io.Process.run('free', [], environment: _environment);
-      if (result.exitCode == 0) {
-        var str = result.stdout.toString();
-        //              total        used        free
-        var info = _findMem.firstMatch(str)!;
-        var infoSwap = _findSwap.firstMatch(str)!;
-
+      final memory = await _getMemory();
+      if (memory != null) {
         b = b.copyWith(
-          memTotal: int.tryParse(info.group(1)!) ?? 0,
-          memUsed: int.tryParse(info.group(2)!) ?? 0,
-          swapTotal: int.tryParse(infoSwap.group(1)!) ?? 0,
-          swapUsed: int.tryParse(infoSwap.group(2)!) ?? 0,
+          memTotal: memory.total,
+          memUsed: memory.used,
+          swapTotal: memory.swapTotal,
+          swapUsed: memory.swapUsed,
         );
       }
-      result = await io.Process.run('cat', [
-        '/proc/loadavg',
-      ], environment: _environment);
-      if (result.exitCode == 0) {
-        var str = result.stdout.toString();
-        var arrData = str.split(' ');
-        b = b.copyWith(
-          cpuLoad1: double.tryParse(arrData[0]) ?? 0,
-          cpuLoad5: double.tryParse(arrData[1]) ?? 0,
-          cpuLoad15: double.tryParse(arrData[2]) ?? 0,
-        );
+      if (io.Platform.isLinux) {
+        b = _withLoad(b, await _read('/proc/loadavg'));
+      } else {
+        result = await _run('cat', ['/proc/loadavg']);
+        if (result.exitCode == 0) {
+          b = _withLoad(b, result.stdout.toString());
+        }
       }
-      //  _log.info(b.build());
     } catch (e, s) {
       _log.severe('getUpdateInfo', e, s);
     }
     b = b.copyWith(sensors: await _getSensorInfo());
-
+    _checkOpen();
     return b;
   }
 
+  UpdateInfo _withLoad(UpdateInfo info, String text) {
+    final values = text.trim().split(RegExp(r'\s+'));
+    if (values.length < 3) throw FormatException('Incomplete load average');
+    return info.copyWith(
+      cpuLoad1: double.tryParse(values[0]) ?? 0,
+      cpuLoad5: double.tryParse(values[1]) ?? 0,
+      cpuLoad15: double.tryParse(values[2]) ?? 0,
+    );
+  }
+
+  Future<_Memory?> _getMemory() async {
+    if (io.Platform.isLinux) {
+      try {
+        final memory = _parseProcMemory(await _read('/proc/meminfo'));
+        if (memory != null) return memory;
+      } catch (error, stack) {
+        _checkOpen();
+        _log.fine('Cannot read memory; using free', error, stack);
+      }
+    }
+    final result = await _run('free', []);
+    if (result.exitCode != 0) return null;
+    final text = result.stdout.toString();
+    final memory = _findMem.firstMatch(text)!;
+    final swap = _findSwap.firstMatch(text)!;
+    return _Memory(
+      int.tryParse(memory.group(1)!) ?? 0,
+      int.tryParse(memory.group(2)!) ?? 0,
+      int.tryParse(swap.group(1)!) ?? 0,
+      int.tryParse(swap.group(2)!) ?? 0,
+    );
+  }
+
+  _Memory? _parseProcMemory(String text) {
+    final values = <String, int>{};
+    for (final match in RegExp(
+      r'^([A-Za-z_()]+):\s+(\d+)\s+kB\s*$',
+      multiLine: true,
+    ).allMatches(text)) {
+      final value = int.tryParse(match.group(2)!);
+      if (value != null) values[match.group(1)!] = value;
+    }
+    final total = values['MemTotal'];
+    final available = values['MemAvailable'];
+    final swapTotal = values['SwapTotal'];
+    final swapFree = values['SwapFree'];
+    if (total == null ||
+        available == null ||
+        swapTotal == null ||
+        swapFree == null ||
+        available > total ||
+        swapFree > swapTotal) {
+      return null;
+    }
+    return _Memory(total, total - available, swapTotal, swapTotal - swapFree);
+  }
+
   Future<bool> hasInternet() async {
-    //    _log.info('hasInternet');
     try {
-      var result = await io.Process.run('ping', [
-        '-c',
-        '1',
-        '8.8.8.8',
-      ], environment: _environment);
+      final result = await _run('ping', ['-c', '1', '8.8.8.8']);
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
       }
@@ -178,34 +299,39 @@ class SystemInfoService {
     return false;
   }
 
-  Future<SystemInfo?> init() {
-    return getFullInfo();
+  Future<SystemInfo?> init() => getFullInfo();
+
+  Future<void> release() => _releaseFuture ??= _release();
+
+  Future<void> _release() async {
+    _released = true;
+    _lastInfo = null;
+    _lastUpdate = null;
+    _clock.stop();
+    await _commands.close();
   }
 
   Future<CpuInfo> _getCpuInfo() async {
-    //    _log.info('_getCpuInfo');
-    var b = new CpuInfo(cores: 0, hardware: '', model: '', revision: '');
-
+    var b = CpuInfo(cores: 0, hardware: '', model: '', revision: '');
     try {
-      var result = await io.Process.run('nproc', [
-        '--all',
-      ], environment: _environment);
+      final result = await _run('nproc', ['--all']);
       if (result.exitCode == 0) {
         b = b.copyWith(cores: int.tryParse(result.stdout.toString()) ?? 0);
       }
-
-      result = await io.Process.run('cat', [
-        '/proc/cpuinfo',
-      ], environment: _environment);
-      if (result.exitCode == 0) {
-        var str = result.stdout.toString();
+      String? text;
+      if (io.Platform.isLinux) {
+        text = await _read('/proc/cpuinfo');
+      } else {
+        final result = await _run('cat', ['/proc/cpuinfo']);
+        if (result.exitCode == 0) text = result.stdout.toString();
+      }
+      if (text != null) {
         b = b.copyWith(
-          hardware: _findHardware.firstMatch(str)?.group(1) ?? 'Unknown',
-          model: _findModel.firstMatch(str)?.group(1) ?? 'Unknown',
-          revision: _findRevision.firstMatch(str)?.group(1) ?? 'Unknown',
+          hardware: _findHardware.firstMatch(text)?.group(1) ?? 'Unknown',
+          model: _findModel.firstMatch(text)?.group(1) ?? 'Unknown',
+          revision: _findRevision.firstMatch(text)?.group(1) ?? 'Unknown',
         );
       }
-      //      _log.info(b.build());
     } catch (e, s) {
       _log.severe('_getCpuInfo', e, s);
     }
@@ -214,7 +340,7 @@ class SystemInfoService {
 
   Future<NetworkInfo> _getNetworkInfo() async {
     return NetworkInfo(
-      lastUpdate: new DateTime.now().millisecondsSinceEpoch,
+      lastUpdate: _wallClock().millisecondsSinceEpoch,
       interfaces: await getNetworkInterfaces(),
       hasInternet: await hasInternet(),
     );
@@ -223,14 +349,11 @@ class SystemInfoService {
   Future<OSInfo> _getOSInfo() async {
     var b = OSInfo(name: '', osType: OSType.unknown);
     try {
-      var result = await io.Process.run('uname', [
-        '-a',
-      ], environment: _environment);
+      final result = await _run('uname', ['-a']);
       if (result.exitCode == 0) {
         final osInfo = result.stdout.toString().replaceAll('\n', '');
         b = b.copyWith(name: osInfo, osType: _resolveOSType(osInfo));
       }
-      //  _log.info(b.build());
     } catch (e, s) {
       _log.severe('_getOSInfo', e, s);
     }
@@ -238,35 +361,21 @@ class SystemInfoService {
   }
 
   Future<List<SensorInfo>> _getSensorInfo() async {
-    var result = <SensorInfo>[];
-    //  vcgencmd measure_temp
+    final sensors = <SensorInfo>[];
     try {
-      //'vcgencmd', ['measure_temp'],
-      var resultCommand = await io.Process.run(
-        _config.sensorsScript,
-        [],
-        environment: _environment,
-      );
-      //temp=61.3'C
-      if (resultCommand.exitCode == 0) {
-        //temp=49.0'C
-        final arrSensors = resultCommand.stdout.toString().split('\n');
-        arrSensors.forEach((line) {
-          if (line.isEmpty){
-            return;
-          }
-          final arr = line.split('=');
-          if (arr.length<2){
-            return;
-          }
-          result.add(SensorInfo(name: arr[0], value: arr[1]));
-        });
+      final result = await _run(_config.sensorsScript, []);
+      if (result.exitCode == 0) {
+        for (final line in result.stdout.toString().split('\n')) {
+          if (line.isEmpty) continue;
+          final values = line.split('=');
+          if (values.length < 2) continue;
+          sensors.add(SensorInfo(name: values[0], value: values[1]));
+        }
       }
     } catch (e, s) {
       _log.severe('_getSensorInfo', e, s);
     }
-
-    return result;
+    return sensors;
   }
 
   static List<NetworkInterfaceInfo> parseIfconfigOutput(String output) {
@@ -365,4 +474,13 @@ class SystemInfoService {
 
     return OSType.unknown;
   }
+}
+
+class _Memory {
+  final int total;
+  final int used;
+  final int swapTotal;
+  final int swapUsed;
+
+  const _Memory(this.total, this.used, this.swapTotal, this.swapUsed);
 }

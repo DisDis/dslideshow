@@ -55,6 +55,105 @@
 Сравнивайте эти хеши между эталоном и кандидатом; успешная эвристическая
 проверка движения сама по себе не подтверждает точное совпадение пикселей.
 
+## Локальные проверки backend без Flutter и устройства
+
+`tool/backend_local.dart` и `tool/backend_local.py` образуют отдельный pure Dart
+стенд для `DiskStorage`, транспорта RPC и `SystemInfoService`. Он не запускает
+Flutter, hardware service, GPIO, MQTT, фоторамку или команды настройки сети.
+Используются существующие зависимости `backend/.dart_tool/package_config.json`;
+стенд ничего не устанавливает и не меняет SDK, версии или lock-файлы.
+
+Перед production-правками сохраните baseline. Runner копирует `backend/lib`,
+`common/lib`, pubspec/lock и собственный harness, превращает package roots
+в абсолютные пути и компилирует эту копию. Если исходники уже меняются в другом
+чате, baseline обязан использовать заранее замороженный package config.
+Одинаковый Dart harness применяется к обеим версиям через прежний публичный API.
+Если сам инструмент уже получил изменения, `--harness ПУТЬ/baseline/sources/backend_local.dart`
+закрепляет прежний исходник; его SHA256 и режим сравниваются при построении отчёта.
+
+Из корня репозитория:
+
+```bash
+python3 benchmarks/tool/backend_local.py \
+  --packages backend/.dart_tool/package_config.json \
+  --variant baseline --output benchmarks/reports/backend-local-EXPERIMENT
+# После изменения production-кода:
+python3 benchmarks/tool/backend_local.py \
+  --packages backend/.dart_tool/package_config.json \
+  --variant candidate --output benchmarks/reports/backend-local-EXPERIMENT
+python3 benchmarks/tool/backend_local_confirm.py \
+  --output benchmarks/reports/backend-local-EXPERIMENT --rounds 1
+# Необязательный отдельный process-count diagnostic, если strace уже установлен:
+python3 benchmarks/tool/backend_local_trace.py \
+  --output benchmarks/reports/backend-local-EXPERIMENT
+```
+
+По умолчанию используется существующий SDK
+`/home/dis/bin/flutter/bin/cache/dart-sdk/bin/dart`; другой путь задаётся `--dart`.
+Это прямой бинарник Dart SDK, а не Flutter wrapper. Режим по умолчанию — локальный
+Linux AOT executable (`dart compile exe --packages=...`); `--mode jit` доступен
+для диагностики. JIT и AOT напрямую не сравниваются. Существующий каталог варианта
+не перезаписывается: для повторения нужен новый experiment. Подтверждение ABBA
+использует уже сохранённые AOT binaries, а не текущие production-исходники.
+Если после review появились production-исправления, дополнительный вариант
+`--variant candidate-final` сохраняет прежний candidate; для него повторите
+confirm с `--candidate candidate-final`. Старые результаты остаются в архиве,
+основной отчёт показывает окончательный измеренный вариант.
+Для отдельного пользовательского уточнения поддержан `candidate-approved`;
+его подтверждение выбирается `--candidate candidate-approved`. `--metrics-only`
+у confirm повторяет только метрики, если код Storage между вариантами не менялся.
+
+Сценарии по умолчанию: 1/1k/10k/50k файлов, flat/nested, три свежих процесса
+на случай. `--sizes 1,1000 --layouts nested --repeats 1 --metrics-repeats 1`
+сокращает локальную проверку. Metadata-only fixtures содержат маленькие текстовые
+обычные файлы с расширением `.jpg` и отдельными inode; декодер их никогда не читает.
+Они проверяют метаданные, не качество фото или воспроизведение. Данные и manifest
+переиспользуются с проверкой содержимого/хешей; неполные каталоги не затираются.
+Полный набор занимает около 500 MiB при блоке 4 KiB плюс метаданные.
+
+Измеряются первый `next()` (индекс + первый выбор) и ровно N−1 следующих вызовов,
+поэтому повторное сканирование на границе цикла не попадает в цифры. Проверка
+полноты/уникальности и пары current/next выполняется вне timed window. `init()`
+и watcher здесь не используются; их корректность покрывают backend unit-тесты.
+Отзывчивость измеряется отдельно: настоящий RPC transport вызывает backend worker
+в другом isolate, клиент планирует Echo каждые 5 ms. При занятии четырёх probe ports
+интервалы явно отмечаются пропущенными. Сырые scheduled/send/receive timestamps,
+event-loop lag и пропуски сохраняются; пропущенные запросы не становятся нулями.
+
+Системные метрики используют данные хоста через production implementation
+(`/proc`, `df`, `uptime`, `free` по конкретной версии) и явно подписанный
+постоянный fixture script двух сенсоров. Проверяются cold, immediate,
+истёкший refresh с интервалом 1100 ms и bursts 2/5. Это ускоренная локальная нагрузка;
+штатный frontend запрашивает данные при запуске и раз в минуту. Отдельный diagnostic
+pass считает непосредственные вызовы команд forwarding wrappers; shell internals
+и все дочерние процессы этим не подсчитываются. Эти wrappers не используются в timed pass.
+Штатный hardware service и запись production-логов на диск в этот стенд не входят.
+Необязательный `backend_local_trace.py` использует только уже установленный
+`strace` и считает успешные fork/vfork/clone без `CLONE_THREAD`, включая split
+records. Если окружение запрещает ptrace, причина сохраняется в
+`process-diagnostic.json`, а полный счётчик процессов остаётся непроверенным.
+
+`report.md` и `comparison.json` содержат сводку, `raw.jsonl` — исходные наблюдения,
+а каталоги вариантов сохраняют provenance, исходный архив, SHA256, package config,
+binary, compile log и diagnostic exec log. RSS/HWM относятся ко всему Linux-процессу,
+включая оба isolate. `cpu_ms` в raw / `self_cpu_ms` в summary — только Dart
+utime/stime, без системных subprocess. Подтверждение `confirm-raw.jsonl` отдельно
+собирает CPU процесса вместе с reaped descendants через Python `RUSAGE_CHILDREN`.
+Малое число повторов не подтверждает устойчивый p99. Это локальные результаты;
+они не подтверждают ускорение на RaPi5 и не заменяют отдельно согласованную
+аппаратную проверку. Локальный стенд её не запускает и не планирует.
+
+Регрессии самого инструмента (без Flutter/устройства):
+
+```bash
+python3 -m unittest discover -s benchmarks/tool -p 'test_backend_local.py' -v
+```
+
+Проверяются полные циклы/один файл, RPC process exit, ошибки обхода, неизменность
+source snapshot, повреждённые fixtures и реальное завершение группы процессов
+при timeout. `DART_EXECUTABLE` переопределяет Dart для integration tests; если SDK
+или backend package config отсутствует, эта часть тестов явно пропускается.
+
 ## Сборка на рабочей машине
 
 Используется установленный Flutter SDK и `flutterpi_tool`, как в

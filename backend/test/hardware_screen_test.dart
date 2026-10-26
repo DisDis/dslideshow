@@ -79,15 +79,30 @@ class FakeMqtt implements MqttService {
 }
 
 class FakeStorage implements Storage {
+  bool released = false;
   @override
   Future<void> init() async {}
+  @override
+  Future<void> release() async {
+    released = true;
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class FakeSystemInfo implements SystemInfoService {
+  Completer<SystemInfo>? pending;
+  bool released = false;
   @override
   Future<Null> init() async => null;
+  @override
+  Future<SystemInfo> getFullInfo() => pending!.future;
+  @override
+  Future<void> release() async {
+    released = true;
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -107,6 +122,8 @@ class HardwareFixture {
   final remote = FakeRemote();
   final mqtt = FakeMqtt();
   final power = ControlledPower();
+  final storage = FakeStorage();
+  final systemInfo = FakeSystemInfo();
   late final ScreenService screen;
   late final ApplicationStateService application;
   late final HardwareService hardware;
@@ -122,10 +139,10 @@ class HardwareFixture {
     hardware = HardwareService(
       config,
       remote,
-      FakeStorage(),
+      storage,
       gpio,
       screen,
-      FakeSystemInfo(),
+      systemInfo,
       remote,
       mqtt,
       UnusedWiFi(),
@@ -148,6 +165,8 @@ class HardwareFixture {
       hardware.dispose();
       await mqtt.close();
       expect(gpio.released, isTrue);
+      expect(storage.released, isTrue);
+      expect(systemInfo.released, isTrue);
       expect(gpio.motion.hasListener, isFalse);
       expect(mqtt.screen.hasListener, isFalse);
       expect(time.pendingTimers, isEmpty);
@@ -156,6 +175,36 @@ class HardwareFixture {
 }
 
 void main() {
+  for (final duringDisposal in [false, true]) {
+    test(
+      'system-info failure returns its RPC id (disposed=$duringDisposal)',
+      () async {
+        final fixture = HardwareFixture();
+        addTearDown(() async {
+          await fixture.hardware.dispose();
+          await fixture.mqtt.close();
+        });
+        final pending = Completer<SystemInfo>();
+        fixture.systemInfo.pending = pending;
+        final response = fixture.hardware.executeCommand(
+          const GetSystemInfoCommand(id: 543),
+        );
+        if (duringDisposal) {
+          await fixture.hardware.dispose();
+          expect(fixture.systemInfo.released, isTrue);
+        }
+        pending.completeError(StateError('Collection stopped'));
+        final result = await response;
+        expect(result, isA<ErrorResult>());
+        expect(result.id, 543);
+        expect((result as ErrorResult).error, contains('Collection stopped'));
+        await fixture.hardware.dispose();
+        expect(fixture.storage.released, isTrue);
+        expect(fixture.systemInfo.released, isTrue);
+      },
+    );
+  }
+
   test(
     'GPIO presence cancels sleep and restores both UI and application state',
     () {

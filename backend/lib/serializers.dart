@@ -1,7 +1,7 @@
 library dslideshow.serializers;
 
 import 'package:dslideshow_backend/command.dart';
-//import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/rpc.dart' show ErrorResult;
 import 'package:dslideshow_common/serializers.dart';
 
 // @SerializersFor()
@@ -10,6 +10,8 @@ Serializers serializers = _SerializersImpl();
 
 class _SerializersImpl implements Serializers {
   Object? serialize<T>(T object) {
+    if (object is ErrorResult) return ["ErrorResult", object.toJson()];
+
     if (object is EchoCommand) return ["EchoCommand", object.toJson()];
 
     if (object is EchoCommandResult)
@@ -148,6 +150,9 @@ class _SerializersImpl implements Serializers {
 
   Object? _deserializeByType(String typeName, Map<String, dynamic> object) {
     switch (typeName) {
+      case 'ErrorResult':
+        return ErrorResult.fromJson(object);
+
       case 'EchoCommand':
         return EchoCommand.fromJson(object);
 

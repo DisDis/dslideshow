@@ -31,6 +31,7 @@ class GPhotoStorage extends DiskStorage {
   @override
   DateTime lastSync = new DateTime.fromMicrosecondsSinceEpoch(1);
   bool _syncInProcess = false;
+  bool _released = false;
   Timer? _syncTimer;
 
   final StreamController<DateTime> _scStartSync =
@@ -44,7 +45,8 @@ class GPhotoStorage extends DiskStorage {
 
   final AppStorage _appStorage;
 
-  GPhotoStorage(this._config, this._appStorage) : super(_config) {
+  GPhotoStorage(this._config, this._appStorage, {Directory? folder})
+    : super(_config, folder: folder) {
     final accessTokenData = _appStorage.getValue<String>(
       GPhotoStorage_accessTokenData,
       '',
@@ -92,6 +94,7 @@ class GPhotoStorage extends DiskStorage {
 
   @override
   Future<Null> sync() async {
+    if (_released) return null;
     _log.info(
       'sync GPhoto Albums:"${_config.albumNames}" ${_config.imageWidth}x${_config.imageHeight}',
     );
@@ -166,21 +169,34 @@ class GPhotoStorage extends DiskStorage {
 
   @override
   Future init() async {
+    if (_released) return;
     _log.info('init');
-    sync();
+    _startSync();
     await super.init();
+    if (_released) return;
     _log.info('Start periodic sync timer d:${_config.syncPeriod}');
-    _syncTimer = new Timer.periodic(_config.syncPeriod, (_) {
-      sync();
+    _syncTimer ??= new Timer.periodic(_config.syncPeriod, (_) {
+      _startSync();
     });
+  }
+
+  void _startSync() {
+    if (_released) return;
+    unawaited(
+      Future<Null>.sync(sync).catchError((Object error, StackTrace stack) {
+        _log.warning('Background synchronization failed', error, stack);
+        return null;
+      }),
+    );
   }
 
   @override
   Future release() async {
+    _released = true;
     if (_syncTimer != null) {
       _syncTimer!.cancel();
       _syncTimer = null;
     }
-    super.release();
+    await super.release();
   }
 }

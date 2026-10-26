@@ -33,7 +33,7 @@ class Service {
           final commandList = commandRaw as List;
           final resultOPort = resultOPorts[commandList[0]];
           final command = commandList[1];
-          _log.info("i:${commandList[0]}, c:$command");
+          _log.fine(() => "i:${commandList[0]}, c:$command");
           if (command is String) {
             RpcCommand cmd = serializers.deserialize(json.decode(command) as Object) as RpcCommand;
             var result = await service.executeCommand(cmd);

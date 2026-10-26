@@ -146,6 +146,7 @@ class HardwareService implements RpcService {
     await _applicationStateService.dispose();
     await _screenService.dispose();
     await _gpioService.release();
+    await Future.wait([_storage.release(), _systemInfoService.release()]);
     await _screenNotifications;
   }
 
@@ -169,8 +170,9 @@ class HardwareService implements RpcService {
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info(
-        "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms",
+      _log.fine(
+        () =>
+            "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds}ms",
       );
     });
   }
@@ -269,8 +271,13 @@ class HardwareService implements RpcService {
   Future<RpcResult> _executeGetSystemInfoCommand(
     GetSystemInfoCommand command,
   ) async {
-    final info = await _systemInfoService.getFullInfo();
-    return GetSystemInfoCommandResult(id: command.id, systemInfo: info);
+    try {
+      final info = await _systemInfoService.getFullInfo();
+      return GetSystemInfoCommandResult(id: command.id, systemInfo: info);
+    } catch (error, stack) {
+      _log.warning('Could not collect system information', error, stack);
+      return _generateErrorResult(error, command);
+    }
   }
 
   Future<RpcResult> _sendButtonEvent(ButtonEvent event) async {

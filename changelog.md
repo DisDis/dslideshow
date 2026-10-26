@@ -1,5 +1,12 @@
 # Unreleased
 
+* Make backend media selection linear over a full random cycle and build disk
+  indexes asynchronously with serialized selection and lifecycle guards.
+  Coalesce SystemInfo requests, reuse short-lived snapshots and bound system
+  commands while preserving metric DTOs and legacy missing-value behaviour.
+  Reduce routine RPC/WebSocket logging and add local backend regressions and
+  baseline/candidate measurements without changing frontend rendering.
+
 * Keep config_app edits in an isolated in-memory draft, serialize Save/Reload,
   acknowledge successful writes and retain drafts on operation errors. Confirm
   discard on navigation, logout and reload; guard browser unload and disable

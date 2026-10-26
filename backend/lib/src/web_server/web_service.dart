@@ -515,13 +515,13 @@ class WebSocketUser {
 
   void sendOneWay(WebSocketCommand cmd) {
     final message = json.encode(serializers.serialize(cmd));
-    _log.info('user< "$message"');
+    _log.fine(() => 'user< "$message"');
     _webSocket.sink.add(message);
   }
 
   void response(WebSocketResult result) {
     final message = json.encode(serializers.serialize(result));
-    _log.info('user< result "$message"');
+    _log.fine(() => 'user< result "$message"');
     _webSocket.sink.add(message);
   }
 
@@ -532,7 +532,7 @@ class WebSocketUser {
 
   void _parseMessage(dynamic message) {
     try {
-      _log.info('user> "$message"');
+      _log.fine(() => 'user> "$message"');
       final msg = serializers.deserialize(
         json.decode(message.toString()),
       ) as WebSocketResult;
