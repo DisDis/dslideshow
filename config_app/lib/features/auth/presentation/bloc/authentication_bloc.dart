@@ -19,18 +19,25 @@ class AuthenticationBloc
     required UserRepository userRepository,
     // required RealtimeService realtimeService,
     required PermissionService permissionService,
-  })  : _authenticationRepository = authenticationRepository,
-        _userRepository = userRepository,
-        // _realtimeService = realtimeService,
-        _permissionService = permissionService,
-        super(
-          const AuthenticationState.unknown(),
-          //
-        ) {
+  }) : _authenticationRepository = authenticationRepository,
+       _userRepository = userRepository,
+       // _realtimeService = realtimeService,
+       _permissionService = permissionService,
+       super(
+         const AuthenticationState.unknown(),
+         //
+       ) {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
-      (status) => add(_AuthenticationStatusChanged(status)),
+      (status) {
+        if (_closing || isClosed) return;
+        // Invalidate an in-flight user lookup as soon as the newer transport
+        // status arrives, before its BLoC event is processed.
+        final event = _AuthenticationStatusChanged(status);
+        _statusGenerations[event] = ++_generation;
+        add(event);
+      },
     );
     // on<AuthenticationRestoreAuthRequested>(_onAuthenticationRestoreRequested);
   }
@@ -40,33 +47,48 @@ class AuthenticationBloc
   final UserRepository _userRepository;
   // final RealtimeService _realtimeService;
   late StreamSubscription<AuthenticationStatus>
-      _authenticationStatusSubscription;
+  _authenticationStatusSubscription;
+  int _generation = 0;
+  bool _closing = false;
+  final _statusGenerations = Map<_AuthenticationStatusChanged, int>.identity();
 
   @override
-  Future<void> close() {
-    _authenticationStatusSubscription.cancel();
+  Future<void> close() async {
+    _closing = true;
+    ++_generation;
+    _statusGenerations.clear();
+    await _authenticationStatusSubscription.cancel();
     _authenticationRepository.dispose();
-    return super.close();
+    await super.close();
   }
 
   Future<void> _onAuthenticationStatusChanged(
     _AuthenticationStatusChanged event,
     Emitter<AuthenticationState> emit,
   ) async {
+    final generation = _statusGenerations.remove(event) ?? ++_generation;
+    if (!_isCurrent(generation, emit)) return;
     switch (event.status) {
       case AuthenticationStatus.unauthenticated:
+        _permissionService.clear();
         return emit(const AuthenticationState.unauthenticated());
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser(true);
-        //_permissionService.loadDataByScopeId(user.permissionIdsByScopeId);
-        _permissionService.loadData([Permission.NONE.id]);
-        //_realtimeService.connect(userId: user.user.id, socketToken: user.socketToken);
-        return emit(
-          user != User.empty
-              ? AuthenticationState.authenticated(user)
-              : const AuthenticationState.unauthenticated(),
-        );
+        try {
+          final user = await _userRepository.getUser();
+          if (!_isCurrent(generation, emit)) return;
+          if (user == null || user == User.empty) {
+            _permissionService.clear();
+            return emit(const AuthenticationState.unauthenticated());
+          }
+          _permissionService.loadData([Permission.NONE.id]);
+          return emit(AuthenticationState.authenticated(user));
+        } catch (_) {
+          if (!_isCurrent(generation, emit)) return;
+          _permissionService.clear();
+          return emit(const AuthenticationState.unauthenticated());
+        }
       case AuthenticationStatus.unknown:
+        _permissionService.clear();
         return emit(const AuthenticationState.unknown());
     }
   }
@@ -75,15 +97,16 @@ class AuthenticationBloc
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
   ) {
-    _authenticationRepository.logOut();
+    if (_closing || emit.isDone) return;
+    ++_generation;
     _userRepository.clear();
     _permissionService.clear();
+    emit(const AuthenticationState.unauthenticated());
+    _authenticationRepository.logOut();
   }
 
-  Future<User> _tryGetUser([bool force = false]) async {
-    final user = await _userRepository.getUser(/*force*/);
-    return user!;
-  }
+  bool _isCurrent(int generation, Emitter<AuthenticationState> emit) =>
+      !_closing && !emit.isDone && generation == _generation;
 
   // FutureOr<void> _onAuthenticationRestoreRequested(AuthenticationRestoreAuthRequested event, Emitter<AuthenticationState> emit) async {
   //   try {

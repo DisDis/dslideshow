@@ -33,6 +33,7 @@ More [info](https://github.com/DisDis/article-dslideshow)
 * [Сон экрана, датчик присутствия и регрессионные проверки](doc/screen-presence.md)
 * [Специальные экраны: часы, камеры и редактор настроек](doc/special-screens.md)
 * [Анализ проекта и предложения по улучшению](doc/project-review-2026-10.md)
+* [Потоковая загрузка медиа и OTA: контракт и локальные проверки](doc/uploads.md)
 
 # TODO:
 

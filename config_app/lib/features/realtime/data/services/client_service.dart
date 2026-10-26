@@ -4,157 +4,333 @@ import 'dart:convert';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
-import 'package:dslideshow_common/rpc.dart';
-import 'package:flutter/rendering.dart';
 import 'package:logging/logging.dart';
-
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 class ClientServiceImpl implements RealtimeService {
   static final _log = Logger('ClientService');
-  WebSocketChannel? channel;
+
+  final WebSocketChannel Function(Uri) _channelFactory;
+  final Duration connectionTimeout;
+  final Duration requestTimeout;
+  final _onDisconnect = StreamController<void>.broadcast();
+  final _cleanupOperations = <Future<void>>{};
+  _Connection? _connection;
   bool _isAuth = false;
-  bool get isAuth => _isAuth;
-  final _onDisconnect = StreamController.broadcast();
-  // final _onConnect = StreamController.broadcast();
-  // final _onCommand = StreamController<WebSocketCommand>.broadcast();
-  // final _onAuth = StreamController<bool>.broadcast();
-  // Stream<WebSocketCommand> get onCommand => _onCommand.stream;
-  @override
-  Stream get onDisconnect => _onDisconnect.stream;
-  // Stream get onConnect => _onConnect.stream;
-  // Stream<bool> get onAuth => _onAuth.stream;
+  bool _disposed = false;
+  Future<void>? _disposal;
   String _authCode = '';
+  Uri _connectUri = Uri.parse('http://127.0.0.1');
+
+  ClientServiceImpl({
+    WebSocketChannel Function(Uri)? channelFactory,
+    this.connectionTimeout = const Duration(seconds: 10),
+    this.requestTimeout = const Duration(seconds: 15),
+  }) : _channelFactory = channelFactory ?? WebSocketChannel.connect {
+    if (connectionTimeout <= Duration.zero || requestTimeout <= Duration.zero) {
+      throw ArgumentError('Connection and request timeouts must be positive');
+    }
+  }
+
+  WebSocketChannel? get channel => _connection?.channel;
+  bool get isAuth => _isAuth;
+
+  @override
+  Stream<void> get onDisconnect => _onDisconnect.stream;
+
   @override
   String get authCode => _authCode;
-
-  Uri _connectUri = Uri.parse('http://127.0.0.1');
 
   @override
   Uri get connectUri => _connectUri;
 
-  final _resultQueue = <int, Completer<WebSocketResult>>{};
-  ClientServiceImpl();
   @override
-  Future<WebSocketResult> connect(Uri uri, String code) {
-    if (channel != null) {
-      disconnect();
-    }
-    // Completer<bool> _result = Completer();
-    _isAuth = false;
-    _authCode = code;
-    _connectUri = uri;
-    channel = WebSocketChannel.connect(_connectUri);
-    channel!.stream.listen(_parseMessage, onError: (error) {
-      _log.info('onError: $error');
-      // _result.completeError(error);
-    }).onDone(disconnect);
-    _log.info('User is connecting');
+  Future<WebSocketResult> connect(Uri uri, String code) async {
+    _ensureActive();
+    final previous = _connection;
+    if (previous != null) _disconnect(previous, notify: false);
 
-    return send(WSAuthCommand(
-      userName: "admin",
-      id: RpcCommand.generateId(),
-      code: _authCode,
-    ));
-    //return _result.future;
+    late final WebSocketChannel transport;
+    try {
+      transport = _channelFactory(uri);
+    } catch (error) {
+      _log.warning('WebSocket creation failed (${error.runtimeType})');
+      throw StateError('WebSocket connection failed');
+    }
+    final connection = _Connection(transport);
+    // A stream may fail synchronously while its listener is being installed.
+    // Callers still observe readiness errors through connect()/send().
+    connection.ready.future.ignore();
+    _connection = connection;
+    _connectUri = uri;
+    _authCode = code;
+    _isAuth = false;
+    try {
+      unawaited(_waitForReady(connection));
+      connection.subscription = transport.stream.listen(
+        (message) {
+          if (_isCurrent(connection)) _parseMessage(connection, message);
+        },
+        onError: (Object error, StackTrace stack) {
+          if (!_isCurrent(connection)) return;
+          _log.warning('WebSocket transport failed (${error.runtimeType})');
+          _disconnect(
+            connection,
+            error: StateError('WebSocket connection failed'),
+          );
+        },
+        onDone: () => _disconnect(connection),
+      );
+      await connection.ready.future;
+      final result = await _send(
+        connection,
+        WSAuthCommand(
+          userName: 'admin',
+          id: WebSocketCommand.generateId(),
+          code: code,
+        ),
+      );
+      _ensureCurrent(connection);
+      _isAuth = true;
+      _log.info('WebSocket authenticated');
+      return result;
+    } catch (error) {
+      if (_isCurrent(connection)) _disconnect(connection);
+      rethrow;
+    }
+  }
+
+  Future<void> _waitForReady(_Connection connection) async {
+    if (!_isCurrent(connection)) return;
+    connection.handshakeTimer = Timer(connectionTimeout, () {
+      if (!_isCurrent(connection)) return;
+      _disconnect(
+        connection,
+        error: TimeoutException(
+          'WebSocket connection timed out',
+          connectionTimeout,
+        ),
+      );
+    });
+    try {
+      await connection.channel.ready;
+      if (!_isCurrent(connection)) return;
+      connection.handshakeTimer?.cancel();
+      connection.isReady = true;
+      connection.ready.complete();
+    } catch (error) {
+      if (!_isCurrent(connection)) return;
+      _log.warning('WebSocket connection failed (${error.runtimeType})');
+      _disconnect(connection, error: StateError('WebSocket connection failed'));
+    }
   }
 
   @override
   void disconnect() {
-    _isAuth = false;
-    if (channel == null) {
-      return;
+    final connection = _connection;
+    if (connection != null) _disconnect(connection);
+  }
+
+  void _disconnect(
+    _Connection connection, {
+    bool notify = true,
+    Object? error,
+  }) {
+    if (connection.closed) return;
+    connection.closed = true;
+    connection.handshakeTimer?.cancel();
+    final isCurrent = identical(_connection, connection);
+    if (isCurrent) {
+      _connection = null;
+      _isAuth = false;
+      _authCode = '';
     }
-    channel!.sink.close(status.goingAway);
-    channel = null;
-    _onDisconnect.add(null);
-    _resultQueue.forEach((key, value) {
-      value.completeError(WSErrorResult.byId('disconnect', key));
-    });
-    _resultQueue.clear();
-    _log.info('User disconnected');
+    if (!connection.ready.isCompleted) {
+      connection.ready.completeError(
+        error ?? StateError('WebSocket disconnected'),
+      );
+    }
+    final requests = connection.pending.entries.toList();
+    connection.pending.clear();
+    for (final entry in requests) {
+      entry.value.timer?.cancel();
+      entry.value.result.completeError(
+        WSErrorResult.byId('disconnect', entry.key),
+      );
+    }
+    _trackCleanup(
+      _cleanup(
+        () => connection.subscription?.cancel(),
+        'subscription cancellation',
+      ),
+    );
+    _trackCleanup(
+      _cleanup(
+        () => connection.channel.sink.close(status.normalClosure),
+        'close',
+      ),
+    );
+    if (isCurrent && notify && !_disposed) _onDisconnect.add(null);
+    _log.info('WebSocket disconnected');
+  }
+
+  Future<void> _cleanup(FutureOr<void> Function() action, String operation) =>
+      Future<void>.sync(action)
+          .timeout(connectionTimeout)
+          .catchError((Object error) {
+            _log.warning('WebSocket $operation failed (${error.runtimeType})');
+          });
+
+  void _trackCleanup(Future<void> operation) {
+    _cleanupOperations.add(operation);
+    unawaited(operation.then((_) => _cleanupOperations.remove(operation)));
   }
 
   @override
-  Future<WebSocketResult> send(WebSocketCommand cmd) {
-    sendOneWay(cmd);
-    return _addMessageToQueue(cmd.id);
+  Future<WebSocketResult> send(WebSocketCommand cmd) async {
+    _ensureActive();
+    final connection = _connection;
+    if (connection == null) throw StateError('WebSocket is not connected');
+    return _send(connection, cmd);
+  }
+
+  Future<WebSocketResult> _send(
+    _Connection connection,
+    WebSocketCommand cmd,
+  ) async {
+    await connection.ready.future;
+    _ensureCurrent(connection);
+    if (connection.pending.containsKey(cmd.id)) {
+      throw StateError('RPC request ID is already pending');
+    }
+    final request = _PendingRequest();
+    connection.pending[cmd.id] = request;
+    request.timer = Timer(requestTimeout, () {
+      if (connection.pending.remove(cmd.id) != request) return;
+      _log.warning('RPC timed out id=${cmd.id}');
+      request.result.completeError(
+        TimeoutException('RPC request timed out', requestTimeout),
+      );
+    });
+    try {
+      _write(connection, cmd);
+    } catch (_) {
+      final pending = connection.pending.remove(cmd.id);
+      if (pending != null) {
+        pending.timer?.cancel();
+        pending.result.completeError(
+          StateError('RPC request could not be sent'),
+        );
+      }
+      _disconnect(connection);
+    }
+    return request.result.future;
   }
 
   @override
   void sendOneWay(WebSocketCommand cmd) {
-    final message = json.encode(serializers.serialize(cmd));
-    _log.info('user> "$message"');
-    if (channel == null) {
-      throw ErrorDescription('Channel is null');
+    _ensureActive();
+    final connection = _connection;
+    if (connection == null) throw StateError('WebSocket is not connected');
+    try {
+      _write(connection, cmd);
+    } catch (_) {
+      _disconnect(connection);
+      rethrow;
     }
-    channel!.sink.add(message);
-  }
-
-  Future<WebSocketResult> _addMessageToQueue(int id) {
-    final result =
-        _resultQueue.putIfAbsent(id, () => Completer<WebSocketResult>());
-    return result.future;
   }
 
   @override
   void response(WebSocketResult result) {
-    final message = json.encode(serializers.serialize(result));
-    _log.info('user> result "$message"');
-    if (channel == null) {
-      throw ErrorDescription('Channel is null');
-    }
-    channel!.sink.add(message);
-  }
-
-  void _parseMessage(dynamic message) {
+    _ensureActive();
+    final connection = _connection;
+    if (connection == null) throw StateError('WebSocket is not connected');
     try {
-      _log.info('user< "$message"');
-      final msg = serializers.deserialize(json.decode(message.toString()))
-          as WebSocketResult;
-      if (msg is WebSocketCommand) {
-        _execCommand(msg);
-      } else {
-        _processResult(msg);
-      }
-    } catch (e, st) {
-      _log.severe(e.toString(), e, st);
+      _write(connection, result);
+    } catch (_) {
+      _disconnect(connection);
+      rethrow;
     }
   }
 
-  void _execCommand(WebSocketCommand command) {
+  void _write(_Connection connection, WebSocketResult result) {
+    _ensureCurrent(connection);
+    if (!connection.isReady) throw StateError('WebSocket is not ready');
     try {
-      WebSocketResult result;
-      switch (command.type) {
-        case WSHelloCommand.TYPE:
-          result = _executeWSHelloCommand(command as WSHelloCommand);
-          break;
-        default:
-          result = WSErrorResult.byCommand('Unknown command', command);
-          break;
-      }
-      response(result);
-    } catch (e, st) {
-      _log.severe(e.toString(), e, st);
-      response(WSErrorResult.byCommand(e.toString(), command));
+      final message = json.encode(serializers.serialize(result));
+      connection.channel.sink.add(message);
+      _log.fine('RPC sent ${result.runtimeType} id=${result.id}');
+    } catch (error) {
+      _log.warning('RPC send failed (${error.runtimeType})');
+      throw StateError('RPC request could not be sent');
     }
   }
 
-  void _processResult(WebSocketResult msg) {
-    final completer = _resultQueue.remove(msg.id);
-    if (completer != null) {
-      if (msg is WebSocketErrorResult) {
-        completer.completeError(msg);
+  void _parseMessage(_Connection connection, dynamic message) {
+    try {
+      final result = serializers.deserialize(
+        json.decode(message.toString()),
+      ) as WebSocketResult;
+      _log.fine('RPC received ${result.runtimeType} id=${result.id}');
+      if (result is WebSocketCommand) {
+        _write(connection, switch (result) {
+          WSHelloCommand() => WSResultOk.byCommand(result),
+          _ => WSErrorResult.byCommand('Unknown command', result),
+        });
       } else {
-        completer.complete(msg);
+        final request = connection.pending.remove(result.id);
+        if (request == null) return;
+        request.timer?.cancel();
+        if (result is WebSocketErrorResult) {
+          request.result.completeError(result);
+        } else {
+          request.result.complete(result);
+        }
       }
+    } catch (error) {
+      // Parser exceptions can contain the entire payload, including secrets.
+      _log.warning('RPC message rejected (${error.runtimeType})');
+      _disconnect(connection);
     }
   }
 
-  WebSocketResult _executeWSHelloCommand(WSHelloCommand msg) {
-    _isAuth = true;
-    // _onAuth.add(true);
-    return WSResultOk.byCommand(msg);
+  bool _isCurrent(_Connection connection) =>
+      !_disposed && !connection.closed && identical(_connection, connection);
+
+  void _ensureCurrent(_Connection connection) {
+    _ensureActive();
+    if (!_isCurrent(connection)) throw StateError('WebSocket disconnected');
   }
+
+  void _ensureActive() {
+    if (_disposed) throw StateError('WebSocket client is disposed');
+  }
+
+  Future<void> dispose() => _disposal ??= _dispose();
+
+  Future<void> _dispose() async {
+    _disposed = true;
+    final connection = _connection;
+    if (connection != null) _disconnect(connection, notify: false);
+    await Future.wait(_cleanupOperations.toList());
+    await _onDisconnect.close();
+  }
+}
+
+class _Connection {
+  final WebSocketChannel channel;
+  final ready = Completer<void>();
+  final pending = <int, _PendingRequest>{};
+  StreamSubscription<dynamic>? subscription;
+  Timer? handshakeTimer;
+  bool isReady = false;
+  bool closed = false;
+
+  _Connection(this.channel);
+}
+
+class _PendingRequest {
+  final result = Completer<WebSocketResult>();
+  Timer? timer;
 }

@@ -9,21 +9,19 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   static final Logger _log = Logger('AuthenticationRepository');
   final RealtimeService client;
   final _controller = StreamController<AuthenticationStatus>();
-  // late StreamSubscription<bool> _authSub;
+  StreamSubscription<dynamic>? _disconnectSubscription;
+  AuthenticationStatus _status = AuthenticationStatus.unauthenticated;
+  int _generation = 0;
+  int? _disconnectedGeneration;
+  bool _disposed = false;
 
   AuthenticationRepositoryImpl({required this.client}) {
-    client.onDisconnect.listen((event) {
-      _controller.add(AuthenticationStatus.unauthenticated);
-      logOut();
-    });
+    _controller.add(_status);
+    _observeDisconnects(_generation);
   }
 
   @override
-  Stream<AuthenticationStatus> get status async* {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
-    yield* _controller.stream;
-  }
+  Stream<AuthenticationStatus> get status => _controller.stream;
 
   @override
   Future<void> logIn({
@@ -31,31 +29,88 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     required String username,
     required String password,
   }) async {
-    _log.finest(
-        "Try to logIn U:$username P(${password.length}), url:$connectUrl");
+    if (_disposed) {
+      throw StateError('Authentication repository is disposed');
+    }
+    final generation = ++_generation;
+    _cancelDisconnectSubscription();
+    _log.fine('Authentication started');
     try {
+      // Canceling the previous subscription drops any queued disconnect from
+      // that attempt. The new listener only owns this login generation.
+      _observeDisconnects(generation);
       final result = await client.connect(connectUrl, password);
-      if (result is WebSocketErrorResult) {
-        _controller.add(AuthenticationStatus.unauthenticated);
-      } else {
-        _controller.add(AuthenticationStatus.authenticated);
+      if (!_isCurrent(generation) || _disconnectedGeneration == generation) {
+        return;
       }
-      _log.finest('authenticated');
-    } catch (e, st) {
-      _log.severe("Error", e, st);
+      if (result is WebSocketErrorResult) {
+        _setStatus(AuthenticationStatus.unauthenticated);
+        _log.fine('Authentication rejected');
+      } else {
+        _setStatus(AuthenticationStatus.authenticated);
+        _log.fine('Authentication succeeded');
+      }
+    } catch (_) {
+      if (!_isCurrent(generation)) {
+        return;
+      }
+      _setStatus(AuthenticationStatus.unauthenticated);
+      // Transport exceptions may contain the URL or authentication payload.
+      _log.warning('Authentication failed');
       rethrow;
     }
   }
 
   @override
   void logOut() {
-    client.disconnect();
-    _controller.add(AuthenticationStatus.unauthenticated);
+    if (_disposed) {
+      return;
+    }
+    ++_generation;
+    _cancelDisconnectSubscription();
+    try {
+      client.disconnect();
+    } finally {
+      _setStatus(AuthenticationStatus.unauthenticated);
+    }
   }
 
   @override
   void dispose() {
-    _controller.close();
-    // _authSub.cancel();
+    if (_disposed) {
+      return;
+    }
+    _disposed = true;
+    ++_generation;
+    _cancelDisconnectSubscription();
+    unawaited(_controller.close());
+  }
+
+  bool _isCurrent(int generation) => !_disposed && generation == _generation;
+
+  void _observeDisconnects(int generation) {
+    _disconnectSubscription = client.onDisconnect.listen((_) {
+      if (!_isCurrent(generation)) {
+        return;
+      }
+      _disconnectedGeneration = generation;
+      _setStatus(AuthenticationStatus.unauthenticated);
+    });
+  }
+
+  void _cancelDisconnectSubscription() {
+    final subscription = _disconnectSubscription;
+    _disconnectSubscription = null;
+    if (subscription != null) {
+      unawaited(subscription.cancel());
+    }
+  }
+
+  void _setStatus(AuthenticationStatus status) {
+    if (_disposed || status == _status) {
+      return;
+    }
+    _status = status;
+    _controller.add(status);
   }
 }

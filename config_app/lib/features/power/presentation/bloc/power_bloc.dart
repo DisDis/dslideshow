@@ -11,38 +11,58 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
 class PowerBloc extends Bloc<PowerEvent, PowerState> {
-  static final Logger _log = Logger('WebTabBloc');
+  static final Logger _log = Logger('PowerBloc');
   final RealtimeService _client;
-  static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
-  PowerBloc(
-      {required PowerState initialState, required RealtimeService client})
-      : _client = client,
-        super(initialState) {
+  PowerBloc({required PowerState initialState, required RealtimeService client})
+    : _client = client,
+      super(initialState) {
     on<RestartAppPowerEvent>(_restartApp);
     on<PowerOffPowerEvent>(_powerOff);
     on<LoadPowerEvent>(_loadData);
   }
 
-  void _loadData(LoadPowerEvent event, emit) async {
-    final result = await _client
-            .send(WSConfigDownloadCommand(id: WebSocketCommand.generateId()))
-        as WSConfigDownloadResult;
-    _log.info('Recived config:');
-    var jsonMsg = json.decode(result.content);
-    final config = AppConfig.fromJson(jsonMsg);
-    _log.info(prettyPrintJSONEncode.convert(jsonMsg));
-    emit(InitializedPowerState(config));
+  Future<void> _loadData(LoadPowerEvent event, Emitter<PowerState> emit) async {
+    emit(const UninitializedPowerState());
+    try {
+      final result = await _client.send(
+        WSConfigDownloadCommand(id: WebSocketCommand.generateId()),
+      ) as WSConfigDownloadResult;
+      if (emit.isDone) {
+        return;
+      }
+      final jsonMsg = json.decode(result.content);
+      final config = AppConfig.fromJson(jsonMsg);
+      _log.info('Configuration received');
+      emit(InitializedPowerState(config));
+    } catch (error) {
+      _log.warning('Loading power configuration failed (${error.runtimeType})');
+      emit(ErrorPowerState(error.toString()));
+    }
   }
 
-  void _restartApp(RestartAppPowerEvent event, emit) {
-    _client.sendOneWay(WSSendRpcCommand.byCommand(RestartAppCommand(
-      id: RpcCommand.generateId(),
-    )));
+  void _restartApp(RestartAppPowerEvent event, Emitter<PowerState> emit) {
+    try {
+      _client.sendOneWay(
+        WSSendRpcCommand.byCommand(
+          RestartAppCommand(id: RpcCommand.generateId()),
+        ),
+      );
+    } catch (error) {
+      _log.warning('Restart request failed (${error.runtimeType})');
+      emit(ErrorPowerState(error.toString()));
+    }
   }
 
-  void _powerOff(PowerOffPowerEvent event, emit) {
-    _client.sendOneWay(WSSendRpcCommand.byCommand(PowerOffCommand(
-      id: RpcCommand.generateId(),
-    )));
+  void _powerOff(PowerOffPowerEvent event, Emitter<PowerState> emit) {
+    try {
+      _client.sendOneWay(
+        WSSendRpcCommand.byCommand(
+          PowerOffCommand(id: RpcCommand.generateId()),
+        ),
+      );
+    } catch (error) {
+      _log.warning('Power-off request failed (${error.runtimeType})');
+      emit(ErrorPowerState(error.toString()));
+    }
   }
 }

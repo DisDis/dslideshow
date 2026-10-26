@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
 import 'dart:math' as math;
-import 'dart:typed_data' as io;
 import 'dart:typed_data';
 
+import 'package:dslideshow_backend/src/service/ota/ota_installer.dart';
 import 'package:dslideshow_backend/src/service/ota/release_info.dart';
-import 'package:http/http.dart' as http;
+import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'package:dslideshow_backend/command.dart';
@@ -16,47 +16,56 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:shelf_router/shelf_router.dart';
-import 'package:shelf/shelf_io.dart' as io;
+import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf/shelf.dart';
 import 'package:shelf_multipart/shelf_multipart.dart';
 import 'package:path/path.dart' as path;
 
 class OTAService implements RpcService {
   static final Logger _log = new Logger('OTAService');
-  static const _webPort = 8282;
   String _code = _generateCode();
   String get code => _code;
 
-  final io.Directory _folder = new io.Directory(
-    path.join(externalStorage.path, 'firmwares'),
-  );
+  final io.Directory _folder;
+  final FirmwareInstaller _installer;
+  final StreamingUploadReceiver _uploadReceiver;
+  final Future<ReleaseInfo?> Function()? _latestRelease;
+  final io.HttpClient Function() _downloadClientFactory;
+  final int _port;
+  final Duration _restartDelay;
+  final Duration _autostopDelay;
+  final Duration _networkTimeout;
+  final bool _automaticallyStartServer;
+  final Set<io.HttpClient> _clients = {};
+  final Set<void Function()> _closeListeners = {};
+  _OTAOperation? _operation;
+  bool get busy => _operation != null;
+  OTAInfo get info => _info;
+  Handler get handler => _router.call;
+  bool _closed = false;
+  bool _disableWhenIdle = false;
+  Future<void> _serverChanges = Future<void>.value();
+  Future<void>? _closeFuture;
+  Timer? _initialCheck;
+  Timer? _periodicCheck;
+  Timer? _restartTimer;
+  bool _notificationInFlight = false;
+  OTAGetInfoCommand? _pendingInfo;
+  final BytesBuilder _pendingOutput = BytesBuilder(copy: false);
+  _QueuedScreen? _pendingScreen;
+  _QueuedScreen? _activeScreen;
+  bool _outputTruncatedWithoutOperation = false;
+  static const _maxPendingOutputBytes = 64 * 1024;
   static final math.Random _rnd = math.Random();
 
   bool _enabled = false;
   bool get enabled => _enabled;
+  int? get boundPort => _server?.port;
 
-  OTAInfo _info = OTAInfo(
-    status: OTAStatus.disabled,
-    code: "-",
-    uploadingPercent: 0,
-  );
+  OTAInfo _info = OTAInfo(status: OTAStatus.disabled, code: "-", uploadingPercent: 0);
 
   void set enabled(bool newvalue) {
-    if (config.ota.alwaysEnabled) {
-      newvalue = true;
-    }
-    if (_autostop != null && _autostop!.isActive) {
-      _autostop!.cancel();
-    }
-    if (newvalue == _enabled) {
-      return;
-    }
-    _enabled = newvalue;
-    if (newvalue) {
-      _startWebServer();
-    } else {
-      _stopWebServer();
-    }
+    unawaited(_setEnabled(newvalue));
   }
 
   Router _router = Router();
@@ -64,8 +73,30 @@ class OTAService implements RpcService {
   final AppConfig config;
   final RemoteService _frontendService;
 
-  OTAService({required this.config, required RemoteService frontendService})
-    : this._frontendService = frontendService {
+  OTAService({
+    required this.config,
+    required RemoteService frontendService,
+    bool startServer = true,
+    io.Directory? firmwareDirectory,
+    FirmwareInstaller? installer,
+    StreamingUploadReceiver? uploadReceiver,
+    Future<ReleaseInfo?> Function()? latestRelease,
+    io.HttpClient Function()? downloadClientFactory,
+    int port = 8282,
+    Duration restartDelay = const Duration(seconds: 5),
+    Duration autostopDelay = const Duration(minutes: 5),
+    Duration networkTimeout = const Duration(seconds: 60),
+  }) : _frontendService = frontendService,
+       _folder = firmwareDirectory ?? io.Directory(path.join(externalStorage.path, 'firmwares')),
+       _installer = installer ?? const ProcessFirmwareInstaller(),
+       _uploadReceiver = uploadReceiver ?? StreamingUploadReceiver(limits: const UploadLimits(maxFiles: 1, maxParts: 2)),
+       _latestRelease = latestRelease,
+       _downloadClientFactory = downloadClientFactory ?? io.HttpClient.new,
+       _port = port,
+       _restartDelay = restartDelay,
+       _autostopDelay = autostopDelay,
+       _networkTimeout = networkTimeout,
+       _automaticallyStartServer = startServer {
     _router.get('/ota_start', _getOTAStart);
     _router.get('/ota_stop', _getOTAStop);
     _router.get('/ota_download_config', _getOTAGetConfig);
@@ -74,150 +105,96 @@ class OTAService implements RpcService {
     _router.post('/ota_upload_config', _postOTAUploadConfig);
     _router.post('/ota_upload', _postOTAUploadPackage);
 
-    enabled = true;
-    _autostop = Timer(const Duration(seconds: 60 * 5), () {
-      enabled = false;
-    });
     _info = _info.copyWith(code: code);
-    if (config.ota.alwaysEnabled) {
-      enabled = config.ota.alwaysEnabled;
-      _log.warning('OTA server always on');
-    }
-    if (config.ota.autoUpdateEnabled) {
-      Timer.periodic(const Duration(minutes: 60), (timer) {
-        _checkLatestRelease();
-      });
-      Timer(const Duration(seconds: 30), () {
-        _checkLatestRelease();
-      });
+    if (startServer) {
+      unawaited(_setEnabled(true));
     }
   }
 
-  void _checkLatestRelease() async {
-    _log.info("Checking new version...");
-    final releaseInfo = await _fetchLatestDebRelease();
-    if (releaseInfo != null) {
+  Future<void> _setEnabled(bool value) async {
+    try {
+      if (value || config.ota.alwaysEnabled) {
+        await start();
+      } else {
+        await stop();
+      }
+    } catch (e, st) {
+      if (!_closed) _recordFailure(e, st);
+    }
+  }
+
+  /// Own the release lookup as well as its download, so scheduled checks and
+  /// manual uploads cannot each start an installation.
+  Future<void> checkLatestRelease() async {
+    if (_closed || busy) return;
+    final operation = _beginOperation();
+    StagedUploadFile? staged;
+    io.HttpClient? client;
+    try {
+      _log.info('Checking new version...');
+      final releaseInfo = await _untilClosed((_latestRelease?.call() ?? _fetchLatestDebRelease()).timeout(_networkTimeout));
+      _checkOpen(operation);
+      if (releaseInfo == null) return;
       final currentVersion = Version.parse(ApplicationInfo.frontendVersion);
       if (currentVersion >= releaseInfo.version) {
-        _log.info(
-          'The current version "${ApplicationInfo.frontendVersion}" is the latest',
-        );
+        _log.info('The current version "${ApplicationInfo.frontendVersion}" is the latest');
         return;
       }
-      _log.info("Found new version '${releaseInfo.version}'");
-      if (!enabled) {
-        enabled = true;
+      if (!enabled && _automaticallyStartServer) await start();
+      _checkOpen(operation);
+      await _untilClosed(_requestScreen(true));
+      _beginUpload(operation);
+      _output("Try to download new version '${releaseInfo.version}'\n\r");
+      final debUri = Uri.parse(releaseInfo.debUrl);
+      final filename = path.basename(Uri.decodeFull(releaseInfo.debUrl));
+      if (path.extension(filename) != '.deb') {
+        throw UploadFailure(415, 'Support only deb package');
       }
-      _log.info('Try to download "${releaseInfo.debUrl}"');
-      try {
-        final fWait = Future.delayed(Duration(seconds: 1));
-        await _switchFrontendToOTAScreen();
-        await fWait;
-        _updateInfo(
-          _info.copyWith(uploadingPercent: 0, status: OTAStatus.uploading),
-        );
-        _frontendService.send(
-          OTAOutputCommand(
-            id: RpcCommand.generateId(),
-            output: "Try to download new version '${releaseInfo.version}'\n\r",
-          ),
-        );
-
-        final debUri = Uri.parse(releaseInfo.debUrl);
-        final fileName = path.basename(Uri.decodeFull(releaseInfo.debUrl));
-        final httpClient = io.HttpClient();
-        httpClient.connectionTimeout = const Duration(seconds: 60);
-        httpClient.idleTimeout = const Duration(seconds: 60);
-        final request = await httpClient.getUrl(debUri);
-        request.headers.add('User-Agent', 'dslideshow-flutter-app');
-        var response = await request.close();
-        if (response.statusCode != io.HttpStatus.ok) {
-          throw io.HttpException(
-            'Failed to download file. Status: ${response.statusCode} ${response.reasonPhrase}',
-          );
-        }
-        final firmwareData = await downloadFileToMemory(
-          response: response,
-          onProgress: (uploadedSize, fullSize) {
-            _updateInfo(
-              _info.copyWith(uploadingPercent: (uploadedSize / fullSize * 100)),
-            );
-          },
-        );
-
-        // final response = await http.get(debUri,headers: {'User-Agent': 'dslideshow-flutter-app'});
-        //_processFirmware(fileName, response.bodyBytes);
-        _updateInfo(_info.copyWith(uploadingPercent: 100));
-        _processFirmware(fileName, firmwareData);
-      } catch (e) {
-        _log.warning("checkLatestRelease error: $e");
-      } finally {
-        Timer(const Duration(seconds: 60), () {
-          _switchFrontendToSlideshowScreen();
-        });
+      client = _createHttpClient();
+      final request = await _network(client.getUrl(debUri));
+      request.headers.add('User-Agent', 'dslideshow-flutter-app');
+      final response = await _network(request.close());
+      if (response.statusCode != io.HttpStatus.ok) {
+        throw io.HttpException('Download failed: HTTP ${response.statusCode}');
       }
-    } else {
-      _log.warning("Not found last release info, no Internet?");
+      await _folder.create(recursive: true);
+      staged = await _uploadReceiver.receiveStream(
+        response,
+        filename: filename,
+        destination: path.join(_folder.path, filename),
+        contentLength: response.contentLength < 0 ? null : response.contentLength,
+        cancellation: operation.cancellation,
+        onProgress: (received, total) => _uploadProgress(operation, received, total),
+      );
+      await _acceptFirmware(operation, staged);
+    } catch (e, st) {
+      if (!_closed) _recordFailure(e, st);
+    } finally {
+      await staged?.cleanup();
+      if (client != null) _closeClient(client);
+      _finishInput(operation);
     }
-  }
-
-  /// Downloads a file to memory and returns Uint8List with progress tracking
-  Future<Uint8List> downloadFileToMemory({
-    required void Function(int receivedBytes, int totalBytes) onProgress,
-    required io.HttpClientResponse response,
-  }) async {
-    final contentLength = response.headers.contentLength;
-    if (contentLength == -1) {
-      throw io.HttpException('Content-Length header is missing or invalid');
-    }
-
-    BytesBuilder buffer = BytesBuilder();
-    int receivedBytes = 0;
-    final completer = Completer<Uint8List>();
-
-    response.listen(
-      (List<int> data) {
-        buffer.add(data);
-        receivedBytes += data.length;
-
-        onProgress(receivedBytes, contentLength);
-      },
-      onError: (error) {
-        completer.completeError(error);
-      },
-      onDone: () {
-        completer.complete(buffer.takeBytes());
-      },
-    );
-    return completer.future;
   }
 
   Future<ReleaseInfo?> _fetchLatestDebRelease() async {
-    final url = Uri.parse(
-      'https://api.github.com/repos/DisDis/dslideshow/releases/latest',
-    );
-
+    final url = Uri.parse('https://api.github.com/repos/DisDis/dslideshow/releases/latest');
+    final client = _createHttpClient();
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          'User-Agent': 'Flutter-App',
-          'Accept': 'application/vnd.github.v3+json',
-        },
-      );
+      final request = await _network(client.getUrl(url));
+      request.headers.set('User-Agent', 'Flutter-App');
+      request.headers.set('Accept', 'application/vnd.github.v3+json');
+      final response = await _network(request.close());
 
       if (response.statusCode != 200) {
-        _log.warning(
-          'Ошибка получения релиза: ${response.statusCode} - ${response.body}',
-        );
+        _log.warning('Ошибка получения релиза: ${response.statusCode}');
         return null;
       }
 
-      final releaseData = json.decode(response.body);
+      final body = await _network(utf8.decoder.bind(response).join());
+      final releaseData = json.decode(body) as Map<String, dynamic>;
       return parseReleaseData(releaseData);
-    } catch (e) {
-      _log.warning('Ошибка при выполнении запроса: $e');
-      return null;
+    } finally {
+      _closeClient(client);
     }
   }
 
@@ -230,9 +207,7 @@ class OTAService implements RpcService {
     }
 
     // Очищаем тег от префикса 'v' если он есть и парсим в SemVer
-    final cleanVersion = tagName.startsWith('v')
-        ? tagName.substring(1)
-        : tagName;
+    final cleanVersion = tagName.startsWith('v') ? tagName.substring(1) : tagName;
 
     try {
       final version = Version.parse(cleanVersion);
@@ -285,29 +260,299 @@ class OTAService implements RpcService {
 
   io.HttpServer? _server;
 
-  void _startWebServer() async {
-    _log.info('_startServer');
-    if (_server != null) {
-      _log.info('Is the server running?');
-      _stopWebServer();
-    }
-    io.HttpServer server = await io.serve(_router, '0.0.0.0', _webPort);
-    _server = server;
-    // Enable content compression
-    server.autoCompress = true;
-    _info = _info.copyWith(status: OTAStatus.ready);
+  Future<void> start() => _changeServer(true);
 
-    _log.info(
-      'Serving at http://${server.address.host}:${server.port} authCode:$_code',
-    );
+  Future<void> _changeServer(bool value) {
+    final change = _serverChanges.then((_) async {
+      if (_closed) {
+        if (value) throw StateError('OTA service is closed');
+        return;
+      }
+      if (value) {
+        _disableWhenIdle = false;
+        _enabled = true;
+        if (_server == null) {
+          try {
+            await _startWebServer();
+          } catch (_) {
+            _enabled = false;
+            rethrow;
+          }
+        }
+      } else if (!config.ota.alwaysEnabled) {
+        if (busy) {
+          _disableWhenIdle = true;
+          return;
+        }
+        _enabled = false;
+        _autostop?.cancel();
+        final server = _server;
+        _server = null;
+        await server?.close(force: true);
+        if (!_closed && !busy) _updateInfo(_info.copyWith(status: OTAStatus.disabled));
+      }
+    });
+    // Retain the original error for the caller without poisoning the next
+    // lifecycle request or leaving a failed queue future unobserved.
+    _serverChanges = change.then<void>((_) {}, onError: (Object _, StackTrace __) {});
+    return change;
   }
 
-  Future<void> _stopWebServer() async {
-    _log.info('_stopServer');
-    if (_server != null) {
-      await _server?.close(force: true);
-      _server = null;
+  Future<void> _startWebServer() async {
+    final server = await shelf_io.serve(handler, '0.0.0.0', _port);
+    if (_closed || !_enabled) {
+      await server.close(force: true);
+      return;
     }
+    _server = server;
+    server.autoCompress = true;
+    if (!busy) _updateInfo(_info.copyWith(status: OTAStatus.ready));
+    _autostop?.cancel();
+    _autostop = Timer(_autostopDelay, () => unawaited(_setEnabled(false)));
+    if (config.ota.autoUpdateEnabled && _periodicCheck == null) {
+      _initialCheck = Timer(const Duration(seconds: 30), () {
+        unawaited(checkLatestRelease());
+      });
+      _periodicCheck = Timer.periodic(const Duration(hours: 1), (_) {
+        unawaited(checkLatestRelease());
+      });
+    }
+    _log.info('Serving at http://${server.address.host}:${server.port}');
+  }
+
+  Future<void> stop() => _changeServer(false);
+
+  /// Cancel incoming transfers and timers. An already running package manager
+  /// is allowed to finish; closing never kills apt and never schedules a restart.
+  Future<void> close() => _closeFuture ??= _close();
+
+  Future<void> _close() async {
+    _closed = true;
+    _enabled = false;
+    for (final listener in _closeListeners.toList()) {
+      listener();
+    }
+    _closeListeners.clear();
+    _completeScreen(_activeScreen, const UploadFailure(503, 'OTA service is closed'));
+    _completeScreen(_pendingScreen, const UploadFailure(503, 'OTA service is closed'));
+    _pendingScreen = null;
+    _pendingInfo = null;
+    _pendingOutput.clear();
+    _autostop?.cancel();
+    _initialCheck?.cancel();
+    _periodicCheck?.cancel();
+    _restartTimer?.cancel();
+    final operation = _operation;
+    operation?.cancellation.cancel('OTA service closed');
+    for (final client in _clients.toList()) {
+      _closeClient(client);
+    }
+    await _serverChanges;
+    final server = _server;
+    _server = null;
+    await server?.close(force: true);
+    await operation?.inputFinished.future;
+    _operation = null;
+    _info = _info.copyWith(status: OTAStatus.disabled);
+  }
+
+  _OTAOperation _beginOperation() {
+    final operation = _OTAOperation();
+    _operation = operation;
+    return operation;
+  }
+
+  void _checkOpen(_OTAOperation operation) {
+    if (_closed || !identical(_operation, operation)) {
+      throw UploadFailure(503, 'OTA service is closed');
+    }
+  }
+
+  Future<T> _network<T>(Future<T> future) => _untilClosed(future.timeout(_networkTimeout));
+
+  Future<T> _untilClosed<T>(Future<T> future) {
+    final result = Completer<T>();
+    void closed() {
+      if (!result.isCompleted) result.completeError(const UploadFailure(503, 'OTA service is closed'));
+    }
+
+    if (_closed) {
+      closed();
+    } else {
+      _closeListeners.add(closed);
+    }
+    future.then<void>(
+      (value) {
+        _closeListeners.remove(closed);
+        if (!result.isCompleted) result.complete(value);
+      },
+      onError: (Object error, StackTrace stack) {
+        _closeListeners.remove(closed);
+        if (!result.isCompleted) result.completeError(error, stack);
+      },
+    );
+    return result.future;
+  }
+
+  io.HttpClient _createHttpClient() {
+    final client = _downloadClientFactory();
+    client.connectionTimeout = const Duration(seconds: 60);
+    client.idleTimeout = const Duration(seconds: 60);
+    _clients.add(client);
+    return client;
+  }
+
+  void _closeClient(io.HttpClient client) {
+    _clients.remove(client);
+    client.close(force: true);
+  }
+
+  void _beginUpload(_OTAOperation operation) {
+    _checkOpen(operation);
+    operation.uploading = true;
+    operation.progressWatch.start();
+    _updateInfo(_info.copyWith(uploadingPercent: 0, exitCode: null, errorText: null, status: OTAStatus.uploading));
+  }
+
+  void _uploadProgress(_OTAOperation operation, int received, int? total) {
+    if (_closed || !identical(_operation, operation) || !operation.uploading) return;
+    final elapsed = operation.progressWatch.elapsedMicroseconds;
+    if (elapsed - operation.lastProgressMicros < 250000) return;
+    final percent = total != null && total > 0 ? (received / total * 100).clamp(0.0, 99.0).toDouble() : 0.0;
+    if (percent == _info.uploadingPercent) return;
+    operation.lastProgressMicros = elapsed;
+    _updateInfo(_info.copyWith(uploadingPercent: percent));
+  }
+
+  void _finishInput(_OTAOperation operation) {
+    if (!operation.inputFinished.isCompleted) operation.inputFinished.complete();
+    if (!operation.accepted || operation.releaseAfterInput) _releaseOperation(operation);
+  }
+
+  void _releaseOperation(_OTAOperation operation) {
+    if (!identical(_operation, operation)) return;
+    if (!operation.inputFinished.isCompleted) {
+      operation.releaseAfterInput = true;
+      return;
+    }
+    _operation = null;
+    if (_disableWhenIdle && !_closed) unawaited(_setEnabled(false));
+  }
+
+  void _recordFailure(Object error, StackTrace stackTrace) {
+    _log.warning('OTA operation failed', error, stackTrace);
+    _updateInfo(_info.copyWith(status: OTAStatus.issue, errorText: '$error', exitCode: null));
+  }
+
+  void _output(String output) {
+    _notify(OTAOutputCommand(id: RpcCommand.generateId(), output: output));
+  }
+
+  void _notify(RpcCommand command) {
+    if (_closed) return;
+    if (command is OTAGetInfoCommand) {
+      _pendingInfo = command;
+    } else if (command is OTAOutputCommand) {
+      final bytes = utf8.encode(command.output);
+      final remaining = _maxPendingOutputBytes - _pendingOutput.length;
+      if (remaining > 0) {
+        _pendingOutput.add(bytes.length <= remaining ? bytes : bytes.sublist(0, remaining));
+      }
+      if (bytes.length > remaining) {
+        final operation = _operation;
+        if (!(operation?.outputTruncated ?? _outputTruncatedWithoutOperation)) {
+          _log.warning('OTA frontend output queue full; truncating pending output');
+          if (operation != null) {
+            operation.outputTruncated = true;
+          } else {
+            _outputTruncatedWithoutOperation = true;
+          }
+        }
+      }
+    }
+    _drainNotifications();
+  }
+
+  _QueuedScreen _queueScreen(bool ready) {
+    final pending = _pendingScreen;
+    if (pending?.command.ready == ready) return pending!;
+    _completeScreen(pending, const UploadFailure(409, 'OTA screen request superseded'));
+    _pendingScreen = null;
+    final active = _activeScreen;
+    if (active?.command.ready == ready) return active!;
+    final screen = _QueuedScreen(OTAReadyCommand(id: RpcCommand.generateId(), ready: ready));
+    if (_closed) {
+      _completeScreen(screen, const UploadFailure(503, 'OTA service is closed'));
+    } else {
+      _pendingScreen = screen;
+      _drainNotifications();
+    }
+    return screen;
+  }
+
+  Future<void> _requestScreen(bool ready) {
+    final screen = _queueScreen(ready);
+    if (screen.completed) {
+      return screen.error == null ? Future<void>.value() : Future<void>.error(screen.error!);
+    }
+    final waiter = _ScreenWaiter();
+    screen.waiters.add(waiter);
+    waiter.timeout = Timer(_networkTimeout, () {
+      screen.waiters.remove(waiter);
+      waiter.completion.completeError(TimeoutException('OTA frontend did not respond', _networkTimeout));
+    });
+    return waiter.completion.future;
+  }
+
+  void _completeScreen(_QueuedScreen? screen, [Object? error, StackTrace? stack]) {
+    if (screen == null || screen.completed) return;
+    screen.completed = true;
+    screen.error = error;
+    for (final waiter in screen.waiters) {
+      waiter.timeout?.cancel();
+      if (error == null) {
+        waiter.completion.complete();
+      } else {
+        waiter.completion.completeError(error, stack);
+      }
+    }
+    screen.waiters.clear();
+  }
+
+  /// A stalled RPC retains its single slot until the underlying future settles.
+  /// Progress coalesces to the latest state; output has a fixed memory budget.
+  void _drainNotifications() {
+    if (_closed || _notificationInFlight) return;
+    RpcCommand command;
+    final screen = _pendingScreen;
+    if (screen != null) {
+      _pendingScreen = null;
+      _activeScreen = screen;
+      command = screen.command;
+    } else if (_pendingInfo != null) {
+      command = _pendingInfo!;
+      _pendingInfo = null;
+    } else if (_pendingOutput.isNotEmpty) {
+      command = OTAOutputCommand(id: RpcCommand.generateId(), output: utf8.decode(_pendingOutput.takeBytes(), allowMalformed: true));
+    } else {
+      return;
+    }
+    _notificationInFlight = true;
+    Future<RpcResult>.sync(() => _frontendService.send(command))
+        .then<void>(
+          (_) {
+            _completeScreen(screen);
+          },
+          onError: (Object error, StackTrace stack) {
+            _log.warning('Unable to notify OTA frontend', error, stack);
+            _completeScreen(screen, error, stack);
+          },
+        )
+        .whenComplete(() {
+          if (screen != null && identical(_activeScreen, screen)) _activeScreen = null;
+          _notificationInFlight = false;
+          _drainNotifications();
+        });
   }
 
   @override
@@ -318,10 +563,7 @@ class OTAService implements RpcService {
       case OTAGetInfoCommand.TYPE:
         return _executeOTAGetInfoCommand(command as OTAGetInfoCommand);
       default:
-        return _generateErrorResult(
-          new Exception("Unknown command: ${command.type}"),
-          command,
-        );
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
@@ -329,16 +571,10 @@ class OTAService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} Service ${new DateTime.now()}",
-    );
+    return new EchoCommandResult(id: command.id, resultText: "${command.text} Service ${new DateTime.now()}");
   }
 
-  Future<RpcErrorResult> _generateErrorResult(
-    Object e,
-    RpcCommand command,
-  ) async {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -347,69 +583,55 @@ class OTAService implements RpcService {
   }
 
   void _updateInfo(OTAInfo newValue) {
+    if (_closed) return;
     _info = newValue;
-    _frontendService.send(
-      OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info),
-    );
+    _notify(OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info));
   }
 
   Future<Response> _postOTAUploadPackage(Request request) async {
-    String filename = '';
-    int uploadedSize = 0;
-    String code = '';
-
-    final firmwareData = new io.BytesBuilder();
-    var multiPartR = request.multipart();
-    if (multiPartR == null /*!request.isMultipart*/ ) {
-      _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
-      return Response.ok('Not a multipart request');
-    }
-
-    var multipartFormData = request.formData();
-    if ( /*!request.isMultipartForm*/ multipartFormData == null) {
-      return Response.forbidden('Need multipart request');
-    }
-    _log.info('Parsed form multipart request');
-    var fullSize = request.contentLength!;
-    //200Mb
-    if (fullSize > 200 * 1024 * 1024) {
-      return Response.ok('Too big size');
-    }
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 0, status: OTAStatus.uploading),
-    );
-    await for (final formData
-        in multipartFormData.formData /*request.multipartFormData*/ ) {
-      _log.info('${formData.name}');
-      if (formData.name == 'code') {
-        code = await formData.part.readString();
-        _log.info('code="$code"');
-      } else if (formData.name == 'file') {
-        filename = formData.filename!;
-        _log.info('Filename "$filename"');
-        await formData.part.forEach((bytes) {
-          firmwareData.add(bytes);
-          uploadedSize += bytes.length;
-          _updateInfo(
-            _info.copyWith(uploadingPercent: (uploadedSize / fullSize * 100)),
-          );
-        });
+    if (_closed) return Response(503, body: 'OTA service is closed');
+    if (busy) return Response(409, body: 'An OTA operation is already active');
+    final operation = _beginOperation();
+    StagedUploadBatch? batch;
+    var authorized = false;
+    try {
+      batch = await _uploadReceiver.receiveMultipart(
+        request,
+        cancellation: operation.cancellation,
+        onField: (name, value) {
+          if (name != 'code' || authorized) {
+            throw UploadFailure(400, 'Expected one code field before the file');
+          }
+          if (value != _code) throw UploadFailure(403, 'Code error');
+          authorized = true;
+        },
+        beforeFile: (filename) {
+          if (!authorized) throw UploadFailure(403, 'Code must precede the file');
+          if (operation.uploading) throw UploadFailure(400, 'Expected one firmware file');
+          if (path.extension(filename) != '.deb') {
+            throw UploadFailure(415, 'Support only deb package');
+          }
+          _beginUpload(operation);
+        },
+        destinationFor: (filename) async {
+          await _folder.create(recursive: true);
+          return path.join(_folder.path, filename);
+        },
+        onProgress: (received, total) => _uploadProgress(operation, received, total),
+      );
+      if (!authorized || batch.files.length != 1) {
+        throw UploadFailure(400, 'Expected a code and one firmware file');
       }
+      await _acceptFirmware(operation, batch.files.single);
+      return Response.ok('Firmware uploaded; installation accepted');
+    } catch (e, st) {
+      if (!_closed && operation.uploading) _recordFailure(e, st);
+      final failure = uploadFailureFor(e);
+      return Response(failure.statusCode, body: failure.message);
+    } finally {
+      await batch?.cleanup();
+      _finishInput(operation);
     }
-    _log.info('file size: ${firmwareData.length}');
-    if (code != _code) {
-      _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
-      return Response.forbidden('Code error');
-    }
-    if (path.extension(filename) != '.deb') {
-      _updateInfo(_info.copyWith(uploadingPercent: 0, status: OTAStatus.ready));
-      return Response.forbidden('Support only deb package');
-    }
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 100, status: OTAStatus.uploading),
-    );
-    _processFirmware(filename, firmwareData.toBytes());
-    return Response.ok('Firmware uploaded');
   }
 
   static const _uploadForm =
@@ -426,7 +648,7 @@ class OTAService implements RpcService {
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
    <label for="file">Choose file to upload</label><Br>
-   <input type="file" id="file" name="file" multiple>
+   <input type="file" id="file" name="file" accept=".deb">
  </div>
  <div>
    <button>Submit</button>
@@ -437,20 +659,8 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAStop(Request request) {
-    _switchFrontendToSlideshowScreen();
+    _queueScreen(false);
     return Response.ok('Return to normal mode');
-  }
-
-  Future _switchFrontendToSlideshowScreen() {
-    return _frontendService.send(
-      OTAReadyCommand(id: RpcCommand.generateId(), ready: false),
-    );
-  }
-
-  Future _switchFrontendToOTAScreen() {
-    return _frontendService.send(
-      OTAReadyCommand(id: RpcCommand.generateId(), ready: true),
-    );
   }
 
   Response _getOTAStart(Request request) {
@@ -458,90 +668,78 @@ class OTAService implements RpcService {
       _autostop!.cancel();
     }
 
-    _switchFrontendToOTAScreen();
-    if (request.url.queryParameters.isNotEmpty &&
-        request.url.queryParameters['format'] == 'json') {
+    _queueScreen(true);
+    if (request.url.queryParameters.isNotEmpty && request.url.queryParameters['format'] == 'json') {
       return Response.ok(
         '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"},"status":"${_info.status.name}"}',
         headers: {'content-type': 'text/json; charset=utf-8'},
       );
     }
-    return Response.ok(
-      _uploadForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
-  void _processFirmware(String filename, io.Uint8List firmwareData) async {
-    _log.info('_processFirmware "${filename}" [${firmwareData.length}]');
-    if (!_folder.existsSync()) {
-      await _folder.create();
+  Future<void> _acceptFirmware(_OTAOperation operation, StagedUploadFile staged) async {
+    _checkOpen(operation);
+    if (await staged.temporary.length() == 0) {
+      throw UploadFailure(400, 'Firmware file is empty');
     }
-    final fullFilename = path.join(_folder.path, filename);
-    await io.File(fullFilename).openWrite()
-      ..add(firmwareData)
-      ..close();
+    final package = await staged.publish();
+    _checkOpen(operation);
+    _output('\n\rSave firmware to "${package.path}"\n\r');
+    _updateInfo(_info.copyWith(uploadingPercent: 100));
+    operation.accepted = true;
+    unawaited(_installFirmware(operation, package));
+  }
 
-    _frontendService.send(
-      OTAOutputCommand(
-        id: RpcCommand.generateId(),
-        output: '\n\rSave firmware to "$fullFilename"\n\r',
-      ),
-    );
-    _updateInfo(
-      _info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling),
-    );
-
-    var process = await io.Process.start(
-      'sudo',
-      ['apt-get', '-f', '-y', 'install', '$fullFilename'],
-      environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'},
-    );
-    process.stdout.cast<List<int>>().transform(utf8.decoder).listen((str) {
-      _frontendService.send(
-        OTAOutputCommand(id: RpcCommand.generateId(), output: str),
+  Future<void> _installFirmware(_OTAOperation operation, io.File package) async {
+    var awaitingRestart = false;
+    try {
+      _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling));
+      final exitCode = await _installer.install(
+        package,
+        onOutput: (output) {
+          if (!_closed) _output(output);
+        },
       );
-    });
-    process.stderr.cast<List<int>>().transform(utf8.decoder).listen((str) {
-      _frontendService.send(
-        OTAOutputCommand(id: RpcCommand.generateId(), output: str),
+      if (_closed) return;
+      _output('\n\rExit code: $exitCode');
+      _updateInfo(
+        _info.copyWith(
+          uploadingPercent: 100,
+          exitCode: exitCode,
+          errorText: exitCode == 0 ? null : 'Installer exited with code $exitCode',
+          status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue,
+        ),
       );
-    });
-    var exitCode = await process.exitCode;
-    _frontendService.send(
-      OTAOutputCommand(
-        id: RpcCommand.generateId(),
-        output: '\n\rExit code: $exitCode',
-      ),
-    );
-    _updateInfo(
-      _info.copyWith(
-        uploadingPercent: 100,
-        exitCode: exitCode,
-        status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue,
-      ),
-    );
-    if (exitCode == 0) {
-      Timer(const Duration(seconds: 5), () {
-        _updateInfo(
-          _info.copyWith(
-            uploadingPercent: 100,
-            exitCode: 0,
-            status: OTAStatus.preReboot,
-          ),
-        );
-        Timer(const Duration(seconds: 5), () {
-          io.Process.start('sudo', ['service', 'dslideshow', 'restart']);
+      if (exitCode == 0) {
+        awaitingRestart = true;
+        _restartTimer = Timer(_restartDelay, () {
+          if (_closed) return;
+          _updateInfo(_info.copyWith(status: OTAStatus.preReboot));
+          _restartTimer = Timer(_restartDelay, () {
+            unawaited(_restart(operation));
+          });
         });
-      });
+      }
+    } catch (e, st) {
+      if (!_closed) _recordFailure(e, st);
+    } finally {
+      if (!awaitingRestart) _releaseOperation(operation);
+    }
+  }
+
+  Future<void> _restart(_OTAOperation operation) async {
+    try {
+      if (!_closed) await _installer.restart();
+    } catch (e, st) {
+      if (!_closed) _recordFailure(e, st);
+    } finally {
+      _releaseOperation(operation);
     }
   }
 
   Response _getOTAGetConfig(Request request) {
-    return Response.ok(
-      _downloadConfigForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_downloadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   static const _downloadConfigForm =
@@ -567,16 +765,12 @@ class OTAService implements RpcService {
 """;
 
   Future<Response> _postOTAGetConfig(Request request) async {
-    var content = await request
-        .readAsString(); //.transform(utf8.decoder).join();
+    var content = await request.readAsString(); //.transform(utf8.decoder).join();
     var queryParams = Uri(query: content).queryParameters;
     if (queryParams['code'] != _code) {
       return Response.forbidden('Incorrect code');
     }
-    return Response.ok(
-      io.File(config.fullConfigFilename).readAsStringSync(),
-      headers: {'Content-Type': 'text/plain; charset=utf-8'},
-    );
+    return Response.ok(io.File(config.fullConfigFilename).readAsStringSync(), headers: {'Content-Type': 'text/plain; charset=utf-8'});
   }
 
   static const _uploadConfigForm =
@@ -604,10 +798,7 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAUploadConfig(Request request) {
-    return Response.ok(
-      _uploadConfigForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_uploadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   Future<Response> _postOTAUploadConfig(Request request) async {
@@ -628,8 +819,7 @@ class OTAService implements RpcService {
       return Response.ok('Too big size');
     }
 
-    await for (final formData
-        in multipartForm.formData /*request.multipartFormData*/ ) {
+    await for (final formData in multipartForm.formData /*request.multipartFormData*/ ) {
       _log.info('${formData.name}');
       if (formData.name == 'code') {
         code = await formData.part.readString();
@@ -649,14 +839,35 @@ class OTAService implements RpcService {
         ..openWrite()
         ..writeAsStringSync(configData);
     } catch (e, st) {
-      _log.warning(
-        "Parse & save config to '${config.fullConfigFilename}'",
-        e,
-        st,
-      );
+      _log.warning("Parse & save config to '${config.fullConfigFilename}'", e, st);
       return Response.forbidden('Error: $e');
     }
     _log.info('Config updated');
     return Response.ok('Config updated');
   }
+}
+
+class _OTAOperation {
+  final UploadCancellationToken cancellation = UploadCancellationToken();
+  final Completer<void> inputFinished = Completer<void>();
+  final Stopwatch progressWatch = Stopwatch();
+  int lastProgressMicros = 0;
+  bool uploading = false;
+  bool accepted = false;
+  bool releaseAfterInput = false;
+  bool outputTruncated = false;
+}
+
+class _QueuedScreen {
+  final OTAReadyCommand command;
+  final Set<_ScreenWaiter> waiters = {};
+  bool completed = false;
+  Object? error;
+
+  _QueuedScreen(this.command);
+}
+
+class _ScreenWaiter {
+  final Completer<void> completion = Completer<void>();
+  Timer? timeout;
 }

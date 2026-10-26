@@ -10,6 +10,7 @@ import 'package:config_app/features/user/domain/repository/user_repository.dart'
 import 'package:config_app/features/auth/data/repository/authentication_repository.dart';
 import 'package:config_app/features/user/data/repository/user_repository.dart';
 import 'package:get_it/get_it.dart';
+
 // import 'package:wa_api_gen/wa_api_gen.dart';
 // import 'package:wa_common/environment.dart';
 // import 'package:wa_common/injection_container.dart' as common;
@@ -17,26 +18,34 @@ import 'package:get_it/get_it.dart';
 // import 'package:workagree_app/src/providers/scaffold_provider_impl.dart';
 
 final sl = GetIt.instance;
-Future<void> initializeAllDependencies(
-    {String? apiUrl,
-    String webSocketHost = "localhost",
-    int webSocketPort = 8000}) async {
-  sl.registerSingleton<RealtimeService>(ClientServiceImpl());
+Future<void> initializeAllDependencies({
+  String? apiUrl,
+  String webSocketHost = "localhost",
+  int webSocketPort = 8000,
+}) async {
+  final realtimeClient = ClientServiceImpl();
+  sl.registerSingleton<RealtimeService>(
+    realtimeClient,
+    dispose: (_) => realtimeClient.dispose(),
+  );
   sl.registerSingleton<UserRepository>(UserRepositoryImpl());
   sl.registerSingleton<AuthenticationRepository>(
-      AuthenticationRepositoryImpl(client: sl()));
+    AuthenticationRepositoryImpl(client: sl()),
+  );
   sl.registerSingleton<PhotoframeRepository>(PhotoframeRepository(sl()));
 
   sl.registerSingleton<UploadQueueBloc>(UploadQueueBloc(client: sl()));
-  
+
   sl.registerSingleton<PermissionService>(PermissionService());
 
-  sl.registerSingleton(AuthenticationBloc(
-    authenticationRepository: sl(),
-    permissionService: sl(),
-    // ignore: no-equal-arguments
-    userRepository: sl(),
-  ));
+  sl.registerSingleton(
+    AuthenticationBloc(
+      authenticationRepository: sl(),
+      permissionService: sl(),
+      // ignore: no-equal-arguments
+      userRepository: sl(),
+    ),
+  );
 
   /*final api = WaApiGen(interceptors: [], basePathOverride: apiUrl);
   sl.registerSingleton<Dio>(api.dio);

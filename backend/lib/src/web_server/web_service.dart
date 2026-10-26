@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
-import 'dart:typed_data';
+
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
+import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
 import 'package:path/path.dart' as path;
 import 'package:http_parser/http_parser.dart' as hp;
-import 'package:shelf_multipart/shelf_multipart.dart';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -28,9 +28,14 @@ import 'package:mime/mime.dart' as mime;
 class WebService {
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
-  final _cacheFolder = new io.Directory(
-    path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
-  );
+  final io.Directory _cacheFolder;
+  final StreamingUploadReceiver _uploadReceiver;
+  final int _maxConcurrentUploads;
+  final _uploads = <UploadCancellationToken, Completer<void>>{};
+  bool _closed = false;
+  Future<void> _serverTransition = Future<void>.value();
+
+  Handler get handler => _router.call;
 
   final RemoteService _remoteBackendService;
   String _code = '__';
@@ -44,6 +49,7 @@ class WebService {
   bool get enabled => _enabled;
 
   void set enabled(bool newvalue) {
+    if (_closed) return;
     if (_config.alwaysEnabled) {
       newvalue = true;
     }
@@ -51,11 +57,17 @@ class WebService {
       return;
     }
     _enabled = newvalue;
-    if (newvalue) {
-      _startWebServer();
-    } else {
-      _stopWebServer();
-    }
+    _serverTransition = _serverTransition
+        .then((_) async {
+          if (_closed || !_enabled) {
+            await _stopWebServer();
+          } else {
+            await _startWebServer();
+          }
+        })
+        .catchError((Object error, StackTrace stack) {
+          _log.severe('Unable to update web server', error, stack);
+        });
   }
 
   String _generateCode() {
@@ -99,7 +111,24 @@ class WebService {
     };
   }
 
-  WebService(this._appConfig, this._config, this._remoteBackendService) {
+  WebService(
+    this._appConfig,
+    this._config,
+    this._remoteBackendService, {
+    io.Directory? cacheDirectory,
+    StreamingUploadReceiver? uploadReceiver,
+    int maxConcurrentUploads = 2,
+    bool startServer = true,
+  }) : _cacheFolder =
+           cacheDirectory ??
+           io.Directory(
+             path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
+           ),
+       _uploadReceiver = uploadReceiver ?? StreamingUploadReceiver(),
+       _maxConcurrentUploads = maxConcurrentUploads {
+    if (maxConcurrentUploads <= 0) {
+      throw ArgumentError.value(maxConcurrentUploads, 'maxConcurrentUploads');
+    }
     updateCode();
     _router.get(WebServerRoutes.info, _getInfo);
     _router.get(WebServerRoutes.webSocket, _webSocketHandler);
@@ -120,7 +149,7 @@ class WebService {
     );
     _router.mount('/', virtualDir.router);
 
-    enabled = _config.alwaysEnabled;
+    if (startServer) enabled = _config.alwaysEnabled;
     if (_config.alwaysEnabled) {
       _log.warning('Web server always on');
     }
@@ -213,59 +242,81 @@ class WebService {
   }
 
   Future<Response> _postUploadMedia(Request request, String code) async {
-    if (code != _code) {
-      return Response.forbidden('Code is incorrect');
-    }
-    String filename = '';
-    int uploadedSize = 0;
-
-    final mediaData = BytesBuilder();
-    var multiPartR = request.multipart();
-    if (multiPartR == null /*!request.isMultipart*/ ) {
-      return Response.badRequest(body: 'Not a multipart request');
+    if (_closed) return Response(503, body: 'Web server is closed');
+    if (code != _code) return Response.forbidden('Code is incorrect');
+    if (_uploads.length >= _maxConcurrentUploads) {
+      return Response(
+        429,
+        body: 'Upload slots are busy',
+        headers: {'retry-after': '1'},
+      );
     }
 
-    var multipartFormData = request.formData();
-    if ( /*!request.isMultipartForm*/ multipartFormData == null) {
-      return Response.forbidden('Need multipart request');
-    }
-    var fullSize = request.contentLength!;
-    //200Mb
-    if (fullSize > 200 * 1024 * 1024) {
-      return Response.ok('Too big size (200Mb>)');
-    }
-    await for (final formData
-        in multipartFormData.formData /*request.multipartFormData*/ ) {
-      // if (formData.name == 'code') {
-      //   code = await formData.part.readString();
-      //   _log.info('code="$code"');
-      // } else
-      if (formData.name == 'file') {
-        filename = formData.filename!;
-        _log.info('Detect file "$filename"');
-        await formData.part.forEach((bytes) {
-          mediaData.add(bytes);
-          uploadedSize += bytes.length;
-          _log.info(
-            "Uploading '$filename' - ${(uploadedSize / fullSize * 100).toStringAsFixed(1)}",
-          );
-        });
-      }
-    }
-
+    final cancellation = UploadCancellationToken();
+    final done = Completer<void>();
+    _uploads[cancellation] = done;
+    StagedUploadBatch? batch;
+    final published = <String>[];
+    final progressClock = Stopwatch()..start();
+    var lastProgress = -250;
     try {
-      _processMediaFile(filename, mediaData);
-    } catch (e) {
-      return Response.forbidden('Upload error: $e');
+      batch = await _uploadReceiver.receiveMultipart(
+        request,
+        cancellation: cancellation,
+        destinationFor: _mediaDestination,
+        onField: (name, value) {
+          throw UploadFailure(400, 'Unexpected form field');
+        },
+        onProgress: (received, total) {
+          final now = progressClock.elapsedMilliseconds;
+          if (now - lastProgress < 250) return;
+          lastProgress = now;
+          _log.fine('Receiving media: $received bytes');
+        },
+      );
+      for (final file in batch.files) {
+        if (_closed || cancellation.isCancelled) {
+          throw UploadFailure(503, 'Upload cancelled');
+        }
+        await file.publish();
+        published.add(file.filename);
+      }
+      _log.info('Media upload completed: ${published.length} file(s)');
+      return Response.ok('File uploaded');
+    } catch (error, stack) {
+      final failure = uploadFailureFor(error);
+      _log.warning('Media upload failed (${failure.statusCode})', error, stack);
+      return Response(
+        failure.statusCode,
+        body: json.encode({'error': failure.message, 'published': published}),
+        headers: {'content-type': 'application/json; charset=utf-8'},
+      );
+    } finally {
+      try {
+        await batch?.cleanup();
+      } catch (error, stack) {
+        _log.warning('Unable to clean up media upload', error, stack);
+      }
+      _uploads.remove(cancellation);
+      done.complete();
     }
-    return Response.ok('File uploaded');
   }
 
-  void _startWebServer() async {
+  // Path validation is kept unchanged; hardening paths is a separate stage.
+  String _mediaDestination(String itemPath) {
+    itemPath = Uri.decodeFull(itemPath);
+    final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));
+    if (!fullFilename.startsWith(_cacheFolder.path)) {
+      throw UploadFailure(400, 'Outside cache folder');
+    }
+    return fullFilename;
+  }
+
+  Future<void> _startWebServer() async {
     _log.info('_startServer');
     if (_server != null) {
       _log.info('Is the server running?');
-      _stopWebServer();
+      return;
     }
     //HTTPS? securityContext: io.SecurityContext()
     io.HttpServer server = await io.serve(
@@ -276,6 +327,10 @@ class WebService {
       backlog: 32,
       shared: true,
     );
+    if (_closed || !_enabled) {
+      await server.close(force: true);
+      return;
+    }
     _server = server;
 
     server.idleTimeout = const Duration(seconds: 120);
@@ -288,17 +343,27 @@ class WebService {
     );
   }
 
-  void _stopWebServer() {
-    _log.info('_stopServer');
-    if (_server != null) {
-      final tmpUsers = <WebSocketUser>[]..addAll(_activeUsers);
-      _activeUsers.clear();
-      tmpUsers.forEach((element) {
-        element.disconnect();
-      });
-      _server?.close(force: true);
-      _server = null;
+  Future<void> _stopWebServer() async {
+    for (final cancellation in _uploads.keys.toList()) {
+      cancellation.cancel();
     }
+    final users = List<WebSocketUser>.of(_activeUsers);
+    _activeUsers.clear();
+    for (final user in users) {
+      user.disconnect();
+    }
+    final server = _server;
+    _server = null;
+    await server?.close(force: true);
+  }
+
+  Future<void> close() async {
+    _closed = true;
+    _enabled = false;
+    final pending = _uploads.values.map((done) => done.future).toList();
+    await _stopWebServer();
+    await _serverTransition;
+    await Future.wait(pending);
   }
 
   Response _getItemsList(Request request, String code) {
@@ -400,23 +465,6 @@ class WebService {
       headers: headers,
     );
   }
-
-  Future<Future<io.File>> _processMediaFile(
-    String itemPath,
-    BytesBuilder mediaData,
-  ) async {
-    itemPath = Uri.decodeFull(itemPath);
-    _log.info('processMediaFile "${itemPath}" size:${mediaData.length}');
-    final fullFilename = path.absolute(path.join(_cacheFolder.path, itemPath));
-    if (!fullFilename.startsWith(_cacheFolder.path)) {
-      throw Exception('Outside cache folder');
-    }
-    final file = io.File(fullFilename);
-
-    await file.parent.create(recursive: true);
-
-    return file.writeAsBytes(mediaData.toBytes(), flush: true);
-  }
 }
 
 enum WebSocketUserStatus { anonymous, authorization, authorized }
@@ -484,9 +532,9 @@ class WebSocketUser {
   void _parseMessage(dynamic message) {
     try {
       _log.info('user> "$message"');
-      final msg =
-          serializers.deserialize(json.decode(message.toString()))
-              as WebSocketResult;
+      final msg = serializers.deserialize(
+        json.decode(message.toString()),
+      ) as WebSocketResult;
       if (msg is WebSocketCommand) {
         _execCommand(msg);
       } else {

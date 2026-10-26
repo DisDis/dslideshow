@@ -14,10 +14,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final _log = Logger('LoginBloc');
   static final defaultConnectUri = 'ws://${Uri.base.host}:${Uri.base.port}/ws';
 
-  LoginBloc({
-    required AuthenticationRepository authenticationRepository,
-  })  : _authenticationRepository = authenticationRepository,
-        super( kIsWeb? LoginState(connectUri:  ConnectUri.pure(defaultValue: defaultConnectUri)): const LoginState()) {
+  LoginBloc({required AuthenticationRepository authenticationRepository})
+    : _authenticationRepository = authenticationRepository,
+      super(
+        kIsWeb
+            ? LoginState(
+                connectUri: ConnectUri.pure(defaultValue: defaultConnectUri),
+              )
+            : const LoginState(),
+      ) {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginConnectUriChanged>(_onConnectUriChanged);
@@ -32,10 +37,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     final username = Username.dirty(event.username);
-    emit(state.copyWith(
-      username: username,
-      isValid: Formz.validate([state.password, username, state.connectUri]),
-    ));
+    emit(
+      state.copyWith(
+        username: username,
+        isValid: Formz.validate([state.password, username, state.connectUri]),
+      ),
+    );
   }
 
   void _onConnectUriChanged(
@@ -43,10 +50,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     final connectUri = ConnectUri.dirty(event.connectUri);
-    emit(state.copyWith(
-      connectUri: connectUri,
-      isValid: Formz.validate([state.password, state.username, connectUri]),
-    ));
+    emit(
+      state.copyWith(
+        connectUri: connectUri,
+        isValid: Formz.validate([state.password, state.username, connectUri]),
+      ),
+    );
   }
 
   void _onConnectUriAutoChanged(
@@ -57,10 +66,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       return;
     }
     final connectUri = ConnectUri.dirty(defaultConnectUri);
-    emit(state.copyWith(
-      connectUri: connectUri,
-      isValid: Formz.validate([state.password, state.username, connectUri]),
-    ));
+    emit(
+      state.copyWith(
+        connectUri: connectUri,
+        isValid: Formz.validate([state.password, state.username, connectUri]),
+      ),
+    );
   }
 
   void _onPasswordChanged(
@@ -68,17 +79,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) {
     final password = Password.dirty(event.password);
-    emit(state.copyWith(
-      password: password,
-      isValid: Formz.validate([password, state.username, state.connectUri]),
-    ));
+    emit(
+      state.copyWith(
+        password: password,
+        isValid: Formz.validate([password, state.username, state.connectUri]),
+      ),
+    );
   }
 
-  void _onSubmitted(
+  Future<void> _onSubmitted(
     LoginSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    if (state.isValid) {
+    if (state.isValid && !state.status.isInProgress) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await _authenticationRepository.logIn(
@@ -88,7 +101,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e, st) {
-        _log.severe("Error", e, st);
+        _log.severe('Login failed (${e.runtimeType})', null, st);
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }
     }

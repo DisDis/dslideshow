@@ -8,12 +8,11 @@ import 'package:logging/logging.dart';
 final Logger _log = Logger('main');
 
 Future _setup() async {
-  _log.info("Url: '${Uri.base}'");
   final currentUrl = Uri.parse(Uri.base.toString());
   final apiUrl = currentUrl.scheme == 'file'
       ? null
       : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
-  _log.info("currentUrl: '${Uri.base}' , apiUrl: '$apiUrl'");
+  _log.info('Initializing application dependencies');
   await initializeAllDependencies(apiUrl: apiUrl);
 }
 
@@ -23,7 +22,5 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initEnvironment();
   await _setup();
-  runApp(
-    const App(),
-  );
+  runApp(const App());
 }

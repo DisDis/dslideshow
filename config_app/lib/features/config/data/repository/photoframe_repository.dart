@@ -15,20 +15,22 @@ class PhotoframeRepository {
   static const prettyPrintJSONEncode = JsonEncoder.withIndent('  ');
 
   Future<AppConfig> getConfig() async {
-    final result = await _client
-            .send(WSConfigDownloadCommand(id: WebSocketCommand.generateId()))
-        as WSConfigDownloadResult;
-    _log.info('Recived config:');
+    final result = await _client.send(
+      WSConfigDownloadCommand(id: WebSocketCommand.generateId()),
+    ) as WSConfigDownloadResult;
     var jsonMsg = json.decode(result.content);
     final config = AppConfig.fromJson(jsonMsg);
-    _log.info(prettyPrintJSONEncode.convert(jsonMsg));
+    _log.info('Configuration downloaded');
     return config;
   }
 
   Future<WebSocketResult> saveConfig(AppConfig config) {
-    return _client.send(WSConfigUploadCommand(
+    return _client.send(
+      WSConfigUploadCommand(
         id: WebSocketCommand.generateId(),
-        content: prettyPrintJSONEncode.convert(config.toJson())));
+        content: prettyPrintJSONEncode.convert(config.toJson()),
+      ),
+    );
   }
 
   void dispose() {

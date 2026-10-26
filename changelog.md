@@ -1,5 +1,15 @@
 # Unreleased
 
+* Stream media and manual/automatic OTA downloads into temporary files, enforce
+  actual byte and concurrency limits, and await close before atomic publication.
+  Authenticate legacy OTA uploads before the file body, serialize installation,
+  and add local failure/lifecycle regressions with a fake installer.
+
+* Harden config_app WebSocket/RPC connection ownership, client close codes,
+  handshake/request timeouts and cleanup. Cancel stale authentication attempts,
+  handle network-operation failures, and remove sensitive payloads from client
+  diagnostics. Add lifecycle/error regressions and the staged improvement plan.
+
 # 10.1.0+1 — 2026-10-25
 
 * Align generated clock JSON defaults with the configured 50% time font size;
