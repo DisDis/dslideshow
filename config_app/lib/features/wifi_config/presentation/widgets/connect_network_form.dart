@@ -7,8 +7,11 @@ class ConnectNetworkForm extends StatefulWidget {
   final String initialSSID;
   final WifiTabBloc wifiBloc;
 
-  const ConnectNetworkForm(
-      {super.key, required this.initialSSID, required this.wifiBloc});
+  const ConnectNetworkForm({
+    super.key,
+    required this.initialSSID,
+    required this.wifiBloc,
+  });
 
   @override
   State<ConnectNetworkForm> createState() => _ConnectNetworkFormState();
@@ -45,7 +48,9 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.initialSSID.isEmpty ? context.localizations.add_network : context.localizations.connect_to_network,
+              widget.initialSSID.isEmpty
+                  ? context.localizations.add_network
+                  : context.localizations.connect_to_network,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
@@ -56,8 +61,9 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
                 prefixIcon: const Icon(Icons.wifi_find),
                 border: const OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value == null || value.isEmpty ? context.localizations.required_field : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? context.localizations.required_field
+                  : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -68,9 +74,12 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
                 prefixIcon: const Icon(Icons.key),
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+                  tooltip: _obscurePassword
+                      ? context.localizations.show_secret
+                      : context.localizations.hide_secret,
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                  ),
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
@@ -87,10 +96,13 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
                 FilledButton.icon(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      widget.wifiBloc.add(AddWifiTabEvent(
+                      widget.wifiBloc.add(
+                        AddWifiTabEvent(
                           "${_ssidController.text} connection",
                           _ssidController.text,
-                          _passwordController.text));
+                          _passwordController.text,
+                        ),
+                      );
                       Navigator.pop(context);
                     }
                   },
@@ -98,7 +110,7 @@ class _ConnectNetworkFormState extends State<ConnectNetworkForm> {
                   label: Text(context.localizations.connect_button),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

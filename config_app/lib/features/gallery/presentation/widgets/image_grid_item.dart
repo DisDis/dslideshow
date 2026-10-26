@@ -1,15 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
 import 'package:flutter/material.dart';
 
 class ImageGridItem extends StatelessWidget {
   final GalleryItem item;
-  const ImageGridItem({
-    super.key,
-    required this.item,
-  });
+  const ImageGridItem({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +22,20 @@ class ImageGridItem extends StatelessWidget {
           ),
         ),
         errorWidget: (context, url, error) => Container(
-          color: AppColors.imageErrorBackground,
+          color: Theme.of(context).colorScheme.errorContainer,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.broken_image, color: AppColors.imageErrorIcon),
-              Text(context.localizations.error_text, style: const TextStyle(fontSize: 10)),
+              Icon(
+                Icons.broken_image,
+                color: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+              Text(
+                context.localizations.error_text,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+              ),
             ],
           ),
         ),

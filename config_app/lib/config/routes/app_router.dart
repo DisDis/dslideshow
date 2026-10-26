@@ -11,8 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:config_app/features/power/config/router.dart'
-    as web_config;
+import 'package:config_app/features/power/config/router.dart' as web_config;
 import 'package:config_app/features/wifi_config/config/router.dart'
     as wifi_config;
 import 'package:config_app/features/gallery/config/router.dart' as gallery;
@@ -24,26 +23,13 @@ const _defaultPath = '/splash';
 const _loginPath = '/login';
 const _homePath = '/home';
 
-//TODO: Fix it
-String _lastPath = _defaultPath;
-
 // ignore: long-method
 GoRouter createAppRouter(BuildContext context) {
-  return GoRouter(
-    debugLogDiagnostics: kDebugMode,
+  return _AppRouter(
     routes: [
-      GoRoute(
-        path: _loginPath,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: _homePath,
-        builder: (context, state) => const HomePage(),
-      ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const HomePage(),
-      ),
+      GoRoute(path: _loginPath, builder: (context, state) => const LoginPage()),
+      GoRoute(path: _homePath, builder: (context, state) => const HomePage()),
+      GoRoute(path: '/', builder: (context, state) => const HomePage()),
       ota.createRoute(context),
       web_config.createRoute(context),
       wifi_config.createRoute(context),
@@ -55,36 +41,67 @@ GoRouter createAppRouter(BuildContext context) {
         builder: (context, state) => const SplashPage(),
       ),
     ],
-    initialLocation: _lastPath /*_defaultPath*/,
+    initialLocation: _defaultPath,
 
     // redirect to the login page if the user is not logged in
     redirect: (BuildContext context, GoRouterState state) {
       final authState = context.read<AuthenticationBloc>().state;
-      final location = state.uri.toString();
-      if (location != _defaultPath &&
-          authState is! AuthenticationAuthenticatedState) {
-        return _loginPath;
+      final location = state.uri.path;
+      // There is no automatic session restoration. Read the current state on
+      // the first parse as well: its initial status may predate the widget tree.
+      if (authState is! AuthenticationAuthenticatedState) {
+        return location == _loginPath ? null : _loginPath;
       }
-      if (authState is AuthenticationAuthenticatedState &&
-          (location == _loginPath || location == _defaultPath)) {
+      if (location == _loginPath || location == _defaultPath) {
         return _homePath;
       }
-      _lastPath = location;
       return null;
     },
 
     // changes on the listenable will cause the router to refresh it's route
-    refreshListenable:
-        _GoRouterRefreshStream(context.read<AuthenticationBloc>().stream),
+    refreshListenable: _GoRouterRefreshStream(
+      context.read<AuthenticationBloc>().stream,
+    ),
   );
+}
+
+/// Owns the authentication listener for exactly the lifetime of this router.
+class _AppRouter extends GoRouter {
+  factory _AppRouter({
+    required List<RouteBase> routes,
+    required String initialLocation,
+    required GoRouterRedirect redirect,
+    required _GoRouterRefreshStream refreshListenable,
+  }) {
+    final config = ValueNotifier(
+      RoutingConfig(routes: routes, redirect: redirect),
+    );
+    return _AppRouter._(config, refreshListenable, initialLocation);
+  }
+
+  _AppRouter._(this._config, this._refresh, String initialLocation)
+    : super.routingConfig(
+        routingConfig: _config,
+        refreshListenable: _refresh,
+        initialLocation: initialLocation,
+        debugLogDiagnostics: kDebugMode,
+      );
+
+  final ValueNotifier<RoutingConfig> _config;
+  final _GoRouterRefreshStream _refresh;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refresh.dispose();
+    _config.dispose();
+  }
 }
 
 class _GoRouterRefreshStream extends ChangeNotifier {
   _GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-          (dynamic _) => notifyListeners(),
-        );
+    _subscription = stream.listen((dynamic _) => notifyListeners());
   }
 
   late final StreamSubscription<dynamic> _subscription;

@@ -99,6 +99,144 @@ void main() {
     );
   });
   test(
+    'clock fonts and weekday have compatible defaults and enum fallbacks',
+    () {
+      for (final json in <Map<String, dynamic>>[
+        {},
+        {'timeFont': null, 'dateFont': null},
+        {'timeFont': 'future-font', 'dateFont': 'future-font'},
+        {'timeFont': 1, 'dateFont': true},
+      ]) {
+        final options = ClockScreenOptions.fromJson(json);
+        expect(options.timeFont, ClockFont.system);
+        expect(options.dateFont, ClockFont.system);
+        expect(options.showWeekday, isFalse);
+      }
+      for (final font in ClockFont.values) {
+        final screen = SpecialScreenConfig(
+          id: 'clock',
+          type: SpecialScreenType.clock,
+          options: ClockScreenOptions(
+            timeFont: font,
+            dateFont: ClockFont.fredoka,
+            showDate: false,
+            showWeekday: true,
+          ),
+        );
+        final cloned = screen.clone();
+        final options = cloned.options as ClockScreenOptions;
+        expect(options.timeFont, font);
+        expect(options.dateFont, ClockFont.fredoka);
+        expect(options.showWeekday, isTrue);
+        expect(options.showDate, isFalse);
+        expect(cloned.toJson(), screen.toJson());
+        expect(
+          SpecialScreenConfig.fromJson(screen.toStorageJson(stripDefaults))
+              .toJson(),
+          screen.toJson(),
+        );
+      }
+    },
+  );
+  test(
+    'camera timeout accepts finite milliseconds within the configured bounds',
+    () {
+      expect(CamerasScreenOptions().requestTimeoutMs, 10000);
+      expect(CamerasScreenOptions.fromJson({}).requestTimeoutMs, 10000);
+      for (final value in <dynamic>[
+        null,
+        -1,
+        0,
+        99,
+        99.99,
+        120001,
+        double.nan,
+        double.infinity,
+        double.negativeInfinity,
+        '1000',
+        true,
+        [],
+        {},
+      ]) {
+        expect(
+          CamerasScreenOptions.fromJson({'requestTimeoutMs': value})
+              .requestTimeoutMs,
+          10000,
+          reason: 'Invalid timeout $value must use the default',
+        );
+      }
+      for (final value in <num>[100, 250, 1000.9, 10000, 120000]) {
+        final options = CamerasScreenOptions.fromJson({
+          'requestTimeoutMs': value,
+        });
+        expect(options.requestTimeoutMs, value.toInt());
+        expect(
+          CamerasScreenOptions.fromJson(options.toJson()).requestTimeoutMs,
+          value.toInt(),
+        );
+      }
+    },
+  );
+  test(
+    'AppConfig stores new options and strips them when reset to defaults',
+    () {
+      final config = AppConfig.fromJson({});
+      final clockOptions = ClockScreenOptions(
+        timeFont: ClockFont.orbitron,
+        dateFont: ClockFont.roboto,
+        showWeekday: true,
+      );
+      final cameraOptions = CamerasScreenOptions(requestTimeoutMs: 1500);
+      config.slideshow.specialScreens.addAll([
+        SpecialScreenConfig(
+          id: 'clock',
+          type: SpecialScreenType.clock,
+          options: clockOptions,
+        ),
+        SpecialScreenConfig(
+          id: 'cameras',
+          type: SpecialScreenType.cameras,
+          options: cameraOptions,
+        ),
+      ]);
+      final compact = config.toStorageJson();
+      expect(compact, {
+        'slideshow': {
+          'specialScreens': [
+            {
+              'id': 'clock',
+              'type': 'clock',
+              'options': {
+                'timeFont': 'orbitron',
+                'dateFont': 'roboto',
+                'showWeekday': true,
+              },
+            },
+            {
+              'id': 'cameras',
+              'type': 'cameras',
+              'options': {'requestTimeoutMs': 1500},
+            },
+          ],
+        },
+      });
+      expect(AppConfig.fromJson(compact).toJson(), config.toJson());
+      clockOptions
+        ..timeFont = ClockFont.system
+        ..dateFont = ClockFont.system
+        ..showWeekday = false;
+      cameraOptions.requestTimeoutMs = 10000;
+      expect(config.toStorageJson(), {
+        'slideshow': {
+          'specialScreens': [
+            {'id': 'clock', 'type': 'clock'},
+            {'id': 'cameras', 'type': 'cameras'},
+          ],
+        },
+      });
+    },
+  );
+  test(
     'old configuration has no special screens and saves without the section',
     () {
       final config = AppConfig.fromJson({});

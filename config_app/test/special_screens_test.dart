@@ -2,16 +2,176 @@ import 'package:config_app/features/config/presentation/pages/special_screens_pa
 import 'package:config_app/features/config/presentation/pages/special_screen_editor_page.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_i18n/i18n.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget app(Widget home) => MaterialApp(
+Widget app(Widget home, {Locale? locale}) => MaterialApp(
+  locale: locale,
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: home,
 );
 
 void main() {
+  testWidgets(
+    'Check camera validates visible raw URL instead of requesting last valid URL',
+    (tester) async {
+      var sessions = 0;
+      final original =
+          SpecialScreenRenderers.definitions[SpecialScreenType.cameras]!;
+      SpecialScreenRenderers.definitions[SpecialScreenType.cameras] =
+          SpecialScreenRenderer((config, _) {
+            sessions++;
+            return _UnavailableSession(config);
+          }, (_) => const SizedBox());
+      addTearDown(
+        () => SpecialScreenRenderers.definitions[SpecialScreenType.cameras] =
+            original,
+      );
+      final config = SpecialScreenConfig(
+        id: 'cam',
+        type: SpecialScreenType.cameras,
+        options: CamerasScreenOptions(
+          cameras: [
+            CameraConfig(id: 'a', url: 'https://camera.test/snapshot.jpg'),
+          ],
+        ),
+      );
+      await tester.pumpWidget(app(SpecialScreenEditorPage(config: config)));
+      await tester.pumpAndSettle();
+      expect(sessions, 1);
+      await tester.tap(find.byKey(const ValueKey('preview-toggle')));
+      await tester.pumpAndSettle();
+      final url = find.widgetWithText(
+        TextFormField,
+        'Snapshot URL (HTTP/HTTPS, JPEG/PNG)',
+      );
+      await tester.ensureVisible(url);
+      await tester.enterText(url, 'bad-url');
+      await tester.pump();
+      final check = find.text('Check snapshot');
+      await tester.ensureVisible(check);
+      await tester.tap(check);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('Enter an HTTP/HTTPS URL.'), findsOneWidget);
+      expect(sessions, 1);
+      expect(
+        (config.options as CamerasScreenOptions).cameras.single.url,
+        'https://camera.test/snapshot.jpg',
+      );
+      await tester.pumpWidget(const SizedBox());
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'changing locale preserves incomplete numeric special-screen input',
+    (tester) async {
+      final checks = <ValueGetter<bool>>{};
+      final config = SpecialScreenConfig(
+        id: 'clock',
+        type: SpecialScreenType.clock,
+      );
+      final editor = SpecialScreenEditorPage(
+        config: config,
+        registerDraft: (check) {
+          checks.add(check);
+          return () => checks.remove(check);
+        },
+      );
+      await tester.pumpWidget(app(editor, locale: const Locale('en')));
+      await tester.pumpAndSettle();
+      final duration = find.widgetWithText(
+        TextFormField,
+        'Display duration (seconds)',
+      );
+      await tester.ensureVisible(duration);
+      await tester.enterText(duration, '-');
+      await tester.pump();
+      final fieldKey = tester.widget<TextFormField>(duration).key;
+      final field = find.byWidgetPredicate(
+        (widget) => widget is TextFormField && widget.key == fieldKey,
+      );
+      final state = tester.state<FormFieldState<String>>(field);
+      expect(state.value, '-');
+      expect(checks.single(), isTrue);
+      await tester.pumpWidget(app(editor, locale: const Locale('ru')));
+      await tester.pumpAndSettle();
+      expect(tester.state<FormFieldState<String>>(field), same(state));
+      expect(state.value, '-');
+      expect(checks.single(), isTrue);
+      expect(find.byKey(const ValueKey('preview-last-valid')), findsOneWidget);
+      expect(config.displayTimeMs, 10000);
+      await tester.pumpWidget(const SizedBox());
+      expect(checks, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'conditional date fields and locale preserve incomplete time-size and color input',
+    (tester) async {
+      final checks = <ValueGetter<bool>>{};
+      final config = SpecialScreenConfig(
+        id: 'clock',
+        type: SpecialScreenType.clock,
+      );
+      final editor = SpecialScreenEditorPage(
+        config: config,
+        registerDraft: (check) {
+          checks.add(check);
+          return () => checks.remove(check);
+        },
+      );
+      await tester.pumpWidget(app(editor, locale: const Locale('en')));
+      await tester.pumpAndSettle();
+      final timeSize = find.widgetWithText(
+        TextFormField,
+        'Time font (% of shorter screen side)',
+      );
+      await tester.ensureVisible(timeSize);
+      await tester.enterText(timeSize, 'bad');
+      await tester.pump();
+      final timeKey = tester.widget<TextFormField>(timeSize).key;
+      final timeField = find.byWidgetPredicate(
+        (widget) => widget is TextFormField && widget.key == timeKey,
+      );
+      final timeState = tester.state<FormFieldState<String>>(timeField);
+      final color = find.widgetWithText(TextFormField, 'Text color (AARRGGBB)');
+      await tester.ensureVisible(color);
+      await tester.enterText(color, 'ff00');
+      await tester.pump();
+      final fieldKey = tester.widget<TextFormField>(color).key;
+      final field = find.byWidgetPredicate(
+        (widget) => widget is TextFormField && widget.key == fieldKey,
+      );
+      final state = tester.state<FormFieldState<String>>(field);
+      final showDate = find.widgetWithText(SwitchListTile, 'Show date');
+      await tester.ensureVisible(showDate);
+      await tester.tap(showDate);
+      await tester.pumpAndSettle();
+      expect(tester.state<FormFieldState<String>>(field), same(state));
+      expect(state.value, 'ff00');
+      expect(tester.state<FormFieldState<String>>(timeField), same(timeState));
+      expect(timeState.value, 'bad');
+      await tester.tap(showDate);
+      await tester.pumpAndSettle();
+      expect(tester.state<FormFieldState<String>>(field), same(state));
+      await tester.pumpWidget(app(editor, locale: const Locale('ru')));
+      await tester.pumpAndSettle();
+      expect(tester.state<FormFieldState<String>>(field), same(state));
+      expect(state.value, 'ff00');
+      expect(tester.state<FormFieldState<String>>(timeField), same(timeState));
+      expect(timeState.value, 'bad');
+      expect(checks.single(), isTrue);
+      expect(find.byKey(const ValueKey('preview-last-valid')), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      expect(checks, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'local draft registration follows Done, Cancel, Back and disposal',
     (tester) async {
@@ -186,4 +346,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pumpWidget(const SizedBox());
   });
+}
+
+class _UnavailableSession extends SpecialScreenSession {
+  _UnavailableSession(super.config);
+  @override
+  Future<bool> prepare() async => false;
 }

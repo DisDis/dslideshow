@@ -1,118 +1,175 @@
 import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
+import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
+import 'package:config_app/features/theme/presentation/app_preferences.dart';
+import 'package:config_app/features/theme/presentation/l10n/app_locale.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
+import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-// final _leftDrawerProvider = sl<LeftDrawerProvider>();
+enum AppDestination {
+  home('/home', Icons.home_outlined),
+  gallery('/gallery', Icons.photo_library_outlined),
+  upload('/upload', Icons.upload_file_outlined),
+  config('/config', Icons.tune),
+  ota('/ota', Icons.system_update_outlined),
+  wifi('/wifi_config', Icons.wifi),
+  power('/power', Icons.power_settings_new);
 
-enum HomeTab { log, hardware, slideshow, welcome, web, mqtt, storage, wifi }
+  const AppDestination(this.path, this.icon);
+  final String path;
+  final IconData icon;
+
+  String label(BuildContext context) {
+    final l = context.localizations;
+    return switch (this) {
+      home => l.home_menu_item,
+      gallery => l.gallery_menu_item,
+      upload => l.upload_media_menu_item,
+      config => l.configuration_menu_item,
+      ota => l.ota_update_title,
+      wifi => l.wifi_menu_item,
+      power => l.system_control_menu_item,
+    };
+  }
+}
 
 class ConfigAppNavigationBar extends StatelessWidget {
-  static const Key _navKey = Key("#WANavigationBar");
   final Future<bool> Function()? onLogoutRequested;
+  final bool embedded;
 
-  const ConfigAppNavigationBar({this.onLogoutRequested}) : super(key: _navKey);
+  const ConfigAppNavigationBar({
+    super.key,
+    this.onLogoutRequested,
+    this.embedded = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    final l = context.localizations;
+    final theme = Theme.of(context);
+    final router = GoRouter.maybeOf(context);
+    final path = router?.routeInformationProvider.value.uri.path;
+    final preferences = AppPreferencesScope.maybeOf(context);
+    final client = sl.isRegistered<RealtimeService>()
+        ? sl<RealtimeService>()
+        : null;
+    final uri = client?.connectUri;
+    final address = uri == null || uri.host.isEmpty
+        ? null
+        : '${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
+    final navigation = SafeArea(
       child: ListView(
-        // Remove padding
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
         children: [
-          BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            builder: (context, state) {
-              return UserAccountsDrawerHeader(
-                accountName: Text(state.user.username),
-                accountEmail: Text(context.localizations.example_email_address),
-                currentAccountPicture: CircleAvatar(
-                  child: ClipOval(
-                    child: Image.network(
-                      state.user.avatarUrl.medium,
-                      fit: BoxFit.cover,
-                      width: 90,
-                      height: 90,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: AppColors.noImageAvatar,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'No image',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        );
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.filter_frames_outlined,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Text('Dslideshow', style: theme.textTheme.titleMedium),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(l.device_panel_title, style: theme.textTheme.titleSmall),
+                if (address != null)
+                  SelectableText(address, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+          for (final destination in AppDestination.values)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: ListTile(
+                key: ValueKey(destination),
+                selected: path == destination.path,
+                leading: Icon(destination.icon),
+                title: Text(destination.label(context)),
+                onTap: router == null
+                    ? null
+                    : () {
+                        if (!embedded) Scaffold.maybeOf(context)?.closeDrawer();
+                        if (path != destination.path) {
+                          router.go(destination.path);
+                        }
                       },
-                    ),
-                  ),
+              ),
+            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Divider(),
+          ),
+          if (preferences != null)
+            ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+              leading: const Icon(Icons.palette_outlined),
+              title: Text(l.appearance_title),
+              childrenPadding: const EdgeInsets.only(top: 8, bottom: 16),
+              children: [
+                DropdownButtonFormField<AppLocale>(
+                  key: ValueKey(preferences.appLocale),
+                  initialValue: preferences.appLocale,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText: l.language_label),
+                  items: [
+                    for (final locale in AppLocale.values)
+                      DropdownMenuItem(
+                        value: locale,
+                        child: Text(locale.toLanguage(context)),
+                      ),
+                  ],
+                  onChanged: (locale) {
+                    if (locale != null) preferences.setLocale(locale);
+                  },
                 ),
-                decoration: const BoxDecoration(
-                  color: AppColors.imageAvatar,
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                      'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg',
-                    ),
-                  ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<ThemeMode>(
+                  key: ValueKey(preferences.themeMode),
+                  initialValue: preferences.themeMode,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText: l.theme_mode_label),
+                  items: [
+                    for (final mode in ThemeMode.values)
+                      DropdownMenuItem(
+                        value: mode,
+                        child: Text(switch (mode) {
+                          ThemeMode.system => l.ui_system_default,
+                          ThemeMode.light => l.theme_mode_light,
+                          ThemeMode.dark => l.theme_mode_dark,
+                        }),
+                      ),
+                  ],
+                  onChanged: (mode) {
+                    if (mode != null) preferences.setThemeMode(mode);
+                  },
                 ),
-              );
-            },
-          ),
+              ],
+            ),
           ListTile(
-            leading: const Icon(Icons.home),
-            title: Text(context.localizations.home_menu_item),
-            onTap: () => context.go('/home'),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.photo_library),
-            title: Text(context.localizations.gallery_menu_item),
-            onTap: () => context.go('/gallery'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.upload_file),
-            title: Text(context.localizations.upload_media_menu_item),
-            onTap: () => context.go('/upload'),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(context.localizations.configuration_menu_item),
-            onTap: () => context.go('/config'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.system_update),
-            title: Text(context.localizations.ota_update_title),
-            onTap: () => context.go('/ota'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.wifi),
-            title: Text(context.localizations.wifi_menu_item),
-            onTap: () => context.go('/wifi_config'),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.power_settings_new),
-            title: Text(context.localizations.system_control_menu_item),
-            onTap: () => context.go("/power"),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(context.localizations.exit_menu_item),
-            leading: const Icon(Icons.exit_to_app),
+            title: Text(l.exit_menu_item),
+            leading: const Icon(Icons.logout),
             onTap: () async {
               final mayLogout = await onLogoutRequested?.call() ?? true;
               if (mayLogout && context.mounted) {
-                context.read<AuthenticationBloc>().add(
+                context.read<AuthenticationBloc?>()?.add(
                   const AuthenticationLogoutRequested(),
                 );
               }
             },
           ),
-          // ..._leftDrawerProvider.getMenuItems()
         ],
       ),
     );
+    return embedded
+        ? Material(color: theme.colorScheme.surface, child: navigation)
+        : Drawer(child: navigation);
   }
 }

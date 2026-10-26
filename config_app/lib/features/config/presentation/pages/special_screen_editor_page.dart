@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
+import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
+import 'package:config_app/features/config/presentation/wigdgets/visual_number_input.dart';
 import 'package:config_app/features/config/presentation/wigdgets/special_screen_preview.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -10,10 +13,25 @@ import 'package:uuid/uuid.dart';
 
 import 'special_screens_page.dart';
 
-/// Registers a live dirty check and returns an idempotent cleanup callback.
-typedef RegisterUnsavedDraft = VoidCallback Function(
-  ValueGetter<bool> hasChanges,
-);
+enum _SpecialEditorField {
+  interval,
+  slideCount,
+  duration,
+  timeSize,
+  dateSize,
+  columns,
+  refresh,
+  frequency,
+  timeFormat,
+  dateFormat,
+  timeFont,
+  dateFont,
+  requestTimeout,
+  cameraMode,
+  fit,
+  textColor,
+  backgroundColor,
+}
 
 class SpecialScreenEditorPage extends StatefulWidget {
   final SpecialScreenConfig config;
@@ -33,6 +51,18 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
   late final SpecialScreenConfig _draft;
   late final String _initialJson;
   VoidCallback? _unregisterDraft;
+  bool _invalid = false;
+
+  bool _hasInvalidInput() =>
+      _form.currentState?.fields.any(
+        (field) => field.hasInteractedByUser && !field.isValid,
+      ) ??
+      false;
+
+  void _updateValidation() {
+    final invalid = _hasInvalidInput();
+    if (_invalid != invalid) setState(() => _invalid = invalid);
+  }
 
   @override
   void initState() {
@@ -42,21 +72,8 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     _unregisterDraft = widget.registerDraft?.call(_hasChanges);
   }
 
-  bool _hasChanges() {
-    if (jsonEncode(_draft.toJson()) != _initialJson) return true;
-    var invalidInput = false;
-    void visit(Element element) {
-      if (element case StatefulElement(state: FormFieldState<dynamic> field)) {
-        // Invalid numeric/color input is intentionally absent from the typed
-        // model. Query validation without changing errors or rebuilding UI.
-        if (field.hasInteractedByUser && !field.isValid) invalidInput = true;
-      }
-      if (!invalidInput) element.visitChildren(visit);
-    }
-
-    _form.currentContext?.visitChildElements(visit);
-    return invalidInput;
-  }
+  bool _hasChanges() =>
+      jsonEncode(_draft.toJson()) != _initialJson || _hasInvalidInput();
 
   void _releaseDraft() {
     _unregisterDraft?.call();
@@ -69,8 +86,15 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     super.dispose();
   }
 
-  void _change(VoidCallback change) => setState(change);
+  void _change(VoidCallback change) {
+    setState(change);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _updateValidation();
+    });
+  }
+
   Widget _number(
+    _SpecialEditorField field,
     String label,
     num value,
     void Function(double) onChanged, {
@@ -78,9 +102,10 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     double max = 86400,
     bool integer = false,
   }) => Padding(
+    key: ValueKey(field),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
     child: TextFormField(
-      key: ValueKey(label),
+      key: ValueKey(field),
       initialValue: value.toString(),
       keyboardType: TextInputType.numberWithOptions(decimal: !integer),
       decoration: InputDecoration(
@@ -88,7 +113,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
         border: const OutlineInputBorder(),
       ),
       validator: (text) {
-        final n = double.tryParse(text ?? '');
+        final n = parseVisualNumber(text, integer: integer);
         return n == null ||
                 !n.isFinite ||
                 n < min ||
@@ -98,7 +123,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
             : null;
       },
       onChanged: (text) {
-        final n = double.tryParse(text);
+        final n = parseVisualNumber(text, integer: integer);
         if (n != null &&
             n.isFinite &&
             n >= min &&
@@ -116,13 +141,16 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
         onChanged: (v) => _change(() => change(v)),
       );
   Widget _dropdown<T>(
+    _SpecialEditorField field,
     String label,
     T value,
     Map<T, String> choices,
     void Function(T) change,
   ) => Padding(
+    key: ValueKey(field),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
     child: DropdownButtonFormField<T>(
+      key: ValueKey(field),
       initialValue: value,
       isExpanded: true,
       decoration: InputDecoration(
@@ -137,9 +165,16 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
       },
     ),
   );
-  Widget _color(String label, int value, void Function(int) change) => Padding(
+  Widget _color(
+    _SpecialEditorField field,
+    String label,
+    int value,
+    void Function(int) change,
+  ) => Padding(
+    key: ValueKey(field),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
     child: TextFormField(
+      key: ValueKey(field),
       initialValue: value.toRadixString(16).padLeft(8, '0'),
       decoration: InputDecoration(
         labelText: label,
@@ -190,19 +225,15 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
       body: Form(
         key: _form,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: Column(
+        onChanged: _updateValidation,
+        child: PreviewEditorLayout(
+          hasInvalidInput: _invalid,
+          help: options is ClockScreenOptions
+              ? l.preview_clock_help
+              : l.special_browser_camera_help,
+          previewBuilder: (_) => SpecialScreenPreview(config: _draft),
+          editor: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 480),
-                    child: SpecialScreenPreview(config: _draft),
-                  ),
-                ),
-              ),
               if (kIsWeb && options is CamerasScreenOptions)
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -227,14 +258,21 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
                     _draft.enabled,
                     (v) => _draft.enabled = v,
                   ),
-                  _dropdown(l.special_frequency, _draft.schedule.type, {
-                    SpecialScreenScheduleType.everyMediaSlides:
-                        l.special_after_slides,
-                    SpecialScreenScheduleType.interval: l.special_interval,
-                  }, (v) => _draft.schedule.type = v),
+                  _dropdown(
+                    _SpecialEditorField.frequency,
+                    l.special_frequency,
+                    _draft.schedule.type,
+                    {
+                      SpecialScreenScheduleType.everyMediaSlides:
+                          l.special_after_slides,
+                      SpecialScreenScheduleType.interval: l.special_interval,
+                    },
+                    (v) => _draft.schedule.type = v,
+                  ),
                   if (_draft.schedule.type ==
                       SpecialScreenScheduleType.interval)
                     _number(
+                      _SpecialEditorField.interval,
                       l.special_interval_minutes,
                       _draft.schedule.intervalMs / 60000,
                       (v) => _draft.schedule.intervalMs = (v * 60000).round(),
@@ -243,6 +281,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
                     )
                   else
                     _number(
+                      _SpecialEditorField.slideCount,
                       l.special_slide_count,
                       _draft.schedule.count,
                       (v) => _draft.schedule.count = v.toInt(),
@@ -251,6 +290,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
                       integer: true,
                     ),
                   _number(
+                    _SpecialEditorField.duration,
                     l.special_duration_seconds,
                     _draft.displayTimeMs / 1000,
                     (v) => _draft.displayTimeMs = (v * 1000).round(),
@@ -272,10 +312,16 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     return SettingsSection(
       title: l.special_clock_settings,
       children: [
-        _dropdown(l.special_time_format, options.timeFormat, {
-          ClockTimeFormat.h24: l.special_24h,
-          ClockTimeFormat.h12: l.special_12h,
-        }, (v) => options.timeFormat = v),
+        _dropdown(
+          _SpecialEditorField.timeFormat,
+          l.special_time_format,
+          options.timeFormat,
+          {
+            ClockTimeFormat.h24: l.special_24h,
+            ClockTimeFormat.h12: l.special_12h,
+          },
+          (v) => options.timeFormat = v,
+        ),
         _switch(
           l.special_show_seconds,
           options.showSeconds,
@@ -286,33 +332,67 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
           options.showDate,
           (v) => options.showDate = v,
         ),
+        _switch(
+          l.special_show_weekday,
+          options.showWeekday,
+          (v) => options.showWeekday = v,
+        ),
         if (options.showDate)
-          _dropdown(l.special_date_format, options.dateFormat, {
-            ClockDateFormat.dayMonthYear: '25.10.2026',
-            ClockDateFormat.yearMonthDay: '2026-10-25',
-            ClockDateFormat.dayMonthYearSlashes: '25/10/2026',
-          }, (v) => options.dateFormat = v),
+          _dropdown(
+            _SpecialEditorField.dateFormat,
+            l.special_date_format,
+            options.dateFormat,
+            {
+              ClockDateFormat.dayMonthYear: '25.10.2026',
+              ClockDateFormat.yearMonthDay: '2026-10-25',
+              ClockDateFormat.dayMonthYearSlashes: '25/10/2026',
+            },
+            (v) => options.dateFormat = v,
+          ),
+        _dropdown(
+          _SpecialEditorField.timeFont,
+          l.special_time_font,
+          options.timeFont,
+          _clockFonts(),
+          (v) => options.timeFont = v,
+        ),
         _number(
+          _SpecialEditorField.timeSize,
           l.special_time_size,
           options.timeFontSizePercent,
           (v) => options.timeFontSizePercent = v,
           min: 1,
           max: 100,
         ),
-        if (options.showDate)
+        if (options.showDate || options.showWeekday)
+          _dropdown(
+            _SpecialEditorField.dateFont,
+            l.special_date_font,
+            options.dateFont,
+            _clockFonts(),
+            (v) => options.dateFont = v,
+          ),
+        if (options.showDate || options.showWeekday)
           _number(
+            _SpecialEditorField.dateSize,
             l.special_date_size,
             options.dateFontSizePercent,
             (v) => options.dateFontSizePercent = v,
             min: 1,
             max: 100,
           ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(l.special_font_help),
+        ),
         _color(
+          _SpecialEditorField.textColor,
           l.special_text_color,
           options.textColor,
           (v) => options.textColor = v,
         ),
         _color(
+          _SpecialEditorField.backgroundColor,
           l.special_background_color,
           options.backgroundColor,
           (v) => options.backgroundColor = v,
@@ -321,15 +401,32 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     );
   }
 
+  Map<ClockFont, String> _clockFonts() {
+    final l = context.localizations;
+    return {
+      ClockFont.system: l.special_font_system,
+      ClockFont.roboto: l.special_font_roboto,
+      ClockFont.orbitron: l.special_font_orbitron,
+      ClockFont.righteous: l.special_font_righteous,
+      ClockFont.fredoka: l.special_font_fredoka,
+    };
+  }
+
   Widget _cameras(CamerasScreenOptions options) {
     final l = context.localizations;
     return SettingsSection(
       title: l.special_camera_settings,
       children: [
-        _dropdown(l.special_camera_mode, options.mode, {
-          CameraDisplayMode.grid: l.special_grid,
-          CameraDisplayMode.sequence: l.special_sequence,
-        }, (v) => options.mode = v),
+        _dropdown(
+          _SpecialEditorField.cameraMode,
+          l.special_camera_mode,
+          options.mode,
+          {
+            CameraDisplayMode.grid: l.special_grid,
+            CameraDisplayMode.sequence: l.special_sequence,
+          },
+          (v) => options.mode = v,
+        ),
         if (options.mode == CameraDisplayMode.sequence)
           Padding(
             padding: const EdgeInsets.all(16),
@@ -337,6 +434,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
           ),
         if (options.mode == CameraDisplayMode.grid)
           _number(
+            _SpecialEditorField.columns,
             l.special_columns,
             options.columns,
             (v) => options.columns = v.toInt(),
@@ -344,7 +442,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
             max: 16,
             integer: true,
           ),
-        _dropdown(l.special_fit, options.fit, {
+        _dropdown(_SpecialEditorField.fit, l.special_fit, options.fit, {
           CameraImageFit.contain: l.special_contain,
           CameraImageFit.cover: l.special_cover,
         }, (v) => options.fit = v),
@@ -354,10 +452,23 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
           (v) => options.showNames = v,
         ),
         _number(
+          _SpecialEditorField.refresh,
           l.special_refresh,
           options.refreshIntervalMs / 1000,
           (v) => options.refreshIntervalMs = (v * 1000).round(),
           min: 0,
+        ),
+        _number(
+          _SpecialEditorField.requestTimeout,
+          l.special_request_timeout,
+          options.requestTimeoutMs / 1000,
+          (v) => options.requestTimeoutMs = (v * 1000).round(),
+          min: .1,
+          max: 120,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(l.special_request_timeout_help),
         ),
         for (var i = 0; i < options.cameras.length; i++) _camera(options, i),
         Padding(
@@ -377,6 +488,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
   Widget _camera(CamerasScreenOptions options, int index) {
     final l = context.localizations;
     final camera = options.cameras[index];
+    final urlField = GlobalObjectKey<FormFieldState<String>>(camera);
     return Card(
       key: ValueKey(camera.id),
       margin: const EdgeInsets.all(12),
@@ -425,6 +537,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
               onChanged: (v) => _change(() => camera.name = v),
             ),
             TextFormField(
+              key: urlField,
               initialValue: camera.url,
               keyboardType: TextInputType.url,
               decoration: InputDecoration(labelText: l.special_camera_url),
@@ -432,7 +545,12 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
                   CameraConfig(id: '', url: text?.trim() ?? '').hasValidUrl
                   ? null
                   : l.special_invalid_url,
-              onChanged: (v) => _change(() => camera.url = v.trim()),
+              onChanged: (v) {
+                final url = v.trim();
+                if (CameraConfig(id: '', url: url).hasValidUrl) {
+                  _change(() => camera.url = url);
+                }
+              },
             ),
             ExpansionTile(
               title: Text(l.special_auth),
@@ -451,7 +569,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
               ],
             ),
             TextButton.icon(
-              onPressed: () => _checkCamera(camera),
+              onPressed: () => _checkCamera(camera, urlField),
               icon: const Icon(Icons.image_outlined),
               label: Text(l.special_check_camera),
             ),
@@ -461,9 +579,15 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
     );
   }
 
-  void _checkCamera(CameraConfig camera) {
-    if (!camera.hasValidUrl) {
-      _form.currentState!.validate();
+  void _checkCamera(
+    CameraConfig camera,
+    GlobalKey<FormFieldState<String>> urlField,
+  ) {
+    // The typed model retains the last valid URL while its raw field may be
+    // incomplete. Never check an older URL instead of what the user sees.
+    if (_form.currentState?.validate() != true ||
+        urlField.currentState?.validate() != true ||
+        !camera.hasValidUrl) {
       return;
     }
     final config = SpecialScreenConfig(
@@ -472,6 +596,8 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
       options: CamerasScreenOptions(
         cameras: [CameraConfig.fromJson(camera.toJson())],
         refreshIntervalMs: 0,
+        requestTimeoutMs:
+            (_draft.options as CamerasScreenOptions).requestTimeoutMs,
       ),
     );
     showDialog<void>(

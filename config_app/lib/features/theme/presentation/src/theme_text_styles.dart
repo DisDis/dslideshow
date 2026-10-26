@@ -64,8 +64,11 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
       searchHint: TextStyle.lerp(searchHint, other.searchHint, t)!,
       chatDateStyle: TextStyle.lerp(chatDateStyle, other.chatDateStyle, t)!,
       searchInput: TextStyle.lerp(searchInput, other.searchInput, t)!,
-      chatMessageTextStyle:
-          TextStyle.lerp(chatMessageTextStyle, other.chatMessageTextStyle, t)!,
+      chatMessageTextStyle: TextStyle.lerp(
+        chatMessageTextStyle,
+        other.chatMessageTextStyle,
+        t,
+      )!,
       settingsDialogLanguage: TextStyle.lerp(
         settingsDialogLanguage,
         other.settingsDialogLanguage,
@@ -74,64 +77,29 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
     );
   }
 
-  static ThemeTextStyles get light => ThemeTextStyles(
-        appTitle: headline1.copyWith(
-          color: AppColors.darkerGrey,
-          fontWeight: FontWeight.w700,
+  factory ThemeTextStyles.fromTheme(TextTheme text, ColorScheme scheme) =>
+      ThemeTextStyles(
+        appTitle: text.titleLarge!,
+        appDescription: text.bodyMedium!.copyWith(
+          color: scheme.onSurfaceVariant,
         ),
-        appDescription: headline3.copyWith(
-          color: AppColors.darkerGrey,
-          fontWeight: FontWeight.w500,
+        labelStyle: text.labelLarge!,
+        searchHint: text.bodyLarge!.copyWith(color: scheme.onSurfaceVariant),
+        searchInput: text.bodyLarge!,
+        settingsDialogLanguage: text.bodyMedium!,
+        chatDateStyle: text.bodySmall!.copyWith(color: scheme.onSurfaceVariant),
+        chatMessageTextStyle: text.bodyLarge!.copyWith(
+          color: scheme.onSecondaryContainer,
         ),
-        labelStyle: headline1.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
-        searchHint: headline1.copyWith(
-          color: AppColors.white,
-          fontSize: 18,
-        ),
-        searchInput: headline1.copyWith(
-          fontSize: 18,
-        ),
-        settingsDialogLanguage: headline2.copyWith(
-          color: AppColors.black,
-        ),
-        chatDateStyle: labelSmall.copyWith(
-          fontSize: 13,
-          color: ThemeColors.light.messageDateTimeColor,
-        ),
-        chatMessageTextStyle: TextStyle(
-            fontSize: 16, color: ThemeColors.light.messagePrimaryColor),
       );
 
-  static ThemeTextStyles get dark => ThemeTextStyles(
-        appTitle: headline1.copyWith(
-          color: AppColors.lighterGrey,
-          fontWeight: FontWeight.w700,
-        ),
-        appDescription: headline3.copyWith(
-          color: AppColors.lightGrey,
-          fontWeight: FontWeight.w500,
-        ),
-        labelStyle: headline1.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
-        searchHint: headline1.copyWith(
-          color: AppColors.lighterGrey,
-          fontSize: 18,
-        ),
-        searchInput: headline1.copyWith(
-          fontSize: 18,
-          color: AppColors.grey,
-        ),
-        settingsDialogLanguage: headline2.copyWith(
-          color: AppColors.grey,
-        ),
-        chatDateStyle: labelSmall.copyWith(
-          fontSize: 13,
-          color: ThemeColors.dark.messageDateTimeColor,
-        ),
-        chatMessageTextStyle: TextStyle(
-            fontSize: 16, color: ThemeColors.dark.messagePrimaryColor),
-      );
+  static ThemeTextStyles get light {
+    final scheme = _createColorScheme(Brightness.light);
+    return ThemeTextStyles.fromTheme(createTextTheme(scheme), scheme);
+  }
+
+  static ThemeTextStyles get dark {
+    final scheme = _createColorScheme(Brightness.dark);
+    return ThemeTextStyles.fromTheme(createTextTheme(scheme), scheme);
+  }
 }

@@ -1,6 +1,5 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart';
 import 'package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart';
@@ -20,30 +19,38 @@ class WiFiConfigTab extends StatelessWidget {
       builder: (context, state) {
         // 1. Состояние Загрузки
         if (state is UnWifiTabState) {
-          return Scaffold(
-            appBar: AppBar(title: Text(context.localizations.connect_form_title)),
-            drawer: const ConfigAppNavigationBar(),
+          return ConfigAppScaffold(
+            appBar: AppBar(
+              title: Text(context.localizations.connect_form_title),
+            ),
+
             body: const Center(child: CircularProgressIndicator()),
           );
         }
 
         // 2. Состояние Ошибки
         if (state is ErrorWifiTabState) {
-          return Scaffold(
-            appBar: AppBar(title: Text(context.localizations.connect_form_title)),
-            drawer: const ConfigAppNavigationBar(),
+          return ConfigAppScaffold(
+            appBar: AppBar(
+              title: Text(context.localizations.connect_form_title),
+            ),
+
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.wifi_off, size: 64, color: AppColors.wifiIconError),
+                  Icon(
+                    Icons.wifi_off,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   const SizedBox(height: 16),
                   Text(state.errorMessage, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: () => context
-                        .read<WifiTabBloc>()
-                        .add(const LoadWifiTabEvent()),
+                    onPressed: () => context.read<WifiTabBloc>().add(
+                      const LoadWifiTabEvent(),
+                    ),
                     icon: const Icon(Icons.refresh),
                     label: Text(context.localizations.try_again_button),
                   ),
@@ -54,13 +61,13 @@ class WiFiConfigTab extends StatelessWidget {
         } else
         // 3. Основное состояние (Список сетей)
         if (state is InWifiTabState) {
-          return Scaffold(
-            drawer: const ConfigAppNavigationBar(),
+          return ConfigAppScaffold(
             body: RefreshIndicator(
               onRefresh: () async {
                 context.read<WifiTabBloc>().add(const LoadWifiTabEvent());
               },
               child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     title: Text(context.localizations.connect_form_title),
@@ -69,61 +76,70 @@ class WiFiConfigTab extends StatelessWidget {
                     actions: [
                       IconButton(
                         icon: const Icon(Icons.refresh),
-                        tooltip: "Refresh",
+                        tooltip: context.localizations.refresh_button,
                         // Передаем context, так как мы в StatelessWidget
-                        onPressed: () => context.read<WifiTabBloc>().add(const LoadWifiTabEvent()),
+                        onPressed: () => context.read<WifiTabBloc>().add(
+                          const LoadWifiTabEvent(),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.add),
-                        tooltip: "Add manually",
+                        tooltip: context.localizations.add_manually,
                         // Передаем context, так как мы в StatelessWidget
                         onPressed: () => _showConnectBottomSheet(context),
-                      )
+                      ),
                     ],
                   ),
 
-                // Секция: Сохраненные сети
-                if (state.connections.isNotEmpty) ...[
-                  _SectionHeader(title: context.localizations.saved_connections_subtitle),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final connectionItem = state.connections.elementAt(index);
-                        
-                        return SavedConnectionTile(connection: connectionItem,
-                        onDelete: (){
-                          _showDeleteConfirmation(context, connectionItem);
-                        },);
-                      },
-                      childCount: state.connections.length,
+                  // Секция: Сохраненные сети
+                  if (state.connections.isNotEmpty) ...[
+                    _SectionHeader(
+                      title: context.localizations.saved_connections_subtitle,
                     ),
-                  ),
-                ],
-
-                // Секция: Доступные сети
-                _SectionHeader(title: context.localizations.manage_connections_subtitle),
-
-                if (state.availableNetworks.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: Center(child: Text(context.localizations.no_networks_found_nearby)),
-                    ),
-                  ),
-
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final network =
-                            state.availableNetworks.elementAt(index);
-                        return AvailableNetworkTile(
-                          network: network,
-                          onTap: () => _showConnectBottomSheet(context,
-                              ssid: network.SSID),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final connectionItem = state.connections.elementAt(
+                          index,
                         );
-                      },
-                      childCount: state.availableNetworks.length,
+
+                        return SavedConnectionTile(
+                          connection: connectionItem,
+                          onDelete: () {
+                            _showDeleteConfirmation(context, connectionItem);
+                          },
+                        );
+                      }, childCount: state.connections.length),
                     ),
+                  ],
+
+                  // Секция: Доступные сети
+                  _SectionHeader(
+                    title: context.localizations.manage_connections_subtitle,
+                  ),
+
+                  if (state.availableNetworks.isEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: Center(
+                          child: Text(
+                            context.localizations.no_networks_found_nearby,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final network = state.availableNetworks.elementAt(index);
+                      return AvailableNetworkTile(
+                        network: network,
+                        onTap: () => _showConnectBottomSheet(
+                          context,
+                          ssid: network.SSID,
+                        ),
+                      );
+                    }, childCount: state.availableNetworks.length),
                   ),
 
                   const SliverPadding(padding: EdgeInsets.only(bottom: 40)),
@@ -137,33 +153,46 @@ class WiFiConfigTab extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, WiFiConnectionInfo connection) {
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text("Forget Network?"),
-      content: Text("Are you sure you want to delete '${connection.name}'?"),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
-        FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: AppColors.wifiDeleteButton),
-          onPressed: () {
-            context.read<WifiTabBloc>().add(RemoveWifiTabEvent(connection.UUID));
-            Navigator.pop(ctx);
-          },
-          child: const Text("Delete"),
+  void _showDeleteConfirmation(
+    BuildContext context,
+    WiFiConnectionInfo connection,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(context.localizations.forget_network_title),
+        content: Text(
+          context.localizations.forget_network_question(connection.name),
         ),
-      ],
-    ),
-  );
-}
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(context.localizations.cancel_button),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () {
+              context.read<WifiTabBloc>().add(
+                RemoveWifiTabEvent(connection.UUID),
+              );
+              Navigator.pop(ctx);
+            },
+            child: Text(context.localizations.delete_button),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _showConnectBottomSheet(BuildContext parentContext, {String ssid = ''}) {
     showModalBottomSheet(
       context: parentContext,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => Padding(
+      builder: (context) => SingleChildScrollView(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
@@ -190,9 +219,9 @@ class _SectionHeader extends StatelessWidget {
         child: Text(
           title,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ),
     );

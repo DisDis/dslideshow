@@ -11,8 +11,8 @@ import 'package:config_app/features/config/presentation/pages/webserver_editor.d
 import 'package:config_app/features/config/presentation/pages/welcome_editor_page.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
+import 'package:config_app/features/config/presentation/wigdgets/draft_editor_form.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +22,8 @@ import 'package:go_router/go_router.dart';
 import 'package:config_app/src/browser_exit_guard/browser_exit_guard.dart';
 
 import 'special_screens_page.dart';
+
+enum ConfigDiscardAction { leave, reload, reset }
 
 class ConfigScreen extends StatefulWidget {
   final PhotoframeRepository? repository;
@@ -86,32 +88,45 @@ class ConfigScreenState extends State<ConfigScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(text),
-          backgroundColor: error ? AppColors.errorRed : null,
+          content: Text(
+            text,
+            style: error
+                ? TextStyle(color: Theme.of(context).colorScheme.onError)
+                : null,
+          ),
+          backgroundColor: error ? Theme.of(context).colorScheme.error : null,
         ),
       );
   }
 
-  Future<bool> _confirmDiscard({required bool reload}) async {
-    final l = context.localizations;
+  Future<bool> _confirmDiscard(ConfigDiscardAction action) async {
     final dialog = DialogRoute<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(reload ? l.config_reload_title : l.config_unsaved_changes),
-        content: Text(
-          reload ? l.config_reload_warning : l.config_leave_warning,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l.config_keep_editing),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l.config_discard_changes),
-          ),
-        ],
-      ),
+      builder: (dialogContext) {
+        final l = dialogContext.localizations;
+        return AlertDialog(
+          title: Text(switch (action) {
+            ConfigDiscardAction.reload => l.config_reload_title,
+            ConfigDiscardAction.leave => l.config_unsaved_changes,
+            ConfigDiscardAction.reset => l.config_reset_button,
+          }),
+          content: Text(switch (action) {
+            ConfigDiscardAction.reload => l.config_reload_warning,
+            ConfigDiscardAction.leave => l.config_leave_warning,
+            ConfigDiscardAction.reset => l.config_reset_warning,
+          }),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l.config_keep_editing),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l.config_discard_changes),
+            ),
+          ],
+        );
+      },
     );
     _dialog = dialog;
     try {
@@ -132,7 +147,7 @@ class ConfigScreenState extends State<ConfigScreen> {
       return false;
     }
     if (!_hasUnsavedChanges) return true;
-    final discard = await _confirmDiscard(reload: false);
+    final discard = await _confirmDiscard(ConfigDiscardAction.leave);
     if (!mounted) return false;
     if (discard) {
       setState(() {
@@ -144,7 +159,9 @@ class ConfigScreenState extends State<ConfigScreen> {
   }
 
   void _save() {
-    if (_busy || !_draft.hasChanges) return;
+    if (_busy || !_draft.hasChanges || _localDrafts.any((check) => check())) {
+      return;
+    }
     try {
       final snapshot = cloneConfig(_editingConfig!);
       FocusScope.of(context).unfocus();
@@ -166,7 +183,10 @@ class ConfigScreenState extends State<ConfigScreen> {
     if (_busy || _reloadPending || _exitConfirmation != null) return;
     _reloadPending = true;
     try {
-      if (_draft.hasChanges && !await _confirmDiscard(reload: true)) return;
+      if (_hasUnsavedChanges &&
+          !await _confirmDiscard(ConfigDiscardAction.reload)) {
+        return;
+      }
       if (!mounted || _busy) return;
       FocusScope.of(context).unfocus();
       setState(() {
@@ -200,6 +220,7 @@ class ConfigScreenState extends State<ConfigScreen> {
           }),
           loaded: (config) => setState(() {
             _draft.replaceSaved(config);
+            _localDrafts.clear();
             _revision++;
             _busy = false;
             _error = null;
@@ -218,25 +239,22 @@ class ConfigScreenState extends State<ConfigScreen> {
           orElse: () {},
         );
       },
-      builder: (context, state) => Scaffold(
-        drawer: ConfigAppNavigationBar(onLogoutRequested: confirmExit),
+      builder: (context, state) => ConfigAppScaffold(
+        onLogoutRequested: confirmExit,
         appBar: AppBar(
           title: Text(l.settings_title),
           actions: [
             IconButton(
               key: const ValueKey('config-reload'),
               tooltip: l.config_reload_button,
-              icon: const Icon(Icons.restore),
+              icon: const Icon(Icons.refresh),
               onPressed: _busy ? null : _reload,
-            ),
-            IconButton(
-              key: const ValueKey('config-save'),
-              tooltip: l.config_save_button,
-              icon: const Icon(Icons.save),
-              onPressed: !_busy && _draft.hasChanges ? _save : null,
             ),
           ],
         ),
+        bottomNavigationBar: _editingConfig == null
+            ? null
+            : _buildSaveBar(context),
         body: _editingConfig == null
             ? _busy
                   ? const Center(child: CircularProgressIndicator())
@@ -262,36 +280,16 @@ class ConfigScreenState extends State<ConfigScreen> {
             : Column(
                 children: [
                   if (_busy) const LinearProgressIndicator(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _draft.hasChanges
-                              ? l.config_unsaved_changes
-                              : l.config_saved_state,
+                  if (_error != null)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        l.error_with_message(_error!),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
                         ),
-                        Text(l.config_restart_hint),
-                        if (_hasSaved)
-                          TextButton.icon(
-                            onPressed: _busy
-                                ? null
-                                : () => context.go('/power'),
-                            icon: const Icon(Icons.power_settings_new),
-                            label: Text(l.system_control_menu_item),
-                          ),
-                        if (_error != null)
-                          Text(
-                            l.error_with_message(_error!),
-                            style: const TextStyle(color: AppColors.errorRed),
-                          ),
-                      ],
+                      ),
                     ),
-                  ),
                   Expanded(
                     child: AbsorbPointer(
                       absorbing: _busy,
@@ -299,10 +297,12 @@ class ConfigScreenState extends State<ConfigScreen> {
                         excluding: _busy,
                         child: KeyedSubtree(
                           key: ValueKey(_revision),
-                          child: Form(
+                          child: DraftEditorForm(
                             key: const ValueKey('config-editor-fields'),
+                            confirmInvalidOnBack: false,
+                            registerDraft: _registerLocalDraft,
                             onChanged: _refreshDraft,
-                            child: _buildBody(context),
+                            child: SettingsContent(child: _buildBody(context)),
                           ),
                         ),
                       ),
@@ -310,6 +310,92 @@ class ConfigScreenState extends State<ConfigScreen> {
                   ),
                 ],
               ),
+      ),
+    );
+  }
+
+  Future<void> _reset() async {
+    if (_busy || _reloadPending || _exitConfirmation != null) return;
+    _reloadPending = true;
+    try {
+      if (!await _confirmDiscard(ConfigDiscardAction.reset) || !mounted) return;
+      FocusScope.of(context).unfocus();
+      setState(() {
+        _draft.discard();
+        _localDrafts.clear();
+        _revision++;
+        _error = null;
+      });
+    } finally {
+      _reloadPending = false;
+    }
+  }
+
+  Widget _buildSaveBar(BuildContext context) {
+    final l = context.localizations;
+    final theme = Theme.of(context);
+    final dirty = _hasUnsavedChanges;
+    return Material(
+      color: theme.colorScheme.surface,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    dirty ? Icons.edit_outlined : Icons.check_circle_outline,
+                    size: 20,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      dirty ? l.config_unsaved_changes : l.config_saved_state,
+                      style: theme.textTheme.labelLarge,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(l.config_restart_hint, style: theme.textTheme.bodySmall),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  FilledButton.icon(
+                    key: const ValueKey('config-save'),
+                    icon: const Icon(Icons.save_outlined),
+                    label: Text(l.config_save_button),
+                    onPressed:
+                        !_busy &&
+                            _draft.hasChanges &&
+                            !_localDrafts.any((check) => check())
+                        ? _save
+                        : null,
+                  ),
+                  TextButton(
+                    key: const ValueKey('config-reset'),
+                    onPressed: !_busy && dirty ? _reset : null,
+                    child: Text(l.config_reset_button),
+                  ),
+                  if (_hasSaved)
+                    TextButton.icon(
+                      onPressed: _busy ? null : () => context.go('/power'),
+                      icon: const Icon(Icons.power_settings_new),
+                      label: Text(l.system_control_menu_item),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -327,8 +413,9 @@ class ConfigScreenState extends State<ConfigScreen> {
           children: [
             SettingsTileNavigation(
               title: context.localizations.general_and_effects_title,
-              subtitle:
-                  'Delay: ${_editingConfig!.slideshow.displayTimeMs}ms, Effects...',
+              subtitle: context.localizations.slideshow_summary(
+                _editingConfig!.slideshow.displayTimeMs / 1000,
+              ),
               icon: Icons.photo_library,
               onTap: () => _navigateToSlideshowEditor(context),
             ),
@@ -340,8 +427,12 @@ class ConfigScreenState extends State<ConfigScreen> {
             ),
             SettingsTileNavigation(
               title: context.localizations.special_screens_title,
-              subtitle:
-                  '${_editingConfig!.slideshow.specialScreens.where((s) => s.enabled).length} / ${_editingConfig!.slideshow.specialScreens.length}',
+              subtitle: context.localizations.special_enabled_summary(
+                _editingConfig!.slideshow.specialScreens
+                    .where((s) => s.enabled)
+                    .length,
+                _editingConfig!.slideshow.specialScreens.length,
+              ),
               icon: Icons.dashboard_customize,
               onTap: () async {
                 await Navigator.of(context).push(
@@ -382,8 +473,8 @@ class ConfigScreenState extends State<ConfigScreen> {
             SettingsTileNavigation(
               title: context.localizations.web_server_settings_title,
               subtitle: _editingConfig!.webServer.alwaysEnabled
-                  ? "Enabled"
-                  : "Disabled",
+                  ? context.localizations.enabled_label
+                  : context.localizations.disabled_label,
               icon: Icons.dns,
               onTap: () => _navigateToWebServerEditor(context),
             ),
@@ -405,11 +496,19 @@ class ConfigScreenState extends State<ConfigScreen> {
             SettingsTextField(
               label: context.localizations.gpio_smoothing_label,
               isNumber: true,
+              validator: (text) {
+                final value = int.tryParse(text ?? '');
+                return value != null && value >= 0
+                    ? null
+                    : context.localizations.invalid_nonnegative_integer;
+              },
               initialValue: _editingConfig!.hardware.smoothingGPIOMs.toString(),
               onChanged: (val) {
                 setState(() {
-                  _editingConfig!.hardware.smoothingGPIOMs =
-                      int.tryParse(val) ?? 100;
+                  final value = int.tryParse(val);
+                  if (value != null && value >= 0) {
+                    _editingConfig!.hardware.smoothingGPIOMs = value;
+                  }
                 });
               },
             ),
@@ -418,6 +517,7 @@ class ConfigScreenState extends State<ConfigScreen> {
         ),
         SettingsSection(
           title: context.localizations.logging_levels_title,
+          expandable: true,
           icon: Icons.bug_report,
           children: [
             SettingsDropdown<Level>(
@@ -471,14 +571,34 @@ class ConfigScreenState extends State<ConfigScreen> {
     _refreshDraft();
   }
 
-  void _navigateToSlideshowEditor(BuildContext context) =>
-      _edit(SlideshowEditorPage(config: _editingConfig!.slideshow));
-  void _navigateToMqttEditor(BuildContext context) =>
-      _edit(MqttEditorPage(config: _editingConfig!.mqtt));
-  void _navigateToWebServerEditor(BuildContext context) =>
-      _edit(WebServerEditorPage(config: _editingConfig!.webServer));
-  void _navigateToWelcomeEditor(BuildContext context) =>
-      _edit(WelcomeEditorPage(config: _editingConfig!.welcome));
-  void _navigateToStorageSettings(BuildContext context) =>
-      _edit(StorageSettingsPage(config: _editingConfig!.storages));
+  void _navigateToSlideshowEditor(BuildContext context) => _edit(
+    SlideshowEditorPage(
+      config: _editingConfig!.slideshow,
+      registerDraft: _registerLocalDraft,
+    ),
+  );
+  void _navigateToMqttEditor(BuildContext context) => _edit(
+    MqttEditorPage(
+      config: _editingConfig!.mqtt,
+      registerDraft: _registerLocalDraft,
+    ),
+  );
+  void _navigateToWebServerEditor(BuildContext context) => _edit(
+    WebServerEditorPage(
+      config: _editingConfig!.webServer,
+      registerDraft: _registerLocalDraft,
+    ),
+  );
+  void _navigateToWelcomeEditor(BuildContext context) => _edit(
+    WelcomeEditorPage(
+      config: _editingConfig!.welcome,
+      registerDraft: _registerLocalDraft,
+    ),
+  );
+  void _navigateToStorageSettings(BuildContext context) => _edit(
+    StorageSettingsPage(
+      config: _editingConfig!.storages,
+      registerDraft: _registerLocalDraft,
+    ),
+  );
 }

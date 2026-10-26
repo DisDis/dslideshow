@@ -45,6 +45,23 @@ flutter:
   config:
     enable-native-assets: true
   uses-material-design: true
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/google_fonts/Roboto-Regular.ttf
+        - asset: assets/google_fonts/Roboto-Bold.ttf
+          weight: 700
+    - family: Orbitron
+      fonts:
+        - asset: assets/google_fonts/Orbitron-Regular.ttf
+        - asset: assets/google_fonts/Orbitron-Bold.ttf
+          weight: 700
+    - family: Righteous
+      fonts:
+        - asset: assets/google_fonts/Righteous-Regular.ttf
+    - family: FredokaOne
+      fonts:
+        - asset: assets/google_fonts/FredokaOne-Regular.ttf
   assets:
     - assets/
     - assets/images/

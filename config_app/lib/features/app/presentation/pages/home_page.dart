@@ -1,260 +1,102 @@
-import 'package:config_app/features/auth/presentation/bloc/authentication_bloc.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
-import 'package:config_app/features/wifi_config/config/router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  static void route(BuildContext context) {
-    context.go('/home');
-  }
+  static void route(BuildContext context) => context.go('/home');
 
   @override
   Widget build(BuildContext context) {
-    // Получаем ID пользователя через Bloc
-    final userId = context.select(
-      (AuthenticationBloc bloc) => bloc.state.user.id,
-    );
-
-    return Scaffold(
-      // Используем drawer, так что AppBar нужен для кнопки "гамбургер"
-      // Но сделаем его прозрачным/сливающимся с фоном для современности
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(context.localizations.home_page_name),
-        backgroundColor: AppColors.homeHeader,
-        elevation: 0,
-        // Если фон хедера темный, иконки делаем светлыми, иначе наоборот
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
-        titleTextStyle: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      drawer: const ConfigAppNavigationBar(),
-      body: Container(
-        // Легкий градиент на фоне для глубины
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              // 1. Приветственный блок
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 20), // Отступ под AppBar
-                      Text(
-                        context.localizations.welcome_back,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              color: AppColors.homePageHeaderWelcome,
+    final l = context.localizations;
+    final theme = Theme.of(context);
+    final destinations = AppDestination.values
+        .where((item) => item != AppDestination.home)
+        .toList();
+    return ConfigAppScaffold(
+      appBar: AppBar(title: Text(l.home_page_name)),
+      body: SettingsContent(
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            Text(l.device_panel_title, style: theme.textTheme.headlineMedium),
+            const SizedBox(height: 8),
+            Text(
+              l.device_settings_description,
+              style: theme.textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 28),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final columns = constraints.maxWidth >= 680 ? 2 : 1;
+                final width =
+                    (constraints.maxWidth - (columns - 1) * 16) / columns;
+                return Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: [
+                    for (final destination in destinations)
+                      SizedBox(
+                        width: width,
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () => context.go(destination.path),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    destination.icon,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          destination.label(context),
+                                          style: theme.textTheme.titleMedium,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(switch (destination) {
+                                          AppDestination.gallery =>
+                                            l.view_media_subtitle,
+                                          AppDestination.upload =>
+                                            l.upload_media_subtitle,
+                                          AppDestination.config =>
+                                            l.system_settings_subtitle,
+                                          AppDestination.ota =>
+                                            l.firmware_upgrade_subtitle,
+                                          AppDestination.wifi =>
+                                            l.manage_connections_subtitle,
+                                          AppDestination.power =>
+                                            l.restart_app_power_off_subtitle,
+                                          AppDestination.home =>
+                                            l.device_settings_description,
+                                        }, style: theme.textTheme.bodySmall),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.chevron_right),
+                                ],
+                              ),
                             ),
-                      ),
-                      Text(
-                        "User #$userId", // Используем ID из блока
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        context.localizations.manage_your_device_settings_and_updates,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.homePageHeaderWelcome[600],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // 2. Сетка навигации
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverGrid.count(
-                  crossAxisCount: 2, // 2 карточки в ряд
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 2.5, // Чуть шире чем квадрат
-                  children: [
-                    
-                    // Добавил Галерею, так как мы её делали ранее (для примера)
-                    _DashboardCard(
-                      title: context.localizations.gallery_card_title,
-                      subtitle: context.localizations.view_media_subtitle,
-                      icon: Icons.photo_library,
-                      color: AppColors.navGalleryMenuItem,
-                      onTap: () => context.go('/gallery'), // Если такой роут есть
-                    ),
-                    _DashboardCard(
-                      title: context.localizations.upload_card_title,
-                      subtitle: context.localizations.upload_media_subtitle,
-                      icon: Icons.upload_file,
-                      color: AppColors.navUploadMenuItem,
-                      onTap: () => context.go('/upload'), // Если такой роут есть
-                    ),
-                    _DashboardCard(
-                      title: context.localizations.ota_update_card_title,
-                      subtitle: context.localizations.firmware_upgrade_subtitle,
-                      icon: Icons.system_update,
-                      color: AppColors.navOtaMenuItem,
-                      onTap: () => context.go('/ota'),
-                    ),
-                    _DashboardCard(
-                      title: context.localizations.wifi_setup_card_title,
-                      subtitle: context.localizations.manage_connections_subtitle,
-                      icon: Icons.wifi,
-                      color: AppColors.navWiFiMenuItem,
-                      onTap: () => context.go(WiFiConfigPages.main.value),
-                    ),
-                    _DashboardCard(
-                      title: context.localizations.configuration_card_title,
-                      subtitle: context.localizations.system_settings_subtitle,
-                      icon: Icons.settings,
-                      color: AppColors.navConfigMenuItem,
-                      onTap: () => context.go('/config'),
-                    ),
-                    _DashboardCard(
-                      title: context.localizations.system_control_card_title,
-                      subtitle: context.localizations.restart_app_power_off_subtitle,
-                      icon: Icons.power_settings_new,
-                      color: AppColors.navPowerMenuItem,
-                      onTap: () => context.go('/power'),
-                    ),
-                    
                   ],
-                ),
-              ),
-
-              // 3. Кнопка выхода (Внизу списка)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 40, bottom: 20),
-                  child: Center(
-                    child: TextButton.icon(
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.errorRed,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      icon: const Icon(Icons.logout),
-                      label: Text(
-                        context.localizations.home_page_logout_button,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      onPressed: () {
-                        context
-                            .read<AuthenticationBloc>()
-                            .add(const AuthenticationLogoutRequested());
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// --- ВИДЖЕТ КАРТОЧКИ ---
-
-class _DashboardCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _DashboardCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shadowColor: color.withAlpha((255.0 * 0.3).round()),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      clipBehavior: Clip.antiAlias, // Чтобы ripple effect не вылезал
-      child: InkWell(
-        onTap: onTap,
-        splashColor: color.withAlpha((255.0 * 0.1).round()),
-        highlightColor: color.withAlpha((255.0 * 0.05).round()),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).cardColor,
-                Theme.of(context).cardColor,
-                // Легкий оттенок цвета в углу
-                color.withAlpha((255.0 * 0.05).round()),
-              ],
+                );
+              },
             ),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Иконка в кружочке
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withAlpha((255.0 * 0.1).round()),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 28),
-              ),
-              
-              // Тексты
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          ],
         ),
       ),
     );

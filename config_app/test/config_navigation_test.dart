@@ -87,14 +87,14 @@ void main() {
     await tester.tap(find.text('Welcome Screen'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Text'),
+      find.byKey(const Key('welcome-text')),
       _editedWelcome,
     );
     // Popping an editor preserves the settings draft without prompting.
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsNothing);
-    expect(find.text(_editedWelcome), findsOneWidget);
+    expect(find.text(_editedWelcome), findsWidgets);
   }
 
   testWidgets('a clean configuration route exits without confirmation', (
@@ -122,7 +122,7 @@ void main() {
       await tester.tap(find.text('Keep editing'));
       await tester.pumpAndSettle();
       expect(find.byType(ConfigScreen), findsOneWidget);
-      expect(find.text(_editedWelcome), findsOneWidget);
+      expect(find.text(_editedWelcome), findsWidgets);
       expect(find.text('Home page'), findsNothing);
 
       router.go('/home');
@@ -157,7 +157,7 @@ void main() {
     await tester.tap(find.text('Welcome Screen'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Text'),
+      find.byKey(const Key('welcome-text')),
       _editedWelcome,
     );
 
@@ -166,8 +166,8 @@ void main() {
     expect(_confirmationTitle, findsOneWidget);
     await tester.tap(find.text('Keep editing'));
     await tester.pumpAndSettle();
-    expect(find.text('Welcome Settings'), findsOneWidget);
-    expect(find.text(_editedWelcome), findsOneWidget);
+    expect(find.byKey(const Key('welcome-text')), findsOneWidget);
+    expect(find.text(_editedWelcome), findsWidgets);
 
     router.go('/home');
     await tester.pumpAndSettle();
@@ -271,7 +271,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(await pop, isTrue);
     expect(find.byType(ConfigScreen), findsOneWidget);
-    expect(find.text(_editedWelcome), findsOneWidget);
+    expect(find.text(_editedWelcome), findsWidgets);
   });
 
   testWidgets(
@@ -340,6 +340,8 @@ void main() {
         matching: find.byType(Scrollable),
       ),
     );
+    await tester.ensureVisible(find.text('Exit'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Exit'));
     await tester.pumpAndSettle();
     expect(authentication.logoutCount, 0);
@@ -348,6 +350,8 @@ void main() {
     expect(authentication.state, isA<AuthenticationAuthenticatedState>());
     expect(authentication.logoutCount, 0);
 
+    await tester.ensureVisible(find.text('Exit'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Exit'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Discard changes'));

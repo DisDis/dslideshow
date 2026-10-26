@@ -46,6 +46,7 @@ ClockScreenOptions _$ClockScreenOptionsFromJson(Map<String, dynamic> json) =>
           ClockTimeFormat.h24,
       showSeconds: json['showSeconds'] as bool? ?? false,
       showDate: json['showDate'] as bool? ?? true,
+      showWeekday: json['showWeekday'] as bool? ?? false,
       dateFormat:
           $enumDecodeNullable(
             _$ClockDateFormatEnumMap,
@@ -53,6 +54,20 @@ ClockScreenOptions _$ClockScreenOptionsFromJson(Map<String, dynamic> json) =>
             unknownValue: ClockDateFormat.dayMonthYear,
           ) ??
           ClockDateFormat.dayMonthYear,
+      timeFont:
+          $enumDecodeNullable(
+            _$ClockFontEnumMap,
+            json['timeFont'],
+            unknownValue: ClockFont.system,
+          ) ??
+          ClockFont.system,
+      dateFont:
+          $enumDecodeNullable(
+            _$ClockFontEnumMap,
+            json['dateFont'],
+            unknownValue: ClockFont.system,
+          ) ??
+          ClockFont.system,
       timeFontSizePercent: json['timeFontSizePercent'] == null
           ? 50
           : _parseTimeSize(json['timeFontSizePercent']),
@@ -72,7 +87,10 @@ Map<String, dynamic> _$ClockScreenOptionsToJson(ClockScreenOptions instance) =>
       'timeFormat': _$ClockTimeFormatEnumMap[instance.timeFormat]!,
       'showSeconds': instance.showSeconds,
       'showDate': instance.showDate,
+      'showWeekday': instance.showWeekday,
       'dateFormat': _$ClockDateFormatEnumMap[instance.dateFormat]!,
+      'timeFont': _$ClockFontEnumMap[instance.timeFont]!,
+      'dateFont': _$ClockFontEnumMap[instance.dateFont]!,
       'timeFontSizePercent': instance.timeFontSizePercent,
       'dateFontSizePercent': instance.dateFontSizePercent,
       'textColor': _colorToJson(instance.textColor),
@@ -88,6 +106,14 @@ const _$ClockDateFormatEnumMap = {
   ClockDateFormat.dayMonthYear: 'dd.MM.yyyy',
   ClockDateFormat.yearMonthDay: 'yyyy-MM-dd',
   ClockDateFormat.dayMonthYearSlashes: 'dd/MM/yyyy',
+};
+
+const _$ClockFontEnumMap = {
+  ClockFont.system: 'system',
+  ClockFont.roboto: 'roboto',
+  ClockFont.orbitron: 'orbitron',
+  ClockFont.righteous: 'righteous',
+  ClockFont.fredoka: 'fredoka',
 };
 
 CameraConfig _$CameraConfigFromJson(Map<String, dynamic> json) => CameraConfig(
@@ -130,6 +156,9 @@ CamerasScreenOptions _$CamerasScreenOptionsFromJson(
   refreshIntervalMs: json['refreshIntervalMs'] == null
       ? 5000
       : _parseRefresh(json['refreshIntervalMs']),
+  requestTimeoutMs: json['requestTimeoutMs'] == null
+      ? 10000
+      : _parseRequestTimeout(json['requestTimeoutMs']),
 );
 
 Map<String, dynamic> _$CamerasScreenOptionsToJson(
@@ -141,6 +170,7 @@ Map<String, dynamic> _$CamerasScreenOptionsToJson(
   'fit': _$CameraImageFitEnumMap[instance.fit]!,
   'showNames': instance.showNames,
   'refreshIntervalMs': instance.refreshIntervalMs,
+  'requestTimeoutMs': instance.requestTimeoutMs,
 };
 
 const _$CameraDisplayModeEnumMap = {

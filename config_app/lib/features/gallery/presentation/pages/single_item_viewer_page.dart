@@ -2,6 +2,7 @@ import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.
 import 'package:config_app/features/gallery/presentation/widgets/metadata_panel.dart';
 import 'package:config_app/features/gallery/presentation/widgets/single_image_viewer.dart';
 import 'package:config_app/features/gallery/presentation/widgets/single_video_player.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -15,7 +16,8 @@ class SingleItemViewerPage extends StatefulWidget {
   State<SingleItemViewerPage> createState() => _SingleItemViewerPageState();
 }
 
-class _SingleItemViewerPageState extends State<SingleItemViewerPage> with SingleTickerProviderStateMixin {
+class _SingleItemViewerPageState extends State<SingleItemViewerPage>
+    with SingleTickerProviderStateMixin {
   bool _showControls = true;
   late AnimationController _controlsAnimController;
   late Animation<double> _controlsOpacity;
@@ -58,7 +60,7 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage> with Single
     final isVideo = FileSettings.isVideo(ext);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.scrim,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -68,7 +70,10 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage> with Single
             behavior: HitTestBehavior.translucent,
             child: Center(
               child: isVideo
-                  ? SingleVideoPlayer(uri: widget.item.uri, onContentTap: _toggleControls)
+                  ? SingleVideoPlayer(
+                      uri: widget.item.uri,
+                      onContentTap: _toggleControls,
+                    )
                   : SingleImageViewer(uri: widget.item.uri),
             ),
           ),
@@ -81,25 +86,40 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage> with Single
             child: FadeTransition(
               opacity: _controlsOpacity,
               child: Container(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                decoration: const BoxDecoration(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                ),
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black87, Colors.transparent],
+                    colors: [
+                      Theme.of(context).colorScheme.surface
+                          .withValues(alpha: 0.95),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
                 child: AppBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   leading: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    tooltip: MaterialLocalizations.of(context)
+                        .backButtonTooltip,
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   actions: [
                     // Тут можно добавить кнопки "Скачать", "Удалить"
                     IconButton(
-                      icon: const Icon(Icons.info_outline, color: Colors.white),
+                      tooltip: context.localizations.media_info,
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       onPressed: _toggleControls, // Просто акцентируем внимание на инфо
                     ),
                   ],

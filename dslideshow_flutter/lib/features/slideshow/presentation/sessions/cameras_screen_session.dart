@@ -23,10 +23,18 @@ class CamerasScreenSession extends SpecialScreenSession {
     super.config, {
     this.cameraIndex = 0,
     CameraSnapshotClient? client,
-  }) : client = client ?? CameraSnapshotClient();
+  }) : client =
+           client ??
+           CameraSnapshotClient(
+             timeout: Duration(
+               milliseconds:
+                   (config.options as CamerasScreenOptions).requestTimeoutMs,
+             ),
+           );
   @override
   Future<bool> prepare() async {
-    if (options.cameras.isEmpty) return false;
+    if (closed || options.cameras.isEmpty) return false;
+    cameraIndex %= options.cameras.length;
     final generation = _generation;
     if (options.mode == CameraDisplayMode.sequence) {
       for (var offset = 0; offset < options.cameras.length; offset++) {
@@ -46,7 +54,9 @@ class CamerasScreenSession extends SpecialScreenSession {
         ),
       );
     }
-    return !closed && generation == _generation && images.isNotEmpty;
+    // An unreachable camera is still a usable screen: show its unavailable
+    // state and allow the normal refresh cycle to recover it.
+    return !closed && generation == _generation;
   }
 
   Future<void> _load(int index, int generation) async {
@@ -66,7 +76,11 @@ class CamerasScreenSession extends SpecialScreenSession {
       images[index] = bytes;
       failed.remove(index);
     } catch (_) {
-      if (!closed && generation == _generation) failed.add(index);
+      if (!closed && generation == _generation) {
+        final previous = images.remove(index);
+        if (previous != null) MemoryImage(previous).evict();
+        failed.add(index);
+      }
     } finally {
       _requests.remove(key);
     }

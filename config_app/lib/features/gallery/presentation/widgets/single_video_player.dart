@@ -1,4 +1,4 @@
-import 'package:config_app/features/theme/presentation/theme.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -6,12 +6,15 @@ class SingleVideoPlayer extends StatefulWidget {
   final Uri uri;
   final VoidCallback onContentTap;
 
-  const SingleVideoPlayer({super.key, required this.uri, required this.onContentTap});
+  const SingleVideoPlayer({
+    super.key,
+    required this.uri,
+    required this.onContentTap,
+  });
 
   @override
   State<SingleVideoPlayer> createState() => _SingleVideoPlayerState();
 }
-
 
 class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
   late VideoPlayerController _controller;
@@ -30,7 +33,7 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
         _controller.play();
         _controller.setLooping(true);
       });
-    
+
     _controller.addListener(() {
       // Обновляем UI для слайдера прогресса
       if (mounted) setState(() {});
@@ -58,7 +61,7 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     if (!_initialized) {
-      return const CircularProgressIndicator(color: Colors.white);
+      return const CircularProgressIndicator();
     }
 
     return AspectRatio(
@@ -67,7 +70,7 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
         alignment: Alignment.bottomCenter,
         children: [
           VideoPlayer(_controller),
-          
+
           // Прозрачный слой для клика Play/Pause по центру, если нужно,
           // но мы используем глобальный тап для скрытия UI.
           // Добавим большую кнопку Play по центру, если пауза
@@ -75,19 +78,25 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
             Center(
               child: IconButton(
                 iconSize: 64,
-                icon: const Icon(Icons.play_circle_fill, color: Colors.white54),
+                tooltip: context.localizations.preview_resume,
+                icon: Icon(
+                  Icons.play_circle_fill,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 onPressed: _togglePlay,
               ),
             ),
-            
+
           // Видео Прогресс (в самом низу видео)
           VideoProgressIndicator(
-            _controller, 
+            _controller,
             allowScrubbing: true,
-            colors: const VideoProgressColors(
-              playedColor: AppColors.videoProgressPlayedColor,
-              bufferedColor: AppColors.videoProgressBufferedColor,
-              backgroundColor: AppColors.videoProgressBackgroundColor,
+            colors: VideoProgressColors(
+              playedColor: Theme.of(context).colorScheme.primary,
+              bufferedColor: Theme.of(context).colorScheme.primaryContainer,
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainerHighest,
             ),
           ),
         ],

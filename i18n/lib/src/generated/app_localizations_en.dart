@@ -516,7 +516,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_time_size => 'Time font (% of shorter screen side)';
 
   @override
-  String get special_date_size => 'Date font (% of shorter screen side)';
+  String get special_date_size =>
+      'Date and weekday size (% of shorter screen side)';
 
   @override
   String get special_text_color => 'Text color (AARRGGBB)';
@@ -629,4 +630,532 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get effect_water_refraction => 'Water Refraction';
+
+  @override
+  String get ui_system_default => 'System default';
+
+  @override
+  String get app_title => 'Photo frame';
+
+  @override
+  String get appearance_title => 'Appearance';
+
+  @override
+  String get language_label => 'Language';
+
+  @override
+  String get theme_mode_label => 'Theme';
+
+  @override
+  String get theme_mode_light => 'Light';
+
+  @override
+  String get theme_mode_dark => 'Dark';
+
+  @override
+  String get device_panel_title => 'Photo frame';
+
+  @override
+  String get device_settings_description =>
+      'Manage media, appearance and device settings.';
+
+  @override
+  String get connection_title => 'Connection';
+
+  @override
+  String get authentication_title => 'Authentication';
+
+  @override
+  String get enabled_label => 'Enabled';
+
+  @override
+  String get disabled_label => 'Disabled';
+
+  @override
+  String get server_host_label => 'Server host';
+
+  @override
+  String get port_label => 'Port';
+
+  @override
+  String get permanent_code_label => 'Permanent access code';
+
+  @override
+  String get always_enabled_label => 'Always enabled';
+
+  @override
+  String get active_storage_label => 'Active storage';
+
+  @override
+  String get provider_label => 'Provider';
+
+  @override
+  String get local_disk_label => 'Local disk';
+
+  @override
+  String get google_photos_label => 'Google Photos';
+
+  @override
+  String get auth_refresh_token_label => 'Refresh token';
+
+  @override
+  String get client_id_label => 'Client ID';
+
+  @override
+  String get client_secret_label => 'Client secret';
+
+  @override
+  String get upload_from_disk_label => 'Upload photos from disk';
+
+  @override
+  String get image_width_label => 'Image width';
+
+  @override
+  String get image_height_label => 'Image height';
+
+  @override
+  String get show_secret => 'Show value';
+
+  @override
+  String get hide_secret => 'Hide value';
+
+  @override
+  String get items_none => 'None selected';
+
+  @override
+  String get items_all => 'All selected';
+
+  @override
+  String items_selected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items selected',
+      one: '$count item selected',
+      zero: 'None selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get config_editor_draft_hint =>
+      'Edits stay in the draft. Use Save on Settings to write them to the device.';
+
+  @override
+  String get config_reset_button => 'Undo edits';
+
+  @override
+  String get invalid_port => 'Enter a port from 1 to 65535.';
+
+  @override
+  String get invalid_positive_integer => 'Enter a positive whole number.';
+
+  @override
+  String get invalid_nonnegative_integer =>
+      'Enter zero or a positive whole number.';
+
+  @override
+  String slideshow_summary(num seconds) {
+    final intl.NumberFormat secondsNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String secondsString = secondsNumberFormat.format(seconds);
+
+    return 'Photo display: $secondsString s';
+  }
+
+  @override
+  String special_enabled_summary(int enabled, int total) {
+    return '$enabled of $total enabled';
+  }
+
+  @override
+  String get preview_title => 'Preview';
+
+  @override
+  String get preview_local_controls =>
+      'Preview controls are local and are not saved.';
+
+  @override
+  String get preview_hide => 'Hide preview';
+
+  @override
+  String get preview_show => 'Show preview';
+
+  @override
+  String get preview_effect => 'Preview transition';
+
+  @override
+  String get preview_aspect => 'Screen aspect ratio';
+
+  @override
+  String get preview_pause => 'Pause';
+
+  @override
+  String get preview_resume => 'Resume';
+
+  @override
+  String get preview_failed =>
+      'Could not load media. Check the address and network access.';
+
+  @override
+  String get preview_last_valid =>
+      'Showing the last valid values. Correct the marked fields.';
+
+  @override
+  String get preview_device_scale => 'Scaled relative to a 2560 × 1600 screen';
+
+  @override
+  String get preview_environment_help =>
+      'Sample media loads from the network. Preview does not confirm device codec support.';
+
+  @override
+  String get preview_clock_help => 'Uses this computer’s current time.';
+
+  @override
+  String get timing_title => 'Timing';
+
+  @override
+  String get display_time_ms => 'Display duration (ms)';
+
+  @override
+  String get transition_time_ms => 'Transition duration (ms)';
+
+  @override
+  String get visuals_title => 'Appearance';
+
+  @override
+  String get allowed_transitions => 'Allowed transitions';
+
+  @override
+  String get allowed_transitions_all => 'An empty list allows all transitions.';
+
+  @override
+  String get blur_background => 'Blur background';
+
+  @override
+  String get background_blur_sigma => 'Background blur';
+
+  @override
+  String get background_color_argb => 'Background color (AARRGGBB)';
+
+  @override
+  String get welcome_text => 'Welcome text';
+
+  @override
+  String get welcome_text_size => 'Text size';
+
+  @override
+  String get welcome_delay_ms => 'Animation phase duration (ms)';
+
+  @override
+  String get welcome_replay => 'Replay welcome';
+
+  @override
+  String get welcome_animation_help =>
+      'The welcome fades in and out; the delay sets the duration of each phase.';
+
+  @override
+  String get invalid_positive_number => 'Enter a positive number.';
+
+  @override
+  String get effect_cube => 'Cube';
+
+  @override
+  String get effect_accordion => 'Accordion';
+
+  @override
+  String get effect_background_to_foreground => 'Background to foreground';
+
+  @override
+  String get effect_foreground_to_background => 'Foreground to background';
+
+  @override
+  String get effect_default => 'Slide';
+
+  @override
+  String get effect_depth => 'Depth';
+
+  @override
+  String get effect_flip_horizontal => 'Horizontal flip';
+
+  @override
+  String get effect_flip_vertical => 'Vertical flip';
+
+  @override
+  String get effect_parallax => 'Parallax';
+
+  @override
+  String get effect_stack => 'Stack';
+
+  @override
+  String get effect_tablet => 'Tablet';
+
+  @override
+  String get effect_rotate_down => 'Rotate down';
+
+  @override
+  String get effect_rotate_up => 'Rotate up';
+
+  @override
+  String get effect_zoom_out_slide => 'Zoom out';
+
+  @override
+  String get effect_fade => 'Fade';
+
+  @override
+  String get effect_mosaic => 'Mosaic';
+
+  @override
+  String get effect_mosaic_fade => 'Mosaic fade';
+
+  @override
+  String get effect_mosaic_tl_fade => 'Mosaic from top left';
+
+  @override
+  String get effect_mosaic_br_fade => 'Mosaic from bottom right';
+
+  @override
+  String get effect_liquid_morph => 'Liquid morph';
+
+  @override
+  String get effect_blinds => 'Blinds';
+
+  @override
+  String get effect_blur_fade => 'Blur fade';
+
+  @override
+  String get effect_zoom_over => 'Zoom over';
+
+  @override
+  String get effect_mosaic_tr_fade => 'Mosaic from top right';
+
+  @override
+  String get effect_mosaic_bl_fade => 'Mosaic from bottom left';
+
+  @override
+  String get effect_wipe_left => 'Wipe left';
+
+  @override
+  String get effect_wipe_right => 'Wipe right';
+
+  @override
+  String get effect_wipe_up => 'Wipe up';
+
+  @override
+  String get effect_wipe_down => 'Wipe down';
+
+  @override
+  String get effect_curtain_horizontal => 'Horizontal curtain';
+
+  @override
+  String get effect_curtain_vertical => 'Vertical curtain';
+
+  @override
+  String get effect_diagonal_top_left => 'Diagonal from top left';
+
+  @override
+  String get effect_diagonal_top_right => 'Diagonal from top right';
+
+  @override
+  String get effect_diagonal_bottom_left => 'Diagonal from bottom left';
+
+  @override
+  String get effect_diagonal_bottom_right => 'Diagonal from bottom right';
+
+  @override
+  String get effect_iris => 'Iris';
+
+  @override
+  String get effect_fade_through_black => 'Fade through black';
+
+  @override
+  String get effect_fade_through_white => 'Fade through white';
+
+  @override
+  String get effect_push_right => 'Push right';
+
+  @override
+  String get effect_push_up => 'Push up';
+
+  @override
+  String get effect_push_down => 'Push down';
+
+  @override
+  String get effect_cover_right => 'Cover right';
+
+  @override
+  String get effect_cover_up => 'Cover up';
+
+  @override
+  String get effect_cover_down => 'Cover down';
+
+  @override
+  String get effect_reveal_left => 'Reveal left';
+
+  @override
+  String get effect_reveal_right => 'Reveal right';
+
+  @override
+  String get effect_reveal_up => 'Reveal up';
+
+  @override
+  String get effect_reveal_down => 'Reveal down';
+
+  @override
+  String get sync_settings_title => 'Sync settings';
+
+  @override
+  String get sync_period_label => 'Sync period';
+
+  @override
+  String get albums_title => 'Albums';
+
+  @override
+  String get album_names_label => 'Album names, separated by commas';
+
+  @override
+  String get pixels_unit => 'px';
+
+  @override
+  String get minutes_unit => 'min';
+
+  @override
+  String get milliseconds_unit => 'ms';
+
+  @override
+  String get config_reset_warning =>
+      'Discard all edits and restore the last loaded or saved settings?';
+
+  @override
+  String get refresh_button => 'Refresh';
+
+  @override
+  String get add_manually => 'Add manually';
+
+  @override
+  String get delete_connection => 'Delete connection';
+
+  @override
+  String get forget_network_title => 'Forget network?';
+
+  @override
+  String forget_network_question(String name) {
+    return 'Delete the saved connection “$name”?';
+  }
+
+  @override
+  String get delete_button => 'Delete';
+
+  @override
+  String get ota_code_label => 'Update code';
+
+  @override
+  String ota_version(String version) {
+    return 'Version: $version';
+  }
+
+  @override
+  String get ota_uploading => 'Uploading firmware…';
+
+  @override
+  String get ota_upload_complete => 'Firmware upload completed successfully.';
+
+  @override
+  String gallery_selected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '$count selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get clear_selection => 'Clear selection';
+
+  @override
+  String get gallery_empty => 'No media files yet.';
+
+  @override
+  String get upload_empty_hint =>
+      'Add photos and videos to display on the frame.';
+
+  @override
+  String get upload_remove_task => 'Remove from queue';
+
+  @override
+  String get video_load => 'Load video';
+
+  @override
+  String get video_tap_to_play => 'Tap to play';
+
+  @override
+  String get media_info => 'File information';
+
+  @override
+  String get invalid_editor_leave_warning =>
+      'Some fields contain invalid values. Discard the incomplete input and return to settings?';
+
+  @override
+  String get discard_invalid_input => 'Discard input';
+
+  @override
+  String get special_no_image => 'No image';
+
+  @override
+  String get special_request_timeout => 'Snapshot timeout (seconds)';
+
+  @override
+  String get special_request_timeout_help =>
+      'Time allowed for one snapshot request: 0.1–120 seconds. An unavailable image is replaced with a message.';
+
+  @override
+  String get special_time_font => 'Time font';
+
+  @override
+  String get special_date_font => 'Date and weekday font';
+
+  @override
+  String get special_show_weekday => 'Show day of the week';
+
+  @override
+  String get special_font_system => 'Default font';
+
+  @override
+  String get special_font_roboto => 'Roboto';
+
+  @override
+  String get special_font_orbitron => 'Orbitron';
+
+  @override
+  String get special_font_righteous => 'Righteous';
+
+  @override
+  String get special_font_fredoka => 'Fredoka One';
+
+  @override
+  String get special_font_help =>
+      'Fonts are bundled and work offline. Characters absent from a decorative font use a fallback font.';
+
+  @override
+  String get special_weekday_monday => 'Monday';
+
+  @override
+  String get special_weekday_tuesday => 'Tuesday';
+
+  @override
+  String get special_weekday_wednesday => 'Wednesday';
+
+  @override
+  String get special_weekday_thursday => 'Thursday';
+
+  @override
+  String get special_weekday_friday => 'Friday';
+
+  @override
+  String get special_weekday_saturday => 'Saturday';
+
+  @override
+  String get special_weekday_sunday => 'Sunday';
 }

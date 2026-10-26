@@ -1,0 +1,62 @@
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
+import 'package:dslideshow_flutter/effect.dart';
+import 'package:flutter/widgets.dart';
+
+/// Local labels stay separate from the stable effect names stored by the API.
+String effectLabel(BuildContext context, Effect effect) {
+  final l = context.localizations;
+  return <Effect, String>{
+        Effect.noiseDissolveEffect: l.effect_noise_dissolve,
+        Effect.rippleRevealEffect: l.effect_ripple_reveal,
+        Effect.waterRefractionEffect: l.effect_water_refraction,
+        Effect.cubeEffect: l.effect_cube,
+        Effect.accordionEffect: l.effect_accordion,
+        Effect.backgroundToForegroundEffect: l.effect_background_to_foreground,
+        Effect.foregroundToBackgroundEffect: l.effect_foreground_to_background,
+        Effect.defaultEffect: l.effect_default,
+        Effect.depthEffect: l.effect_depth,
+        Effect.flipHorizontalEffect: l.effect_flip_horizontal,
+        Effect.flipVerticalEffect: l.effect_flip_vertical,
+        Effect.parallaxEffect: l.effect_parallax,
+        Effect.stackEffect: l.effect_stack,
+        Effect.tabletEffect: l.effect_tablet,
+        Effect.rotateDownEffect: l.effect_rotate_down,
+        Effect.rotateUpEffect: l.effect_rotate_up,
+        Effect.zoomOutSlideEffect: l.effect_zoom_out_slide,
+        Effect.fadeEffect: l.effect_fade,
+        Effect.mosaicEffect: l.effect_mosaic,
+        Effect.mosaicFadeEffect: l.effect_mosaic_fade,
+        Effect.mosaicTLFadeEffect: l.effect_mosaic_tl_fade,
+        Effect.mosaicBRFadeEffect: l.effect_mosaic_br_fade,
+        Effect.liquidMorphEffect: l.effect_liquid_morph,
+        Effect.blindsEffect: l.effect_blinds,
+        Effect.blurFadeEffect: l.effect_blur_fade,
+        Effect.zoomOverEffect: l.effect_zoom_over,
+        Effect.mosaicTRFadeEffect: l.effect_mosaic_tr_fade,
+        Effect.mosaicBLFadeEffect: l.effect_mosaic_bl_fade,
+        Effect.wipeLeftEffect: l.effect_wipe_left,
+        Effect.wipeRightEffect: l.effect_wipe_right,
+        Effect.wipeUpEffect: l.effect_wipe_up,
+        Effect.wipeDownEffect: l.effect_wipe_down,
+        Effect.curtainHorizontalEffect: l.effect_curtain_horizontal,
+        Effect.curtainVerticalEffect: l.effect_curtain_vertical,
+        Effect.diagonalTopLeftEffect: l.effect_diagonal_top_left,
+        Effect.diagonalTopRightEffect: l.effect_diagonal_top_right,
+        Effect.diagonalBottomLeftEffect: l.effect_diagonal_bottom_left,
+        Effect.diagonalBottomRightEffect: l.effect_diagonal_bottom_right,
+        Effect.irisEffect: l.effect_iris,
+        Effect.fadeThroughBlackEffect: l.effect_fade_through_black,
+        Effect.fadeThroughWhiteEffect: l.effect_fade_through_white,
+        Effect.pushRightEffect: l.effect_push_right,
+        Effect.pushUpEffect: l.effect_push_up,
+        Effect.pushDownEffect: l.effect_push_down,
+        Effect.coverRightEffect: l.effect_cover_right,
+        Effect.coverUpEffect: l.effect_cover_up,
+        Effect.coverDownEffect: l.effect_cover_down,
+        Effect.revealLeftEffect: l.effect_reveal_left,
+        Effect.revealRightEffect: l.effect_reveal_right,
+        Effect.revealUpEffect: l.effect_reveal_up,
+        Effect.revealDownEffect: l.effect_reveal_down,
+      }[effect] ??
+      l.effect_default;
+}

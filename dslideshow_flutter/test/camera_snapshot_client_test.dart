@@ -195,4 +195,37 @@ void main() {
     );
     expect(held.closed, true);
   });
+
+  test(
+    'timeout cancels a stalled body and releases the next queued request',
+    () async {
+      final cancelled = Completer<void>();
+      final body = StreamController<List<int>>(
+        onCancel: () => cancelled.complete(),
+      );
+      var requests = 0;
+      final loader = CameraSnapshotClient(
+        timeout: const Duration(milliseconds: 10),
+        maxConcurrent: 1,
+        createClient: () => MockClient.streaming((_, _) async {
+          requests++;
+          return requests == 1
+              ? http.StreamedResponse(body.stream, 200)
+              : http.StreamedResponse(Stream.value(png), 200);
+        }),
+      );
+      addTearDown(loader.dispose);
+      addTearDown(body.close);
+      final camera = CameraConfig(id: 'a', url: 'http://camera/snapshot');
+      final first = expectLater(
+        loader.fetch('stalled-body', camera),
+        throwsA(isA<TimeoutException>()),
+      );
+      final second = loader.fetch('next', camera);
+      await first;
+      await cancelled.future;
+      expect(await second, png);
+      expect(requests, 2);
+    },
+  );
 }

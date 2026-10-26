@@ -92,22 +92,40 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     }
 
     return ThemeColors(
-      appContainerBackground:
-          Color.lerp(appContainerBackground, other.appContainerBackground, t)!,
-      appContainerShadow:
-          Color.lerp(appContainerShadow, other.appContainerShadow, t)!,
+      appContainerBackground: Color.lerp(
+        appContainerBackground,
+        other.appContainerBackground,
+        t,
+      )!,
+      appContainerShadow: Color.lerp(
+        appContainerShadow,
+        other.appContainerShadow,
+        t,
+      )!,
       selectedLabel: Color.lerp(selectedLabel, other.selectedLabel, t)!,
       unselectedLabel: Color.lerp(unselectedLabel, other.unselectedLabel, t)!,
       coursorColor: Color.lerp(coursorColor, other.coursorColor, t)!,
       micIcon: Color.lerp(micIcon, other.micIcon, t)!,
-      settingsDialogLanguage:
-          Color.lerp(settingsDialogLanguage, other.settingsDialogLanguage, t)!,
-      messagePrimaryColor:
-          Color.lerp(messagePrimaryColor, other.messagePrimaryColor, t)!,
-      messageBubbleColor:
-          Color.lerp(messageBubbleColor, other.messageBubbleColor, t)!,
-      avatarBackgroundColor:
-          Color.lerp(avatarBackgroundColor, other.avatarBackgroundColor, t)!,
+      settingsDialogLanguage: Color.lerp(
+        settingsDialogLanguage,
+        other.settingsDialogLanguage,
+        t,
+      )!,
+      messagePrimaryColor: Color.lerp(
+        messagePrimaryColor,
+        other.messagePrimaryColor,
+        t,
+      )!,
+      messageBubbleColor: Color.lerp(
+        messageBubbleColor,
+        other.messageBubbleColor,
+        t,
+      )!,
+      avatarBackgroundColor: Color.lerp(
+        avatarBackgroundColor,
+        other.avatarBackgroundColor,
+        t,
+      )!,
       messageReceiptBackgroundColor: Color.lerp(
         messageReceiptBackgroundColor,
         other.messageReceiptBackgroundColor,
@@ -136,40 +154,27 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     );
   }
 
-  static ThemeColors get light => ThemeColors(
-        appContainerBackground: AppColors.white,
-        appContainerShadow: AppColors.grey.withAlpha((255.0 * 0.5).round()),
-        selectedLabel: AppColors.darkestGrey,
-        unselectedLabel: AppColors.darkestGrey.withAlpha((255.0 * 0.7).round()),
-        coursorColor: AppColors.pink,
-        micIcon: AppColors.lightGrey,
-        settingsDialogLanguage: AppColors.white,
-        messagePrimaryColor: AppColors.lightMessagePrimaryColor,
-        messageBubbleColor: AppColors.lightMessageBubbleColor,
-        avatarBackgroundColor: Colors.white,
-        messageReceiptBackgroundColor: Colors.white,
-        messageReceiptIconReadColor: Colors.green[700]!,
-        messageReceiptIconUnReadColor: Colors.grey,
-        messageDateTimeColor: Colors.black54,
-        messageReceivedBubbleColor: AppColors.lightMessageReceivedBubbleColor,
-      );
+  factory ThemeColors.fromScheme(ColorScheme scheme) => ThemeColors(
+    appContainerBackground: scheme.surfaceContainerLow,
+    appContainerShadow: scheme.shadow.withValues(alpha: .08),
+    selectedLabel: scheme.onSecondaryContainer,
+    unselectedLabel: scheme.onSurfaceVariant,
+    coursorColor: scheme.primary,
+    micIcon: scheme.onSurfaceVariant,
+    settingsDialogLanguage: scheme.surfaceContainerLow,
+    messagePrimaryColor: scheme.onSecondaryContainer,
+    messageBubbleColor: scheme.secondaryContainer,
+    avatarBackgroundColor: scheme.primaryContainer,
+    messageReceiptBackgroundColor: scheme.surfaceContainer,
+    messageReceiptIconReadColor: scheme.primary,
+    messageReceiptIconUnReadColor: scheme.onSurfaceVariant,
+    messageDateTimeColor: scheme.onSurfaceVariant,
+    messageReceivedBubbleColor: scheme.secondaryContainer,
+  );
 
-  static ThemeColors get dark => ThemeColors(
-        appContainerBackground: AppColors.lightDark,
-        appContainerShadow:
-            AppColors.darkerGrey.withAlpha((255.0 * 0.2).round()),
-        selectedLabel: AppColors.darkestGrey,
-        unselectedLabel: AppColors.darkestGrey.withAlpha((255.0 * 0.7).round()),
-        coursorColor: AppColors.pink,
-        micIcon: AppColors.lightGrey,
-        settingsDialogLanguage: AppColors.lighterDark,
-        messagePrimaryColor: AppColors.darkMessagePrimaryColor,
-        messageBubbleColor: AppColors.darkMessageBubbleColor,
-        avatarBackgroundColor: Colors.black,
-        messageReceiptBackgroundColor: Colors.black,
-        messageReceiptIconReadColor: Colors.green[700]!,
-        messageReceiptIconUnReadColor: Colors.grey,
-        messageDateTimeColor: Colors.white70,
-        messageReceivedBubbleColor: AppColors.darkMessageReceivedBubbleColor,
-      );
+  static ThemeColors get light =>
+      ThemeColors.fromScheme(_createColorScheme(Brightness.light));
+
+  static ThemeColors get dark =>
+      ThemeColors.fromScheme(_createColorScheme(Brightness.dark));
 }

@@ -20,27 +20,20 @@ class LoginPage extends StatelessWidget {
         onTap: () => FocusScope.of(context)
             .unfocus(), // Скрываем клавиатуру при клике на фон
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.tertiaryContainer,
-              ],
-            ),
-          ),
+          color: Theme.of(context).colorScheme.surface,
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: BlocProvider(
                 create: (context) {
-                  return LoginBloc(
-                    authenticationRepository: sl(),
-                  )..add(
-                      const LoginConnectUriAutoChanged()); // Авто-определение хоста при старте
+                  return LoginBloc(authenticationRepository: sl())..add(
+                    const LoginConnectUriAutoChanged(),
+                  ); // Авто-определение хоста при старте
                 },
-                child: const LoginForm(),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 480),
+                  child: const LoginForm(),
+                ),
               ),
             ),
           ),

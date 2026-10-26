@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_ru.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ru'),
+  ];
 
   /// No description provided for @password.
   ///
@@ -1051,7 +1055,7 @@ abstract class AppLocalizations {
   /// No description provided for @special_date_size.
   ///
   /// In en, this message translates to:
-  /// **'Date font (% of shorter screen side)'**
+  /// **'Date and weekday size (% of shorter screen side)'**
   String get special_date_size;
 
   /// No description provided for @special_text_color.
@@ -1269,6 +1273,978 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Water Refraction'**
   String get effect_water_refraction;
+
+  /// No description provided for @ui_system_default.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get ui_system_default;
+
+  /// No description provided for @app_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo frame'**
+  String get app_title;
+
+  /// No description provided for @appearance_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance_title;
+
+  /// No description provided for @language_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language_label;
+
+  /// No description provided for @theme_mode_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme_mode_label;
+
+  /// No description provided for @theme_mode_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get theme_mode_light;
+
+  /// No description provided for @theme_mode_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get theme_mode_dark;
+
+  /// No description provided for @device_panel_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo frame'**
+  String get device_panel_title;
+
+  /// No description provided for @device_settings_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage media, appearance and device settings.'**
+  String get device_settings_description;
+
+  /// No description provided for @connection_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get connection_title;
+
+  /// No description provided for @authentication_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get authentication_title;
+
+  /// No description provided for @enabled_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled_label;
+
+  /// No description provided for @disabled_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled_label;
+
+  /// No description provided for @server_host_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Server host'**
+  String get server_host_label;
+
+  /// No description provided for @port_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get port_label;
+
+  /// No description provided for @permanent_code_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent access code'**
+  String get permanent_code_label;
+
+  /// No description provided for @always_enabled_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Always enabled'**
+  String get always_enabled_label;
+
+  /// No description provided for @active_storage_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Active storage'**
+  String get active_storage_label;
+
+  /// No description provided for @provider_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get provider_label;
+
+  /// No description provided for @local_disk_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Local disk'**
+  String get local_disk_label;
+
+  /// No description provided for @google_photos_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Photos'**
+  String get google_photos_label;
+
+  /// No description provided for @auth_refresh_token_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh token'**
+  String get auth_refresh_token_label;
+
+  /// No description provided for @client_id_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get client_id_label;
+
+  /// No description provided for @client_secret_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret'**
+  String get client_secret_label;
+
+  /// No description provided for @upload_from_disk_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload photos from disk'**
+  String get upload_from_disk_label;
+
+  /// No description provided for @image_width_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Image width'**
+  String get image_width_label;
+
+  /// No description provided for @image_height_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Image height'**
+  String get image_height_label;
+
+  /// No description provided for @show_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'Show value'**
+  String get show_secret;
+
+  /// No description provided for @hide_secret.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide value'**
+  String get hide_secret;
+
+  /// No description provided for @items_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None selected'**
+  String get items_none;
+
+  /// No description provided for @items_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All selected'**
+  String get items_all;
+
+  /// No description provided for @items_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None selected} one{{count} item selected} other{{count} items selected}}'**
+  String items_selected(int count);
+
+  /// No description provided for @config_editor_draft_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edits stay in the draft. Use Save on Settings to write them to the device.'**
+  String get config_editor_draft_hint;
+
+  /// No description provided for @config_reset_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo edits'**
+  String get config_reset_button;
+
+  /// No description provided for @invalid_port.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a port from 1 to 65535.'**
+  String get invalid_port;
+
+  /// No description provided for @invalid_positive_integer.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a positive whole number.'**
+  String get invalid_positive_integer;
+
+  /// No description provided for @invalid_nonnegative_integer.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter zero or a positive whole number.'**
+  String get invalid_nonnegative_integer;
+
+  /// No description provided for @slideshow_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo display: {seconds} s'**
+  String slideshow_summary(num seconds);
+
+  /// No description provided for @special_enabled_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'{enabled} of {total} enabled'**
+  String special_enabled_summary(int enabled, int total);
+
+  /// No description provided for @preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview_title;
+
+  /// No description provided for @preview_local_controls.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview controls are local and are not saved.'**
+  String get preview_local_controls;
+
+  /// No description provided for @preview_hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide preview'**
+  String get preview_hide;
+
+  /// No description provided for @preview_show.
+  ///
+  /// In en, this message translates to:
+  /// **'Show preview'**
+  String get preview_show;
+
+  /// No description provided for @preview_effect.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview transition'**
+  String get preview_effect;
+
+  /// No description provided for @preview_aspect.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen aspect ratio'**
+  String get preview_aspect;
+
+  /// No description provided for @preview_pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get preview_pause;
+
+  /// No description provided for @preview_resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get preview_resume;
+
+  /// No description provided for @preview_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load media. Check the address and network access.'**
+  String get preview_failed;
+
+  /// No description provided for @preview_last_valid.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the last valid values. Correct the marked fields.'**
+  String get preview_last_valid;
+
+  /// No description provided for @preview_device_scale.
+  ///
+  /// In en, this message translates to:
+  /// **'Scaled relative to a 2560 × 1600 screen'**
+  String get preview_device_scale;
+
+  /// No description provided for @preview_environment_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample media loads from the network. Preview does not confirm device codec support.'**
+  String get preview_environment_help;
+
+  /// No description provided for @preview_clock_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses this computer’s current time.'**
+  String get preview_clock_help;
+
+  /// No description provided for @timing_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Timing'**
+  String get timing_title;
+
+  /// No description provided for @display_time_ms.
+  ///
+  /// In en, this message translates to:
+  /// **'Display duration (ms)'**
+  String get display_time_ms;
+
+  /// No description provided for @transition_time_ms.
+  ///
+  /// In en, this message translates to:
+  /// **'Transition duration (ms)'**
+  String get transition_time_ms;
+
+  /// No description provided for @visuals_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get visuals_title;
+
+  /// No description provided for @allowed_transitions.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed transitions'**
+  String get allowed_transitions;
+
+  /// No description provided for @allowed_transitions_all.
+  ///
+  /// In en, this message translates to:
+  /// **'An empty list allows all transitions.'**
+  String get allowed_transitions_all;
+
+  /// No description provided for @blur_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Blur background'**
+  String get blur_background;
+
+  /// No description provided for @background_blur_sigma.
+  ///
+  /// In en, this message translates to:
+  /// **'Background blur'**
+  String get background_blur_sigma;
+
+  /// No description provided for @background_color_argb.
+  ///
+  /// In en, this message translates to:
+  /// **'Background color (AARRGGBB)'**
+  String get background_color_argb;
+
+  /// No description provided for @welcome_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome text'**
+  String get welcome_text;
+
+  /// No description provided for @welcome_text_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get welcome_text_size;
+
+  /// No description provided for @welcome_delay_ms.
+  ///
+  /// In en, this message translates to:
+  /// **'Animation phase duration (ms)'**
+  String get welcome_delay_ms;
+
+  /// No description provided for @welcome_replay.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay welcome'**
+  String get welcome_replay;
+
+  /// No description provided for @welcome_animation_help.
+  ///
+  /// In en, this message translates to:
+  /// **'The welcome fades in and out; the delay sets the duration of each phase.'**
+  String get welcome_animation_help;
+
+  /// No description provided for @invalid_positive_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a positive number.'**
+  String get invalid_positive_number;
+
+  /// No description provided for @effect_cube.
+  ///
+  /// In en, this message translates to:
+  /// **'Cube'**
+  String get effect_cube;
+
+  /// No description provided for @effect_accordion.
+  ///
+  /// In en, this message translates to:
+  /// **'Accordion'**
+  String get effect_accordion;
+
+  /// No description provided for @effect_background_to_foreground.
+  ///
+  /// In en, this message translates to:
+  /// **'Background to foreground'**
+  String get effect_background_to_foreground;
+
+  /// No description provided for @effect_foreground_to_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Foreground to background'**
+  String get effect_foreground_to_background;
+
+  /// No description provided for @effect_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide'**
+  String get effect_default;
+
+  /// No description provided for @effect_depth.
+  ///
+  /// In en, this message translates to:
+  /// **'Depth'**
+  String get effect_depth;
+
+  /// No description provided for @effect_flip_horizontal.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal flip'**
+  String get effect_flip_horizontal;
+
+  /// No description provided for @effect_flip_vertical.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical flip'**
+  String get effect_flip_vertical;
+
+  /// No description provided for @effect_parallax.
+  ///
+  /// In en, this message translates to:
+  /// **'Parallax'**
+  String get effect_parallax;
+
+  /// No description provided for @effect_stack.
+  ///
+  /// In en, this message translates to:
+  /// **'Stack'**
+  String get effect_stack;
+
+  /// No description provided for @effect_tablet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get effect_tablet;
+
+  /// No description provided for @effect_rotate_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate down'**
+  String get effect_rotate_down;
+
+  /// No description provided for @effect_rotate_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate up'**
+  String get effect_rotate_up;
+
+  /// No description provided for @effect_zoom_out_slide.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get effect_zoom_out_slide;
+
+  /// No description provided for @effect_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade'**
+  String get effect_fade;
+
+  /// No description provided for @effect_mosaic.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic'**
+  String get effect_mosaic;
+
+  /// No description provided for @effect_mosaic_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic fade'**
+  String get effect_mosaic_fade;
+
+  /// No description provided for @effect_mosaic_tl_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic from top left'**
+  String get effect_mosaic_tl_fade;
+
+  /// No description provided for @effect_mosaic_br_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic from bottom right'**
+  String get effect_mosaic_br_fade;
+
+  /// No description provided for @effect_liquid_morph.
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid morph'**
+  String get effect_liquid_morph;
+
+  /// No description provided for @effect_blinds.
+  ///
+  /// In en, this message translates to:
+  /// **'Blinds'**
+  String get effect_blinds;
+
+  /// No description provided for @effect_blur_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Blur fade'**
+  String get effect_blur_fade;
+
+  /// No description provided for @effect_zoom_over.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom over'**
+  String get effect_zoom_over;
+
+  /// No description provided for @effect_mosaic_tr_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic from top right'**
+  String get effect_mosaic_tr_fade;
+
+  /// No description provided for @effect_mosaic_bl_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosaic from bottom left'**
+  String get effect_mosaic_bl_fade;
+
+  /// No description provided for @effect_wipe_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe left'**
+  String get effect_wipe_left;
+
+  /// No description provided for @effect_wipe_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe right'**
+  String get effect_wipe_right;
+
+  /// No description provided for @effect_wipe_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe up'**
+  String get effect_wipe_up;
+
+  /// No description provided for @effect_wipe_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe down'**
+  String get effect_wipe_down;
+
+  /// No description provided for @effect_curtain_horizontal.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal curtain'**
+  String get effect_curtain_horizontal;
+
+  /// No description provided for @effect_curtain_vertical.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical curtain'**
+  String get effect_curtain_vertical;
+
+  /// No description provided for @effect_diagonal_top_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal from top left'**
+  String get effect_diagonal_top_left;
+
+  /// No description provided for @effect_diagonal_top_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal from top right'**
+  String get effect_diagonal_top_right;
+
+  /// No description provided for @effect_diagonal_bottom_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal from bottom left'**
+  String get effect_diagonal_bottom_left;
+
+  /// No description provided for @effect_diagonal_bottom_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal from bottom right'**
+  String get effect_diagonal_bottom_right;
+
+  /// No description provided for @effect_iris.
+  ///
+  /// In en, this message translates to:
+  /// **'Iris'**
+  String get effect_iris;
+
+  /// No description provided for @effect_fade_through_black.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade through black'**
+  String get effect_fade_through_black;
+
+  /// No description provided for @effect_fade_through_white.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade through white'**
+  String get effect_fade_through_white;
+
+  /// No description provided for @effect_push_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Push right'**
+  String get effect_push_right;
+
+  /// No description provided for @effect_push_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Push up'**
+  String get effect_push_up;
+
+  /// No description provided for @effect_push_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Push down'**
+  String get effect_push_down;
+
+  /// No description provided for @effect_cover_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover right'**
+  String get effect_cover_right;
+
+  /// No description provided for @effect_cover_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover up'**
+  String get effect_cover_up;
+
+  /// No description provided for @effect_cover_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover down'**
+  String get effect_cover_down;
+
+  /// No description provided for @effect_reveal_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal left'**
+  String get effect_reveal_left;
+
+  /// No description provided for @effect_reveal_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal right'**
+  String get effect_reveal_right;
+
+  /// No description provided for @effect_reveal_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal up'**
+  String get effect_reveal_up;
+
+  /// No description provided for @effect_reveal_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal down'**
+  String get effect_reveal_down;
+
+  /// No description provided for @sync_settings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync settings'**
+  String get sync_settings_title;
+
+  /// No description provided for @sync_period_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync period'**
+  String get sync_period_label;
+
+  /// No description provided for @albums_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get albums_title;
+
+  /// No description provided for @album_names_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Album names, separated by commas'**
+  String get album_names_label;
+
+  /// No description provided for @pixels_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'px'**
+  String get pixels_unit;
+
+  /// No description provided for @minutes_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutes_unit;
+
+  /// No description provided for @milliseconds_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'ms'**
+  String get milliseconds_unit;
+
+  /// No description provided for @config_reset_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard all edits and restore the last loaded or saved settings?'**
+  String get config_reset_warning;
+
+  /// No description provided for @refresh_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh_button;
+
+  /// No description provided for @add_manually.
+  ///
+  /// In en, this message translates to:
+  /// **'Add manually'**
+  String get add_manually;
+
+  /// No description provided for @delete_connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete connection'**
+  String get delete_connection;
+
+  /// No description provided for @forget_network_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget network?'**
+  String get forget_network_title;
+
+  /// No description provided for @forget_network_question.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the saved connection “{name}”?'**
+  String forget_network_question(String name);
+
+  /// No description provided for @delete_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete_button;
+
+  /// No description provided for @ota_code_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Update code'**
+  String get ota_code_label;
+
+  /// No description provided for @ota_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version: {version}'**
+  String ota_version(String version);
+
+  /// No description provided for @ota_uploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading firmware…'**
+  String get ota_uploading;
+
+  /// No description provided for @ota_upload_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware upload completed successfully.'**
+  String get ota_upload_complete;
+
+  /// No description provided for @gallery_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} selected} other{{count} selected}}'**
+  String gallery_selected(int count);
+
+  /// No description provided for @clear_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get clear_selection;
+
+  /// No description provided for @gallery_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No media files yet.'**
+  String get gallery_empty;
+
+  /// No description provided for @upload_empty_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos and videos to display on the frame.'**
+  String get upload_empty_hint;
+
+  /// No description provided for @upload_remove_task.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from queue'**
+  String get upload_remove_task;
+
+  /// No description provided for @video_load.
+  ///
+  /// In en, this message translates to:
+  /// **'Load video'**
+  String get video_load;
+
+  /// No description provided for @video_tap_to_play.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to play'**
+  String get video_tap_to_play;
+
+  /// No description provided for @media_info.
+  ///
+  /// In en, this message translates to:
+  /// **'File information'**
+  String get media_info;
+
+  /// No description provided for @invalid_editor_leave_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Some fields contain invalid values. Discard the incomplete input and return to settings?'**
+  String get invalid_editor_leave_warning;
+
+  /// No description provided for @discard_invalid_input.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard input'**
+  String get discard_invalid_input;
+
+  /// No description provided for @special_no_image.
+  ///
+  /// In en, this message translates to:
+  /// **'No image'**
+  String get special_no_image;
+
+  /// No description provided for @special_request_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot timeout (seconds)'**
+  String get special_request_timeout;
+
+  /// No description provided for @special_request_timeout_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Time allowed for one snapshot request: 0.1–120 seconds. An unavailable image is replaced with a message.'**
+  String get special_request_timeout_help;
+
+  /// No description provided for @special_time_font.
+  ///
+  /// In en, this message translates to:
+  /// **'Time font'**
+  String get special_time_font;
+
+  /// No description provided for @special_date_font.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and weekday font'**
+  String get special_date_font;
+
+  /// No description provided for @special_show_weekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Show day of the week'**
+  String get special_show_weekday;
+
+  /// No description provided for @special_font_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Default font'**
+  String get special_font_system;
+
+  /// No description provided for @special_font_roboto.
+  ///
+  /// In en, this message translates to:
+  /// **'Roboto'**
+  String get special_font_roboto;
+
+  /// No description provided for @special_font_orbitron.
+  ///
+  /// In en, this message translates to:
+  /// **'Orbitron'**
+  String get special_font_orbitron;
+
+  /// No description provided for @special_font_righteous.
+  ///
+  /// In en, this message translates to:
+  /// **'Righteous'**
+  String get special_font_righteous;
+
+  /// No description provided for @special_font_fredoka.
+  ///
+  /// In en, this message translates to:
+  /// **'Fredoka One'**
+  String get special_font_fredoka;
+
+  /// No description provided for @special_font_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts are bundled and work offline. Characters absent from a decorative font use a fallback font.'**
+  String get special_font_help;
+
+  /// No description provided for @special_weekday_monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get special_weekday_monday;
+
+  /// No description provided for @special_weekday_tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get special_weekday_tuesday;
+
+  /// No description provided for @special_weekday_wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get special_weekday_wednesday;
+
+  /// No description provided for @special_weekday_thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get special_weekday_thursday;
+
+  /// No description provided for @special_weekday_friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get special_weekday_friday;
+
+  /// No description provided for @special_weekday_saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get special_weekday_saturday;
+
+  /// No description provided for @special_weekday_sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get special_weekday_sunday;
 }
 
 class _AppLocalizationsDelegate
@@ -1282,7 +2258,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1293,6 +2269,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'ru':
+      return AppLocalizationsRu();
   }
 
   throw FlutterError(

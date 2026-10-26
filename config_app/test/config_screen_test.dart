@@ -100,12 +100,12 @@ void main() {
   ) async {
     await load(tester);
     await edit(tester, '275');
-    expect(tester.widget<IconButton>(_save).onPressed, isNotNull);
+    expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
 
     await tester.tap(_save);
     await tester.pump();
     expect(repository.saved.single.hardware.smoothingGPIOMs, 275);
-    expect(tester.widget<IconButton>(_save).onPressed, isNull);
+    expect(tester.widget<FilledButton>(_save).onPressed, isNull);
     expect(tester.widget<IconButton>(_reload).onPressed, isNull);
 
     repository.saves.single.complete(const WSResultOk(id: 1));
@@ -133,7 +133,7 @@ void main() {
 
     expect(gpioValue(tester), '425');
     expect(find.textContaining('upload failed'), findsWidgets);
-    expect(tester.widget<IconButton>(_save).onPressed, isNotNull);
+    expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
     await tester.tap(_save);
     await tester.pump();
     expect(repository.saved, hasLength(2));
@@ -200,7 +200,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(gpioValue(tester), '825');
-        expect(tester.widget<IconButton>(_save).onPressed, isNotNull);
+        expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
         await tester.tap(_gpio);
         await tester.pump();
         expect(tester.testTextInput.hasAnyClients, isTrue);
@@ -239,7 +239,7 @@ void main() {
     repository.loads.last.completeError(StateError('reload failed'));
     await tester.pumpAndSettle();
     expect(gpioValue(tester), '525');
-    expect(tester.widget<IconButton>(_save).onPressed, isNotNull);
+    expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
 
     await tester.tap(_reload);
     await tester.pumpAndSettle();
@@ -287,14 +287,14 @@ void main() {
     await tester.tap(find.text('Welcome Screen'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Text').first,
+      find.byKey(const Key('welcome-text')),
       'Changed welcome',
     );
     await tester.pageBack();
     await tester.pumpAndSettle();
 
     expect(find.text('Changed welcome'), findsOneWidget);
-    expect(tester.widget<IconButton>(_save).onPressed, isNotNull);
+    expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
     final exit = screen.currentState!.confirmExit();
     await tester.pumpAndSettle();
     expect(
@@ -307,6 +307,77 @@ void main() {
     await tester.tap(find.text('Keep editing'));
     await tester.pumpAndSettle();
     expect(await exit, isFalse);
+  });
+  testWidgets(
+    'Undo edits confirms and restores the saved form without a request',
+    (tester) async {
+      await load(tester, 150);
+      await edit(tester, '900');
+      final reset = find.byKey(const Key('config-reset'));
+      await tester.tap(reset);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Keep editing'));
+      await tester.pumpAndSettle();
+      expect(gpioValue(tester), '900');
+      await tester.tap(reset);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Discard changes'));
+      await tester.pumpAndSettle();
+      expect(gpioValue(tester), '150');
+      expect(tester.widget<FilledButton>(_save).onPressed, isNull);
+      expect(find.text('No unsaved changes'), findsOneWidget);
+      expect(repository.loads, hasLength(1));
+      expect(repository.saved, isEmpty);
+      expect(await screen.currentState!.confirmExit(), isTrue);
+    },
+  );
+
+  testWidgets(
+    'invalid raw input is protected and reset restores the valid value',
+    (tester) async {
+      await load(tester, 150);
+      await edit(tester, '');
+      expect(
+        find.text('Enter zero or a positive whole number.'),
+        findsOneWidget,
+      );
+      expect(tester.widget<FilledButton>(_save).onPressed, isNull);
+      final exit = screen.currentState!.confirmExit();
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      await tester.tap(find.text('Keep editing'));
+      await tester.pumpAndSettle();
+      expect(await exit, isFalse);
+      expect(gpioValue(tester), '');
+      await tester.tap(find.byKey(const Key('config-reset')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Discard changes'));
+      await tester.pumpAndSettle();
+      expect(gpioValue(tester), '150');
+      expect(find.text('Enter zero or a positive whole number.'), findsNothing);
+      expect(find.text('No unsaved changes'), findsOneWidget);
+      expect(await screen.currentState!.confirmExit(), isTrue);
+    },
+  );
+  testWidgets('resizing the app shell preserves incomplete field input', (
+    tester,
+  ) async {
+    await load(tester, 150);
+    await edit(tester, '');
+    tester.view.physicalSize = const Size(375, 900);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(_gpio, 250);
+    expect(gpioValue(tester), '');
+    expect(find.text('Enter zero or a positive whole number.'), findsOneWidget);
+    final exit = screen.currentState!.confirmExit();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Keep editing'));
+    await tester.pumpAndSettle();
+    expect(await exit, isFalse);
+    tester.view.physicalSize = const Size(1400, 2200);
+    await tester.pumpAndSettle();
+    expect(gpioValue(tester), '');
+    expect(tester.takeException(), isNull);
   });
 }
 

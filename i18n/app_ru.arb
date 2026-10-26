@@ -1,0 +1,775 @@
+{
+  "password": "Пароль",
+  "username": "Имя пользователя",
+  "helloWorld": "Привет, мир!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "english": "Английский",
+  "russian": "Русский",
+  "home_userid": "Пользователь: '{userId}'",
+  "@home_userid": {
+    "placeholders": {
+      "userId": {
+        "type": "String"
+      }
+    }
+  },
+  "home_page_name": "Главная",
+  "home_page_logout_button": "Выйти",
+  "login_page_name": "Вход",
+  "admin_account_info_title": "Название: {title}",
+  "@admin_account_info_title": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "upload_queue_title": "Очередь загрузки",
+  "add_files_menu_item": "Добавить файлы",
+  "add_folder_menu_item": "Добавить папку",
+  "queue_is_empty": "Очередь пуста",
+  "no_images_found_in_folder": "В папке не найдены изображения",
+  "authentication_failure": "Ошибка входа",
+  "ota_update_title": "Обновление прошивки",
+  "unknown_state": "Неизвестное состояние",
+  "initialize_button": "Подготовить",
+  "select_file_button": "Выбрать файл",
+  "update_button": "Обновить",
+  "reset_button": "Сбросить",
+  "home_menu_item": "Главная",
+  "gallery_menu_item": "Галерея",
+  "upload_media_menu_item": "Загрузка медиа",
+  "configuration_menu_item": "Настройки",
+  "wifi_menu_item": "Wi-Fi",
+  "system_control_menu_item": "Управление устройством",
+  "exit_menu_item": "Выйти",
+  "storage_settings_title": "Настройки хранилища",
+  "unknown_storage_type_configuration": "Неизвестный тип хранилища",
+  "no_configuration_needed_for_local_disk": "Для локального диска дополнительные настройки пока не нужны.",
+  "slideshow_settings_title": "Настройки слайд-шоу",
+  "background_opacity": "Непрозрачность фона",
+  "config_save_button": "Сохранить",
+  "config_reload_button": "Загрузить заново",
+  "config_unsaved_changes": "Есть несохранённые изменения",
+  "config_saved_state": "Нет несохранённых изменений",
+  "config_restart_hint": "Сохранённые настройки вступят в силу после перезапуска приложения.",
+  "config_reload_title": "Загрузить настройки заново?",
+  "config_reload_warning": "Отменить изменения и загрузить сохранённые настройки с устройства?",
+  "config_leave_warning": "Изменения не сохранены. Отменить их и выйти из настроек?",
+  "config_keep_editing": "Продолжить редактирование",
+  "config_discard_changes": "Отменить изменения",
+  "config_operation_in_progress": "Дождитесь завершения текущей операции с настройками.",
+  "config_load_failed": "Не удалось загрузить настройки",
+  "config_saved_successfully": "Настройки сохранены",
+  "config_is_reloading": "Загрузка настроек…",
+  "settings_title": "Настройки",
+  "select_items_dialog_title": "Выберите элементы",
+  "cancel_button": "Отмена",
+  "ok_button": "ОК",
+  "not_found": "Не найдено",
+  "no_access_title": "Нет доступа",
+  "no_access_contact_administrator": "Нет доступа. Обратитесь к администратору.",
+  "ch_text": "Канал:",
+  "device_text": "Устройство:",
+  "connect_form_title": "Настройки Wi-Fi",
+  "connect_button": "Подключить",
+  "gallery_title": "Галерея",
+  "system_control_title": "Управление устройством",
+  "try_again_button": "Повторить",
+  "error_text": "Ошибка",
+  "@upload_queue_title": {
+    "description": "Title for the upload queue page"
+  },
+  "@add_files_menu_item": {
+    "description": "Menu item to add files for upload"
+  },
+  "@add_folder_menu_item": {
+    "description": "Menu item to add a folder for upload"
+  },
+  "@queue_is_empty": {
+    "description": "Message shown when upload queue is empty"
+  },
+  "@no_images_found_in_folder": {
+    "description": "Message shown when no images are found in selected folder"
+  },
+  "@authentication_failure": {
+    "description": "Message shown when authentication fails"
+  },
+  "@ota_update_title": {
+    "description": "Title for the OTA update page"
+  },
+  "@unknown_state": {
+    "description": "Message shown when system is in unknown state"
+  },
+  "@initialize_button": {
+    "description": "Text for initialize button"
+  },
+  "@select_file_button": {
+    "description": "Text for select file button"
+  },
+  "@update_button": {
+    "description": "Text for update button"
+  },
+  "@reset_button": {
+    "description": "Text for reset button"
+  },
+  "@home_menu_item": {
+    "description": "Home menu item text"
+  },
+  "@gallery_menu_item": {
+    "description": "Gallery menu item text"
+  },
+  "@upload_media_menu_item": {
+    "description": "Upload media menu item text"
+  },
+  "@configuration_menu_item": {
+    "description": "Configuration menu item text"
+  },
+  "@wifi_menu_item": {
+    "description": "WiFi menu item text"
+  },
+  "@system_control_menu_item": {
+    "description": "System control menu item text"
+  },
+  "@exit_menu_item": {
+    "description": "Exit menu item text"
+  },
+  "@storage_settings_title": {
+    "description": "Title for storage settings page"
+  },
+  "@unknown_storage_type_configuration": {
+    "description": "Message for unknown storage type configuration"
+  },
+  "@no_configuration_needed_for_local_disk": {
+    "description": "Message when no configuration is needed for local disk"
+  },
+  "@slideshow_settings_title": {
+    "description": "Title for slideshow settings page"
+  },
+  "@background_opacity": {
+    "description": "Label for background opacity setting"
+  },
+  "@config_saved_successfully": {
+    "description": "Message shown when config is saved successfully"
+  },
+  "@config_is_reloading": {
+    "description": "Message shown when config is reloading"
+  },
+  "@settings_title": {
+    "description": "Title for settings page"
+  },
+  "@select_items_dialog_title": {
+    "description": "Title for select items dialog"
+  },
+  "@cancel_button": {
+    "description": "Cancel button text"
+  },
+  "@ok_button": {
+    "description": "OK button text"
+  },
+  "@not_found": {
+    "description": "Not found message"
+  },
+  "@no_access_title": {
+    "description": "Title for no access page"
+  },
+  "@no_access_contact_administrator": {
+    "description": "Message to contact administrator when no access"
+  },
+  "@ch_text": {
+    "description": "Short text for 'Channel' in WiFi context"
+  },
+  "@device_text": {
+    "description": "Text for 'Device' label"
+  },
+  "@connect_form_title": {
+    "description": "Title for WiFi connect form"
+  },
+  "@connect_button": {
+    "description": "Connect button text"
+  },
+  "@gallery_title": {
+    "description": "Title for gallery page"
+  },
+  "@system_control_title": {
+    "description": "Title for system control page"
+  },
+  "@try_again_button": {
+    "description": "Try again button text"
+  },
+  "@error_text": {
+    "description": "Generic error text"
+  },
+  "welcome_back": "С возвращением!",
+  "@welcome_back": {
+    "description": "Welcome back greeting text"
+  },
+  "manage_your_device_settings_and_updates": "Управляйте настройками и обновлениями фоторамки.",
+  "@manage_your_device_settings_and_updates": {
+    "description": "Description text on home page"
+  },
+  "gallery_card_title": "Галерея",
+  "@gallery_card_title": {
+    "description": "Title for gallery card on home page"
+  },
+  "view_media_subtitle": "Просмотр медиа",
+  "@view_media_subtitle": {
+    "description": "Subtitle for gallery card"
+  },
+  "upload_card_title": "Загрузка",
+  "@upload_card_title": {
+    "description": "Title for upload card on home page"
+  },
+  "upload_media_subtitle": "Загрузить медиа",
+  "@upload_media_subtitle": {
+    "description": "Subtitle for upload card"
+  },
+  "ota_update_card_title": "Обновление прошивки",
+  "@ota_update_card_title": {
+    "description": "Title for OTA update card on home page"
+  },
+  "firmware_upgrade_subtitle": "Установка новой версии",
+  "@firmware_upgrade_subtitle": {
+    "description": "Subtitle for OTA update card"
+  },
+  "wifi_setup_card_title": "Настройки Wi-Fi",
+  "@wifi_setup_card_title": {
+    "description": "Title for WiFi setup card on home page"
+  },
+  "manage_connections_subtitle": "Управление подключениями",
+  "@manage_connections_subtitle": {
+    "description": "Subtitle for WiFi setup card"
+  },
+  "configuration_card_title": "Настройки",
+  "@configuration_card_title": {
+    "description": "Title for configuration card on home page"
+  },
+  "system_settings_subtitle": "Настройки системы",
+  "@system_settings_subtitle": {
+    "description": "Subtitle for configuration card"
+  },
+  "system_control_card_title": "Управление устройством",
+  "@system_control_card_title": {
+    "description": "Title for system control card on home page"
+  },
+  "restart_app_power_off_subtitle": "Перезапуск и выключение",
+  "@restart_app_power_off_subtitle": {
+    "description": "Subtitle for system control card"
+  },
+  "mqtt_settings_title": "Настройки MQTT",
+  "@mqtt_settings_title": {
+    "description": "Title for MQTT settings page"
+  },
+  "webserver_settings_title": "Настройки веб-сервера",
+  "@webserver_settings_title": {
+    "description": "Title for WebServer settings page"
+  },
+  "welcome_settings_title": "Настройки приветствия",
+  "@welcome_settings_title": {
+    "description": "Title for Welcome settings page"
+  },
+  "saved_connections_subtitle": "Сохранённые подключения",
+  "@saved_connections_subtitle": {
+    "description": "Subtitle for saved connections section in WiFi"
+  },
+  "no_networks_found_nearby": "Поблизости не найдено сетей",
+  "@no_networks_found_nearby": {
+    "description": "Message when no WiFi networks are found nearby"
+  },
+  "add_network": "Добавить сеть",
+  "@add_network": {
+    "description": "Title for adding a new WiFi network"
+  },
+  "connect_to_network": "Подключиться к сети",
+  "@connect_to_network": {
+    "description": "Title for connecting to a WiFi network"
+  },
+  "ssid_name_label": "SSID (имя сети)",
+  "@ssid_name_label": {
+    "description": "Label for SSID input field"
+  },
+  "required_field": "Обязательное поле",
+  "@required_field": {
+    "description": "Message for required field validation"
+  },
+  "connection_failed": "Не удалось подключиться",
+  "@connection_failed": {
+    "description": "Message shown when connection fails"
+  },
+  "power_management_title": "Управление питанием",
+  "@power_management_title": {
+    "description": "Title for power management section"
+  },
+  "choose_action_on_device": "Выберите действие для устройства",
+  "@choose_action_on_device": {
+    "description": "Description text for power management section"
+  },
+  "restart_application": "Перезапустить приложение",
+  "@restart_application": {
+    "description": "Title for restart application action"
+  },
+  "reload_software_without_rebooting_os": "Перезапускает приложение без перезагрузки операционной системы.",
+  "@reload_software_without_rebooting_os": {
+    "description": "Description for restart application action"
+  },
+  "restart_application_question": "Перезапустить приложение?",
+  "@restart_application_question": {
+    "description": "Question for restart application confirmation dialog"
+  },
+  "this_will_reload_configuration_app_and_slideshow_services": "Службы панели настройки и слайд-шоу будут перезапущены.",
+  "@this_will_reload_configuration_app_and_slideshow_services": {
+    "description": "Description for restart application confirmation dialog"
+  },
+  "restart": "Перезапустить",
+  "@restart": {
+    "description": "Restart button text"
+  },
+  "power_off": "Выключить",
+  "@power_off": {
+    "description": "Title for power off action"
+  },
+  "safely_shuts_down_the_device_operating_system": "Безопасно завершает работу операционной системы устройства.",
+  "@safely_shuts_down_the_device_operating_system": {
+    "description": "Description for power off action"
+  },
+  "power_off_device_question": "Выключить устройство?",
+  "@power_off_device_question": {
+    "description": "Question for power off confirmation dialog"
+  },
+  "the_device_will_shut_down_completely": "Устройство будет полностью выключено. Для повторного включения потребуется физический доступ к нему.",
+  "@the_device_will_shut_down_completely": {
+    "description": "Description for power off confirmation dialog"
+  },
+  "power_off_button": "Выключить",
+  "@power_off_button": {
+    "description": "Power off button text"
+  },
+  "please_sign_in_to_continue": "Войдите, чтобы продолжить",
+  "@please_sign_in_to_continue": {
+    "description": "Message prompting user to sign in"
+  },
+  "server_uri": "Адрес сервера",
+  "@server_uri": {
+    "description": "Label for server URI input field"
+  },
+  "invalid_uri": "Некорректный адрес",
+  "@invalid_uri": {
+    "description": "Error message for invalid URI"
+  },
+  "invalid_username": "Некорректное имя пользователя",
+  "@invalid_username": {
+    "description": "Error message for invalid username"
+  },
+  "invalid_password": "Некорректный пароль",
+  "@invalid_password": {
+    "description": "Error message for invalid password"
+  },
+  "sign_in": "Войти",
+  "@sign_in": {
+    "description": "Sign in button text"
+  },
+  "not_found_with_id": "Не найдено: «{id}»",
+  "@not_found_with_id": {
+    "description": "Message for not found item with specific ID",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "transition_display_times": "Переход: {transitionTime} мс\nПоказ: {displayTime} мс",
+  "@transition_display_times": {
+    "description": "Display transition and display times",
+    "placeholders": {
+      "transitionTime": {
+        "type": "int"
+      },
+      "displayTime": {
+        "type": "int"
+      }
+    }
+  },
+  "wifi_5ghz_label": "5 ГГц",
+  "@wifi_5ghz_label": {
+    "description": "Label for 5GHz WiFi networks"
+  },
+  "channel_text": "Канал: {channel}",
+  "@channel_text": {
+    "description": "Text showing the WiFi channel number",
+    "placeholders": {
+      "channel": {
+        "type": "int"
+      }
+    }
+  },
+  "device_connection_info": "Устройство: {device} • {type}",
+  "@device_connection_info": {
+    "description": "Information about device connection",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "slideshow_section_title": "Слайд-шоу",
+  "@slideshow_section_title": {
+    "description": "Title for slideshow section in config"
+  },
+  "general_and_effects_title": "Основные настройки и эффекты",
+  "@general_and_effects_title": {
+    "description": "Title for general and effects settings"
+  },
+  "welcome_screen_title": "Экран приветствия",
+  "@welcome_screen_title": {
+    "description": "Title for welcome screen settings"
+  },
+  "storage_configuration_title": "Настройки хранилища",
+  "@storage_configuration_title": {
+    "description": "Title for storage configuration"
+  },
+  "using_local_disk": "Используется локальный диск",
+  "@using_local_disk": {
+    "description": "Text indicating local disk is being used"
+  },
+  "using_google_photos": "Используется Google Фото",
+  "@using_google_photos": {
+    "description": "Text indicating Google Photos is being used"
+  },
+  "connectivity_title": "Подключения",
+  "@connectivity_title": {
+    "description": "Title for connectivity section"
+  },
+  "web_server_settings_title": "Веб-сервер",
+  "@web_server_settings_title": {
+    "description": "Title for web server settings"
+  },
+  "mqtt_title": "MQTT",
+  "@mqtt_title": {
+    "description": "Title for MQTT settings"
+  },
+  "hardware_title": "Оборудование",
+  "@hardware_title": {
+    "description": "Title for hardware section"
+  },
+  "gpio_smoothing_label": "Сглаживание GPIO (мс)",
+  "@gpio_smoothing_label": {
+    "description": "Label for GPIO smoothing setting"
+  },
+  "logging_levels_title": "Уровни журналирования",
+  "@logging_levels_title": {
+    "description": "Title for logging levels section"
+  },
+  "main_logic_label": "Основная логика",
+  "@main_logic_label": {
+    "description": "Label for main logic logging level"
+  },
+  "ota_update_label": "Обновление прошивки",
+  "@ota_update_label": {
+    "description": "Label for OTA update logging level"
+  },
+  "hardware_frame_label": "Оборудование фоторамки",
+  "@hardware_frame_label": {
+    "description": "Label for hardware frame logging level"
+  },
+  "storage_title": "Хранилище",
+  "@storage_title": {
+    "description": "Title for storage section"
+  },
+  "retry_button": "Повторить",
+  "@retry_button": {
+    "description": "Text for retry button"
+  },
+  "error_with_message": "Ошибка: {message}",
+  "@error_with_message": {
+    "description": "Error message with specific details",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "example_email_address": "example@gmail.com",
+  "@example_email_address": {
+    "description": "Example email address for display purposes"
+  },
+  "special_screens_title": "Специальные экраны",
+  "special_screen_clock": "Дата и время",
+  "special_screen_cameras": "Камеры",
+  "special_add_screen": "Добавить экран",
+  "special_empty": "Добавьте в слайд-шоу часы или экран с камерами.",
+  "special_name": "Название",
+  "special_enabled": "Включён",
+  "special_delete": "Удалить",
+  "special_done": "Готово",
+  "special_cancel": "Отмена",
+  "special_preview": "Предпросмотр",
+  "special_preview_unavailable": "Предпросмотр недоступен. Проверьте адрес камеры и доступ к сети.",
+  "special_next_camera": "Следующая камера",
+  "special_common": "Показ",
+  "special_frequency": "Показывать",
+  "special_after_slides": "После медиафайлов",
+  "special_interval": "Через интервал активного показа",
+  "special_slide_count": "Количество фото / видео",
+  "special_interval_minutes": "Интервал (минуты)",
+  "special_duration_seconds": "Продолжительность показа (секунды)",
+  "special_seconds": "с",
+  "special_minutes": "мин",
+  "special_clock_settings": "Внешний вид часов",
+  "special_time_format": "Формат времени",
+  "special_24h": "24 часа",
+  "special_12h": "12 часов (AM/PM)",
+  "special_show_seconds": "Показывать секунды",
+  "special_show_date": "Показывать дату",
+  "special_date_format": "Формат даты",
+  "special_time_size": "Размер времени (% от короткой стороны экрана)",
+  "special_date_size": "Размер даты и дня недели (% от короткой стороны экрана)",
+  "special_text_color": "Цвет текста (AARRGGBB)",
+  "special_background_color": "Цвет фона (AARRGGBB)",
+  "special_camera_settings": "Отображение камер",
+  "special_camera_mode": "Режим отображения",
+  "special_grid": "Все камеры в сетке",
+  "special_sequence": "Одна камера за показ",
+  "special_sequence_help": "При каждом появлении экрана показывается следующая камера из списка.",
+  "special_columns": "Столбцы сетки (0 = автоматически)",
+  "special_fit": "Размещение изображения",
+  "special_contain": "Изображение целиком",
+  "special_cover": "Заполнение с обрезкой",
+  "special_show_names": "Показывать названия камер",
+  "special_refresh": "Обновление (секунды; 0 = только при появлении)",
+  "special_add_camera": "Добавить камеру",
+  "special_camera_url": "Адрес снимка (HTTP/HTTPS, JPEG/PNG)",
+  "special_check_camera": "Проверить снимок",
+  "special_move_up": "Переместить выше",
+  "special_move_down": "Переместить ниже",
+  "special_invalid_number": "Введите число в допустимом диапазоне.",
+  "special_invalid_url": "Введите адрес HTTP/HTTPS.",
+  "special_invalid_color": "Введите 8 шестнадцатеричных цифр (AARRGGBB).",
+  "special_camera_required": "Добавьте хотя бы одну камеру.",
+  "special_unsupported": "Неподдерживаемый тип экрана",
+  "special_auth": "Аутентификация (необязательно)",
+  "special_save_hint": "Нажмите «Сохранить» на главной странице настроек, чтобы записать изменения на устройство.",
+  "special_browser_camera_help": "Камеры для предпросмотра загружаются напрямую из этого браузера. Камера должна разрешать доступ из браузера (CORS). Для страницы HTTPS адрес камеры также должен использовать HTTPS.",
+  "photo_motion_title": "Движение фото",
+  "photo_motion_off": "Выключено",
+  "photo_motion_ken_burns": "Кен Бёрнс (плавное движение и увеличение)",
+  "photo_motion_zoom": "Максимальное увеличение",
+  "water_photo_only": "Для эффекта «Преломление воды» нужны два неподвижных фото. Для GIF и видео используется другой разрешённый переход.",
+  "preview_video_url": "Адрес видео (необязательно)",
+  "preview_play": "Предпросмотр",
+  "effect_noise_dissolve": "Растворение в шуме",
+  "effect_ripple_reveal": "Раскрытие волнами",
+  "effect_water_refraction": "Преломление воды",
+  "ui_system_default": "Как в системе",
+  "app_title": "Фоторамка",
+  "appearance_title": "Оформление",
+  "language_label": "Язык",
+  "theme_mode_label": "Тема",
+  "theme_mode_light": "Светлая",
+  "theme_mode_dark": "Тёмная",
+  "device_panel_title": "Фоторамка",
+  "device_settings_description": "Медиафайлы, оформление и настройки устройства.",
+  "connection_title": "Подключение",
+  "authentication_title": "Авторизация",
+  "enabled_label": "Включено",
+  "disabled_label": "Выключено",
+  "server_host_label": "Адрес сервера",
+  "port_label": "Порт",
+  "permanent_code_label": "Постоянный код доступа",
+  "always_enabled_label": "Всегда включён",
+  "active_storage_label": "Активное хранилище",
+  "provider_label": "Тип хранилища",
+  "local_disk_label": "Локальный диск",
+  "google_photos_label": "Google Фото",
+  "auth_refresh_token_label": "Токен обновления",
+  "client_id_label": "ID клиента",
+  "client_secret_label": "Секрет клиента",
+  "upload_from_disk_label": "Загружать фото с диска",
+  "image_width_label": "Ширина изображения",
+  "image_height_label": "Высота изображения",
+  "show_secret": "Показать значение",
+  "hide_secret": "Скрыть значение",
+  "items_none": "Ничего не выбрано",
+  "items_all": "Выбраны все",
+  "items_selected": "{count, plural, =0{Ничего не выбрано} one{Выбран {count} элемент} few{Выбрано {count} элемента} many{Выбрано {count} элементов} other{Выбрано {count} элемента}}",
+  "@items_selected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "config_editor_draft_hint": "Изменения остаются в черновике. Для записи на устройство нажмите «Сохранить» в настройках.",
+  "config_reset_button": "Отменить правки",
+  "invalid_port": "Введите порт от 1 до 65535.",
+  "invalid_positive_integer": "Введите целое положительное число.",
+  "invalid_nonnegative_integer": "Введите ноль или целое положительное число.",
+  "slideshow_summary": "Показ фото: {seconds} с",
+  "@slideshow_summary": {
+    "placeholders": {
+      "seconds": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "special_enabled_summary": "Включено {enabled} из {total}",
+  "@special_enabled_summary": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "preview_title": "Предпросмотр",
+  "preview_local_controls": "Локальные инструменты предпросмотра — не сохраняются",
+  "preview_hide": "Скрыть предпросмотр",
+  "preview_show": "Показать предпросмотр",
+  "preview_effect": "Эффект для предпросмотра",
+  "preview_aspect": "Пропорции экрана",
+  "preview_pause": "Пауза",
+  "preview_resume": "Продолжить",
+  "preview_failed": "Не удалось загрузить медиа. Проверьте адрес и доступ к сети.",
+  "preview_last_valid": "Показаны последние допустимые значения. Исправьте отмеченные поля.",
+  "preview_device_scale": "Масштаб относительно экрана 2560 × 1600",
+  "preview_environment_help": "Тестовые медиа загружаются из сети. Предпросмотр не подтверждает поддержку кодеков устройством.",
+  "preview_clock_help": "Используется время этого компьютера",
+  "timing_title": "Время показа",
+  "display_time_ms": "Продолжительность показа (мс)",
+  "transition_time_ms": "Продолжительность перехода (мс)",
+  "visuals_title": "Внешний вид",
+  "allowed_transitions": "Разрешённые переходы",
+  "allowed_transitions_all": "Пустой список разрешает все переходы",
+  "blur_background": "Размывать фон",
+  "background_blur_sigma": "Размытие фона",
+  "background_color_argb": "Цвет фона (AARRGGBB)",
+  "welcome_text": "Текст приветствия",
+  "welcome_text_size": "Размер текста",
+  "welcome_delay_ms": "Продолжительность фазы анимации (мс)",
+  "welcome_replay": "Повторить приветствие",
+  "welcome_animation_help": "Приветствие плавно появляется и исчезает; длительность каждой фазы задаётся задержкой",
+  "invalid_positive_number": "Введите положительное число.",
+  "effect_cube": "Куб",
+  "effect_accordion": "Гармошка",
+  "effect_background_to_foreground": "Из фона на передний план",
+  "effect_foreground_to_background": "С переднего плана в фон",
+  "effect_default": "Сдвиг",
+  "effect_depth": "Глубина",
+  "effect_flip_horizontal": "Горизонтальный переворот",
+  "effect_flip_vertical": "Вертикальный переворот",
+  "effect_parallax": "Параллакс",
+  "effect_stack": "Стопка",
+  "effect_tablet": "Планшет",
+  "effect_rotate_down": "Поворот вниз",
+  "effect_rotate_up": "Поворот вверх",
+  "effect_zoom_out_slide": "Уменьшение",
+  "effect_fade": "Растворение",
+  "effect_mosaic": "Мозаика",
+  "effect_mosaic_fade": "Растворение мозаикой",
+  "effect_mosaic_tl_fade": "Мозаика из верхнего левого угла",
+  "effect_mosaic_br_fade": "Мозаика из нижнего правого угла",
+  "effect_liquid_morph": "Жидкое преобразование",
+  "effect_blinds": "Жалюзи",
+  "effect_blur_fade": "Растворение с размытием",
+  "effect_zoom_over": "Увеличение поверх",
+  "effect_mosaic_tr_fade": "Мозаика из верхнего правого угла",
+  "effect_mosaic_bl_fade": "Мозаика из нижнего левого угла",
+  "effect_wipe_left": "Открытие влево",
+  "effect_wipe_right": "Открытие вправо",
+  "effect_wipe_up": "Открытие вверх",
+  "effect_wipe_down": "Открытие вниз",
+  "effect_curtain_horizontal": "Горизонтальные шторы",
+  "effect_curtain_vertical": "Вертикальные шторы",
+  "effect_diagonal_top_left": "По диагонали из верхнего левого угла",
+  "effect_diagonal_top_right": "По диагонали из верхнего правого угла",
+  "effect_diagonal_bottom_left": "По диагонали из нижнего левого угла",
+  "effect_diagonal_bottom_right": "По диагонали из нижнего правого угла",
+  "effect_iris": "Диафрагма",
+  "effect_fade_through_black": "Через чёрный",
+  "effect_fade_through_white": "Через белый",
+  "effect_push_right": "Выталкивание вправо",
+  "effect_push_up": "Выталкивание вверх",
+  "effect_push_down": "Выталкивание вниз",
+  "effect_cover_right": "Накрытие вправо",
+  "effect_cover_up": "Накрытие вверх",
+  "effect_cover_down": "Накрытие вниз",
+  "effect_reveal_left": "Снятие влево",
+  "effect_reveal_right": "Снятие вправо",
+  "effect_reveal_up": "Снятие вверх",
+  "effect_reveal_down": "Снятие вниз",
+  "sync_settings_title": "Синхронизация",
+  "sync_period_label": "Период синхронизации",
+  "albums_title": "Альбомы",
+  "album_names_label": "Названия альбомов через запятую",
+  "pixels_unit": "пикс.",
+  "minutes_unit": "мин",
+  "milliseconds_unit": "мс",
+  "config_reset_warning": "Отменить все правки и восстановить последние загруженные или сохранённые настройки?",
+  "refresh_button": "Обновить",
+  "add_manually": "Добавить вручную",
+  "delete_connection": "Удалить подключение",
+  "forget_network_title": "Забыть сеть?",
+  "forget_network_question": "Удалить сохранённое подключение «{name}»?",
+  "@forget_network_question": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "delete_button": "Удалить",
+  "ota_code_label": "Код обновления",
+  "ota_version": "Версия: {version}",
+  "@ota_version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "ota_uploading": "Загрузка прошивки…",
+  "ota_upload_complete": "Прошивка загружена.",
+  "gallery_selected": "{count, plural, one{Выбран {count} файл} few{Выбрано {count} файла} many{Выбрано {count} файлов} other{Выбрано {count} файла}}",
+  "@gallery_selected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clear_selection": "Снять выделение",
+  "gallery_empty": "Медиафайлов пока нет.",
+  "upload_empty_hint": "Добавьте фото и видео для показа на фоторамке.",
+  "upload_remove_task": "Убрать из очереди",
+  "video_load": "Загрузить видео",
+  "video_tap_to_play": "Нажмите для воспроизведения",
+  "media_info": "Информация о файле",
+  "invalid_editor_leave_warning": "В форме есть некорректные значения. Отбросить незавершённый ввод и вернуться к настройкам?",
+  "discard_invalid_input": "Отбросить ввод",
+  "special_no_image": "Нет изображения",
+  "special_request_timeout": "Таймаут снимка (секунды)",
+  "special_request_timeout_help": "Время ожидания одного снимка: 0,1–120 секунд. Недоступное изображение заменяется сообщением.",
+  "special_time_font": "Шрифт времени",
+  "special_date_font": "Шрифт даты и дня недели",
+  "special_show_weekday": "Показывать день недели",
+  "special_font_system": "Шрифт по умолчанию",
+  "special_font_roboto": "Roboto",
+  "special_font_orbitron": "Orbitron",
+  "special_font_righteous": "Righteous",
+  "special_font_fredoka": "Fredoka One",
+  "special_font_help": "Шрифты встроены и работают без сети. Отсутствующие в декоративном шрифте символы выводятся запасным шрифтом.",
+  "special_weekday_monday": "Понедельник",
+  "special_weekday_tuesday": "Вторник",
+  "special_weekday_wednesday": "Среда",
+  "special_weekday_thursday": "Четверг",
+  "special_weekday_friday": "Пятница",
+  "special_weekday_saturday": "Суббота",
+  "special_weekday_sunday": "Воскресенье"
+}

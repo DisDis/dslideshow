@@ -1,5 +1,26 @@
 # Unreleased
 
+* Fix replaying the welcome preview throwing a Flutter assertion with an
+  explicitly synchronous replay handler that keeps TickerFuture out of setState;
+  cover replay during forward/reverse playback and after completion.
+
+* Add configurable snapshot timeouts and localized no-image placeholders to
+  special camera screens, including failed refreshes and recovery. Add separate
+  bundled time/date fonts and an optional localized weekday to clock screens,
+  with live configuration previews and compatible compact JSON defaults.
+
+* Refresh config_app with adaptive navigation, shared light/dark/system themes,
+  complete English/Russian localization and session appearance preferences that
+  preserve the active route and draft. Add a persistent Save/Undo bar, readable
+  validated forms and masked secrets. Provide adaptive live slideshow, welcome
+  and special-screen previews with device-scale composition and bounded cleanup.
+  Localize the media, Wi-Fi, OTA and power screens and cover UI state/lifecycle
+  regressions without changing the photoframe renderer or runtime.
+
+* Fix config_app startup getting stuck on `/splash` when authentication status
+  arrives before the UI mounts. Resolve login/home from the current state in
+  the router and remove delayed splash navigation; cover startup transitions.
+
 * Make backend media selection linear over a full random cycle and build disk
   indexes asynchronously with serialized selection and lifecycle guards.
   Coalesce SystemInfo requests, reuse short-lived snapshots and bound system

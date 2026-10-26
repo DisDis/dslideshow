@@ -17,6 +17,7 @@ import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
+import 'package:dslideshow_i18n/i18n.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/features/config/presentation/pages/config_page.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
@@ -110,8 +111,11 @@ void main() async {
     });
 
     injector.registerFactory<ButtonsHintBloc>(() {
-      return ButtonsHintBloc(frontendService: frontendService, statusBloc: injector(),appConfig: config)
-        ..add(ButtonsHintEvent.show(isShow: true));
+      return ButtonsHintBloc(
+        frontendService: frontendService,
+        statusBloc: injector(),
+        appConfig: config,
+      )..add(ButtonsHintEvent.show(isShow: true));
     });
     injector.registerFactory<MainMenuBloc>(() {
       return MainMenuBloc(
@@ -171,11 +175,8 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(surface: Colors.black),
       ),
-      localizationsDelegates: const [],
-      supportedLocales: const [
-        Locale('en'), // English
-        // ... other locales the app supports
-      ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: BlocBuilder<RouteBloc, RouteState>(
         builder: (_, state) {
           switch (state.current) {

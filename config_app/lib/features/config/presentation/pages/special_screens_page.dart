@@ -1,9 +1,12 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import 'special_screen_editor_page.dart';
+
+import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
 
 enum _ScreenAction { delete }
 
@@ -11,7 +14,7 @@ String specialScreenTypeLabel(BuildContext context, SpecialScreenType type) =>
     switch (type) {
       SpecialScreenType.clock => context.localizations.special_screen_clock,
       SpecialScreenType.cameras => context.localizations.special_screen_cameras,
-      _ => '${context.localizations.special_unsupported}: $type',
+      _ => context.localizations.special_unsupported,
     };
 
 class SpecialScreensPage extends StatefulWidget {
@@ -84,6 +87,9 @@ class _SpecialScreensPageState extends State<SpecialScreensPage> {
   Widget build(BuildContext context) {
     final l = context.localizations;
     final screens = widget.config.specialScreens;
+    final numbers = NumberFormat.decimalPattern(
+      Localizations.localeOf(context).toLanguageTag(),
+    );
     return Scaffold(
       appBar: AppBar(title: Text(l.special_screens_title)),
       floatingActionButton: FloatingActionButton.extended(
@@ -117,7 +123,7 @@ class _SpecialScreensPageState extends State<SpecialScreensPage> {
                       final schedule = screen.schedule;
                       final frequency =
                           schedule.type == SpecialScreenScheduleType.interval
-                          ? '${l.special_interval}: ${schedule.intervalMs / 60000} ${l.special_minutes}'
+                          ? '${l.special_interval}: ${numbers.format(schedule.intervalMs / 60000)} ${l.special_minutes}'
                           : '${l.special_after_slides}: ${schedule.count}';
                       return Card(
                         key: ValueKey(screen.id),
@@ -134,9 +140,7 @@ class _SpecialScreensPageState extends State<SpecialScreensPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           subtitle: Text(
-                            '$frequency · ${screen.displayTimeMs / 1000} ${l.special_seconds}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            '${screen.name.isEmpty ? '' : '${specialScreenTypeLabel(context, screen.type)} · '}${screen.enabled ? l.enabled_label : l.disabled_label}\n$frequency · ${numbers.format(screen.displayTimeMs / 1000)} ${l.special_seconds}',
                           ),
                           onTap: screen.isSupported
                               ? () => _edit(screen)

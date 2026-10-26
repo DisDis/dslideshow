@@ -230,7 +230,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "10.1.0+1"
+    version: "10.1.0+3"
   dslideshow_common:
     dependency: "direct main"
     description:
@@ -238,6 +238,13 @@ packages:
       relative: true
     source: path
     version: "2.0.0"
+  dslideshow_i18n:
+    dependency: "direct main"
+    description:
+      path: "../i18n"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   duration:
     dependency: "direct main"
     description:

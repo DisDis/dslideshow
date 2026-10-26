@@ -1,4 +1,4 @@
-import 'package:config_app/features/theme/presentation/theme.dart';
+import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
@@ -67,21 +67,26 @@ class _VideoGridItemState extends State<VideoGridItem> {
     // 1. Если ошибка загрузки
     if (_hasError) {
       return Container(
-        color: AppColors.videoBackground,
+        color: Theme.of(context).colorScheme.errorContainer,
         child: Center(
-            child: Column(
-          children: [
-            Icon(Icons.error, color: AppColors.videoErrorIcon),
-            Text(
-              widget.title,
-              style: const TextStyle(color: AppColors.videoText, fontSize: 10),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            
-          ],
-        )),
+          child: Column(
+            children: [
+              Icon(
+                Icons.error,
+                color: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -107,8 +112,12 @@ class _VideoGridItemState extends State<VideoGridItem> {
             Center(
               child: IconButton(
                 onPressed: _playPause,
-                icon: const Icon(Icons.play_circle_fill,
-                    size: 50, color: AppColors.videoPlayIcon),
+                tooltip: context.localizations.preview_resume,
+                icon: Icon(
+                  Icons.play_circle_fill,
+                  size: 50,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
           // Прозрачный слой для управления нажатием (Play/Pause)
@@ -126,34 +135,45 @@ class _VideoGridItemState extends State<VideoGridItem> {
       alignment: Alignment.center,
       children: [
         // Фон (черный или можно поставить превью картинкой, если есть)
-        Container(color: AppColors.galleryVideoLoadinBackground),
+        Container(color: Theme.of(context).colorScheme.surfaceContainerHighest),
 
         // Кнопка "Скачать и смотреть"
         IconButton(
           onPressed: _initializeVideo, // Начинаем грузить только по клику
-          icon: const Icon(Icons.play_circle_outline,
-              size: 40, color: AppColors.videoPlayButton),
+          tooltip: context.localizations.video_load,
+          icon: Icon(
+            Icons.play_circle_outline,
+            size: 40,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
 
         // Текст для понятности
         Positioned(
+          left: 8,
+          right: 8,
           bottom: 10,
           child: Column(
             children: [
               Text(
                 widget.title,
-                style: const TextStyle(color: AppColors.videoText, fontSize: 10),
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "Tap to play",
-                style: TextStyle(color: AppColors.galleryVideoHint, fontSize: 10),
+                context.localizations.video_tap_to_play,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

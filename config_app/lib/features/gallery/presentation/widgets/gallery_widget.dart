@@ -4,8 +4,7 @@ import 'package:config_app/features/gallery/presentation/widgets/folder_grid_ite
 import 'package:config_app/features/gallery/presentation/widgets/image_grid_item.dart';
 import 'package:config_app/features/gallery/presentation/widgets/video_grid_item.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,30 +27,33 @@ class _GalleryWidgetState extends State<GalleryWidget> {
       builder: (context, state) {
         // 1. Состояние загрузки (Показываем пустой экран с Drawer, чтобы меню работало всегда)
         if (state is UninitializedGalleryState) {
-          return Scaffold(
+          return ConfigAppScaffold(
             appBar: AppBar(title: Text(context.localizations.gallery_title)),
-            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+
             body: const Center(child: CircularProgressIndicator()),
           );
         }
 
         // 2. Состояние ошибки
         if (state is ErrorGalleryState) {
-          return Scaffold(
+          return ConfigAppScaffold(
             appBar: AppBar(title: Text(context.localizations.gallery_title)),
-            drawer: const ConfigAppNavigationBar(), // <-- Drawer здесь
+
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline,
-                      size: 48, color: AppColors.errorRed),
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   const SizedBox(height: 16),
                   Text(state.errorMessage),
                   TextButton(
-                    onPressed: () => context
-                        .read<GalleryBloc>()
-                        .add(const GalleryLoadEvent()),
+                    onPressed: () => context.read<GalleryBloc>().add(
+                      const GalleryLoadEvent(),
+                    ),
                     child: Text(context.localizations.retry_button),
                   ),
                 ],
@@ -62,52 +64,59 @@ class _GalleryWidgetState extends State<GalleryWidget> {
 
         // 3. Состояние данных (Основной экран)
         if (state is LoadedGalleryState) {
-          return Scaffold(
+          return ConfigAppScaffold(
             // ВАЖНО: Добавляем Drawer сюда
-            drawer: const ConfigAppNavigationBar(),
 
             body: RefreshIndicator(
               onRefresh: () async {
                 context.read<GalleryBloc>().add(const GalleryLoadEvent());
               },
               child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  // SliverAppBar автоматически покажет кнопку меню (Drawer),
-                  // потому что мы добавили drawer в Scaffold выше.
+                  // The shell supplies a drawer on narrow screens.
                   SliverAppBar(
-                    title: Text(_isSelectionMode
-                        ? "${_selectedIds.length} selected"
-                        : "${context.localizations.gallery_title} (${state.items.length})"),
+                    title: Text(
+                      _isSelectionMode
+                          ? context.localizations.gallery_selected(
+                              _selectedIds.length,
+                            )
+                          : "${context.localizations.gallery_title} (${state.items.length})",
+                    ),
                     floating: true,
                     pinned: true,
                     // Меняем цвет, если выбран режим выделения
                     backgroundColor: _isSelectionMode
-                        ? AppColors.gallerySelectionModeHeader
+                        ? Theme.of(context).colorScheme.secondaryContainer
                         : null,
                     // Если режим выбора - показываем кнопку "Назад" (закрыть выбор) вместо "Меню"
                     leading: _isSelectionMode
                         ? IconButton(
                             icon: const Icon(Icons.close),
+                            tooltip: context.localizations.clear_selection,
                             onPressed: () =>
                                 setState(() => _selectedIds.clear()),
                           )
                         : null, // Если null, Flutter сам поставит кнопку Drawer (бургер)
                     actions: [
-                      if (_isSelectionMode) ...[
-                        IconButton(
-                            icon: const Icon(Icons.share), onPressed: () {}),
-                        IconButton(
-                            icon: const Icon(Icons.delete), onPressed: () {}),
-                      ] else
+                      if (!_isSelectionMode)
                         IconButton(
                           icon: const Icon(Icons.refresh),
-                          onPressed: () => context
-                              .read<GalleryBloc>()
-                              .add(const GalleryLoadEvent()),
-                        )
+                          tooltip: context.localizations.refresh_button,
+                          onPressed: () => context.read<GalleryBloc>().add(
+                            const GalleryLoadEvent(),
+                          ),
+                        ),
                     ],
                   ),
 
+                  if (state.items.isEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text(context.localizations.gallery_empty),
+                      ),
+                    ),
                   SliverPadding(
                     padding: const EdgeInsets.all(8.0),
                     sliver: MediaGallerySliverGrid(
@@ -161,39 +170,35 @@ class MediaGallerySliverGrid extends StatelessWidget {
         crossAxisSpacing: 8.0,
         childAspectRatio: 1.0, // Квадратные ячейки выглядят современнее
       ),
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          final itemString = items[index];
-          // Создаем модель на лету (или лучше делать это в BLoC)
-          final galleryItem = GalleryItem(
-            uri: wclient.getMediaItemUri(itemString),
-            title: path.basename(itemString),
-          );
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        final itemString = items[index];
+        // Создаем модель на лету (или лучше делать это в BLoC)
+        final galleryItem = GalleryItem(
+          uri: wclient.getMediaItemUri(itemString),
+          title: path.basename(itemString),
+        );
 
-          final isSelected = selectedIds.contains(galleryItem.uri.toString());
+        final isSelected = selectedIds.contains(galleryItem.uri.toString());
 
-          return _GalleryItemWidget(
-            item: galleryItem,
-            isSelected: isSelected,
-            onTap: () {
-              if (selectedIds.isNotEmpty) {
-                // Если режим выбора активен, обычный клик тоже выбирает
-                onToggleSelect(galleryItem.uri.toString());
-              } else if (!galleryItem.isFolder){
-                // ОТКРЫТИЕ SINGLE VIEWER
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SingleItemViewerPage(item: galleryItem),
-                  ),
-                );
-              }
-            },
-            onLongPress: () => onToggleSelect(galleryItem.uri.toString()),
-          );
-        },
-        childCount: items.length,
-      ),
+        return _GalleryItemWidget(
+          item: galleryItem,
+          isSelected: isSelected,
+          onTap: () {
+            if (selectedIds.isNotEmpty) {
+              // Если режим выбора активен, обычный клик тоже выбирает
+              onToggleSelect(galleryItem.uri.toString());
+            } else if (!galleryItem.isFolder) {
+              // ОТКРЫТИЕ SINGLE VIEWER
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SingleItemViewerPage(item: galleryItem),
+                ),
+              );
+            }
+          },
+          onLongPress: () => onToggleSelect(galleryItem.uri.toString()),
+        );
+      }, childCount: items.length),
     );
   }
 }
@@ -222,11 +227,14 @@ class _GalleryItemWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: AppColors.galleryItem,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-              ? Border.all(width: 3, color: AppColors.gallerySelectionBorder)
-              : Border.all(width: 0, color: AppColors.galleryUnSelectionBorder),
+              ? Border.all(
+                  width: 3,
+                  color: Theme.of(context).colorScheme.primary,
+                )
+              : null,
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
@@ -239,21 +247,27 @@ class _GalleryItemWidget extends StatelessWidget {
               // Затемнение при выборе
               if (isSelected)
                 Container(
-                  color: AppColors.selectionBackground
-                      .withAlpha((255.0 * 0.2).round()),
-                  child: const Center(
-                    child: Icon(Icons.check_circle,
-                        color: AppColors.selectionBackground, size: 36),
+                  color: Theme.of(context).colorScheme.primary
+                      .withValues(alpha: 0.2),
+                  child: Center(
+                    child: Icon(
+                      Icons.check_circle,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 36,
+                    ),
                   ),
                 ),
 
               // Индикаторы типа файла
               if (isVideo)
-                const Positioned(
+                Positioned(
                   top: 6,
                   right: 6,
-                  child: Icon(Icons.play_circle_fill,
-                      color: AppColors.videoPlayIcon, size: 24),
+                  child: Icon(
+                    Icons.play_circle_fill,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    size: 24,
+                  ),
                 ),
             ],
           ),
@@ -283,9 +297,6 @@ class GalleryItem {
   bool selected;
   final bool isFolder;
 
-  GalleryItem({
-    required this.uri,
-    required this.title,
-    this.selected = false,
-  }): isFolder = path.extension(uri.path)== '';
+  GalleryItem({required this.uri, required this.title, this.selected = false})
+    : isFolder = path.extension(uri.path) == '';
 }

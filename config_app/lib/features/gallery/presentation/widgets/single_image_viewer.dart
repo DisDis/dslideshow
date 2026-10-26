@@ -14,10 +14,13 @@ class SingleImageViewer extends StatelessWidget {
         filterQuality: FilterQuality.high,
         imageUrl: uri.toString(),
         fit: BoxFit.contain,
-        placeholder: (context, url) => const CircularProgressIndicator(color: Colors.white),
-        errorWidget: (context, url, error) => const Icon(Icons.broken_image, color: Colors.grey, size: 50),
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(
+          Icons.broken_image,
+          color: Theme.of(context).colorScheme.error,
+          size: 50,
+        ),
       ),
     );
   }
 }
-

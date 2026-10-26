@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 
 import '../sessions/cameras_screen_session.dart';
@@ -13,10 +14,13 @@ class CamerasScreenWidget extends StatelessWidget {
     listenable: session,
     builder: (_, _) {
       final options = session.options;
+      final localizations =
+          Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+          lookupAppLocalizations(const Locale('en'));
       if (options.cameras.isEmpty) {
-        return const ColoredBox(
+        return ColoredBox(
           color: Colors.black,
-          child: Center(child: Icon(Icons.videocam_off, color: Colors.white)),
+          child: _unavailable(localizations.special_no_image),
         );
       }
       return ColoredBox(
@@ -27,6 +31,7 @@ class CamerasScreenWidget extends StatelessWidget {
               return _tile(
                 session.cameraIndex % options.cameras.length,
                 constraints.maxWidth,
+                localizations.special_no_image,
               );
             }
             final count = options.cameras.length;
@@ -55,6 +60,7 @@ class CamerasScreenWidget extends StatelessWidget {
                                 child: _tile(
                                   index,
                                   constraints.maxWidth / columns,
+                                  localizations.special_no_image,
                                 ),
                               )
                             : const SizedBox(),
@@ -69,12 +75,10 @@ class CamerasScreenWidget extends StatelessWidget {
       );
     },
   );
-  Widget _tile(int index, double width) {
+  Widget _tile(int index, double width, String unavailableLabel) {
     final camera = session.options.cameras[index];
     final bytes = session.images[index];
-    final unavailable = session.failed.contains(index);
-    Widget placeholder() =>
-        const Center(child: Icon(Icons.videocam_off, color: Colors.white54));
+    Widget placeholder() => _unavailable(unavailableLabel);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -88,12 +92,6 @@ class CamerasScreenWidget extends StatelessWidget {
                 ? BoxFit.cover
                 : BoxFit.contain,
             errorBuilder: (_, _, _) => placeholder(),
-          ),
-        if (unavailable && bytes != null)
-          const Positioned(
-            top: 8,
-            right: 8,
-            child: Icon(Icons.sync_problem, color: Colors.amber),
           ),
         if (session.options.showNames && camera.name.isNotEmpty)
           Positioned(
@@ -119,4 +117,37 @@ class CamerasScreenWidget extends StatelessWidget {
       ],
     );
   }
+
+  Widget _unavailable(String label) => LayoutBuilder(
+    builder: (_, constraints) {
+      final fontSize =
+          (math.min(constraints.maxWidth, constraints.maxHeight) * .06).clamp(
+            16.0,
+            96.0,
+          );
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.videocam_off,
+                  size: fontSize * 1.5,
+                  color: Colors.white70,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  label,
+                  style: TextStyle(color: Colors.white, fontSize: fontSize),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

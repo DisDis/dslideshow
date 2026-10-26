@@ -1,7 +1,7 @@
 import 'dart:io';
+
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:config_app/features/upload/domain/upload_task.dart';
 import 'package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart';
 import 'package:dslideshow_common/file_settings.dart';
@@ -11,41 +11,74 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
 
+enum _UploadSelection { files, folder }
+
 class UploadScreen extends StatelessWidget {
-  static const _filesValue = 'files';
-  static const _folderValue = 'folder';
   const UploadScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Блок уже должен быть предоставлен выше в дереве
-    return Scaffold(
+    return ConfigAppScaffold(
       appBar: AppBar(
         title: Text(context.localizations.upload_queue_title),
         actions: [
           // Меню добавления
-          PopupMenuButton<String>(
+          PopupMenuButton<_UploadSelection>(
             icon: const Icon(Icons.add),
+            tooltip: context.localizations.add_files_menu_item,
             onSelected: (value) => _handleMenuSelection(context, value),
             itemBuilder: (context) => [
               PopupMenuItem(
-                value: _filesValue,
+                value: _UploadSelection.files,
                 child: Text(context.localizations.add_files_menu_item),
               ),
               if (!kIsWeb)
                 PopupMenuItem(
-                  value: _folderValue,
+                  value: _UploadSelection.folder,
                   child: Text(context.localizations.add_folder_menu_item),
                 ),
             ],
           ),
         ],
       ),
-      drawer: const ConfigAppNavigationBar(),
+
       body: BlocBuilder<UploadQueueBloc, UploadQueueState>(
         builder: (context, state) {
           if (state.tasks.isEmpty) {
-            return Center(child: Text(context.localizations.queue_is_empty));
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.upload_file_outlined,
+                      size: 56,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      context.localizations.queue_is_empty,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      context.localizations.upload_empty_hint,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    FilledButton.icon(
+                      key: const ValueKey('upload-add-files'),
+                      onPressed: () =>
+                          _handleMenuSelection(context, _UploadSelection.files),
+                      icon: const Icon(Icons.add),
+                      label: Text(context.localizations.add_files_menu_item),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
 
           // Показываем новые сверху или снизу? Обычно новые снизу.
@@ -64,16 +97,18 @@ class UploadScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _handleMenuSelection(BuildContext context, String value) async {
+  Future<void> _handleMenuSelection(
+    BuildContext context,
+    _UploadSelection value,
+  ) async {
     final bloc = context.read<UploadQueueBloc>();
     switch (value) {
-      case _filesValue:
+      case _UploadSelection.files:
         await _uploadFiles(bloc);
         break;
-      case _folderValue:
+      case _UploadSelection.folder:
         await _uploadFolder(bloc, context);
         break;
-      default:
     }
   }
 
@@ -148,22 +183,24 @@ class _UploadTaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: _buildLeadingIcon(),
+      leading: _buildLeadingIcon(context),
       title: Text(p.basename(task.serverPath)), // Показываем имя файла
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             task.serverPath,
-            style: const TextStyle(fontSize: 10, color: AppColors.uploadText),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           if (task.status == UploadStatus.uploading)
             LinearProgressIndicator(value: task.progress),
           if (task.status == UploadStatus.error)
             Text(
-              task.errorMessage ?? "Error",
-              style: const TextStyle(
-                color: AppColors.uploadErrorText,
+              task.errorMessage ?? context.localizations.error_text,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
                 fontSize: 12,
               ),
             ),
@@ -174,12 +211,12 @@ class _UploadTaskTile extends StatelessWidget {
     );
   }
 
-  Widget _buildLeadingIcon() {
+  Widget _buildLeadingIcon(BuildContext context) {
     switch (task.status) {
       case UploadStatus.queued:
-        return const Icon(
+        return Icon(
           Icons.hourglass_empty,
-          color: AppColors.uploadQueuedIcon,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         );
       case UploadStatus.uploading:
         return Stack(
@@ -193,12 +230,12 @@ class _UploadTaskTile extends StatelessWidget {
           ],
         );
       case UploadStatus.completed:
-        return const Icon(
+        return Icon(
           Icons.check_circle,
-          color: AppColors.uploadCompletedIcon,
+          color: Theme.of(context).colorScheme.primary,
         );
       case UploadStatus.error:
-        return const Icon(Icons.error, color: AppColors.uploadErrorIcon);
+        return Icon(Icons.error, color: Theme.of(context).colorScheme.error);
     }
   }
 
@@ -206,6 +243,7 @@ class _UploadTaskTile extends StatelessWidget {
     if (task.status == UploadStatus.completed) {
       return IconButton(
         icon: const Icon(Icons.delete),
+        tooltip: context.localizations.upload_remove_task,
         onPressed: () {
           context.read<UploadQueueBloc>().add(
             UploadQueueEvent.removeTask(task.id),
@@ -215,6 +253,7 @@ class _UploadTaskTile extends StatelessWidget {
     } else if (task.status == UploadStatus.queued) {
       return IconButton(
         icon: const Icon(Icons.delete),
+        tooltip: context.localizations.upload_remove_task,
         onPressed: () {
           context.read<UploadQueueBloc>().add(
             UploadQueueEvent.removeTask(task.id),
@@ -224,6 +263,7 @@ class _UploadTaskTile extends StatelessWidget {
     } else if (task.status == UploadStatus.error) {
       return IconButton(
         icon: const Icon(Icons.refresh),
+        tooltip: context.localizations.retry_button,
         onPressed: () {
           context.read<UploadQueueBloc>().add(
             UploadQueueEvent.retryTask(task.id),

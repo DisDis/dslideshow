@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
+import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/effect.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
@@ -11,6 +12,76 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'photo preview applies draft background color and blurred layer opacity',
+    (tester) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(Colors.white, BlendMode.src);
+      final picture = recorder.endRecording();
+      final source = (await tester.runAsync(() => picture.toImage(10, 10)))!;
+      final png = (await tester.runAsync(
+        () => source.toByteData(format: ui.ImageByteFormat.png),
+      ))!;
+      final provider = MemoryImage(
+        Uint8List.fromList(png.buffer.asUint8List()),
+      );
+      source.dispose();
+      picture.dispose();
+      final config = SlideShowConfig.fromJson({
+        'transitionTimeMs': 10,
+        'displayTimeMs': 5000,
+        'isBlurredBackground': false,
+        'backgroundColor': 0xffff0000,
+      });
+      final images = <ImageProvider>[provider];
+      final key = GlobalKey<SlideshowPreviewState>();
+      Widget app() => MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: SlideshowPreview(key: key, config: config, images: images),
+          ),
+        ),
+      );
+      await tester.pumpWidget(app());
+      await tester.runAsync(() => precacheImage(provider, key.currentContext!));
+      Future<void> finish() async {
+        for (var i = 0; i < 8; i++) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 20)),
+          );
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+      }
+
+      Future<List<int>> corner() async {
+        final image = tester
+            .widget<RawImage>(find.byType(RawImage).last)
+            .image!;
+        final data = (await tester.runAsync(
+          () => image.toByteData(format: ui.ImageByteFormat.rawRgba),
+        ))!;
+        return data.buffer.asUint8List().take(4).toList();
+      }
+
+      await finish();
+      expect(await corner(), [255, 0, 0, 255]);
+      config.backgroundColor = 0xff0000ff;
+      config.isBlurredBackground = true;
+      config.backgroundBlurSigma = 0;
+      config.backgroundOpacity = .5;
+      await tester.pumpWidget(app());
+      await finish();
+      final blended = await corner();
+      expect(blended[0], closeTo(128, 1));
+      expect(blended[1], closeTo(128, 1));
+      expect(blended[2], 255);
+      expect(config.backgroundOpacity, .5);
+      await tester.pumpWidget(const SizedBox());
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'Preview applies effects immediately and keeps configured timing and clock',
     (tester) async {
@@ -37,8 +108,7 @@ void main() {
           GlobalWidgetsLocalizations.delegate,
         ],
         home: Scaffold(
-          body: SizedBox(
-            height: 360,
+          body: SingleChildScrollView(
             child: SlideshowPreview(key: key, config: config, images: [image]),
           ),
         ),
@@ -93,8 +163,7 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
           ],
           home: Scaffold(
-            body: SizedBox(
-              height: 500,
+            body: SingleChildScrollView(
               child: SlideshowPreview(
                 key: key,
                 config: config,
@@ -127,9 +196,11 @@ void main() {
         isFalse,
       );
       expect(find.byType(RawImage), findsWidgets);
-      tester.widget<DropdownButton<double>>(
-        find.byKey(const ValueKey('preview-aspect')),
-      ).onChanged!(1.0);
+      tester
+          .widget<DropdownButtonFormField<PreviewAspectRatio>>(
+            find.byKey(const ValueKey('preview-aspect')),
+          )
+          .onChanged!(PreviewAspectRatio.square);
       await tester.pump();
       await advance();
       expect(tester.takeException(), isNull);

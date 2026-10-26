@@ -1,19 +1,20 @@
-// import 'package:async_redux/async_redux.dart';
-// import 'package:flutter/material.dart';
-// import 'package:my_apps/presentation/redux/theme/actions/set_dark_theme_action.dart';
-// import 'package:my_apps/presentation/redux/theme/actions/set_light_theme_action.dart';
-// import 'package:my_apps/presentation/redux/theme/actions/switch_theme_action.dart';
+import 'package:config_app/features/theme/presentation/app_preferences.dart';
+import 'package:flutter/material.dart';
 
 abstract class ThemeManager {
-  /*static void setLightTheme(BuildContext context) {
-    StoreProvider.dispatch(context, SetLightThemeAction());
-  }
+  static void setThemeMode(BuildContext context, ThemeMode mode) =>
+      AppPreferencesScope.of(context).setThemeMode(mode);
 
-  static void setDarkTheme(BuildContext context) {
-    StoreProvider.dispatch(context, SetDarkThemeAction());
-  }
+  static void setLightTheme(BuildContext context) =>
+      setThemeMode(context, ThemeMode.light);
 
-  static void switchTheme(BuildContext context) {
-    StoreProvider.dispatch(context, SwitchThemeAction());
-  }*/
+  static void setDarkTheme(BuildContext context) =>
+      setThemeMode(context, ThemeMode.dark);
+
+  static void switchTheme(BuildContext context) => setThemeMode(
+    context,
+    Theme.of(context).brightness == Brightness.dark
+        ? ThemeMode.light
+        : ThemeMode.dark,
+  );
 }

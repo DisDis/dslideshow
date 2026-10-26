@@ -11,6 +11,8 @@ enum CameraDisplayMode { grid, sequence }
 
 enum ClockTimeFormat { h24, h12 }
 
+enum ClockFont { system, roboto, orbitron, righteous, fredoka }
+
 enum CameraImageFit { contain, cover }
 
 enum ClockDateFormat {
@@ -42,6 +44,8 @@ int _parseTextColor(dynamic value) => _color(value, 0xFFFFFFFF);
 int _parseBackgroundColor(dynamic value) => _color(value, 0xFF000000);
 int _parseColumns(dynamic value) => value is num && value.isFinite ? value.toInt().clamp(0, 16) : 0;
 int _parseRefresh(dynamic value) => value == 0 ? 0 : _positive(value, 5000);
+int _parseRequestTimeout(dynamic value) =>
+    value is num && value.isFinite && value >= 100 && value <= 120000 ? value.toInt() : 10000;
 
 @JsonSerializable()
 class SpecialScreenSchedule {
@@ -68,8 +72,13 @@ class ClockScreenOptions extends SpecialScreenOptions {
   ClockTimeFormat timeFormat;
   bool showSeconds;
   bool showDate;
+  bool showWeekday;
   @JsonKey(unknownEnumValue: ClockDateFormat.dayMonthYear)
   ClockDateFormat dateFormat;
+  @JsonKey(unknownEnumValue: ClockFont.system)
+  ClockFont timeFont;
+  @JsonKey(unknownEnumValue: ClockFont.system)
+  ClockFont dateFont;
   @JsonKey(fromJson: _parseTimeSize)
   double timeFontSizePercent;
   @JsonKey(fromJson: _parseDateSize)
@@ -82,7 +91,10 @@ class ClockScreenOptions extends SpecialScreenOptions {
     this.timeFormat = ClockTimeFormat.h24,
     this.showSeconds = false,
     this.showDate = true,
+    this.showWeekday = false,
     this.dateFormat = ClockDateFormat.dayMonthYear,
+    this.timeFont = ClockFont.system,
+    this.dateFont = ClockFont.system,
     this.timeFontSizePercent = 50,
     this.dateFontSizePercent = 5,
     this.textColor = 0xFFFFFFFF,
@@ -130,6 +142,8 @@ class CamerasScreenOptions extends SpecialScreenOptions {
   bool showNames;
   @JsonKey(fromJson: _parseRefresh)
   int refreshIntervalMs;
+  @JsonKey(fromJson: _parseRequestTimeout)
+  int requestTimeoutMs;
   CamerasScreenOptions({
     this.mode = CameraDisplayMode.grid,
     List<CameraConfig>? cameras,
@@ -137,6 +151,7 @@ class CamerasScreenOptions extends SpecialScreenOptions {
     this.fit = CameraImageFit.contain,
     this.showNames = true,
     this.refreshIntervalMs = 5000,
+    this.requestTimeoutMs = 10000,
   }) : cameras = cameras ?? [];
   static List<CameraConfig> _parseCameras(dynamic value) {
     final result = <CameraConfig>[];

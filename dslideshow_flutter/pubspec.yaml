@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 10.1.0+2
+version: 10.2.0+1
 publish_to: none
 
 environment:
@@ -32,6 +32,9 @@ dependencies:
 
   dslideshow_common: 
     path: ../common
+
+  dslideshow_i18n:
+    path: ../i18n
 
   system_metrics_widget:
     path: ../system_metrics_widget

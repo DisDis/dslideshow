@@ -1,23 +1,27 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:flutter/material.dart';
 
 class AvailableNetworkTile extends StatelessWidget {
   final WiFiNetworkInfo network;
   final VoidCallback onTap;
 
-  const AvailableNetworkTile({super.key, required this.network, required this.onTap});
+  const AvailableNetworkTile({
+    super.key,
+    required this.network,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     Color signalColor;
     if (network.signal >= 75) {
-      signalColor = AppColors.wifiSignalStrong;
+      signalColor = colors.primary;
     } else if (network.signal >= 50) {
-      signalColor = AppColors.wifiSignalMedium;
+      signalColor = colors.tertiary;
     } else {
-      signalColor = AppColors.wifiSignalWeak;
+      signalColor = colors.error;
     }
 
     final is5Ghz = network.channel > 14;
@@ -29,14 +33,15 @@ class AvailableNetworkTile extends StatelessWidget {
       leading: Stack(
         children: [
           Icon(
-              network.signal >= 85
-                  ? Icons.network_wifi
-                  : network.signal >= 70
-                      ? Icons.network_wifi_3_bar
-                      : network.signal >= 50
-                          ? Icons.network_wifi_2_bar
-                          : Icons.network_wifi_1_bar,
-              color: signalColor),
+            network.signal >= 85
+                ? Icons.network_wifi
+                : network.signal >= 70
+                ? Icons.network_wifi_3_bar
+                : network.signal >= 50
+                ? Icons.network_wifi_2_bar
+                : Icons.network_wifi_1_bar,
+            color: signalColor,
+          ),
           if (isLocked)
             Positioned(
               right: 0,
@@ -44,48 +49,56 @@ class AvailableNetworkTile extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(1),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(4)),
-                child: const Icon(Icons.lock, size: 10, color: AppColors.wifiLockedIcon),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(
+                  Icons.lock,
+                  size: 10,
+                  color: colors.onSurfaceVariant,
+                ),
               ),
-            )
+            ),
         ],
       ),
-      title: Text(network.SSID,
-          style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(
+        network.SSID,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
       subtitle: Row(
         children: [
           if (is5Ghz) ...[
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
-                  color: AppColors.wifiBackground.withAlpha((255.0 * 0.1).round()),
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                      color: AppColors.wifiBackground.withAlpha((255.0 * 0.3).round()))),
-              child: Text(context.localizations.wifi_5ghz_label,
-                  style: TextStyle(
-                      fontSize: 9,
-                      color: AppColors.wifi5GhzLabel,
-                      fontWeight: FontWeight.bold)),
+                color: colors.secondaryContainer,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: colors.outlineVariant),
+              ),
+              child: Text(
+                context.localizations.wifi_5ghz_label,
+                style: TextStyle(
+                  fontSize: 9,
+                  color: colors.onSecondaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(width: 6),
           ],
           Text("${network.signal}%", style: const TextStyle(fontSize: 12)),
           const SizedBox(width: 6),
-          Text("• ${context.localizations.channel_text(network.channel)}",
-              style: const TextStyle(fontSize: 12, color: AppColors.wifiChannel)),
+          Text(
+            "• ${context.localizations.channel_text(network.channel)}",
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: colors.onSurfaceVariant),
+          ),
         ],
       ),
-      trailing: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(8),
-            elevation: 0,
-            backgroundColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest),
+      trailing: IconButton.filledTonal(
+        tooltip: context.localizations.connect_button,
         onPressed: onTap,
-        child: const Icon(Icons.add, size: 20),
+        icon: const Icon(Icons.add, size: 20),
       ),
     );
   }

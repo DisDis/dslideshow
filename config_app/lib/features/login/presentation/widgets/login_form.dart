@@ -18,7 +18,12 @@ class LoginForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(context.localizations.authentication_failure),
+                content: Text(
+                  context.localizations.authentication_failure,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onError,
+                  ),
+                ),
                 backgroundColor: Theme.of(context).colorScheme.error,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -26,11 +31,8 @@ class LoginForm extends StatelessWidget {
         }
       },
       child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        color: Theme.of(context).colorScheme.surface,
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -44,22 +46,22 @@ class LoginForm extends StatelessWidget {
               Text(
                 context.localizations.login_page_name, // "Login"
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 context.localizations.please_sign_in_to_continue,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               Text(
                 "v${ApplicationInfo.frontendVersion}/v${ApplicationInfo.backendVersion}",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -85,24 +87,27 @@ class _ConnectUriInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.connectUri != current.connectUri,
+      buildWhen: (previous, current) =>
+          previous.connectUri != current.connectUri,
       builder: (context, state) {
         // Мы сохраняем логику с созданием контроллера на лету,
         // так как это единственный способ обновить текст из Блока в Stateless
         // без использования хуков.
         return TextField(
           key: const Key('loginForm_connectUriInput_textField'),
-          controller: state.connectUri.isPure ? TextEditingController(text: state.connectUri.value) : null,
-          onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
+          controller: state.connectUri.isPure
+              ? TextEditingController(text: state.connectUri.value)
+              : null,
+          onChanged: (connectUri) =>
+              context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
           decoration: InputDecoration(
             labelText: context.localizations.server_uri,
             hintText: 'ws://192.168.1.x:8080/ws',
             prefixIcon: const Icon(Icons.link),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             enabled: !kIsWeb,
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.connectUri.displayError != null ? context.localizations.invalid_uri : null,
+            errorText: state.connectUri.displayError != null
+                ? context.localizations.invalid_uri
+                : null,
           ),
           keyboardType: TextInputType.url,
         );
@@ -119,15 +124,17 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
-          controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
-          onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+          controller: state.username.isPure
+              ? TextEditingController(text: state.username.value)
+              : null,
+          onChanged: (username) =>
+              context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: context.localizations.username,
             prefixIcon: const Icon(Icons.person_outline),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.username.displayError != null ? context.localizations.invalid_username : null,
+            errorText: state.username.displayError != null
+                ? context.localizations.invalid_username
+                : null,
           ),
           textInputAction: TextInputAction.next,
         );
@@ -144,16 +151,18 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          controller: state.password.isPure ? TextEditingController(text: state.password.value) : null,
-          onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+          controller: state.password.isPure
+              ? TextEditingController(text: state.password.value)
+              : null,
+          onChanged: (password) =>
+              context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true, // Всегда скрыт, так как мы в Stateless
           decoration: InputDecoration(
             labelText: context.localizations.password,
             prefixIcon: const Icon(Icons.lock_outline),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha((255.0 * 0.3).round()),
-            errorText: state.password.displayError != null ? context.localizations.invalid_password : null,
+            errorText: state.password.displayError != null
+                ? context.localizations.invalid_password
+                : null,
           ),
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
@@ -171,7 +180,9 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => (previous.status != current.status) || (previous.isValid != current.isValid),
+      buildWhen: (previous, current) =>
+          (previous.status != current.status) ||
+          (previous.isValid != current.isValid),
       builder: (context, state) {
         if (state.status.isInProgress) {
           return const Center(child: CircularProgressIndicator());
@@ -179,24 +190,14 @@ class _LoginButton extends StatelessWidget {
 
         return SizedBox(
           width: double.infinity,
-          height: 50,
           child: FilledButton(
             key: const Key('loginForm_continue_raisedButton'),
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 2,
-            ),
             onPressed: state.isValid
                 ? () {
                     context.read<LoginBloc>().add(const LoginSubmitted());
                   }
                 : null,
-            child: Text(
-              context.localizations.sign_in,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            child: Text(context.localizations.sign_in),
           ),
         );
       },

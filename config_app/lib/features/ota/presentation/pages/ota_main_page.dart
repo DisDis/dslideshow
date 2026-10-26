@@ -1,6 +1,5 @@
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart';
+import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_state.dart';
 import 'package:config_app/features/ota/presentation/bloc/ota_event.dart';
@@ -9,15 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 
 class OtaMainPage extends StatelessWidget {
   const OtaMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ConfigAppScaffold(
       appBar: AppBar(title: Text(context.localizations.ota_update_title)),
-      drawer: const ConfigAppNavigationBar(),
+
       body: MultiBlocProvider(
         providers: [
           BlocProvider<OtaBloc>(
@@ -53,21 +53,31 @@ class _OtaPageContentState extends State<OtaPageContent> {
         if (state is ErrorOtaState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.errorMessage),
-              backgroundColor: AppColors.errorRed,
+              content: Text(
+                state.errorMessage,
+                style: TextStyle(color: Theme.of(context).colorScheme.onError),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
       },
       builder: (context, state) {
-        return state.maybeWhen(
-          uninitialized: () => _buildUninitializedState(context),
-          initialized: (version) => _buildInitializedState(context, version),
-          uploading: (progress) => _buildUploadingState(context, progress),
-          uploadComplete: () => _buildUploadCompleteState(context),
-          error: (errorMessage) => _buildErrorState(context, errorMessage),
-          orElse: () =>
-              Center(child: Text(context.localizations.unknown_state)),
+        return SettingsContent(
+          maxWidth: 720,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: state.maybeWhen(
+              uninitialized: () => _buildUninitializedState(context),
+              initialized: (version) =>
+                  _buildInitializedState(context, version),
+              uploading: (progress) => _buildUploadingState(context, progress),
+              uploadComplete: () => _buildUploadCompleteState(context),
+              error: (errorMessage) => _buildErrorState(context, errorMessage),
+              orElse: () =>
+                  Center(child: Text(context.localizations.unknown_state)),
+            ),
+          ),
         );
       },
     );
@@ -81,12 +91,11 @@ class _OtaPageContentState extends State<OtaPageContent> {
         children: [
           SelectableText(
             'http://${uri.host}:8282/ota_start',
-            style: TextStyle(fontSize: 18),
-            onTap: () {},
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const Text(
-            'OTA Update',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Text(
+            context.localizations.ota_update_title,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -109,13 +118,15 @@ class _OtaPageContentState extends State<OtaPageContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Version: $version',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            context.localizations.ota_version(version),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 10),
           TextField(
             controller: tEdCode,
-            decoration: const InputDecoration(labelText: 'OTA Code'),
+            decoration: InputDecoration(
+              labelText: context.localizations.ota_code_label,
+            ),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly,
@@ -148,18 +159,18 @@ class _OtaPageContentState extends State<OtaPageContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Uploading firmware...', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: AppColors.progressOta,
-            valueColor: const AlwaysStoppedAnimation<Color>(
-              AppColors.progressOtaValue,
-            ),
+          Text(
+            context.localizations.ota_uploading,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 10),
+          LinearProgressIndicator(value: progress),
+          const SizedBox(height: 10),
           Text(
-            '${(progress * 100).toStringAsFixed(1)}%',
+            NumberFormat.decimalPercentPattern(
+              locale: Localizations.localeOf(context).toLanguageTag(),
+              decimalDigits: 1,
+            ).format(progress),
             style: const TextStyle(fontSize: 16),
           ),
         ],
@@ -173,22 +184,10 @@ class _OtaPageContentState extends State<OtaPageContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   'Version: $version',
-          //   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          // ),
-          // const SizedBox(height: 10),
-          // Text(
-          //   'Update Code: $updateCode',
-          //   style: const TextStyle(fontSize: 16),
-          // ),
-          // const SizedBox(height: 20),
-          const Text(
-            'Firmware upload completed successfully!',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.firmwareUploadSuccess,
-            ),
+          Text(
+            context.localizations.ota_upload_complete,
+            style: Theme.of(context).textTheme.bodyLarge
+                ?.copyWith(color: Theme.of(context).colorScheme.primary),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -208,8 +207,9 @@ class _OtaPageContentState extends State<OtaPageContent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Error: $errorMessage',
-            style: const TextStyle(fontSize: 16, color: AppColors.errorRedDark),
+            context.localizations.error_with_message(errorMessage),
+            style: Theme.of(context).textTheme.bodyLarge
+                ?.copyWith(color: Theme.of(context).colorScheme.error),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
