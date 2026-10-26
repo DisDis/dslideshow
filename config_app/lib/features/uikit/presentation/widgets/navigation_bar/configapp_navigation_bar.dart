@@ -11,7 +11,9 @@ enum HomeTab { log, hardware, slideshow, welcome, web, mqtt, storage, wifi }
 
 class ConfigAppNavigationBar extends StatelessWidget {
   static const Key _navKey = Key("#WANavigationBar");
-  const ConfigAppNavigationBar() : super(key: _navKey);
+  final Future<bool> Function()? onLogoutRequested;
+
+  const ConfigAppNavigationBar({this.onLogoutRequested}) : super(key: _navKey);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
                       height: 90,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: AppColors.noImageAvatar ,
+                          color: AppColors.noImageAvatar,
                           alignment: Alignment.center,
                           child: const Text(
                             'No image',
@@ -48,9 +50,11 @@ class ConfigAppNavigationBar extends StatelessWidget {
                 decoration: const BoxDecoration(
                   color: AppColors.imageAvatar,
                   image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(
-                          'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
+                    fit: BoxFit.fill,
+                    image: NetworkImage(
+                      'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg',
+                    ),
+                  ),
                 ),
               );
             },
@@ -97,9 +101,14 @@ class ConfigAppNavigationBar extends StatelessWidget {
           ListTile(
             title: Text(context.localizations.exit_menu_item),
             leading: const Icon(Icons.exit_to_app),
-            onTap: () => context
-                .read<AuthenticationBloc>()
-                .add(const AuthenticationLogoutRequested()),
+            onTap: () async {
+              final mayLogout = await onLogoutRequested?.call() ?? true;
+              if (mayLogout && context.mounted) {
+                context.read<AuthenticationBloc>().add(
+                  const AuthenticationLogoutRequested(),
+                );
+              }
+            },
           ),
           // ..._leftDrawerProvider.getMenuItems()
         ],

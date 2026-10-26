@@ -298,6 +298,78 @@ abstract class AppLocalizations {
   /// **'Background Opacity'**
   String get background_opacity;
 
+  /// No description provided for @config_save_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get config_save_button;
+
+  /// No description provided for @config_reload_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get config_reload_button;
+
+  /// No description provided for @config_unsaved_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get config_unsaved_changes;
+
+  /// No description provided for @config_saved_state.
+  ///
+  /// In en, this message translates to:
+  /// **'No unsaved changes'**
+  String get config_saved_state;
+
+  /// No description provided for @config_restart_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved settings take effect after restarting the application.'**
+  String get config_restart_hint;
+
+  /// No description provided for @config_reload_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload settings?'**
+  String get config_reload_title;
+
+  /// No description provided for @config_reload_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard your changes and load the saved settings from the device?'**
+  String get config_reload_warning;
+
+  /// No description provided for @config_leave_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes have not been saved. Discard them and leave settings?'**
+  String get config_leave_warning;
+
+  /// No description provided for @config_keep_editing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get config_keep_editing;
+
+  /// No description provided for @config_discard_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes'**
+  String get config_discard_changes;
+
+  /// No description provided for @config_operation_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for the current settings operation to finish.'**
+  String get config_operation_in_progress;
+
+  /// No description provided for @config_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load settings'**
+  String get config_load_failed;
+
   /// Message shown when config is saved successfully
   ///
   /// In en, this message translates to:

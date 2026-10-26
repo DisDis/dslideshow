@@ -16,7 +16,12 @@ String specialScreenTypeLabel(BuildContext context, SpecialScreenType type) =>
 
 class SpecialScreensPage extends StatefulWidget {
   final SlideShowConfig config;
-  const SpecialScreensPage({super.key, required this.config});
+  final RegisterUnsavedDraft? registerDraft;
+  const SpecialScreensPage({
+    super.key,
+    required this.config,
+    this.registerDraft,
+  });
   @override
   State<SpecialScreensPage> createState() => _SpecialScreensPageState();
 }
@@ -25,7 +30,10 @@ class _SpecialScreensPageState extends State<SpecialScreensPage> {
   Future<void> _edit(SpecialScreenConfig screen, {bool isNew = false}) async {
     final result = await Navigator.of(context).push<SpecialScreenConfig>(
       MaterialPageRoute(
-        builder: (_) => SpecialScreenEditorPage(config: screen),
+        builder: (_) => SpecialScreenEditorPage(
+          config: screen,
+          registerDraft: widget.registerDraft,
+        ),
       ),
     );
     if (!mounted || result == null) return;

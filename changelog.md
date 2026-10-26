@@ -1,5 +1,12 @@
 # Unreleased
 
+* Keep config_app edits in an isolated in-memory draft, serialize Save/Reload,
+  acknowledge successful writes and retain drafts on operation errors. Confirm
+  discard on navigation, logout and reload; guard browser unload and disable
+  pointer/keyboard editing during requests. Download the saved configuration
+  from disk while preserving active services until an application restart.
+  Add backend, widget, navigation and Chrome DOM regressions.
+
 * Stream media and manual/automatic OTA downloads into temporary files, enforce
   actual byte and concurrency limits, and await close before atomic publication.
   Authenticate legacy OTA uploads before the file body, serialize installation,

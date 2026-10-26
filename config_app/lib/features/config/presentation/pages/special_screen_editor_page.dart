@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/config/presentation/wigdgets/special_screen_preview.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
@@ -8,9 +10,19 @@ import 'package:uuid/uuid.dart';
 
 import 'special_screens_page.dart';
 
+/// Registers a live dirty check and returns an idempotent cleanup callback.
+typedef RegisterUnsavedDraft = VoidCallback Function(
+  ValueGetter<bool> hasChanges,
+);
+
 class SpecialScreenEditorPage extends StatefulWidget {
   final SpecialScreenConfig config;
-  const SpecialScreenEditorPage({super.key, required this.config});
+  final RegisterUnsavedDraft? registerDraft;
+  const SpecialScreenEditorPage({
+    super.key,
+    required this.config,
+    this.registerDraft,
+  });
   @override
   State<SpecialScreenEditorPage> createState() =>
       _SpecialScreenEditorPageState();
@@ -19,10 +31,42 @@ class SpecialScreenEditorPage extends StatefulWidget {
 class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
   final _form = GlobalKey<FormState>();
   late final SpecialScreenConfig _draft;
+  late final String _initialJson;
+  VoidCallback? _unregisterDraft;
+
   @override
   void initState() {
     super.initState();
     _draft = widget.config.clone();
+    _initialJson = jsonEncode(_draft.toJson());
+    _unregisterDraft = widget.registerDraft?.call(_hasChanges);
+  }
+
+  bool _hasChanges() {
+    if (jsonEncode(_draft.toJson()) != _initialJson) return true;
+    var invalidInput = false;
+    void visit(Element element) {
+      if (element case StatefulElement(state: FormFieldState<dynamic> field)) {
+        // Invalid numeric/color input is intentionally absent from the typed
+        // model. Query validation without changing errors or rebuilding UI.
+        if (field.hasInteractedByUser && !field.isValid) invalidInput = true;
+      }
+      if (!invalidInput) element.visitChildren(visit);
+    }
+
+    _form.currentContext?.visitChildElements(visit);
+    return invalidInput;
+  }
+
+  void _releaseDraft() {
+    _unregisterDraft?.call();
+    _unregisterDraft = null;
+  }
+
+  @override
+  void dispose() {
+    _releaseDraft();
+    super.dispose();
   }
 
   void _change(VoidCallback change) => setState(change);
@@ -121,6 +165,7 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
       );
       return;
     }
+    _releaseDraft();
     Navigator.of(context).pop(_draft);
   }
 
@@ -133,7 +178,10 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
         title: Text(specialScreenTypeLabel(context, _draft.type)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              _releaseDraft();
+              Navigator.pop(context);
+            },
             child: Text(l.special_cancel),
           ),
           TextButton(onPressed: _done, child: Text(l.special_done)),

@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
+import 'package:config_app/features/config/domain/config_draft.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc_models.dart';
 import 'package:config_app/features/config/presentation/pages/mqtt_editor_page.dart';
@@ -14,96 +18,299 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:logging/logging.dart';
+import 'package:go_router/go_router.dart';
+import 'package:config_app/src/browser_exit_guard/browser_exit_guard.dart';
+
 import 'special_screens_page.dart';
 
-
-class ConfigScreen extends StatelessWidget {
-  const ConfigScreen({super.key});
+class ConfigScreen extends StatefulWidget {
+  final PhotoframeRepository? repository;
+  const ConfigScreen({super.key, this.repository});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ConfigBloc(
-        initialState: const ConfigState.initial(),
-        client: sl(),
-      )..add(const ConfigEvent.load()),
-      child: const _ConfigView(),
-    );
+  State<ConfigScreen> createState() => ConfigScreenState();
+}
+
+class ConfigScreenState extends State<ConfigScreen> {
+  late final ConfigBloc _bloc;
+  final _draft = ConfigDraft();
+  final _localDrafts = <ValueGetter<bool>>{};
+  bool get _hasUnsavedChanges =>
+      _draft.hasChanges || _localDrafts.any((hasChanges) => hasChanges());
+  late final BrowserExitGuard _browserExitGuard;
+  AppConfig? get _editingConfig => _draft.value;
+  Future<bool>? _exitConfirmation;
+  DialogRoute<bool>? _dialog;
+  bool _busy = true;
+  bool _reloadPending = false;
+  bool _hasSaved = false;
+  int _revision = 0;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = ConfigBloc(
+      initialState: const ConfigState.initial(),
+      client: widget.repository ?? sl(),
+    )..add(const ConfigEvent.load());
+    _browserExitGuard = BrowserExitGuard(() => _busy || _hasUnsavedChanges);
   }
-}
 
-class _ConfigView extends StatefulWidget {
-  const _ConfigView();
+  VoidCallback _registerLocalDraft(ValueGetter<bool> hasChanges) {
+    _localDrafts.add(hasChanges);
+    // An editor can finish unmounting after its replacement has registered.
+    // Remove only this editor's check, without rebuilding during unmount.
+    return () => _localDrafts.remove(hasChanges);
+  }
 
   @override
-  State<_ConfigView> createState() => _ConfigViewState();
-}
+  void dispose() {
+    _browserExitGuard.dispose();
+    unawaited(_bloc.close());
+    final dialog = _dialog;
+    final navigator = dialog?.navigator;
+    if (dialog != null && navigator != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (navigator.mounted && dialog.isActive) {
+          navigator.removeRoute(dialog, false);
+        }
+      });
+    }
+    super.dispose();
+  }
 
-class _ConfigViewState extends State<_ConfigView> {
-  // Локальная изменяемая копия конфига для редактирования до сохранения
-  AppConfig? _editingConfig;
+  void _message(String text, {bool error = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: error ? AppColors.errorRed : null,
+        ),
+      );
+  }
+
+  Future<bool> _confirmDiscard({required bool reload}) async {
+    final l = context.localizations;
+    final dialog = DialogRoute<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(reload ? l.config_reload_title : l.config_unsaved_changes),
+        content: Text(
+          reload ? l.config_reload_warning : l.config_leave_warning,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l.config_keep_editing),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l.config_discard_changes),
+          ),
+        ],
+      ),
+    );
+    _dialog = dialog;
+    try {
+      return await Navigator.of(context).push(dialog) ?? false;
+    } finally {
+      if (identical(_dialog, dialog)) _dialog = null;
+    }
+  }
+
+  Future<bool> confirmExit() => _exitConfirmation ??= _confirmExit()
+      .whenComplete(() => _exitConfirmation = null);
+
+  Future<bool> _confirmExit() async {
+    if (!mounted) return false;
+    if (_reloadPending) return false;
+    if (_busy) {
+      _message(context.localizations.config_operation_in_progress);
+      return false;
+    }
+    if (!_hasUnsavedChanges) return true;
+    final discard = await _confirmDiscard(reload: false);
+    if (!mounted) return false;
+    if (discard) {
+      setState(() {
+        _draft.discard();
+        _revision++;
+      });
+    }
+    return discard;
+  }
+
+  void _save() {
+    if (_busy || !_draft.hasChanges) return;
+    try {
+      final snapshot = cloneConfig(_editingConfig!);
+      FocusScope.of(context).unfocus();
+      setState(() {
+        _busy = true;
+        _error = null;
+      });
+      _bloc.add(ConfigEvent.save(snapshot));
+    } catch (error) {
+      setState(() => _error = error.toString());
+      _message(
+        context.localizations.error_with_message(error.toString()),
+        error: true,
+      );
+    }
+  }
+
+  Future<void> _reload() async {
+    if (_busy || _reloadPending || _exitConfirmation != null) return;
+    _reloadPending = true;
+    try {
+      if (_draft.hasChanges && !await _confirmDiscard(reload: true)) return;
+      if (!mounted || _busy) return;
+      FocusScope.of(context).unfocus();
+      setState(() {
+        _busy = true;
+        _error = null;
+      });
+      _bloc.add(const ConfigEvent.load());
+    } finally {
+      _reloadPending = false;
+    }
+  }
+
+  void _refreshDraft() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l = context.localizations;
     return BlocConsumer<ConfigBloc, ConfigState>(
+      bloc: _bloc,
       listener: (context, state) {
         state.maybeWhen(
-          loaded: (config) {
-            // При первой загрузке или после сохранения обновляем локальную копию
-            // Внимание: если вы хотите сохранять стейт при перерисовках,
-            // лучше делать это аккуратнее, но для примера сойдет.
-            _editingConfig ??= config;
-          },
+          loading: () => setState(() {
+            _busy = true;
+            _error = null;
+          }),
+          saving: () => setState(() {
+            _busy = true;
+            _error = null;
+          }),
+          loaded: (config) => setState(() {
+            _draft.replaceSaved(config);
+            _revision++;
+            _busy = false;
+            _error = null;
+          }),
           saved: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.localizations.config_saved_successfully)),
-            );
+            setState(() => _hasSaved = true);
+            _message(l.config_saved_successfully);
           },
-          error: (msg) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(context.localizations.error_with_message(msg)), backgroundColor: AppColors.errorRed),
-            );
+          error: (message) {
+            setState(() {
+              _busy = false;
+              _error = message;
+            });
+            _message(l.error_with_message(message), error: true);
           },
           orElse: () {},
         );
       },
-      builder: (context, state) {
-        return Scaffold(
-          drawer: const ConfigAppNavigationBar(),
-          appBar: AppBar(
-            title: Text(context.localizations.settings_title),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.restore),
-                onPressed: () {
-                  context.read<ConfigBloc>().add(ConfigEvent.load());
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(context.localizations.config_is_reloading)),
-                  );
-                },
+      builder: (context, state) => Scaffold(
+        drawer: ConfigAppNavigationBar(onLogoutRequested: confirmExit),
+        appBar: AppBar(
+          title: Text(l.settings_title),
+          actions: [
+            IconButton(
+              key: const ValueKey('config-reload'),
+              tooltip: l.config_reload_button,
+              icon: const Icon(Icons.restore),
+              onPressed: _busy ? null : _reload,
+            ),
+            IconButton(
+              key: const ValueKey('config-save'),
+              tooltip: l.config_save_button,
+              icon: const Icon(Icons.save),
+              onPressed: !_busy && _draft.hasChanges ? _save : null,
+            ),
+          ],
+        ),
+        body: _editingConfig == null
+            ? _busy
+                  ? const Center(child: CircularProgressIndicator())
+                  : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.error_outline, size: 48),
+                            Text(l.config_load_failed),
+                            if (_error != null)
+                              Text(l.error_with_message(_error!)),
+                            FilledButton(
+                              key: const ValueKey('config-retry'),
+                              onPressed: _reload,
+                              child: Text(l.try_again_button),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+            : Column(
+                children: [
+                  if (_busy) const LinearProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _draft.hasChanges
+                              ? l.config_unsaved_changes
+                              : l.config_saved_state,
+                        ),
+                        Text(l.config_restart_hint),
+                        if (_hasSaved)
+                          TextButton.icon(
+                            onPressed: _busy
+                                ? null
+                                : () => context.go('/power'),
+                            icon: const Icon(Icons.power_settings_new),
+                            label: Text(l.system_control_menu_item),
+                          ),
+                        if (_error != null)
+                          Text(
+                            l.error_with_message(_error!),
+                            style: const TextStyle(color: AppColors.errorRed),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: AbsorbPointer(
+                      absorbing: _busy,
+                      child: ExcludeFocus(
+                        excluding: _busy,
+                        child: KeyedSubtree(
+                          key: ValueKey(_revision),
+                          child: Form(
+                            key: const ValueKey('config-editor-fields'),
+                            onChanged: _refreshDraft,
+                            child: _buildBody(context),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              if (_editingConfig != null)
-                IconButton(
-                  icon: const Icon(Icons.save),
-                  onPressed: () {
-                    context
-                        .read<ConfigBloc>()
-                        .add(ConfigEvent.save(_editingConfig!));
-                  },
-                )
-            ],
-          ),
-          body: state.maybeWhen(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            saving: () => const Center(child: CircularProgressIndicator()),
-            loaded: (_) => _buildBody(context),
-            // Если мы уже загрузили, но редактируем - показываем body
-            orElse: () =>
-                _editingConfig != null ? _buildBody(context) : const SizedBox(),
-          ),
-        );
-      },
+      ),
     );
   }
 
@@ -133,10 +340,18 @@ class _ConfigViewState extends State<_ConfigView> {
             ),
             SettingsTileNavigation(
               title: context.localizations.special_screens_title,
-              subtitle: '${_editingConfig!.slideshow.specialScreens.where((s) => s.enabled).length} / ${_editingConfig!.slideshow.specialScreens.length}',
+              subtitle:
+                  '${_editingConfig!.slideshow.specialScreens.where((s) => s.enabled).length} / ${_editingConfig!.slideshow.specialScreens.length}',
               icon: Icons.dashboard_customize,
               onTap: () async {
-                await Navigator.of(context).push(MaterialPageRoute(builder: (_) => SpecialScreensPage(config: _editingConfig!.slideshow)));
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SpecialScreensPage(
+                      config: _editingConfig!.slideshow,
+                      registerDraft: _registerLocalDraft,
+                    ),
+                  ),
+                );
                 if (mounted) setState(() {});
               },
             ),
@@ -152,8 +367,8 @@ class _ConfigViewState extends State<_ConfigView> {
               // Показываем текущий выбор в подзаголовке
               subtitle:
                   _editingConfig!.storages.selected == StorageType.DiskStorage
-                      ? context.localizations.using_local_disk
-                      : context.localizations.using_google_photos,
+                  ? context.localizations.using_local_disk
+                  : context.localizations.using_google_photos,
               icon: Icons.settings_system_daydream,
               onTap: () => _navigateToStorageSettings(context),
             ),
@@ -164,10 +379,11 @@ class _ConfigViewState extends State<_ConfigView> {
           title: context.localizations.connectivity_title,
           icon: Icons.wifi,
           children: [
-             SettingsTileNavigation(
+            SettingsTileNavigation(
               title: context.localizations.web_server_settings_title,
-              subtitle:
-                  _editingConfig!.webServer.alwaysEnabled ? "Enabled" : "Disabled",
+              subtitle: _editingConfig!.webServer.alwaysEnabled
+                  ? "Enabled"
+                  : "Disabled",
               icon: Icons.dns,
               onTap: () => _navigateToWebServerEditor(context),
             ),
@@ -191,14 +407,10 @@ class _ConfigViewState extends State<_ConfigView> {
               isNumber: true,
               initialValue: _editingConfig!.hardware.smoothingGPIOMs.toString(),
               onChanged: (val) {
-                // ТУТ МЫ ОБНОВЛЯЕМ _editingConfig
-                // Так как нет copyWith, приходится делать полную реконструкцию
-                // или менять поле, если бы оно было mutable (в вашем коде поля mutable, кроме полей в AppConfig, которые final)
-                // В вашем коде AppConfig поля final, но внутри HardwareConfig поля mutable (не final).
-                // Это упрощает дело!
-
-                _editingConfig!.hardware.smoothingGPIOMs =
-                    int.tryParse(val) ?? 100;
+                setState(() {
+                  _editingConfig!.hardware.smoothingGPIOMs =
+                      int.tryParse(val) ?? 100;
+                });
               },
             ),
             // ... другие поля hardware
@@ -249,50 +461,24 @@ class _ConfigViewState extends State<_ConfigView> {
               },
             ),
           ],
-        )
+        ),
       ],
     );
   }
 
-  void _navigateToSlideshowEditor(BuildContext context) async {
-    // Передаем ссылку на mutable объект конфига
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => SlideshowEditorPage(config: _editingConfig!.slideshow),
-    ));
-    // После возврата обновляем UI, чтобы показать новые значения в subtitle
-    setState(() {});
+  Future<void> _edit(Widget page) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+    _refreshDraft();
   }
 
-  void _navigateToMqttEditor(BuildContext context) async {
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => MqttEditorPage(config: _editingConfig!.mqtt),
-    ));
-    setState(() {});
-  }
-
-  void _navigateToWebServerEditor(BuildContext context) async {
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => WebServerEditorPage(config: _editingConfig!.webServer),
-    ));
-    setState(() {});
-  }
-
-  
-
-  void _navigateToWelcomeEditor(BuildContext context) async {
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => WelcomeEditorPage(config: _editingConfig!.welcome),
-    ));
-    setState(() {});
-  }
-
-  void _navigateToStorageSettings(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => StorageSettingsPage(config: _editingConfig!.storages),
-      ),
-    );
-    setState(() {}); // Обновляем UI после возврата
-  }
+  void _navigateToSlideshowEditor(BuildContext context) =>
+      _edit(SlideshowEditorPage(config: _editingConfig!.slideshow));
+  void _navigateToMqttEditor(BuildContext context) =>
+      _edit(MqttEditorPage(config: _editingConfig!.mqtt));
+  void _navigateToWebServerEditor(BuildContext context) =>
+      _edit(WebServerEditorPage(config: _editingConfig!.webServer));
+  void _navigateToWelcomeEditor(BuildContext context) =>
+      _edit(WelcomeEditorPage(config: _editingConfig!.welcome));
+  void _navigateToStorageSettings(BuildContext context) =>
+      _edit(StorageSettingsPage(config: _editingConfig!.storages));
 }

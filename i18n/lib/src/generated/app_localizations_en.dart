@@ -118,6 +118,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get background_opacity => 'Background Opacity';
 
   @override
+  String get config_save_button => 'Save';
+
+  @override
+  String get config_reload_button => 'Reload';
+
+  @override
+  String get config_unsaved_changes => 'Unsaved changes';
+
+  @override
+  String get config_saved_state => 'No unsaved changes';
+
+  @override
+  String get config_restart_hint =>
+      'Saved settings take effect after restarting the application.';
+
+  @override
+  String get config_reload_title => 'Reload settings?';
+
+  @override
+  String get config_reload_warning =>
+      'Discard your changes and load the saved settings from the device?';
+
+  @override
+  String get config_leave_warning =>
+      'Your changes have not been saved. Discard them and leave settings?';
+
+  @override
+  String get config_keep_editing => 'Keep editing';
+
+  @override
+  String get config_discard_changes => 'Discard changes';
+
+  @override
+  String get config_operation_in_progress =>
+      'Wait for the current settings operation to finish.';
+
+  @override
+  String get config_load_failed => 'Could not load settings';
+
+  @override
   String get config_saved_successfully => 'Config saved successfully';
 
   @override

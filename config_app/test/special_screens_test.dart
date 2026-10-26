@@ -12,6 +12,87 @@ Widget app(Widget home) => MaterialApp(
 );
 
 void main() {
+  testWidgets(
+    'local draft registration follows Done, Cancel, Back and disposal',
+    (tester) async {
+      final config = SlideShowConfig.fromJson({});
+      config.specialScreens.add(
+        SpecialScreenConfig(
+          id: 'clock',
+          type: SpecialScreenType.clock,
+          name: 'Original',
+        ),
+      );
+      final checks = <ValueGetter<bool>>{};
+      await tester.pumpWidget(
+        app(
+          SpecialScreensPage(
+            config: config,
+            registerDraft: (hasChanges) {
+              checks.add(hasChanges);
+              return () => checks.remove(hasChanges);
+            },
+          ),
+        ),
+      );
+
+      Future<void> open() async {
+        await tester.tap(find.text(config.specialScreens.single.name));
+        await tester.pumpAndSettle();
+        expect(checks, hasLength(1));
+        expect(checks.single(), isFalse);
+      }
+
+      await open();
+      final name = find.widgetWithText(TextFormField, 'Name').first;
+      await tester.ensureVisible(name);
+      await tester.enterText(name, 'Changed');
+      expect(checks.single(), isTrue);
+      await tester.enterText(name, 'Original');
+      expect(checks.single(), isFalse);
+      final duration = find.widgetWithText(
+        TextFormField,
+        'Display duration (seconds)',
+      );
+      await tester.ensureVisible(duration);
+      await tester.enterText(duration, '');
+      expect(checks.single(), isTrue);
+      await tester.enterText(duration, '10.0');
+      expect(checks.single(), isFalse);
+      await tester.enterText(duration, '-1');
+      expect(checks.single(), isTrue);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(checks, isEmpty);
+      expect(config.specialScreens.single.displayTimeMs, 10000);
+
+      await open();
+      await tester.ensureVisible(name);
+      await tester.enterText(name, 'Done clock');
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+      expect(checks, isEmpty);
+      expect(config.specialScreens.single.name, 'Done clock');
+
+      await open();
+      await tester.ensureVisible(name);
+      await tester.enterText(name, 'Back discards this');
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(checks, isEmpty);
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(config.specialScreens.single.name, 'Done clock');
+
+      await open();
+      await tester.ensureVisible(name);
+      await tester.enterText(name, 'Disposed clock');
+      expect(checks.single(), isTrue);
+      await tester.pumpWidget(const SizedBox.shrink());
+      expect(checks, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('adding a clock edits a draft; Done adds it to the screen list', (
     tester,
   ) async {
