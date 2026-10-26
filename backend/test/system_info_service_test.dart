@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_command_runner.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
+import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 const _memory = '''
@@ -156,6 +157,106 @@ void main() {
       expect(fixture.runner.count('nproc --all'), 1);
       expect(fixture.runner.count('ifconfig'), 1);
     });
+
+    test(
+      'retains partial sensor data and logs successful diagnostics',
+      () async {
+        final warnings = <LogRecord>[];
+        final subscription = Logger.root.onRecord.listen((record) {
+          if (record.loggerName == 'SystemInfoService' &&
+              record.level == Level.WARNING) {
+            warnings.add(record);
+          }
+        });
+        addTearDown(subscription.cancel);
+        fixture.runner.onRun = (executable, arguments) async {
+          if (executable == './scripts/sensorsScript.sh') {
+            return ProcessResult(
+              1,
+              0,
+              "temp=61.3'C\ncustom=hello world\n",
+              'Cannot read fan tachometer\n',
+            );
+          }
+          return fixture.runner.response(executable, arguments);
+        };
+        final info = await fixture.service.getUpdateInfo();
+        expect(
+          {for (final sensor in info.sensors) sensor.name: sensor.value},
+          {'temp': "61.3'C", 'custom': 'hello world'},
+        );
+        expect(warnings, hasLength(1));
+        expect(warnings.single.message, contains('Cannot read fan tachometer'));
+      },
+    );
+
+    test(
+      'refresh replaces positive and zero RPM with absent sensor data',
+      () async {
+        var fan = 'fan1=4611rpm\n';
+        fixture.runner.onRun = (executable, arguments) async {
+          if (executable == './scripts/sensorsScript.sh') {
+            return ProcessResult(
+              1,
+              0,
+              "temp=61.3'C\n${fan}custom=hello world\n",
+              '',
+            );
+          }
+          return fixture.runner.response(executable, arguments);
+        };
+
+        final positive = await fixture.service.getUpdateInfo();
+        expect(
+          positive.sensors.singleWhere((sensor) => sensor.name == 'fan1').value,
+          '4611rpm',
+        );
+        fan = 'fan1=0rpm\n';
+        fixture.advance(const Duration(seconds: 1));
+        final stopped = await fixture.service.getUpdateInfo();
+        expect(
+          stopped.sensors.singleWhere((sensor) => sensor.name == 'fan1').value,
+          '0rpm',
+        );
+        fan = '';
+        fixture.advance(const Duration(seconds: 1));
+        final absent = await fixture.service.getUpdateInfo();
+        expect(
+          {for (final sensor in absent.sensors) sensor.name: sensor.value},
+          {'temp': "61.3'C", 'custom': 'hello world'},
+        );
+        expect(fixture.runner.count('./scripts/sensorsScript.sh'), 3);
+      },
+    );
+
+    test(
+      'rejects failed sensor stdout and logs the failure only once',
+      () async {
+        final warnings = <LogRecord>[];
+        final subscription = Logger.root.onRecord.listen((record) {
+          if (record.loggerName == 'SystemInfoService' &&
+              record.level == Level.WARNING) {
+            warnings.add(record);
+          }
+        });
+        addTearDown(subscription.cancel);
+        fixture.runner.onRun = (executable, arguments) async {
+          if (executable == './scripts/sensorsScript.sh') {
+            return ProcessResult(
+              1,
+              1,
+              'fan1=4611rpm\n',
+              'Sensor collection failed\n',
+            );
+          }
+          return fixture.runner.response(executable, arguments);
+        };
+        expect((await fixture.service.getUpdateInfo()).sensors, isEmpty);
+        expect(warnings, hasLength(1));
+        expect(warnings.single.message, contains('exited 1'));
+        expect(warnings.single.message, contains('Sensor collection failed'));
+      },
+    );
 
     test(
       'one second TTL starts at completion and uses monotonic time',

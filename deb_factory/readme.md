@@ -4,6 +4,10 @@
 автоматическое увеличение build-номера и оформление `changelog.md` описаны в
 [руководстве выпуска](../doc/releasing.md).
 
+Штатный `scripts/sensorsScript.sh` передаёт температуру и, при наличии тахометра
+Raspberry Pi 5, фактический RPM вентилятора. Формат, отсутствие показаний,
+диагностика и проверки описаны в [руководстве датчиков](../doc/sensors.md).
+
 * install md5deep, dpkg-deb
 * Create 'source_arm64'
 * Create 'source_arm64/flutter-pi/'
@@ -18,6 +22,7 @@
 ```bash
 python3 -m unittest discover -s deb_factory -p 'test_*.py' -v
 sh -n deb_factory/build.sh
+sh -n deb_factory/template_build_arm64/opt/dslideshow/scripts/sensorsScript.sh
 ```
 
 Тест использует небольшие готовые assets вместо Flutter-компиляции и вызывает

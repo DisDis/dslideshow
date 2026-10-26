@@ -365,6 +365,10 @@ class SystemInfoService {
     try {
       final result = await _run(_config.sensorsScript, []);
       if (result.exitCode == 0) {
+        final diagnostics = result.stderr.toString().trim();
+        if (diagnostics.isNotEmpty) {
+          _log.warning('Sensor script ${_config.sensorsScript}: $diagnostics');
+        }
         for (final line in result.stdout.toString().split('\n')) {
           if (line.isEmpty) continue;
           final values = line.split('=');

@@ -1,8 +1,10 @@
 // Read-only gallery protocol probe. Uses only a fresh temporary media folder.
-// Run from repository root with the existing backend package config:
+// Run from repository root using existing dependencies:
 // dart --packages=backend/.dart_tool/package_config.json \
 //   benchmarks/tool/gallery_contract_probe.dart
 // --socket-cancel additionally binds loopback for a client disconnect probe.
+// This standalone tool uses backend's package config without changing pubspecs.
+// ignore_for_file: depend_on_referenced_packages
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -19,15 +21,29 @@ class _UnusedRemote implements RemoteService {
 }
 
 Future<void> main(List<String> arguments) async {
-  final folder = await Directory.systemTemp.createTemp('gallery-contract-');
+  final root = await Directory.systemTemp.createTemp('gallery-contract-');
+  final folder = await Directory('${root.path}/media').create();
+  // WebService also constructs its static app handler. Keep that unrelated
+  // directory in this fixture, independent of config_app build artifacts.
+  await Directory('${root.path}/web').create();
   final config = AppConfig.fromJson({});
-  final service = WebService(
-    config,
-    config.webServer,
-    _UnusedRemote(),
-    cacheDirectory: folder,
-    startServer: false,
-  );
+  final previousDirectory = Directory.current;
+  late WebService service;
+  try {
+    Directory.current = root;
+    service = WebService(
+      config,
+      config.webServer,
+      _UnusedRemote(),
+      cacheDirectory: folder,
+      startServer: false,
+    );
+  } catch (_) {
+    await root.delete(recursive: true);
+    rethrow;
+  } finally {
+    Directory.current = previousDirectory;
+  }
   Future<Response> response(
     String method,
     String tail, [
@@ -122,7 +138,7 @@ Future<void> main(List<String> arguments) async {
     );
   } finally {
     await service.close();
-    await folder.delete(recursive: true);
+    await root.delete(recursive: true);
   }
 }
 

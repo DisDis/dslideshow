@@ -57,6 +57,13 @@
 
 ## Локальные проверки backend без Flutter и устройства
 
+Отдельные диагностические пробы галереи `tool/gallery_list_probe.dart` и
+`tool/gallery_contract_probe.dart` описаны в
+[исследовании галереи](../doc/gallery-performance.md) и
+[локальном отчёте](reports/gallery-local-2026-10-26/report.md).
+Они проверяют текущий HTTP-контракт, блокировку списка и локальную отмену
+потока; не запускают устройство и не заменяют A/B интерфейса на RaPi5.
+
 `tool/backend_local.dart` и `tool/backend_local.py` образуют отдельный pure Dart
 стенд для `DiskStorage`, транспорта RPC и `SystemInfoService`. Он не запускает
 Flutter, hardware service, GPIO, MQTT, фоторамку или команды настройки сети.

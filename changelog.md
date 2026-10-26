@@ -1,5 +1,10 @@
 # Unreleased
 
+* Report measured Raspberry Pi 5 fan RPM through the existing sensor script,
+  DTOs and widget. Discover the board tachometer without a fixed hwmon index;
+  omit unavailable readings, preserve valid zero RPM and other sensors, and
+  log partial collection diagnostics. Add local sysfs, RPC and widget regressions.
+
 * Add Linux desktop video playback to config_app with a media_kit/libmpv
   backend while retaining video_player_web for browsers. Handle gallery player
   errors, bounded initialization, seeking, late results and controller cleanup;

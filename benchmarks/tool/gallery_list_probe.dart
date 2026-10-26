@@ -1,5 +1,7 @@
 // Local, in-process diagnostic of the existing gallery HTTP handler.
 // No hardware services or listening sockets. Run with backend package_config.
+// The standalone diagnostic intentionally imports backend's dependencies.
+// ignore_for_file: depend_on_referenced_packages, avoid_print
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,15 +16,21 @@ class UnusedRemoteService implements RemoteService {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-WebService createService(Directory directory) {
-  final config = AppConfig.fromJson({});
-  return WebService(
-    config,
-    config.webServer,
-    UnusedRemoteService(),
-    cacheDirectory: directory,
-    startServer: false,
-  );
+WebService createService(Directory directory, Directory workingDirectory) {
+  final previousDirectory = Directory.current;
+  try {
+    Directory.current = workingDirectory;
+    final config = AppConfig.fromJson({});
+    return WebService(
+      config,
+      config.webServer,
+      UnusedRemoteService(),
+      cacheDirectory: directory,
+      startServer: false,
+    );
+  } finally {
+    Directory.current = previousDirectory;
+  }
 }
 
 Future<void> main(List<String> arguments) async {
@@ -41,10 +49,25 @@ Future<void> main(List<String> arguments) async {
       'fixture': 'zero_byte_jpg_files_flat_no_decoding',
     }),
   );
-  final directory = await Directory.systemTemp.createTemp(
-    'gallery-list-probe-',
-  );
-  final service = createService(directory);
+  final root = await Directory.systemTemp.createTemp('gallery-list-probe-');
+  try {
+    // WebService constructs its unrelated static app handler synchronously.
+    // Keep that scaffold separate from media, with no build/web dependency.
+    await Directory('${root.path}/web').create();
+    await _runProbes(root, original, originalLength);
+  } finally {
+    // This also runs if WebService construction fails before its own try/finally.
+    await root.delete(recursive: true);
+  }
+}
+
+Future<void> _runProbes(
+  Directory root,
+  File original,
+  int originalLength,
+) async {
+  final directory = await Directory('${root.path}/media').create();
+  final service = createService(directory, root);
   try {
     var previous = 0;
     for (final count in [1000, 10000, 50000]) {
@@ -101,7 +124,7 @@ Future<void> main(List<String> arguments) async {
     await directory.delete(recursive: true);
   }
 
-  final mediaService = createService(original.parent);
+  final mediaService = createService(original.parent, root);
   try {
     final response = await mediaService.handler(
       Request(

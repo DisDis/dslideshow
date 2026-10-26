@@ -32,6 +32,54 @@ void _worker(Map<String, dynamic> handshake) async {
 }
 
 void main() {
+  for (final fan in ['4611rpm', '0rpm', null]) {
+    test('sensor strings survive system-info JSON roundtrip (fan=$fan)', () {
+      final sensors = [
+        const SensorInfo(name: 'temp', value: "61.3'C"),
+        if (fan != null) SensorInfo(name: 'fan1', value: fan),
+        const SensorInfo(name: 'button', value: 'false'),
+        const SensorInfo(name: 'custom', value: 'hello world'),
+      ];
+      final result = GetSystemInfoCommandResult(
+        id: 543,
+        systemInfo: SystemInfo(
+          cpuInfo: const CpuInfo(
+            cores: 4,
+            hardware: '',
+            model: '',
+            revision: '',
+          ),
+          networkInfo: const NetworkInfo(
+            lastUpdate: 123,
+            hasInternet: false,
+            interfaces: [],
+          ),
+          osInfo: const OSInfo(name: 'Linux test', osType: OSType.linux),
+          updateInfo: UpdateInfo(
+            cpuLoad1: 0,
+            cpuLoad15: 0,
+            cpuLoad5: 0,
+            diskAvailable: 0,
+            diskUsed: 0,
+            diskUsedPercent: 0,
+            lastUpdate: 123,
+            memTotal: 0,
+            memUsed: 0,
+            sensors: sensors,
+            swapTotal: 0,
+            swapUsed: 0,
+            uptime: '',
+          ),
+        ),
+      );
+      final wire = jsonDecode(jsonEncode(serializers.serialize(result)));
+      final decoded =
+          serializers.deserialize(wire) as GetSystemInfoCommandResult;
+      expect(decoded, result);
+      expect(decoded.systemInfo.updateInfo.sensors, sensors);
+    });
+  }
+
   test('system-info error survives backend JSON serialization', () {
     const error = ErrorResult(id: 543, error: 'Collection stopped');
     final wire = jsonDecode(jsonEncode(serializers.serialize(error)));
