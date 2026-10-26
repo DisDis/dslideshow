@@ -198,6 +198,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connect_button => 'Connect';
 
   @override
+  String get gallery_load_failed => 'Could not load the gallery.';
+
+  @override
+  String get gallery_refresh_failed =>
+      'Could not refresh the gallery. Your previous list is still available.';
+
+  @override
   String get gallery_title => 'Gallery';
 
   @override

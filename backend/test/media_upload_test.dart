@@ -1,3 +1,5 @@
+// Test asynchronous disk publication and cancellation without blocking the event loop.
+// ignore_for_file: avoid_slow_async_io
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -95,6 +97,8 @@ void main() {
     }
     services.clear();
     await directory.delete(recursive: true);
+    final gallery = Directory('${directory.path}.gallery');
+    if (await gallery.exists()) await gallery.delete(recursive: true);
   });
 
   test(

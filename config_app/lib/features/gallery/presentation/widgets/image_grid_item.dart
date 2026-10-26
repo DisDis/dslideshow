@@ -1,45 +1,59 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:config_app/features/gallery/domain/gallery_item.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
+import 'package:config_app/src/gallery/gallery_image_widget.dart';
+import 'package:config_app/src/gallery/media_image_loader.dart';
 import 'package:flutter/material.dart';
 
 class ImageGridItem extends StatelessWidget {
+  const ImageGridItem({
+    super.key,
+    required this.item,
+    required this.loader,
+    required this.decodePool,
+    this.active = true,
+    this.priority = GalleryImagePriority.visible,
+    this.distance = 0,
+    this.onRevisionMismatch,
+  });
   final GalleryItem item;
-  const ImageGridItem({super.key, required this.item});
+  final MediaImageLoader loader;
+  final GalleryDecodePool decodePool;
+  final bool active;
+  final GalleryImagePriority priority;
+  final int distance;
+  final VoidCallback? onRevisionMismatch;
 
   @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: item.title,
-      child: CachedNetworkImage(
-        imageUrl: item.uri.toString(),
-        fit: BoxFit.cover, // ВАЖНО: Заполняет весь квадрат
-        placeholder: (context, url) => const Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+  Widget build(BuildContext context) => Tooltip(
+    message: item.title,
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        if (item.thumbnailsEnabled && item.thumbnailBaseUri == null) {
+          return const Center(child: Icon(Icons.image_not_supported_outlined));
+        }
+        final pixels =
+            (constraints.maxWidth * MediaQuery.devicePixelRatioOf(context))
+                .ceil();
+        return GalleryImage(
+          loader: loader,
+          decodePool: decodePool,
+          request: item.imageRequest(physicalWidth: pixels.toDouble()),
+          active: active,
+          priority: priority,
+          distance: distance,
+          // Server derivatives are square cover crops. A legacy/original may
+          // be landscape: reducing only its width would blur the square cover.
+          decodeWidth: item.thumbnailBaseUri != null ? pixels : null,
+          onRevisionMismatch: onRevisionMismatch,
+          errorBuilder: (context, retry) => Center(
+            child: IconButton(
+              icon: const Icon(Icons.broken_image_outlined),
+              tooltip: context.localizations.retry_button,
+              onPressed: retry,
+            ),
           ),
-        ),
-        errorWidget: (context, url, error) => Container(
-          color: Theme.of(context).colorScheme.errorContainer,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.broken_image,
-                color: Theme.of(context).colorScheme.onErrorContainer,
-              ),
-              Text(
-                context.localizations.error_text,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+        );
+      },
+    ),
+  );
 }

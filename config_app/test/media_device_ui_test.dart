@@ -30,6 +30,9 @@ final class _Client implements RealtimeService {
   String get authCode => '12345';
 
   @override
+  Stream get onDisconnect => const Stream.empty();
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
@@ -237,7 +240,14 @@ void main() {
     'gallery selection has a localized title and no unimplemented actions',
     (tester) async {
       final bloc = GalleryBloc(
-        initialState: const LoadedGalleryState(items: ['album']),
+        initialState: LoadedGalleryState(
+          items: [
+            GalleryItem(
+              uri: Uri.parse('http://frame.local/album'),
+              title: 'album',
+            ),
+          ],
+        ),
         client: _Client(),
       );
       addTearDown(bloc.close);

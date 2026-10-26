@@ -75,6 +75,8 @@
   "device_text": "Устройство:",
   "connect_form_title": "Настройки Wi-Fi",
   "connect_button": "Подключить",
+  "gallery_load_failed": "Не удалось загрузить галерею.",
+  "gallery_refresh_failed": "Не удалось обновить галерею. Предыдущий список остаётся доступен.",
   "gallery_title": "Галерея",
   "system_control_title": "Управление устройством",
   "try_again_button": "Повторить",

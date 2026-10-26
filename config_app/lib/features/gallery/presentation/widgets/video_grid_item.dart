@@ -12,6 +12,7 @@ class VideoGridItem extends StatefulWidget {
   final String title;
   final VideoPlayerController Function(Uri)? controllerFactory;
   final Duration initializationTimeout;
+  final bool active;
 
   const VideoGridItem({
     super.key,
@@ -19,6 +20,7 @@ class VideoGridItem extends StatefulWidget {
     required this.title,
     this.controllerFactory,
     this.initializationTimeout = const Duration(seconds: 15),
+    this.active = true,
   }) : assert(initializationTimeout > Duration.zero);
 
   @override
@@ -34,6 +36,9 @@ class _VideoGridItemState extends State<VideoGridItem> {
   bool _isPlaying = false;
   bool _busy = false;
   bool _hasError = false;
+  bool _resumeWhenVisible = false;
+  int _visibilityGeneration = 0;
+  Future<void> _visibilityOperation = Future<void>.value();
 
   bool _isCurrent(VideoPlayerController controller, int generation) =>
       mounted &&
@@ -70,6 +75,65 @@ class _VideoGridItemState extends State<VideoGridItem> {
       _isPlaying = false;
       _busy = false;
       _hasError = false;
+      _resumeWhenVisible = false;
+      ++_visibilityGeneration;
+      _visibilityOperation = Future<void>.value();
+    } else if (oldWidget.active != widget.active) {
+      final controller = _controller;
+      if (controller != null && _isInitialized) {
+        if (!widget.active) {
+          _resumeWhenVisible = controller.value.isPlaying;
+          unawaited(_setRoutePlayback(controller, false, _generation));
+        } else if (_resumeWhenVisible) {
+          _resumeWhenVisible = false;
+          unawaited(_setRoutePlayback(controller, true, _generation));
+        }
+      }
+    }
+  }
+
+  Future<void> _setRoutePlayback(
+    VideoPlayerController controller,
+    bool play,
+    int generation,
+  ) async {
+    final visibilityGeneration = ++_visibilityGeneration;
+    final previous = _visibilityOperation;
+    final operation = _applyRoutePlayback(
+      previous,
+      controller,
+      play,
+      generation,
+      visibilityGeneration,
+    );
+    _visibilityOperation = operation;
+    await operation;
+  }
+
+  Future<void> _applyRoutePlayback(
+    Future<void> previous,
+    VideoPlayerController controller,
+    bool play,
+    int generation,
+    int visibilityGeneration,
+  ) async {
+    try {
+      await previous;
+      if (!_isCurrent(controller, generation) ||
+          visibilityGeneration != _visibilityGeneration) {
+        return;
+      }
+      if (play) {
+        await controller.play();
+      } else {
+        await controller.pause();
+      }
+      if (_isCurrent(controller, generation) &&
+          visibilityGeneration == _visibilityGeneration) {
+        setState(() => _isPlaying = controller.value.isPlaying);
+      }
+    } catch (_) {
+      _fail(generation);
     }
   }
 
@@ -104,7 +168,11 @@ class _VideoGridItemState extends State<VideoGridItem> {
   }
 
   Future<void> _initializeVideo() async {
-    if (!supportsConfigAppVideo || _controller != null || _busy || _hasError) {
+    if (!widget.active ||
+        !supportsConfigAppVideo ||
+        _controller != null ||
+        _busy ||
+        _hasError) {
       return;
     }
     final generation = ++_generation;
@@ -119,7 +187,22 @@ class _VideoGridItemState extends State<VideoGridItem> {
       if (!_isCurrent(controller, generation)) return;
       await controller.setLooping(true);
       if (!_isCurrent(controller, generation)) return;
-      await controller.play();
+      // Visibility can change while native play/pause is pending, before the
+      // controller is exposed as initialized. Reconcile the latest demand in
+      // this same serial startup operation before publishing readiness.
+      while (_isCurrent(controller, generation)) {
+        final active = widget.active;
+        if (active) {
+          await controller.play();
+        } else {
+          await controller.pause();
+        }
+        if (!_isCurrent(controller, generation)) return;
+        if (widget.active == active) {
+          _resumeWhenVisible = !active;
+          break;
+        }
+      }
       if (!_isCurrent(controller, generation)) return;
       setState(() {
         _isInitialized = true;
@@ -133,7 +216,9 @@ class _VideoGridItemState extends State<VideoGridItem> {
 
   Future<void> _playPause() async {
     final controller = _controller;
-    if (controller == null || !_isInitialized || _busy) return;
+    if (controller == null || !_isInitialized || _busy || !widget.active) {
+      return;
+    }
     final generation = _generation;
     setState(() => _busy = true);
     try {

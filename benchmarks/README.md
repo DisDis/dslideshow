@@ -57,12 +57,70 @@
 
 ## Локальные проверки backend без Flutter и устройства
 
+Исследовательские `tool/camera_rpc_probe.dart` и `tool/rpc_timeout_probe.dart`
+проверяют настоящий HTTP при отказах камер и удержание межизолятных RPC-слотов.
+`tool/camera_device_probe.dart` и `tool/camera_socket_probe.py` сопоставляют
+читающие RPC со снимками TCP/FD работающей рамки. `tool/camera_http_probe.py`
+сравнивает публичный `/info` через сеть и loopback. Команды, результаты и границы
+проверок — в [исследовании timeout камер](../doc/camera-rpc-investigation-2026-10.md).
+
 Отдельные диагностические пробы галереи `tool/gallery_list_probe.dart` и
 `tool/gallery_contract_probe.dart` описаны в
 [исследовании галереи](../doc/gallery-performance.md) и
 [локальном отчёте](reports/gallery-local-2026-10-26/report.md).
 Они проверяют текущий HTTP-контракт, блокировку списка и локальную отмену
 потока; не запускают устройство и не заменяют A/B интерфейса на RaPi5.
+
+### Миниатюры и управляемый HTTP галереи
+
+Production-поведение, API и лимиты описаны в [руководстве галереи](../doc/gallery.md).
+`gallery_http.py` компилирует frozen backend/common с одним и тем же
+`gallery_http_server.dart` в AOT, запускает локальный HTTP-сервер и сравнивает
+каталоги 1k/10k, оригиналы, холодные/тёплые миниатюры, validators, отмену и
+ресурсы процесса. Чтение тел замедляется управляемым клиентом; число активных
+запросов включает всё тело. `/info` — proxy отзывчивости web-isolate, не RPC.
+Freeze сохраняет исходники, manifest и package config; зависимости остаются
+в существующем pub cache. Нужны разрешённый loopback и уже установленные SDK.
+
+Из корня репозитория, с новым каталогом результата для каждого измерения:
+
+```sh
+# Baseline нужно заморозить ДО изменения production-кода:
+python3 benchmarks/tool/gallery_http.py \
+  --freeze-current --variant baseline \
+  --output benchmarks/reports/gallery-http-EXPERIMENT
+# После изменения production-кода, с тем же harness/SDK/media:
+python3 benchmarks/tool/gallery_http.py \
+  --freeze-current --variant candidate \
+  --output benchmarks/reports/gallery-http-EXPERIMENT
+python3 -m unittest discover -s benchmarks/tool -p test_gallery_http.py
+```
+
+По умолчанию выполняются три свежих процесса на каждый размер коллекции,
+12 image requests при concurrency 1/4/10 и неизменённые `photo_a.jpg`,
+`photo_b.jpg`, `photo_large.jpg` из `assets/media/`. Другие медиа задаются
+повторяемым `--media PATH`; для обеих сторон они должны совпадать по SHA-256.
+`--harness PATH` фиксирует исходный harness. `--reuse-binary --run-name NAME`
+повторяет уже собранную версию в новом подкаталоге без перезаписи предыдущих данных.
+
+`gallery_browser_probe.py` компилирует копию production `MediaImageLoader` в JS
+и запускает уже установленный Chrome/Chromium с отдельным временным профилем.
+Два локальных origin проверяют настоящий BrowserClient: abort до headers и
+во время body, общий cap, single-flight, cache/revision и CORS/OPTIONS/validators.
+Новый браузер не устанавливается:
+
+```sh
+python3 benchmarks/tool/gallery_browser_probe.py \
+  --output benchmarks/reports/gallery-browser-EXPERIMENT
+```
+
+Это сетевой тест, а не Flutter UI/scroll/FPS. Локальные исходные данные и выводы
+сохранены в [итоговом HTTP/Chrome-отчёте](reports/gallery-implementation-2026-10-26/report.md).
+Отдельный [прототип scaled JPEG decode](reports/gallery-thumbnail-local-2026-10-26/report.md)
+описывает `gallery_thumbnail_probe.dart`, время, RSS и неизменность оригиналов.
+Wi-Fi, Flutter FrameTiming, визуальная проверка устройства и аппаратный A/B
+не выполняются этими командами; для них требуется отдельное окно по
+[руководству RaPi5](../doc/raspberry-pi-benchmarks.md).
 
 `tool/backend_local.dart` и `tool/backend_local.py` образуют отдельный pure Dart
 стенд для `DiskStorage`, транспорта RPC и `SystemInfoService`. Он не запускает

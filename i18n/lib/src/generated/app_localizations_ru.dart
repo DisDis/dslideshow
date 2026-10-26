@@ -197,6 +197,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get connect_button => 'Подключить';
 
   @override
+  String get gallery_load_failed => 'Не удалось загрузить галерею.';
+
+  @override
+  String get gallery_refresh_failed =>
+      'Не удалось обновить галерею. Предыдущий список остаётся доступен.';
+
+  @override
   String get gallery_title => 'Галерея';
 
   @override

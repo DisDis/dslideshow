@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dslideshow_backend/src/service/gallery/gallery_media_publisher.dart';
+import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
+
 import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
@@ -33,6 +36,10 @@ class GPhotoStorage extends DiskStorage {
   bool _syncInProcess = false;
   bool _released = false;
   Timer? _syncTimer;
+  StreamSubscription<dynamic>? _credentialsSubscription;
+  final Set<HttpClient> _downloadClients = {};
+  final Set<UploadCancellationToken> _downloadCancellations = {};
+  final Set<Future<void>> _downloads = {};
 
   final StreamController<DateTime> _scStartSync =
       new StreamController.broadcast();
@@ -45,8 +52,12 @@ class GPhotoStorage extends DiskStorage {
 
   final AppStorage _appStorage;
 
-  GPhotoStorage(this._config, this._appStorage, {Directory? folder})
-    : super(_config, folder: folder) {
+  GPhotoStorage(
+    this._config,
+    this._appStorage, {
+    Directory? folder,
+    GooglePhotoService? googlePhotoService,
+  }) : super(_config, folder: folder) {
     final accessTokenData = _appStorage.getValue<String>(
       GPhotoStorage_accessTokenData,
       '',
@@ -65,14 +76,18 @@ class GPhotoStorage extends DiskStorage {
     if (lastSyncStr.isNotEmpty) {
       lastSync = DateTime.parse(lastSyncStr);
     }
-    _googlePhotoService = new GooglePhotoService(
-      _config.clientId.identifier,
-      _config.clientId.secret,
-      _config.refreshToken,
-      accessTokenData,
-      accessTokenExpiry,
-    );
-    _googlePhotoService!.onUpdateCredentials.listen((event) {
+    _googlePhotoService =
+        googlePhotoService ??
+        new GooglePhotoService(
+          _config.clientId.identifier,
+          _config.clientId.secret,
+          _config.refreshToken,
+          accessTokenData,
+          accessTokenExpiry,
+        );
+    _credentialsSubscription = _googlePhotoService!.onUpdateCredentials.listen((
+      event,
+    ) {
       _appStorage.setValue(
         GPhotoStorage_accessTokenData,
         event.accessToken.data,
@@ -114,57 +129,94 @@ class GPhotoStorage extends DiskStorage {
     final syncDate = new DateTime.now();
     _scStartSync.add(syncDate);
 
-    for (String albumName in _config.albumNames) {
-      _log.info('sync GPhoto Album:"${albumName}"');
-      final items = await _googlePhotoService!.getMediaItemInAlbum(
-        albumName,
-        _config.imageWidth,
-        _config.imageHeight,
-      );
-      final Map<String, GooglePhotoItem> itemMap = new Map.fromIterables(
-        items.map((e) => _getFileName(e)),
-        items,
-      );
-      final localItems = (await folder.listSync()).map(
-        (e) => path.basename(e.path),
-      );
-      localItems.forEach((element) => itemMap.remove(element));
-
-      var allItems = itemMap.keys.length;
-      _log.info('Detect ${allItems} new media item(s)');
-
-      var count = 0;
-      await Future.forEach(itemMap.keys, (String fileName) async {
-        var googleItem = itemMap[fileName]!;
-        _log.info(
-          '  downloading "${googleItem.id}": type=${googleItem.mimeType}',
+    try {
+      for (String albumName in _config.albumNames) {
+        if (_released) return;
+        _log.info('sync GPhoto Album:"${albumName}"');
+        final items = await _googlePhotoService!.getMediaItemInAlbum(
+          albumName,
+          _config.imageWidth,
+          _config.imageHeight,
         );
-        HttpClient client = new HttpClient();
-        await client
-            .getUrl(Uri.parse(googleItem.url))
-            .then((HttpClientRequest request) {
-              return request.close();
-            })
-            .then((HttpClientResponse response) {
-              response.pipe(
-                new File(path.join(folder.path, fileName)).openWrite(),
-              );
-            });
-        count++;
-        _log.info(
-          '  downloaded $count/$allItems(${(count * 100 / allItems).truncate()}%), "$fileName"',
+        final Map<String, GooglePhotoItem> itemMap = new Map.fromIterables(
+          items.map((e) => _getFileName(e)),
+          items,
         );
-      });
+        if (_released) return;
+        await folder.create(recursive: true);
+        if (_released) return;
+        final localItems = (await folder.list().toList()).map(
+          (e) => path.basename(e.path),
+        );
+        if (_released) return;
+        localItems.forEach((element) => itemMap.remove(element));
+
+        var allItems = itemMap.keys.length;
+        _log.info('Detect ${allItems} new media item(s)');
+
+        var count = 0;
+        await Future.forEach(itemMap.keys, (String fileName) async {
+          var googleItem = itemMap[fileName]!;
+          _log.info(
+            '  downloading "${googleItem.id}": type=${googleItem.mimeType}',
+          );
+          if (_released) return;
+          final operation = _download(googleItem, fileName);
+          _downloads.add(operation);
+          try {
+            await operation;
+          } finally {
+            _downloads.remove(operation);
+          }
+          count++;
+          _log.info(
+            '  downloaded $count/$allItems(${(count * 100 / allItems).truncate()}%), "$fileName"',
+          );
+        });
+      }
+
+      if (_released) return;
+      _scEndSync.add(syncDate);
+      lastSync = syncDate;
+      _appStorage.setValue<String>(
+        GPhotoStorage_lastSync,
+        lastSync.toIso8601String(),
+      );
+      return;
+    } finally {
+      _syncInProcess = false;
     }
+  }
 
-    _scEndSync.add(syncDate);
-    lastSync = syncDate;
-    _appStorage.setValue<String>(
-      GPhotoStorage_lastSync,
-      lastSync.toIso8601String(),
-    );
-    _syncInProcess = false;
-    return;
+  Future<void> _download(GooglePhotoItem item, String filename) async {
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 30);
+    final cancellation = UploadCancellationToken();
+    _downloadClients.add(client);
+    _downloadCancellations.add(cancellation);
+    try {
+      final request = await client
+          .getUrl(Uri.parse(item.url))
+          .timeout(const Duration(seconds: 30));
+      final response = await request.close().timeout(
+        const Duration(seconds: 30),
+      );
+      if (_released) throw const UploadFailure(503, 'Storage closed');
+      if (response.statusCode != HttpStatus.ok)
+        throw const UploadFailure(502, 'Media download failed');
+      await GalleryMediaPublisher(originals: folder).publish(
+        response,
+        filename,
+        contentLength: response.contentLength < 0
+            ? null
+            : response.contentLength,
+        cancellation: cancellation,
+      );
+    } finally {
+      client.close(force: true);
+      _downloadClients.remove(client);
+      _downloadCancellations.remove(cancellation);
+    }
   }
 
   @override
@@ -193,10 +245,35 @@ class GPhotoStorage extends DiskStorage {
   @override
   Future release() async {
     _released = true;
+    final storageReleased = super.release();
     if (_syncTimer != null) {
       _syncTimer!.cancel();
       _syncTimer = null;
     }
-    await super.release();
+    for (final cancellation in _downloadCancellations.toList()) {
+      cancellation.cancel('Storage closed');
+    }
+    for (final client in _downloadClients.toList()) {
+      client.close(force: true);
+    }
+    if (_downloads.isNotEmpty) {
+      await Future.wait(
+        _downloads.toList().map(
+          (operation) => operation.then<void>(
+            (_) {},
+            onError: (Object _, StackTrace __) {},
+          ),
+        ),
+      );
+    }
+    // Detaching the credential listener is synchronous; a notification stream's
+    // completion must not keep hardware shutdown waiting for consumers.
+    final credentials = _credentialsSubscription;
+    _credentialsSubscription = null;
+    if (credentials != null) unawaited(credentials.cancel());
+    await storageReleased;
+    // Notification consumers may pause indefinitely; they do not own shutdown.
+    unawaited(_scStartSync.close());
+    unawaited(_scEndSync.close());
   }
 }

@@ -1,0 +1,222 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:config_app/src/gallery/gallery_repository.dart';
+import 'package:config_app/src/gallery/media_image_loader.dart';
+import 'package:dslideshow_common/gallery.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+
+Map<String, dynamic> catalog({String revision = 'r1'}) => GalleryCatalog(
+  serverId: 'server',
+  catalogRevision: 'c1',
+  capabilities: [
+    GalleryCapability.thumbnails,
+    GalleryCapability.revisionedOriginals,
+    GalleryCapability.refresh,
+  ],
+  thumbnailPolicy: const GalleryThumbnailPolicy(
+    version: 1,
+    sizes: [
+      GalleryThumbnailSize.small,
+      GalleryThumbnailSize.medium,
+      GalleryThumbnailSize.large,
+    ],
+  ),
+  entries: [
+    GalleryEntry(
+      mediaId: 'photo',
+      path: 'album/with #?%.jpg',
+      name: 'with #?%.jpg',
+      kind: GalleryEntryKind.image,
+      sourceRevision: revision,
+      thumbnailSupported: true,
+    ),
+  ],
+).toJson();
+
+GalleryRepository repository(http.Client client) => GalleryRepository(
+  baseUri: Uri.parse('http://localhost:8000'),
+  code: 'secret',
+  client: client,
+);
+
+void main() {
+  test('typed catalog preserves original, safely encodes path and picks DPR bucket', () async {
+    final repo = repository(
+      MockClient((_) async => http.Response(jsonEncode(catalog()), 200)),
+    );
+    final result = await repo.load();
+    final item = result.items.single;
+    expect(item.uri.pathSegments, [
+      'cache',
+      'secret',
+      'get',
+      'album',
+      'with #?%.jpg',
+    ]);
+    expect(item.uri.queryParameters, {'rev': 'r1'});
+    final thumbnail = item.imageRequest(physicalWidth: 400);
+    expect(thumbnail.uri.pathSegments.last, '512');
+    expect(thumbnail.key.variant, GalleryImageVariant.thumbnail);
+    expect(item.imageRequest().key.variant, GalleryImageVariant.original);
+    repo.close();
+  });
+
+  test('only missing protocol falls back; explicit legacy refresh bypasses old URL', () async {
+    final urls = <Uri>[];
+    final repo = repository(
+      MockClient((request) async {
+        urls.add(request.url);
+        return request.url.path.endsWith('catalog')
+            ? http.Response('', 404)
+            : http.Response(
+                jsonEncode({
+                  'items': ['a.jpg'],
+                }),
+                200,
+              );
+      }),
+    );
+    final first = await repo.load();
+    final next = await repo.load(refresh: true);
+    expect(first.protocol, GalleryProtocol.legacy);
+    expect(urls.where((url) => url.path.endsWith('catalog')), hasLength(1));
+    expect(first.items.single.uri, isNot(next.items.single.uri));
+    expect(first.items.single.revision, isNot(next.items.single.revision));
+    repo.close();
+    var calls = 0;
+    final forbidden = repository(
+      MockClient((_) async {
+        calls++;
+        return http.Response('', 403);
+      }),
+    );
+    await expectLater(
+      forbidden.load(),
+      throwsA(isA<GalleryImageHttpException>()),
+    );
+    expect(calls, 1);
+    forbidden.close();
+  });
+
+  test('normal v2 refresh POST uses scan and preserves unchanged source identities', () async {
+    final requests = <http.Request>[];
+    final repo = repository(
+      MockClient((request) async {
+        requests.add(request);
+        return http.Response(jsonEncode(catalog()), 200);
+      }),
+    );
+    final first = await repo.load();
+    final second = await repo.load(refresh: true);
+    expect(requests.last.method, 'POST');
+    expect(requests.last.url.path, endsWith('/v2/catalog/refresh'));
+    expect(jsonDecode(requests.last.body)['mode'], 'scan');
+    expect(jsonDecode(requests.last.body)['operationId'], isNotEmpty);
+    expect(
+      first.items.single.selectionIdentity,
+      second.items.single.selectionIdentity,
+    );
+    repo.close();
+  });
+
+  test(
+    'invalid schema/data never silently downgrade to legacy strings',
+    () async {
+      var body = catalog()..['schemaVersion'] = 999;
+      final repo = repository(
+        MockClient((_) async => http.Response(jsonEncode(body), 200)),
+      );
+      await expectLater(repo.load(), throwsFormatException);
+      body = {
+        'items': [42],
+      };
+      await expectLater(repo.load(), throwsA(anything));
+      expect(repo.protocol, isNot(GalleryProtocol.legacy));
+      repo.close();
+    },
+  );
+
+  test(
+    'replacement load cancels the old request and old data cannot publish',
+    () async {
+      final client = _AbortCatalogClient();
+      final repo = repository(client);
+      final old = repo.load();
+      old.ignore();
+      await Future<void>.delayed(Duration.zero);
+      final current = repo.load();
+      await Future<void>.delayed(Duration.zero);
+      expect(client.aborted, 1);
+      client.pending.last.complete(
+        http.StreamedResponse(
+          Stream.value(utf8.encode(jsonEncode(catalog(revision: 'new')))),
+          200,
+        ),
+      );
+      expect((await current).items.single.revision, 'new');
+      await expectLater(old, throwsA(anything));
+      repo.close();
+    },
+  );
+
+  test(
+    'late missing-protocol response cannot downgrade the replacement request',
+    () async {
+      final client = _LateCatalogClient();
+      final repo = repository(client);
+      final old = repo.load();
+      old.ignore();
+      await Future<void>.delayed(Duration.zero);
+      final current = repo.load();
+      await Future<void>.delayed(Duration.zero);
+      client.pending.first.complete(
+        http.StreamedResponse(const Stream.empty(), 404),
+      );
+      await expectLater(old, throwsA(isA<GalleryImageCancelled>()));
+      expect(client.pending, hasLength(2));
+      client.pending.last.complete(
+        http.StreamedResponse(
+          Stream.value(utf8.encode(jsonEncode(catalog()))),
+          200,
+        ),
+      );
+      await current;
+      expect(repo.protocol, GalleryProtocol.versioned);
+      repo.close();
+    },
+  );
+}
+
+class _LateCatalogClient extends http.BaseClient {
+  final pending = <Completer<http.StreamedResponse>>[];
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    final result = Completer<http.StreamedResponse>();
+    pending.add(result);
+    return result.future;
+  }
+}
+
+class _AbortCatalogClient extends http.BaseClient {
+  final pending = <Completer<http.StreamedResponse>>[];
+  int aborted = 0;
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    final result = Completer<http.StreamedResponse>();
+    pending.add(result);
+    if (request case http.Abortable(:final abortTrigger?)) {
+      unawaited(
+        abortTrigger.then((_) {
+          aborted++;
+          if (!result.isCompleted) {
+            result.completeError(http.RequestAbortedException(request.url));
+          }
+        }),
+      );
+    }
+    return result.future;
+  }
+}

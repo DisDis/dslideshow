@@ -1,16 +1,28 @@
+import 'dart:async';
+
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
 import 'package:config_app/features/gallery/presentation/widgets/metadata_panel.dart';
 import 'package:config_app/features/gallery/presentation/widgets/single_image_viewer.dart';
 import 'package:config_app/features/gallery/presentation/widgets/single_video_player.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:dslideshow_common/file_settings.dart';
+import 'package:config_app/src/gallery/gallery_session.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 
 class SingleItemViewerPage extends StatefulWidget {
   final GalleryItem item;
+  final GallerySession? session;
+  final VoidCallback? onRevisionMismatch;
+  final Stream<GalleryItem?>? itemUpdates;
+  final GalleryItem? Function()? currentItem;
 
-  const SingleItemViewerPage({super.key, required this.item});
+  const SingleItemViewerPage({
+    super.key,
+    required this.item,
+    this.session,
+    this.onRevisionMismatch,
+    this.itemUpdates,
+    this.currentItem,
+  });
 
   @override
   State<SingleItemViewerPage> createState() => _SingleItemViewerPageState();
@@ -21,10 +33,16 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
   bool _showControls = true;
   late AnimationController _controlsAnimController;
   late Animation<double> _controlsOpacity;
+  late GalleryItem _item;
+  StreamSubscription<GalleryItem?>? _itemSubscription;
+  bool _missing = false;
 
   @override
   void initState() {
     super.initState();
+    _item = widget.item;
+    _subscribe();
+    _readCurrent();
     // Анимация исчезновения контролов
     _controlsAnimController = AnimationController(
       vsync: this,
@@ -39,8 +57,41 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
 
   @override
   void dispose() {
+    unawaited(_itemSubscription?.cancel());
     _controlsAnimController.dispose();
     super.dispose();
+  }
+
+  void _subscribe() {
+    _itemSubscription = widget.itemUpdates?.listen((item) {
+      if (!mounted) return;
+      setState(() {
+        _missing = item == null;
+        if (item != null) _item = item;
+      });
+    });
+  }
+
+  void _readCurrent() {
+    final lookup = widget.currentItem;
+    if (lookup == null) return;
+    final current = lookup();
+    _missing = current == null;
+    if (current != null) _item = current;
+  }
+
+  @override
+  void didUpdateWidget(SingleItemViewerPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item != widget.item) {
+      _item = widget.item;
+      _missing = false;
+    }
+    if (oldWidget.itemUpdates != widget.itemUpdates) {
+      unawaited(_itemSubscription?.cancel());
+      _subscribe();
+    }
+    _readCurrent();
   }
 
   void _toggleControls() {
@@ -56,8 +107,7 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
 
   @override
   Widget build(BuildContext context) {
-    final ext = path.extension(widget.item.uri.path);
-    final isVideo = FileSettings.isVideo(ext);
+    final isVideo = _item.isVideo;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.scrim,
@@ -69,12 +119,19 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
             onTap: _toggleControls, // Тап по пустому месту переключает UI
             behavior: HitTestBehavior.translucent,
             child: Center(
-              child: isVideo
+              child: _missing
+                  ? Text(context.localizations.gallery_load_failed)
+                  : isVideo
                   ? SingleVideoPlayer(
-                      uri: widget.item.uri,
+                      uri: _item.uri,
                       onContentTap: _toggleControls,
                     )
-                  : SingleImageViewer(uri: widget.item.uri),
+                  : SingleImageViewer(
+                      uri: _item.uri,
+                      item: _item,
+                      session: widget.session,
+                      onRevisionMismatch: widget.onRevisionMismatch,
+                    ),
             ),
           ),
 
@@ -145,7 +202,7 @@ class _SingleItemViewerPageState extends State<SingleItemViewerPage>
                 ignoring: !_showControls,
                 child: FadeTransition(
                   opacity: _controlsOpacity,
-                  child: MetadataPanel(item: widget.item),
+                  child: MetadataPanel(item: _item),
                 ),
               ),
             ),

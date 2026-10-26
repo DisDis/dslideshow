@@ -1,5 +1,13 @@
 # Unreleased
 
+* Add lazy server gallery thumbnails and a revisioned catalog while preserving
+  originals for fullscreen and the frame. Share a viewport-prioritized image
+  queue with cancellation, single-flight, bounded encoded caches and decode
+  admission across gallery routes. Publish uploads/GooglePhoto atomically with
+  persistent revisions; add conditional/Range/CORS responses, resource budgets,
+  lifecycle regressions and frozen local HTTP/Chrome comparisons. Raspberry Pi
+  performance and visual acceptance remain pending a separate hardware run.
+
 * Add authenticated frame telemetry and remote pause/resume, menu and screen
   controls to config_app. Read presence from the MQTT source and report actual
   frame software/display details, screen transitions and stale samples. Bound

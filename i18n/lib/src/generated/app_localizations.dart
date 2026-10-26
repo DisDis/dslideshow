@@ -452,6 +452,18 @@ abstract class AppLocalizations {
   /// **'Connect'**
   String get connect_button;
 
+  /// No description provided for @gallery_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the gallery.'**
+  String get gallery_load_failed;
+
+  /// No description provided for @gallery_refresh_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh the gallery. Your previous list is still available.'**
+  String get gallery_refresh_failed;
+
   /// Title for gallery page
   ///
   /// In en, this message translates to:

@@ -75,6 +75,8 @@
   "device_text": "Device:",
   "connect_form_title": "WiFi Configuration",
   "connect_button": "Connect",
+  "gallery_load_failed": "Could not load the gallery.",
+  "gallery_refresh_failed": "Could not refresh the gallery. Your previous list is still available.",
   "gallery_title": "Gallery",
   "system_control_title": "System Control",
   "try_again_button": "Try Again",

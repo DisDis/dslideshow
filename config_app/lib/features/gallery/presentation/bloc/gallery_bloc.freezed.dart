@@ -14,24 +14,78 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$GalleryEvent {
+  bool get scan;
+  Completer<void>? get completion;
+
+  /// Create a copy of GalleryEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GalleryEventCopyWith<GalleryEvent> get copyWith =>
+      _$GalleryEventCopyWithImpl<GalleryEvent>(
+        this as GalleryEvent,
+        _$identity,
+      );
+
   @override
   bool operator ==(Object other) {
+    final _this = this as GalleryEvent;
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is GalleryEvent);
+        (other.runtimeType == runtimeType &&
+            other is GalleryEvent &&
+            (identical(other.scan, _this.scan) || other.scan == _this.scan) &&
+            (identical(other.completion, _this.completion) ||
+                other.completion == _this.completion));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode {
+    final _this = this as GalleryEvent;
+    return Object.hash(runtimeType, _this.scan, _this.completion);
+  }
 
   @override
   String toString() {
-    return 'GalleryEvent()';
+    final _this = this as GalleryEvent;
+    return 'GalleryEvent(scan: ${_this.scan}, completion: ${_this.completion})';
   }
 }
 
 /// @nodoc
-class $GalleryEventCopyWith<$Res> {
-  $GalleryEventCopyWith(GalleryEvent _, $Res Function(GalleryEvent) __);
+abstract mixin class $GalleryEventCopyWith<$Res> {
+  factory $GalleryEventCopyWith(
+    GalleryEvent value,
+    $Res Function(GalleryEvent) _then,
+  ) = _$GalleryEventCopyWithImpl;
+  @useResult
+  $Res call({bool scan, Completer<void>? completion});
+}
+
+/// @nodoc
+class _$GalleryEventCopyWithImpl<$Res> implements $GalleryEventCopyWith<$Res> {
+  _$GalleryEventCopyWithImpl(this._self, this._then);
+
+  final GalleryEvent _self;
+  final $Res Function(GalleryEvent) _then;
+
+  /// Create a copy of GalleryEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? scan = null, Object? completion = freezed}) {
+    return _then(
+      GalleryEvent.load(
+        scan: null == scan
+            ? _self.scan
+            : scan // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        completion: freezed == completion
+            ? _self.completion
+            : completion // ignore: cast_nullable_to_non_nullable
+                  as Completer<void>?,
+      ),
+    );
+  }
 }
 
 /// Adds pattern-matching-related methods to [GalleryEvent].
@@ -127,13 +181,13 @@ extension GalleryEventPatterns on GalleryEvent {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? load,
+    TResult Function(bool scan, Completer<void>? completion)? load,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case GalleryLoadEvent() when load != null:
-        return load();
+        return load(_that.scan, _that.completion);
       case _:
         return orElse();
     }
@@ -153,11 +207,13 @@ extension GalleryEventPatterns on GalleryEvent {
   /// ```
 
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({required TResult Function() load}) {
+  TResult when<TResult extends Object?>({
+    required TResult Function(bool scan, Completer<void>? completion) load,
+  }) {
     final _that = this;
     switch (_that) {
       case GalleryLoadEvent():
-        return load();
+        return load(_that.scan, _that.completion);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -176,11 +232,13 @@ extension GalleryEventPatterns on GalleryEvent {
   /// ```
 
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? load}) {
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(bool scan, Completer<void>? completion)? load,
+  }) {
     final _that = this;
     switch (_that) {
       case GalleryLoadEvent() when load != null:
-        return load();
+        return load(_that.scan, _that.completion);
       case _:
         return null;
     }
@@ -190,20 +248,80 @@ extension GalleryEventPatterns on GalleryEvent {
 /// @nodoc
 
 class GalleryLoadEvent implements GalleryEvent {
-  const GalleryLoadEvent();
+  const GalleryLoadEvent({this.scan = false, this.completion});
+
+  @override
+  @JsonKey()
+  final bool scan;
+  @override
+  final Completer<void>? completion;
+
+  /// Create a copy of GalleryEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GalleryLoadEventCopyWith<GalleryLoadEvent> get copyWith =>
+      _$GalleryLoadEventCopyWithImpl<GalleryLoadEvent>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is GalleryLoadEvent);
+        (other.runtimeType == runtimeType &&
+            other is GalleryLoadEvent &&
+            (identical(other.scan, scan) || other.scan == scan) &&
+            (identical(other.completion, completion) ||
+                other.completion == completion));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode {
+    return Object.hash(runtimeType, scan, completion);
+  }
 
   @override
   String toString() {
-    return 'GalleryEvent.load()';
+    return 'GalleryEvent.load(scan: $scan, completion: $completion)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $GalleryLoadEventCopyWith<$Res>
+    implements $GalleryEventCopyWith<$Res> {
+  factory $GalleryLoadEventCopyWith(
+    GalleryLoadEvent value,
+    $Res Function(GalleryLoadEvent) _then,
+  ) = _$GalleryLoadEventCopyWithImpl;
+  @override
+  @useResult
+  $Res call({bool scan, Completer<void>? completion});
+}
+
+/// @nodoc
+class _$GalleryLoadEventCopyWithImpl<$Res>
+    implements $GalleryLoadEventCopyWith<$Res> {
+  _$GalleryLoadEventCopyWithImpl(this._self, this._then);
+
+  final GalleryLoadEvent _self;
+  final $Res Function(GalleryLoadEvent) _then;
+
+  /// Create a copy of GalleryEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({Object? scan = null, Object? completion = freezed}) {
+    return _then(
+      GalleryLoadEvent(
+        scan: null == scan
+            ? _self.scan
+            : scan // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        completion: freezed == completion
+            ? _self.completion
+            : completion // ignore: cast_nullable_to_non_nullable
+                  as Completer<void>?,
+      ),
+    );
   }
 }
 
@@ -342,7 +460,12 @@ extension GalleryStatePatterns on GalleryState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? uninitialized,
     TResult Function(String errorMessage)? error,
-    TResult Function(List<String> items)? loaded,
+    TResult Function(
+      List<GalleryItem> items,
+      bool refreshing,
+      bool refreshFailed,
+    )?
+    loaded,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -352,7 +475,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState() when error != null:
         return error(_that.errorMessage);
       case LoadedGalleryState() when loaded != null:
-        return loaded(_that.items);
+        return loaded(_that.items, _that.refreshing, _that.refreshFailed);
       case _:
         return orElse();
     }
@@ -375,7 +498,12 @@ extension GalleryStatePatterns on GalleryState {
   TResult when<TResult extends Object?>({
     required TResult Function() uninitialized,
     required TResult Function(String errorMessage) error,
-    required TResult Function(List<String> items) loaded,
+    required TResult Function(
+      List<GalleryItem> items,
+      bool refreshing,
+      bool refreshFailed,
+    )
+    loaded,
   }) {
     final _that = this;
     switch (_that) {
@@ -384,7 +512,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState():
         return error(_that.errorMessage);
       case LoadedGalleryState():
-        return loaded(_that.items);
+        return loaded(_that.items, _that.refreshing, _that.refreshFailed);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -406,7 +534,12 @@ extension GalleryStatePatterns on GalleryState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? uninitialized,
     TResult? Function(String errorMessage)? error,
-    TResult? Function(List<String> items)? loaded,
+    TResult? Function(
+      List<GalleryItem> items,
+      bool refreshing,
+      bool refreshFailed,
+    )?
+    loaded,
   }) {
     final _that = this;
     switch (_that) {
@@ -415,7 +548,7 @@ extension GalleryStatePatterns on GalleryState {
       case ErrorGalleryState() when error != null:
         return error(_that.errorMessage);
       case LoadedGalleryState() when loaded != null:
-        return loaded(_that.items);
+        return loaded(_that.items, _that.refreshing, _that.refreshFailed);
       case _:
         return null;
     }
@@ -514,14 +647,23 @@ class _$ErrorGalleryStateCopyWithImpl<$Res>
 /// @nodoc
 
 class LoadedGalleryState implements GalleryState {
-  const LoadedGalleryState({required List<String> items}) : _items = items;
+  const LoadedGalleryState({
+    required List<GalleryItem> items,
+    this.refreshing = false,
+    this.refreshFailed = false,
+  }) : _items = items;
 
-  final List<String> _items;
-  List<String> get items {
+  final List<GalleryItem> _items;
+  List<GalleryItem> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
   }
+
+  @JsonKey()
+  final bool refreshing;
+  @JsonKey()
+  final bool refreshFailed;
 
   /// Create a copy of GalleryState
   /// with the given fields replaced by the non-null parameter values.
@@ -535,7 +677,11 @@ class LoadedGalleryState implements GalleryState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is LoadedGalleryState &&
-            const DeepCollectionEquality().equals(other.items, _items));
+            const DeepCollectionEquality().equals(other.items, _items) &&
+            (identical(other.refreshing, refreshing) ||
+                other.refreshing == refreshing) &&
+            (identical(other.refreshFailed, refreshFailed) ||
+                other.refreshFailed == refreshFailed));
   }
 
   @override
@@ -543,12 +689,14 @@ class LoadedGalleryState implements GalleryState {
     return Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_items),
+      refreshing,
+      refreshFailed,
     );
   }
 
   @override
   String toString() {
-    return 'GalleryState.loaded(items: $items)';
+    return 'GalleryState.loaded(items: $items, refreshing: $refreshing, refreshFailed: $refreshFailed)';
   }
 }
 
@@ -560,7 +708,7 @@ abstract mixin class $LoadedGalleryStateCopyWith<$Res>
     $Res Function(LoadedGalleryState) _then,
   ) = _$LoadedGalleryStateCopyWithImpl;
   @useResult
-  $Res call({List<String> items});
+  $Res call({List<GalleryItem> items, bool refreshing, bool refreshFailed});
 }
 
 /// @nodoc
@@ -574,13 +722,25 @@ class _$LoadedGalleryStateCopyWithImpl<$Res>
   /// Create a copy of GalleryState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? items = null}) {
+  $Res call({
+    Object? items = null,
+    Object? refreshing = null,
+    Object? refreshFailed = null,
+  }) {
     return _then(
       LoadedGalleryState(
         items: null == items
             ? _self._items
             : items // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
+                  as List<GalleryItem>,
+        refreshing: null == refreshing
+            ? _self.refreshing
+            : refreshing // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        refreshFailed: null == refreshFailed
+            ? _self.refreshFailed
+            : refreshFailed // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
