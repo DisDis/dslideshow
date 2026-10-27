@@ -3,7 +3,7 @@ set -eu
 
 REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
-for PACKAGE in common backend; do
+for PACKAGE in common rpc_serializers_generator backend; do
   echo "--- Test '$PACKAGE' ---"
   (
     cd "$REPO_DIR/$PACKAGE"

@@ -18,7 +18,8 @@ Raspberry Pi 5, фактический RPM вентилятора. Формат,
 ## Обязательные тесты перед сборкой
 
 `build.sh` сначала запускает `run_tests.sh`. Он последовательно выполняет
-`dart test` в `common` и `backend` (для backend — `--concurrency=1`, поскольку
+`dart test` в `common`, `rpc_serializers_generator` и `backend`
+(для backend — `--concurrency=1`, поскольку
 тесты используют общие loopback-порты), затем `flutter test --no-pub` в `i18n`,
 `system_metrics_widget`, `dslideshow_flutter` и `config_app`. После этого
 запускаются Python-тесты из `dslideshow_flutter/tool` и `deb_factory`.

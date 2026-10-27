@@ -8,6 +8,7 @@
 *.swp
 pubspec.lock
 !backend/pubspec.lock
+!rpc_serializers_generator/pubspec.lock
 !config_app/pubspec.lock
 !dslideshow_flutter/pubspec.lock
 !benchmarks/pubspec.lock

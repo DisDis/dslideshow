@@ -1,6 +1,9 @@
 targets:
   $default:
     builders:
+      rpc_serializers_generator:rpc_serializers:
+        generate_for:
+          - lib/serializers.dart
       json_serializable:
         options:
           # any_map: true

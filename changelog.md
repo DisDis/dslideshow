@@ -1,5 +1,10 @@
 # Unreleased
 
+* Generate the RPC serializer registry from @RpcSerializers using a separate
+  local rpc_serializers_generator build_runner package. Preserve all 57 wire
+  tags and codec behavior, remove the stale CLI registry generator, and add
+  builder/codec regressions, pre-build tests and generation documentation.
+
 * Extract frame snapshot collection and frontend-state request coalescing into
   FrameStateReader. Preserve isolate boundaries, shared frontend deadlines,
   control acknowledgement freshness and shutdown behavior; add local reader

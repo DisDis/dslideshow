@@ -28,6 +28,7 @@ More [info](https://github.com/DisDis/article-dslideshow)
 
 * [Инструкции для агентов и карта проекта](AGENTS.md)
 * [Backend: сервисы, изоляты, подписки и проверки](backend/README.md)
+* [Генератор RPC-реестра и аннотация RpcSerializers](rpc_serializers_generator/README.md)
 * [Сборка Linux/Raspberry Pi и устранение ошибки GTK](dslideshow_flutter/README.md)
 * [Запуск бенчмарков и регрессионных проверок на RaPi5](doc/raspberry-pi-benchmarks.md)
 * [Версии, changelog и выпуск DEB](doc/releasing.md)

@@ -18,7 +18,7 @@ class TestRunnerTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for package in (
-                "common", "backend", "i18n", "system_metrics_widget",
+                "common", "rpc_serializers_generator", "backend", "i18n", "system_metrics_widget",
                 "dslideshow_flutter", "config_app", "deb_factory",
             ):
                 (root / package).mkdir()
@@ -58,7 +58,7 @@ class TestRunnerTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         dart_packages = {cwd for tool, cwd, args in commands if tool == "dart" and args[0] == "test"}
         flutter_packages = {cwd for tool, cwd, args in commands if tool == "flutter" and args[0] == "test"}
-        self.assertEqual(dart_packages, {"common", "backend"})
+        self.assertEqual(dart_packages, {"common", "rpc_serializers_generator", "backend"})
         self.assertEqual(flutter_packages, {"i18n", "system_metrics_widget", "dslideshow_flutter", "config_app"})
         python_commands = [args for tool, cwd, args in commands if tool == "python3"]
         self.assertEqual(len(python_commands), 2)
@@ -72,7 +72,16 @@ class TestRunnerTest(unittest.TestCase):
     def test_failure_stops_before_remaining_packages_and_tools(self):
         result, commands = self.run_fixture(failed_package="backend")
         self.assertEqual(result.returncode, 7)
-        self.assertEqual([(tool, cwd) for tool, cwd, _ in commands], [("dart", "common"), ("dart", "backend")])
+        self.assertEqual([(tool, cwd) for tool, cwd, _ in commands], [
+            ("dart", "common"), ("dart", "rpc_serializers_generator"), ("dart", "backend"),
+        ])
+
+    def test_generator_failure_stops_before_backend_and_flutter(self):
+        result, commands = self.run_fixture(failed_package="rpc_serializers_generator")
+        self.assertEqual(result.returncode, 7)
+        self.assertEqual([(tool, cwd) for tool, cwd, _ in commands], [
+            ("dart", "common"), ("dart", "rpc_serializers_generator"),
+        ])
 
 
 if __name__ == "__main__":

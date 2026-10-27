@@ -115,6 +115,7 @@ Linux runner восстанавливает исходный `XDG_DATA_DIRS` и�
 python3 dslideshow_flutter/tool/test_linux_dependencies.py -v
 python3 dslideshow_flutter/tool/test_linux_host_environment.py -v
 (cd common && dart test)
+(cd rpc_serializers_generator && dart test)
 (cd backend && dart test)
 (cd config_app && flutter test)
 (cd system_metrics_widget && flutter test)
@@ -126,12 +127,15 @@ python3 dslideshow_flutter/tool/test_linux_host_environment.py -v
 `dslideshow_flutter/` и `config_app/`. Для watch-режима доступны скрипты
 `generate_models.sh`. На Flutter 3.47.7/Dart 3.13.5 проверена обычная AOT-генерация:
 прежний `--force-jit` и ограничение `source_helper <1.4.0` больше не нужны.
+В backend эта же команда генерирует RPC-реестр из `@RpcSerializers`:
+[подключение builder и правила регистрации](../rpc_serializers_generator/README.md).
 
 Device Preview 3 подключается до инициализации WidgetsBinding. В desktop debug/profile
 доступен профиль PhotoFrame 2560×1600; управление устройствами теперь находится
 в расширении Flutter DevTools. Embedded- и release-запуск используют обычный binding.
 
-Lock-файлы приложений, backend и autover сохраняются в Git для воспроизводимости.
+Lock-файлы приложений, backend, rpc_serializers_generator и autover сохраняются
+в Git для воспроизводимости.
 При нехватке квоты `/tmp` можно задать `TMPDIR` на диске с достаточным местом.
 
 [Новые эффекты и Ken Burns](../doc/new-visuals-2026-10.md): настройка, совместимость,
