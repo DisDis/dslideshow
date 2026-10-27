@@ -36,9 +36,14 @@ class SlideShowConfig with _$SlideShowConfig {
     if (value is! List) return result;
     for (final item in value) {
       if (item is! Map) continue;
-      final screen = SpecialScreenConfig.fromJson(
-        Map<String, dynamic>.from(item),
-      );
+      final json = Map<String, dynamic>.from(item);
+      if (SpecialScreenConfig.typeFromJson(json['type']) == null) {
+        _log.warning(
+          'Skipping unsupported special screen type: ${json['type']}',
+        );
+        continue;
+      }
+      final screen = SpecialScreenConfig.fromJson(json);
       if (screen.id.isEmpty || result.any((s) => s.id == screen.id)) {
         var index = result.length + 1;
         while (result.any((s) => s.id == 'screen-$index')) {

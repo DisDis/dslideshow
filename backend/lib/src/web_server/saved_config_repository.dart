@@ -21,8 +21,7 @@ class SavedConfigRepository {
       // Do not hide permissions, invalid paths or other read failures behind
       // an old configuration. ENOENT is the only allowed fallback.
       if (error.osError?.errorCode != 2) rethrow;
-      // Unknown future screen options contain opaque JSON whose nested maps
-      // are not copied by the generated model parser.
+      // Keep the fallback independent from the active services.
       return _parse(jsonEncode(_activeConfig.toJson()));
     }
     return _parse(content);

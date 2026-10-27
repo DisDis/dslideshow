@@ -1,12 +1,17 @@
 # Unreleased
 
+* Generate special-screen, schedule, clock and camera copyWith with Freezed,
+  preserving mutable editor contracts and compact JSON. Skip unknown screen
+  types while parsing the settings list, log the omission and remove obsolete
+  opaque options/type preservation. Keep nested camera drafts isolated.
+
 * Store per-effect settings in an immutable map keyed by EffectType; remove
   the redundant type field from EffectConfig. Keep field and Save validation
   in config_app only. Let effect settings strip their own defaults; omit empty
   sections normally and use Fade for absent or empty selections on the frame.
   Apply the same self-contained JSON serialization to special screens, schedules
   and camera settings; remove the slideshow storage wrapper and preserve required
-  identities, sources and opaque future options.
+  identities and sources.
 
 * Add a shared ARGB ColorPicker with alpha and Apply/Cancel to effect, slideshow
   background and clock settings. Preserve incomplete manual input and close

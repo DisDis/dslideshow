@@ -99,19 +99,15 @@ void main() {
     expect(observed, ['a:0', 'b:0', 'a:1', 'b:1', 'a:0', 'b:0']);
   });
   test('disabled, unknown and empty camera screens are ignored', () {
-    final scheduler = SpecialScreenScheduler([
-      SpecialScreenConfig(id: 'off', type: SpecialScreenType.clock),
-      SpecialScreenConfig(
-        id: 'future',
-        type: SpecialScreenType.unknown,
-        enabled: true,
-      ),
-      SpecialScreenConfig(
-        id: 'empty',
-        type: SpecialScreenType.cameras,
-        enabled: true,
-      ),
-    ]);
+    final config = SlideShowConfig.fromJson({
+      'specialScreens': [
+        {'id': 'off', 'type': 'clock'},
+        {'id': 'future', 'type': 'future-widget', 'enabled': true},
+        {'id': 'empty', 'type': 'cameras', 'enabled': true},
+      ],
+    });
+    expect(config.specialScreens.map((s) => s.id), ['off', 'empty']);
+    final scheduler = SpecialScreenScheduler(config.specialScreens);
     addTearDown(scheduler.close);
     for (var i = 0; i < 20; i++) {
       scheduler.shown(media);

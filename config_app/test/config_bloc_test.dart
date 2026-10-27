@@ -111,42 +111,38 @@ void main() {
     expect(draft.webServer.port, 9090);
   });
 
-  test('save isolates nested options of an unknown future screen', () async {
-    final draft = AppConfig.fromJson({
-      'slideshow': {
-        'specialScreens': [
-          {
-            'id': 'future-screen',
-            'type': 'future-type',
-            'options': {
-              'layers': [
-                {'color': 'original'},
-              ],
-            },
-          },
-        ],
-      },
-    });
-    final options =
-        draft.slideshow.specialScreens.single.options as UnknownScreenOptions;
-
-    bloc.add(ConfigEvent.save(draft));
-    await pumpEventQueue();
-    (options.json['layers'] as List).single['color'] = 'edited';
-    repository.saves.single.complete(const WSResultOk(id: 1));
-    await pumpEventQueue();
-
-    final acknowledged = (bloc.state as ConfigLoadedState).config;
-    final savedOptions =
-        acknowledged.slideshow.specialScreens.single.options
-            as UnknownScreenOptions;
-    expect((savedOptions.json['layers'] as List).single['color'], 'original');
-    expect((options.json['layers'] as List).single['color'], 'edited');
-    expect(
-      acknowledged.slideshow.specialScreens.single.toJson()['type'],
-      'future-type',
-    );
-  });
+  test(
+    'save isolates nested camera settings while waiting for acknowledgement',
+    () async {
+      final draft = _config(8081);
+      draft.slideshow.specialScreens.add(
+        SpecialScreenConfig(
+          id: 'cameras',
+          type: SpecialScreenType.cameras,
+          options: CamerasScreenOptions(
+            cameras: [CameraConfig(id: 'front', url: 'https://cam/front')],
+          ),
+        ),
+      );
+      final cameras =
+          (draft.slideshow.specialScreens.single.options
+                  as CamerasScreenOptions)
+              .cameras;
+      bloc.add(ConfigEvent.save(draft));
+      await pumpEventQueue();
+      cameras.single.url = 'https://cam/edited';
+      cameras.add(CameraConfig(id: 'back', url: 'https://cam/back'));
+      repository.saves.single.complete(const WSResultOk(id: 1));
+      await pumpEventQueue();
+      final acknowledged = (bloc.state as ConfigLoadedState).config;
+      final savedCameras =
+          (acknowledged.slideshow.specialScreens.single.options
+                  as CamerasScreenOptions)
+              .cameras;
+      expect(savedCameras.single.url, 'https://cam/front');
+      expect(cameras, hasLength(2));
+    },
+  );
 
   test('ignores duplicate loads and saves while loading', () async {
     bloc.add(const ConfigEvent.load());

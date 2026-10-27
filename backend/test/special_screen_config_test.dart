@@ -5,6 +5,80 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('clone isolates nested camera drafts', () {
+    final original = SpecialScreenConfig(
+      id: 'cameras',
+      type: SpecialScreenType.cameras,
+      options: CamerasScreenOptions(
+        cameras: [CameraConfig(id: 'front', url: 'https://cam/front')],
+      ),
+    );
+    final draft = original.clone();
+    final cameras = (draft.options as CamerasScreenOptions).cameras;
+    cameras.single.url = 'https://cam/edited';
+    cameras.add(CameraConfig(id: 'back', url: 'https://cam/back'));
+    expect(
+      (original.options as CamerasScreenOptions).cameras.single.url,
+      'https://cam/front',
+    );
+  });
+
+  test('generated copyWith updates typed drafts without changing original values', () {
+    final schedule = SpecialScreenSchedule();
+    final clockOptions = ClockScreenOptions();
+    final clock = SpecialScreenConfig(
+      id: 'clock',
+      type: SpecialScreenType.clock,
+      schedule: schedule,
+      options: clockOptions,
+    );
+    final editedClock = clock.copyWith(
+      enabled: true,
+      schedule: schedule.copyWith(count: 3),
+      options: clockOptions.copyWith(showDate: false),
+    );
+    expect(editedClock.toJson(), {
+      'id': 'clock',
+      'type': 'clock',
+      'enabled': true,
+      'schedule': {'count': 3},
+      'options': {'showDate': false},
+    });
+    expect(clock.toJson(), {'id': 'clock', 'type': 'clock'});
+    // The existing editor still writes directly to its isolated mutable draft.
+    editedClock.name = 'Kitchen';
+    (editedClock.options as ClockScreenOptions).showSeconds = true;
+    expect(clock.name, isEmpty);
+    expect(clockOptions.showSeconds, isFalse);
+
+    final camera = CameraConfig(id: 'front', url: 'https://cam/front');
+    final cameras = CamerasScreenOptions(cameras: [camera]);
+    final editedCameras = cameras.copyWith(
+      mode: CameraDisplayMode.sequence,
+      cameras: [camera.copyWith(url: 'https://cam/back', name: 'Back')],
+    );
+    expect(editedCameras.toJson(), {
+      'mode': 'sequence',
+      'cameras': [
+        {'id': 'front', 'url': 'https://cam/back', 'name': 'Back'},
+      ],
+    });
+    expect(cameras.mode, CameraDisplayMode.grid);
+    expect(camera.url, 'https://cam/front');
+    expect(
+      CamerasScreenOptions.fromJson(editedCameras.toJson()).toJson(),
+      editedCameras.toJson(),
+    );
+
+    final clockDefinition =
+        SpecialScreenRegistry.definitions[SpecialScreenType.clock]!;
+    final cameraDefinition = clockDefinition.copyWith(
+      parseOptions: CamerasScreenOptions.fromJson,
+    );
+    expect(clockDefinition.defaults(), isA<ClockScreenOptions>());
+    expect(cameraDefinition.defaults(), isA<CamerasScreenOptions>());
+  });
+
   test(
     'generated slideshow JSON delegates compact serialization to nested models',
     () {
@@ -24,11 +98,6 @@ void main() {
             ],
           ),
         ),
-        SpecialScreenConfig.fromJson({
-          'id': 'future',
-          'type': 'future-widget',
-          'options': {'zero': 0, 'disabled': false, 'nested': {}, 'items': []},
-        }),
       ]);
       final json = config.toJson();
       expect(json['specialScreens'], [
@@ -45,11 +114,6 @@ void main() {
               },
             ],
           },
-        },
-        {
-          'id': 'future',
-          'type': 'future-widget',
-          'options': {'zero': 0, 'disabled': false, 'nested': {}, 'items': []},
         },
       ]);
       final restored = SlideShowConfig.fromJson(
@@ -401,34 +465,45 @@ void main() {
     final restored = AppConfig.fromFile(directory.path);
     expect(restored.slideshow.toJson(), config.slideshow.toJson());
   });
-  test('unknown screen options survive a round trip and stay unsupported', () {
-    final screen = SpecialScreenConfig.fromJson({
-      'id': 'future',
-      'type': 'weather',
-      'options': {'provider': 'later'},
+  test('unknown and missing screen types are excluded while supported entries retain order and IDs', () {
+    final config = SlideShowConfig.fromJson({
+      'specialScreens': [
+        {
+          'id': 'same',
+          'type': 'weather',
+          'options': {'provider': 'later'},
+        },
+        {'id': 'same', 'type': 'clock', 'enabled': true},
+        {'id': 'missing'},
+        {'id': 'explicit', 'type': 'unknown'},
+        {'id': 'bad', 'type': 42},
+        {'id': 'cameras', 'type': 'cameras'},
+        {'id': 'same', 'type': 'clock'},
+      ],
     });
-    expect(screen.isSupported, false);
-    expect(screen.toJson()['options'], {'provider': 'later'});
-    expect(screen.toJson(), {
-      'id': 'future',
-      'type': 'weather',
-      'options': {'provider': 'later'},
+    expect(config.specialScreens.map((s) => s.type), [
+      SpecialScreenType.clock,
+      SpecialScreenType.cameras,
+      SpecialScreenType.clock,
+    ]);
+    expect(config.specialScreens.first.id, 'same');
+    expect(config.specialScreens.map((s) => s.id).toSet(), hasLength(3));
+    expect(SlideShowConfig.fromJson(config.toJson()).toJson(), config.toJson());
+    final empty = AppConfig.fromJson({
+      'slideshow': {
+        'specialScreens': [
+          {'id': 'future', 'type': 'weather'},
+        ],
+      },
     });
+    expect(empty.slideshow.specialScreens, isEmpty);
+    expect(empty.toStorageJson(), isEmpty);
     expect(
-      SpecialScreenConfig.fromJson(screen.toJson()).toJson(),
-      screen.toJson(),
+      () => SpecialScreenConfig.fromJson({'id': 'future', 'type': 'weather'}),
+      throwsFormatException,
     );
-    final empty = SpecialScreenConfig.fromJson({
-      'id': 'empty',
-      'type': 'weather',
-      'options': <String, dynamic>{},
-    });
-    expect(empty.toJson(), {
-      'id': 'empty',
-      'type': 'weather',
-      'options': <String, dynamic>{},
-    });
   });
+
   test(
     'invalid timing and sizes fall back; camera URL schemes are constrained',
     () {

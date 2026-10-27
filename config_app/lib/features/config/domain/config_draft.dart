@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dslideshow_backend/config.dart';
 
-/// Copy JSON all the way down, including opaque options of future screen types.
+/// Copy nested JSON so the editable draft stays independent of saved settings.
 AppConfig cloneConfig(AppConfig value) => AppConfig.fromJson(
   jsonDecode(jsonEncode(value.toJson())) as Map<String, dynamic>,
 );

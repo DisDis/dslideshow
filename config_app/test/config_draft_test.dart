@@ -82,41 +82,59 @@ void main() {
     expect(draft.hasChanges, isFalse);
   });
 
-  test('unknown nested options are isolated and compared independent of key order', () {
-    AppConfig config(Map<String, dynamic> options) => AppConfig.fromJson({
+  test('unknown screens are omitted from the draft and supported camera edits remain isolated', () {
+    final saved = AppConfig.fromJson({
       'slideshow': {
         'specialScreens': [
-          {'id': 'future', 'type': 'future-widget', 'options': options},
+          {
+            'id': 'future',
+            'type': 'future-widget',
+            'options': {
+              'nested': {'value': 1},
+            },
+          },
+          {
+            'id': 'cameras',
+            'type': 'cameras',
+            'options': {
+              'cameras': [
+                {'id': 'front', 'url': 'https://cam/front'},
+              ],
+            },
+          },
         ],
       },
     });
-    final first = config({
-      'a': {'x': 1, 'y': 2},
-      'b': [1, 2],
-    });
-    final draft = ConfigDraft()..replaceSaved(first);
-    final reordered = config({
-      'b': [1, 2],
-      'a': {'y': 2, 'x': 1},
-    });
-    // Move opaque options into the editable model without changing their values.
-    draft.value!.slideshow.specialScreens[0] =
-        reordered.slideshow.specialScreens[0];
+    final draft = ConfigDraft()..replaceSaved(saved);
+    expect(
+      draft.value!.slideshow.specialScreens.single.type,
+      SpecialScreenType.cameras,
+    );
     expect(draft.hasChanges, isFalse);
-    final options = draft.value!.slideshow.specialScreens.single.options
-        .toJson();
-    (options['a'] as Map)['x'] = 3;
-    // Unknown options.toJson returns a copy, so explicitly replace the screen.
-    draft.value!.slideshow.specialScreens[0] = config(options)
-        .slideshow
-        .specialScreens[0];
+    final camera =
+        (draft.value!.slideshow.specialScreens.single.options
+                as CamerasScreenOptions)
+            .cameras
+            .single;
+    camera.url = 'https://cam/edited';
     expect(draft.hasChanges, isTrue);
-    expect(first.slideshow.specialScreens.single.options.toJson()['a'], {
-      'x': 1,
-      'y': 2,
-    });
+    expect(
+      (saved.slideshow.specialScreens.single.options as CamerasScreenOptions)
+          .cameras
+          .single
+          .url,
+      'https://cam/front',
+    );
     draft.discard();
     expect(draft.hasChanges, isFalse);
+    expect(
+      (draft.value!.slideshow.specialScreens.single.options
+              as CamerasScreenOptions)
+          .cameras
+          .single
+          .url,
+      'https://cam/front',
+    );
   });
 
   test('invalid numeric input remains protected until discarded', () {

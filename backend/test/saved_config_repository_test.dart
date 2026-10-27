@@ -64,32 +64,45 @@ void main() {
     expect(file.existsSync(), isFalse);
   });
 
-  test('missing-file fallback deep copies opaque future screen options', () {
+  test('missing-file fallback isolates nested camera settings', () {
     activeConfig.slideshow.specialScreens.add(
-      SpecialScreenConfig.fromJson({
-        'id': 'future',
-        'type': 'future-screen',
-        'options': {
-          'layers': [
-            {
-              'nested': {'color': 'blue'},
-            },
-          ],
-        },
-      }),
+      SpecialScreenConfig(
+        id: 'cameras',
+        type: SpecialScreenType.cameras,
+        options: CamerasScreenOptions(
+          cameras: [CameraConfig(id: 'front', url: 'https://cam/front')],
+        ),
+      ),
     );
     final before = jsonEncode(activeConfig.toJson());
     final loaded = repository.load();
-    final options =
-        loaded.slideshow.specialScreens.single.options as UnknownScreenOptions;
-    final layers = options.json['layers'] as List<dynamic>;
-    ((layers.single as Map<String, dynamic>)['nested']
-            as Map<String, dynamic>)['color'] =
-        'red';
-    layers.add({'nested': {}});
-
+    final cameras =
+        (loaded.slideshow.specialScreens.single.options as CamerasScreenOptions)
+            .cameras;
+    cameras.single.url = 'https://cam/edited';
+    cameras.add(CameraConfig(id: 'back', url: 'https://cam/back'));
     expect(jsonEncode(activeConfig.toJson()), before);
     expect(repository.load().toJson(), activeConfig.toJson());
+  });
+
+  test('unknown screens are skipped on load and omitted on the next save', () {
+    const content =
+        '{"slideshow":{"specialScreens":[{"id":"future","type":"future-widget","enabled":true},{"id":"clock","type":"clock"}]}}';
+    file.writeAsStringSync(content);
+    final loaded = repository.load();
+    expect(
+      loaded.slideshow.specialScreens.single.type,
+      SpecialScreenType.clock,
+    );
+    expect(file.readAsStringSync(), content);
+    repository.save(jsonEncode(loaded.toJson()));
+    final screens =
+        jsonDecode(file.readAsStringSync())['slideshow']['specialScreens']
+            as List;
+    expect(screens, [
+      {'id': 'clock', 'type': 'clock'},
+    ]);
+    expect(activeConfig.slideshow.specialScreens, isEmpty);
   });
 
   test('save uses the private server filename and compact default values', () {

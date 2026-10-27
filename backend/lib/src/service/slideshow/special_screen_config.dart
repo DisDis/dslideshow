@@ -1,7 +1,8 @@
 import 'package:dslideshow_backend/src/config_json.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'special_screen_config.g.dart';
+part 'special_screen_config.freezed.dart';
 
 /// String identifiers are confined to JSON; playback and editors use enums.
 enum SpecialScreenType { clock, cameras, unknown }
@@ -56,8 +57,9 @@ int _parseRequestTimeout(dynamic value) =>
     ? value.toInt()
     : 10000;
 
+@unfreezed
 @JsonSerializable()
-class SpecialScreenSchedule {
+class SpecialScreenSchedule with _$SpecialScreenSchedule {
   @JsonKey(unknownEnumValue: SpecialScreenScheduleType.everyMediaSlides)
   SpecialScreenScheduleType type;
   @JsonKey(fromJson: _parseCount)
@@ -81,8 +83,10 @@ abstract class SpecialScreenOptions {
   Map<String, dynamic> toJson();
 }
 
+@unfreezed
 @JsonSerializable()
-class ClockScreenOptions extends SpecialScreenOptions {
+class ClockScreenOptions extends SpecialScreenOptions
+    with _$ClockScreenOptions {
   @JsonKey(unknownEnumValue: ClockTimeFormat.h24)
   ClockTimeFormat timeFormat;
   bool showSeconds;
@@ -124,8 +128,9 @@ class ClockScreenOptions extends SpecialScreenOptions {
   );
 }
 
+@unfreezed
 @JsonSerializable()
-class CameraConfig {
+class CameraConfig with _$CameraConfig {
   @JsonKey(defaultValue: '')
   String id;
   String name;
@@ -155,8 +160,10 @@ class CameraConfig {
   }
 }
 
+@unfreezed
 @JsonSerializable()
-class CamerasScreenOptions extends SpecialScreenOptions {
+class CamerasScreenOptions extends SpecialScreenOptions
+    with _$CamerasScreenOptions {
   @JsonKey(unknownEnumValue: CameraDisplayMode.grid)
   CameraDisplayMode mode;
   @JsonKey(fromJson: _parseCameras)
@@ -205,19 +212,8 @@ class CamerasScreenOptions extends SpecialScreenOptions {
   );
 }
 
-/// Opaque payload of a future screen type. Preserve it when saving older apps.
-@JsonSerializable()
-class UnknownScreenOptions extends SpecialScreenOptions {
-  final Map<String, dynamic> json;
-  UnknownScreenOptions(this.json);
-  factory UnknownScreenOptions.fromJson(Map<String, dynamic> json) =>
-      _$UnknownScreenOptionsFromJson({'json': json});
-  @override
-  Map<String, dynamic> toJson() =>
-      _$UnknownScreenOptionsToJson(this)['json'] as Map<String, dynamic>;
-}
-
-class SpecialScreenDefinition {
+@freezed
+class SpecialScreenDefinition with _$SpecialScreenDefinition {
   final SpecialScreenOptions Function(Map<String, dynamic>) parseOptions;
   SpecialScreenDefinition(this.parseOptions);
   SpecialScreenOptions defaults() => parseOptions({});
@@ -234,16 +230,12 @@ class SpecialScreenRegistry {
   };
 }
 
+@unfreezed
 @JsonSerializable()
-class SpecialScreenConfig {
+class SpecialScreenConfig with _$SpecialScreenConfig {
   @JsonKey(defaultValue: '')
   String id;
-  @JsonKey(
-    defaultValue: SpecialScreenType.unknown,
-    unknownEnumValue: SpecialScreenType.unknown,
-  )
   final SpecialScreenType type;
-  String? _unsupportedType;
   String name;
   bool enabled;
   @JsonKey(fromJson: _parseSchedule)
@@ -264,39 +256,41 @@ class SpecialScreenConfig {
        options =
            options ??
            SpecialScreenRegistry.definitions[type]?.defaults() ??
-           UnknownScreenOptions({});
+           (throw ArgumentError.value(
+             type,
+             'type',
+             'Unsupported special screen',
+           ));
   static SpecialScreenSchedule _parseSchedule(dynamic value) =>
       SpecialScreenSchedule.fromJson(_map(value));
   static SpecialScreenOptions _parsedOptions(dynamic value) =>
       value as SpecialScreenOptions;
   bool get isSupported => SpecialScreenRegistry.definitions.containsKey(type);
+
+  /// JSON discriminator lookup shared with the slideshow list parser.
+  static SpecialScreenType? typeFromJson(Object? value) {
+    final type = SpecialScreenType.values.asNameMap()[value];
+    return SpecialScreenRegistry.definitions.containsKey(type) ? type : null;
+  }
+
   factory SpecialScreenConfig.fromJson(Map<String, dynamic> json) {
-    // The discriminator belongs to the envelope, so choose the concrete options
-    // before delegating the common configuration fields to JsonSerializable.
-    final type =
-        SpecialScreenType.values.asNameMap()[json['type']] ??
-        SpecialScreenType.unknown;
-    final options =
-        SpecialScreenRegistry.definitions[type]?.parseOptions(
-          _map(json['options']),
-        ) ??
-        UnknownScreenOptions.fromJson(_map(json['options']));
-    final result = _$SpecialScreenConfigFromJson({...json, 'options': options});
-    if (type == SpecialScreenType.unknown)
-      result._unsupportedType = json['type'] as String?;
-    return result;
+    final type = typeFromJson(json['type']);
+    if (type == null) {
+      throw FormatException('Unsupported special screen type: ${json['type']}');
+    }
+    final options = SpecialScreenRegistry.definitions[type]!.parseOptions(
+      _map(json['options']),
+    );
+    return _$SpecialScreenConfigFromJson({...json, 'options': options});
   }
   Map<String, dynamic> toJson() {
     final defaults =
         _$SpecialScreenConfigToJson(SpecialScreenConfig(id: '', type: type))
           ..remove('id')
           ..remove('type');
-    // Preserve opaque options of future types, even an explicitly empty payload.
-    if (!isSupported) defaults.remove('options');
-    final result = stripDefaults(_$SpecialScreenConfigToJson(this), defaults);
-    if (_unsupportedType != null) result['type'] = _unsupportedType;
-    return result;
+    return stripDefaults(_$SpecialScreenConfigToJson(this), defaults);
   }
 
+  /// Parsing recreates the supported nested models for an isolated editor draft.
   SpecialScreenConfig clone() => SpecialScreenConfig.fromJson(toJson());
 }

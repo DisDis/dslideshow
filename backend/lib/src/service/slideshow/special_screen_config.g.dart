@@ -183,24 +183,10 @@ const _$CameraImageFitEnumMap = {
   CameraImageFit.cover: 'cover',
 };
 
-UnknownScreenOptions _$UnknownScreenOptionsFromJson(
-  Map<String, dynamic> json,
-) => UnknownScreenOptions(json['json'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$UnknownScreenOptionsToJson(
-  UnknownScreenOptions instance,
-) => <String, dynamic>{'json': instance.json};
-
 SpecialScreenConfig _$SpecialScreenConfigFromJson(Map<String, dynamic> json) =>
     SpecialScreenConfig(
       id: json['id'] as String? ?? '',
-      type:
-          $enumDecodeNullable(
-            _$SpecialScreenTypeEnumMap,
-            json['type'],
-            unknownValue: SpecialScreenType.unknown,
-          ) ??
-          SpecialScreenType.unknown,
+      type: $enumDecode(_$SpecialScreenTypeEnumMap, json['type']),
       name: json['name'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? false,
       schedule: SpecialScreenConfig._parseSchedule(json['schedule']),
