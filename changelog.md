@@ -1,5 +1,10 @@
 # Unreleased
 
+* Extract frame snapshot collection and frontend-state request coalescing into
+  FrameStateReader. Preserve isolate boundaries, shared frontend deadlines,
+  control acknowledgement freshness and shutdown behavior; add local reader
+  and RPC race regressions and update backend documentation.
+
 * Extract WebSocketUser into its own file and device-event subscriptions into
   DeviceEventBindings. Preserve isolate boundaries, event mapping, logging and
   cleanup order; add protocol/subscription regressions and backend documentation.

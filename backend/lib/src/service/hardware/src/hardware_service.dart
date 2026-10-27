@@ -9,10 +9,10 @@ import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 
 import 'device_event_bindings.dart';
+import 'frame_state_reader.dart';
 import 'gpio_service.dart';
 
 class HardwareService implements RpcService {
@@ -43,18 +43,26 @@ class HardwareService implements RpcService {
     this._powerOffService,
     this._applicationStateService,
   ) {
+    _frameStateReader = FrameStateReader(
+      frontendService: _frontendService,
+      screenService: _screenService,
+      applicationStateService: _applicationStateService,
+      waitForFrontend: _waitFrontend,
+      ensureActive: _ensureActive,
+      logger: _log,
+    );
     _init();
   }
 
   final List<Future> _initFutures = <Future>[];
   late final DeviceEventBindings _eventBindings;
+  late final FrameStateReader _frameStateReader;
   bool _disposed = false;
   Future<void>? _disposeFuture;
   Future<void> _screenNotifications = Future.value();
   Completer<void>? _notificationWait;
   static const _frontendTimeout = Duration(seconds: 3);
   final _frontendWaits = <Completer<dynamic>>{};
-  Future<FrameFrontendState?>? _frontendStateRequest;
   void _init() {
     _initFutures.add(_storage.init());
     if (Platform.isLinux) {
@@ -285,70 +293,18 @@ class HardwareService implements RpcService {
     });
   }
 
-  Future<FrameFrontendState?> _readFrontendState() async {
+  void _ensureActive() {
     if (_disposed) throw StateError('Hardware service disposed');
-    // A timeout cannot cancel an isolate RPC. Reuse the outstanding request so
-    // polling a hung frontend never exhausts its transport's result-port pool.
-    var request = _frontendStateRequest;
-    if (request == null) {
-      late final Future<FrameFrontendState?> bounded;
-      final pending = _frontendService
-          .send(GetFrameFrontendStateCommand(id: RpcCommand.generateId()))
-          .then<FrameFrontendState?>((result) {
-            return result is GetFrameFrontendStateResult ? result.state : null;
-          })
-          .catchError((Object error, StackTrace stack) {
-            _log.fine('Frontend state unavailable', error, stack);
-            return null;
-          })
-          .whenComplete(() {
-            if (identical(_frontendStateRequest, bounded)) {
-              _frontendStateRequest = null;
-            }
-          });
-      bounded = _waitFrontend(pending)
-          .onError<TimeoutException>((_, _) => null);
-      request = bounded;
-      _frontendStateRequest = bounded;
-    }
-    return await request;
-  }
-
-  Future<FrameState> _getFrameState() async {
-    final frontend = await _readFrontendState();
-    if (_disposed) throw StateError('Hardware service disposed');
-    final presence = _applicationStateService.observedPresence;
-    return FrameState(
-      sampledAt: DateTime.now().toUtc(),
-      presence: presence == null
-          ? FramePresence.unknown
-          : presence
-          ? FramePresence.present
-          : FramePresence.absent,
-      presenceObservedAt: _applicationStateService.presenceObservedAt,
-      isScreenLocked: _screenService.isScreenOffLock,
-      isScreenOn: _screenService.confirmedPower,
-      screenPhase: switch (_screenService.phase) {
-        ScreenPhase.on => FrameScreenPhase.on,
-        ScreenPhase.waitingOff => FrameScreenPhase.waitingOff,
-        ScreenPhase.fadingOut => FrameScreenPhase.fadingOut,
-        ScreenPhase.poweringOff => FrameScreenPhase.poweringOff,
-        ScreenPhase.off => FrameScreenPhase.off,
-        ScreenPhase.wakingUp => FrameScreenPhase.wakingUp,
-        ScreenPhase.fadingIn => FrameScreenPhase.fadingIn,
-        ScreenPhase.failed => FrameScreenPhase.failed,
-        ScreenPhase.disposed => FrameScreenPhase.unknown,
-      },
-      backendVersion: ApplicationInfo.backendVersion,
-      frontend: frontend,
-    );
   }
 
   Future<RpcResult> _executeGetFrameStateCommand(
     GetFrameStateCommand command,
   ) async {
     try {
-      return GetFrameStateResult(id: command.id, state: await _getFrameState());
+      return GetFrameStateResult(
+        id: command.id,
+        state: await _frameStateReader.read(),
+      );
     } catch (error, stack) {
       _log.warning('Could not collect frame state', error, stack);
       return _generateErrorResult(error, command);
@@ -368,8 +324,11 @@ class HardwareService implements RpcService {
       }
       // A poll started before the acknowledgement may describe the old intent.
       // Read again after acceptance instead of returning that in-flight sample.
-      _frontendStateRequest = null;
-      return GetFrameStateResult(id: command.id, state: await _getFrameState());
+      _frameStateReader.invalidateFrontendRequest();
+      return GetFrameStateResult(
+        id: command.id,
+        state: await _frameStateReader.read(),
+      );
     } catch (error, stack) {
       _log.warning('Frame control failed', error, stack);
       return _generateErrorResult(error, command);

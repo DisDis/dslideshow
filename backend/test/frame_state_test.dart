@@ -301,6 +301,116 @@ void main() {
     });
   });
 
+  test('overlapping snapshots preserve each incoming RPC id', () async {
+    final f = FrameFixture()..tearDown();
+    final pending = Completer<RpcResult>();
+    f.remote.pendingState = pending;
+    final responses = [
+      for (final id in [51, 52, 53])
+        f.hardware.executeCommand(GetFrameStateCommand(id: id)),
+    ];
+    expect(
+      f.remote.commands.whereType<GetFrameFrontendStateCommand>(),
+      hasLength(1),
+    );
+    pending.complete(GetFrameFrontendStateResult(id: 0, state: f.remote.state));
+    final results = await Future.wait(responses);
+    expect(results.map((result) => result.id), [51, 52, 53]);
+    expect(results.every((result) => result is GetFrameStateResult), isTrue);
+  });
+
+  test('late pre-control poll does not clear a newer pending snapshot', () {
+    fakeAsync((time) {
+      final f = FrameFixture();
+      final oldState = f.remote.state;
+      final oldPoll = Completer<RpcResult>();
+      f.remote.pendingState = oldPoll;
+      final polled = <FrameState>[];
+      f.snapshot().then(polled.add);
+      time.flushMicrotasks();
+      final freshPoll = Completer<RpcResult>();
+      f.remote.pendingState = freshPoll;
+      final controlled = <RpcResult>[];
+      f.hardware
+          .executeCommand(
+            const SetFrameControlCommand(
+              id: 54,
+              control: FrameControl.pause,
+              enabled: true,
+            ),
+          )
+          .then(controlled.add);
+      time.flushMicrotasks();
+      expect(
+        f.remote.commands.whereType<GetFrameFrontendStateCommand>(),
+        hasLength(2),
+      );
+      expect(controlled, isEmpty);
+
+      oldPoll.complete(GetFrameFrontendStateResult(id: 0, state: oldState));
+      time.flushMicrotasks();
+      expect(polled.single.frontend!.isPaused, isFalse);
+      f.snapshot().then(polled.add);
+      time.flushMicrotasks();
+      expect(
+        f.remote.commands.whereType<GetFrameFrontendStateCommand>(),
+        hasLength(2),
+      );
+      expect(polled, hasLength(1));
+
+      freshPoll.complete(
+        GetFrameFrontendStateResult(id: 0, state: f.remote.state),
+      );
+      time.flushMicrotasks();
+      expect(
+        (controlled.single as GetFrameStateResult).state.frontend!.isPaused,
+        isTrue,
+      );
+      expect(controlled.single.id, 54);
+      expect(polled.last.frontend!.isPaused, isTrue);
+      expect(time.pendingTimers, isEmpty);
+      f.dispose(time);
+    });
+  });
+
+  test('dispose cancels a state read after control acknowledgement', () {
+    fakeAsync((time) {
+      final f = FrameFixture();
+      final pending = Completer<RpcResult>();
+      f.remote.pendingState = pending;
+      final responses = <RpcResult>[];
+      f.hardware
+          .executeCommand(
+            const SetFrameControlCommand(
+              id: 55,
+              control: FrameControl.menu,
+              enabled: true,
+            ),
+          )
+          .then(responses.add);
+      time.flushMicrotasks();
+      expect(
+        f.remote.commands.whereType<SetFrameControlCommand>(),
+        hasLength(1),
+      );
+      expect(
+        f.remote.commands.whereType<GetFrameFrontendStateCommand>(),
+        hasLength(1),
+      );
+      expect(responses, isEmpty);
+      f.dispose(time);
+      expect(responses.single, isA<ErrorResult>());
+      expect(responses.single.id, 55);
+      expect(
+        (responses.single as ErrorResult).error,
+        contains('Hardware service disposed'),
+      );
+      expect(time.pendingTimers, isEmpty);
+      pending.completeError(StateError('Late disconnect'));
+      time.flushMicrotasks();
+    });
+  });
+
   test(
     'dispose cancels a pending control timer and keeps the original RPC id',
     () {
