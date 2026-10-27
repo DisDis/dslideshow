@@ -1,0 +1,558 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
+import 'package:dslideshow_flutter/effect.dart';
+import 'package:dslideshow_flutter/src/effect/glass_effect.dart';
+import 'package:dslideshow_flutter/src/effect/slice_effect.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'zoom_blur_effect_test.dart' as pixels;
+
+final _effects = <Effect>[
+  Effect.softWipeEffect,
+  Effect.lightSweepEffect,
+  Effect.sliceEffect,
+  Effect.lumaFadeEffect,
+  Effect.pagePeelEffect,
+  Effect.lightLeakEffect,
+  Effect.filmRollEffect,
+  Effect.crossZoomEffect,
+  Effect.whipEffect,
+  Effect.glassEffect,
+];
+
+List<int> _pixel(Uint8List image, int x, int y, {int width = 160}) =>
+    image.sublist((y * width + x) * 4, (y * width + x) * 4 + 4);
+
+Future<Uint8List> _frame(
+  WidgetTester tester,
+  Effect descriptor,
+  double progress, {
+  Widget from = const ColoredBox(color: Color(0xffff0000)),
+  Widget to = const ColoredBox(color: Color(0xff0000ff)),
+  Size size = const Size(160, 100),
+}) => pixels.capture(
+  tester,
+  (context) => descriptor.createEffect().createTransformWidget(
+    context,
+    from,
+    to,
+    AlwaysStoppedAnimation(progress),
+    size.width,
+    size.height,
+  ),
+  size: size,
+);
+
+void main() {
+  test('new persisted names round-trip and support every media pair', () {
+    expect(_effects.map((e) => e.name), [
+      'Soft Wipe',
+      'Light Sweep',
+      'Slice',
+      'Luma Fade',
+      'Page Peel',
+      'Light Leak',
+      'Film Roll',
+      'Cross Zoom',
+      'Whip',
+      'Glass',
+    ]);
+    for (final effect in _effects) {
+      expect(Effect.values, contains(effect));
+      expect(Effect.parse(effect.name), effect);
+      for (final from in TransitionMedia.values) {
+        for (final to in TransitionMedia.values) {
+          expect(effect.supportsMedia(from, to), isTrue);
+        }
+      }
+    }
+  });
+
+  testWidgets(
+    'exact endpoints and evolving opaque frames in both orientations',
+    (tester) async {
+      for (final size in [const Size(160, 100), const Size(97, 163)]) {
+        const source = DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.red, Colors.black],
+            ),
+          ),
+        );
+        final from = await pixels.capture(tester, (_) => source, size: size);
+        final to = await pixels.capture(
+          tester,
+          (_) => const ColoredBox(color: Color(0xff0000ff)),
+          size: size,
+        );
+        for (final effect in _effects) {
+          expect(
+            await _frame(tester, effect, 0, size: size, from: source),
+            from,
+            reason: '${effect.name} start $size',
+          );
+          expect(
+            await _frame(tester, effect, 1, size: size, from: source),
+            to,
+            reason: '${effect.name} end $size',
+          );
+          final frames = <String>{};
+          for (final t in [.15, .35, .55, .75, .95]) {
+            final frame = await _frame(
+              tester,
+              effect,
+              t,
+              size: size,
+              from: source,
+            );
+            frames.add(frame.toString());
+            expect(
+              [for (var i = 3; i < frame.length; i += 4) frame[i]],
+              everyElement(255),
+              reason: '${effect.name} alpha at $t',
+            );
+          }
+          expect(frames.length, greaterThanOrEqualTo(4), reason: effect.name);
+        }
+      }
+      await tester.pumpWidget(const SizedBox());
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('soft wipe has a feathered edge; sweep lights that edge only', (
+    tester,
+  ) async {
+    final soft = await _frame(tester, Effect.softWipeEffect, .5);
+    final light = await _frame(tester, Effect.lightSweepEffect, .5);
+    expect(_pixel(soft, 5, 50), [0, 0, 255, 255]);
+    expect(_pixel(soft, 155, 50), [255, 0, 0, 255]);
+    final edge = _pixel(soft, 80, 50);
+    expect(edge[0], inExclusiveRange(20, 235));
+    expect(edge[2], inExclusiveRange(20, 235));
+    expect(_pixel(light, 80, 50)[1], greaterThan(100));
+    expect(_pixel(light, 5, 50), _pixel(soft, 5, 50));
+    expect(_pixel(light, 155, 50), _pixel(soft, 155, 50));
+  });
+
+  testWidgets(
+    'letterboxed and transparent media have opaque endpoint backing',
+    (tester) async {
+      const letterboxed = Center(
+        child: SizedBox(
+          width: 80,
+          height: 50,
+          child: ColoredBox(color: Colors.white),
+        ),
+      );
+      const transparent = ColoredBox(color: Color(0x80ff0000));
+      for (final source in [letterboxed, transparent]) {
+        final expected = await pixels.capture(tester, (_) => source);
+        for (final descriptor in _effects) {
+          expect(
+            await _frame(tester, descriptor, 0, from: source),
+            expected,
+            reason: '${descriptor.name} start',
+          );
+          expect(
+            await _frame(tester, descriptor, 1, to: source),
+            expected,
+            reason: '${descriptor.name} end',
+          );
+        }
+      }
+    },
+  );
+
+  testWidgets('luma fade removes bright pixels before dark pixels', (
+    tester,
+  ) async {
+    const source = Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(child: ColoredBox(color: Color(0xff202020))),
+        Expanded(child: ColoredBox(color: Color(0xffe0e0e0))),
+      ],
+    );
+    final frame = await _frame(tester, Effect.lumaFadeEffect, .5, from: source);
+    expect(_pixel(frame, 20, 50), [32, 32, 32, 255]);
+    expect(_pixel(frame, 140, 50), [0, 0, 255, 255]);
+    // Identical images must not dim/brighten during the dissolve.
+    const gray = ColoredBox(color: Color(0xff777777));
+    final same = await _frame(
+      tester,
+      Effect.lumaFadeEffect,
+      .5,
+      from: gray,
+      to: gray,
+    );
+    expect(_pixel(same, 80, 50), [119, 119, 119, 255]);
+  });
+
+  testWidgets('slice moves image content in alternating delayed strips', (
+    tester,
+  ) async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    canvas.drawColor(const Color(0xffff0000), BlendMode.src);
+    canvas.drawRect(
+      const Rect.fromLTWH(78, 0, 4, 100),
+      Paint()..color = const Color(0xff00ff00),
+    );
+    final picture = recorder.endRecording();
+    final image = picture.toImageSync(160, 100);
+    picture.dispose();
+    try {
+      final frame = await _frame(
+        tester,
+        Effect.sliceEffect,
+        .3,
+        from: RawImage(image: image),
+      );
+      List<int> greenXs(int y) => [
+        for (var x = 0; x < 160; x++)
+          if (_pixel(frame, x, y)[1] > 80) x,
+      ];
+      expect(
+        greenXs(6).reduce((a, b) => a + b) / greenXs(6).length,
+        lessThan(60),
+      );
+      expect(
+        greenXs(18).reduce((a, b) => a + b) / greenXs(18).length,
+        greaterThan(100),
+      );
+      expect(greenXs(93), [78, 79, 80, 81]);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      image.dispose();
+    }
+  });
+
+  testWidgets('page peel exposes the corner and a shaded paper back', (
+    tester,
+  ) async {
+    final frame = await _frame(tester, Effect.pagePeelEffect, .4);
+    expect(_pixel(frame, 158, 1), [0, 0, 255, 255]);
+    expect(_pixel(frame, 1, 98), [255, 0, 0, 255]);
+    final paper = _pixel(frame, 60, 30);
+    expect(paper[0], greaterThan(120));
+    expect(paper[1], greaterThan(120));
+    expect(paper[2], greaterThan(120));
+    expect(_pixel(frame, 60, 5), isNot(paper), reason: 'Fold has shading');
+  });
+
+  testWidgets('light leak sweeps a warm light over even identical dark media', (
+    tester,
+  ) async {
+    const black = ColoredBox(color: Colors.black);
+    final early = await _frame(
+      tester,
+      Effect.lightLeakEffect,
+      .25,
+      from: black,
+      to: black,
+    );
+    final middle = await _frame(
+      tester,
+      Effect.lightLeakEffect,
+      .5,
+      from: black,
+      to: black,
+    );
+    final late = await _frame(
+      tester,
+      Effect.lightLeakEffect,
+      .75,
+      from: black,
+      to: black,
+    );
+    expect(_pixel(middle, 80, 30)[0], greaterThan(150));
+    final warm = _pixel(middle, 20, 70);
+    expect(warm[0], greaterThan(warm[2]));
+    expect(early, isNot(late), reason: 'The light moves across the frame');
+  });
+
+  testWidgets(
+    'film roll moves vertically and whip moves with horizontal blur',
+    (tester) async {
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder)..drawColor(Colors.black, BlendMode.src);
+      canvas.drawRect(
+        const Rect.fromLTWH(78, 0, 4, 100),
+        Paint()..color = const Color(0xff00ff00),
+      );
+      canvas.drawRect(
+        const Rect.fromLTWH(0, 48, 160, 4),
+        Paint()..color = const Color(0xffff0000),
+      );
+      final picture = recorder.endRecording();
+      final image = picture.toImageSync(160, 100);
+      picture.dispose();
+      try {
+        final source = RawImage(image: image);
+        final film = await _frame(
+          tester,
+          Effect.filmRollEffect,
+          .25,
+          from: source,
+        );
+        // The horizontal red marker moves up while the vertical green marker
+        // stays at its original x position, away from the film's edge holes.
+        expect(_pixel(film, 40, 43)[0], greaterThan(100));
+        expect(_pixel(film, 40, 50)[0], lessThan(10));
+        expect(_pixel(film, 80, 20)[1], greaterThan(200));
+        final whip = await _frame(tester, Effect.whipEffect, .25, from: source);
+        expect(_pixel(whip, 70, 20)[1], greaterThan(_pixel(whip, 80, 20)[1]));
+        expect(
+          _pixel(whip, 66, 20)[1],
+          greaterThan(10),
+          reason: 'Motion blur spreads beyond the four-pixel marker',
+        );
+        expect(_pixel(whip, 40, 50)[0], greaterThan(200));
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        image.dispose();
+      }
+    },
+  );
+
+  testWidgets('cross zoom enlarges outgoing detail and softens its edges', (
+    tester,
+  ) async {
+    const source = Center(
+      child: SizedBox(
+        width: 40,
+        height: 20,
+        child: ColoredBox(color: Colors.white),
+      ),
+    );
+    final frame = await _frame(
+      tester,
+      Effect.crossZoomEffect,
+      .5,
+      from: source,
+      to: const ColoredBox(color: Colors.black),
+    );
+    expect(
+      _pixel(frame, 56, 50)[0],
+      greaterThan(50),
+      reason: 'Outgoing content expands beyond its original x=60 boundary',
+    );
+    expect(
+      _pixel(frame, 52, 50)[0],
+      inExclusiveRange(0, 100),
+      reason: 'The zoom has a soft edge',
+    );
+    expect(
+      _pixel(frame, 80, 50)[0],
+      closeTo(128, 8),
+      reason: 'The midpoint remains close to a half blend under easing',
+    );
+  });
+
+  testWidgets('glass displaces live image detail in separate facets', (
+    tester,
+  ) async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder)..drawColor(Colors.black, BlendMode.src);
+    for (var x = 0; x < 160; x += 8) {
+      canvas.drawRect(
+        Rect.fromLTWH(x.toDouble(), 0, 3, 100),
+        Paint()..color = const Color(0xff00ff00),
+      );
+    }
+    final picture = recorder.endRecording();
+    final image = picture.toImageSync(160, 100);
+    picture.dispose();
+    try {
+      final source = RawImage(image: image);
+      final frame = await _frame(
+        tester,
+        Effect.glassEffect,
+        .5,
+        from: source,
+        to: source,
+      );
+      final original = await pixels.capture(tester, (_) => source);
+      var displacedBars = 0;
+      for (var x = 0; x < 160; x++) {
+        if (_pixel(frame, x, 50)[1] > 180 && _pixel(original, x, 50)[1] < 10) {
+          displacedBars++;
+        }
+      }
+      expect(
+        displacedBars,
+        greaterThan(10),
+        reason: 'Refraction moves the bars, in addition to the glass glint',
+      );
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      image.dispose();
+    }
+  });
+
+  testWidgets('views stay mounted, update live, reverse and release once', (
+    tester,
+  ) async {
+    for (final descriptor in _effects) {
+      var fromMounts = 0, toMounts = 0, releases = 0;
+      final color = _LiveColor();
+      final capture = GlobalKey();
+      final from = _LiveProbe(color, () => fromMounts++, () => releases++);
+      final to = _LiveProbe(color, () => toMounts++, () => releases++);
+      Future<void> pump(double t) => tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Center(
+            child: RepaintBoundary(
+              key: capture,
+              child: SizedBox(
+                width: 160,
+                height: 100,
+                child: Builder(
+                  builder: (context) =>
+                      descriptor.createEffect().createTransformWidget(
+                        context,
+                        from,
+                        to,
+                        AlwaysStoppedAnimation(t),
+                        160,
+                        100,
+                      ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final expectedTo = descriptor == Effect.glassEffect ? 8 : 1;
+      final expectedFrom =
+          (descriptor == Effect.sliceEffect || descriptor == Effect.glassEffect)
+          ? 8
+          : 1;
+      for (final t in [0.0, .01, .5, .99, 1.0, .5, 0.0]) {
+        await pump(t);
+        expect(fromMounts, expectedFrom, reason: '${descriptor.name} at $t');
+        expect(toMounts, expectedTo);
+        expect(releases, 0);
+        color.value = color.value == const Color(0xffff0000)
+            ? const Color(0xff00ff00)
+            : const Color(0xffff0000);
+        await tester.pump();
+        if (t == 0 || t == 1) {
+          final rgba = (await tester.runAsync(() async {
+            final boundary =
+                capture.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary;
+            final image = await boundary.toImage();
+            try {
+              return await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+            } finally {
+              image.dispose();
+            }
+          }))!;
+          expect(
+            rgba.buffer.asUint8List().sublist(0, 4),
+            color.value == const Color(0xffff0000)
+                ? [255, 0, 0, 255]
+                : [0, 255, 0, 255],
+            reason: '${descriptor.name} must keep descendants live',
+          );
+        }
+        expect(tester.takeException(), isNull);
+      }
+      await tester.pumpWidget(const SizedBox());
+      expect(releases, expectedFrom + expectedTo);
+      expect(color.isObserved, isFalse);
+      color.dispose();
+    }
+  });
+
+  testWidgets('one-strip slice and fractional strip boundaries have no gaps', (
+    tester,
+  ) async {
+    const size = Size(161, 103);
+    for (final count in [1, 8, 13]) {
+      final frame = await pixels.capture(
+        tester,
+        (context) => SliceEffect(stripCount: count).createTransformWidget(
+          context,
+          const ColoredBox(color: Color(0xffff0000)),
+          const ColoredBox(color: Color(0xff0000ff)),
+          const AlwaysStoppedAnimation(0),
+          size.width,
+          size.height,
+        ),
+        size: size,
+      );
+      expect([
+        for (var i = 0; i < frame.length; i += 4) frame[i],
+      ], everyElement(255));
+    }
+  });
+
+  testWidgets('glass panes cover fractional boundaries at both endpoints', (
+    tester,
+  ) async {
+    const size = Size(161, 103);
+    for (final count in [1, 8, 13]) {
+      for (final t in [0.0, 1.0]) {
+        final frame = await pixels.capture(
+          tester,
+          (context) => GlassEffect(paneCount: count).createTransformWidget(
+            context,
+            const ColoredBox(color: Color(0xffff0000)),
+            const ColoredBox(color: Color(0xffff0000)),
+            AlwaysStoppedAnimation(t),
+            size.width,
+            size.height,
+          ),
+          size: size,
+        );
+        expect([
+          for (var i = 0; i < frame.length; i += 4) frame[i],
+        ], everyElement(255));
+      }
+    }
+  });
+}
+
+class _LiveProbe extends StatefulWidget {
+  final ValueNotifier<Color> color;
+  final VoidCallback mount, release;
+  const _LiveProbe(this.color, this.mount, this.release);
+
+  @override
+  State<_LiveProbe> createState() => _LiveProbeState();
+}
+
+class _LiveColor extends ValueNotifier<Color> {
+  _LiveColor() : super(const Color(0xffff0000));
+
+  bool get isObserved => hasListeners;
+}
+
+class _LiveProbeState extends State<_LiveProbe> {
+  @override
+  void initState() {
+    super.initState();
+    widget.mount();
+  }
+
+  @override
+  Widget build(BuildContext context) => RepaintBoundary(
+    child: ValueListenableBuilder<Color>(
+      valueListenable: widget.color,
+      builder: (_, color, _) => ColoredBox(color: color),
+    ),
+  );
+
+  @override
+  void dispose() {
+    widget.release();
+    super.dispose();
+  }
+}

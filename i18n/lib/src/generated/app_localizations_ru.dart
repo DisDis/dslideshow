@@ -631,6 +631,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_play => 'Предпросмотр';
 
   @override
+  String get effect_light_leak => 'Световая засветка';
+
+  @override
+  String get effect_film_roll => 'Прокрутка плёнки';
+
+  @override
+  String get effect_cross_zoom => 'Встречный зум';
+
+  @override
+  String get effect_whip => 'Резкая панорама';
+
+  @override
+  String get effect_glass => 'Стекло';
+
+  @override
+  String get effect_soft_wipe => 'Мягкое раскрытие';
+
+  @override
+  String get effect_light_sweep => 'Световой проход';
+
+  @override
+  String get effect_slice => 'Сдвиг полос';
+
+  @override
+  String get effect_luma_fade => 'Растворение по яркости';
+
+  @override
+  String get effect_page_peel => 'Загиб страницы';
+
+  @override
   String get effect_noise_dissolve => 'Растворение в шуме';
 
   @override

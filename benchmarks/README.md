@@ -13,6 +13,12 @@
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
 с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
+Отдельный [короткий A/B flutter-pi](tool/pageflip_ab/README.md) сравнивает
+`integration_dpms_and_video` и `remove-page-flip` на одинаковом frozen release-bundle внутри каждой пары,
+с ABBA, тяжёлыми эффектами, видео и независимыми DRM completion-событиями.
+Результаты 27.10.2026: [отчёт по всем эффектам](reports/flutter-pi-pageflip-2026-10-27/report.md)
+и [English report for the MR](reports/flutter-pi-pageflip-2026-10-27/mr-report.md).
+
 ## Диагностика Accordion / LiquidMorph
 
 Наборы `composition-confirm.json`, `composition-visual.json`,
@@ -569,7 +575,8 @@ bash -n run.sh build_aot_pi5.sh
 flutter test --no-pub tool/render_effect_gallery_test.dart
 ```
 
-Галереи появятся в `build/effects/gallery-1.png` … `gallery-4.png`.
+Галереи появятся в `build/effects/gallery-*.png`; количество файлов зависит
+от размера реестра эффектов, по 12 переходов на страницу.
 Для пересоздания встроенных медиа: `python3 tool/generate_media.py`
 (только на рабочей машине: Pillow и ffmpeg с libx264).
 

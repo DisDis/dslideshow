@@ -6,6 +6,12 @@ import 'reveal_effect.dart';
 import 'procedural_reveal_effect.dart';
 import 'water_refraction_effect.dart';
 import 'transition_media.dart';
+import 'soft_wipe_effect.dart';
+import 'slice_effect.dart';
+import 'luma_fade_effect.dart';
+import 'page_peel_effect.dart';
+import 'cinematic_transition_effect.dart';
+import 'glass_effect.dart';
 export 'transition_media.dart';
 
 import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
@@ -35,6 +41,25 @@ import 'mosaic_transition_effect.dart';
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
 class Effect {
+  static const Effect lightLeakEffect = Effect._(
+    'Light Leak',
+    _createLightLeak,
+  );
+  static const Effect filmRollEffect = Effect._('Film Roll', _createFilmRoll);
+  static const Effect crossZoomEffect = Effect._(
+    'Cross Zoom',
+    _createCrossZoom,
+  );
+  static const Effect whipEffect = Effect._('Whip', _createWhip);
+  static const Effect glassEffect = Effect._('Glass', _createGlass);
+  static const Effect softWipeEffect = Effect._('Soft Wipe', _createSoftWipe);
+  static const Effect lightSweepEffect = Effect._(
+    'Light Sweep',
+    _createLightSweep,
+  );
+  static const Effect sliceEffect = Effect._('Slice', _createSlice);
+  static const Effect lumaFadeEffect = Effect._('Luma Fade', _createLumaFade);
+  static const Effect pagePeelEffect = Effect._('Page Peel', _createPagePeel);
   static const Effect noiseDissolveEffect = Effect._(
     'Noise Dissolve',
     _createNoiseDissolve,
@@ -245,6 +270,16 @@ class Effect {
     revealRightEffect,
     revealUpEffect,
     revealDownEffect,
+    softWipeEffect,
+    lightSweepEffect,
+    sliceEffect,
+    lumaFadeEffect,
+    pagePeelEffect,
+    lightLeakEffect,
+    filmRollEffect,
+    crossZoomEffect,
+    whipEffect,
+    glassEffect,
   ];
   final String name;
 
@@ -314,6 +349,21 @@ class Effect {
   @override
   String toString() => name;
 
+  static MediaSliderItemEffect _createLightLeak() =>
+      CinematicTransitionEffect(CinematicTransitionKind.lightLeak);
+  static MediaSliderItemEffect _createFilmRoll() =>
+      CinematicTransitionEffect(CinematicTransitionKind.filmRoll);
+  static MediaSliderItemEffect _createCrossZoom() =>
+      CinematicTransitionEffect(CinematicTransitionKind.crossZoom);
+  static MediaSliderItemEffect _createWhip() =>
+      CinematicTransitionEffect(CinematicTransitionKind.whip);
+  static MediaSliderItemEffect _createGlass() => GlassEffect();
+  static MediaSliderItemEffect _createSoftWipe() => SoftWipeEffect();
+  static MediaSliderItemEffect _createLightSweep() =>
+      SoftWipeEffect(style: SoftWipeStyle.lightSweep);
+  static MediaSliderItemEffect _createSlice() => SliceEffect();
+  static MediaSliderItemEffect _createLumaFade() => LumaFadeEffect();
+  static MediaSliderItemEffect _createPagePeel() => PagePeelEffect();
   static MediaSliderItemEffect _createAccordionEffect() => AccordionEffect();
   static MediaSliderItemEffect _createNoiseDissolve() =>
       ProceduralRevealEffect(ProceduralRevealKind.noiseDissolve);

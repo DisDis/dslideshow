@@ -124,3 +124,6 @@ flutter test --no-pub -d linux integration_test/linux_video_test.dart \
 
 [Новые эффекты и Ken Burns](../doc/new-visuals-2026-10.md): настройка, совместимость,
 предпросмотр, тесты и измерения на RaPi5.
+
+[Десять дополнительных переходов в стиле видеоредакторов](../doc/premiere-style-transitions.md):
+новые переходы в настройках и предпросмотре, совместимость и локальные проверки.

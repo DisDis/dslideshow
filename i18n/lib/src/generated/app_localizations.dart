@@ -1268,6 +1268,66 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview_play;
 
+  /// No description provided for @effect_light_leak.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Leak'**
+  String get effect_light_leak;
+
+  /// No description provided for @effect_film_roll.
+  ///
+  /// In en, this message translates to:
+  /// **'Film Roll'**
+  String get effect_film_roll;
+
+  /// No description provided for @effect_cross_zoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross Zoom'**
+  String get effect_cross_zoom;
+
+  /// No description provided for @effect_whip.
+  ///
+  /// In en, this message translates to:
+  /// **'Whip'**
+  String get effect_whip;
+
+  /// No description provided for @effect_glass.
+  ///
+  /// In en, this message translates to:
+  /// **'Glass'**
+  String get effect_glass;
+
+  /// No description provided for @effect_soft_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft Wipe'**
+  String get effect_soft_wipe;
+
+  /// No description provided for @effect_light_sweep.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Sweep'**
+  String get effect_light_sweep;
+
+  /// No description provided for @effect_slice.
+  ///
+  /// In en, this message translates to:
+  /// **'Slice'**
+  String get effect_slice;
+
+  /// No description provided for @effect_luma_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Luma Fade'**
+  String get effect_luma_fade;
+
+  /// No description provided for @effect_page_peel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Peel'**
+  String get effect_page_peel;
+
   /// No description provided for @effect_noise_dissolve.
   ///
   /// In en, this message translates to:

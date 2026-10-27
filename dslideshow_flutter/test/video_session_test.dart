@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/effect.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
 import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
@@ -50,6 +51,98 @@ class FakeVideoController extends VideoPlayerController {
 }
 
 void main() {
+  testWidgets(
+    'new transitions share live players and leave disposal to owners',
+    (tester) async {
+      for (final effect in [
+        Effect.softWipeEffect,
+        Effect.lightSweepEffect,
+        Effect.sliceEffect,
+        Effect.lumaFadeEffect,
+        Effect.pagePeelEffect,
+        Effect.lightLeakEffect,
+        Effect.filmRollEffect,
+        Effect.crossZoomEffect,
+        Effect.whipEffect,
+        Effect.glassEffect,
+      ]) {
+        final from = FakeVideoController(), to = FakeVideoController();
+        VideoSession session(FakeVideoController player) => VideoSession(
+          File('/tmp/session-test.mp4'),
+          controller: player,
+          supported: true,
+        );
+        final fromSession = session(from), toSession = session(to);
+        await fromSession.prepare();
+        await toSession.prepare();
+        await fromSession.setPlaying(true);
+        await toSession.setPlaying(true);
+        final current = VideoWidget(
+          MediaItem('from', Uri.file('/tmp/from.mp4')),
+          session: fromSession,
+        );
+        final next = VideoWidget(
+          MediaItem('to', Uri.file('/tmp/to.mp4')),
+          session: toSession,
+        );
+        for (final t in [0.0, .35, .65, 1.0, .5]) {
+          await tester.pumpWidget(
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Center(
+                child: SizedBox(
+                  width: 320,
+                  height: 240,
+                  child: Builder(
+                    builder: (context) =>
+                        effect.createEffect().createTransformWidget(
+                          context,
+                          current,
+                          next,
+                          AlwaysStoppedAnimation(t),
+                          320,
+                          240,
+                        ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          from.value = from.value.copyWith(
+            position: const Duration(seconds: 7),
+          );
+          to.value = to.value.copyWith(position: const Duration(seconds: 3));
+          await tester.pump();
+          expect(
+            find.byType(VideoWidget),
+            findsNWidgets(
+              effect == Effect.glassEffect
+                  ? 16
+                  : effect == Effect.sliceEffect
+                  ? 9
+                  : 2,
+            ),
+          );
+          for (final player in [from, to]) {
+            expect(player.initializations, 1);
+            expect(player.disposals, 0);
+            expect(player.plays, 1);
+          }
+          expect(from.value.position, const Duration(seconds: 7));
+          expect(to.value.position, const Duration(seconds: 3));
+          expect(tester.takeException(), isNull);
+        }
+        await tester.pumpWidget(const SizedBox());
+        expect(from.disposals, 0);
+        expect(to.disposals, 0);
+        await fromSession.dispose();
+        await toSession.dispose();
+        expect(from.disposals, 1);
+        expect(to.disposals, 1);
+      }
+    },
+  );
+
   test(
     'Preparation is shared; pause during initialization overrides play',
     () async {

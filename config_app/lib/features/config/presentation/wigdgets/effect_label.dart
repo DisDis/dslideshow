@@ -6,6 +6,16 @@ import 'package:flutter/widgets.dart';
 String effectLabel(BuildContext context, Effect effect) {
   final l = context.localizations;
   return <Effect, String>{
+        Effect.lightLeakEffect: l.effect_light_leak,
+        Effect.filmRollEffect: l.effect_film_roll,
+        Effect.crossZoomEffect: l.effect_cross_zoom,
+        Effect.whipEffect: l.effect_whip,
+        Effect.glassEffect: l.effect_glass,
+        Effect.softWipeEffect: l.effect_soft_wipe,
+        Effect.lightSweepEffect: l.effect_light_sweep,
+        Effect.sliceEffect: l.effect_slice,
+        Effect.lumaFadeEffect: l.effect_luma_fade,
+        Effect.pagePeelEffect: l.effect_page_peel,
         Effect.noiseDissolveEffect: l.effect_noise_dissolve,
         Effect.rippleRevealEffect: l.effect_ripple_reveal,
         Effect.waterRefractionEffect: l.effect_water_refraction,

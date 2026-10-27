@@ -630,6 +630,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_play => 'Preview';
 
   @override
+  String get effect_light_leak => 'Light Leak';
+
+  @override
+  String get effect_film_roll => 'Film Roll';
+
+  @override
+  String get effect_cross_zoom => 'Cross Zoom';
+
+  @override
+  String get effect_whip => 'Whip';
+
+  @override
+  String get effect_glass => 'Glass';
+
+  @override
+  String get effect_soft_wipe => 'Soft Wipe';
+
+  @override
+  String get effect_light_sweep => 'Light Sweep';
+
+  @override
+  String get effect_slice => 'Slice';
+
+  @override
+  String get effect_luma_fade => 'Luma Fade';
+
+  @override
+  String get effect_page_peel => 'Page Peel';
+
+  @override
   String get effect_noise_dissolve => 'Noise Dissolve';
 
   @override
