@@ -5,7 +5,6 @@ publish_to: none
 environment:
   sdk: '^3.13.0'
 dependencies:
-    image: ^4.12.0
     crypto: ^3.0.7
     http: ^1.6.0
     http_parser: ^4.1.2
@@ -37,6 +36,7 @@ dependencies:
     json_annotation: ^4.12.0
     freezed_annotation: ^3.1.0
 dev_dependencies:
+  image: ^4.12.0
   rpc_serializers_generator:
     path: ../rpc_serializers_generator
   # shelf_router_generator: ^1.0.2

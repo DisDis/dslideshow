@@ -102,6 +102,9 @@ class GalleryRepository {
           if (catalog.capabilities.contains(GalleryCapability.thumbnails) &&
               (catalog.thumbnailPolicy == null ||
                   catalog.thumbnailPolicy!.version < 1 ||
+                  (catalog.thumbnailPolicy!.revision.isNotEmpty &&
+                      !RegExp(r'^[a-f0-9]{64}$')
+                          .hasMatch(catalog.thumbnailPolicy!.revision)) ||
                   !catalog.thumbnailPolicy!.sizes.any(
                     (size) => size.pixels > 0,
                   ))) {
@@ -156,7 +159,7 @@ class GalleryRepository {
                           'thumbnail',
                           entry.mediaId,
                           revision,
-                          '${catalog.thumbnailPolicy!.version}',
+                          catalog.thumbnailPolicy!.identity,
                         ])
                       : null,
                 );

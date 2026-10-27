@@ -2,7 +2,6 @@
 // ignore_for_file: avoid_slow_async_io
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
@@ -55,13 +54,8 @@ class ControlledWorker implements ThumbnailWorker {
   void complete(int index, [List<int> bytes = const [1, 2, 3, 4]]) {
     requests[index].complete(
       ThumbnailWorkerResult(
-        data: TransferableTypedData.fromList([Uint8List.fromList(bytes)]),
-        format: ThumbnailFormat.jpeg,
-        digest: sha256.convert(bytes).toString(),
-        width: 1,
-        height: 1,
-        jpegScale: 1,
-        elapsedMicroseconds: 1,
+        bytes: Uint8List.fromList(bytes),
+        digest: md5.convert(bytes).toString(),
       ),
     );
   }
@@ -119,7 +113,7 @@ void main() {
     () async {
       await cache.create();
       final bytes = [1, 2, 3, 4];
-      final digest = sha256.convert(bytes).toString();
+      final digest = md5.convert(bytes).toString();
       for (var index = 0; index < 2049; index++) {
         final key = index.toRadixString(16).padLeft(64, '0');
         await File('${cache.path}/$key-$digest.jpg').writeAsBytes(bytes);
@@ -142,7 +136,7 @@ void main() {
       worker.complete(0);
       final lease = await first;
       expect(await File(lease.artifact.path).readAsBytes(), [1, 2, 3, 4]);
-      expect(lease.artifact.etag, '"${sha256.convert([1, 2, 3, 4])}"');
+      expect(lease.artifact.etag, '"${md5.convert([1, 2, 3, 4])}"');
       expect(lease.artifact.mimeType, 'image/jpeg');
       final second = await service.acquire(source(), variant);
       expect(second.artifact.path, lease.artifact.path);
@@ -178,10 +172,35 @@ void main() {
     await lease.release();
   });
 
+  test('changed render settings cannot reuse a persisted derivative', () async {
+    final before = create();
+    final first = before.acquire(source(), variant);
+    await worker.waitForCalls(1);
+    worker.complete(0, [1, 2, 3]);
+    final old = await first;
+    final oldPath = old.artifact.path;
+    await old.release();
+    await before.close();
+
+    final after = create(policy: const ThumbnailPolicy(jpegQuality: 25));
+    final second = after.acquire(source(), variant);
+    await worker.waitForCalls(2);
+    worker.complete(1, [4, 5, 6]);
+    final current = await second;
+    expect(current.artifact.path, isNot(oldPath));
+    expect(await File(current.artifact.path).readAsBytes(), [4, 5, 6]);
+    await current.release();
+    final warm = await after.acquire(source(), variant);
+    expect(worker.requests, hasLength(2));
+    await warm.release();
+  });
+
   test(
     'queue and global waiters are bounded, one worker stays active',
     () async {
-      final service = create(policy: const ThumbnailPolicy(maxQueued: 1));
+      final service = create(
+        policy: const ThumbnailPolicy(maxWorkers: 1, maxQueued: 1),
+      );
       final first = service.acquire(source('a'), variant);
       await worker.waitForCalls(1);
       final second = service.acquire(source('b'), variant);
@@ -203,9 +222,40 @@ void main() {
   );
 
   test(
-    'last cancellation removes queued work and permits future acquire',
+    'default runs four distinct jobs and bounds eight queued jobs',
     () async {
       final service = create();
+      expect(service.policy.maxWorkers, 4);
+      expect(service.policy.maxQueued, 8);
+      expect(service.policy.maxWaiters, 32);
+      final pending = List.generate(
+        12,
+        (index) => service.acquire(source('item-$index'), variant),
+      );
+      await worker.waitForCalls(4);
+      await expectLater(
+        service.acquire(source('overflow'), variant),
+        failure(ThumbnailFailureKind.queueFull),
+      );
+      expect(worker.requests.length, 4);
+      worker.complete(0);
+      await worker.waitForCalls(5);
+      for (var index = 1; index < 12; index++) {
+        await worker.waitForCalls(index + 1);
+        worker.complete(index);
+      }
+      for (final result in pending) {
+        await (await result).release();
+      }
+      expect(worker.peak, 4);
+      expect(worker.active, 0);
+    },
+  );
+
+  test(
+    'last cancellation removes queued work and permits future acquire',
+    () async {
+      final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
       final first = service.acquire(source('a'), variant);
       await worker.waitForCalls(1);
       final token = ThumbnailCancellationToken();
@@ -346,14 +396,17 @@ void main() {
       await lease.release();
       await service.close();
       final temporary = File('${cache.path}/.thumb-${'a' * 32}.part');
+      final legacy = File('${cache.path}/${'a' * 64}-${'b' * 64}.png');
       final foreign = File('${cache.path}/keep.txt');
       await temporary.writeAsString('unfinished');
+      await legacy.writeAsString('old derivative');
       await foreign.writeAsString('keep');
       final warm = create();
       final reused = await warm.acquire(source(), variant);
       expect(worker.requests.length, 1);
       await reused.release();
       expect(await temporary.exists(), isFalse);
+      expect(await legacy.exists(), isFalse);
       expect(await foreign.exists(), isTrue);
       await warm.close();
       await File(artifact.path).writeAsBytes([8, 8, 8, 8]);
@@ -368,7 +421,7 @@ void main() {
   test(
     'close cancels running and queued work and forbids late publish',
     () async {
-      final service = create();
+      final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
       final first = service.acquire(source('a'), variant);
       final firstError = expectLater(
         first,
@@ -505,12 +558,17 @@ void main() {
     },
   );
 
-  test('real GIF derivative contains only its first frame', () async {
+  test('real GIF derivative is a single representative JPEG', () async {
     final first = image.Image(width: 8, height: 8);
     image.fill(first, color: image.ColorRgb8(255, 0, 0));
     final second = image.Image(width: 8, height: 8);
     image.fill(second, color: image.ColorRgb8(0, 0, 255));
     first.addFrame(second);
+    for (var index = 0; index < 4; index++) {
+      first.addFrame(
+        image.Image(width: 8, height: 8)..clear(image.ColorRgb8(0, index, 240)),
+      );
+    }
     final gif = File('${root.path}/animation.gif');
     await gif.writeAsBytes(image.encodeGif(first));
     final real = ThumbnailService(
@@ -531,74 +589,69 @@ void main() {
       await File(lease.artifact.path).readAsBytes(),
     )!;
     expect(decoded.numFrames, 1);
-    expect(decoded.getPixel(3, 3).r, greaterThan(230));
-    expect(decoded.getPixel(3, 3).b, lessThan(20));
+    expect(decoded.getPixel(3, 3).b, greaterThan(200));
+    expect(decoded.getPixel(3, 3).r, lessThan(30));
+    expect(lease.artifact.mimeType, 'image/jpeg');
     await lease.release();
   });
 
-  test(
-    'real decoder preserves alpha and EXIF orientation without upscaling',
-    () async {
-      final pixels = image.Image(width: 4, height: 2, numChannels: 4);
-      for (final pixel in pixels) {
-        pixel.setRgba(
-          pixel.x < 2 ? 255 : 0,
-          0,
-          pixel.x < 2 ? 0 : 255,
-          pixel.y == 0 ? 0 : 128,
-        );
-      }
-      final png = File('${root.path}/alpha.png');
-      await png.writeAsBytes(image.encodePng(pixels));
-      final real = ThumbnailService(
-        cacheDirectory: cache,
-        isCurrent: (_) async => true,
-      );
-      services.add(real);
-      final lease = await real.acquire(
-        ThumbnailSource(
-          mediaId: 'alpha',
-          revision: '1',
-          path: png.path,
-          fingerprintToken: '1',
-        ),
-        variant,
-      );
-      final decoded = image.decodePng(
-        await File(lease.artifact.path).readAsBytes(),
-      )!;
-      expect(decoded.width, 2);
-      expect(decoded.height, 2);
-      expect(decoded.hasAlpha, isTrue);
-      expect(decoded.getPixel(0, 0).a, 0);
-      expect(lease.artifact.mimeType, 'image/png');
-      await lease.release();
-      // Orientation 6 rotates a 4x2 image clockwise before center cover.
-      final jpeg = image.Image(width: 4, height: 2);
-      for (final pixel in jpeg) {
-        pixel.setRgb(pixel.x < 2 ? 255 : 0, 0, pixel.x < 2 ? 0 : 255);
-      }
-      jpeg.exif.imageIfd.orientation = 6;
-      final jpg = File('${root.path}/orientation.jpg');
-      await jpg.writeAsBytes(image.encodeJpg(jpeg));
-      final oriented = await real.acquire(
-        ThumbnailSource(
-          mediaId: 'exif',
-          revision: '1',
-          path: jpg.path,
-          fingerprintToken: '1',
-        ),
-        variant,
-      );
-      final result = image.decodeJpg(
-        await File(oriented.artifact.path).readAsBytes(),
-      )!;
-      expect(result.getPixel(0, 0).r, greaterThan(result.getPixel(0, 0).b));
-      expect(result.getPixel(0, 1).b, greaterThan(result.getPixel(0, 1).r));
-      expect(result.exif.imageIfd.hasOrientation, isFalse);
-      await oriented.release();
-    },
-  );
+  test('real decoder flattens alpha and preserves EXIF orientation without upscaling', () async {
+    final pixels = image.Image(width: 4, height: 2, numChannels: 4);
+    for (final pixel in pixels) {
+      pixel.setRgba(255, 0, 0, 0);
+    }
+    final png = File('${root.path}/alpha.png');
+    await png.writeAsBytes(image.encodePng(pixels));
+    final real = ThumbnailService(
+      cacheDirectory: cache,
+      isCurrent: (_) async => true,
+    );
+    services.add(real);
+    final lease = await real.acquire(
+      ThumbnailSource(
+        mediaId: 'alpha',
+        revision: '1',
+        path: png.path,
+        fingerprintToken: '1',
+      ),
+      variant,
+    );
+    final decoded = image.decodeJpg(
+      await File(lease.artifact.path).readAsBytes(),
+    )!;
+    expect(decoded.width, 2);
+    expect(decoded.height, 2);
+    expect(decoded.hasAlpha, isFalse);
+    expect(decoded.getPixel(0, 0).r, closeTo(32, 20));
+    expect(lease.artifact.mimeType, 'image/jpeg');
+    await lease.release();
+    // Large color regions survive JPEG chroma subsampling after rotation/crop.
+    final jpeg = image.Image(width: 40, height: 20);
+    for (final pixel in jpeg) {
+      pixel.setRgb(pixel.x < 20 ? 255 : 0, 0, pixel.x < 20 ? 0 : 255);
+    }
+    jpeg.exif.imageIfd.orientation = 6;
+    final jpg = File('${root.path}/orientation.jpg');
+    await jpg.writeAsBytes(image.encodeJpg(jpeg));
+    final oriented = await real.acquire(
+      ThumbnailSource(
+        mediaId: 'exif',
+        revision: '1',
+        path: jpg.path,
+        fingerprintToken: '1',
+      ),
+      variant,
+    );
+    final result = image.decodeJpg(
+      await File(oriented.artifact.path).readAsBytes(),
+    )!;
+    expect(result.width, 20);
+    expect(result.height, 20);
+    expect(result.getPixel(5, 4).r, greaterThan(result.getPixel(5, 4).b));
+    expect(result.getPixel(5, 15).b, greaterThan(result.getPixel(5, 15).r));
+    expect(result.exif.imageIfd.hasOrientation, isFalse);
+    await oriented.release();
+  });
 
   test(
     'real worker timeout terminates CPU work before releasing the call',

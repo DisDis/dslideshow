@@ -19,12 +19,14 @@ GalleryThumbnailPolicy _$GalleryThumbnailPolicyFromJson(
         ),
       )
       .toList(),
+  revision: json['revision'] as String? ?? '',
 );
 
 Map<String, dynamic> _$GalleryThumbnailPolicyToJson(
   GalleryThumbnailPolicy instance,
 ) => <String, dynamic>{
   'version': instance.version,
+  'revision': instance.revision,
   'sizes': instance.sizes
       .map((e) => _$GalleryThumbnailSizeEnumMap[e]!)
       .toList(),

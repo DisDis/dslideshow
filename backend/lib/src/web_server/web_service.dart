@@ -110,9 +110,9 @@ class WebService {
     this._remoteBackendService, {
     io.Directory? cacheDirectory,
     io.Directory? galleryDirectory,
-    ThumbnailWorker thumbnailWorker = const IsolateThumbnailWorker(),
-    ThumbnailPolicy thumbnailPolicy = const ThumbnailPolicy(),
-    int maxConcurrentMediaStreams = 12,
+    ThumbnailWorker thumbnailWorker = const FfmpegThumbnailWorker(),
+    ThumbnailPolicy? thumbnailPolicy,
+    int? maxConcurrentMediaStreams,
     StreamingUploadReceiver? uploadReceiver,
     int maxConcurrentUploads = 2,
     bool startServer = true,
@@ -126,18 +126,26 @@ class WebService {
     if (maxConcurrentUploads <= 0) {
       throw ArgumentError.value(maxConcurrentUploads, 'maxConcurrentUploads');
     }
+    final effectiveThumbnailPolicy =
+        thumbnailPolicy ??
+        ThumbnailPolicy.fromConfig(_appConfig.gallery.thumbnail);
     _galleryDirectory = galleryDirectory ?? galleryStateDirectory(_cacheFolder);
     _galleryCatalog = GalleryCatalogService(
       originals: _cacheFolder,
       stateDirectory: _galleryDirectory,
+      thumbnailPolicy: effectiveThumbnailPolicy.catalogPolicy,
     );
-    _mediaFiles = MediaFileResponder(maxStreams: maxConcurrentMediaStreams);
+    _mediaFiles = MediaFileResponder(
+      maxStreams:
+          maxConcurrentMediaStreams ??
+          _appConfig.gallery.maxConcurrentMediaStreams,
+    );
     _thumbnails = ThumbnailService(
       cacheDirectory: io.Directory(
         path.join(_galleryDirectory.path, 'thumbnails'),
       ),
       originalsDirectory: _cacheFolder,
-      policy: thumbnailPolicy,
+      policy: effectiveThumbnailPolicy,
       worker: thumbnailWorker,
       isCurrent: (source) async {
         try {
@@ -502,10 +510,17 @@ class WebService {
   ) async {
     if (code != _code) return _galleryError(GalleryErrorCode.forbidden);
     final size = int.tryParse(bucket);
-    if (policy != '1' ||
-        !GalleryCatalogService.thumbnailPolicy.sizes.any(
-          (item) => item.pixels == size,
-        )) {
+    if (!RegExp(r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$').hasMatch(policy) ||
+        size == null ||
+        size <= 0) {
+      return _galleryError(GalleryErrorCode.invalidRequest);
+    }
+    if (policy != _galleryCatalog.thumbnailPolicy.identity) {
+      return _galleryError(GalleryErrorCode.revisionMismatch);
+    }
+    if (!_galleryCatalog.thumbnailPolicy.sizes.any(
+      (item) => item.pixels == size,
+    )) {
       return _galleryError(GalleryErrorCode.invalidRequest);
     }
     try {
@@ -519,7 +534,11 @@ class WebService {
           path: source.absolutePath,
           fingerprintToken: source.fingerprint,
         ),
-        ThumbnailVariantSpec(bucketId: bucket, size: size!),
+        ThumbnailVariantSpec(
+          bucketId: bucket,
+          size: size,
+          policyRevision: _galleryCatalog.thumbnailPolicy.revision,
+        ),
       );
       return await _mediaFiles.serve(
         request,

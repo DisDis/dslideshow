@@ -24,6 +24,9 @@ export 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storag
 export 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 export 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 
+import 'src/service/gallery/gallery_config.dart';
+export 'src/service/gallery/gallery_config.dart';
+
 part 'config.g.dart';
 
 @JsonSerializable()
@@ -40,6 +43,8 @@ class AppConfig {
   WelcomeConfig welcome;
   @JsonKey(fromJson: _parseWebServer, name: 'web')
   WebServerConfig webServer;
+  @JsonKey(fromJson: _parseGallery)
+  GalleryConfig gallery;
   @JsonKey(fromJson: _parseMQTT)
   MqttConfig mqtt;
   @JsonKey(fromJson: _parseStorages)
@@ -55,6 +60,7 @@ class AppConfig {
     required this.slideshow,
     required this.welcome,
     required this.webServer,
+    this.gallery = const GalleryConfig(),
     required this.mqtt,
     required this.storages,
     required this.wifi,
@@ -148,6 +154,10 @@ class AppConfig {
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return new WebServerConfig.fromJson(dataV);
   }
+
+  static GalleryConfig _parseGallery(dynamic data) => GalleryConfig.fromJson(
+    data is Map<String, dynamic> ? data : <String, dynamic>{},
+  );
 
   static MqttConfig _parseMQTT(dynamic data) {
     _log.info("- parsing 'mqtt'");

@@ -43,7 +43,7 @@ void main() {
     ]);
     expect(decoded.entries.first.kind, GalleryEntryKind.directory);
     expect(decoded.entries[1].thumbnailSupported, true);
-    expect(decoded.entries[2].thumbnailSupported, false);
+    expect(decoded.entries[2].thumbnailSupported, true);
   });
   test('scan/restart preserve identity; force operation is idempotent and changes generations', () async {
     await write('one.jpg', 'source');

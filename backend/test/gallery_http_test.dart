@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_publication.dart';
+import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
 import 'package:dslideshow_backend/src/web_server/web_service.dart';
 import 'package:dslideshow_backend/src/web_server/media_file_responder.dart';
 import 'package:dslideshow_common/gallery.dart';
@@ -22,6 +24,8 @@ void main() {
   late Directory root;
   late Directory media;
   late WebService service;
+  var missingEncoder = false;
+  var galleryConfig = const GalleryConfig();
   setUp(() async {
     root = await Directory.systemTemp.createTemp('gallery-http-test-');
     media = await Directory('${root.path}/media').create();
@@ -29,7 +33,7 @@ void main() {
     final cwd = Directory.current;
     try {
       Directory.current = root;
-      final config = AppConfig.fromJson({});
+      final config = AppConfig.fromJson({})..gallery = galleryConfig;
       service = WebService(
         config,
         config.webServer,
@@ -37,6 +41,9 @@ void main() {
         cacheDirectory: media,
         galleryDirectory: Directory('${root.path}/gallery'),
         startServer: false,
+        thumbnailWorker: FfmpegThumbnailWorker(
+          ffmpegExecutable: missingEncoder ? '${root.path}/missing' : 'ffmpeg',
+        ),
       );
     } finally {
       Directory.current = cwd;
@@ -69,11 +76,19 @@ void main() {
     final catalog = GalleryCatalog.fromJson(
       jsonDecode(await catalogResponse.readAsString()) as Map<String, dynamic>,
     );
+    expect(catalog.thumbnailPolicy!.version, thumbnailPolicyVersion);
     final entry = catalog.entries.single;
-    final tail = 'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/1/256';
+    final tail =
+        'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${catalog.thumbnailPolicy!.identity}/256';
+    final outdated = await request(
+      'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/1/256',
+    );
+    expect(outdated.statusCode, 409);
+    await outdated.read().drain<void>();
     final thumb = await request(tail);
     expect(thumb.statusCode, 200);
     final bytes = await thumb.read().expand((chunk) => chunk).toList();
+    expect(thumb.headers['etag'], '"${md5.convert(bytes)}"');
     final decoded = image.decodeImage(Uint8List.fromList(bytes))!;
     expect(decoded.width, 256);
     expect(decoded.height, 256);
@@ -107,6 +122,102 @@ void main() {
     final stale = await request(tail);
     expect(stale.statusCode, 409);
     await stale.read().drain<void>();
+  });
+  group('without FFmpeg', () {
+    setUpAll(() => missingEncoder = true);
+    tearDownAll(() => missingEncoder = false);
+    test('thumbnail is 503 while original remains available', () async {
+      final original = image.encodePng(image.Image(width: 8, height: 8));
+      await File('${media.path}/photo.png').writeAsBytes(original);
+      final response = await request('v2/catalog');
+      final catalog = GalleryCatalog.fromJson(
+        jsonDecode(await response.readAsString()) as Map<String, dynamic>,
+      );
+      final entry = catalog.entries.single;
+      final thumbnail = await request(
+        'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${catalog.thumbnailPolicy!.identity}/256',
+      );
+      expect(thumbnail.statusCode, 503);
+      expect(await thumbnail.readAsString(), isNot(contains(root.path)));
+      final full = await request('get/photo.png?rev=${entry.sourceRevision}');
+      expect(await full.read().expand((chunk) => chunk).toList(), original);
+    });
+  });
+  group('gallery configuration', () {
+    setUpAll(
+      () => galleryConfig = const GalleryConfig(
+        maxConcurrentMediaStreams: 1,
+        thumbnail: GalleryThumbnailConfig(
+          sizes: [GalleryThumbnailSize.small],
+          jpegQuality: 95,
+          backgroundColor: 0xffffffff,
+          frameSelectionFrames: 5,
+        ),
+      ),
+    );
+    tearDownAll(() => galleryConfig = const GalleryConfig());
+
+    test('advertises configured buckets and renders JPEG on configured background', () async {
+      final original = image.encodePng(
+        image.Image(width: 20, height: 20, numChannels: 4),
+      );
+      await File('${media.path}/alpha.png').writeAsBytes(original);
+      final response = await request('v2/catalog');
+      final catalog = GalleryCatalog.fromJson(
+        jsonDecode(await response.readAsString()) as Map<String, dynamic>,
+      );
+      final policy = catalog.thumbnailPolicy!;
+      expect(policy.sizes, [GalleryThumbnailSize.small]);
+      expect(
+        policy.identity,
+        ThumbnailPolicy.fromConfig(galleryConfig.thumbnail)
+            .catalogPolicy
+            .identity,
+      );
+      final entry = catalog.entries.single;
+      final tail =
+          'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${policy.identity}';
+      final invalidSize = await request('$tail/512');
+      expect(invalidSize.statusCode, 400);
+      await invalidSize.read().drain<void>();
+      // An open client with the previous size list must refresh its catalog.
+      final previousPolicy = const ThumbnailPolicy().catalogPolicy.identity;
+      final oldCatalog = await request(
+        'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/$previousPolicy/512',
+      );
+      expect(oldCatalog.statusCode, 409);
+      await oldCatalog.read().drain<void>();
+      final responseJpeg = await request('$tail/256');
+      expect(responseJpeg.statusCode, 200);
+      expect(responseJpeg.headers['content-type'], 'image/jpeg');
+      final bytes = Uint8List.fromList(
+        await responseJpeg.read().expand((chunk) => chunk).toList(),
+      );
+      final jpeg = image.decodeJpg(bytes)!;
+      expect(jpeg.width, 20);
+      expect(jpeg.getPixel(10, 10).r, greaterThan(245));
+      expect(jpeg.getPixel(10, 10).g, greaterThan(245));
+      expect(jpeg.getPixel(10, 10).b, greaterThan(245));
+      final full = await request('get/alpha.png?rev=${entry.sourceRevision}');
+      expect(await full.read().expand((chunk) => chunk).toList(), original);
+    });
+
+    test(
+      'configured media stream cap lasts until the first body is consumed',
+      () async {
+        await File('${media.path}/photo.jpg')
+            .writeAsBytes(List.filled(200000, 7));
+        final first = await request('get/photo.jpg');
+        expect(first.statusCode, 200);
+        final blocked = await request('get/photo.jpg');
+        expect(blocked.statusCode, 429);
+        await blocked.read().drain<void>();
+        await first.read().drain<void>();
+        final next = await request('get/photo.jpg');
+        expect(next.statusCode, 200);
+        await next.read().drain<void>();
+      },
+    );
   });
   test(
     'original conditional, Range, HEAD and CORS preserve the HTTP contract',

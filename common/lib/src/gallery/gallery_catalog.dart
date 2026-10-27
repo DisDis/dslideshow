@@ -43,10 +43,19 @@ enum GalleryErrorCode {
 @JsonSerializable()
 class GalleryThumbnailPolicy {
   final int version;
+  @JsonKey(defaultValue: '')
+  final String revision;
   @JsonKey(unknownEnumValue: GalleryThumbnailSize.unknown)
   final List<GalleryThumbnailSize> sizes;
 
-  const GalleryThumbnailPolicy({required this.version, required this.sizes});
+  const GalleryThumbnailPolicy({
+    required this.version,
+    required this.sizes,
+    this.revision = '',
+  });
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String get identity => revision.isEmpty ? '$version' : '$version-$revision';
 
   factory GalleryThumbnailPolicy.fromJson(Map<String, dynamic> json) =>
       _$GalleryThumbnailPolicyFromJson(json);

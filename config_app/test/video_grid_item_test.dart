@@ -69,6 +69,7 @@ Widget _app({
   required VideoPlayerController Function(Uri) factory,
   String url = 'https://frame.local/video.mp4',
   Duration initializationTimeout = const Duration(seconds: 15),
+  Widget? poster,
 }) => MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
@@ -82,6 +83,7 @@ Widget _app({
           title: 'Sample video',
           controllerFactory: factory,
           initializationTimeout: initializationTimeout,
+          poster: poster,
         ),
       ),
     ),
@@ -102,6 +104,47 @@ void _videoTest(
 );
 
 void main() {
+  _videoTest('poster is visible before loading the original video', (
+    tester,
+  ) async {
+    var calls = 0;
+    final controller = _Controller();
+    await tester.pumpWidget(
+      _app(
+        poster: const Text('JPEG poster'),
+        factory: (uri) {
+          expect(uri, Uri.parse('https://frame.local/video.mp4'));
+          calls++;
+          return controller;
+        },
+      ),
+    );
+    expect(find.text('JPEG poster'), findsOneWidget);
+    expect(calls, 0);
+    await tester.tap(find.byTooltip(_strings(tester).video_load));
+    await tester.pumpAndSettle();
+    expect(calls, 1);
+    expect(find.byType(VideoPlayer), findsOneWidget);
+    expect(find.text('JPEG poster'), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+    expect(controller.disposeCalls, 1);
+  });
+
+  _videoTest('unsupported playback still displays its JPEG poster', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        poster: const Text('JPEG poster'),
+        factory: (_) => throw StateError('must remain lazy'),
+      ),
+    );
+    expect(find.text('JPEG poster'), findsOneWidget);
+    expect(find.byType(VideoPlayer), findsNothing);
+    expect(find.byType(IconButton), findsNothing);
+  }, platform: TargetPlatform.linux);
+
   _videoTest('unsupported Linux does not construct or initialize a player', (
     tester,
   ) async {

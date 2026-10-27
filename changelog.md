@@ -1,5 +1,15 @@
 # Unreleased
 
+* Generate all gallery thumbnails as JPEG through one FFmpeg process per job,
+  without ffprobe or per-request Dart isolates. Preserve EXIF and square sizes,
+  flatten alpha on a configurable background, select representative animation/video
+  frames with the thumbnail filter, and show video posters in the grid. Add gallery
+  configuration with enum size choices, quality, frame selection, four default
+  workers, queue/cache/timeout and media-stream limits. Use policy 3 plus render
+  settings in cache identities, MD5 content ETags and cache checksums; discard old
+  derivatives. Remove the runtime image dependency, require ffmpeg in the DEB,
+  and cover codecs, cancellation, settings and caches with local tests.
+
 * Add a standalone local Ambient API probe for device OAuth, album-source
   selection, paginated media listing and photo/video downloads. Preserve
   backend code; add resumable private state, bounded downloads, diagnostics,
@@ -7,7 +17,8 @@
 
 * Record the deferred three-level RPC contract coverage checks and a proposed
   Google Photos client/FFmpeg thumbnail implementation plan; implementation
-  of these plans remains pending.
+  of the Google Photos client automation remains pending; the FFmpeg step is
+  tracked separately above.
 
 * Generate the RPC serializer registry from @RpcSerializers using a separate
   local rpc_serializers_generator build_runner package. Preserve all 57 wire

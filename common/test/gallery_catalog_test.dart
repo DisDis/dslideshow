@@ -11,6 +11,7 @@ void main() {
       capabilities: [GalleryCapability.thumbnails],
       thumbnailPolicy: GalleryThumbnailPolicy(
         version: 1,
+        revision: 'render-settings',
         sizes: [GalleryThumbnailSize.small],
       ),
       entries: [
@@ -29,6 +30,8 @@ void main() {
     );
     expect(restored.toJson(), catalog.toJson());
     expect(restored.thumbnailPolicy!.sizes.single.pixels, 256);
+    expect(restored.thumbnailPolicy!.revision, 'render-settings');
+    expect(restored.thumbnailPolicy!.identity, '1-render-settings');
   });
   test(
     'unknown future enums remain explicit rather than becoming supported',
@@ -47,6 +50,8 @@ void main() {
         'sizes': [8192],
       });
       expect(policy.sizes, [GalleryThumbnailSize.unknown]);
+      expect(policy.revision, '');
+      expect(policy.identity, '1');
     },
   );
   test(

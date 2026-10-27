@@ -86,6 +86,9 @@ class DebBuildTest(unittest.TestCase):
                 (extracted / "opt/dslideshow/flutter-pi").read_bytes(), runtime.read_bytes()
             )
             self.assertEqual((extracted / "opt/dslideshow/version").read_text(), "1.0.0+1\n")
+            control = (extracted / "DEBIAN/control").read_text().splitlines()
+            dependencies = next(line.removeprefix('Depends:') for line in control if line.startswith('Depends:'))
+            self.assertIn('ffmpeg', [item.strip() for item in dependencies.split(',')])
 
 
 class DebPreflightTest(unittest.TestCase):

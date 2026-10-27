@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 
 import 'catalog_state.dart';
 import 'gallery_publication.dart';
+import 'thumbnail_policy.dart';
 
 class GalleryCatalogFailure implements Exception {
   final GalleryErrorCode code;
@@ -30,6 +31,7 @@ class GalleryCatalogService {
   final Directory stateDirectory;
   final Duration scanMaxAge;
   final int maxPendingOperations;
+  final GalleryThumbnailPolicy thumbnailPolicy;
   int _pendingOperations = 0;
   GalleryCatalogState? _state;
   GalleryCatalog? _catalog;
@@ -47,19 +49,12 @@ class GalleryCatalogService {
     required this.stateDirectory,
     this.scanMaxAge = const Duration(seconds: 30),
     this.maxPendingOperations = 64,
-  }) {
+    GalleryThumbnailPolicy? thumbnailPolicy,
+  }) : thumbnailPolicy =
+           thumbnailPolicy ?? const ThumbnailPolicy().catalogPolicy {
     if (maxPendingOperations < 1)
       throw ArgumentError.value(maxPendingOperations);
   }
-
-  static const thumbnailPolicy = GalleryThumbnailPolicy(
-    version: 1,
-    sizes: [
-      GalleryThumbnailSize.small,
-      GalleryThumbnailSize.medium,
-      GalleryThumbnailSize.large,
-    ],
-  );
 
   Future<T> _enqueue<T>(Future<T> Function() work) {
     if (_closed)
@@ -323,7 +318,8 @@ class GalleryCatalogService {
                 : '${next.epoch}-${record.generation}',
             thumbnailSupported:
                 kind == GalleryEntryKind.image ||
-                kind == GalleryEntryKind.animatedImage,
+                kind == GalleryEntryKind.animatedImage ||
+                kind == GalleryEntryKind.video,
           );
         }),
       ),

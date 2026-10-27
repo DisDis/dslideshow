@@ -17,6 +17,7 @@ final class GalleryImageKey {
     required this.revision,
     required this.variant,
     this.policy = 0,
+    this.policyRevision = '',
     this.bucket = 0,
   });
 
@@ -25,11 +26,12 @@ final class GalleryImageKey {
   final String revision;
   final GalleryImageVariant variant;
   final int policy;
+  final String policyRevision;
   final int bucket;
 
   String get storageKey =>
       '${scope.length}:$scope${mediaId.length}:$mediaId'
-      '${revision.length}:$revision:${variant.name}:$policy:$bucket';
+      '${revision.length}:$revision:${variant.name}:$policy:${policyRevision.length}:$policyRevision:$bucket';
 
   @override
   bool operator ==(Object other) =>

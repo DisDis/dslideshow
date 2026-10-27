@@ -13,6 +13,7 @@ class VideoGridItem extends StatefulWidget {
   final VideoPlayerController Function(Uri)? controllerFactory;
   final Duration initializationTimeout;
   final bool active;
+  final Widget? poster;
 
   const VideoGridItem({
     super.key,
@@ -21,6 +22,7 @@ class VideoGridItem extends StatefulWidget {
     this.controllerFactory,
     this.initializationTimeout = const Duration(seconds: 15),
     this.active = true,
+    this.poster,
   }) : assert(initializationTimeout > Duration.zero);
 
   @override
@@ -240,7 +242,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
   @override
   Widget build(BuildContext context) {
     if (!supportsConfigAppVideo) {
-      return VideoUnavailable(title: widget.title);
+      return widget.poster ?? VideoUnavailable(title: widget.title);
     }
 
     final theme = Theme.of(context);
@@ -321,7 +323,9 @@ class _VideoGridItemState extends State<VideoGridItem> {
       alignment: Alignment.center,
       children: [
         Positioned.fill(
-          child: ColoredBox(color: theme.colorScheme.surfaceContainerHighest),
+          child:
+              widget.poster ??
+              ColoredBox(color: theme.colorScheme.surfaceContainerHighest),
         ),
         if (_busy)
           const CircularProgressIndicator()

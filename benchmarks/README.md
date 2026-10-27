@@ -80,6 +80,17 @@
 
 ### Миниатюры и управляемый HTTP галереи
 
+[Один FFmpeg и JPEG](reports/thumbnail-jpeg-local-2026-10-27/report.md) сравнивает
+новый конвейер с предыдущим probe/RGBA/encode. [Первый переход на FFmpeg](reports/thumbnail-ffmpeg-local-2026-10-27/report.md)
+сохраняет baseline/candidate, сырые HTTP-результаты, медиахеши и команды повтора.
+`gallery_http.py --bucket 256|512|1024` берёт policy из каталога;
+`--cold-concurrency 4` задаёт параллельный холодный проход. Инструмент измеряет
+дерево процессов: sampled sum RSS/FD/threads и CPU с reaped children.
+Сумма RSS может дважды учитывать shared pages; дискретный максимум не является
+точным peak RSS. `/info` остаётся HTTP-proxy отзывчивости, не измерением RPC.
+`gallery_thumbnail_probe.dart source size output-file` проверяет текущий worker;
+прежние Dart decoder-пробы сохранены в исторических frozen-отчётах.
+
 Production-поведение, API и лимиты описаны в [руководстве галереи](../doc/gallery.md).
 `gallery_http.py` компилирует frozen backend/common с одним и тем же
 `gallery_http_server.dart` в AOT, запускает локальный HTTP-сервер и сравнивает

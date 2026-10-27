@@ -7,9 +7,14 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
+import 'package:dslideshow_common/gallery.dart';
 import 'package:path/path.dart' as path;
 
 import 'thumbnail_worker.dart';
+import 'thumbnail_policy.dart';
+export 'thumbnail_policy.dart';
+import 'ffmpeg_thumbnail_worker.dart';
+export 'ffmpeg_thumbnail_worker.dart';
 export 'thumbnail_worker.dart';
 
 class ThumbnailSource {
@@ -27,49 +32,12 @@ class ThumbnailSource {
 
 class ThumbnailVariantSpec {
   final String bucketId;
-  final String policyVersion;
+  final String policyRevision;
   final int size;
-  final int jpegQuality;
-  final ThumbnailFormat format;
   const ThumbnailVariantSpec({
     required this.bucketId,
     required this.size,
-    this.policyVersion = '1',
-    this.jpegQuality = 88,
-    this.format = ThumbnailFormat.automatic,
-  });
-}
-
-/// Conservative initial experiment parameters, not measured Pi capacity.
-/// Count/pixel/byte limits bound accepted work, not the whole Dart VM RSS.
-class ThumbnailPolicy {
-  final int maxWorkers;
-  final int maxQueued;
-  final int maxWaiters;
-  final int maxCacheBytes;
-  final int maxCacheObjects;
-  final int maxNegativeEntries;
-  final int maxSourceBytes;
-  final int maxSourcePixels;
-  final int maxOutputBytes;
-  final int maxVariantSize;
-  final Duration workerTimeout;
-  final Duration waiterTimeout;
-  final Duration negativeTtl;
-  const ThumbnailPolicy({
-    this.maxWorkers = 1,
-    this.maxQueued = 8,
-    this.maxWaiters = 32,
-    this.maxCacheBytes = 512 * 1024 * 1024,
-    this.maxCacheObjects = 2048,
-    this.maxNegativeEntries = 64,
-    this.maxSourceBytes = 200 * 1024 * 1024,
-    this.maxSourcePixels = 64 * 1024 * 1024,
-    this.maxOutputBytes = 8 * 1024 * 1024,
-    this.maxVariantSize = 1024,
-    this.workerTimeout = const Duration(seconds: 20),
-    this.waiterTimeout = const Duration(seconds: 30),
-    this.negativeTtl = const Duration(seconds: 3),
+    this.policyRevision = '',
   });
 }
 
@@ -119,7 +87,8 @@ class ThumbnailService {
   int _waiters = 0;
   int _usedBytes = 0;
   int _sequence = 0;
-  static final _name = RegExp(r'^([a-f0-9]{64})-([a-f0-9]{64})\.(jpg|png)$');
+  static final _name = RegExp(r'^([a-f0-9]{64})-([a-f0-9]{32})\.jpg$');
+  static final _legacyName = RegExp(r'^[a-f0-9]{64}-[a-f0-9]{64}\.(jpg|png)$');
   static final _temporaryName = RegExp(r'^\.thumb-[a-f0-9]{32}\.part$');
   static final _random = Random.secure();
 
@@ -128,7 +97,7 @@ class ThumbnailService {
     required ThumbnailSourceValidator isCurrent,
     Directory? originalsDirectory,
     this.policy = const ThumbnailPolicy(),
-    ThumbnailWorker worker = const IsolateThumbnailWorker(),
+    ThumbnailWorker worker = const FfmpegThumbnailWorker(),
     Duration Function()? elapsed,
   }) : _worker = worker,
        _isCurrent = isCurrent,
@@ -145,6 +114,14 @@ class ThumbnailService {
       policy.maxVariantSize,
     ];
     if (positive.any((value) => value <= 0) ||
+        policy.sizes.isEmpty ||
+        policy.sizes.contains(GalleryThumbnailSize.unknown) ||
+        policy.jpegQuality < 1 ||
+        policy.jpegQuality > 100 ||
+        policy.frameSelectionFrames < 2 ||
+        policy.frameSelectionFrames > 120 ||
+        policy.backgroundColor < 0xff000000 ||
+        policy.backgroundColor > 0xffffffff ||
         policy.maxQueued < 0 ||
         policy.maxOutputBytes > policy.maxCacheBytes ||
         policy.workerTimeout <= Duration.zero ||
@@ -170,7 +147,7 @@ class ThumbnailService {
       _checkOpen();
       if (entity is! File) continue;
       final filename = path.basename(entity.path);
-      if (_temporaryName.hasMatch(filename)) {
+      if (_temporaryName.hasMatch(filename) || _legacyName.hasMatch(filename)) {
         await _delete(entity);
         continue;
       }
@@ -181,7 +158,7 @@ class ThumbnailService {
       try {
         final stat = await file.stat();
         if (stat.size > policy.maxOutputBytes ||
-            (await sha256.bind(file.openRead()).first).toString() != match[2]) {
+            (await md5.bind(file.openRead()).first).toString() != match[2]) {
           await _delete(file);
           continue;
         }
@@ -191,7 +168,7 @@ class ThumbnailService {
             path: file.path,
             length: stat.size,
             etag: '"${match[2]}"',
-            mimeType: match[3] == 'png' ? 'image/png' : 'image/jpeg',
+            mimeType: 'image/jpeg',
           ),
           stat.modified,
         );
@@ -227,10 +204,7 @@ class ThumbnailService {
     if (_waiters >= policy.maxWaiters) {
       throw const ThumbnailFailure(ThumbnailFailureKind.queueFull);
     }
-    if (variant.size <= 0 ||
-        variant.size > policy.maxVariantSize ||
-        variant.jpegQuality < 1 ||
-        variant.jpegQuality > 100) {
+    if (variant.size <= 0 || variant.size > policy.maxVariantSize) {
       throw ArgumentError('Invalid thumbnail variant');
     }
     _waiters++;
@@ -286,10 +260,10 @@ class ThumbnailService {
               source.revision,
               source.fingerprintToken,
               variant.bucketId,
-              variant.policyVersion,
+              thumbnailPolicyVersion,
+              policy.renderRevision,
+              variant.policyRevision,
               variant.size,
-              variant.jpegQuality,
-              variant.format.name,
             ]),
           ),
         )
@@ -404,8 +378,9 @@ class ThumbnailService {
         ThumbnailWorkRequest(
           path: job.source.path,
           size: job.variant.size,
-          jpegQuality: job.variant.jpegQuality,
-          format: job.variant.format,
+          jpegQuality: policy.jpegQuality,
+          backgroundColor: policy.backgroundColor,
+          frameSelectionFrames: policy.frameSelectionFrames,
           maxSourceBytes: policy.maxSourceBytes,
           maxSourcePixels: policy.maxSourcePixels,
           maxOutputBytes: policy.maxOutputBytes,
@@ -418,7 +393,7 @@ class ThumbnailService {
       if (!await _isCurrent(job.source)) {
         throw const ThumbnailFailure(ThumbnailFailureKind.staleSource);
       }
-      final bytes = result.takeBytes();
+      final bytes = result.bytes;
       if (bytes.isEmpty ||
           bytes.length > policy.maxOutputBytes ||
           bytes.length > policy.maxCacheBytes) {
@@ -440,7 +415,7 @@ class ThumbnailService {
         final temporary = File(
           path.join(cacheDirectory.path, '.thumb-$nonce.part'),
         );
-        final extension = result.format == ThumbnailFormat.png ? 'png' : 'jpg';
+        const extension = 'jpg';
         final destination = File(
           path.join(
             cacheDirectory.path,
@@ -474,9 +449,7 @@ class ThumbnailService {
               path: destination.path,
               length: bytes.length,
               etag: '"${result.digest}"',
-              mimeType: result.format == ThumbnailFormat.png
-                  ? 'image/png'
-                  : 'image/jpeg',
+              mimeType: 'image/jpeg',
             ),
             stat.modified,
           );
@@ -502,6 +475,7 @@ class ThumbnailService {
           : const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
       if ([
         ThumbnailFailureKind.decodeFailed,
+        ThumbnailFailureKind.unavailable,
         ThumbnailFailureKind.unsupported,
         ThumbnailFailureKind.sourceTooLarge,
       ].contains(failure.kind)) {

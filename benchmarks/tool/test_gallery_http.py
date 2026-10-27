@@ -1,8 +1,11 @@
 """Regression checks for provenance and the gallery load client's observations."""
 import http.server
 import json
+import os
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import threading
 import unittest
 
@@ -59,6 +62,19 @@ class GallerySnapshotTest(unittest.TestCase):
     def test_missing_quantiles_are_not_reported_as_zero(self):
         self.assertEqual(bench.distribution([]), {'n': 0, 'p50': None, 'p95': None, 'p99': None, 'max': None})
         self.assertEqual(bench.distribution([3, 2, 50])['p99'], 50)
+
+    def test_resource_samples_include_real_children(self):
+        child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+        try:
+            sample = bench.process_sample(os.getpid())
+            self.assertIsNotNone(sample)
+            self.assertIn(child.pid, [item['pid'] for item in sample['children']])
+            self.assertGreaterEqual(sample['tree_processes'], 2)
+            self.assertGreaterEqual(sample['tree_rss_kib'], sample['VmRSS'])
+            self.assertGreaterEqual(sample['tree_threads'], sample['Threads'])
+        finally:
+            child.kill()
+            child.wait(timeout=5)
 
 
 class GalleryHttpClientTest(unittest.TestCase):

@@ -299,6 +299,17 @@ class _GalleryItemWidget extends StatelessWidget {
         title: item.title,
         url: item.uri.toString(),
         active: videoActive,
+        poster: item.thumbnailBaseUri == null
+            ? null
+            : ImageGridItem(
+                item: item,
+                loader: session.loader,
+                decodePool: session.decodePool,
+                active: active,
+                priority: priority,
+                distance: distance,
+                onRevisionMismatch: onRevisionMismatch,
+              ),
       );
     } else if (item.isImage) {
       content = ImageGridItem(

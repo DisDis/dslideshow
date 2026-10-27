@@ -12,6 +12,9 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
   slideshow: AppConfig._parseSlideshow(json['slideshow']),
   welcome: AppConfig._parseWelcome(json['welcome']),
   webServer: AppConfig._parseWebServer(json['web']),
+  gallery: json['gallery'] == null
+      ? const GalleryConfig()
+      : AppConfig._parseGallery(json['gallery']),
   mqtt: AppConfig._parseMQTT(json['mqtt']),
   storages: AppConfig._parseStorages(json['storages']),
   wifi: AppConfig._parseWifi(json['wifi']),
@@ -24,6 +27,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'slideshow': instance.slideshow.toJson(),
   'welcome': instance.welcome.toJson(),
   'web': instance.webServer.toJson(),
+  'gallery': instance.gallery.toJson(),
   'mqtt': instance.mqtt.toJson(),
   'storages': instance.storages.toJson(),
   'ota': instance.ota.toJson(),

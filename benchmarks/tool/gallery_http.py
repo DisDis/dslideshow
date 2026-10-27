@@ -187,7 +187,16 @@ def request(port, path, *, delay_ms=0, cancel_after=None, headers=None, capture_
             'cancelled': cancelled, 'error': error, 'headers': response_headers}, bytes(body)
 
 
-def process_sample(pid):
+def process_sample(pid, seen=None):
+    """Sample simultaneous RSS (shared pages can be counted more than once).
+
+    Children can belong to any Dart IO thread. Include reaped child CPU from
+    /proc/stat so short ffprobe/ffmpeg processes are not lost between samples.
+    """
+    seen = set() if seen is None else seen
+    if pid in seen:
+        return None
+    seen.add(pid)
     try:
         status = {}
         for line in Path(f'/proc/{pid}/status').read_text().splitlines():
@@ -198,6 +207,22 @@ def process_sample(pid):
         status['cpu_ms'] = (int(fields[11]) + int(fields[12])) * 1000 / os.sysconf('SC_CLK_TCK')
         status['fd'] = len(list(Path(f'/proc/{pid}/fd').iterdir()))
         status['monotonic_s'] = time.monotonic()
+        status['pid'] = pid
+        children = set()
+        for task in Path(f'/proc/{pid}/task').glob('*/children'):
+            try:
+                children.update(map(int, task.read_text().split()))
+            except OSError:
+                pass  # An IO thread may exit during enumeration.
+        status['children'] = [child for child in (process_sample(child_pid, seen)
+                              for child_pid in sorted(children)) if child is not None]
+        descendants = status['children']
+        status['tree_rss_kib'] = status.get('VmRSS', 0) + sum(child['tree_rss_kib'] for child in descendants)
+        status['tree_fd'] = status['fd'] + sum(child['tree_fd'] for child in descendants)
+        status['tree_threads'] = status['Threads'] + sum(child['tree_threads'] for child in descendants)
+        status['tree_processes'] = 1 + sum(child['tree_processes'] for child in descendants)
+        status['tree_cpu_ms'] = (status['cpu_ms'] + (int(fields[13]) + int(fields[14])) * 1000 / os.sysconf('SC_CLK_TCK')
+                                 + sum(child['tree_cpu_ms'] for child in descendants))
         return status
     except (OSError, ValueError):
         return None
@@ -262,6 +287,12 @@ def run_group(port, pid, name, paths, concurrency, delay_ms=0, cancel_after=None
             'info_latency_ms': distribution([item['elapsed_ms'] for item in info if item['status'] == 200]),
             'info_errors': sum(item['error'] is not None or item['status'] != 200 for item in info),
             'cpu_ms': after['cpu_ms'] - before['cpu_ms'] if before and after else None,
+            'tree_cpu_ms': after['tree_cpu_ms'] - before['tree_cpu_ms'] if before and after else None,
+            'max_sampled_tree_rss_kib': max((sample['tree_rss_kib'] for sample in samples), default=None),
+            'max_sampled_tree_fd': max((sample['tree_fd'] for sample in samples), default=None),
+            'max_sampled_tree_threads': max((sample['tree_threads'] for sample in samples), default=None),
+            'max_sampled_tree_processes': max((sample['tree_processes'] for sample in samples), default=None),
+            'child_processes_after': after['tree_processes'] - 1 if after else None,
             'max_rss_kib': max((sample['VmRSS'] for sample in samples), default=None),
             'max_fd': max((sample['fd'] for sample in samples), default=None),
             'fd_before': before['fd'] if before else None, 'fd_after': after['fd'] if after else None,
@@ -269,7 +300,7 @@ def run_group(port, pid, name, paths, concurrency, delay_ms=0, cancel_after=None
             'server': observed, 'responses': responses, 'info_responses': info, 'process_samples': samples}
 
 
-def run_trial(binary, result_dir, count, media_files, concurrency_values, requests):
+def run_trial(binary, result_dir, count, media_files, concurrency_values, requests, bucket=256, cold_concurrency=1):
     result_dir.mkdir(exist_ok=False)
     with tempfile.TemporaryDirectory(prefix='gallery-http-') as temporary:
         fixture = Path(temporary) / 'fixture'
@@ -288,12 +319,16 @@ def run_trial(binary, result_dir, count, media_files, concurrency_values, reques
             if catalog_result['status'] == 200:
                 catalog = json.loads(catalog_body)
                 entries = {entry['path']: entry for entry in catalog['entries']}
+                thumbnail_policy = catalog['thumbnailPolicy']
+                policy_id = str(thumbnail_policy['version'])
+                if thumbnail_policy.get('revision'):
+                    policy_id += '-' + thumbnail_policy['revision']
                 for source in media_files:
                     entry = entries[source.name]
                     if not entry.get('thumbnailSupported'):
                         raise RuntimeError(f'Real JPEG lacks thumbnail support: {entry}')
                     thumbnails.append(f'/cache/{code}/v2/thumbnail/{quote(entry["mediaId"])}/'
-                                      f'{quote(entry["sourceRevision"])}/1/256')
+                                      f'{quote(entry["sourceRevision"])}/{policy_id}/{bucket}')
                 original_paths = [f'/cache/{code}/get/{quote(source.name)}?rev={quote(entries[source.name]["sourceRevision"])}'
                                   for source in media_files]
             elif catalog_result['status'] != 404:
@@ -302,7 +337,7 @@ def run_trial(binary, result_dir, count, media_files, concurrency_values, reques
             # First tile pass measures backend derivative-cache cold state only;
             # original media and OS page cache were warmed during fixture setup.
             grid_paths = thumbnails or original_paths
-            groups.append(run_group(port, ready['pid'], 'grid-backend-cache-cold', grid_paths, 1))
+            groups.append(run_group(port, ready['pid'], 'grid-backend-cache-cold', grid_paths, cold_concurrency))
             conditional_probe = []
             for path in grid_paths:
                 first, _ = request(port, path)
@@ -377,13 +412,15 @@ def main():
     parser.add_argument('--sizes', default='1000,10000')
     parser.add_argument('--concurrency', default='1,4,10')
     parser.add_argument('--requests', type=int, default=12)
+    parser.add_argument('--bucket', type=int, choices=(256, 512, 1024), default=256)
+    parser.add_argument('--cold-concurrency', type=int, default=1)
     parser.add_argument('--repeats', type=int, default=3)
     parser.add_argument('--run-name', default='confirmed', help='New immutable measurement subdirectory')
     parser.add_argument('--media', type=Path, action='append')
     args = parser.parse_args()
     sizes = [int(value) for value in args.sizes.split(',')]
     concurrency = [int(value) for value in args.concurrency.split(',')]
-    if min(sizes) < 0 or min(concurrency) < 1 or args.requests < 1 or args.repeats < 1:
+    if min(sizes) < 0 or min(concurrency) < 1 or args.requests < 1 or args.repeats < 1 or args.cold_concurrency < 1:
         parser.error('Sizes must be nonnegative; other counts must be positive')
     variant = args.output.resolve() / args.variant
     if args.freeze_current:
@@ -411,12 +448,14 @@ def main():
         'sizes': sizes, 'concurrency': concurrency, 'requests': args.requests,
         'repeats': args.repeats, 'media': [str(file.resolve()) for file in media_files],
         'run_name': args.run_name,
+        'bucket': args.bucket,
+        'cold_concurrency': args.cold_concurrency,
     }, indent=2) + '\n')
     results = []
     for count in sizes:
         for repeat in range(args.repeats):
             trial = measured / f'n{count}-r{repeat}'
-            result = run_trial(binary, trial, count, media_files, concurrency, args.requests)
+            result = run_trial(binary, trial, count, media_files, concurrency, args.requests, args.bucket, args.cold_concurrency)
             results.append(result)
             write_summary(measured, results)
             print(json.dumps({'trial': str(trial), 'thumbnail_endpoint_available': result['thumbnail_endpoint_available']}), flush=True)

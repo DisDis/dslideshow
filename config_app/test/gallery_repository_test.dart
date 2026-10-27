@@ -8,7 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-Map<String, dynamic> catalog({String revision = 'r1'}) => GalleryCatalog(
+Map<String, dynamic> catalog({
+  String revision = 'r1',
+  String renderRevision = '',
+}) => GalleryCatalog(
   serverId: 'server',
   catalogRevision: 'c1',
   capabilities: [
@@ -16,8 +19,9 @@ Map<String, dynamic> catalog({String revision = 'r1'}) => GalleryCatalog(
     GalleryCapability.revisionedOriginals,
     GalleryCapability.refresh,
   ],
-  thumbnailPolicy: const GalleryThumbnailPolicy(
-    version: 1,
+  thumbnailPolicy: GalleryThumbnailPolicy(
+    version: 3,
+    revision: renderRevision,
     sizes: [
       GalleryThumbnailSize.small,
       GalleryThumbnailSize.medium,
@@ -59,8 +63,48 @@ void main() {
     expect(item.uri.queryParameters, {'rev': 'r1'});
     final thumbnail = item.imageRequest(physicalWidth: 400);
     expect(thumbnail.uri.pathSegments.last, '512');
+    expect(
+      thumbnail.uri.pathSegments[thumbnail.uri.pathSegments.length - 2],
+      '3',
+    );
+    expect(thumbnail.key.policy, 3);
     expect(thumbnail.key.variant, GalleryImageVariant.thumbnail);
     expect(item.imageRequest().key.variant, GalleryImageVariant.original);
+    repo.close();
+  });
+
+  test(
+    'render settings change thumbnail URL and key, keeping original identity',
+    () async {
+      var revision = List.filled(64, 'a').join();
+      final repo = repository(
+        MockClient(
+          (_) async =>
+              http.Response(jsonEncode(catalog(renderRevision: revision)), 200),
+        ),
+      );
+      final first = (await repo.load()).items.single;
+      final thumbnail = first.imageRequest(physicalWidth: 256);
+      expect(thumbnail.uri.pathSegments, contains('3-$revision'));
+      expect(thumbnail.key.policyRevision, revision);
+      revision = List.filled(64, 'b').join();
+      final next = (await repo.load()).items.single;
+      expect(next.imageRequest(physicalWidth: 256).uri, isNot(thumbnail.uri));
+      expect(next.imageRequest(physicalWidth: 256).key, isNot(thumbnail.key));
+      expect(next.imageRequest().key, first.imageRequest().key);
+      expect(next.selectionIdentity, first.selectionIdentity);
+      repo.close();
+    },
+  );
+
+  test('malformed policy revision cannot become a thumbnail path', () async {
+    final repo = repository(
+      MockClient(
+        (_) async =>
+            http.Response(jsonEncode(catalog(renderRevision: '../other')), 200),
+      ),
+    );
+    await expectLater(repo.load(), throwsFormatException);
     repo.close();
   });
 

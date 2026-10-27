@@ -56,6 +56,7 @@ class GalleryItem {
             revision: revision,
             variant: GalleryImageVariant.thumbnail,
             policy: policy.version,
+            policyRevision: policy.revision,
             bucket: size.pixels,
           ),
           uri: base.replace(
