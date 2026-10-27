@@ -23,6 +23,16 @@ void main() {
     Effect.crossZoomEffect,
     Effect.whipEffect,
     Effect.glassEffect,
+    Effect.clockWipeEffect,
+    Effect.splitEffect,
+    Effect.panelWipeEffect,
+    Effect.stretchEffect,
+    Effect.starWipeEffect,
+    Effect.filmDissolveEffect,
+    Effect.frameEffect,
+    Effect.louverEffect,
+    Effect.mirrorEffect,
+    Effect.neonWipeEffect,
   ]) {
     testWidgets(
       '${effect.name} is selected from saved settings for photos/GIF/video',

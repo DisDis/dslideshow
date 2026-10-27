@@ -631,6 +631,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_play => 'Предпросмотр';
 
   @override
+  String get effect_film_dissolve => 'Кинематографическое растворение';
+
+  @override
+  String get effect_frame => 'Рамка';
+
+  @override
+  String get effect_louver => 'Поворотные жалюзи';
+
+  @override
+  String get effect_mirror => 'Зеркало';
+
+  @override
+  String get effect_neon_wipe => 'Неоновое раскрытие';
+
+  @override
+  String get effect_clock_wipe => 'Часовое раскрытие';
+
+  @override
+  String get effect_split => 'Раздвижение половин';
+
+  @override
+  String get effect_panel_wipe => 'Раскрытие панелями';
+
+  @override
+  String get effect_stretch => 'Растяжение';
+
+  @override
+  String get effect_star_wipe => 'Раскрытие звездой';
+
+  @override
   String get effect_light_leak => 'Световая засветка';
 
   @override

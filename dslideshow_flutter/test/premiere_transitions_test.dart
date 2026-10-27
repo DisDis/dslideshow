@@ -2,7 +2,10 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dslideshow_flutter/effect.dart';
+import 'package:dslideshow_flutter/src/effect/geometric_transition_effect.dart';
 import 'package:dslideshow_flutter/src/effect/glass_effect.dart';
+import 'package:dslideshow_flutter/src/effect/optical_transition_effect.dart';
+import 'package:dslideshow_flutter/src/effect/soft_wipe_effect.dart';
 import 'package:dslideshow_flutter/src/effect/slice_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,6 +24,16 @@ final _effects = <Effect>[
   Effect.crossZoomEffect,
   Effect.whipEffect,
   Effect.glassEffect,
+  Effect.clockWipeEffect,
+  Effect.splitEffect,
+  Effect.panelWipeEffect,
+  Effect.stretchEffect,
+  Effect.starWipeEffect,
+  Effect.filmDissolveEffect,
+  Effect.frameEffect,
+  Effect.louverEffect,
+  Effect.mirrorEffect,
+  Effect.neonWipeEffect,
 ];
 
 List<int> _pixel(Uint8List image, int x, int y, {int width = 160}) =>
@@ -59,6 +72,16 @@ void main() {
       'Cross Zoom',
       'Whip',
       'Glass',
+      'Clock Wipe',
+      'Split',
+      'Panel Wipe',
+      'Stretch',
+      'Star Wipe',
+      'Film Dissolve',
+      'Frame',
+      'Louver',
+      'Mirror',
+      'Neon Wipe',
     ]);
     for (final effect in _effects) {
       expect(Effect.values, contains(effect));
@@ -394,6 +417,305 @@ void main() {
     }
   });
 
+  testWidgets('clock wipe opens clockwise from twelve oclock', (tester) async {
+    final quarter = await _frame(tester, Effect.clockWipeEffect, .25);
+    expect(_pixel(quarter, 120, 20), [0, 0, 255, 255]);
+    expect(_pixel(quarter, 120, 80), [255, 0, 0, 255]);
+    expect(_pixel(quarter, 40, 20), [255, 0, 0, 255]);
+    final half = await _frame(tester, Effect.clockWipeEffect, .5);
+    expect(_pixel(half, 120, 80), [0, 0, 255, 255]);
+    expect(_pixel(half, 40, 80), [255, 0, 0, 255]);
+    final threeQuarters = await _frame(tester, Effect.clockWipeEffect, .75);
+    expect(_pixel(threeQuarters, 40, 80), [0, 0, 255, 255]);
+    expect(_pixel(threeQuarters, 40, 20), [255, 0, 0, 255]);
+  });
+
+  testWidgets('split moves the two image halves away from the center', (
+    tester,
+  ) async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder)
+      ..drawColor(const Color(0xffff0000), BlendMode.src);
+    for (final x in [24.0, 132.0]) {
+      canvas.drawRect(
+        Rect.fromLTWH(x, 0, 4, 100),
+        Paint()..color = const Color(0xff00ff00),
+      );
+    }
+    final picture = recorder.endRecording();
+    final image = picture.toImageSync(160, 100);
+    picture.dispose();
+    try {
+      final frame = await _frame(
+        tester,
+        Effect.splitEffect,
+        .25,
+        from: RawImage(image: image),
+      );
+      final left = <int>[], right = <int>[];
+      for (var x = 0; x < 160; x++) {
+        if (_pixel(frame, x, 50)[1] > 100) (x < 80 ? left : right).add(x);
+      }
+      expect(left, isNotEmpty);
+      expect(right, isNotEmpty);
+      expect(left.reduce((a, b) => a + b) / left.length, lessThan(22));
+      expect(right.reduce((a, b) => a + b) / right.length, greaterThan(138));
+      expect(_pixel(frame, 80, 50), [0, 0, 255, 255]);
+      expect(_pixel(frame, 5, 50), [255, 0, 0, 255]);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      image.dispose();
+    }
+  });
+
+  testWidgets('panel wipe alternates directions and delays lower panels', (
+    tester,
+  ) async {
+    final frame = await _frame(tester, Effect.panelWipeEffect, .5);
+    expect(_pixel(frame, 5, 6), [0, 0, 255, 255]);
+    expect(_pixel(frame, 155, 6), [255, 0, 0, 255]);
+    expect(_pixel(frame, 5, 18), [255, 0, 0, 255]);
+    expect(_pixel(frame, 155, 18), [0, 0, 255, 255]);
+    expect(_pixel(frame, 80, 6), [0, 0, 255, 255]);
+    expect(_pixel(frame, 80, 93), [255, 0, 0, 255]);
+    const size = Size(161, 103);
+    for (final count in [1, 8, 13]) {
+      for (final t in [0.0, 1.0]) {
+        final pixelsAtEndpoint = await pixels.capture(
+          tester,
+          (context) =>
+              GeometricTransitionEffect(
+                GeometricTransitionKind.panelWipe,
+                panelCount: count,
+              ).createTransformWidget(
+                context,
+                const ColoredBox(color: Color(0xffff0000)),
+                const ColoredBox(color: Color(0xff0000ff)),
+                AlwaysStoppedAnimation(t),
+                size.width,
+                size.height,
+              ),
+          size: size,
+        );
+        expect([
+          for (var i = 0; i < pixelsAtEndpoint.length; i += 4)
+            pixelsAtEndpoint[i],
+        ], everyElement(t == 0 ? 255 : 0));
+      }
+    }
+  });
+
+  testWidgets('stretch expands horizontal detail without changing its height', (
+    tester,
+  ) async {
+    const source = Center(
+      child: SizedBox(
+        width: 20,
+        height: 20,
+        child: ColoredBox(color: Colors.white),
+      ),
+    );
+    final frame = await _frame(
+      tester,
+      Effect.stretchEffect,
+      .5,
+      from: source,
+      to: const ColoredBox(color: Colors.black),
+    );
+    expect(_pixel(frame, 62, 50)[0], greaterThan(100));
+    expect(_pixel(frame, 80, 35), [0, 0, 0, 255]);
+    expect(_pixel(frame, 80, 50)[0], closeTo(128, 8));
+  });
+
+  testWidgets('star wipe reveals a pointed star instead of a circular iris', (
+    tester,
+  ) async {
+    final frame = await _frame(tester, Effect.starWipeEffect, .4);
+    expect(_pixel(frame, 80, 50), [0, 0, 255, 255]);
+    expect(_pixel(frame, 80, 20), [0, 0, 255, 255]);
+    expect(_pixel(frame, 60, 20), [255, 0, 0, 255]);
+    expect(_pixel(frame, 80, 85), [255, 0, 0, 255]);
+  });
+
+  testWidgets(
+    'film dissolve blends linear light and preserves exact endpoints',
+    (tester) async {
+      const black = ColoredBox(color: Colors.black);
+      const white = ColoredBox(color: Colors.white);
+      final film = await _frame(
+        tester,
+        Effect.filmDissolveEffect,
+        .5,
+        from: black,
+        to: white,
+      );
+      final fade = await _frame(
+        tester,
+        Effect.fadeEffect,
+        .5,
+        from: black,
+        to: white,
+      );
+      expect(_pixel(film, 80, 50)[0], closeTo(188, 2));
+      expect(_pixel(fade, 80, 50)[0], closeTo(128, 1));
+      const same = ColoredBox(color: Color(0xff777777));
+      final identical = await _frame(
+        tester,
+        Effect.filmDissolveEffect,
+        .5,
+        from: same,
+        to: same,
+      );
+      expect(_pixel(identical, 80, 50)[0], closeTo(119, 2));
+    },
+  );
+
+  testWidgets('frame opens a central rectangle with a lit border', (
+    tester,
+  ) async {
+    final frame = await _frame(tester, Effect.frameEffect, .5);
+    expect(_pixel(frame, 80, 50), [0, 0, 255, 255]);
+    expect(_pixel(frame, 5, 5), [255, 0, 0, 255]);
+    final border = _pixel(frame, 38, 50);
+    expect(border[1], greaterThan(50));
+    expect(border[2], greaterThan(50));
+  });
+
+  testWidgets('louver turns staggered slats with old/new faces and dark gaps', (
+    tester,
+  ) async {
+    final frame = await _frame(tester, Effect.louverEffect, .5);
+    expect(_pixel(frame, 10, 50)[2], greaterThan(100));
+    expect(_pixel(frame, 150, 50)[0], greaterThan(100));
+    expect(_pixel(frame, 20, 50), [0, 0, 0, 255]);
+    const size = Size(161, 103);
+    for (final count in [1, 8, 13]) {
+      for (final t in [0.0, 1.0]) {
+        final endpoint = await pixels.capture(
+          tester,
+          (context) =>
+              OpticalTransitionEffect(
+                OpticalTransitionKind.louver,
+                slatCount: count,
+              ).createTransformWidget(
+                context,
+                const ColoredBox(color: Color(0xffff0000)),
+                const ColoredBox(color: Color(0xff0000ff)),
+                AlwaysStoppedAnimation(t),
+                size.width,
+                size.height,
+              ),
+          size: size,
+        );
+        expect(
+          [
+            for (var i = t == 0 ? 0 : 2; i < endpoint.length; i += 4)
+              endpoint[i],
+          ],
+          everyElement(255),
+          reason: 'All slats cover their endpoint at count=$count',
+        );
+      }
+    }
+  });
+
+  testWidgets('mirror temporarily reflects the right half onto the left', (
+    tester,
+  ) async {
+    const source = Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(child: ColoredBox(color: Color(0xffff0000))),
+        Expanded(child: ColoredBox(color: Color(0xff00ff00))),
+      ],
+    );
+    final frame = await _frame(
+      tester,
+      Effect.mirrorEffect,
+      .5,
+      from: source,
+      to: source,
+    );
+    expect(_pixel(frame, 20, 50), [0, 255, 0, 255]);
+    expect(_pixel(frame, 140, 50), [0, 255, 0, 255]);
+  });
+
+  testWidgets('neon wipe has a narrow edge with cyan and pink light', (
+    tester,
+  ) async {
+    const black = ColoredBox(color: Colors.black);
+    final frame = await _frame(
+      tester,
+      Effect.neonWipeEffect,
+      .5,
+      from: black,
+      to: black,
+    );
+    expect(_pixel(frame, 77, 50)[1], greaterThan(_pixel(frame, 77, 50)[0]));
+    expect(_pixel(frame, 82, 50)[0], greaterThan(_pixel(frame, 82, 50)[1]));
+    expect(_pixel(frame, 5, 50), [0, 0, 0, 255]);
+  });
+
+  testWidgets('retained wipe replaces its feather when style and size change', (
+    tester,
+  ) async {
+    final key = GlobalKey();
+    for (final size in [const Size(160, 100), const Size(137, 89)]) {
+      for (final style in [
+        SoftWipeStyle.soft,
+        SoftWipeStyle.neon,
+        SoftWipeStyle.soft,
+        SoftWipeStyle.neon,
+      ]) {
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Center(
+              child: RepaintBoundary(
+                key: key,
+                child: SizedBox.fromSize(
+                  size: size,
+                  child: Builder(
+                    builder: (context) =>
+                        SoftWipeEffect(style: style).createTransformWidget(
+                          context,
+                          const ColoredBox(color: Color(0xffff0000)),
+                          const ColoredBox(color: Color(0xff0000ff)),
+                          const AlwaysStoppedAnimation(.5),
+                          size.width,
+                          size.height,
+                        ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        final red = (await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage();
+          try {
+            final data = (await image.toByteData(
+              format: ui.ImageByteFormat.rawRgba,
+            ))!;
+            return data.getUint8(
+              ((size.height ~/ 2) * size.width.toInt() +
+                      (size.width * .44).floor()) *
+                  4,
+            );
+          } finally {
+            image.dispose();
+          }
+        }))!;
+        expect(red, style == SoftWipeStyle.soft ? greaterThan(10) : 0);
+      }
+    }
+    await tester.pumpWidget(const SizedBox());
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('views stay mounted, update live, reverse and release once', (
     tester,
   ) async {
@@ -428,10 +750,20 @@ void main() {
           ),
         ),
       );
-      final expectedTo = descriptor == Effect.glassEffect ? 8 : 1;
-      final expectedFrom =
-          (descriptor == Effect.sliceEffect || descriptor == Effect.glassEffect)
+      final expectedTo =
+          descriptor == Effect.glassEffect || descriptor == Effect.louverEffect
           ? 8
+          : descriptor == Effect.mirrorEffect
+          ? 2
+          : 1;
+      final expectedFrom =
+          (descriptor == Effect.sliceEffect ||
+              descriptor == Effect.glassEffect ||
+              descriptor == Effect.louverEffect)
+          ? 8
+          : descriptor == Effect.splitEffect ||
+                descriptor == Effect.mirrorEffect
+          ? 2
           : 1;
       for (final t in [0.0, .01, .5, .99, 1.0, .5, 0.0]) {
         await pump(t);

@@ -6,6 +6,16 @@ import 'package:flutter/widgets.dart';
 String effectLabel(BuildContext context, Effect effect) {
   final l = context.localizations;
   return <Effect, String>{
+        Effect.filmDissolveEffect: l.effect_film_dissolve,
+        Effect.frameEffect: l.effect_frame,
+        Effect.louverEffect: l.effect_louver,
+        Effect.mirrorEffect: l.effect_mirror,
+        Effect.neonWipeEffect: l.effect_neon_wipe,
+        Effect.clockWipeEffect: l.effect_clock_wipe,
+        Effect.splitEffect: l.effect_split,
+        Effect.panelWipeEffect: l.effect_panel_wipe,
+        Effect.stretchEffect: l.effect_stretch,
+        Effect.starWipeEffect: l.effect_star_wipe,
         Effect.lightLeakEffect: l.effect_light_leak,
         Effect.filmRollEffect: l.effect_film_roll,
         Effect.crossZoomEffect: l.effect_cross_zoom,

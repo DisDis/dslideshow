@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 import 'media_slider_item_effect.dart';
 
-enum SoftWipeStyle { soft, lightSweep }
+enum SoftWipeStyle { soft, lightSweep, neon }
 
 /// A feathered mask over the live outgoing layer, optionally lit at its edge.
 class SoftWipeEffect extends MediaSliderItemEffect {
@@ -34,15 +34,18 @@ class SoftWipeEffect extends MediaSliderItemEffect {
     double screenH,
   ) => ClipRect(
     child: CustomPaint(
-      foregroundPainter: style == SoftWipeStyle.lightSweep
-          ? _SweepLight(controller.value)
-          : null,
+      foregroundPainter: switch (style) {
+        SoftWipeStyle.soft => null,
+        SoftWipeStyle.lightSweep => _SweepLight(controller.value),
+        SoftWipeStyle.neon => _NeonEdge(controller.value),
+      },
       child: Stack(
         fit: StackFit.expand,
         children: [
           ColoredBox(color: Colors.black, child: nextWidget),
           _WipeMask(
             progress: controller.value,
+            featherFraction: style == SoftWipeStyle.neon ? .02 : .12,
             child: ColoredBox(color: Colors.black, child: currentWidget),
           ),
         ],
@@ -53,30 +56,37 @@ class SoftWipeEffect extends MediaSliderItemEffect {
 
 class _WipeMask extends SingleChildRenderObjectWidget {
   final double progress;
+  final double featherFraction;
 
-  const _WipeMask({required this.progress, required super.child});
+  const _WipeMask({
+    required this.progress,
+    required this.featherFraction,
+    required super.child,
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) =>
-      _RenderWipeMask(progress);
+      _RenderWipeMask(progress, featherFraction);
 
   @override
   void updateRenderObject(
     BuildContext context,
     covariant _RenderWipeMask renderObject,
-  ) => renderObject.progress = progress;
+  ) => renderObject.update(progress, featherFraction);
 }
 
 class _RenderWipeMask extends RenderProxyBox {
   double _progress;
+  double _featherFraction;
   ui.Gradient? _shader;
   Size? _shaderSize;
 
-  _RenderWipeMask(this._progress);
+  _RenderWipeMask(this._progress, this._featherFraction);
 
-  set progress(double value) {
-    if (_progress == value) return;
-    _progress = value;
+  void update(double progress, double featherFraction) {
+    if (_progress == progress && _featherFraction == featherFraction) return;
+    _progress = progress;
+    _featherFraction = featherFraction;
     _clearShader();
     markNeedsPaint();
   }
@@ -103,7 +113,7 @@ class _RenderWipeMask extends RenderProxyBox {
       return;
     }
     if (_shaderSize != size) _clearShader();
-    final feather = size.width * .12;
+    final feather = size.width * _featherFraction;
     final front = -feather + (size.width + 2 * feather) * _progress;
     final shader = _shader ??= ui.Gradient.linear(
       Offset(front - feather, 0),
@@ -165,4 +175,37 @@ class _SweepLight extends CustomPainter {
   @override
   bool shouldRepaint(_SweepLight oldDelegate) =>
       progress != oldDelegate.progress;
+}
+
+class _NeonEdge extends CustomPainter {
+  final double progress;
+  _NeonEdge(this.progress);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || progress <= 0 || progress >= 1) return;
+    final feather = size.width * .02;
+    final front = -feather + (size.width + 2 * feather) * progress;
+    final glow = size.width * .045;
+    final strength = math.sin(math.pi * progress);
+    final shader = ui.Gradient.linear(
+      Offset(front - glow, 0),
+      Offset(front + glow, 0),
+      [
+        const Color(0x0000eaff),
+        const Color(0xff00eaff).withValues(alpha: strength * .3),
+        const Color(0xff00eaff).withValues(alpha: strength * .8),
+        Colors.white.withValues(alpha: strength),
+        const Color(0xffff28d7).withValues(alpha: strength * .8),
+        const Color(0xffff28d7).withValues(alpha: strength * .3),
+        const Color(0x00ff28d7),
+      ],
+      const [0, .3, .47, .5, .53, .7, 1],
+    );
+    canvas.drawRect(Offset.zero & size, Paint()..shader = shader);
+    shader.dispose();
+  }
+
+  @override
+  bool shouldRepaint(_NeonEdge oldDelegate) => progress != oldDelegate.progress;
 }

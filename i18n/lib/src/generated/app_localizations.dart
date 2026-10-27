@@ -1268,6 +1268,66 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview_play;
 
+  /// No description provided for @effect_film_dissolve.
+  ///
+  /// In en, this message translates to:
+  /// **'Film Dissolve'**
+  String get effect_film_dissolve;
+
+  /// No description provided for @effect_frame.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame'**
+  String get effect_frame;
+
+  /// No description provided for @effect_louver.
+  ///
+  /// In en, this message translates to:
+  /// **'Louver'**
+  String get effect_louver;
+
+  /// No description provided for @effect_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirror'**
+  String get effect_mirror;
+
+  /// No description provided for @effect_neon_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon Wipe'**
+  String get effect_neon_wipe;
+
+  /// No description provided for @effect_clock_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock Wipe'**
+  String get effect_clock_wipe;
+
+  /// No description provided for @effect_split.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get effect_split;
+
+  /// No description provided for @effect_panel_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel Wipe'**
+  String get effect_panel_wipe;
+
+  /// No description provided for @effect_stretch.
+  ///
+  /// In en, this message translates to:
+  /// **'Stretch'**
+  String get effect_stretch;
+
+  /// No description provided for @effect_star_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Star Wipe'**
+  String get effect_star_wipe;
+
   /// No description provided for @effect_light_leak.
   ///
   /// In en, this message translates to:

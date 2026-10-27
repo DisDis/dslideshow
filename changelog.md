@@ -1,5 +1,15 @@
 # Unreleased
 
+* Add linear-light Film Dissolve, Frame, Louver, Mirror and Neon Wipe to the
+  frame and settings preview, with Russian/English labels and shared live media
+  sessions. Cover color blending, geometry, mask replacement, endpoints and
+  resource ownership locally; no device run is performed at the user's request.
+
+* Add Clock Wipe, Split, Panel Wipe, Stretch and Star Wipe to the frame and
+  settings preview, with Russian/English labels, live media layers and shared
+  video sessions. Add local geometry, endpoint, resource and preview regressions;
+  device testing is omitted at the user's request.
+
 * Add Light Leak, Film Roll, Cross Zoom, Whip and faceted Glass to the frame
   and settings preview, with localized labels, live GIF/video composition,
   shared video sessions and local visual/configuration/lifecycle regressions.

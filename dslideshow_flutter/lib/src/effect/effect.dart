@@ -12,6 +12,8 @@ import 'luma_fade_effect.dart';
 import 'page_peel_effect.dart';
 import 'cinematic_transition_effect.dart';
 import 'glass_effect.dart';
+import 'geometric_transition_effect.dart';
+import 'optical_transition_effect.dart';
 export 'transition_media.dart';
 
 import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
@@ -41,6 +43,25 @@ import 'mosaic_transition_effect.dart';
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
 class Effect {
+  static const Effect filmDissolveEffect = Effect._(
+    'Film Dissolve',
+    _createFilmDissolve,
+  );
+  static const Effect frameEffect = Effect._('Frame', _createFrame);
+  static const Effect louverEffect = Effect._('Louver', _createLouver);
+  static const Effect mirrorEffect = Effect._('Mirror', _createMirror);
+  static const Effect neonWipeEffect = Effect._('Neon Wipe', _createNeonWipe);
+  static const Effect clockWipeEffect = Effect._(
+    'Clock Wipe',
+    _createClockWipe,
+  );
+  static const Effect splitEffect = Effect._('Split', _createSplit);
+  static const Effect panelWipeEffect = Effect._(
+    'Panel Wipe',
+    _createPanelWipe,
+  );
+  static const Effect stretchEffect = Effect._('Stretch', _createStretch);
+  static const Effect starWipeEffect = Effect._('Star Wipe', _createStarWipe);
   static const Effect lightLeakEffect = Effect._(
     'Light Leak',
     _createLightLeak,
@@ -280,6 +301,16 @@ class Effect {
     crossZoomEffect,
     whipEffect,
     glassEffect,
+    clockWipeEffect,
+    splitEffect,
+    panelWipeEffect,
+    stretchEffect,
+    starWipeEffect,
+    filmDissolveEffect,
+    frameEffect,
+    louverEffect,
+    mirrorEffect,
+    neonWipeEffect,
   ];
   final String name;
 
@@ -349,6 +380,26 @@ class Effect {
   @override
   String toString() => name;
 
+  static MediaSliderItemEffect _createFilmDissolve() =>
+      OpticalTransitionEffect(OpticalTransitionKind.filmDissolve);
+  static MediaSliderItemEffect _createFrame() =>
+      OpticalTransitionEffect(OpticalTransitionKind.frame);
+  static MediaSliderItemEffect _createLouver() =>
+      OpticalTransitionEffect(OpticalTransitionKind.louver);
+  static MediaSliderItemEffect _createMirror() =>
+      OpticalTransitionEffect(OpticalTransitionKind.mirror);
+  static MediaSliderItemEffect _createNeonWipe() =>
+      SoftWipeEffect(style: SoftWipeStyle.neon);
+  static MediaSliderItemEffect _createClockWipe() =>
+      GeometricTransitionEffect(GeometricTransitionKind.clockWipe);
+  static MediaSliderItemEffect _createSplit() =>
+      GeometricTransitionEffect(GeometricTransitionKind.split);
+  static MediaSliderItemEffect _createPanelWipe() =>
+      GeometricTransitionEffect(GeometricTransitionKind.panelWipe);
+  static MediaSliderItemEffect _createStretch() =>
+      GeometricTransitionEffect(GeometricTransitionKind.stretch);
+  static MediaSliderItemEffect _createStarWipe() =>
+      GeometricTransitionEffect(GeometricTransitionKind.starWipe);
   static MediaSliderItemEffect _createLightLeak() =>
       CinematicTransitionEffect(CinematicTransitionKind.lightLeak);
   static MediaSliderItemEffect _createFilmRoll() =>

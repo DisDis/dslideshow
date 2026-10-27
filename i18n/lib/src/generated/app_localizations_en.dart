@@ -630,6 +630,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_play => 'Preview';
 
   @override
+  String get effect_film_dissolve => 'Film Dissolve';
+
+  @override
+  String get effect_frame => 'Frame';
+
+  @override
+  String get effect_louver => 'Louver';
+
+  @override
+  String get effect_mirror => 'Mirror';
+
+  @override
+  String get effect_neon_wipe => 'Neon Wipe';
+
+  @override
+  String get effect_clock_wipe => 'Clock Wipe';
+
+  @override
+  String get effect_split => 'Split';
+
+  @override
+  String get effect_panel_wipe => 'Panel Wipe';
+
+  @override
+  String get effect_stretch => 'Stretch';
+
+  @override
+  String get effect_star_wipe => 'Star Wipe';
+
+  @override
   String get effect_light_leak => 'Light Leak';
 
   @override

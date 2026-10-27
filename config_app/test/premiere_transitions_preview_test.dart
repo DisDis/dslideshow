@@ -22,6 +22,16 @@ final _effects = [
   Effect.crossZoomEffect,
   Effect.whipEffect,
   Effect.glassEffect,
+  Effect.clockWipeEffect,
+  Effect.splitEffect,
+  Effect.panelWipeEffect,
+  Effect.stretchEffect,
+  Effect.starWipeEffect,
+  Effect.filmDissolveEffect,
+  Effect.frameEffect,
+  Effect.louverEffect,
+  Effect.mirrorEffect,
+  Effect.neonWipeEffect,
 ];
 
 Widget _app(Widget child, Locale locale) => MaterialApp(
@@ -66,6 +76,16 @@ void main() {
                   'Встречный зум',
                   'Резкая панорама',
                   'Стекло',
+                  'Часовое раскрытие',
+                  'Раздвижение половин',
+                  'Раскрытие панелями',
+                  'Растяжение',
+                  'Раскрытие звездой',
+                  'Кинематографическое растворение',
+                  'Рамка',
+                  'Поворотные жалюзи',
+                  'Зеркало',
+                  'Неоновое раскрытие',
                 ]
               : [
                   'Soft Wipe',
@@ -78,6 +98,16 @@ void main() {
                   'Cross Zoom',
                   'Whip',
                   'Glass',
+                  'Clock Wipe',
+                  'Split',
+                  'Panel Wipe',
+                  'Stretch',
+                  'Star Wipe',
+                  'Film Dissolve',
+                  'Frame',
+                  'Louver',
+                  'Mirror',
+                  'Neon Wipe',
                 ],
         );
         selector.onChanged(_effects);
@@ -91,7 +121,7 @@ void main() {
     );
 
     testWidgets(
-      'preview plays all ten and changes safely (${locale.languageCode})',
+      'preview plays all twenty and changes safely (${locale.languageCode})',
       (tester) async {
         final recorder = ui.PictureRecorder();
         Canvas(recorder).drawColor(Colors.orange, BlendMode.src);

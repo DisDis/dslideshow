@@ -65,6 +65,16 @@ void main() {
         Effect.crossZoomEffect,
         Effect.whipEffect,
         Effect.glassEffect,
+        Effect.clockWipeEffect,
+        Effect.splitEffect,
+        Effect.panelWipeEffect,
+        Effect.stretchEffect,
+        Effect.starWipeEffect,
+        Effect.filmDissolveEffect,
+        Effect.frameEffect,
+        Effect.louverEffect,
+        Effect.mirrorEffect,
+        Effect.neonWipeEffect,
       ]) {
         final from = FakeVideoController(), to = FakeVideoController();
         VideoSession session(FakeVideoController player) => VideoSession(
@@ -116,10 +126,14 @@ void main() {
           expect(
             find.byType(VideoWidget),
             findsNWidgets(
-              effect == Effect.glassEffect
+              effect == Effect.glassEffect || effect == Effect.louverEffect
                   ? 16
+                  : effect == Effect.mirrorEffect
+                  ? 4
                   : effect == Effect.sliceEffect
                   ? 9
+                  : effect == Effect.splitEffect
+                  ? 3
                   : 2,
             ),
           );
