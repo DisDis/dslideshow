@@ -1,5 +1,14 @@
 # Unreleased
 
+* Add a standalone local Ambient API probe for device OAuth, album-source
+  selection, paginated media listing and photo/video downloads. Preserve
+  backend code; add resumable private state, bounded downloads, diagnostics,
+  loopback HTTP regressions and local setup documentation.
+
+* Record the deferred three-level RPC contract coverage checks and a proposed
+  Google Photos client/FFmpeg thumbnail implementation plan; implementation
+  of these plans remains pending.
+
 * Generate the RPC serializer registry from @RpcSerializers using a separate
   local rpc_serializers_generator build_runner package. Preserve all 57 wire
   tags and codec behavior, remove the stale CLI registry generator, and add

@@ -2,6 +2,9 @@
 *.a3d.bak
 
 # Miscellaneous
+.local/
+/.local/ambient-api/
+/.local/ambient-api-client.json
 *.class
 *.log
 *.pyc
