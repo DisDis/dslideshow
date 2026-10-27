@@ -35,6 +35,9 @@ import 'package:dslideshow_backend/environment.dart';
 export 'web_socket_user.dart' show WebSocketUser, WebSocketUserStatus;
 
 class WebService {
+  static final _thumbnailPolicyPattern = RegExp(
+    r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$',
+  );
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
   final io.Directory _cacheFolder;
@@ -510,7 +513,7 @@ class WebService {
   ) async {
     if (code != _code) return _galleryError(GalleryErrorCode.forbidden);
     final size = int.tryParse(bucket);
-    if (!RegExp(r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$').hasMatch(policy) ||
+    if (!_thumbnailPolicyPattern.hasMatch(policy) ||
         size == null ||
         size <= 0) {
       return _galleryError(GalleryErrorCode.invalidRequest);

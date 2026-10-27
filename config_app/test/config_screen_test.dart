@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 final _save = find.byKey(const Key('config-save'));
 final _reload = find.byKey(const Key('config-reload'));
 final _gpio = find.widgetWithText(TextFormField, 'GPIO Smoothing (ms)');
+final _restartPattern = RegExp('restart', caseSensitive: false);
 
 void main() {
   late _Repository repository;
@@ -113,10 +114,7 @@ void main() {
 
     expect(gpioValue(tester), '275');
     expect(find.text('Config saved successfully'), findsOneWidget);
-    expect(
-      find.textContaining(RegExp('restart', caseSensitive: false)),
-      findsWidgets,
-    );
+    expect(find.textContaining(_restartPattern), findsWidgets);
     expect(await screen.currentState!.confirmExit(), isTrue);
     expect(find.byType(AlertDialog), findsNothing);
   });

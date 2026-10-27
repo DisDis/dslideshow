@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
 class MetadataPanel extends StatelessWidget {
+  static final _cachePathPrefixPattern = RegExp(r'^/cache/[^/]+/get/');
   final GalleryItem item;
 
   const MetadataPanel({super.key, required this.item});
@@ -13,15 +14,12 @@ class MetadataPanel extends StatelessWidget {
     final decodedPath = Uri.decodeComponent(item.uri.path);
 
     // 2. Отрезаем техническую часть '/cache/xxxx/get/'
-    // RegExp(r'^/cache/[^/]+/get/') означает:
+    // _cachePathPrefixPattern означает:
     // ^        -> начало строки
     // /cache/  -> буквально "/cache/"
     // [^/]+    -> один или более символов, которые НЕ являются слешем (то самое xxxx)
     // /get/    -> буквально "/get/"
-    final cleanPath = decodedPath.replaceFirst(
-      RegExp(r'^/cache/[^/]+/get/'),
-      '',
-    );
+    final cleanPath = decodedPath.replaceFirst(_cachePathPrefixPattern, '');
 
     // 3. Теперь получаем имя и папку из чистого пути
     final fileName = path.basename(cleanPath);

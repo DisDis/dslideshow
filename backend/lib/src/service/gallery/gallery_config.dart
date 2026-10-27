@@ -28,6 +28,7 @@ class GalleryConfig {
 
 @JsonSerializable()
 class GalleryThumbnailConfig {
+  static final _backgroundColorPattern = RegExp(r'^#[a-fA-F0-9]{6}$');
   static const defaultSizes = [
     GalleryThumbnailSize.small,
     GalleryThumbnailSize.medium,
@@ -103,7 +104,7 @@ class GalleryThumbnailConfig {
       _integer(value, 2048, max: 1000000);
   static int _timeout(dynamic value) => _integer(value, 20, max: 600);
   static int _color(dynamic value) =>
-      value is String && RegExp(r'^#[a-fA-F0-9]{6}$').hasMatch(value)
+      value is String && _backgroundColorPattern.hasMatch(value)
       ? 0xff000000 | int.parse(value.substring(1), radix: 16)
       : defaultBackgroundColor;
   static String _colorText(int value) =>

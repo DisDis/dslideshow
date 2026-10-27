@@ -4,6 +4,8 @@ import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 
 class SensorsInfoWidget extends StatelessWidget {
+  static final _lettersPattern = RegExp(r'[a-zA-Z]');
+  static final _nonNumericPattern = RegExp(r'[^0-9\.]');
   const SensorsInfoWidget({required this.model, super.key});
   final UpdateInfo model;
 
@@ -56,7 +58,7 @@ class SensorsInfoWidget extends StatelessWidget {
     
     // Проверка на вентилятор (RPM)
     if (lowerVal.contains("rpm")) {
-      return _buildNumericRow(name, valueStr.replaceAll(RegExp(r'[a-zA-Z]'), ''), unit: "RPM", valueColor: Colors.greenAccent);
+      return _buildNumericRow(name, valueStr.replaceAll(_lettersPattern, ''), unit: "RPM", valueColor: Colors.greenAccent);
     }
 
     // Проверка на Motion/Detect (Датчики движения часто шлют "detected" или "motion")
@@ -74,7 +76,7 @@ class SensorsInfoWidget extends StatelessWidget {
   Widget _buildNumericRow(String name, String rawValue, {required String unit, required Color valueColor}) {
     // Пытаемся вытащить чистое число для красивого форматирования
     // "61.3'C" -> "61.3"
-    final cleanValue = rawValue.replaceAll(RegExp(r"[^0-9\.]"), "");
+    final cleanValue = rawValue.replaceAll(_nonNumericPattern, "");
     
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

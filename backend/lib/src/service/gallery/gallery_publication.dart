@@ -10,6 +10,7 @@ import 'package:path/path.dart' as path;
 import 'catalog_state.dart';
 
 final _random = Random.secure();
+final _uploadTemporaryNamePattern = RegExp(r'^\.upload-[0-9a-f]{32}\.part$');
 String galleryToken() => List.generate(
   16,
   (_) => _random.nextInt(256).toRadixString(16).padLeft(2, '0'),
@@ -19,11 +20,12 @@ Directory galleryStateDirectory(Directory originals) =>
     Directory('${path.normalize(originals.absolute.path)}.gallery');
 
 bool isGalleryStagingPath(String name) =>
-    RegExp(r'^\.upload-[0-9a-f]{32}\.part$').hasMatch(path.basename(name));
+    _uploadTemporaryNamePattern.hasMatch(path.basename(name));
 
 /// Filesystem notifications are hints; this durable marker also crosses isolates.
 /// The source is never ready while a managed publisher owns a dirty marker.
 class GalleryPublication {
+  static final _processStatWhitespacePattern = RegExp(r'\s+');
   final File marker;
   final File pending;
   final String token;
@@ -105,7 +107,7 @@ class GalleryPublication {
       return stat
           .substring(stat.lastIndexOf(')') + 1)
           .trim()
-          .split(RegExp(r'\s+'))[19];
+          .split(_processStatWhitespacePattern)[19];
     } on FileSystemException catch (error) {
       if (error.osError?.errorCode == 2 || error.osError?.errorCode == 3)
         return null;

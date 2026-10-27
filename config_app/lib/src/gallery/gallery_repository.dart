@@ -22,6 +22,7 @@ class GalleryCatalogResult {
 /// Catalog operations have their own cancellable transport, so a saturated
 /// image queue cannot block refresh or authentication.
 class GalleryRepository {
+  static final _policyRevisionPattern = RegExp(r'^[a-f0-9]{64}$');
   GalleryRepository({
     required this.baseUri,
     required this.code,
@@ -103,8 +104,9 @@ class GalleryRepository {
               (catalog.thumbnailPolicy == null ||
                   catalog.thumbnailPolicy!.version < 1 ||
                   (catalog.thumbnailPolicy!.revision.isNotEmpty &&
-                      !RegExp(r'^[a-f0-9]{64}$')
-                          .hasMatch(catalog.thumbnailPolicy!.revision)) ||
+                      !_policyRevisionPattern.hasMatch(
+                        catalog.thumbnailPolicy!.revision,
+                      )) ||
                   !catalog.thumbnailPolicy!.sizes.any(
                     (size) => size.pixels > 0,
                   ))) {

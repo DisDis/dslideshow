@@ -14,6 +14,18 @@ class SystemInfoService {
   static final _findModel = RegExp(r'Model *[^ ]*([^\n]*)');
   static final _findMem = RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
   static final _findSwap = RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final _diskUsagePattern = RegExp(
+    r' *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)',
+  );
+  static final _whitespacePattern = RegExp(r'\s+');
+  static final _procMemoryPattern = RegExp(
+    r'^([A-Za-z_()]+):\s+(\d+)\s+kB\s*$',
+    multiLine: true,
+  );
+  static final _interfaceNamePattern = RegExp(
+    r'^([a-zA-Z0-9_.:@-]+):\s+flags=',
+  );
+  static final _leadingWhitespacePattern = RegExp(r'\s');
   static const _updatePeriod = Duration(seconds: 1);
   static const _networkInfoUpdatePeriod = Duration(minutes: 1);
 
@@ -189,9 +201,10 @@ class SystemInfoService {
               orElse: () => '',
             );
         if (diskInfo.isNotEmpty) {
-          final info = RegExp(
-            '${RegExp.escape(_config.systemDiskDev)} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)',
-          ).firstMatch(diskInfo)!;
+          // The literal device prefix was already matched by startsWith above.
+          final info = _diskUsagePattern.firstMatch(
+            diskInfo.substring(_config.systemDiskDev.length),
+          )!;
           b = b.copyWith(
             diskUsed: int.tryParse(info.group(2)!) ?? 0,
             diskAvailable: int.tryParse(info.group(3)!) ?? 0,
@@ -231,7 +244,7 @@ class SystemInfoService {
   }
 
   UpdateInfo _withLoad(UpdateInfo info, String text) {
-    final values = text.trim().split(RegExp(r'\s+'));
+    final values = text.trim().split(_whitespacePattern);
     if (values.length < 3) throw FormatException('Incomplete load average');
     return info.copyWith(
       cpuLoad1: double.tryParse(values[0]) ?? 0,
@@ -265,10 +278,7 @@ class SystemInfoService {
 
   _Memory? _parseProcMemory(String text) {
     final values = <String, int>{};
-    for (final match in RegExp(
-      r'^([A-Za-z_()]+):\s+(\d+)\s+kB\s*$',
-      multiLine: true,
-    ).allMatches(text)) {
+    for (final match in _procMemoryPattern.allMatches(text)) {
       final value = int.tryParse(match.group(2)!);
       if (value != null) values[match.group(1)!] = value;
     }
@@ -391,10 +401,6 @@ class SystemInfoService {
     String currentIp4 = '';
     String currentIp6 = '';
 
-    // Регулярные выражения для извлечения данных
-    // Require an ifconfig header; error output must not become interfaces.
-    final nameRegex = RegExp(r'^([a-zA-Z0-9_.:@-]+):\s+flags=');
-
     // Вспомогательная функция для сохранения накопленных данных
     void saveCurrentInterface() {
       if (currentName != null) {
@@ -415,7 +421,7 @@ class SystemInfoService {
       if (line.trim().isEmpty) continue;
 
       // Если строка начинается НЕ с пробела, это начало нового интерфейса
-      if (!line.startsWith(RegExp(r'\s'))) {
+      if (!line.startsWith(_leadingWhitespacePattern)) {
         // 1. Сохраняем предыдущий интерфейс, если он был
         saveCurrentInterface();
 
@@ -426,7 +432,7 @@ class SystemInfoService {
         currentIp6 = '';
 
         // 3. Парсим имя
-        final nameMatch = nameRegex.firstMatch(line);
+        final nameMatch = _interfaceNamePattern.firstMatch(line);
         if (nameMatch != null) {
           currentName = nameMatch.group(1);
         }

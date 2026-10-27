@@ -47,6 +47,7 @@ class SpecialScreenEditorPage extends StatefulWidget {
 }
 
 class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
+  static final _argbColorPattern = RegExp(r'^[0-9a-fA-F]{8}$');
   final _form = GlobalKey<FormState>();
   late final SpecialScreenConfig _draft;
   late final String _initialJson;
@@ -181,11 +182,11 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
         border: const OutlineInputBorder(),
         suffixIcon: Icon(Icons.circle, color: Color(value)),
       ),
-      validator: (text) => RegExp(r'^[0-9a-fA-F]{8}$').hasMatch(text ?? '')
+      validator: (text) => _argbColorPattern.hasMatch(text ?? '')
           ? null
           : context.localizations.special_invalid_color,
       onChanged: (text) {
-        if (RegExp(r'^[0-9a-fA-F]{8}$').hasMatch(text)) {
+        if (_argbColorPattern.hasMatch(text)) {
           _change(() => change(int.parse(text, radix: 16)));
         }
       },

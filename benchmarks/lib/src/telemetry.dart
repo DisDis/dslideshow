@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+final _memoryKiBPattern = RegExp(r'^(\w+):\s+(\d+)\s+kB');
+final _whitespacePattern = RegExp(r'\s+');
+final _cpuTicksPattern = RegExp(r'^cpu\s+(.+)', multiLine: true);
+
 Future<String?> readText(String path) async {
   try {
     return (await File(path).readAsString()).trim();
@@ -40,7 +44,7 @@ Future<String?> command(String executable, List<String> args) async {
 Map<String, int> parseKiB(String text) {
   final result = <String, int>{};
   for (final line in text.split('\n')) {
-    final match = RegExp(r'^(\w+):\s+(\d+)\s+kB').firstMatch(line);
+    final match = _memoryKiBPattern.firstMatch(line);
     if (match != null) result[match[1]!] = int.parse(match[2]!) * 1024;
   }
   return result;
@@ -50,7 +54,7 @@ int? processTicks(String text) {
   // comm may contain spaces and parentheses; fields start after the final ')'.
   final end = text.lastIndexOf(')');
   if (end < 0) return null;
-  final fields = text.substring(end + 1).trim().split(RegExp(r'\s+'));
+  final fields = text.substring(end + 1).trim().split(_whitespacePattern);
   if (fields.length < 13) return null;
   final user = int.tryParse(fields[11]);
   final system = int.tryParse(fields[12]);
@@ -58,10 +62,10 @@ int? processTicks(String text) {
 }
 
 ({int total, int idle})? cpuTicks(String text) {
-  final match = RegExp(r'^cpu\s+(.+)', multiLine: true).firstMatch(text);
+  final match = _cpuTicksPattern.firstMatch(text);
   final values = match?[1]
       ?.trim()
-      .split(RegExp(r'\s+'))
+      .split(_whitespacePattern)
       .map(int.parse)
       .toList();
   if (values == null || values.length < 5) return null;
@@ -72,6 +76,8 @@ int? processTicks(String text) {
 }
 
 class LinuxTelemetry {
+  static final _throttleBitsPattern = RegExp(r'0x([0-9a-fA-F]+)');
+  static final _threadsPattern = RegExp(r'^Threads:\s+(\d+)', multiLine: true);
   final void Function(Map<String, Object?>) onSample;
   final void Function(Object, StackTrace)? onError;
   final Stopwatch clock = Stopwatch()..start();
@@ -213,7 +219,7 @@ class LinuxTelemetry {
         : temperatures.reduce((a, b) => a > b ? a : b);
     if (us - _lastThrottleUs >= 10000000) {
       final result = await command('vcgencmd', ['get_throttled']);
-      final hex = RegExp(r'0x([0-9a-fA-F]+)').firstMatch(result ?? '')?[1];
+      final hex = _throttleBitsPattern.firstMatch(result ?? '')?[1];
       throttleBits = hex == null ? null : int.parse(hex, radix: 16);
       initialThrottleBits ??= throttleBits;
       _lastThrottleUs = us;
@@ -240,10 +246,7 @@ class LinuxTelemetry {
       'system_cpu_percent': systemPercent,
       'available_memory_bytes': systemMemory['MemAvailable'],
       'swap_free_bytes': systemMemory['SwapFree'],
-      'threads': int.tryParse(
-        RegExp(r'^Threads:\s+(\d+)', multiLine: true).firstMatch(status)?[1] ??
-            '',
-      ),
+      'threads': int.tryParse(_threadsPattern.firstMatch(status)?[1] ?? ''),
       'open_fds': fds,
       'load_average': texts[4],
       'cpu_temperature_c': temperature,

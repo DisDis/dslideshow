@@ -14,6 +14,7 @@ import 'package:video_player/video_player.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 const _fixture = String.fromEnvironment('VIDEO_SMOKE_FILE');
+final _rangePattern = RegExp(r'^bytes=(\d+)-(\d*)$');
 
 class _TrackedNativeSession extends NativeLinuxVideoSession {
   bool disposed = false;
@@ -51,7 +52,7 @@ Future<HttpServer> _serve(File fixture) async {
     var end = length - 1;
     final range = request.headers.value(HttpHeaders.rangeHeader);
     if (range != null) {
-      final match = RegExp(r'^bytes=(\d+)-(\d*)$').firstMatch(range);
+      final match = _rangePattern.firstMatch(range);
       if (match == null) {
         response.statusCode = HttpStatus.requestedRangeNotSatisfiable;
         await response.close();

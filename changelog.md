@@ -1,5 +1,9 @@
 # Unreleased
 
+* Reuse static final regular expressions throughout backend, configuration UI,
+  metrics widgets, tests and benchmark tools. Remove interpolated patterns from
+  disk/proc parsing and record the repository-wide RegExp lifetime rule in AGENTS.md.
+
 * Generate all gallery thumbnails as JPEG through one FFmpeg process per job,
   without ffprobe or per-request Dart isolates. Preserve EXIF and square sizes,
   flatten alpha on a configurable background, select representative animation/video

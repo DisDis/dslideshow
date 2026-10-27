@@ -425,6 +425,9 @@ enum _BoundaryCandidate { valid, invalid, incomplete }
 /// Streams files to staging, leaving filename/path policy to its caller.
 /// All multipart bytes are counted before parsing, including ignored epilogue.
 class StreamingUploadReceiver {
+  static final _headerNamePattern = RegExp(r"^[!#$%&'*+.^_`|~0-9a-z-]+$");
+  static final _lineEndingPattern = RegExp(r'\r\n$');
+  static final _trailingWhitespacePattern = RegExp(r'[ \t]+$');
   static final Logger _log = Logger('StreamingUploadReceiver');
   final UploadLimits limits;
   final UploadWriterFactory _writerFactory;
@@ -710,8 +713,7 @@ class StreamingUploadReceiver {
         throw const UploadFailure(400, 'Invalid multipart header');
       }
       final name = line.substring(0, colon).toLowerCase();
-      if (!RegExp(r"^[!#$%&'*+.^_`|~0-9a-z-]+$").hasMatch(name) ||
-          headers.containsKey(name)) {
+      if (!_headerNamePattern.hasMatch(name) || headers.containsKey(name)) {
         throw const UploadFailure(400, 'Invalid multipart header');
       }
       headers[name] = line.substring(colon + 1).trim();
@@ -821,6 +823,6 @@ class StreamingUploadReceiver {
   }
 
   static String _withoutPadding(String line) => line
-      .replaceFirst(RegExp(r'\r\n$'), '')
-      .replaceFirst(RegExp(r'[ \t]+$'), '');
+      .replaceFirst(_lineEndingPattern, '')
+      .replaceFirst(_trailingWhitespacePattern, '');
 }

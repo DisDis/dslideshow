@@ -13,6 +13,11 @@ import 'package:dslideshow_backend/src/service/system_info/system_info_service.d
 // ignore: depend_on_referenced_packages
 import 'package:dslideshow_common/rpc.dart';
 
+final _whitespacePattern = RegExp(r'\s+');
+final _rssPattern = RegExp(r'^VmRSS:\s+(\d+) kB', multiLine: true);
+final _hwmPattern = RegExp(r'^VmHWM:\s+(\d+) kB', multiLine: true);
+final _threadsPattern = RegExp(r'^Threads:\s+(\d+)', multiLine: true);
+
 Map<String, String> options(List<String> args) {
   final result = <String, String>{};
   for (final argument in args) {
@@ -31,24 +36,18 @@ Future<Map<String, Object?>> processSnapshot() async {
   final fields = stat
       .substring(stat.lastIndexOf(')') + 1)
       .trim()
-      .split(RegExp(r'\s+'));
-  int? kib(String name) {
-    final value = RegExp(
-      '^$name:\\s+(\\d+) kB',
-      multiLine: true,
-    ).firstMatch(status)?[1];
+      .split(_whitespacePattern);
+  int? kib(RegExp pattern) {
+    final value = pattern.firstMatch(status)?[1];
     return value == null ? null : int.parse(value) * 1024;
   }
 
   final ticks = int.parse(Platform.environment['BENCHMARK_CLK_TCK'] ?? '100');
   return {
-    'rss_bytes': kib('VmRSS'),
-    'hwm_bytes': kib('VmHWM'),
+    'rss_bytes': kib(_rssPattern),
+    'hwm_bytes': kib(_hwmPattern),
     'cpu_ms': (int.parse(fields[11]) + int.parse(fields[12])) * 1000 / ticks,
-    'threads': int.tryParse(
-      RegExp(r'^Threads:\s+(\d+)', multiLine: true).firstMatch(status)?[1] ??
-          '',
-    ),
+    'threads': int.tryParse(_threadsPattern.firstMatch(status)?[1] ?? ''),
     'open_fds': await Directory('/proc/self/fd').list().length,
   };
 }

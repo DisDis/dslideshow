@@ -63,6 +63,7 @@ class _Runner implements SystemCommandRunner {
 
 class _Fixture {
   final runner = _Runner();
+  final config = HardwareConfig.fromJson({});
   Duration tick = Duration.zero;
   DateTime wall = DateTime.fromMillisecondsSinceEpoch(1000000);
   final reads = <String>[];
@@ -75,7 +76,7 @@ class _Fixture {
   };
   Future<String> Function(String)? overrideRead;
   late final SystemInfoService service = SystemInfoService(
-    HardwareConfig.fromJson({}),
+    config,
     commandRunner: runner,
     monotonicClock: () => tick,
     wallClock: () => wall,
@@ -157,6 +158,37 @@ void main() {
       expect(fixture.runner.count('nproc --all'), 1);
       expect(fixture.runner.count('ifconfig'), 1);
     });
+
+    test(
+      'disk parser treats configured prefixes literally across updates',
+      () async {
+        const firstDevice = r'/dev/disk[1].+$';
+        const secondDevice = '/dev/mapper/system (root)';
+        fixture.config.systemDiskDev = firstDevice;
+        fixture.runner.onRun = (executable, arguments) async {
+          if (executable == 'df') {
+            return ProcessResult(
+              1,
+              0,
+              '$firstDevice 10000 2000 8000 20% /\n'
+                  '$secondDevice 5000 3000 2000 60% /other\n',
+              '',
+            );
+          }
+          return fixture.runner.response(executable, arguments);
+        };
+        final first = await fixture.service.getUpdateInfo();
+        expect(first.diskUsed, 2000);
+        expect(first.diskAvailable, 8000);
+        expect(first.diskUsedPercent, 20);
+        fixture.config.systemDiskDev = secondDevice;
+        fixture.advance(const Duration(seconds: 2));
+        final second = await fixture.service.getUpdateInfo();
+        expect(second.diskUsed, 3000);
+        expect(second.diskAvailable, 2000);
+        expect(second.diskUsedPercent, 60);
+      },
+    );
 
     test(
       'retains partial sensor data and logs successful diagnostics',

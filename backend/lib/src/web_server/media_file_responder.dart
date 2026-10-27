@@ -19,6 +19,7 @@ const galleryCorsHeaders = <String, String>{
 /// Admission covers opened media handles until body completion or cancellation.
 /// Initial policy is conservative and must be measured on the target device.
 class MediaFileResponder {
+  static final _rangePattern = RegExp(r'^bytes=(\d*)-(\d*)$');
   final int maxStreams;
   final Set<_FileBody> _bodies = {};
   final Set<Completer<void>> _pending = {};
@@ -123,7 +124,7 @@ class MediaFileResponder {
           (!validator.startsWith('W/') && ifRange == validator);
       // RFC 9110 14.2 defines Range only for GET; HEAD retains the full length.
       if (request.method == 'GET' && range != null && rangeAllowed) {
-        final match = RegExp(r'^bytes=(\d*)-(\d*)$').firstMatch(range);
+        final match = _rangePattern.firstMatch(range);
         if (match != null && (match[1]!.isNotEmpty || match[2]!.isNotEmpty)) {
           final first = match[1]!;
           final last = match[2]!;

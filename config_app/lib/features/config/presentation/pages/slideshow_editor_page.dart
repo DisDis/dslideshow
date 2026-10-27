@@ -24,6 +24,7 @@ class SlideshowEditorPage extends StatefulWidget {
 }
 
 class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
+  static final _argbColorPattern = RegExp(r'^[0-9a-fA-F]{8}$');
   final _invalid = <String>{};
 
   Widget _number(
@@ -205,11 +206,11 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
                         ),
                       ),
                       validator: (text) =>
-                          RegExp(r'^[0-9a-fA-F]{8}$').hasMatch(text ?? '')
+                          _argbColorPattern.hasMatch(text ?? '')
                           ? null
                           : l.special_invalid_color,
                       onChanged: (text) => setState(() {
-                        if (RegExp(r'^[0-9a-fA-F]{8}$').hasMatch(text)) {
+                        if (_argbColorPattern.hasMatch(text)) {
                           _invalid.remove('color');
                           config.backgroundColor = int.parse(text, radix: 16);
                         } else {
