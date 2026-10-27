@@ -124,12 +124,21 @@ void main() {
       final config = BenchmarkConfig();
       final plan = buildPlan(config);
       expect(plan.map((c) => c.id).toSet().length, plan.length);
-      expect(plan.length, 504);
+      expect(plan.length, 624);
       expect(
         plan.map((c) => c.media.name).toSet(),
         mediaPairs.map((p) => p.name).toSet(),
       );
       expect(plan.map((c) => c.effect).toSet(), {null, ...Effect.values});
+      for (final effect in Effect.values) {
+        for (final pair in mediaPairs.where((p) => p.name != 'large-photo')) {
+          expect(
+            plan.any((c) => c.effect == effect && c.media.name == pair.name),
+            isTrue,
+            reason: '${effect.name} must cover ${pair.name}',
+          );
+        }
+      }
       for (final grid in [100, 150, 200]) {
         for (final backend in MosaicBackend.values) {
           expect(

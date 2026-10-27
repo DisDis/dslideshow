@@ -1,5 +1,10 @@
 # Unreleased
 
+# 13.1.0+1 — 2026-10-27
+
+* Update the benchmark matrix regression and documentation to 624 cases;
+  verify every registered effect across all six primary media directions.
+
 * Add linear-light Film Dissolve, Frame, Louver, Mirror and Neon Wipe to the
   frame and settings preview, with Russian/English labels and shared live media
   sessions. Cover color blending, geometry, mask replacement, endpoints and
