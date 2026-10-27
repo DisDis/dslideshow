@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 /// Increment when codec or geometry changes invalidate immutable derivatives.
-const thumbnailPolicyVersion = 3;
+const thumbnailPolicyVersion = 4;
 
 enum ThumbnailFailureKind {
   queueFull,

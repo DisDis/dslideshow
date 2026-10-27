@@ -169,6 +169,20 @@ class WebService {
         }
       },
     );
+    _log.info(
+      () =>
+          'Gallery configured originals=${jsonEncode(_cacheFolder.path)} '
+          'stateDirectory=${jsonEncode(_galleryDirectory.path)} '
+          'thumbnailWorker=${thumbnailWorker.runtimeType} '
+          'policy=${effectiveThumbnailPolicy.catalogPolicy.identity} '
+          'sizes=${effectiveThumbnailPolicy.sizes.map((size) => size.name).join(',')} '
+          'quality=${effectiveThumbnailPolicy.jpegQuality} '
+          'frames=${effectiveThumbnailPolicy.frameSelectionFrames} '
+          'maxWorkers=${effectiveThumbnailPolicy.maxWorkers} '
+          'maxQueued=${effectiveThumbnailPolicy.maxQueued} '
+          'maxWaiters=${effectiveThumbnailPolicy.maxWaiters} '
+          'timeoutMs=${effectiveThumbnailPolicy.workerTimeout.inMilliseconds}',
+    );
     updateCode();
     _router.options(
       '/cache/<code>/<tail|.*>',
@@ -466,17 +480,21 @@ class WebService {
 
   Future<Response> _getCatalog(Request request, String code) async {
     if (code != _code) return _galleryError(GalleryErrorCode.forbidden);
+    _log.fine('Gallery catalog requested');
     try {
       return await _catalogResponse(await _galleryCatalog.catalog());
     } on GalleryCatalogFailure catch (error) {
+      _log.fine('Gallery catalog rejected reason=${error.code.name}');
       return _galleryError(error.code);
-    } on Object {
+    } on Object catch (error, stack) {
+      _log.warning('Gallery catalog failed', error, stack);
       return _galleryError(GalleryErrorCode.unavailable);
     }
   }
 
   Future<Response> _refreshCatalog(Request request, String code) async {
     if (code != _code) return _galleryError(GalleryErrorCode.forbidden);
+    _log.fine('Gallery refresh requested');
     try {
       final bytes = <int>[];
       await for (final chunk in request.read().timeout(
@@ -491,6 +509,7 @@ class WebService {
       );
       return await _catalogResponse(await _galleryCatalog.refresh(refresh));
     } on GalleryCatalogFailure catch (error) {
+      _log.fine('Gallery refresh rejected reason=${error.code.name}');
       return _galleryError(error.code);
     } on FormatException {
       return _galleryError(GalleryErrorCode.invalidRequest);
@@ -498,7 +517,8 @@ class WebService {
       return _galleryError(GalleryErrorCode.invalidRequest);
     } on ArgumentError {
       return _galleryError(GalleryErrorCode.invalidRequest);
-    } on Object {
+    } on Object catch (error, stack) {
+      _log.warning('Gallery refresh failed', error, stack);
       return _galleryError(GalleryErrorCode.unavailable);
     }
   }
@@ -511,25 +531,47 @@ class WebService {
     String policy,
     String bucket,
   ) async {
-    if (code != _code) return _galleryError(GalleryErrorCode.forbidden);
+    final clock = Stopwatch()..start();
+    String context() =>
+        'mediaId=${jsonEncode(id)} revision=${jsonEncode(revision)} '
+        'size=${jsonEncode(bucket)} policy=${jsonEncode(policy)}';
+    Response reject(
+      GalleryErrorCode reason, {
+      Object? error,
+      StackTrace? stack,
+    }) {
+      final response = _galleryError(reason);
+      _log.log(
+        reason == GalleryErrorCode.unavailable ? Level.WARNING : Level.FINE,
+        () =>
+            'Gallery thumbnail rejected ${context()} status=${response.statusCode} '
+            'reason=${reason.name} elapsedMs=${clock.elapsedMilliseconds}',
+        error,
+        stack,
+      );
+      return response;
+    }
+
+    if (code != _code) return reject(GalleryErrorCode.forbidden);
+    _log.fine(() => 'Gallery thumbnail requested ${context()}');
     final size = int.tryParse(bucket);
     if (!_thumbnailPolicyPattern.hasMatch(policy) ||
         size == null ||
         size <= 0) {
-      return _galleryError(GalleryErrorCode.invalidRequest);
+      return reject(GalleryErrorCode.invalidRequest);
     }
     if (policy != _galleryCatalog.thumbnailPolicy.identity) {
-      return _galleryError(GalleryErrorCode.revisionMismatch);
+      return reject(GalleryErrorCode.revisionMismatch);
     }
     if (!_galleryCatalog.thumbnailPolicy.sizes.any(
       (item) => item.pixels == size,
     )) {
-      return _galleryError(GalleryErrorCode.invalidRequest);
+      return reject(GalleryErrorCode.invalidRequest);
     }
     try {
       final source = await _galleryCatalog.resolve(id, revision: revision);
       if (!source.entry.thumbnailSupported)
-        return _galleryError(GalleryErrorCode.unsupported);
+        return reject(GalleryErrorCode.unsupported);
       final lease = await _thumbnails.acquire(
         ThumbnailSource(
           mediaId: id,
@@ -543,7 +585,7 @@ class WebService {
           policyRevision: _galleryCatalog.thumbnailPolicy.revision,
         ),
       );
-      return await _mediaFiles.serve(
+      final response = await _mediaFiles.serve(
         request,
         io.File(lease.artifact.path),
         etag: lease.artifact.etag,
@@ -552,18 +594,25 @@ class WebService {
         isCurrent: () => _galleryCatalog.isCurrent(source),
         onRelease: lease.release,
       );
+      _log.log(
+        response.statusCode >= 500 ? Level.WARNING : Level.FINE,
+        () =>
+            'Gallery thumbnail response ${context()} status=${response.statusCode} '
+            'bytes=${response.contentLength} elapsedMs=${clock.elapsedMilliseconds}',
+      );
+      return response;
     } on GalleryCatalogFailure catch (error) {
-      return _galleryError(error.code);
+      return reject(error.code);
     } on ThumbnailFailure catch (error) {
-      return _galleryError(switch (error.kind) {
+      return reject(switch (error.kind) {
         ThumbnailFailureKind.queueFull => GalleryErrorCode.busy,
         ThumbnailFailureKind.staleSource => GalleryErrorCode.revisionMismatch,
         ThumbnailFailureKind.unsupported ||
         ThumbnailFailureKind.sourceTooLarge => GalleryErrorCode.unsupported,
         _ => GalleryErrorCode.unavailable,
-      });
-    } on Object {
-      return _galleryError(GalleryErrorCode.unavailable);
+      }, error: error);
+    } on Object catch (error, stack) {
+      return reject(GalleryErrorCode.unavailable, error: error, stack: stack);
     }
   }
 

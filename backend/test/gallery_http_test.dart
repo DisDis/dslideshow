@@ -15,6 +15,8 @@ import 'package:image/image.dart' as image;
 import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
 
+import 'helpers/capture_logs.dart';
+
 class _Remote implements RemoteService {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -126,22 +128,38 @@ void main() {
   group('without FFmpeg', () {
     setUpAll(() => missingEncoder = true);
     tearDownAll(() => missingEncoder = false);
-    test('thumbnail is 503 while original remains available', () async {
-      final original = image.encodePng(image.Image(width: 8, height: 8));
-      await File('${media.path}/photo.png').writeAsBytes(original);
-      final response = await request('v2/catalog');
-      final catalog = GalleryCatalog.fromJson(
-        jsonDecode(await response.readAsString()) as Map<String, dynamic>,
-      );
-      final entry = catalog.entries.single;
-      final thumbnail = await request(
-        'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${catalog.thumbnailPolicy!.identity}/256',
-      );
-      expect(thumbnail.statusCode, 503);
-      expect(await thumbnail.readAsString(), isNot(contains(root.path)));
-      final full = await request('get/photo.png?rev=${entry.sourceRevision}');
-      expect(await full.read().expand((chunk) => chunk).toList(), original);
-    });
+    test(
+      'thumbnail is 503 while original remains available',
+      () => captureLogs((records) async {
+        final original = image.encodePng(image.Image(width: 8, height: 8));
+        await File('${media.path}/photo.png').writeAsBytes(original);
+        final response = await request('v2/catalog');
+        final catalog = GalleryCatalog.fromJson(
+          jsonDecode(await response.readAsString()) as Map<String, dynamic>,
+        );
+        final entry = catalog.entries.single;
+        final thumbnail = await request(
+          'v2/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${catalog.thumbnailPolicy!.identity}/256',
+        );
+        expect(thumbnail.statusCode, 503);
+        expect(await thumbnail.readAsString(), isNot(contains(root.path)));
+        final full = await request('get/photo.png?rev=${entry.sourceRevision}');
+        expect(await full.read().expand((chunk) => chunk).toList(), original);
+        final diagnostic = records.singleWhere(
+          (record) => record.message.startsWith('Gallery thumbnail rejected'),
+        );
+        expect(diagnostic.message, contains('status=503'));
+        expect(diagnostic.message, contains('reason=unavailable'));
+        expect(diagnostic.message, contains(entry.mediaId));
+        expect(diagnostic.error, isA<ThumbnailFailure>());
+        expect(
+          records.any(
+            (record) => record.message.contains('/cache/${service.code}/'),
+          ),
+          isFalse,
+        );
+      }),
+    );
   });
   group('gallery configuration', () {
     setUpAll(
@@ -339,6 +357,61 @@ void main() {
     await responder.close();
     expect((await responder.serve(req, file)).statusCode, 503);
   });
+
+  test(
+    'file read failures are logged without exposing paths in HTTP',
+    () => captureLogs((records) async {
+      final file = await File('${media.path}/photo.jpg')
+          .writeAsString('original');
+      final responder = MediaFileResponder();
+      addTearDown(responder.close);
+      final response = await responder.serve(
+        Request('GET', Uri.parse('http://localhost/hidden')),
+        file,
+        isCurrent: () async => throw FileSystemException(
+          'Permission denied',
+          file.path,
+          const OSError('Permission denied', 13),
+        ),
+      );
+      expect(response.statusCode, 404);
+      expect(await response.readAsString(), isNot(contains(file.path)));
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('Media file unavailable'),
+      );
+      expect(diagnostic.message, contains(file.path));
+      expect(diagnostic.error, isA<FileSystemException>());
+    }),
+  );
+
+  test(
+    'truncated media body logs its read error and releases its handle',
+    () => captureLogs((records) async {
+      final file = await File('${media.path}/photo.jpg')
+          .writeAsString('original');
+      final responder = MediaFileResponder(maxStreams: 1);
+      addTearDown(responder.close);
+      final response = await responder.serve(
+        Request('GET', Uri.parse('http://localhost/hidden')),
+        file,
+      );
+      await file.writeAsBytes([]);
+      await expectLater(
+        response.read().drain<void>(),
+        throwsA(isA<FileSystemException>()),
+      );
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('Media body failed'),
+      );
+      expect(diagnostic.message, contains(file.path));
+      expect(diagnostic.error, isA<FileSystemException>());
+      final next = await responder.serve(
+        Request('HEAD', Uri.parse('http://localhost/hidden')),
+        file,
+      );
+      expect(next.statusCode, 200);
+    }),
+  );
 
   test('responder close drains admitted validation before reporting all handles released', () async {
     final file = await File('${media.path}/pending-validation.bin')

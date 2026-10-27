@@ -5,3 +5,5 @@ analyzer:
     - reports/**
     # Compiled with config_app's frozen package config by gallery_browser_probe.py.
     - tool/gallery_browser_probe.dart
+    # Compiled with backend's package config: image is a backend dev dependency.
+    - tool/ffmpeg_thumbnail_compat.dart

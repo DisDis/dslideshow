@@ -7,6 +7,7 @@ import 'dart:isolate';
 
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:dslideshow_common/gallery.dart';
+import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 import 'catalog_state.dart';
@@ -27,6 +28,7 @@ class GallerySource {
 
 /// Owns metadata in the web isolate; all writes/scans are serialized.
 class GalleryCatalogService {
+  static final _log = Logger('GalleryCatalogService');
   final Directory originals;
   final Directory stateDirectory;
   final Duration scanMaxAge;
@@ -178,7 +180,16 @@ class GalleryCatalogService {
               .readAsString(),
         ) as Map<String, dynamic>,
       );
-    } on Object {
+    } on Object catch (error, stack) {
+      _log.log(
+        error is FileSystemException && error.osError?.errorCode == 2
+            ? Level.FINE
+            : Level.WARNING,
+        () =>
+            'Starting new gallery catalog stateDirectory=${jsonEncode(stateDirectory.path)}',
+        error,
+        stack,
+      );
       // Missing/corrupt metadata gets a new namespace; no old cache keys survive.
       _state = GalleryCatalogState(
         serverId: galleryToken(),
@@ -194,13 +205,25 @@ class GalleryCatalogService {
             _dirty = true;
             _events++;
           },
-          onError: (Object _) {
+          onError: (Object error, StackTrace stack) {
+            _log.warning(
+              () =>
+                  'Gallery file watcher failed originals=${jsonEncode(originals.path)}',
+              error,
+              stack,
+            );
             _dirty = true;
             _events++;
           },
         );
-      } on FileSystemException {
-        /* explicit scan remains available */
+      } on FileSystemException catch (error, stack) {
+        _log.warning(
+          () =>
+              'Gallery file watcher unavailable; using scans '
+              'originals=${jsonEncode(originals.path)}',
+          error,
+          stack,
+        );
       }
     }
   }
@@ -223,6 +246,12 @@ class GalleryCatalogService {
     bool forceInvalidate = false,
     String? operationId,
   }) async {
+    final clock = Stopwatch()..start();
+    _log.fine(
+      () =>
+          'Gallery scan started originals=${jsonEncode(originals.path)} '
+          'forceInvalidate=$forceInvalidate',
+    );
     final eventAtStart = _events;
     final publicationAtStart = await GalleryPublication.version(stateDirectory);
     var sawPublication = false;
@@ -333,6 +362,12 @@ class GalleryCatalogService {
         _events != eventAtStart ||
         sawPublication ||
         _publicationVersion != publicationAtStart;
+    _log.fine(
+      () =>
+          'Gallery scan completed entries=${records.length} '
+          'revision=${next.revision} changed=$changed '
+          'elapsedMs=${clock.elapsedMilliseconds} dirty=$_dirty',
+    );
   }
 
   Future<void> _persist(GalleryCatalogState state) async {

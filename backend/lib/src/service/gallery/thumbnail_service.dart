@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/gallery.dart';
+import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 import 'thumbnail_worker.dart';
@@ -68,6 +69,7 @@ typedef ThumbnailSourceValidator = Future<bool> Function(
 );
 
 class ThumbnailService {
+  static final _log = Logger('ThumbnailService');
   final Directory cacheDirectory;
   final ThumbnailPolicy policy;
   final ThumbnailWorker _worker;
@@ -140,59 +142,77 @@ class ThumbnailService {
 
   Duration get _elapsed => _elapsedOverride?.call() ?? _clock.elapsed;
 
-  Future<void> initialize() => _initialization ??= _cacheOperation(() async {
-    _checkOpen();
-    await cacheDirectory.create(recursive: true);
-    await for (final entity in cacheDirectory.list(followLinks: false)) {
-      _checkOpen();
-      if (entity is! File) continue;
-      final filename = path.basename(entity.path);
-      if (_temporaryName.hasMatch(filename) || _legacyName.hasMatch(filename)) {
-        await _delete(entity);
-        continue;
-      }
-      if (!_name.hasMatch(filename)) continue;
-      final file = entity;
-      _checkOpen();
-      final match = _name.firstMatch(path.basename(file.path))!;
-      try {
-        final stat = await file.stat();
-        if (stat.size > policy.maxOutputBytes ||
-            (await md5.bind(file.openRead()).first).toString() != match[2]) {
-          await _delete(file);
-          continue;
-        }
-        final entry = _CacheEntry(
-          match[1]!,
-          ThumbnailArtifact(
-            path: file.path,
-            length: stat.size,
-            etag: '"${match[2]}"',
-            mimeType: 'image/jpeg',
-          ),
-          stat.modified,
-        );
-        final previous = _entries[entry.key];
-        if (previous != null) {
-          if (previous.modified.isAfter(stat.modified)) {
-            await _delete(file);
+  Future<void> initialize() => _initialization ??=
+      _cacheOperation(() async {
+        _checkOpen();
+        await cacheDirectory.create(recursive: true);
+        await for (final entity in cacheDirectory.list(followLinks: false)) {
+          _checkOpen();
+          if (entity is! File) continue;
+          final filename = path.basename(entity.path);
+          if (_temporaryName.hasMatch(filename) ||
+              _legacyName.hasMatch(filename)) {
+            await _delete(entity);
             continue;
           }
-          _entries.remove(entry.key);
-          _usedBytes -= previous.artifact.length;
-          await _delete(File(previous.artifact.path));
+          if (!_name.hasMatch(filename)) continue;
+          final file = entity;
+          _checkOpen();
+          final match = _name.firstMatch(path.basename(file.path))!;
+          try {
+            final stat = await file.stat();
+            if (stat.size > policy.maxOutputBytes ||
+                (await md5.bind(file.openRead()).first).toString() !=
+                    match[2]) {
+              await _delete(file);
+              continue;
+            }
+            final entry = _CacheEntry(
+              match[1]!,
+              ThumbnailArtifact(
+                path: file.path,
+                length: stat.size,
+                etag: '"${match[2]}"',
+                mimeType: 'image/jpeg',
+              ),
+              stat.modified,
+            );
+            final previous = _entries[entry.key];
+            if (previous != null) {
+              if (previous.modified.isAfter(stat.modified)) {
+                await _delete(file);
+                continue;
+              }
+              _entries.remove(entry.key);
+              _usedBytes -= previous.artifact.length;
+              await _delete(File(previous.artifact.path));
+            }
+            entry.lastUsed = stat.modified.microsecondsSinceEpoch;
+            _sequence = max(_sequence, entry.lastUsed);
+            _entries[entry.key] = entry;
+            _usedBytes += entry.artifact.length;
+            // Enumeration itself does not accumulate an unbounded candidate list.
+            await _trim();
+          } on FileSystemException {
+            await _delete(file);
+          }
         }
-        entry.lastUsed = stat.modified.microsecondsSinceEpoch;
-        _sequence = max(_sequence, entry.lastUsed);
-        _entries[entry.key] = entry;
-        _usedBytes += entry.artifact.length;
-        // Enumeration itself does not accumulate an unbounded candidate list.
-        await _trim();
-      } on FileSystemException {
-        await _delete(file);
-      }
-    }
-  });
+        _log.info(
+          () =>
+              'Thumbnail cache ready directory=${jsonEncode(cacheDirectory.path)} '
+              'entries=${_entries.length} bytes=$_usedBytes '
+              'maxBytes=${policy.maxCacheBytes} maxEntries=${policy.maxCacheObjects}',
+        );
+      }).catchError((Object error, StackTrace stack) {
+        _log.log(
+          error is ThumbnailFailure ? Level.FINE : Level.WARNING,
+          () =>
+              'Thumbnail cache initialization failed directory=${jsonEncode(cacheDirectory.path)}',
+          error,
+          stack,
+        );
+        Error.throwWithStackTrace(error, stack);
+      });
 
   Future<ThumbnailLease> acquire(
     ThumbnailSource source,
@@ -283,6 +303,11 @@ class ThumbnailService {
       return _lease(entry);
     });
     if (cached != null) {
+      _log.finer(
+        () =>
+            'Thumbnail cache hit mediaId=${source.mediaId} '
+            'revision=${source.revision} size=${variant.size} key=$key',
+      );
       try {
         _checkOpen();
         _checkCancelled(token);
@@ -302,7 +327,14 @@ class ThumbnailService {
     if (retry) _negative.remove(key);
     final negative = _negative[key];
     if (negative != null) {
-      if (negative.expires > _elapsed) throw negative.failure;
+      if (negative.expires > _elapsed) {
+        _log.fine(
+          () =>
+              'Thumbnail negative cache hit mediaId=${source.mediaId} '
+              'size=${variant.size} reason=${negative.failure.kind.name}',
+        );
+        throw negative.failure;
+      }
       _negative.remove(key);
     }
     var job = _jobs[key];
@@ -317,6 +349,18 @@ class ThumbnailService {
       job = _Job(key, source, variant);
       _jobs[key] = job;
       _queue.add(job);
+      _log.fine(
+        () =>
+            'Thumbnail queued mediaId=${source.mediaId} '
+            'revision=${source.revision} size=${variant.size} '
+            'active=$_active queued=${_queue.length} waiters=$_waiters',
+      );
+    } else {
+      _log.finer(
+        () =>
+            'Thumbnail joined existing job mediaId=${source.mediaId} '
+            'size=${variant.size}',
+      );
     }
     final waiter = _Waiter();
     job.waiters.add(waiter);
@@ -368,6 +412,13 @@ class ThumbnailService {
   }
 
   Future<void> _run(_Job job) async {
+    final clock = Stopwatch()..start();
+    _log.fine(
+      () =>
+          'Thumbnail generation started mediaId=${job.source.mediaId} '
+          'revision=${job.source.revision} size=${job.variant.size} '
+          'source=${jsonEncode(job.source.path)} active=$_active queued=${_queue.length}',
+    );
     try {
       if (!await _isCurrent(job.source)) {
         throw const ThumbnailFailure(ThumbnailFailureKind.staleSource);
@@ -466,13 +517,35 @@ class ThumbnailService {
           if (renamed && !committed) await _delete(destination);
         }
       });
-    } catch (error) {
+      _log.fine(
+        () =>
+            'Thumbnail ready mediaId=${job.source.mediaId} '
+            'size=${job.variant.size} bytes=${bytes.length} '
+            'elapsedMs=${clock.elapsedMilliseconds}',
+      );
+    } catch (error, stack) {
       final failure = error is ThumbnailFailure
           ? error
           : error is FileSystemException &&
                 [28, 122].contains(error.osError?.errorCode)
           ? const ThumbnailFailure(ThumbnailFailureKind.diskFull)
           : const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
+      _log.log(
+        switch (failure.kind) {
+          ThumbnailFailureKind.cancelled ||
+          ThumbnailFailureKind.closed ||
+          ThumbnailFailureKind.staleSource ||
+          ThumbnailFailureKind.queueFull => Level.FINE,
+          _ => Level.WARNING,
+        },
+        () =>
+            'Thumbnail generation failed mediaId=${job.source.mediaId} '
+            'revision=${job.source.revision} size=${job.variant.size} '
+            'source=${jsonEncode(job.source.path)} reason=${failure.kind.name} '
+            'elapsedMs=${clock.elapsedMilliseconds}',
+        error is ThumbnailFailure ? null : error,
+        error is ThumbnailFailure ? null : stack,
+      );
       if ([
         ThumbnailFailureKind.decodeFailed,
         ThumbnailFailureKind.unavailable,

@@ -8,6 +8,8 @@ import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
 import 'package:image/image.dart' as image;
 import 'package:test/test.dart';
 
+import 'helpers/capture_logs.dart';
+
 Matcher fails(ThumbnailFailureKind kind) => throwsA(
   isA<ThumbnailFailure>().having((failure) => failure.kind, 'kind', kind),
 );
@@ -320,6 +322,77 @@ void main() {
       fails(ThumbnailFailureKind.unavailable),
     );
   });
+
+  test(
+    'native failure logs exit code, source and stderr before returning',
+    () => captureLogs((records) async {
+      final worker = FfmpegThumbnailWorker(
+        startProcess: (_, __) => helper(
+          'sys.stderr.write("Unsupported filter from native decoder\\n");sys.exit(23)',
+        ),
+      );
+      await expectLater(
+        run(worker: worker),
+        fails(ThumbnailFailureKind.decodeFailed),
+      );
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('FFmpeg failed'),
+      );
+      expect(diagnostic.loggerName, 'FfmpegThumbnailWorker');
+      expect(diagnostic.message, contains('exit=23'));
+      expect(
+        diagnostic.message,
+        contains('Unsupported filter from native decoder'),
+      );
+      expect(diagnostic.message, contains(source.path));
+      expect(
+        records.any((record) => record.message.startsWith('FFmpeg command')),
+        isTrue,
+      );
+    }),
+  );
+
+  test(
+    'missing executable logs ProcessException and source context',
+    () => captureLogs((records) async {
+      await expectLater(
+        run(
+          worker: FfmpegThumbnailWorker(
+            ffmpegExecutable: '${root.path}/missing',
+          ),
+        ),
+        fails(ThumbnailFailureKind.unavailable),
+      );
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('Cannot start FFmpeg'),
+      );
+      expect(diagnostic.error, isA<ProcessException>());
+      expect(diagnostic.message, contains(source.path));
+      expect(diagnostic.stackTrace, isNotNull);
+    }),
+  );
+
+  test(
+    'stderr flood retains a bounded diagnostic prefix and reaps its child',
+    () => captureLogs((records) async {
+      final worker = FfmpegThumbnailWorker(
+        startProcess: (_, __) => helper(
+          'sys.stderr.write("native-diagnostic-prefix\\n"+"x"*200000);sys.stderr.flush()\n'
+          'while True: time.sleep(1)',
+        ),
+      );
+      await expectLater(
+        run(worker: worker),
+        fails(ThumbnailFailureKind.sourceTooLarge),
+      );
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('FFmpeg failed'),
+      );
+      expect(diagnostic.message, contains('native-diagnostic-prefix'));
+      expect(diagnostic.message, contains('[truncated]'));
+      expect(diagnostic.message.length, lessThan(10000));
+    }),
+  );
 
   test(
     'cancellation during Process.start waits for its child and KILL escalation',

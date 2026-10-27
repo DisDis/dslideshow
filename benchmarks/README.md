@@ -88,6 +88,24 @@
 дерево процессов: sampled sum RSS/FD/threads и CPU с reaped children.
 Сумма RSS может дважды учитывать shared pages; дискретный максимум не является
 точным peak RSS. `/info` остаётся HTTP-proxy отзывчивости, не измерением RPC.
+[Совместимость FFmpeg 5.1 и диагностика](reports/gallery-ffmpeg51-diagnostics-2026-10-27/report.md):
+`tool/ffmpeg_thumbnail_compat.dart` запускает настоящий production worker, создаёт
+alpha/EXIF/GIF/tiny fixtures, проверяет JPEG, MD5 и неизменность источников.
+Необязательный аргумент — каталог с photo_a/photo_b/photo_large/video_a.
+Как и browser probe, файл исключён из Flutter-анализатора benchmarks: он
+компилируется с package config backend, где доступен dev-пакет image:
+
+```sh
+# Из корня; пакет image нужен только существующей dev-конфигурации backend.
+dart compile exe --packages=backend/.dart_tool/package_config.json \
+  benchmarks/tool/ffmpeg_thumbnail_compat.dart -o /tmp/ffmpeg-thumbnail-compat
+/tmp/ffmpeg-thumbnail-compat benchmarks/assets/media
+```
+
+Используется `ffmpeg` из PATH: один и тот же AOT probe можно запустить в отдельном
+Debian 12 для 5.1 и на host для 8. Проверка не устанавливает пакеты и не запускает
+hardware service. Ошибки не превращаются в нулевые измерения или skipped.
+
 `gallery_thumbnail_probe.dart source size output-file` проверяет текущий worker;
 прежние Dart decoder-пробы сохранены в исторических frozen-отчётах.
 

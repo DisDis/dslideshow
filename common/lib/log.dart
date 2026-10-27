@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart' show Logger, Level, LogRecord;
+
 import 'dart:isolate';
 
 void initLog([String? isolateMarker]) {
@@ -8,9 +9,14 @@ void initLog([String? isolateMarker]) {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     StringBuffer message = new StringBuffer();
-    message.write('${rec.time} [$isolateMarker] ${rec.level.name}:${rec.loggerName}: ${rec.message}');
+    message.write(
+      '${rec.time} [$isolateMarker] ${rec.level.name}:${rec.loggerName}: ${rec.message}',
+    );
     if (rec.error != null) {
       message.write(' ${rec.error}');
+    }
+    if (rec.stackTrace != null) {
+      message.write('\n${rec.stackTrace}');
     }
     print(message);
   });

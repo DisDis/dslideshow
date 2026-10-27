@@ -1,5 +1,11 @@
 # Unreleased
 
+* Fix FFmpeg 5.1 SIGSEGV while flattening thumbnail alpha: draw the opaque
+  background in RGB before overlay and advance thumbnail policy to 4. Add gallery
+  request/cache/catalog/process diagnostics with bounded native stderr, exit codes
+  and timings; print supplied stack traces in console logs. Reproduce the failure
+  and verify the fix on RaPi, FFmpeg 5.1.9 and 8.0.1; add local logging regressions.
+
 * Reuse static final regular expressions throughout backend, configuration UI,
   metrics widgets, tests and benchmark tools. Remove interpolated patterns from
   disk/proc parsing and record the repository-wide RegExp lifetime rule in AGENTS.md.

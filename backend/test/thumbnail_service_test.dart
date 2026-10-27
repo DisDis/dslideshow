@@ -9,6 +9,8 @@ import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
 import 'package:image/image.dart' as image;
 import 'package:test/test.dart';
 
+import 'helpers/capture_logs.dart';
+
 class ControlledWorker implements ThumbnailWorker {
   final List<Completer<ThumbnailWorkerResult>> requests = [];
   final List<ThumbnailCancellationToken> cancellations = [];
@@ -171,6 +173,52 @@ void main() {
     expect(worker.requests.length, 1);
     await lease.release();
   });
+
+  test(
+    'cache initialization failure is logged with its directory',
+    () => captureLogs((records) async {
+      await File(cache.path).writeAsString('not a directory');
+      final service = create();
+      await expectLater(
+        service.acquire(source(), variant),
+        throwsA(isA<FileSystemException>()),
+      );
+      final diagnostic = records.singleWhere(
+        (record) =>
+            record.message.startsWith('Thumbnail cache initialization failed'),
+      );
+      expect(diagnostic.message, contains(cache.path));
+      expect(diagnostic.error, isA<FileSystemException>());
+      expect(worker.requests, isEmpty);
+    }),
+  );
+
+  test(
+    'disk failure logs its cause and keeps the typed failure',
+    () => captureLogs((records) async {
+      final service = create();
+      final pending = service.acquire(source(), variant);
+      final rejected = expectLater(
+        pending,
+        failure(ThumbnailFailureKind.diskFull),
+      );
+      await worker.waitForCalls(1);
+      worker.requests.single.completeError(
+        FileSystemException(
+          'No space left',
+          cache.path,
+          const OSError('No space left', 28),
+        ),
+      );
+      await rejected;
+      final diagnostic = records.singleWhere(
+        (record) => record.message.startsWith('Thumbnail generation failed'),
+      );
+      expect(diagnostic.message, contains('reason=diskFull'));
+      expect(diagnostic.error, isA<FileSystemException>());
+      expect(diagnostic.stackTrace, isNotNull);
+    }),
+  );
 
   test('changed render settings cannot reuse a persisted derivative', () async {
     final before = create();

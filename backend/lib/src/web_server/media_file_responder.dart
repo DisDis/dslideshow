@@ -1,11 +1,13 @@
 // Asynchronous filesystem work keeps HTTP and RPC event loops responsive.
 // ignore_for_file: avoid_slow_async_io
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:http_parser/http_parser.dart' as dates;
 import 'package:mime/mime.dart';
+import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart';
 
 const galleryCorsHeaders = <String, String>{
@@ -19,6 +21,7 @@ const galleryCorsHeaders = <String, String>{
 /// Admission covers opened media handles until body completion or cancellation.
 /// Initial policy is conservative and must be measured on the target device.
 class MediaFileResponder {
+  static final _log = Logger('MediaFileResponder');
   static final _rangePattern = RegExp(r'^bytes=(\d*)-(\d*)$');
   final int maxStreams;
   final Set<_FileBody> _bodies = {};
@@ -176,13 +179,24 @@ class MediaFileResponder {
       });
       _bodies.add(body);
       return Response(status, headers: headers, body: body.stream);
-    } on FileSystemException {
+    } on FileSystemException catch (error, stack) {
+      _log.log(
+        error.osError?.errorCode == 2 ? Level.FINE : Level.WARNING,
+        () => 'Media file unavailable path=${jsonEncode(file.path)}',
+        error,
+        stack,
+      );
       await release();
       return Response.notFound(
         'Media unavailable',
         headers: galleryCorsHeaders,
       );
-    } catch (_) {
+    } catch (error, stack) {
+      _log.warning(
+        () => 'Media response failed path=${jsonEncode(file.path)}',
+        error,
+        stack,
+      );
       await release();
       rethrow;
     } finally {
@@ -260,7 +274,16 @@ class _FileBody {
         controller.add(bytes);
       }
     } catch (error, stack) {
-      if (!cancelled) controller.addError(error, stack);
+      if (!cancelled) {
+        MediaFileResponder._log.warning(
+          () =>
+              'Media body failed path=${jsonEncode(handle.path)} '
+              'remaining=$remaining',
+          error,
+          stack,
+        );
+        controller.addError(error, stack);
+      }
     } finally {
       // close() schedules done. The consumer may still be paused on the last
       // chunk: onCancel owns release, after actual done/cancel, not source EOF.
