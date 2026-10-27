@@ -1,3 +1,5 @@
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
+
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -62,9 +64,12 @@ void main() {
       () {
         for (final effect in _effects) {
           expect(Effect.values.map((e) => e.type), contains(effect.type));
-          final entry = EffectConfig.fromJson(effect.toConfig().toJson());
-          expect(entry.validate(), isEmpty);
-          expect(Effect.fromConfig(entry), effect);
+          final entry = EffectConfig.fromJson(
+            effect.type,
+            effect.toConfig().toJson(),
+          );
+          expect(entry.validate(effect.type), isEmpty);
+          expect(Effect.fromConfig(effect.type, entry), effect);
         }
       },
     );

@@ -84,9 +84,7 @@ BenchmarkConfig _$BenchmarkConfigFromJson(Map<String, dynamic> json) {
     effects: (json['effects'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
-    effectConfigs: (json['effect_configs'] as List<dynamic>?)
-        ?.map((e) => EffectConfig.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    effectConfigs: _parseEffectConfigs(json['effect_configs']),
     mediaCases: (json['media_cases'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
@@ -127,7 +125,7 @@ Map<String, dynamic> _$BenchmarkConfigToJson(
   'grids': instance.grids.map(const StrictIntConverter().toJson).toList(),
   'backends': instance.backends,
   'effects': instance.effects,
-  'effect_configs': ?instance.effectConfigs?.map((e) => e.toJson()).toList(),
+  'effect_configs': ?_effectConfigsToJson(instance.effectConfigs),
   'media_cases': instance.mediaCases,
   'capture_frames': instance.captureFrames,
   'exit_when_done': instance.exitWhenDone,

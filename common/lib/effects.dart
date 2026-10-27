@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'effects.g.dart';
 part 'effects.freezed.dart';
@@ -154,15 +155,21 @@ class FiniteDoubleConverter implements JsonConverter<double, Object> {
   Object toJson(double value) => value.isFinite ? value : value.toString();
 }
 
+/// Scalar defaults are removed after generated JSON serialization.
+Map<String, dynamic> _withoutDefaults(
+  Map<String, dynamic> json,
+  Map<String, dynamic> defaults,
+) => json
+  ..removeWhere(
+    (key, value) => defaults.containsKey(key) && defaults[key] == value,
+  );
+
 /// Common contract; data, equality and copyWith belong to Freezed models.
 abstract class EffectOptions {
   const EffectOptions();
   int get durationMs;
   Map<String, dynamic> toJson();
   EffectOptions withDuration(int durationMs);
-  List<String> validate() => [
-    if (durationMs < 0 || durationMs > 3600000) 'durationMs',
-  ];
 }
 
 @freezed
@@ -175,7 +182,10 @@ class BasicEffectOptions extends EffectOptions with _$BasicEffectOptions {
   factory BasicEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$BasicEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$BasicEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$BasicEffectOptionsToJson(this),
+    _$BasicEffectOptionsToJson(const BasicEffectOptions()),
+  );
   @override
   BasicEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
@@ -201,17 +211,13 @@ class MosaicEffectOptions extends EffectOptions with _$MosaicEffectOptions {
   factory MosaicEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$MosaicEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$MosaicEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$MosaicEffectOptionsToJson(this),
+    _$MosaicEffectOptionsToJson(const MosaicEffectOptions()),
+  );
   @override
   MosaicEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (gridSize < 100 || gridSize > 200) 'gridSize',
-    if (!fadeFraction.isFinite || fadeFraction < 0 || fadeFraction > 1)
-      'fadeFraction',
-  ];
 }
 
 @freezed
@@ -230,7 +236,10 @@ class SlideEffectOptions extends EffectOptions with _$SlideEffectOptions {
   factory SlideEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$SlideEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$SlideEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$SlideEffectOptionsToJson(this),
+    _$SlideEffectOptionsToJson(const SlideEffectOptions()),
+  );
   @override
   SlideEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
@@ -257,16 +266,13 @@ class RevealMaskEffectOptions extends EffectOptions
   factory RevealMaskEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$RevealMaskEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$RevealMaskEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$RevealMaskEffectOptionsToJson(this),
+    _$RevealMaskEffectOptionsToJson(const RevealMaskEffectOptions()),
+  );
   @override
   RevealMaskEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (shape == RevealShape.diagonal && origin == EffectOrigin.center)
-      'origin',
-  ];
 }
 
 @freezed
@@ -285,15 +291,15 @@ class FadeThroughColorEffectOptions extends EffectOptions
   factory FadeThroughColorEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$FadeThroughColorEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$FadeThroughColorEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$FadeThroughColorEffectOptionsToJson(this),
+    _$FadeThroughColorEffectOptionsToJson(
+      const FadeThroughColorEffectOptions(),
+    ),
+  );
   @override
   FadeThroughColorEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (color < 0 || color > 0xFFFFFFFF) 'color',
-  ];
 }
 
 @freezed
@@ -310,7 +316,10 @@ class SoftWipeEffectOptions extends EffectOptions with _$SoftWipeEffectOptions {
   factory SoftWipeEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$SoftWipeEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$SoftWipeEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$SoftWipeEffectOptionsToJson(this),
+    _$SoftWipeEffectOptionsToJson(const SoftWipeEffectOptions()),
+  );
   @override
   SoftWipeEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
@@ -330,7 +339,10 @@ class FlipEffectOptions extends EffectOptions with _$FlipEffectOptions {
   factory FlipEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$FlipEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$FlipEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$FlipEffectOptionsToJson(this),
+    _$FlipEffectOptionsToJson(const FlipEffectOptions()),
+  );
   @override
   FlipEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
@@ -353,16 +365,13 @@ class RotateEffectOptions extends EffectOptions with _$RotateEffectOptions {
   factory RotateEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$RotateEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$RotateEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$RotateEffectOptionsToJson(this),
+    _$RotateEffectOptionsToJson(const RotateEffectOptions()),
+  );
   @override
   RotateEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (!angleDegrees.isFinite || angleDegrees < 0 || angleDegrees > 90)
-      'angleDegrees',
-  ];
 }
 
 @freezed
@@ -377,15 +386,13 @@ class BlindsEffectOptions extends EffectOptions with _$BlindsEffectOptions {
   factory BlindsEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$BlindsEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$BlindsEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$BlindsEffectOptionsToJson(this),
+    _$BlindsEffectOptionsToJson(const BlindsEffectOptions()),
+  );
   @override
   BlindsEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (stripCount < 1 || stripCount > 32) 'stripCount',
-  ];
 }
 
 @freezed
@@ -400,15 +407,13 @@ class SliceEffectOptions extends EffectOptions with _$SliceEffectOptions {
   factory SliceEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$SliceEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$SliceEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$SliceEffectOptionsToJson(this),
+    _$SliceEffectOptionsToJson(const SliceEffectOptions()),
+  );
   @override
   SliceEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (stripCount < 1 || stripCount > 32) 'stripCount',
-  ];
 }
 
 @freezed
@@ -423,15 +428,13 @@ class GlassEffectOptions extends EffectOptions with _$GlassEffectOptions {
   factory GlassEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$GlassEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$GlassEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$GlassEffectOptionsToJson(this),
+    _$GlassEffectOptionsToJson(const GlassEffectOptions()),
+  );
   @override
   GlassEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (paneCount < 1 || paneCount > 32) 'paneCount',
-  ];
 }
 
 @freezed
@@ -447,15 +450,13 @@ class PanelWipeEffectOptions extends EffectOptions
   factory PanelWipeEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$PanelWipeEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$PanelWipeEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$PanelWipeEffectOptionsToJson(this),
+    _$PanelWipeEffectOptionsToJson(const PanelWipeEffectOptions()),
+  );
   @override
   PanelWipeEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (panelCount < 1 || panelCount > 32) 'panelCount',
-  ];
 }
 
 @freezed
@@ -470,15 +471,13 @@ class LouverEffectOptions extends EffectOptions with _$LouverEffectOptions {
   factory LouverEffectOptions.fromJson(Map<String, dynamic> json) =>
       _$LouverEffectOptionsFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$LouverEffectOptionsToJson(this);
+  Map<String, dynamic> toJson() => _withoutDefaults(
+    _$LouverEffectOptionsToJson(this),
+    _$LouverEffectOptionsToJson(const LouverEffectOptions()),
+  );
   @override
   LouverEffectOptions withDuration(int durationMs) =>
       copyWith(durationMs: durationMs);
-  @override
-  List<String> validate() => [
-    ...super.validate(),
-    if (slatCount < 1 || slatCount > 32) 'slatCount',
-  ];
 }
 
 EffectOptions defaultEffectOptions(EffectType type) => switch (type) {
@@ -497,22 +496,11 @@ EffectOptions defaultEffectOptions(EffectType type) => switch (type) {
   _ => const BasicEffectOptions(),
 };
 
-/// Boundary-only dispatch; ordinary models use json_serializable.
-EffectType _readEffectType(Object? value) =>
-    $enumDecodeNullable(
-      _$EffectTypeEnumMap,
-      value,
-      unknownValue: EffectType.unknown,
-    ) ??
-    EffectType.unknown;
-
-EffectOptions _readOptions(Object? value) {
-  final json = Map<String, dynamic>.from(value as Map);
-  final type = _readEffectType(json['type']);
-  final options = json['options'];
-  final data = options == null
+/// Polymorphic JSON dispatch uses the enclosing map key as the only type tag.
+EffectOptions _readOptions(EffectType type, Object? value) {
+  final data = value == null
       ? <String, dynamic>{}
-      : Map<String, dynamic>.from(options as Map);
+      : Map<String, dynamic>.from(value as Map);
   return switch (type) {
     EffectType.mosaic => MosaicEffectOptions.fromJson(data),
     EffectType.slide => SlideEffectOptions.fromJson(data),
@@ -530,54 +518,46 @@ EffectOptions _readOptions(Object? value) {
   };
 }
 
-Object? _optionsSource(Map json, String key) => json;
-
 @freezed
 @JsonSerializable(explicitToJson: true)
 class EffectConfig with _$EffectConfig {
-  @JsonKey(unknownEnumValue: EffectType.unknown)
-  final EffectType type;
   final bool enabled;
-  @JsonKey(readValue: _optionsSource, fromJson: _readOptions)
+  // The enclosing map key supplies the polymorphic type in fromJson.
+  @JsonKey(includeFromJson: false, includeToJson: true)
   final EffectOptions options;
   @JsonKey(includeFromJson: false, includeToJson: false)
   final InvalidEffectData? invalid;
 
-  EffectConfig({
-    required this.type,
+  const EffectConfig({
     this.enabled = false,
-    EffectOptions? options,
+    this.options = const BasicEffectOptions(),
     this.invalid,
-  }) : options = options ?? defaultEffectOptions(type);
+  });
 
-  factory EffectConfig.invalid(Map<String, dynamic> raw, String error) =>
-      EffectConfig(
-        type: _readEffectType(raw['type']),
-        enabled: raw['enabled'] is bool ? raw['enabled'] as bool : false,
-        invalid: InvalidEffectData(raw, error),
-      );
+  factory EffectConfig.defaults(EffectType type) =>
+      EffectConfig(options: defaultEffectOptions(type));
 
-  factory EffectConfig.fromJson(Map<String, dynamic> json) {
+  factory EffectConfig.fromJson(EffectType type, Map<String, dynamic> json) {
     try {
-      final result = _$EffectConfigFromJson(json);
-      return result.type == EffectType.unknown
-          ? EffectConfig.invalid(json, 'type: unknown')
-          : result;
+      return _$EffectConfigFromJson(json)
+          .copyWith(options: _readOptions(type, json['options']));
     } catch (error) {
-      return EffectConfig.invalid(json, error.toString());
+      return EffectConfig(
+        enabled: json['enabled'] is bool ? json['enabled'] as bool : false,
+        options: defaultEffectOptions(type),
+        invalid: InvalidEffectData(json, error.toString()),
+      );
     }
   }
-  // Opaque malformed variants are retained at the polymorphic JSON boundary.
-  Map<String, dynamic> toJson() => invalid?.raw ?? _$EffectConfigToJson(this);
-
-  List<String> validate() => invalid != null
-      ? [invalid!.error]
-      : [
-          if (type == EffectType.unknown) 'type',
-          if (options.runtimeType != defaultEffectOptions(type).runtimeType)
-            'options',
-          ...options.validate().map((key) => 'options.$key'),
-        ];
+  // Retain malformed known entries for repair in config_app.
+  Map<String, dynamic> toJson() {
+    if (invalid case final invalid?) return invalid.raw;
+    final json = _withoutDefaults(_$EffectConfigToJson(this), {
+      'enabled': false,
+    });
+    if ((json['options'] as Map).isEmpty) json.remove('options');
+    return json;
+  }
 }
 
 @freezed
@@ -601,161 +581,103 @@ class InvalidEffectData with _$InvalidEffectData {
   Map<String, dynamic> toJson() => _$InvalidEffectDataToJson(this);
 }
 
-List<EffectConfig> _readItems(Object? value) {
-  if (value == null) return [];
-  if (value is! List)
-    return [
-      EffectConfig.invalid({'items': value}, 'items must be a list'),
-    ];
-  return value
-      .map(
-        (item) => item is Map
-            ? EffectConfig.fromJson(Map<String, dynamic>.from(item))
-            : EffectConfig.invalid({'item': item}, 'item must be an object'),
-      )
-      .toList();
+Map<EffectType, EffectConfig> _parseEffects(Object? value) {
+  final result = <EffectType, EffectConfig>{};
+  if (value == null) return result;
+  if (value is! Map<String, dynamic>) {
+    EffectsConfig._log.warning('effects.items must be an object');
+    return result;
+  }
+  final types = EffectType.values.asNameMap();
+  for (final entry in value.entries) {
+    final type = types[entry.key];
+    if (type == null || type == EffectType.unknown) {
+      EffectsConfig._log.warning('Unknown effect: ${entry.key}');
+      continue;
+    }
+    if (entry.value is! Map<String, dynamic>) {
+      EffectsConfig._log.warning(
+        'effects.items.${entry.key} must be an object',
+      );
+      continue;
+    }
+    final config = EffectConfig.fromJson(
+      type,
+      entry.value as Map<String, dynamic>,
+    );
+    if (config.invalid case final invalid?) {
+      EffectsConfig._log.warning(
+        'Cannot read effects.items.${entry.key}: ${invalid.error}',
+      );
+    }
+    result[type] = config;
+  }
+  return result;
 }
 
-int _readInteger(Object? value) => value == null
-    ? 1000
-    : value is int
-    ? value
-    : -1;
+Map<String, dynamic> _effectsToJson(Map<EffectType, EffectConfig> value) {
+  final result = <String, dynamic>{};
+  for (final entry in value.entries) {
+    final json = entry.value.toJson();
+    if (json.isNotEmpty) result[entry.key.name] = json;
+  }
+  return result;
+}
 
 @freezed
 @JsonSerializable(explicitToJson: true)
 class EffectsConfig with _$EffectsConfig {
+  static final _log = Logger('EffectsConfig');
   @StrictIntConverter()
   final int schemaVersion;
-  @JsonKey(fromJson: _readInteger)
+  @StrictIntConverter()
   final int defaultDurationMs;
-  @JsonKey(fromJson: _readItems)
-  final List<EffectConfig> items;
+  @JsonKey(fromJson: _parseEffects, toJson: _effectsToJson)
+  final Map<EffectType, EffectConfig> items;
   EffectsConfig({
     this.schemaVersion = 1,
     this.defaultDurationMs = 1000,
-    List<EffectConfig>? items,
-  }) : items = List.unmodifiable(items ?? []);
+    Map<EffectType, EffectConfig>? items,
+  }) : items = Map.unmodifiable(items ?? {});
   factory EffectsConfig.fromJson(Map<String, dynamic> json) =>
       _$EffectsConfigFromJson(json);
-  Map<String, dynamic> toJson() => _$EffectsConfigToJson(this);
-  // Explicit template: adding an enum value does not enable it automatically.
-  factory EffectsConfig.defaults() => EffectsConfig(
-    items: [
-      EffectConfig(type: EffectType.burnAlpha, enabled: true),
-      EffectConfig(type: EffectType.foldMotion, enabled: true),
-      EffectConfig(type: EffectType.glow, enabled: true),
-      EffectConfig(type: EffectType.kaleidoscope, enabled: true),
-      EffectConfig(type: EffectType.tvPower, enabled: true),
-      EffectConfig(type: EffectType.springMotion, enabled: true),
-      EffectConfig(type: EffectType.shapeDissolve, enabled: true),
-      EffectConfig(type: EffectType.vhsDamage, enabled: true),
-      EffectConfig(type: EffectType.radialBlur, enabled: true),
-      EffectConfig(type: EffectType.phosphor, enabled: true),
-      EffectConfig(type: EffectType.filmDissolve, enabled: true),
-      EffectConfig(type: EffectType.frame, enabled: true),
-      EffectConfig(type: EffectType.louver, enabled: true),
-      EffectConfig(type: EffectType.mirror, enabled: true),
-      EffectConfig(type: EffectType.clockWipe, enabled: true),
-      EffectConfig(type: EffectType.split, enabled: true),
-      EffectConfig(type: EffectType.panelWipe, enabled: true),
-      EffectConfig(type: EffectType.stretch, enabled: true),
-      EffectConfig(type: EffectType.starWipe, enabled: true),
-      EffectConfig(type: EffectType.lightLeak, enabled: true),
-      EffectConfig(type: EffectType.filmRoll, enabled: true),
-      EffectConfig(type: EffectType.crossZoom, enabled: true),
-      EffectConfig(type: EffectType.whip, enabled: true),
-      EffectConfig(type: EffectType.glass, enabled: true),
-      EffectConfig(type: EffectType.softWipe, enabled: true),
-      EffectConfig(type: EffectType.slice, enabled: true),
-      EffectConfig(type: EffectType.lumaFade, enabled: true),
-      EffectConfig(type: EffectType.pagePeel, enabled: true),
-      EffectConfig(type: EffectType.noiseDissolve, enabled: true),
-      EffectConfig(type: EffectType.rippleReveal, enabled: true),
-      EffectConfig(type: EffectType.waterRefraction, enabled: true),
-      EffectConfig(type: EffectType.cube, enabled: true),
-      EffectConfig(type: EffectType.accordion, enabled: true),
-      EffectConfig(type: EffectType.backgroundToForeground, enabled: true),
-      EffectConfig(type: EffectType.foregroundToBackground, enabled: true),
-      EffectConfig(type: EffectType.depth, enabled: true),
-      EffectConfig(type: EffectType.parallax, enabled: true),
-      EffectConfig(type: EffectType.stack, enabled: true),
-      EffectConfig(type: EffectType.tablet, enabled: true),
-      EffectConfig(type: EffectType.zoomOut, enabled: true),
-      EffectConfig(type: EffectType.fade, enabled: true),
-      EffectConfig(type: EffectType.mosaic, enabled: true),
-      EffectConfig(type: EffectType.liquidMorph, enabled: true),
-      EffectConfig(type: EffectType.blinds, enabled: true),
-      EffectConfig(type: EffectType.blurFade, enabled: true),
-      EffectConfig(type: EffectType.zoomOver, enabled: true),
-      EffectConfig(type: EffectType.slide, enabled: true),
-      EffectConfig(type: EffectType.revealMask, enabled: true),
-      EffectConfig(type: EffectType.fadeThroughColor, enabled: true),
-      EffectConfig(type: EffectType.flip, enabled: true),
-      EffectConfig(type: EffectType.rotate, enabled: true),
-    ],
-  );
+  Map<String, dynamic> toJson() {
+    final json = _withoutDefaults(_$EffectsConfigToJson(this), {
+      'schemaVersion': 1,
+      'defaultDurationMs': 1000,
+    });
+    if ((json['items'] as Map).isEmpty) json.remove('items');
+    return json;
+  }
+
   int durationFor(EffectOptions options) =>
-      options.durationMs == 0 ? safeDefaultDurationMs : options.durationMs;
-  int get safeDefaultDurationMs =>
-      defaultDurationMs >= 1 && defaultDurationMs <= 3600000
-      ? defaultDurationMs
-      : 1000;
+      options.durationMs == 0 ? defaultDurationMs : options.durationMs;
   EffectConfig get(EffectType type) =>
-      items.where((e) => e.type == type).firstOrNull ??
-      EffectConfig(type: type);
-  EffectsConfig put(EffectConfig value) {
-    final next = [...items];
-    final index = next.indexWhere((e) => e.type == value.type);
-    if (index < 0) {
-      next.add(value);
-    } else {
-      next[index] = value;
-    }
-    return copyWith(items: next);
-  }
+      items[type] ?? EffectConfig.defaults(type);
+  EffectsConfig put(EffectType type, EffectConfig value) =>
+      copyWith(items: {...items, type: value});
 
-  List<String> validate() {
-    final errors = <String>[
-      if (schemaVersion != 1) 'effects.schemaVersion',
-      if (defaultDurationMs < 1 || defaultDurationMs > 3600000)
-        'effects.defaultDurationMs',
-    ];
-    final seen = <EffectType>{};
-    for (var i = 0; i < items.length; i++) {
-      final item = items[i];
-      errors.addAll(item.validate().map((field) => 'effects.items[$i].$field'));
-      if (!seen.add(item.type)) errors.add('effects.items[$i].type: duplicate');
-    }
-    return errors;
-  }
-
-  Iterable<EffectConfig> get playable sync* {
-    if (schemaVersion != 1) return;
-    final seen = <EffectType>{};
-    for (final item in items) {
-      if (item.validate().isEmpty && seen.add(item.type) && item.enabled) {
-        yield item;
-      }
-    }
-  }
-
-  void validateForSave() {
-    final errors = validate();
-    if (errors.isNotEmpty) throw FormatException(errors.join(', '));
-  }
+  Iterable<MapEntry<EffectType, EffectConfig>> get playable =>
+      schemaVersion == 1
+      ? items.entries.where(
+          (entry) =>
+              entry.key != EffectType.unknown &&
+              entry.value.invalid == null &&
+              entry.value.enabled,
+        )
+      : const [];
 }
 
 EffectsConfig parseEffectsConfig(Object? value) {
-  if (value == null) return EffectsConfig.defaults();
+  if (value == null) return EffectsConfig();
   try {
     return EffectsConfig.fromJson(Map<String, dynamic>.from(value as Map));
-  } catch (error) {
-    return EffectsConfig(
-      schemaVersion: -1,
-      items: [
-        EffectConfig.invalid({'effects': value}, error.toString()),
-      ],
+  } catch (error, stack) {
+    EffectsConfig._log.warning(
+      'Cannot read effects configuration',
+      error,
+      stack,
     );
+    return EffectsConfig(schemaVersion: -1);
   }
 }

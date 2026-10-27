@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
 import 'package:dio/dio.dart';
 import 'package:config_app/features/config/presentation/wigdgets/effect_label.dart';
 import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
@@ -68,9 +69,11 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       supportsConfigAppVideo || widget.videoFactory != null;
   Size get _deviceSize => Size(2560, 2560 / _aspect.ratio);
   Duration get _transitionTime => Duration(
-    milliseconds: widget.config.effects
-        .durationFor(currentEffect.options)
-        .clamp(1, 3600000),
+    milliseconds:
+        (currentEffect.options.durationMs == 0
+                ? widget.config.effects.safeDefaultDurationMs
+                : currentEffect.options.durationMs)
+            .clamp(1, 3600000),
   );
   Duration get _displayTime =>
       Duration(milliseconds: widget.config.displayTimeMs.clamp(1, 3600000));

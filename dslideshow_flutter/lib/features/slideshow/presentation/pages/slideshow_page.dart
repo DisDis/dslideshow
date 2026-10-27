@@ -133,7 +133,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     _effectController = FixedAnimationController(
       duration: Duration(
-        milliseconds: _appConfig.slideshow.effects.safeDefaultDurationMs,
+        milliseconds: _appConfig.slideshow.effects.defaultDurationMs,
       ),
       vsync: this,
       animationBehavior: AnimationBehavior.preserve,
@@ -455,7 +455,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     var currentEffect = _nextEffect ?? state.effect.createEffect();
     _nextEffect = null;
     var durationMs = state.effect.options.durationMs == 0
-        ? _appConfig.slideshow.effects.safeDefaultDurationMs
+        ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
     _currentPhotoMotion?.setPlaying(false);
     if (currentEffect is WaterRefractionEffect) {
@@ -466,7 +466,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
           'Water Refraction requires two prepared photos; using Fade.',
         );
         currentEffect = FadeEffect();
-        durationMs = _appConfig.slideshow.effects.safeDefaultDurationMs;
+        durationMs = _appConfig.slideshow.effects.defaultDurationMs;
       } else {
         currentEffect.bindPhotos(
           from,

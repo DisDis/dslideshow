@@ -85,15 +85,12 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     if (_closing || emit.isDone || _initialized) return;
     _initialized = true;
     // Настройка эффектов
-    for (final issue in config.effects.validate()) {
-      _log.warning('Invalid slideshow configuration: $issue');
-    }
     _allowedEffects.addAll(
       config.effects.playable.map(
         (entry) => Effect(
-          entry.type,
-          options: entry.options.withDuration(
-            config.effects.durationFor(entry.options),
+          entry.key,
+          options: entry.value.options.withDuration(
+            config.effects.durationFor(entry.value.options),
           ),
         ),
       ),
@@ -193,7 +190,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     // A photo-only selection must still allow videos, GIFs and clocks to play.
     if (compatible.isEmpty) {
       return Effect.fadeEffect.configured(
-        BasicEffectOptions(durationMs: config.effects.safeDefaultDurationMs),
+        BasicEffectOptions(durationMs: config.effects.defaultDurationMs),
       );
     }
     _effectPool.removeWhere((effect) => !compatible.contains(effect));

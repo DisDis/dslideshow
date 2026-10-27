@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
+import 'src/config_json.dart';
+export 'src/config_json.dart';
+
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_config.dart';
 import 'package:dslideshow_backend/src/service/storage/storages_config.dart';
@@ -116,12 +118,8 @@ class AppConfig {
       final defaults = AppConfig.fromJson({});
       defaults.storages.fillEmptyStorages();
       _defaultJSON = defaults.toJson();
-      (_defaultJSON!['slideshow'] as Map<String, dynamic>).remove('effects');
     }
-    return stripDefaults({
-      ...toJson(),
-      'slideshow': slideshow.toStorageJson(stripDefaults),
-    }, _defaultJSON!);
+    return stripDefaults(toJson(), _defaultJSON!);
   }
 
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
@@ -183,34 +181,6 @@ class AppConfig {
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return WiFiConfig.fromJson(dataV);
   }
-}
-
-Map<String, dynamic> stripDefaults(
-  Map<String, dynamic> json,
-  Map<String, dynamic> defaults,
-) {
-  final result = Map<String, dynamic>.of(json);
-  const deepEq = DeepCollectionEquality();
-
-  for (final key in json.keys) {
-    if (!defaults.containsKey(key)) continue;
-
-    final jsonValue = json[key];
-    final defaultValue = defaults[key];
-
-    if (jsonValue is Map<String, dynamic> &&
-        defaultValue is Map<String, dynamic>) {
-      final strippedChild = stripDefaults(jsonValue, defaultValue);
-      if (strippedChild.isEmpty) {
-        result.remove(key);
-      } else {
-        result[key] = strippedChild;
-      }
-    } else if (deepEq.equals(jsonValue, defaultValue)) {
-      result.remove(key);
-    }
-  }
-  return result;
 }
 
 @JsonSerializable()

@@ -1,3 +1,4 @@
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
 import 'package:config_app/features/config/presentation/pages/effects_editor_page.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_i18n/i18n.dart';
@@ -51,33 +52,18 @@ void main() {
   testWidgets(
     'invalid stored options can be inspected and reset without crashing',
     (tester) async {
-      for (final data in [
-        {
-          'type': 'revealMask',
-          'options': {'shape': 'diagonal', 'origin': 'center'},
-        },
-        {
-          'type': 'mosaic',
-          'options': {'gridSize': 99, 'fadeFraction': 1.1},
-        },
-        {
-          'type': 'mosaic',
-          'options': {'direction': 'future'},
-        },
-        {
-          'type': 'rotate',
-          'options': {'angleDegrees': double.infinity},
-        },
-        {
-          'type': 'glass',
-          'options': {'paneCount': 0},
-        },
+      for (final (type, options) in <(EffectType, Map<String, dynamic>)>[
+        (EffectType.revealMask, {'shape': 'diagonal', 'origin': 'center'}),
+        (EffectType.mosaic, {'gridSize': 99, 'fadeFraction': 1.1}),
+        (EffectType.mosaic, {'direction': 'future'}),
+        (EffectType.rotate, {'angleDegrees': double.infinity}),
+        (EffectType.glass, {'paneCount': 0}),
       ]) {
         final config = SlideShowConfig.fromJson({
           'effects': {
-            'items': [
-              {...data, 'enabled': true},
-            ],
+            'items': {
+              type.name: {'options': options, 'enabled': true},
+            },
           },
         });
         ValueGetter<bool>? hasInvalid;
@@ -89,7 +75,7 @@ void main() {
             return () {};
           },
         );
-        final type = config.effects.items.single.type;
+        expect(config.effects.items.keys.single, type);
         await select(tester, switch (type) {
           EffectType.revealMask => 'Reveal',
           EffectType.mosaic => 'Mosaic',
@@ -101,7 +87,7 @@ void main() {
         await tapVisible(tester, find.byKey(const ValueKey('effect-reset')));
         await tester.pump();
         expect(config.effects.validate(), isEmpty);
-        expect(config.effects.items.single.enabled, isTrue);
+        expect(config.effects.items.values.single.enabled, isTrue);
         expect(hasInvalid!(), isFalse);
         await tester.pumpWidget(const SizedBox());
       }
@@ -113,13 +99,12 @@ void main() {
     (tester) async {
       final config = SlideShowConfig.fromJson({
         'effects': {
-          'items': [
-            {
-              'type': 'fadeThroughColor',
+          'items': {
+            'fadeThroughColor': {
               'enabled': true,
               'options': {'durationMs': 1700, 'color': 0xff112233},
             },
-          ],
+          },
         },
       });
       ValueGetter<bool>? hasInvalid;
@@ -246,12 +231,11 @@ void main() {
   ) async {
     final config = SlideShowConfig.fromJson({
       'effects': {
-        'items': [
-          {
-            'type': 'mosaic',
+        'items': {
+          'mosaic': {
             'options': {'durationMs': 2501},
           },
-        ],
+        },
       },
     });
     ValueGetter<bool>? hasInvalid;
@@ -351,9 +335,8 @@ void main() {
     (tester) async {
       final config = SlideShowConfig.fromJson({
         'effects': {
-          'items': [
-            {
-              'type': 'mosaic',
+          'items': {
+            'mosaic': {
               'enabled': true,
               'options': {
                 'durationMs': 2300,
@@ -362,7 +345,7 @@ void main() {
                 'direction': 'bottomRight',
               },
             },
-          ],
+          },
         },
       });
       await wide(tester, config);
@@ -380,16 +363,14 @@ void main() {
     (tester) async {
       final config = SlideShowConfig.fromJson({
         'effects': {
-          'items': [
-            {
-              'type': 'mosaic',
+          'items': {
+            'mosaic': {
               'options': {'durationMs': 1800, 'gridSize': 150},
             },
-            {
-              'type': 'fade',
+            'fade': {
               'options': {'durationMs': 800},
             },
-          ],
+          },
         },
       });
       await wide(tester, config);

@@ -161,10 +161,10 @@ class Effect {
   const Effect(this.type, {this._options});
   EffectOptions get options => _options ?? defaultEffectOptions(type);
   Effect configured(EffectOptions options) => Effect(type, options: options);
-  static Effect fromConfig(EffectConfig config) =>
-      Effect(config.type, options: config.options);
+  static Effect fromConfig(EffectType type, EffectConfig config) =>
+      Effect(type, options: config.options);
   EffectConfig toConfig({bool enabled = true}) =>
-      EffectConfig(type: type, enabled: enabled, options: options);
+      EffectConfig(enabled: enabled, options: options);
   bool get isMosaic => type == EffectType.mosaic;
   String get name => switch (type) {
     EffectType.burnAlpha => 'Burn Alpha',
@@ -265,10 +265,6 @@ class Effect {
     MosaicBackend mosaicBackend = MosaicBackend.canvas,
   }) {
     final settings = options;
-    final issues = EffectConfig(type: type, options: settings).validate();
-    if (issues.isNotEmpty) {
-      throw ArgumentError('Invalid effect options: $issues');
-    }
     return switch (type) {
       EffectType.burnAlpha => CreativeTransitionEffect(
         CreativeTransitionKind.burnAlpha,

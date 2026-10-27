@@ -127,9 +127,9 @@ void main() {
         'slideshow': {
           'effects': {
             'defaultDurationMs': 20,
-            'items': [
-              {'type': 'fade', 'enabled': true},
-            ],
+            'items': {
+              'fade': {'enabled': true},
+            },
           },
           'displayTimeMs': 100,
           'specialScreens': [
@@ -198,9 +198,9 @@ void main() {
       final config = SlideShowConfig.fromJson({
         'effects': {
           'defaultDurationMs': 1000,
-          'items': [
-            {'type': 'fade', 'enabled': true},
-          ],
+          'items': {
+            'fade': {'enabled': true},
+          },
         },
         'displayTimeMs': 100,
         'specialScreens': [

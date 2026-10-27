@@ -16,26 +16,26 @@
   "repeats": 3,
   "transition_ms": 1000,
   "capture_frames": false,
-  "effect_configs": [
-    {
-      "type": "mosaic",
-      "enabled": true,
-      "options": {
-        "durationMs": 0,
-        "gridSize": 100,
-        "fadeFraction": 0,
-        "direction": "random"
+  "effect_configs": {
+    "mosaic": [
+      {
+        "enabled": true,
+        "options": {
+          "durationMs": 0,
+          "gridSize": 100,
+          "fadeFraction": 0,
+          "direction": "random"
+        }
+      },
+      {
+        "enabled": true,
+        "options": {
+          "durationMs": 0,
+          "gridSize": 100,
+          "fadeFraction": 0.3,
+          "direction": "random"
+        }
       }
-    },
-    {
-      "type": "mosaic",
-      "enabled": true,
-      "options": {
-        "durationMs": 0,
-        "gridSize": 100,
-        "fadeFraction": 0.3,
-        "direction": "random"
-      }
-    }
-  ]
+    ]
+  }
 }

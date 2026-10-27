@@ -3,7 +3,8 @@
 [Новый формат эффектов и локальные проверки](../doc/effect-settings.md):
 51 тип в приложении; standard сохраняет 684 сценария за счёт явных вариантов
 в `lib/src/effect_variants.dart`. ID включает параметры; отчёт — `effect_config`.
-`effect_configs` задаёт точечные typed-конфигурации, их `options.durationMs=0`
+`effect_configs` — карта типов со списком вариантов настроек под каждым
+ключом; в значениях нет поля `type`. Значение `options.durationMs=0`
 наследует `transition_ms`. Диагностические MosaicProbe используют суффиксы
 `binary`/`fade`. Аппаратные прогоны этой работы исключены пользователем.
 
@@ -459,7 +460,7 @@ BENCHMARK_MEDIA_DIR=/home/pi/benchmark-originals ./run.sh --suite standard
 Например для явной настройки мозаики (штатные сетки 100/150/200):
 
 ```json
-{"effect_configs":[{"type":"mosaic","enabled":true,"options":{"durationMs":0,"gridSize":100,"fadeFraction":0.3,"direction":"topLeft"}}],"media_cases":["photo-photo","video-video"],"grids":[100,150,200],"backends":["canvas","shader"],"capture_frames":false}
+{"effect_configs":{"mosaic":[{"enabled":true,"options":{"durationMs":0,"gridSize":100,"fadeFraction":0.3,"direction":"topLeft"}}]},"media_cases":["photo-photo","video-video"],"grids":[100,150,200],"backends":["canvas","shader"],"capture_frames":false}
 ```
 
 ## Метрики и отчёты

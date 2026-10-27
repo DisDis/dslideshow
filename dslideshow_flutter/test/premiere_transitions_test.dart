@@ -113,7 +113,10 @@ void main() {
       expect(Effect.values.map((e) => e.type), contains(effect.type));
       expect(Effect.parse(effect.name).type, effect.type);
       expect(
-        Effect.fromConfig(EffectConfig.fromJson(effect.toConfig().toJson())),
+        Effect.fromConfig(
+          effect.type,
+          EffectConfig.fromJson(effect.type, effect.toConfig().toJson()),
+        ),
         effect,
       );
       for (final from in TransitionMedia.values) {

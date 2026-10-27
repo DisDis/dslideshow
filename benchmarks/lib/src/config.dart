@@ -1,5 +1,5 @@
 import 'package:dslideshow_flutter/effect.dart'
-    show EffectConfig, StrictIntConverter;
+    show EffectConfig, EffectType, StrictIntConverter;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'dart:convert';
@@ -29,8 +29,12 @@ class BenchmarkConfig with _$BenchmarkConfig {
   final List<int> grids;
   final List<String> backends;
   final List<String>? effects;
-  @JsonKey(includeIfNull: false)
-  final List<EffectConfig>? effectConfigs;
+  @JsonKey(
+    includeIfNull: false,
+    fromJson: _parseEffectConfigs,
+    toJson: _effectConfigsToJson,
+  )
+  final Map<EffectType, List<EffectConfig>>? effectConfigs;
   final List<String>? mediaCases;
   final bool captureFrames;
   final bool exitWhenDone;
@@ -55,7 +59,7 @@ class BenchmarkConfig with _$BenchmarkConfig {
     List<int>? grids,
     List<String> backends = const ['canvas', 'shader'],
     List<String>? effects,
-    List<EffectConfig>? effectConfigs,
+    Map<EffectType, List<EffectConfig>>? effectConfigs,
     List<String>? mediaCases,
     bool? captureFrames,
     this.exitWhenDone = true,
@@ -74,15 +78,15 @@ class BenchmarkConfig with _$BenchmarkConfig {
        effects = effects == null ? null : List.unmodifiable(effects),
        effectConfigs = effectConfigs == null
            ? null
-           : List.unmodifiable(effectConfigs),
+           : Map.unmodifiable(
+               effectConfigs.map(
+                 (type, variants) =>
+                     MapEntry(type, List<EffectConfig>.unmodifiable(variants)),
+               ),
+             ),
        mediaCases = mediaCases == null ? null : List.unmodifiable(mediaCases),
        captureFrames = captureFrames ?? (suite == 'standard'),
        soakSeconds = soakSeconds ?? (suite == 'soak' ? 86400 : 0) {
-    for (final effect in effectConfigs ?? <EffectConfig>[]) {
-      if (effect.validate().isNotEmpty) {
-        throw FormatException('Invalid effect_configs: ${effect.validate()}');
-      }
-    }
     if (!['smoke', 'standard', 'soak'].contains(suite)) {
       throw ArgumentError('Unknown suite: $suite');
     }
@@ -157,3 +161,35 @@ class BenchmarkConfig with _$BenchmarkConfig {
 
   Map<String, dynamic> toJson() => _$BenchmarkConfigToJson(this);
 }
+
+// Benchmark variants are grouped by the same enum keys as production settings.
+// A list per key permits multiple parameter sets for one algorithm.
+Map<EffectType, List<EffectConfig>>? _parseEffectConfigs(Object? value) {
+  if (value == null) return null;
+  final json = value as Map<String, dynamic>;
+  final types = EffectType.values.asNameMap();
+  final result = <EffectType, List<EffectConfig>>{};
+  for (final entry in json.entries) {
+    final type = types[entry.key];
+    if (type == null || type == EffectType.unknown) {
+      throw FormatException('Unknown effect_configs type: ${entry.key}');
+    }
+    result[type] = (entry.value as List).map((raw) {
+      final config = EffectConfig.fromJson(type, raw as Map<String, dynamic>);
+      if (config.invalid case final invalid?) {
+        throw FormatException(
+          'Cannot read effect_configs.${entry.key}: ${invalid.error}',
+        );
+      }
+      return config;
+    }).toList();
+  }
+  return result;
+}
+
+Map<String, dynamic>? _effectConfigsToJson(
+  Map<EffectType, List<EffectConfig>>? value,
+) => value?.map(
+  (type, variants) =>
+      MapEntry(type.name, variants.map((config) => config.toJson()).toList()),
+);

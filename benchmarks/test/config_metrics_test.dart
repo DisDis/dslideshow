@@ -17,10 +17,17 @@ void main() {
   test(
     'Freezed benchmark configuration keeps independent immutable variants',
     () {
-      final source = [EffectConfig(type: EffectType.fade)];
+      final variants = [const EffectConfig()];
+      final source = {EffectType.fade: variants};
       final config = BenchmarkConfig(suite: 'smoke', effectConfigs: source);
       source.clear();
+      variants.clear();
       expect(config.effectConfigs, hasLength(1));
+      expect(config.effectConfigs![EffectType.fade], hasLength(1));
+      expect(
+        () => config.effectConfigs![EffectType.fade]!.clear(),
+        throwsUnsupportedError,
+      );
       expect(() => config.effectConfigs!.clear(), throwsUnsupportedError);
       expect(() => config.grids.clear(), throwsUnsupportedError);
       final changed = config.copyWith(transitionMs: 1500);
@@ -29,6 +36,28 @@ void main() {
       expect(changed, BenchmarkConfig.fromJson(changed.toJson()));
     },
   );
+
+  test('bundled configurations retain their grouped effect variants', () {
+    var checked = 0;
+    for (final file in Directory('config').listSync().whereType<File>()) {
+      if (!file.path.endsWith('.json')) continue;
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      if (!json.containsKey('effect_configs')) continue;
+      final config = BenchmarkConfig.fromJson(json);
+      expect(config.effectConfigs!.keys, [
+        EffectType.mosaic,
+      ], reason: file.path);
+      expect(
+        config.effectConfigs![EffectType.mosaic],
+        hasLength(2),
+        reason: file.path,
+      );
+      expect(buildPlan(config), isNotEmpty, reason: file.path);
+      expect(BenchmarkConfig.fromJson(config.toJson()), config);
+      checked++;
+    }
+    expect(checked, 6);
+  });
 
   test(
     'explicit typed variants retain independent IDs and effective duration',
@@ -39,16 +68,16 @@ void main() {
         'grids': [100],
         'backends': ['canvas'],
         'transition_ms': 900,
-        'effect_configs': [
-          {
-            'type': 'mosaic',
-            'options': {'durationMs': 0, 'fadeFraction': 0},
-          },
-          {
-            'type': 'mosaic',
-            'options': {'durationMs': 1400, 'fadeFraction': .3},
-          },
-        ],
+        'effect_configs': {
+          'mosaic': [
+            {
+              'options': {'durationMs': 0, 'fadeFraction': 0},
+            },
+            {
+              'options': {'durationMs': 1400, 'fadeFraction': .3},
+            },
+          ],
+        },
       });
       final plan = buildPlan(config);
       expect(plan.length, 2);
@@ -60,28 +89,29 @@ void main() {
         grid: 200,
       );
       expect(
-        (gridCase.toJson()['effect_config'] as Map)['options']['gridSize'],
+        (gridCase.toJson()['effect_config']
+            as Map)['mosaic']['options']['gridSize'],
         200,
       );
       expect(
         () => buildPlan(
           BenchmarkConfig(
-            effectConfigs: [
-              EffectConfig(type: EffectType.fade),
-              EffectConfig(type: EffectType.fade),
-            ],
+            effectConfigs: {
+              EffectType.fade: [const EffectConfig(), const EffectConfig()],
+            },
           ),
         ),
         throwsArgumentError,
       );
 
       expect(
-        (plan.last.toJson()['effect_config'] as Map)['options']['durationMs'],
+        (plan.last.toJson()['effect_config']
+            as Map)['mosaic']['options']['durationMs'],
         1400,
       );
       expect(
         BenchmarkConfig.fromJson(config.toJson())
-            .effectConfigs!
+            .effectConfigs![EffectType.mosaic]!
             .last
             .options
             .durationMs,

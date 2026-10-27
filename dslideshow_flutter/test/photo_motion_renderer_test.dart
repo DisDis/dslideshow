@@ -64,9 +64,9 @@ void main() {
           'slideshow': {
             'effects': {
               'defaultDurationMs': 100,
-              'items': [
-                {'type': 'waterRefraction', 'enabled': true},
-              ],
+              'items': {
+                'waterRefraction': {'enabled': true},
+              },
             },
             'displayTimeMs': 100000,
             'photoMotion': {'mode': mode.name},

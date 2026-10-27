@@ -137,7 +137,7 @@ class SlideShowConfig with _$SlideShowConfig {
     required this.menu,
     List<SpecialScreenConfig>? specialScreens,
     PhotoMotionConfig? photoMotion,
-  }) : effects = effects ?? EffectsConfig.defaults(),
+  }) : effects = effects ?? EffectsConfig(),
        specialScreens = specialScreens ?? [],
        photoMotion = photoMotion ?? PhotoMotionConfig();
 
@@ -145,14 +145,6 @@ class SlideShowConfig with _$SlideShowConfig {
       _$SlideShowConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
-
-  /// The slideshow owns the storage representation of its typed screen list.
-  Map<String, dynamic> toStorageJson(JsonStripper strip) => {
-    ...toJson(),
-    'specialScreens': specialScreens
-        .map((screen) => screen.toStorageJson(strip))
-        .toList(),
-  };
 }
 
 @JsonSerializable()

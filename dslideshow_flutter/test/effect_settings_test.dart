@@ -68,13 +68,6 @@ void main() {
       ).createEffect(),
       isA<FlipVerticalEffect>(),
     );
-    expect(
-      () => const Effect(
-        EffectType.mosaic,
-        options: BasicEffectOptions(),
-      ).createEffect(),
-      throwsArgumentError,
-    );
   });
   testWidgets(
     'all former direction, shape, color and style variants render intermediate states',

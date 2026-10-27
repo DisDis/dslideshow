@@ -98,7 +98,10 @@ class BenchmarkCase {
   Map<String, Object?> toJson() => {
     'id': id,
     'effect': name,
-    if (effect != null) 'effect_config': effectiveEffect!.toConfig().toJson(),
+    if (effect != null)
+      'effect_config': {
+        effectiveEffect!.type.name: effectiveEffect!.toConfig().toJson(),
+      },
     'media': media.name,
     'from': media.from,
     if (photoMotion) 'photo_motion': 'kenBurns',
@@ -154,7 +157,11 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
           ...benchmarkEffects.where(
             (effect) => config.effects?.contains(effect.name) == true,
           ),
-          ...config.effectConfigs!.map(Effect.fromConfig),
+          ...config.effectConfigs!.entries.expand(
+            (entry) => entry.value.map(
+              (variant) => Effect.fromConfig(entry.key, variant),
+            ),
+          ),
         ];
   for (final pair in pairs) {
     if (config.effects?.contains(photoMotionProbeName) == true) {

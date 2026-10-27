@@ -1,3 +1,4 @@
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
 import 'package:config_app/features/config/presentation/wigdgets/argb_color_field.dart';
 import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
 import 'package:config_app/features/config/presentation/wigdgets/draft_editor_form.dart';
@@ -74,13 +75,13 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
     _revision.value++;
   }
 
-  void _put(EffectConfig entry) {
-    widget.config.effects = _config.put(entry);
+  void _put(EffectType type, EffectConfig entry) {
+    widget.config.effects = _config.put(type, entry);
     _changed();
   }
 
   void _options(EffectOptions options) =>
-      _put(_entry.copyWith(options: options));
+      _put(_selected, _entry.copyWith(options: options));
   int? _milliseconds(String text) {
     final ms = int.tryParse(text.trim(), radix: 10);
     return ms != null && ms >= 1 && ms <= 3600000 ? ms : null;
@@ -89,14 +90,14 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
   String _time(EffectConfig entry) =>
       '${entry.options.durationMs == 0 ? '${context.localizations.effects_inherit} · ' : ''}${context.localizations.effects_milliseconds(_config.durationFor(entry.options))}';
 
-  String _summary(EffectConfig entry) {
-    if (entry.validate().isNotEmpty) {
+  String _summary(EffectType type, EffectConfig entry) {
+    if (entry.validate(type).isNotEmpty) {
       return context.localizations.effects_invalid;
     }
     final options = entry.options;
     final parts = <String>[_time(entry)];
     if (options !=
-        defaultEffectOptions(entry.type).withDuration(options.durationMs)) {
+        defaultEffectOptions(type).withDuration(options.durationMs)) {
       final countLabel = context.localizations.effects_count;
       final details = switch (options) {
         MosaicEffectOptions(
@@ -464,8 +465,8 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
       }
     });
     _put(
+      _selected,
       EffectConfig(
-        type: _selected,
         enabled: _entry.enabled,
         options: defaultEffectOptions(_selected),
       ),
@@ -474,7 +475,7 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
 
   Widget _form() {
     final l = context.localizations, entry = _entry;
-    if (entry.validate().isNotEmpty) {
+    if (entry.validate(_selected).isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -501,7 +502,7 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
             title: Text(effectLabel(context, Effect(_selected))),
             subtitle: Text(l.effects_enable),
             value: entry.enabled,
-            onChanged: (v) => _put(entry.copyWith(enabled: v)),
+            onChanged: (v) => _put(_selected, entry.copyWith(enabled: v)),
           ),
           SegmentedButton<_DurationMode>(
             key: const ValueKey('effect-duration-mode'),
@@ -570,8 +571,8 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
     hasInvalidInput: _hasInvalid,
     previewBuilder: (_) => SlideshowPreview(
       config: widget.config,
-      selectedEffect: _entry.validate().isEmpty
-          ? Effect.fromConfig(_entry)
+      selectedEffect: _entry.validate(_selected).isEmpty
+          ? Effect.fromConfig(_selected, _entry)
           : Effect(_selected),
       images: widget.previewImages,
     ),
@@ -660,11 +661,12 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
                       key: ValueKey('effect-row-${effect.type.name}'),
                       selected: wide && effect.type == _selected,
                       title: Text(effectLabel(context, effect)),
-                      subtitle: Text(_summary(entry)),
+                      subtitle: Text(_summary(effect.type, entry)),
                       leading: Switch(
                         key: ValueKey('effect-enabled-${effect.type.name}'),
                         value: entry.enabled,
-                        onChanged: (v) => _put(entry.copyWith(enabled: v)),
+                        onChanged: (v) =>
+                            _put(effect.type, entry.copyWith(enabled: v)),
                       ),
                       onTap: () async {
                         _selected = effect.type;
@@ -706,7 +708,7 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
       if (action == _BulkAction.inheritAll && entry.options.durationMs > 0) {
         _customDurations[effect.type] = entry.options.durationMs;
       }
-      widget.config.effects = _config.put(switch (action) {
+      widget.config.effects = _config.put(effect.type, switch (action) {
         _BulkAction.enableAll => entry.copyWith(enabled: true),
         _BulkAction.disableAll => entry.copyWith(enabled: false),
         _BulkAction.inheritAll => entry.copyWith(
@@ -801,7 +803,7 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
                             c.dispose();
                           }
                         });
-                        widget.config.effects = EffectsConfig.defaults();
+                        widget.config.effects = EffectsConfig();
                         _global.text = _config.defaultDurationMs.toString();
                         _invalidGlobal = false;
                         _invalid.clear();

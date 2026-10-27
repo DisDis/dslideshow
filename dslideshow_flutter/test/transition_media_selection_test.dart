@@ -57,7 +57,7 @@ void main() {
         final config = SlideShowConfig.fromJson({
           'effects': {
             'defaultDurationMs': 1000,
-            'items': [effect.toConfig().toJson()],
+            'items': {effect.type.name: effect.toConfig().toJson()},
           },
           'displayTimeMs': 100000,
         });
@@ -106,12 +106,19 @@ void main() {
 
   for (final (label, effects, expected) in <(String, EffectsConfig, Effect)>[
     (
+      'missing config',
+      parseEffectsConfig(null),
+      const Effect(
+        EffectType.fade,
+        options: BasicEffectOptions(durationMs: 1000),
+      ),
+    ),
+    (
       'personal',
       EffectsConfig(
         defaultDurationMs: 1200,
-        items: [
-          EffectConfig(
-            type: EffectType.mosaic,
+        items: {
+          EffectType.mosaic: EffectConfig(
             enabled: true,
             options: const MosaicEffectOptions(
               durationMs: 1800,
@@ -119,7 +126,7 @@ void main() {
               direction: MosaicDirection.bottomLeft,
             ),
           ),
-        ],
+        },
       ),
       const Effect(
         EffectType.mosaic,
@@ -134,7 +141,10 @@ void main() {
       'inherited',
       EffectsConfig(
         defaultDurationMs: 1200,
-        items: [EffectConfig(type: EffectType.fade, enabled: true)],
+        items: {
+          EffectType.fade: EffectConfig.defaults(EffectType.fade)
+              .copyWith(enabled: true),
+        },
       ),
       const Effect(
         EffectType.fade,
@@ -154,7 +164,10 @@ void main() {
       EffectsConfig(
         schemaVersion: 2,
         defaultDurationMs: 1200,
-        items: [EffectConfig(type: EffectType.slide, enabled: true)],
+        items: {
+          EffectType.slide: EffectConfig.defaults(EffectType.slide)
+              .copyWith(enabled: true),
+        },
       ),
       const Effect(
         EffectType.fade,
@@ -190,8 +203,8 @@ void main() {
         config.effects = effects
             .copyWith(defaultDurationMs: 2200)
             .put(
+              expected.type,
               EffectConfig(
-                type: expected.type,
                 enabled: true,
                 options: defaultEffectOptions(expected.type).withDuration(3000),
               ),
@@ -208,10 +221,12 @@ void main() {
     final frontend = TestFrontend();
     final config = SlideShowConfig.fromJson({'displayTimeMs': 100000})
       ..effects = EffectsConfig(
-        items: [
-          EffectConfig(type: EffectType.fade, enabled: true),
-          EffectConfig(type: EffectType.slide, enabled: true),
-        ],
+        items: {
+          EffectType.fade: EffectConfig.defaults(EffectType.fade)
+              .copyWith(enabled: true),
+          EffectType.slide: EffectConfig.defaults(EffectType.slide)
+              .copyWith(enabled: true),
+        },
       );
     final status = SlideshowStatusBloc(
       frontendService: frontend,
@@ -256,9 +271,9 @@ void main() {
       final config = SlideShowConfig.fromJson({
         'effects': {
           'defaultDurationMs': 1000,
-          'items': [
-            {'type': 'waterRefraction', 'enabled': true},
-          ],
+          'items': {
+            'waterRefraction': {'enabled': true},
+          },
         },
         'displayTimeMs': 100000,
       });

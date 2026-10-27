@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
 import 'package:config_app/features/config/domain/config_draft.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,8 +11,8 @@ void main() {
     () {
       final config = AppConfig.fromJson(
         jsonDecode(
-          '{"slideshow":{"effects":{"items":[{"type":"mosaic",'
-          '"options":{"fadeFraction":1e999}}]}}}',
+          '{"slideshow":{"effects":{"items":{"mosaic":{'
+          '"options":{"fadeFraction":1e999}}}}}}',
         ) as Map<String, dynamic>,
       );
       final draft = ConfigDraft()..replaceSaved(config);
@@ -20,7 +21,7 @@ void main() {
         draft.value!.slideshow.effects.validateForSave,
         throwsFormatException,
       );
-      draft.value!.slideshow.effects = EffectsConfig.defaults();
+      draft.value!.slideshow.effects = EffectsConfig();
       expect(draft.hasChanges, isTrue);
       expect(draft.value!.slideshow.effects.validate(), isEmpty);
       draft.discard();
@@ -31,6 +32,24 @@ void main() {
       );
     },
   );
+
+  test('default disabled effect entries do not create unsaved changes', () {
+    final draft = ConfigDraft()..replaceSaved(AppConfig.fromJson({}));
+    draft.value!.slideshow.effects = EffectsConfig(
+      items: {EffectType.mosaic: EffectConfig.defaults(EffectType.mosaic)},
+    );
+    expect(draft.hasChanges, isFalse);
+    draft.value!.slideshow.effects = draft.value!.slideshow.effects.put(
+      EffectType.mosaic,
+      const EffectConfig(options: MosaicEffectOptions(gridSize: 150)),
+    );
+    expect(draft.hasChanges, isTrue);
+    draft.value!.slideshow.effects = draft.value!.slideshow.effects.put(
+      EffectType.mosaic,
+      EffectConfig.defaults(EffectType.mosaic),
+    );
+    expect(draft.hasChanges, isFalse);
+  });
 
   test('edits and discard never mutate the saved configuration', () {
     final saved = AppConfig.fromJson({

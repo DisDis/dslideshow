@@ -32,7 +32,6 @@ class SavedConfigRepository {
     // Parsing into a separate model also excludes the private filename from
     // input and keeps the active configuration untouched.
     final config = _parse(content);
-    config.slideshow.effects.validateForSave();
     config.toFile(_file.path);
   }
 

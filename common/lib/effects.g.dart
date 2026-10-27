@@ -305,77 +305,14 @@ Map<String, dynamic> _$LouverEffectOptionsToJson(
   'slatCount': const StrictIntConverter().toJson(instance.slatCount),
 };
 
-EffectConfig _$EffectConfigFromJson(Map<String, dynamic> json) => EffectConfig(
-  type: $enumDecode(
-    _$EffectTypeEnumMap,
-    json['type'],
-    unknownValue: EffectType.unknown,
-  ),
-  enabled: json['enabled'] as bool? ?? false,
-  options: _readOptions(_optionsSource(json, 'options')),
-);
+EffectConfig _$EffectConfigFromJson(Map<String, dynamic> json) =>
+    EffectConfig(enabled: json['enabled'] as bool? ?? false);
 
 Map<String, dynamic> _$EffectConfigToJson(EffectConfig instance) =>
     <String, dynamic>{
-      'type': _$EffectTypeEnumMap[instance.type]!,
       'enabled': instance.enabled,
       'options': instance.options.toJson(),
     };
-
-const _$EffectTypeEnumMap = {
-  EffectType.burnAlpha: 'burnAlpha',
-  EffectType.foldMotion: 'foldMotion',
-  EffectType.glow: 'glow',
-  EffectType.kaleidoscope: 'kaleidoscope',
-  EffectType.tvPower: 'tvPower',
-  EffectType.springMotion: 'springMotion',
-  EffectType.shapeDissolve: 'shapeDissolve',
-  EffectType.vhsDamage: 'vhsDamage',
-  EffectType.radialBlur: 'radialBlur',
-  EffectType.phosphor: 'phosphor',
-  EffectType.filmDissolve: 'filmDissolve',
-  EffectType.frame: 'frame',
-  EffectType.louver: 'louver',
-  EffectType.mirror: 'mirror',
-  EffectType.clockWipe: 'clockWipe',
-  EffectType.split: 'split',
-  EffectType.panelWipe: 'panelWipe',
-  EffectType.stretch: 'stretch',
-  EffectType.starWipe: 'starWipe',
-  EffectType.lightLeak: 'lightLeak',
-  EffectType.filmRoll: 'filmRoll',
-  EffectType.crossZoom: 'crossZoom',
-  EffectType.whip: 'whip',
-  EffectType.glass: 'glass',
-  EffectType.softWipe: 'softWipe',
-  EffectType.slice: 'slice',
-  EffectType.lumaFade: 'lumaFade',
-  EffectType.pagePeel: 'pagePeel',
-  EffectType.noiseDissolve: 'noiseDissolve',
-  EffectType.rippleReveal: 'rippleReveal',
-  EffectType.waterRefraction: 'waterRefraction',
-  EffectType.cube: 'cube',
-  EffectType.accordion: 'accordion',
-  EffectType.backgroundToForeground: 'backgroundToForeground',
-  EffectType.foregroundToBackground: 'foregroundToBackground',
-  EffectType.depth: 'depth',
-  EffectType.parallax: 'parallax',
-  EffectType.stack: 'stack',
-  EffectType.tablet: 'tablet',
-  EffectType.zoomOut: 'zoomOut',
-  EffectType.fade: 'fade',
-  EffectType.mosaic: 'mosaic',
-  EffectType.liquidMorph: 'liquidMorph',
-  EffectType.blinds: 'blinds',
-  EffectType.blurFade: 'blurFade',
-  EffectType.zoomOver: 'zoomOver',
-  EffectType.slide: 'slide',
-  EffectType.revealMask: 'revealMask',
-  EffectType.fadeThroughColor: 'fadeThroughColor',
-  EffectType.flip: 'flip',
-  EffectType.rotate: 'rotate',
-  EffectType.unknown: 'unknown',
-};
 
 InvalidEffectData _$InvalidEffectDataFromJson(Map<String, dynamic> json) =>
     InvalidEffectData(
@@ -395,14 +332,18 @@ EffectsConfig _$EffectsConfigFromJson(Map<String, dynamic> json) =>
             ),
       defaultDurationMs: json['defaultDurationMs'] == null
           ? 1000
-          : _readInteger(json['defaultDurationMs']),
-      items: _readItems(json['items']),
+          : const StrictIntConverter().fromJson(
+              json['defaultDurationMs'] as Object,
+            ),
+      items: _parseEffects(json['items']),
     );
 
 Map<String, dynamic> _$EffectsConfigToJson(
   EffectsConfig instance,
 ) => <String, dynamic>{
   'schemaVersion': const StrictIntConverter().toJson(instance.schemaVersion),
-  'defaultDurationMs': instance.defaultDurationMs,
-  'items': instance.items.map((e) => e.toJson()).toList(),
+  'defaultDurationMs': const StrictIntConverter().toJson(
+    instance.defaultDurationMs,
+  ),
+  'items': _effectsToJson(instance.items),
 };

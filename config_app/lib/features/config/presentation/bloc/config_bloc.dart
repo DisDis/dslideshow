@@ -1,3 +1,4 @@
+import 'package:config_app/features/config/domain/effect_settings_validation.dart';
 import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
 import 'package:config_app/features/config/domain/config_draft.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -2529,20 +2529,20 @@ $EffectConfigCopyWith<EffectConfig> get copyWith => _$EffectConfigCopyWithImpl<E
 @override
 bool operator ==(Object other) {
   final _this = this as EffectConfig;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EffectConfig&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.options, _this.options) || other.options == _this.options)&&(identical(other.invalid, _this.invalid) || other.invalid == _this.invalid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EffectConfig&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.options, _this.options) || other.options == _this.options)&&(identical(other.invalid, _this.invalid) || other.invalid == _this.invalid));
 }
 
 
 @override
 int get hashCode {
   final _this = this as EffectConfig;
-  return Object.hash(runtimeType,_this.type,_this.enabled,_this.options,_this.invalid);
+  return Object.hash(runtimeType,_this.enabled,_this.options,_this.invalid);
 }
 
 @override
 String toString() {
   final _this = this as EffectConfig;
-  return 'EffectConfig(type: ${_this.type}, enabled: ${_this.enabled}, options: ${_this.options}, invalid: ${_this.invalid})';
+  return 'EffectConfig(enabled: ${_this.enabled}, options: ${_this.options}, invalid: ${_this.invalid})';
 }
 
 
@@ -2553,7 +2553,7 @@ abstract mixin class $EffectConfigCopyWith<$Res>  {
   factory $EffectConfigCopyWith(EffectConfig value, $Res Function(EffectConfig) _then) = _$EffectConfigCopyWithImpl;
 @useResult
 $Res call({
- EffectType type, bool enabled, EffectOptions? options, InvalidEffectData? invalid
+ bool enabled, EffectOptions options, InvalidEffectData? invalid
 });
 
 
@@ -2570,12 +2570,11 @@ class _$EffectConfigCopyWithImpl<$Res>
 
 /// Create a copy of EffectConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? enabled = null,Object? options = freezed,Object? invalid = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? options = null,Object? invalid = freezed,}) {
   return _then(EffectConfig(
-type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as EffectType,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
-as bool,options: freezed == options ? _self.options! : options // ignore: cast_nullable_to_non_nullable
-as EffectOptions?,invalid: freezed == invalid ? _self.invalid : invalid // ignore: cast_nullable_to_non_nullable
+enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
+as EffectOptions,invalid: freezed == invalid ? _self.invalid : invalid // ignore: cast_nullable_to_non_nullable
 as InvalidEffectData?,
   ));
 }
@@ -2951,7 +2950,7 @@ abstract mixin class $EffectsConfigCopyWith<$Res>  {
   factory $EffectsConfigCopyWith(EffectsConfig value, $Res Function(EffectsConfig) _then) = _$EffectsConfigCopyWithImpl;
 @useResult
 $Res call({
- int schemaVersion, int defaultDurationMs, List<EffectConfig>? items
+ int schemaVersion, int defaultDurationMs, Map<EffectType, EffectConfig>? items
 });
 
 
@@ -2973,7 +2972,7 @@ class _$EffectsConfigCopyWithImpl<$Res>
 schemaVersion: null == schemaVersion ? _self.schemaVersion : schemaVersion // ignore: cast_nullable_to_non_nullable
 as int,defaultDurationMs: null == defaultDurationMs ? _self.defaultDurationMs : defaultDurationMs // ignore: cast_nullable_to_non_nullable
 as int,items: freezed == items ? _self.items! : items // ignore: cast_nullable_to_non_nullable
-as List<EffectConfig>?,
+as Map<EffectType, EffectConfig>?,
   ));
 }
 

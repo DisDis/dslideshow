@@ -1,5 +1,3 @@
-import 'support/storage_sections.dart';
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,6 +5,65 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test(
+    'generated slideshow JSON delegates compact serialization to nested models',
+    () {
+      final config = SlideShowConfig.fromJson({});
+      config.specialScreens.addAll([
+        SpecialScreenConfig(id: 'clock', type: SpecialScreenType.clock),
+        SpecialScreenConfig(
+          id: 'cameras',
+          type: SpecialScreenType.cameras,
+          options: CamerasScreenOptions(
+            cameras: [
+              CameraConfig(
+                id: 'door',
+                url: 'https://cam/snapshot',
+                password: 'secret',
+              ),
+            ],
+          ),
+        ),
+        SpecialScreenConfig.fromJson({
+          'id': 'future',
+          'type': 'future-widget',
+          'options': {'zero': 0, 'disabled': false, 'nested': {}, 'items': []},
+        }),
+      ]);
+      final json = config.toJson();
+      expect(json['specialScreens'], [
+        {'id': 'clock', 'type': 'clock'},
+        {
+          'id': 'cameras',
+          'type': 'cameras',
+          'options': {
+            'cameras': [
+              {
+                'id': 'door',
+                'url': 'https://cam/snapshot',
+                'password': 'secret',
+              },
+            ],
+          },
+        },
+        {
+          'id': 'future',
+          'type': 'future-widget',
+          'options': {'zero': 0, 'disabled': false, 'nested': {}, 'items': []},
+        },
+      ]);
+      final restored = SlideShowConfig.fromJson(
+        jsonDecode(jsonEncode(json)) as Map<String, dynamic>,
+      );
+      expect(restored.toJson(), json);
+      expect(
+        (restored.specialScreens.first.options as ClockScreenOptions).showDate,
+        isTrue,
+      );
+      expect(restored.specialScreens.first.schedule.count, 10);
+    },
+  );
+
   test(
     'clock defaults survive JSON and compact storage without size drift',
     () {
@@ -24,7 +81,7 @@ void main() {
         type: SpecialScreenType.clock,
         options: defaults,
       );
-      final compact = screen.toStorageJson(stripDefaults);
+      final compact = screen.toJson();
       expect(compact, {'id': 'clock', 'type': 'clock'});
       expect(SpecialScreenConfig.fromJson(compact).toJson(), screen.toJson());
 
@@ -33,7 +90,7 @@ void main() {
         'type': 'clock',
         'options': {'timeFontSizePercent': 20},
       });
-      final explicitCompact = explicit.toStorageJson(stripDefaults);
+      final explicitCompact = explicit.toJson();
       expect(explicitCompact['options'], {'timeFontSizePercent': 20.0});
       expect(
         SpecialScreenConfig.fromJson(explicitCompact).toJson(),
@@ -53,7 +110,7 @@ void main() {
       );
       config.slideshow.specialScreens.add(clock);
       final full = jsonEncode(config.toJson());
-      expect(otherStorageSections(config), {
+      expect(config.toStorageJson(), {
         'slideshow': {
           'specialScreens': [
             {
@@ -68,7 +125,7 @@ void main() {
       expect(jsonEncode(config.toJson()), full);
       (clock.options as ClockScreenOptions).showDate = true;
       clock.enabled = false;
-      expect(otherStorageSections(config), {
+      expect(config.toStorageJson(), {
         'slideshow': {
           'specialScreens': [
             {'id': 'clock', 'type': 'clock'},
@@ -76,7 +133,7 @@ void main() {
         },
       });
       config.slideshow.specialScreens.clear();
-      expect(otherStorageSections(config), isEmpty);
+      expect(config.toStorageJson(), isEmpty);
     },
   );
   test('enum JSON names and annotated date formats round trip', () {
@@ -136,8 +193,7 @@ void main() {
         expect(options.showDate, isFalse);
         expect(cloned.toJson(), screen.toJson());
         expect(
-          SpecialScreenConfig.fromJson(screen.toStorageJson(stripDefaults))
-              .toJson(),
+          SpecialScreenConfig.fromJson(screen.toJson()).toJson(),
           screen.toJson(),
         );
       }
@@ -204,7 +260,7 @@ void main() {
           options: cameraOptions,
         ),
       ]);
-      final compact = otherStorageSections(config);
+      final compact = config.toStorageJson();
       expect(compact, {
         'slideshow': {
           'specialScreens': [
@@ -231,7 +287,7 @@ void main() {
         ..dateFont = ClockFont.system
         ..showWeekday = false;
       cameraOptions.requestTimeoutMs = 10000;
-      expect(otherStorageSections(config), {
+      expect(config.toStorageJson(), {
         'slideshow': {
           'specialScreens': [
             {'id': 'clock', 'type': 'clock'},
@@ -261,15 +317,14 @@ void main() {
         'enabled': true,
         'options': {'showDate': false},
       });
-      expect(clock.toStorageJson(stripDefaults), {
+      expect(clock.toJson(), {
         'id': 'clock',
         'type': 'clock',
         'enabled': true,
         'options': {'showDate': false},
       });
       expect(
-        SpecialScreenConfig.fromJson(clock.toStorageJson(stripDefaults))
-            .toJson(),
+        SpecialScreenConfig.fromJson(clock.toJson()).toJson(),
         clock.toJson(),
       );
     },
@@ -280,7 +335,7 @@ void main() {
       type: SpecialScreenType.clock,
       schedule: SpecialScreenSchedule(type: SpecialScreenScheduleType.interval),
     );
-    final compact = clock.toStorageJson(stripDefaults);
+    final compact = clock.toJson();
     expect(compact['schedule'], {'type': 'interval'});
     expect(SpecialScreenConfig.fromJson(compact).schedule.intervalMs, 300000);
     expect(SpecialScreenConfig.fromJson(compact).toJson(), clock.toJson());
@@ -301,7 +356,7 @@ void main() {
           ],
         ),
       );
-      final compact = screen.toStorageJson(stripDefaults);
+      final compact = screen.toJson();
       expect(compact['options'], {
         'mode': 'sequence',
         'showNames': false,
@@ -312,7 +367,8 @@ void main() {
         ],
       });
       expect(SpecialScreenConfig.fromJson(compact).toJson(), screen.toJson());
-      expect((screen.toJson()['options'] as Map)['columns'], 0);
+      expect((screen.options as CamerasScreenOptions).columns, 0);
+      expect(screen.toJson()['options'], isNot(contains('columns')));
     },
   );
   test('file save and reload preserves multiple typed screens', () {
@@ -352,17 +408,14 @@ void main() {
       'options': {'provider': 'later'},
     });
     expect(screen.isSupported, false);
-    expect(screen.toStorageJson(stripDefaults)['options'], {
-      'provider': 'later',
-    });
-    expect(screen.toStorageJson(stripDefaults), {
+    expect(screen.toJson()['options'], {'provider': 'later'});
+    expect(screen.toJson(), {
       'id': 'future',
       'type': 'weather',
       'options': {'provider': 'later'},
     });
     expect(
-      SpecialScreenConfig.fromJson(screen.toStorageJson(stripDefaults))
-          .toJson(),
+      SpecialScreenConfig.fromJson(screen.toJson()).toJson(),
       screen.toJson(),
     );
     final empty = SpecialScreenConfig.fromJson({
@@ -370,7 +423,7 @@ void main() {
       'type': 'weather',
       'options': <String, dynamic>{},
     });
-    expect(empty.toStorageJson(stripDefaults), {
+    expect(empty.toJson(), {
       'id': 'empty',
       'type': 'weather',
       'options': <String, dynamic>{},

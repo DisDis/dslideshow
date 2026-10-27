@@ -13,6 +13,40 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets(
+    'invalid stored global duration keeps the preview usable for repair',
+    (tester) async {
+      for (final duration in [-1, 0, 3600001]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: TickerMode(
+                  enabled: false,
+                  child: SlideshowPreview(
+                    config: SlideShowConfig.fromJson({
+                      'effects': {'defaultDurationMs': duration},
+                    }),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        final clock = tester
+            .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+            .map((widget) => widget.animation)
+            .whereType<FixedAnimationController>()
+            .single;
+        expect(clock.duration, const Duration(milliseconds: 1000));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      }
+    },
+  );
+
+  testWidgets(
     'loading indicator preserves preview height and control positions',
     (tester) async {
       final recorder = ui.PictureRecorder();

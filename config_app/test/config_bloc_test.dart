@@ -44,10 +44,39 @@ void main() {
     expect((bloc.state as ConfigLoadedState).config, same(second));
   });
 
+  test(
+    'invalid effect settings are rejected before sending the draft',
+    () async {
+      final draft = _config(8081);
+      draft.slideshow.effects = EffectsConfig(
+        items: {
+          EffectType.mosaic: const EffectConfig(
+            enabled: true,
+            options: MosaicEffectOptions(gridSize: 99),
+          ),
+        },
+      );
+      bloc.add(ConfigEvent.save(draft));
+      await pumpEventQueue();
+      expect(states, [isA<ConfigErrorState>()]);
+      expect(repository.saved, isEmpty);
+      expect(repository.saves, isEmpty);
+      expect(
+        (draft.slideshow.effects.get(EffectType.mosaic).options
+                as MosaicEffectOptions)
+            .gridSize,
+        99,
+      );
+    },
+  );
+
   test('acknowledges save before publishing its isolated snapshot', () async {
     final draft = _config(8081);
     draft.slideshow.effects = EffectsConfig(
-      items: [EffectConfig(type: EffectType.fade, enabled: true)],
+      items: {
+        EffectType.fade: EffectConfig.defaults(EffectType.fade)
+            .copyWith(enabled: true),
+      },
     );
 
     bloc.add(ConfigEvent.save(draft));
@@ -64,7 +93,8 @@ void main() {
 
     draft.webServer.port = 9090;
     draft.slideshow.effects = draft.slideshow.effects.put(
-      EffectConfig(type: EffectType.mosaic, enabled: true),
+      EffectType.mosaic,
+      EffectConfig.defaults(EffectType.mosaic).copyWith(enabled: true),
     );
     repository.saves.single.complete(const WSResultOk(id: 1));
     await pumpEventQueue();
@@ -77,7 +107,7 @@ void main() {
     final acknowledged = (bloc.state as ConfigLoadedState).config;
     expect(acknowledged, same(sent));
     expect(acknowledged.webServer.port, 8081);
-    expect(acknowledged.slideshow.effects.items.single.type, EffectType.fade);
+    expect(acknowledged.slideshow.effects.items.keys.single, EffectType.fade);
     expect(draft.webServer.port, 9090);
   });
 

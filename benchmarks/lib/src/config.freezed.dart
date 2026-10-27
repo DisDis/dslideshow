@@ -51,7 +51,7 @@ abstract mixin class $BenchmarkConfigCopyWith<$Res>  {
   factory $BenchmarkConfigCopyWith(BenchmarkConfig value, $Res Function(BenchmarkConfig) _then) = _$BenchmarkConfigCopyWithImpl;
 @useResult
 $Res call({
- String suite, int? repeats, int? warmups, int transitionMs, int transitionTimeoutSeconds, int prepareTimeoutSeconds, int telemetryMs, int timingDrainMs, int? soakSeconds, int seed, List<int>? grids, List<String> backends, List<String>? effects, List<EffectConfig>? effectConfigs, List<String>? mediaCases, bool? captureFrames, bool exitWhenDone, bool requireTimings, bool vulkanVideo, bool visualAudit, String? mediaDirectory, int expectedWidth, int expectedHeight
+ String suite, int? repeats, int? warmups, int transitionMs, int transitionTimeoutSeconds, int prepareTimeoutSeconds, int telemetryMs, int timingDrainMs, int? soakSeconds, int seed, List<int>? grids, List<String> backends, List<String>? effects, Map<EffectType, List<EffectConfig>>? effectConfigs, List<String>? mediaCases, bool? captureFrames, bool exitWhenDone, bool requireTimings, bool vulkanVideo, bool visualAudit, String? mediaDirectory, int expectedWidth, int expectedHeight
 });
 
 
@@ -84,7 +84,7 @@ as int,grids: freezed == grids ? _self.grids! : grids // ignore: cast_nullable_t
 as List<int>?,backends: null == backends ? _self.backends : backends // ignore: cast_nullable_to_non_nullable
 as List<String>,effects: freezed == effects ? _self.effects : effects // ignore: cast_nullable_to_non_nullable
 as List<String>?,effectConfigs: freezed == effectConfigs ? _self.effectConfigs : effectConfigs // ignore: cast_nullable_to_non_nullable
-as List<EffectConfig>?,mediaCases: freezed == mediaCases ? _self.mediaCases : mediaCases // ignore: cast_nullable_to_non_nullable
+as Map<EffectType, List<EffectConfig>>?,mediaCases: freezed == mediaCases ? _self.mediaCases : mediaCases // ignore: cast_nullable_to_non_nullable
 as List<String>?,captureFrames: freezed == captureFrames ? _self.captureFrames! : captureFrames // ignore: cast_nullable_to_non_nullable
 as bool?,exitWhenDone: null == exitWhenDone ? _self.exitWhenDone : exitWhenDone // ignore: cast_nullable_to_non_nullable
 as bool,requireTimings: null == requireTimings ? _self.requireTimings : requireTimings // ignore: cast_nullable_to_non_nullable

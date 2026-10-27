@@ -100,9 +100,9 @@ class Fixture {
     'slideshow': {
       'effects': {
         'defaultDurationMs': 1000,
-        'items': [
-          {'type': 'fade', 'enabled': true},
-        ],
+        'items': {
+          'fade': {'enabled': true},
+        },
       },
       'displayTimeMs': 5000,
       'fadeTimeMs': 2000,

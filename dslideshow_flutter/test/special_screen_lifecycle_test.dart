@@ -39,9 +39,9 @@ class ScreenFixture {
     'slideshow': {
       'effects': {
         'defaultDurationMs': 100,
-        'items': [
-          {'type': 'fade', 'enabled': true},
-        ],
+        'items': {
+          'fade': {'enabled': true},
+        },
       },
       'displayTimeMs': 100,
       'specialScreens': [
