@@ -1,5 +1,7 @@
 # Unreleased
 
+# 13.0.0+1 — 2026-10-27
+
 * Fix FFmpeg 5.1 SIGSEGV while flattening thumbnail alpha: draw the opaque
   background in RGB before overlay and advance thumbnail policy to 4. Add gallery
   request/cache/catalog/process diagnostics with bounded native stderr, exit codes
