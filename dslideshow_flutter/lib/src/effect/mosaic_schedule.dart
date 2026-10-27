@@ -1,8 +1,9 @@
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart' show MosaicDirection;
+
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-
-enum MosaicDirection { random, topLeft, topRight, bottomLeft, bottomRight }
 
 enum MosaicBackend { canvas, shader }
 

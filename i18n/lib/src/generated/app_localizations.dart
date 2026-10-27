@@ -1262,6 +1262,12 @@ abstract class AppLocalizations {
   /// **'Video URL (optional)'**
   String get preview_video_url;
 
+  /// No description provided for @preview_repeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get preview_repeat;
+
   /// No description provided for @preview_play.
   ///
   /// In en, this message translates to:
@@ -1352,12 +1358,6 @@ abstract class AppLocalizations {
   /// **'Mirror'**
   String get effect_mirror;
 
-  /// No description provided for @effect_neon_wipe.
-  ///
-  /// In en, this message translates to:
-  /// **'Neon Wipe'**
-  String get effect_neon_wipe;
-
   /// No description provided for @effect_clock_wipe.
   ///
   /// In en, this message translates to:
@@ -1423,12 +1423,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Soft Wipe'**
   String get effect_soft_wipe;
-
-  /// No description provided for @effect_light_sweep.
-  ///
-  /// In en, this message translates to:
-  /// **'Light Sweep'**
-  String get effect_light_sweep;
 
   /// No description provided for @effect_slice.
   ///
@@ -1892,29 +1886,11 @@ abstract class AppLocalizations {
   /// **'Foreground to background'**
   String get effect_foreground_to_background;
 
-  /// No description provided for @effect_default.
-  ///
-  /// In en, this message translates to:
-  /// **'Slide'**
-  String get effect_default;
-
   /// No description provided for @effect_depth.
   ///
   /// In en, this message translates to:
   /// **'Depth'**
   String get effect_depth;
-
-  /// No description provided for @effect_flip_horizontal.
-  ///
-  /// In en, this message translates to:
-  /// **'Horizontal flip'**
-  String get effect_flip_horizontal;
-
-  /// No description provided for @effect_flip_vertical.
-  ///
-  /// In en, this message translates to:
-  /// **'Vertical flip'**
-  String get effect_flip_vertical;
 
   /// No description provided for @effect_parallax.
   ///
@@ -1934,18 +1910,6 @@ abstract class AppLocalizations {
   /// **'Tablet'**
   String get effect_tablet;
 
-  /// No description provided for @effect_rotate_down.
-  ///
-  /// In en, this message translates to:
-  /// **'Rotate down'**
-  String get effect_rotate_down;
-
-  /// No description provided for @effect_rotate_up.
-  ///
-  /// In en, this message translates to:
-  /// **'Rotate up'**
-  String get effect_rotate_up;
-
   /// No description provided for @effect_zoom_out_slide.
   ///
   /// In en, this message translates to:
@@ -1963,24 +1927,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mosaic'**
   String get effect_mosaic;
-
-  /// No description provided for @effect_mosaic_fade.
-  ///
-  /// In en, this message translates to:
-  /// **'Mosaic fade'**
-  String get effect_mosaic_fade;
-
-  /// No description provided for @effect_mosaic_tl_fade.
-  ///
-  /// In en, this message translates to:
-  /// **'Mosaic from top left'**
-  String get effect_mosaic_tl_fade;
-
-  /// No description provided for @effect_mosaic_br_fade.
-  ///
-  /// In en, this message translates to:
-  /// **'Mosaic from bottom right'**
-  String get effect_mosaic_br_fade;
 
   /// No description provided for @effect_liquid_morph.
   ///
@@ -2005,156 +1951,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zoom over'**
   String get effect_zoom_over;
-
-  /// No description provided for @effect_mosaic_tr_fade.
-  ///
-  /// In en, this message translates to:
-  /// **'Mosaic from top right'**
-  String get effect_mosaic_tr_fade;
-
-  /// No description provided for @effect_mosaic_bl_fade.
-  ///
-  /// In en, this message translates to:
-  /// **'Mosaic from bottom left'**
-  String get effect_mosaic_bl_fade;
-
-  /// No description provided for @effect_wipe_left.
-  ///
-  /// In en, this message translates to:
-  /// **'Wipe left'**
-  String get effect_wipe_left;
-
-  /// No description provided for @effect_wipe_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Wipe right'**
-  String get effect_wipe_right;
-
-  /// No description provided for @effect_wipe_up.
-  ///
-  /// In en, this message translates to:
-  /// **'Wipe up'**
-  String get effect_wipe_up;
-
-  /// No description provided for @effect_wipe_down.
-  ///
-  /// In en, this message translates to:
-  /// **'Wipe down'**
-  String get effect_wipe_down;
-
-  /// No description provided for @effect_curtain_horizontal.
-  ///
-  /// In en, this message translates to:
-  /// **'Horizontal curtain'**
-  String get effect_curtain_horizontal;
-
-  /// No description provided for @effect_curtain_vertical.
-  ///
-  /// In en, this message translates to:
-  /// **'Vertical curtain'**
-  String get effect_curtain_vertical;
-
-  /// No description provided for @effect_diagonal_top_left.
-  ///
-  /// In en, this message translates to:
-  /// **'Diagonal from top left'**
-  String get effect_diagonal_top_left;
-
-  /// No description provided for @effect_diagonal_top_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Diagonal from top right'**
-  String get effect_diagonal_top_right;
-
-  /// No description provided for @effect_diagonal_bottom_left.
-  ///
-  /// In en, this message translates to:
-  /// **'Diagonal from bottom left'**
-  String get effect_diagonal_bottom_left;
-
-  /// No description provided for @effect_diagonal_bottom_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Diagonal from bottom right'**
-  String get effect_diagonal_bottom_right;
-
-  /// No description provided for @effect_iris.
-  ///
-  /// In en, this message translates to:
-  /// **'Iris'**
-  String get effect_iris;
-
-  /// No description provided for @effect_fade_through_black.
-  ///
-  /// In en, this message translates to:
-  /// **'Fade through black'**
-  String get effect_fade_through_black;
-
-  /// No description provided for @effect_fade_through_white.
-  ///
-  /// In en, this message translates to:
-  /// **'Fade through white'**
-  String get effect_fade_through_white;
-
-  /// No description provided for @effect_push_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Push right'**
-  String get effect_push_right;
-
-  /// No description provided for @effect_push_up.
-  ///
-  /// In en, this message translates to:
-  /// **'Push up'**
-  String get effect_push_up;
-
-  /// No description provided for @effect_push_down.
-  ///
-  /// In en, this message translates to:
-  /// **'Push down'**
-  String get effect_push_down;
-
-  /// No description provided for @effect_cover_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Cover right'**
-  String get effect_cover_right;
-
-  /// No description provided for @effect_cover_up.
-  ///
-  /// In en, this message translates to:
-  /// **'Cover up'**
-  String get effect_cover_up;
-
-  /// No description provided for @effect_cover_down.
-  ///
-  /// In en, this message translates to:
-  /// **'Cover down'**
-  String get effect_cover_down;
-
-  /// No description provided for @effect_reveal_left.
-  ///
-  /// In en, this message translates to:
-  /// **'Reveal left'**
-  String get effect_reveal_left;
-
-  /// No description provided for @effect_reveal_right.
-  ///
-  /// In en, this message translates to:
-  /// **'Reveal right'**
-  String get effect_reveal_right;
-
-  /// No description provided for @effect_reveal_up.
-  ///
-  /// In en, this message translates to:
-  /// **'Reveal up'**
-  String get effect_reveal_up;
-
-  /// No description provided for @effect_reveal_down.
-  ///
-  /// In en, this message translates to:
-  /// **'Reveal down'**
-  String get effect_reveal_down;
 
   /// No description provided for @sync_settings_title.
   ///
@@ -3103,6 +2899,444 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receiver handler metrics are out of date.'**
   String get rpc_receiver_stale;
+
+  /// No description provided for @effects_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Transition effects'**
+  String get effects_title;
+
+  /// No description provided for @effects_general.
+  ///
+  /// In en, this message translates to:
+  /// **'General slideshow settings'**
+  String get effects_general;
+
+  /// No description provided for @effects_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search effects'**
+  String get effects_search;
+
+  /// No description provided for @effects_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get effects_all;
+
+  /// No description provided for @effects_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get effects_enabled;
+
+  /// No description provided for @effects_modified.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get effects_modified;
+
+  /// No description provided for @effects_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get effects_group;
+
+  /// No description provided for @effects_fades.
+  ///
+  /// In en, this message translates to:
+  /// **'Fades'**
+  String get effects_fades;
+
+  /// No description provided for @effects_movement.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement'**
+  String get effects_movement;
+
+  /// No description provided for @effects_masks.
+  ///
+  /// In en, this message translates to:
+  /// **'Masks'**
+  String get effects_masks;
+
+  /// No description provided for @effects_geometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Geometric'**
+  String get effects_geometric;
+
+  /// No description provided for @effects_cinematic.
+  ///
+  /// In en, this message translates to:
+  /// **'Cinematic'**
+  String get effects_cinematic;
+
+  /// No description provided for @effects_creative.
+  ///
+  /// In en, this message translates to:
+  /// **'Creative'**
+  String get effects_creative;
+
+  /// No description provided for @effects_global_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Global duration, ms'**
+  String get effects_global_duration;
+
+  /// No description provided for @effects_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration, ms'**
+  String get effects_duration;
+
+  /// No description provided for @effects_inherit.
+  ///
+  /// In en, this message translates to:
+  /// **'Global'**
+  String get effects_inherit;
+
+  /// No description provided for @effects_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get effects_custom;
+
+  /// No description provided for @effects_enable_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable all effects'**
+  String get effects_enable_all;
+
+  /// No description provided for @effects_disable_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable all effects'**
+  String get effects_disable_all;
+
+  /// No description provided for @effects_inherit_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Use global duration for all effects'**
+  String get effects_inherit_all;
+
+  /// No description provided for @effects_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset parameters'**
+  String get effects_reset;
+
+  /// No description provided for @effects_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No compatible effect selected: Fade uses the global duration.'**
+  String get effects_empty;
+
+  /// No description provided for @effects_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid effect configuration. Fix the fields or reset the effect set.'**
+  String get effects_invalid;
+
+  /// No description provided for @effects_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset effect set'**
+  String get effects_restore;
+
+  /// No description provided for @effects_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No effects found'**
+  String get effects_no_results;
+
+  /// No description provided for @effects_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get effects_enable;
+
+  /// No description provided for @effects_grid.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid size'**
+  String get effects_grid;
+
+  /// No description provided for @effects_fade_fraction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell fade duration'**
+  String get effects_fade_fraction;
+
+  /// No description provided for @effects_fade_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Fraction of transition time spent fading each cell. 0% gives a hard cutoff.'**
+  String get effects_fade_help;
+
+  /// No description provided for @effects_direction.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction'**
+  String get effects_direction;
+
+  /// No description provided for @effects_random.
+  ///
+  /// In en, this message translates to:
+  /// **'Random cells'**
+  String get effects_random;
+
+  /// No description provided for @effects_topLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Top left'**
+  String get effects_topLeft;
+
+  /// No description provided for @effects_topRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Top right'**
+  String get effects_topRight;
+
+  /// No description provided for @effects_bottomLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom left'**
+  String get effects_bottomLeft;
+
+  /// No description provided for @effects_bottomRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom right'**
+  String get effects_bottomRight;
+
+  /// No description provided for @effects_center.
+  ///
+  /// In en, this message translates to:
+  /// **'Center'**
+  String get effects_center;
+
+  /// No description provided for @effects_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Left'**
+  String get effects_left;
+
+  /// No description provided for @effects_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Right'**
+  String get effects_right;
+
+  /// No description provided for @effects_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Up'**
+  String get effects_up;
+
+  /// No description provided for @effects_down.
+  ///
+  /// In en, this message translates to:
+  /// **'Down'**
+  String get effects_down;
+
+  /// No description provided for @effects_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get effects_mode;
+
+  /// No description provided for @effects_push.
+  ///
+  /// In en, this message translates to:
+  /// **'Push'**
+  String get effects_push;
+
+  /// No description provided for @effects_cover.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover'**
+  String get effects_cover;
+
+  /// No description provided for @effects_reveal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal'**
+  String get effects_reveal;
+
+  /// No description provided for @effects_shape.
+  ///
+  /// In en, this message translates to:
+  /// **'Shape'**
+  String get effects_shape;
+
+  /// No description provided for @effects_wipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe'**
+  String get effects_wipe;
+
+  /// No description provided for @effects_curtain.
+  ///
+  /// In en, this message translates to:
+  /// **'Curtain'**
+  String get effects_curtain;
+
+  /// No description provided for @effects_diagonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal'**
+  String get effects_diagonal;
+
+  /// No description provided for @effects_iris.
+  ///
+  /// In en, this message translates to:
+  /// **'Iris'**
+  String get effects_iris;
+
+  /// No description provided for @effects_axis.
+  ///
+  /// In en, this message translates to:
+  /// **'Axis'**
+  String get effects_axis;
+
+  /// No description provided for @effects_horizontal.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal'**
+  String get effects_horizontal;
+
+  /// No description provided for @effects_vertical.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical'**
+  String get effects_vertical;
+
+  /// No description provided for @effects_origin.
+  ///
+  /// In en, this message translates to:
+  /// **'Origin'**
+  String get effects_origin;
+
+  /// No description provided for @color_choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose color'**
+  String get color_choose;
+
+  /// No description provided for @color_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get color_apply;
+
+  /// No description provided for @effects_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color, AARRGGBB'**
+  String get effects_color;
+
+  /// No description provided for @effects_black.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get effects_black;
+
+  /// No description provided for @effects_white.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get effects_white;
+
+  /// No description provided for @effects_style.
+  ///
+  /// In en, this message translates to:
+  /// **'Style'**
+  String get effects_style;
+
+  /// No description provided for @effects_soft.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft'**
+  String get effects_soft;
+
+  /// No description provided for @effects_lightSweep.
+  ///
+  /// In en, this message translates to:
+  /// **'Light sweep'**
+  String get effects_lightSweep;
+
+  /// No description provided for @effects_neon.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon'**
+  String get effects_neon;
+
+  /// No description provided for @effects_edge.
+  ///
+  /// In en, this message translates to:
+  /// **'Pivot edge'**
+  String get effects_edge;
+
+  /// No description provided for @effects_top.
+  ///
+  /// In en, this message translates to:
+  /// **'Top'**
+  String get effects_top;
+
+  /// No description provided for @effects_bottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom'**
+  String get effects_bottom;
+
+  /// No description provided for @effects_angle.
+  ///
+  /// In en, this message translates to:
+  /// **'Angle, degrees'**
+  String get effects_angle;
+
+  /// No description provided for @effects_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Strip / panel count'**
+  String get effects_count;
+
+  /// No description provided for @effects_slide.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide'**
+  String get effects_slide;
+
+  /// No description provided for @effects_reveal_mask.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal mask'**
+  String get effects_reveal_mask;
+
+  /// No description provided for @effects_fade_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade through color'**
+  String get effects_fade_color;
+
+  /// No description provided for @effects_flip.
+  ///
+  /// In en, this message translates to:
+  /// **'Flip'**
+  String get effects_flip;
+
+  /// No description provided for @effects_rotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate'**
+  String get effects_rotate;
+
+  /// No description provided for @effects_milliseconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ms'**
+  String effects_milliseconds(int value);
 }
 
 class _AppLocalizationsDelegate

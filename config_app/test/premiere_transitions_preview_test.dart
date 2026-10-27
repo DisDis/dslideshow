@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:config_app/features/config/presentation/pages/slideshow_editor_page.dart';
-import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -13,7 +11,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 final _effects = [
   Effect.softWipeEffect,
-  Effect.lightSweepEffect,
+  (const Effect(
+    EffectType.softWipe,
+    options: SoftWipeEffectOptions(style: SoftWipeStyle.lightSweep),
+  )),
   Effect.sliceEffect,
   Effect.lumaFadeEffect,
   Effect.pagePeelEffect,
@@ -31,7 +32,10 @@ final _effects = [
   Effect.frameEffect,
   Effect.louverEffect,
   Effect.mirrorEffect,
-  Effect.neonWipeEffect,
+  (const Effect(
+    EffectType.softWipe,
+    options: SoftWipeEffectOptions(style: SoftWipeStyle.neon),
+  )),
   Effect.burnAlphaEffect,
   Effect.foldMotionEffect,
   Effect.glowEffect,
@@ -53,100 +57,15 @@ Widget _app(Widget child, Locale locale) => MaterialApp(
 
 void main() {
   for (final locale in [const Locale('en'), const Locale('ru')]) {
-    testWidgets(
-      'new transitions are selectable and saved (${locale.languageCode})',
-      (tester) async {
-        final config = SlideShowConfig.fromJson({});
-        // The inactive preview does not request external sample images.
-        await tester.pumpWidget(
-          _app(
-            TickerMode(
-              enabled: false,
-              child: SlideshowEditorPage(config: config),
-            ),
-            locale,
-          ),
-        );
-        final selector = tester.widget<SettingsMultiSelect<Effect>>(
-          find.byType(SettingsMultiSelect<Effect>),
-        );
-        expect(selector.allItems, containsAll(_effects));
-        final labels = _effects.map(selector.itemLabelBuilder!).toList();
-        expect(
-          labels,
-          locale.languageCode == 'ru'
-              ? [
-                  'Мягкое раскрытие',
-                  'Световой проход',
-                  'Сдвиг полос',
-                  'Растворение по яркости',
-                  'Загиб страницы',
-                  'Световая засветка',
-                  'Прокрутка плёнки',
-                  'Встречный зум',
-                  'Резкая панорама',
-                  'Стекло',
-                  'Часовое раскрытие',
-                  'Раздвижение половин',
-                  'Раскрытие панелями',
-                  'Растяжение',
-                  'Раскрытие звездой',
-                  'Кинематографическое растворение',
-                  'Рамка',
-                  'Поворотные жалюзи',
-                  'Зеркало',
-                  'Неоновое раскрытие',
-                  'Выгорание',
-                  'Складывание',
-                  'Свечение',
-                  'Калейдоскоп',
-                  'Выключение телевизора',
-                  'Пружина',
-                  'Растворение фигурами',
-                  'Видеокассета',
-                  'Радиальное размытие',
-                  'Послесвечение',
-                ]
-              : [
-                  'Soft Wipe',
-                  'Light Sweep',
-                  'Slice',
-                  'Luma Fade',
-                  'Page Peel',
-                  'Light Leak',
-                  'Film Roll',
-                  'Cross Zoom',
-                  'Whip',
-                  'Glass',
-                  'Clock Wipe',
-                  'Split',
-                  'Panel Wipe',
-                  'Stretch',
-                  'Star Wipe',
-                  'Film Dissolve',
-                  'Frame',
-                  'Louver',
-                  'Mirror',
-                  'Neon Wipe',
-                  'Burn Alpha',
-                  'Fold Motion',
-                  'Glow',
-                  'Kaleidoscope',
-                  'TV Power',
-                  'Spring Motion',
-                  'Shape Dissolve',
-                  'VHS Damage',
-                  'Radial Blur',
-                  'Phosphor',
-                ],
-        );
-        selector.onChanged(_effects);
-        await tester.pump();
-        expect(config.allowedEffects, _effects.map((e) => e.name).toList());
-        final reloaded = SlideShowConfig.fromJson(config.toJson());
-        expect(reloaded.allowedEffects.map(Effect.parse), _effects);
-        await tester.pumpWidget(const SizedBox());
-        expect(tester.takeException(), isNull);
+    test(
+      'new transitions use canonical types and typed settings (${locale.languageCode})',
+      () {
+        for (final effect in _effects) {
+          expect(Effect.values.map((e) => e.type), contains(effect.type));
+          final entry = EffectConfig.fromJson(effect.toConfig().toJson());
+          expect(entry.validate(), isEmpty);
+          expect(Effect.fromConfig(entry), effect);
+        }
       },
     );
 
@@ -167,7 +86,7 @@ void main() {
         );
         final key = GlobalKey<SlideshowPreviewState>();
         final config = SlideShowConfig.fromJson({
-          'transitionTimeMs': 100,
+          'effects': {'defaultDurationMs': 100},
           'displayTimeMs': 60000,
           'photoMotion': {'mode': 'kenBurns'},
         });
@@ -208,7 +127,10 @@ void main() {
               matching: find.byType(DropdownButton<Effect>),
             ),
           );
-          expect(dropdown.items!.map((e) => e.value), contains(effect));
+          expect(
+            dropdown.items!.map((e) => e.value!.type),
+            contains(effect.type),
+          );
           field.onChanged!(effect);
           await finish();
           expect(key.currentState!.currentEffect, effect);

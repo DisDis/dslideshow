@@ -1,12 +1,42 @@
 {
   "suite": "smoke",
-  "effects": ["Mosaic", "MosaicFade"],
-  "media_cases": ["photo-photo"],
-  "grids": [100, 150, 200],
-  "backends": ["canvas"],
+  "effects": [],
+  "media_cases": [
+    "photo-photo"
+  ],
+  "grids": [
+    100,
+    150,
+    200
+  ],
+  "backends": [
+    "canvas"
+  ],
   "warmups": 0,
   "repeats": 1,
   "transition_ms": 500,
   "capture_frames": true,
-  "visual_audit": true
+  "visual_audit": true,
+  "effect_configs": [
+    {
+      "type": "mosaic",
+      "enabled": true,
+      "options": {
+        "durationMs": 0,
+        "gridSize": 100,
+        "fadeFraction": 0,
+        "direction": "random"
+      }
+    },
+    {
+      "type": "mosaic",
+      "enabled": true,
+      "options": {
+        "durationMs": 0,
+        "gridSize": 100,
+        "fadeFraction": 0.3,
+        "direction": "random"
+      }
+    }
+  ]
 }

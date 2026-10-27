@@ -46,7 +46,9 @@ void main() {
 
   test('acknowledges save before publishing its isolated snapshot', () async {
     final draft = _config(8081);
-    draft.slideshow.allowedEffects = ['Fade'];
+    draft.slideshow.effects = EffectsConfig(
+      items: [EffectConfig(type: EffectType.fade, enabled: true)],
+    );
 
     bloc.add(ConfigEvent.save(draft));
     await pumpEventQueue();
@@ -56,12 +58,14 @@ void main() {
     expect(sent, isNot(same(draft)));
     expect(sent.webServer, isNot(same(draft.webServer)));
     expect(
-      sent.slideshow.allowedEffects,
-      isNot(same(draft.slideshow.allowedEffects)),
+      sent.slideshow.effects.items,
+      isNot(same(draft.slideshow.effects.items)),
     );
 
     draft.webServer.port = 9090;
-    (draft.slideshow.allowedEffects as List<String>).add('Mosaic');
+    draft.slideshow.effects = draft.slideshow.effects.put(
+      EffectConfig(type: EffectType.mosaic, enabled: true),
+    );
     repository.saves.single.complete(const WSResultOk(id: 1));
     await pumpEventQueue();
 
@@ -73,7 +77,7 @@ void main() {
     final acknowledged = (bloc.state as ConfigLoadedState).config;
     expect(acknowledged, same(sent));
     expect(acknowledged.webServer.port, 8081);
-    expect(acknowledged.slideshow.allowedEffects, ['Fade']);
+    expect(acknowledged.slideshow.effects.items.single.type, EffectType.fade);
     expect(draft.webServer.port, 9090);
   });
 

@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
-import 'package:dslideshow_flutter/effect.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
@@ -63,8 +62,12 @@ void main() {
         final frontend = PhotoFrontend(folder), hints = HiddenHints();
         final config = AppConfig.fromJson({
           'slideshow': {
-            'allowedEffects': ['Water Refraction'],
-            'transitionTimeMs': 100,
+            'effects': {
+              'defaultDurationMs': 100,
+              'items': [
+                {'type': 'waterRefraction', 'enabled': true},
+              ],
+            },
             'displayTimeMs': 100000,
             'photoMotion': {'mode': mode.name},
           },
@@ -101,7 +104,12 @@ void main() {
             );
             await tester.pump(const Duration(milliseconds: 16));
           }
-          expect(predicate(), true, reason: 'phase=${bloc.state.phase}, paused=${bloc.state.isPaused}, loads=${frontend.loads}');
+          expect(
+            predicate(),
+            true,
+            reason:
+                'phase=${bloc.state.phase}, paused=${bloc.state.isPaused}, loads=${frontend.loads}',
+          );
         }
 
         await tester.pumpWidget(
@@ -115,7 +123,8 @@ void main() {
           ),
         );
         await until(() => bloc.state.phase == SlideshowPhase.display);
-        expect(bloc.state.effect, Effect.fadeEffect);
+        expect(bloc.state.effect.type, EffectType.fade);
+        expect(bloc.state.effect.options.durationMs, 100);
         final first = tester.widget<ImageWidget>(find.byType(ImageWidget));
         expect(first.preparedBitmap, isNotNull);
         if (mode == PhotoMotionMode.kenBurns) {
@@ -148,7 +157,8 @@ void main() {
         bloc.add(const SlideshowLoadNextEvent());
         await tester.pump();
         await until(() => bloc.state.phase == SlideshowPhase.transition);
-        expect(bloc.state.effect, Effect.waterRefractionEffect);
+        expect(bloc.state.effect.type, EffectType.waterRefraction);
+        expect(bloc.state.effect.options.durationMs, 100);
         final frozen = mode == PhotoMotionMode.kenBurns
             ? tester
                   .widgetList<PhotoMotionFrame>(find.byType(PhotoMotionFrame))

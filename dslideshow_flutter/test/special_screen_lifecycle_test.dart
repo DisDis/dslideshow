@@ -37,8 +37,12 @@ class ScreenFixture {
   final hints = HiddenHints();
   final config = AppConfig.fromJson({
     'slideshow': {
-      'allowedEffects': ['Fade'],
-      'transitionTimeMs': 100,
+      'effects': {
+        'defaultDurationMs': 100,
+        'items': [
+          {'type': 'fade', 'enabled': true},
+        ],
+      },
       'displayTimeMs': 100,
       'specialScreens': [
         {

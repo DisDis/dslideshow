@@ -366,33 +366,42 @@ void main() {
       expect(
         await pixel(
           tester,
-          frame(Effect.fadeThroughWhiteEffect.createEffect(), .5),
+          frame(
+            (const Effect(
+              EffectType.fadeThroughColor,
+              options: FadeThroughColorEffectOptions(color: 0xFFFFFFFF),
+            )).createEffect(),
+            .5,
+          ),
         ),
         [255, 255, 255, 255],
       );
       expect(
         await pixel(
           tester,
-          frame(Effect.fadeThroughBlackEffect.createEffect(), .5),
+          frame(
+            (const Effect(
+              EffectType.fadeThroughColor,
+              options: FadeThroughColorEffectOptions(),
+            )).createEffect(),
+            .5,
+          ),
         ),
         [0, 0, 0, 255],
       );
     },
   );
 
-  test(
-    'Existing persisted names and unknown-name fallback stay compatible',
-    () {
-      for (final effect in Effect.values) {
-        expect(Effect.parse(effect.name), effect);
-      }
-      expect(Effect.parse('unknown'), Effect.defaultEffect);
-      expect(
-        Effect.values.map((e) => e.name).toSet().length,
-        Effect.values.length,
-      );
-    },
-  );
+  test('Canonical external names are unique and unknown names are errors', () {
+    for (final effect in Effect.values) {
+      expect(Effect.parse(effect.name), effect);
+    }
+    expect(() => Effect.parse('unknown'), throwsFormatException);
+    expect(
+      Effect.values.map((e) => e.name).toSet().length,
+      Effect.values.length,
+    );
+  });
 
   testWidgets(
     'Every registered effect renders endpoints and intermediate frames',

@@ -1,12 +1,11 @@
+import 'package:config_app/features/config/presentation/wigdgets/argb_color_field.dart';
 import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
 import 'package:config_app/features/config/presentation/wigdgets/draft_editor_form.dart';
-import 'package:config_app/features/config/presentation/wigdgets/effect_label.dart';
 import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +23,6 @@ class SlideshowEditorPage extends StatefulWidget {
 }
 
 class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
-  static final _argbColorPattern = RegExp(r'^[0-9a-fA-F]{8}$');
   final _invalid = <String>{};
 
   Widget _number(
@@ -89,35 +87,11 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
                     config.displayTimeMs,
                     (v) => config.displayTimeMs = v,
                   ),
-                  _number(
-                    'slideshow-transition-time',
-                    l.transition_time_ms,
-                    config.transitionTimeMs,
-                    (v) => config.transitionTimeMs = v,
-                  ),
                 ],
               ),
               SettingsSection(
                 title: l.visuals_title,
                 children: [
-                  SettingsMultiSelect<Effect>(
-                    label: l.allowed_transitions,
-                    allItems: Effect.values.toList(),
-                    selectedItems: Effect.values
-                        .where((e) => config.allowedEffects.contains(e.name))
-                        .toList(),
-                    itemLabelBuilder: (effect) => effectLabel(context, effect),
-                    emptySelectionMeansAll: true,
-                    onChanged: (effects) => setState(
-                      () => config.allowedEffects = effects
-                          .map((e) => e.name)
-                          .toList(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(l.allowed_transitions_all),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: DropdownButtonFormField<PhotoMotionMode>(
@@ -193,30 +167,19 @@ class _SlideshowEditorPageState extends State<SlideshowEditorPage> {
                   Padding(
                     key: const ValueKey('slideshow-background-color-field'),
                     padding: const EdgeInsets.all(16),
-                    child: TextFormField(
-                      key: const ValueKey('slideshow-background-color'),
-                      initialValue: config.backgroundColor
-                          .toRadixString(16)
-                          .padLeft(8, '0'),
-                      decoration: InputDecoration(
-                        labelText: l.background_color_argb,
-                        suffixIcon: Icon(
-                          Icons.circle,
-                          color: Color(config.backgroundColor),
-                        ),
-                      ),
-                      validator: (text) =>
-                          _argbColorPattern.hasMatch(text ?? '')
-                          ? null
-                          : l.special_invalid_color,
-                      onChanged: (text) => setState(() {
-                        if (_argbColorPattern.hasMatch(text)) {
+                    child: ArgbColorField(
+                      fieldKey: const ValueKey('slideshow-background-color'),
+                      label: l.background_color_argb,
+                      value: config.backgroundColor,
+                      onValidityChanged: (valid) => setState(() {
+                        if (valid) {
                           _invalid.remove('color');
-                          config.backgroundColor = int.parse(text, radix: 16);
                         } else {
                           _invalid.add('color');
                         }
                       }),
+                      onChanged: (color) =>
+                          setState(() => config.backgroundColor = color),
                     ),
                   ),
                 ],

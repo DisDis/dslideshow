@@ -1,5 +1,27 @@
 # Unreleased
 
+* Add a shared ARGB ColorPicker with alpha and Apply/Cancel to effect, slideshow
+  background and clock settings. Preserve incomplete manual input and close
+  owned dialogs on disposal. Recover invalid stored effect options without
+  building invalid controls; keep overflowing JSON numbers diagnosable and
+  serializable while rejecting Save without changing the file.
+
+* Edit and display effect durations as integer milliseconds in the settings
+  catalog, including global/custom timing and RU/EN labels.
+
+* Match global/custom duration field spacing in the effect editor and reserve
+  preview loading indicator space to prevent layout shifts. Add layout regressions.
+
+* Require Freezed for data models; generate effect settings copyWith/equality and
+  keep per-effect configuration immutable.
+* Store transition effects as typed per-effect settings with durationMs=0 for
+  global timing, retained disabled options and explicit empty-set Fade fallback.
+  Consolidate 81 entries into 51 configurable types, add the searchable adaptive
+  settings catalog and shared preview between photos with a Repeat button,
+  validate saves, and retain all 684 benchmark
+  scenarios as parameterized variants. Cover storage, options, rendering, draft
+  validation and RU/EN editing locally; device runs are excluded at the user's request.
+
 * Add Burn Alpha, Fold Motion, Glow, Kaleidoscope, TV Power, Spring Motion,
   Shape Dissolve, VHS Damage, Radial Blur and Phosphor to the frame and settings
   preview, with Russian/English labels and shared live media sessions. Cover

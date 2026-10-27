@@ -116,6 +116,7 @@ class AppConfig {
       final defaults = AppConfig.fromJson({});
       defaults.storages.fillEmptyStorages();
       _defaultJSON = defaults.toJson();
+      (_defaultJSON!['slideshow'] as Map<String, dynamic>).remove('effects');
     }
     return stripDefaults({
       ...toJson(),

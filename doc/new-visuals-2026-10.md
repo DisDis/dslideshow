@@ -65,7 +65,11 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 ```json
 {
   "slideshow": {
-    "allowedEffects": ["Noise Dissolve", "Ripple Reveal", "Water Refraction"],
+    "effects": {"schemaVersion": 1, "defaultDurationMs": 1000, "items": [
+      {"type": "noiseDissolve", "enabled": true, "options": {"durationMs": 0}},
+      {"type": "rippleReveal", "enabled": true, "options": {"durationMs": 0}},
+      {"type": "waterRefraction", "enabled": true, "options": {"durationMs": 0}}
+    ]},
     "photoMotion": {"mode": "kenBurns", "maxZoom": 1.06}
   }
 }
@@ -75,8 +79,8 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 структура настройки также отключает движение. Некорректный zoom заменяется
 на ×1.06, числовой zoom ограничивается допустимым диапазоном.
 Значения по умолчанию удаляются при компактном сохранении, как остальные поля
-слайдшоу. Пустой `allowedEffects` по прежнему означает весь доступный реестр,
-с проверкой совместимости пары медиа.
+слайдшоу. Набор `effects.items` сохраняется явно; пустой набор использует
+служебный Fade с общей длительностью. [Формат и редактор](effect-settings.md).
 
 ## Проверки и воспроизведение
 
@@ -110,7 +114,7 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 
 `PhotoMotion-KenBurns` — только явная проба стенда; использует production
 `PhotoMotionFrame`, запас prepared pixels и общий bounded clock. Это не имя
-перехода для `allowedEffects`. Проверки production-сессии, паузы, заморозки камеры
+перехода для выбранного `effects.items`. Проверки production-сессии, паузы, заморозки камеры
 в переходе и владения bitmap выполняются отдельно widget-тестами.
 
 Запускать через supervisor из [аппаратного руководства](raspberry-pi-benchmarks.md):

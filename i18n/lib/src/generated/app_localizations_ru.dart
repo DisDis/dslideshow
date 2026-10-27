@@ -628,6 +628,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_video_url => 'Адрес видео (необязательно)';
 
   @override
+  String get preview_repeat => 'Повторить';
+
+  @override
   String get preview_play => 'Предпросмотр';
 
   @override
@@ -673,9 +676,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_mirror => 'Зеркало';
 
   @override
-  String get effect_neon_wipe => 'Неоновое раскрытие';
-
-  @override
   String get effect_clock_wipe => 'Часовое раскрытие';
 
   @override
@@ -707,9 +707,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get effect_soft_wipe => 'Мягкое раскрытие';
-
-  @override
-  String get effect_light_sweep => 'Световой проход';
 
   @override
   String get effect_slice => 'Сдвиг полос';
@@ -970,16 +967,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_foreground_to_background => 'С переднего плана в фон';
 
   @override
-  String get effect_default => 'Сдвиг';
-
-  @override
   String get effect_depth => 'Глубина';
-
-  @override
-  String get effect_flip_horizontal => 'Горизонтальный переворот';
-
-  @override
-  String get effect_flip_vertical => 'Вертикальный переворот';
 
   @override
   String get effect_parallax => 'Параллакс';
@@ -991,12 +979,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_tablet => 'Планшет';
 
   @override
-  String get effect_rotate_down => 'Поворот вниз';
-
-  @override
-  String get effect_rotate_up => 'Поворот вверх';
-
-  @override
   String get effect_zoom_out_slide => 'Уменьшение';
 
   @override
@@ -1004,15 +986,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get effect_mosaic => 'Мозаика';
-
-  @override
-  String get effect_mosaic_fade => 'Растворение мозаикой';
-
-  @override
-  String get effect_mosaic_tl_fade => 'Мозаика из верхнего левого угла';
-
-  @override
-  String get effect_mosaic_br_fade => 'Мозаика из нижнего правого угла';
 
   @override
   String get effect_liquid_morph => 'Жидкое преобразование';
@@ -1025,84 +998,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get effect_zoom_over => 'Увеличение поверх';
-
-  @override
-  String get effect_mosaic_tr_fade => 'Мозаика из верхнего правого угла';
-
-  @override
-  String get effect_mosaic_bl_fade => 'Мозаика из нижнего левого угла';
-
-  @override
-  String get effect_wipe_left => 'Открытие влево';
-
-  @override
-  String get effect_wipe_right => 'Открытие вправо';
-
-  @override
-  String get effect_wipe_up => 'Открытие вверх';
-
-  @override
-  String get effect_wipe_down => 'Открытие вниз';
-
-  @override
-  String get effect_curtain_horizontal => 'Горизонтальные шторы';
-
-  @override
-  String get effect_curtain_vertical => 'Вертикальные шторы';
-
-  @override
-  String get effect_diagonal_top_left => 'По диагонали из верхнего левого угла';
-
-  @override
-  String get effect_diagonal_top_right =>
-      'По диагонали из верхнего правого угла';
-
-  @override
-  String get effect_diagonal_bottom_left =>
-      'По диагонали из нижнего левого угла';
-
-  @override
-  String get effect_diagonal_bottom_right =>
-      'По диагонали из нижнего правого угла';
-
-  @override
-  String get effect_iris => 'Диафрагма';
-
-  @override
-  String get effect_fade_through_black => 'Через чёрный';
-
-  @override
-  String get effect_fade_through_white => 'Через белый';
-
-  @override
-  String get effect_push_right => 'Выталкивание вправо';
-
-  @override
-  String get effect_push_up => 'Выталкивание вверх';
-
-  @override
-  String get effect_push_down => 'Выталкивание вниз';
-
-  @override
-  String get effect_cover_right => 'Накрытие вправо';
-
-  @override
-  String get effect_cover_up => 'Накрытие вверх';
-
-  @override
-  String get effect_cover_down => 'Накрытие вниз';
-
-  @override
-  String get effect_reveal_left => 'Снятие влево';
-
-  @override
-  String get effect_reveal_right => 'Снятие вправо';
-
-  @override
-  String get effect_reveal_up => 'Снятие вверх';
-
-  @override
-  String get effect_reveal_down => 'Снятие вниз';
 
   @override
   String get sync_settings_title => 'Синхронизация';
@@ -1621,4 +1516,228 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get rpc_receiver_stale => 'Данные обработчиков получателя устарели.';
+
+  @override
+  String get effects_title => 'Эффекты перехода';
+
+  @override
+  String get effects_general => 'Общие настройки слайдшоу';
+
+  @override
+  String get effects_search => 'Поиск эффектов';
+
+  @override
+  String get effects_all => 'Все';
+
+  @override
+  String get effects_enabled => 'Включённые';
+
+  @override
+  String get effects_modified => 'Изменённые';
+
+  @override
+  String get effects_group => 'Группа';
+
+  @override
+  String get effects_fades => 'Затухания';
+
+  @override
+  String get effects_movement => 'Движение';
+
+  @override
+  String get effects_masks => 'Маски';
+
+  @override
+  String get effects_geometric => 'Геометрия';
+
+  @override
+  String get effects_cinematic => 'Кинематографические';
+
+  @override
+  String get effects_creative => 'Творческие';
+
+  @override
+  String get effects_global_duration => 'Общая длительность, мс';
+
+  @override
+  String get effects_duration => 'Длительность, мс';
+
+  @override
+  String get effects_inherit => 'Общая';
+
+  @override
+  String get effects_custom => 'Своя';
+
+  @override
+  String get effects_enable_all => 'Включить все эффекты';
+
+  @override
+  String get effects_disable_all => 'Выключить все эффекты';
+
+  @override
+  String get effects_inherit_all => 'Общая длительность для всех эффектов';
+
+  @override
+  String get effects_reset => 'Сбросить параметры';
+
+  @override
+  String get effects_empty =>
+      'При отсутствии выбранных совместимых эффектов используется затухание с общей длительностью.';
+
+  @override
+  String get effects_invalid =>
+      'Некорректные настройки эффектов. Исправьте поля или сбросьте набор.';
+
+  @override
+  String get effects_restore => 'Сбросить набор эффектов';
+
+  @override
+  String get effects_no_results => 'Эффекты не найдены';
+
+  @override
+  String get effects_enable => 'Включён';
+
+  @override
+  String get effects_grid => 'Размер сетки';
+
+  @override
+  String get effects_fade_fraction => 'Плавность ячеек';
+
+  @override
+  String get effects_fade_help =>
+      'Доля времени перехода для затухания одной ячейки. 0% — исчезновение без затухания.';
+
+  @override
+  String get effects_direction => 'Направление';
+
+  @override
+  String get effects_random => 'Случайный порядок ячеек';
+
+  @override
+  String get effects_topLeft => 'Сверху слева';
+
+  @override
+  String get effects_topRight => 'Сверху справа';
+
+  @override
+  String get effects_bottomLeft => 'Снизу слева';
+
+  @override
+  String get effects_bottomRight => 'Снизу справа';
+
+  @override
+  String get effects_center => 'Центр';
+
+  @override
+  String get effects_left => 'Влево';
+
+  @override
+  String get effects_right => 'Вправо';
+
+  @override
+  String get effects_up => 'Вверх';
+
+  @override
+  String get effects_down => 'Вниз';
+
+  @override
+  String get effects_mode => 'Режим';
+
+  @override
+  String get effects_push => 'Выталкивание';
+
+  @override
+  String get effects_cover => 'Накрытие';
+
+  @override
+  String get effects_reveal => 'Открытие';
+
+  @override
+  String get effects_shape => 'Форма';
+
+  @override
+  String get effects_wipe => 'Шторка';
+
+  @override
+  String get effects_curtain => 'Занавес';
+
+  @override
+  String get effects_diagonal => 'Диагональ';
+
+  @override
+  String get effects_iris => 'Диафрагма';
+
+  @override
+  String get effects_axis => 'Ось';
+
+  @override
+  String get effects_horizontal => 'Горизонтальная';
+
+  @override
+  String get effects_vertical => 'Вертикальная';
+
+  @override
+  String get effects_origin => 'Начало раскрытия';
+
+  @override
+  String get color_choose => 'Выбрать цвет';
+
+  @override
+  String get color_apply => 'Применить';
+
+  @override
+  String get effects_color => 'Цвет, AARRGGBB';
+
+  @override
+  String get effects_black => 'Чёрный';
+
+  @override
+  String get effects_white => 'Белый';
+
+  @override
+  String get effects_style => 'Стиль';
+
+  @override
+  String get effects_soft => 'Мягкий';
+
+  @override
+  String get effects_lightSweep => 'Световая полоса';
+
+  @override
+  String get effects_neon => 'Неон';
+
+  @override
+  String get effects_edge => 'Точка поворота';
+
+  @override
+  String get effects_top => 'Сверху';
+
+  @override
+  String get effects_bottom => 'Снизу';
+
+  @override
+  String get effects_angle => 'Угол, градусы';
+
+  @override
+  String get effects_count => 'Количество полос / панелей';
+
+  @override
+  String get effects_slide => 'Сдвиг';
+
+  @override
+  String get effects_reveal_mask => 'Раскрытие маской';
+
+  @override
+  String get effects_fade_color => 'Через цвет';
+
+  @override
+  String get effects_flip => 'Переворот';
+
+  @override
+  String get effects_rotate => 'Поворот';
+
+  @override
+  String effects_milliseconds(int value) {
+    return '$value мс';
+  }
 }

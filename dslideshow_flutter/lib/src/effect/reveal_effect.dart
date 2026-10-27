@@ -1,10 +1,11 @@
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart' show RevealShape;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
-
-enum RevealShape { wipe, curtain, diagonal, iris }
 
 class RevealEffect extends MediaSliderItemEffect {
   final RevealShape shape;

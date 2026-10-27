@@ -22,7 +22,6 @@ import 'package:dslideshow_flutter/src/effect/background_to_foreground_effect.da
 import 'package:dslideshow_flutter/src/effect/blinds_effect.dart';
 import 'package:dslideshow_flutter/src/effect/blure_fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
-import 'package:dslideshow_flutter/src/effect/default_effect.dart';
 import 'package:dslideshow_flutter/src/effect/depth_effect.dart';
 import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/flip_horizontal_effect.dart';
@@ -39,311 +38,72 @@ import 'package:dslideshow_flutter/src/effect/zoom_out_effect.dart';
 import 'package:dslideshow_flutter/src/effect/zoom_over_effect.dart';
 
 import 'media_slider_item_effect.dart';
-import 'mosaic_transition_effect.dart';
 
-typedef EffectImplementor = MediaSliderItemEffect Function();
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart';
 
+/// A configured, immutable effect. One catalog entry per algorithm.
 class Effect {
-  static const Effect burnAlphaEffect = Effect._(
-    'Burn Alpha',
-    _createBurnAlpha,
+  static const Effect burnAlphaEffect = Effect(EffectType.burnAlpha);
+  static const Effect foldMotionEffect = Effect(EffectType.foldMotion);
+  static const Effect glowEffect = Effect(EffectType.glow);
+  static const Effect kaleidoscopeEffect = Effect(EffectType.kaleidoscope);
+  static const Effect tvPowerEffect = Effect(EffectType.tvPower);
+  static const Effect springMotionEffect = Effect(EffectType.springMotion);
+  static const Effect shapeDissolveEffect = Effect(EffectType.shapeDissolve);
+  static const Effect vhsDamageEffect = Effect(EffectType.vhsDamage);
+  static const Effect radialBlurEffect = Effect(EffectType.radialBlur);
+  static const Effect phosphorEffect = Effect(EffectType.phosphor);
+  static const Effect filmDissolveEffect = Effect(EffectType.filmDissolve);
+  static const Effect frameEffect = Effect(EffectType.frame);
+  static const Effect louverEffect = Effect(EffectType.louver);
+  static const Effect mirrorEffect = Effect(EffectType.mirror);
+  static const Effect clockWipeEffect = Effect(EffectType.clockWipe);
+  static const Effect splitEffect = Effect(EffectType.split);
+  static const Effect panelWipeEffect = Effect(EffectType.panelWipe);
+  static const Effect stretchEffect = Effect(EffectType.stretch);
+  static const Effect starWipeEffect = Effect(EffectType.starWipe);
+  static const Effect lightLeakEffect = Effect(EffectType.lightLeak);
+  static const Effect filmRollEffect = Effect(EffectType.filmRoll);
+  static const Effect crossZoomEffect = Effect(EffectType.crossZoom);
+  static const Effect whipEffect = Effect(EffectType.whip);
+  static const Effect glassEffect = Effect(EffectType.glass);
+  static const Effect softWipeEffect = Effect(EffectType.softWipe);
+  static const Effect sliceEffect = Effect(EffectType.slice);
+  static const Effect lumaFadeEffect = Effect(EffectType.lumaFade);
+  static const Effect pagePeelEffect = Effect(EffectType.pagePeel);
+  static const Effect noiseDissolveEffect = Effect(EffectType.noiseDissolve);
+  static const Effect rippleRevealEffect = Effect(EffectType.rippleReveal);
+  static const Effect waterRefractionEffect = Effect(
+    EffectType.waterRefraction,
   );
-  static const Effect foldMotionEffect = Effect._(
-    'Fold Motion',
-    _createFoldMotion,
+  static const Effect cubeEffect = Effect(EffectType.cube);
+  static const Effect accordionEffect = Effect(EffectType.accordion);
+  static const Effect backgroundToForegroundEffect = Effect(
+    EffectType.backgroundToForeground,
   );
-  static const Effect glowEffect = Effect._('Glow', _createGlow);
-  static const Effect kaleidoscopeEffect = Effect._(
-    'Kaleidoscope',
-    _createKaleidoscope,
+  static const Effect foregroundToBackgroundEffect = Effect(
+    EffectType.foregroundToBackground,
   );
-  static const Effect tvPowerEffect = Effect._('TV Power', _createTvPower);
-  static const Effect springMotionEffect = Effect._(
-    'Spring Motion',
-    _createSpringMotion,
+  static const Effect depthEffect = Effect(EffectType.depth);
+  static const Effect parallaxEffect = Effect(EffectType.parallax);
+  static const Effect stackEffect = Effect(EffectType.stack);
+  static const Effect tabletEffect = Effect(EffectType.tablet);
+  static const Effect zoomOutSlideEffect = Effect(EffectType.zoomOut);
+  static const Effect fadeEffect = Effect(EffectType.fade);
+  static const Effect mosaicEffect = Effect(EffectType.mosaic);
+  static const Effect liquidMorphEffect = Effect(EffectType.liquidMorph);
+  static const Effect blindsEffect = Effect(EffectType.blinds);
+  static const Effect blurFadeEffect = Effect(EffectType.blurFade);
+  static const Effect zoomOverEffect = Effect(EffectType.zoomOver);
+  static const Effect slideEffect = Effect(EffectType.slide);
+  static const Effect revealMaskEffect = Effect(EffectType.revealMask);
+  static const Effect fadeThroughColorEffect = Effect(
+    EffectType.fadeThroughColor,
   );
-  static const Effect shapeDissolveEffect = Effect._(
-    'Shape Dissolve',
-    _createShapeDissolve,
-  );
-  static const Effect vhsDamageEffect = Effect._(
-    'VHS Damage',
-    _createVhsDamage,
-  );
-  static const Effect radialBlurEffect = Effect._(
-    'Radial Blur',
-    _createRadialBlur,
-  );
-  static const Effect phosphorEffect = Effect._('Phosphor', _createPhosphor);
-
-  static const Effect filmDissolveEffect = Effect._(
-    'Film Dissolve',
-    _createFilmDissolve,
-  );
-  static const Effect frameEffect = Effect._('Frame', _createFrame);
-  static const Effect louverEffect = Effect._('Louver', _createLouver);
-  static const Effect mirrorEffect = Effect._('Mirror', _createMirror);
-  static const Effect neonWipeEffect = Effect._('Neon Wipe', _createNeonWipe);
-  static const Effect clockWipeEffect = Effect._(
-    'Clock Wipe',
-    _createClockWipe,
-  );
-  static const Effect splitEffect = Effect._('Split', _createSplit);
-  static const Effect panelWipeEffect = Effect._(
-    'Panel Wipe',
-    _createPanelWipe,
-  );
-  static const Effect stretchEffect = Effect._('Stretch', _createStretch);
-  static const Effect starWipeEffect = Effect._('Star Wipe', _createStarWipe);
-  static const Effect lightLeakEffect = Effect._(
-    'Light Leak',
-    _createLightLeak,
-  );
-  static const Effect filmRollEffect = Effect._('Film Roll', _createFilmRoll);
-  static const Effect crossZoomEffect = Effect._(
-    'Cross Zoom',
-    _createCrossZoom,
-  );
-  static const Effect whipEffect = Effect._('Whip', _createWhip);
-  static const Effect glassEffect = Effect._('Glass', _createGlass);
-  static const Effect softWipeEffect = Effect._('Soft Wipe', _createSoftWipe);
-  static const Effect lightSweepEffect = Effect._(
-    'Light Sweep',
-    _createLightSweep,
-  );
-  static const Effect sliceEffect = Effect._('Slice', _createSlice);
-  static const Effect lumaFadeEffect = Effect._('Luma Fade', _createLumaFade);
-  static const Effect pagePeelEffect = Effect._('Page Peel', _createPagePeel);
-  static const Effect noiseDissolveEffect = Effect._(
-    'Noise Dissolve',
-    _createNoiseDissolve,
-  );
-  static const Effect rippleRevealEffect = Effect._(
-    'Ripple Reveal',
-    _createRippleReveal,
-  );
-  static const Effect waterRefractionEffect = Effect._(
-    'Water Refraction',
-    _createWaterRefraction,
-  );
-  static const Effect cubeEffect = Effect._('Cube', _createCubeEffect);
-  static const Effect accordionEffect = Effect._(
-    'Accordion',
-    _createAccordionEffect,
-  );
-  static const Effect backgroundToForegroundEffect = Effect._(
-    'Background To Foreground',
-    _createBackgroundToForegroundEffect,
-  );
-  static const Effect foregroundToBackgroundEffect = Effect._(
-    'Foreground To Background',
-    _createForegroundToBackgroundEffect,
-  );
-  static const Effect defaultEffect = Effect._('Default', _createDefaultEffect);
-  static const Effect depthEffect = Effect._('Depth', _createDepthEffect);
-  static const Effect flipHorizontalEffect = Effect._(
-    'Flip Horizontal',
-    _createFlipHorizontalEffect,
-  );
-  static const Effect flipVerticalEffect = Effect._(
-    'Flip Vertical',
-    _createFlipVerticalEffect,
-  );
-  static const Effect parallaxEffect = Effect._(
-    'Parallax',
-    _createParallaxEffect,
-  );
-  static const Effect stackEffect = Effect._('Stack', _createStackEffect);
-  static const Effect tabletEffect = Effect._('Tablet', _createTabletEffect);
-  static const Effect rotateDownEffect = Effect._(
-    'Rotate Down',
-    _createRotateDownEffect,
-  );
-  static const Effect rotateUpEffect = Effect._(
-    'Rotate Up',
-    _createRotateUpEffect,
-  );
-  static const Effect zoomOutSlideEffect = Effect._(
-    'Zoom Out',
-    _createZoomOutSlideEffect,
-  );
-  static const Effect fadeEffect = Effect._('Fade', _createFadeEffect);
-  static const Effect mosaicEffect = Effect._('Mosaic', _createMosaicEffect);
-  static const Effect mosaicFadeEffect = Effect._(
-    'MosaicFade',
-    _createMosaicFadeEffect,
-  );
-  static const Effect mosaicTLFadeEffect = Effect._(
-    'MosaicTLFade',
-    _createMosaicTLFadeEffect,
-  );
-  static const Effect mosaicBRFadeEffect = Effect._(
-    'MosaicBRFade',
-    _createMosaicBRFadeEffect,
-  );
-  static const Effect liquidMorphEffect = Effect._(
-    'LiquidMorph',
-    _createLiquidMorphEffect,
-  );
-  static const Effect blindsEffect = Effect._('Blinds', _createBlindsEffect);
-  static const Effect blurFadeEffect = Effect._(
-    'BlurFade',
-    _createBlurFadeEffect,
-  );
-  static const Effect zoomOverEffect = Effect._(
-    'ZoomOver',
-    _createZoomOverEffect,
-  );
-
-  static const Effect mosaicTRFadeEffect = Effect._(
-    'MosaicTRFade',
-    _createMosaicTRFade,
-  );
-  static const Effect mosaicBLFadeEffect = Effect._(
-    'MosaicBLFade',
-    _createMosaicBLFade,
-  );
-  static const Effect wipeLeftEffect = Effect._('Wipe Left', _createWipeLeft);
-  static const Effect wipeRightEffect = Effect._(
-    'Wipe Right',
-    _createWipeRight,
-  );
-  static const Effect wipeUpEffect = Effect._('Wipe Up', _createWipeUp);
-  static const Effect wipeDownEffect = Effect._('Wipe Down', _createWipeDown);
-  static const Effect curtainHorizontalEffect = Effect._(
-    'Curtain Horizontal',
-    _createCurtainHorizontal,
-  );
-  static const Effect curtainVerticalEffect = Effect._(
-    'Curtain Vertical',
-    _createCurtainVertical,
-  );
-  static const Effect diagonalTopLeftEffect = Effect._(
-    'Diagonal topLeft',
-    _createDiagonalTopLeft,
-  );
-  static const Effect diagonalTopRightEffect = Effect._(
-    'Diagonal topRight',
-    _createDiagonalTopRight,
-  );
-  static const Effect diagonalBottomLeftEffect = Effect._(
-    'Diagonal bottomLeft',
-    _createDiagonalBottomLeft,
-  );
-  static const Effect diagonalBottomRightEffect = Effect._(
-    'Diagonal bottomRight',
-    _createDiagonalBottomRight,
-  );
-  static const Effect irisEffect = Effect._('Iris', _createIris);
-  static const Effect fadeThroughBlackEffect = Effect._(
-    'Fade Through Black',
-    _createFadeThroughBlack,
-  );
-  static const Effect fadeThroughWhiteEffect = Effect._(
-    'Fade Through White',
-    _createFadeThroughWhite,
-  );
-  static const Effect pushRightEffect = Effect._(
-    'Push Right',
-    _createPushRight,
-  );
-  static const Effect pushUpEffect = Effect._('Push Up', _createPushUp);
-  static const Effect pushDownEffect = Effect._('Push Down', _createPushDown);
-  static const Effect coverRightEffect = Effect._(
-    'Cover Right',
-    _createCoverRight,
-  );
-  static const Effect coverUpEffect = Effect._('Cover Up', _createCoverUp);
-  static const Effect coverDownEffect = Effect._(
-    'Cover Down',
-    _createCoverDown,
-  );
-  static const Effect revealLeftEffect = Effect._(
-    'Reveal Left',
-    _createRevealLeft,
-  );
-  static const Effect revealRightEffect = Effect._(
-    'Reveal Right',
-    _createRevealRight,
-  );
-  static const Effect revealUpEffect = Effect._('Reveal Up', _createRevealUp);
-  static const Effect revealDownEffect = Effect._(
-    'Reveal Down',
-    _createRevealDown,
-  );
-
+  static const Effect flipEffect = Effect(EffectType.flip);
+  static const Effect rotateEffect = Effect(EffectType.rotate);
   static const Iterable<Effect> values = [
-    noiseDissolveEffect,
-    rippleRevealEffect,
-    waterRefractionEffect,
-    cubeEffect,
-    accordionEffect,
-    backgroundToForegroundEffect,
-    foregroundToBackgroundEffect,
-    defaultEffect,
-    depthEffect,
-    flipHorizontalEffect,
-    flipVerticalEffect,
-    parallaxEffect,
-    stackEffect,
-    tabletEffect,
-    rotateDownEffect,
-    rotateUpEffect,
-    zoomOutSlideEffect,
-    fadeEffect,
-    mosaicEffect,
-    mosaicFadeEffect,
-    mosaicTLFadeEffect,
-    mosaicBRFadeEffect,
-    liquidMorphEffect,
-    blindsEffect,
-    blurFadeEffect,
-    zoomOverEffect,
-    mosaicTRFadeEffect,
-    mosaicBLFadeEffect,
-    wipeLeftEffect,
-    wipeRightEffect,
-    wipeUpEffect,
-    wipeDownEffect,
-    curtainHorizontalEffect,
-    curtainVerticalEffect,
-    diagonalTopLeftEffect,
-    diagonalTopRightEffect,
-    diagonalBottomLeftEffect,
-    diagonalBottomRightEffect,
-    irisEffect,
-    fadeThroughBlackEffect,
-    fadeThroughWhiteEffect,
-    pushRightEffect,
-    pushUpEffect,
-    pushDownEffect,
-    coverRightEffect,
-    coverUpEffect,
-    coverDownEffect,
-    revealLeftEffect,
-    revealRightEffect,
-    revealUpEffect,
-    revealDownEffect,
-    softWipeEffect,
-    lightSweepEffect,
-    sliceEffect,
-    lumaFadeEffect,
-    pagePeelEffect,
-    lightLeakEffect,
-    filmRollEffect,
-    crossZoomEffect,
-    whipEffect,
-    glassEffect,
-    clockWipeEffect,
-    splitEffect,
-    panelWipeEffect,
-    stretchEffect,
-    starWipeEffect,
-    filmDissolveEffect,
-    frameEffect,
-    louverEffect,
-    mirrorEffect,
-    neonWipeEffect,
     burnAlphaEffect,
     foldMotionEffect,
     glowEffect,
@@ -354,241 +114,336 @@ class Effect {
     vhsDamageEffect,
     radialBlurEffect,
     phosphorEffect,
+    filmDissolveEffect,
+    frameEffect,
+    louverEffect,
+    mirrorEffect,
+    clockWipeEffect,
+    splitEffect,
+    panelWipeEffect,
+    stretchEffect,
+    starWipeEffect,
+    lightLeakEffect,
+    filmRollEffect,
+    crossZoomEffect,
+    whipEffect,
+    glassEffect,
+    softWipeEffect,
+    sliceEffect,
+    lumaFadeEffect,
+    pagePeelEffect,
+    noiseDissolveEffect,
+    rippleRevealEffect,
+    waterRefractionEffect,
+    cubeEffect,
+    accordionEffect,
+    backgroundToForegroundEffect,
+    foregroundToBackgroundEffect,
+    depthEffect,
+    parallaxEffect,
+    stackEffect,
+    tabletEffect,
+    zoomOutSlideEffect,
+    fadeEffect,
+    mosaicEffect,
+    liquidMorphEffect,
+    blindsEffect,
+    blurFadeEffect,
+    zoomOverEffect,
+    slideEffect,
+    revealMaskEffect,
+    fadeThroughColorEffect,
+    flipEffect,
+    rotateEffect,
   ];
-  final String name;
-
-  final EffectImplementor _implementor;
-
-  const Effect._(this.name, this._implementor);
-
-  @override
-  int get hashCode => name.hashCode ^ _implementor.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Effect &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          _implementor == other._implementor;
-
-  bool get isMosaic =>
-      this == mosaicEffect ||
-      this == mosaicFadeEffect ||
-      this == mosaicTLFadeEffect ||
-      this == mosaicTRFadeEffect ||
-      this == mosaicBLFadeEffect ||
-      this == mosaicBRFadeEffect;
-
+  final EffectType type;
+  final EffectOptions? _options;
+  const Effect(this.type, {this._options});
+  EffectOptions get options => _options ?? defaultEffectOptions(type);
+  Effect configured(EffectOptions options) => Effect(type, options: options);
+  static Effect fromConfig(EffectConfig config) =>
+      Effect(config.type, options: config.options);
+  EffectConfig toConfig({bool enabled = true}) =>
+      EffectConfig(type: type, enabled: enabled, options: options);
+  bool get isMosaic => type == EffectType.mosaic;
+  String get name => switch (type) {
+    EffectType.burnAlpha => 'Burn Alpha',
+    EffectType.foldMotion => 'Fold Motion',
+    EffectType.glow => 'Glow',
+    EffectType.kaleidoscope => 'Kaleidoscope',
+    EffectType.tvPower => 'TV Power',
+    EffectType.springMotion => 'Spring Motion',
+    EffectType.shapeDissolve => 'Shape Dissolve',
+    EffectType.vhsDamage => 'VHS Damage',
+    EffectType.radialBlur => 'Radial Blur',
+    EffectType.phosphor => 'Phosphor',
+    EffectType.filmDissolve => 'Film Dissolve',
+    EffectType.frame => 'Frame',
+    EffectType.louver => 'Louver',
+    EffectType.mirror => 'Mirror',
+    EffectType.clockWipe => 'Clock Wipe',
+    EffectType.split => 'Split',
+    EffectType.panelWipe => 'Panel Wipe',
+    EffectType.stretch => 'Stretch',
+    EffectType.starWipe => 'Star Wipe',
+    EffectType.lightLeak => 'Light Leak',
+    EffectType.filmRoll => 'Film Roll',
+    EffectType.crossZoom => 'Cross Zoom',
+    EffectType.whip => 'Whip',
+    EffectType.glass => 'Glass',
+    EffectType.softWipe => 'Soft Wipe',
+    EffectType.slice => 'Slice',
+    EffectType.lumaFade => 'Luma Fade',
+    EffectType.pagePeel => 'Page Peel',
+    EffectType.noiseDissolve => 'Noise Dissolve',
+    EffectType.rippleReveal => 'Ripple Reveal',
+    EffectType.waterRefraction => 'Water Refraction',
+    EffectType.cube => 'Cube',
+    EffectType.accordion => 'Accordion',
+    EffectType.backgroundToForeground => 'Background To Foreground',
+    EffectType.foregroundToBackground => 'Foreground To Background',
+    EffectType.depth => 'Depth',
+    EffectType.parallax => 'Parallax',
+    EffectType.stack => 'Stack',
+    EffectType.tablet => 'Tablet',
+    EffectType.zoomOut => 'Zoom Out',
+    EffectType.fade => 'Fade',
+    EffectType.mosaic => 'Mosaic',
+    EffectType.liquidMorph => 'LiquidMorph',
+    EffectType.blinds => 'Blinds',
+    EffectType.blurFade => 'BlurFade',
+    EffectType.zoomOver => 'ZoomOver',
+    EffectType.slide => 'Slide',
+    EffectType.revealMask => 'Reveal Mask',
+    EffectType.fadeThroughColor => 'Fade Through Color',
+    EffectType.flip => 'Flip',
+    EffectType.rotate => 'Rotate',
+    EffectType.unknown => 'Unknown',
+  };
+  EffectGroup get group => switch (type) {
+    EffectType.fade ||
+    EffectType.fadeThroughColor ||
+    EffectType.filmDissolve ||
+    EffectType.lumaFade ||
+    EffectType.blurFade => EffectGroup.fades,
+    EffectType.mosaic ||
+    EffectType.revealMask ||
+    EffectType.softWipe ||
+    EffectType.noiseDissolve ||
+    EffectType.rippleReveal => EffectGroup.masks,
+    EffectType.burnAlpha ||
+    EffectType.foldMotion ||
+    EffectType.glow ||
+    EffectType.kaleidoscope ||
+    EffectType.tvPower ||
+    EffectType.springMotion ||
+    EffectType.shapeDissolve ||
+    EffectType.vhsDamage ||
+    EffectType.radialBlur ||
+    EffectType.phosphor => EffectGroup.creative,
+    EffectType.lightLeak ||
+    EffectType.filmRoll ||
+    EffectType.crossZoom ||
+    EffectType.whip => EffectGroup.cinematic,
+    EffectType.clockWipe ||
+    EffectType.split ||
+    EffectType.panelWipe ||
+    EffectType.stretch ||
+    EffectType.starWipe ||
+    EffectType.glass ||
+    EffectType.frame ||
+    EffectType.louver ||
+    EffectType.mirror => EffectGroup.geometric,
+    _ => EffectGroup.movement,
+  };
   bool supportsMedia(TransitionMedia from, TransitionMedia to) =>
-      this != waterRefractionEffect ||
+      type != EffectType.waterRefraction ||
       (from == TransitionMedia.photo && to == TransitionMedia.photo);
-
   MediaSliderItemEffect createEffect({
     int? seed,
-    int mosaicGridSize = 100,
+    int? mosaicGridSize,
     MosaicBackend mosaicBackend = MosaicBackend.canvas,
   }) {
-    if (this == noiseDissolveEffect) {
-      return ProceduralRevealEffect(
+    final settings = options;
+    final issues = EffectConfig(type: type, options: settings).validate();
+    if (issues.isNotEmpty) {
+      throw ArgumentError('Invalid effect options: $issues');
+    }
+    return switch (type) {
+      EffectType.burnAlpha => CreativeTransitionEffect(
+        CreativeTransitionKind.burnAlpha,
+      ),
+      EffectType.foldMotion => CreativeTransitionEffect(
+        CreativeTransitionKind.foldMotion,
+      ),
+      EffectType.glow => CreativeTransitionEffect(CreativeTransitionKind.glow),
+      EffectType.kaleidoscope => CreativeTransitionEffect(
+        CreativeTransitionKind.kaleidoscope,
+      ),
+      EffectType.tvPower => CreativeTransitionEffect(
+        CreativeTransitionKind.tvPower,
+      ),
+      EffectType.springMotion => CreativeTransitionEffect(
+        CreativeTransitionKind.springMotion,
+      ),
+      EffectType.shapeDissolve => CreativeTransitionEffect(
+        CreativeTransitionKind.shapeDissolve,
+      ),
+      EffectType.vhsDamage => CreativeTransitionEffect(
+        CreativeTransitionKind.vhsDamage,
+      ),
+      EffectType.radialBlur => CreativeTransitionEffect(
+        CreativeTransitionKind.radialBlur,
+      ),
+      EffectType.phosphor => CreativeTransitionEffect(
+        CreativeTransitionKind.phosphor,
+      ),
+      EffectType.filmDissolve => OpticalTransitionEffect(
+        OpticalTransitionKind.filmDissolve,
+      ),
+      EffectType.frame => OpticalTransitionEffect(OpticalTransitionKind.frame),
+      EffectType.louver => OpticalTransitionEffect(
+        OpticalTransitionKind.louver,
+        slatCount: (settings as LouverEffectOptions).slatCount,
+      ),
+      EffectType.mirror => OpticalTransitionEffect(
+        OpticalTransitionKind.mirror,
+      ),
+      EffectType.clockWipe => GeometricTransitionEffect(
+        GeometricTransitionKind.clockWipe,
+      ),
+      EffectType.split => GeometricTransitionEffect(
+        GeometricTransitionKind.split,
+      ),
+      EffectType.panelWipe => GeometricTransitionEffect(
+        GeometricTransitionKind.panelWipe,
+        panelCount: (settings as PanelWipeEffectOptions).panelCount,
+      ),
+      EffectType.stretch => GeometricTransitionEffect(
+        GeometricTransitionKind.stretch,
+      ),
+      EffectType.starWipe => GeometricTransitionEffect(
+        GeometricTransitionKind.starWipe,
+      ),
+      EffectType.lightLeak => CinematicTransitionEffect(
+        CinematicTransitionKind.lightLeak,
+      ),
+      EffectType.filmRoll => CinematicTransitionEffect(
+        CinematicTransitionKind.filmRoll,
+      ),
+      EffectType.crossZoom => CinematicTransitionEffect(
+        CinematicTransitionKind.crossZoom,
+      ),
+      EffectType.whip => CinematicTransitionEffect(
+        CinematicTransitionKind.whip,
+      ),
+      EffectType.glass => GlassEffect(
+        paneCount: (settings as GlassEffectOptions).paneCount,
+      ),
+      EffectType.softWipe => SoftWipeEffect(
+        style: (settings as SoftWipeEffectOptions).style,
+      ),
+      EffectType.slice => SliceEffect(
+        stripCount: (settings as SliceEffectOptions).stripCount,
+      ),
+      EffectType.lumaFade => LumaFadeEffect(),
+      EffectType.pagePeel => PagePeelEffect(),
+      EffectType.noiseDissolve => ProceduralRevealEffect(
         ProceduralRevealKind.noiseDissolve,
         seed: seed,
-      );
-    }
-    if (!isMosaic) return _implementor();
-    if (this == mosaicEffect) {
-      return MosaicTransitionEffect(
-        gridSize: mosaicGridSize,
-        seed: seed,
-        backend: mosaicBackend,
-      );
-    }
-    final direction = this == mosaicTLFadeEffect
-        ? MosaicDirection.topLeft
-        : this == mosaicTRFadeEffect
-        ? MosaicDirection.topRight
-        : this == mosaicBLFadeEffect
-        ? MosaicDirection.bottomLeft
-        : this == mosaicBRFadeEffect
-        ? MosaicDirection.bottomRight
-        : MosaicDirection.random;
-    return MosaicFadeEffect(
-      gridSize: mosaicGridSize,
-      seed: seed,
-      direction: direction,
-      backend: mosaicBackend,
-    );
+      ),
+      EffectType.rippleReveal => ProceduralRevealEffect(
+        ProceduralRevealKind.rippleReveal,
+      ),
+      EffectType.waterRefraction => WaterRefractionEffect(),
+      EffectType.cube => CubeEffect(),
+      EffectType.accordion => AccordionEffect(),
+      EffectType.backgroundToForeground => BackgroundToForegroundEffect(),
+      EffectType.foregroundToBackground => ForegroundToBackgroundEffect(),
+      EffectType.depth => DepthEffect(),
+      EffectType.parallax => ParallaxEffect(),
+      EffectType.stack => StackEffect(),
+      EffectType.tablet => TabletEffect(),
+      EffectType.zoomOut => ZoomOutEffect(),
+      EffectType.fade => FadeEffect(),
+      EffectType.mosaic => _mosaic(
+        settings as MosaicEffectOptions,
+        seed,
+        mosaicGridSize,
+        mosaicBackend,
+      ),
+      EffectType.liquidMorph => LiquidMorphEffect(),
+      EffectType.blinds => BlindsEffect(
+        stripCount: (settings as BlindsEffectOptions).stripCount,
+      ),
+      EffectType.blurFade => BlurFadeEffect(),
+      EffectType.zoomOver => ZoomOverEffect(),
+      EffectType.slide => DirectionalSlideEffect(
+        mode: (settings as SlideEffectOptions).mode,
+        direction: _direction(settings.direction),
+      ),
+      EffectType.revealMask => _reveal(settings as RevealMaskEffectOptions),
+      EffectType.fadeThroughColor => FadeThroughColorEffect(
+        color: Color((settings as FadeThroughColorEffectOptions).color),
+      ),
+      EffectType.flip =>
+        (settings as FlipEffectOptions).axis == EffectAxis.horizontal
+            ? FlipHorizontalEffect()
+            : FlipVerticalEffect(),
+      EffectType.rotate =>
+        (settings as RotateEffectOptions).edge == RotationEdge.top
+            ? RotateUpEffect(rotationAngle: settings.angleDegrees)
+            : RotateDownEffect(rotationAngle: settings.angleDegrees),
+      EffectType.unknown => throw ArgumentError('Unknown effect type'),
+    };
   }
 
+  static AxisDirection _direction(EffectDirection direction) =>
+      switch (direction) {
+        EffectDirection.left => AxisDirection.left,
+        EffectDirection.right => AxisDirection.right,
+        EffectDirection.up => AxisDirection.up,
+        EffectDirection.down => AxisDirection.down,
+      };
+  static MediaSliderItemEffect _mosaic(
+    MosaicEffectOptions options,
+    int? seed,
+    int? grid,
+    MosaicBackend backend,
+  ) => MosaicFadeEffect(
+    gridSize: grid ?? options.gridSize,
+    fadeFraction: options.fadeFraction,
+    direction: options.direction,
+    seed: seed,
+    backend: backend,
+  );
+  static MediaSliderItemEffect _reveal(RevealMaskEffectOptions options) =>
+      RevealEffect(
+        shape: options.shape,
+        direction: options.shape == RevealShape.curtain
+            ? (options.axis == EffectAxis.horizontal
+                  ? AxisDirection.left
+                  : AxisDirection.up)
+            : _direction(options.direction),
+        origin: switch (options.origin) {
+          EffectOrigin.center => Alignment.center,
+          EffectOrigin.topLeft => Alignment.topLeft,
+          EffectOrigin.topRight => Alignment.topRight,
+          EffectOrigin.bottomLeft => Alignment.bottomLeft,
+          EffectOrigin.bottomRight => Alignment.bottomRight,
+        },
+      );
+
+  /// Parsing is confined to external tools; unknown IDs are an explicit error.
+  static Effect parse(String name) => values.firstWhere(
+    (e) => e.name == name,
+    orElse: () => throw FormatException('Unknown effect: $name'),
+  );
+  @override
+  bool operator ==(Object other) =>
+      other is Effect && type == other.type && options == other.options;
+  @override
+  int get hashCode => Object.hash(type, options);
   @override
   String toString() => name;
-
-  static MediaSliderItemEffect _createBurnAlpha() =>
-      CreativeTransitionEffect(CreativeTransitionKind.burnAlpha);
-  static MediaSliderItemEffect _createFoldMotion() =>
-      CreativeTransitionEffect(CreativeTransitionKind.foldMotion);
-  static MediaSliderItemEffect _createGlow() =>
-      CreativeTransitionEffect(CreativeTransitionKind.glow);
-  static MediaSliderItemEffect _createKaleidoscope() =>
-      CreativeTransitionEffect(CreativeTransitionKind.kaleidoscope);
-  static MediaSliderItemEffect _createTvPower() =>
-      CreativeTransitionEffect(CreativeTransitionKind.tvPower);
-  static MediaSliderItemEffect _createSpringMotion() =>
-      CreativeTransitionEffect(CreativeTransitionKind.springMotion);
-  static MediaSliderItemEffect _createShapeDissolve() =>
-      CreativeTransitionEffect(CreativeTransitionKind.shapeDissolve);
-  static MediaSliderItemEffect _createVhsDamage() =>
-      CreativeTransitionEffect(CreativeTransitionKind.vhsDamage);
-  static MediaSliderItemEffect _createRadialBlur() =>
-      CreativeTransitionEffect(CreativeTransitionKind.radialBlur);
-  static MediaSliderItemEffect _createPhosphor() =>
-      CreativeTransitionEffect(CreativeTransitionKind.phosphor);
-  static MediaSliderItemEffect _createFilmDissolve() =>
-      OpticalTransitionEffect(OpticalTransitionKind.filmDissolve);
-  static MediaSliderItemEffect _createFrame() =>
-      OpticalTransitionEffect(OpticalTransitionKind.frame);
-  static MediaSliderItemEffect _createLouver() =>
-      OpticalTransitionEffect(OpticalTransitionKind.louver);
-  static MediaSliderItemEffect _createMirror() =>
-      OpticalTransitionEffect(OpticalTransitionKind.mirror);
-  static MediaSliderItemEffect _createNeonWipe() =>
-      SoftWipeEffect(style: SoftWipeStyle.neon);
-  static MediaSliderItemEffect _createClockWipe() =>
-      GeometricTransitionEffect(GeometricTransitionKind.clockWipe);
-  static MediaSliderItemEffect _createSplit() =>
-      GeometricTransitionEffect(GeometricTransitionKind.split);
-  static MediaSliderItemEffect _createPanelWipe() =>
-      GeometricTransitionEffect(GeometricTransitionKind.panelWipe);
-  static MediaSliderItemEffect _createStretch() =>
-      GeometricTransitionEffect(GeometricTransitionKind.stretch);
-  static MediaSliderItemEffect _createStarWipe() =>
-      GeometricTransitionEffect(GeometricTransitionKind.starWipe);
-  static MediaSliderItemEffect _createLightLeak() =>
-      CinematicTransitionEffect(CinematicTransitionKind.lightLeak);
-  static MediaSliderItemEffect _createFilmRoll() =>
-      CinematicTransitionEffect(CinematicTransitionKind.filmRoll);
-  static MediaSliderItemEffect _createCrossZoom() =>
-      CinematicTransitionEffect(CinematicTransitionKind.crossZoom);
-  static MediaSliderItemEffect _createWhip() =>
-      CinematicTransitionEffect(CinematicTransitionKind.whip);
-  static MediaSliderItemEffect _createGlass() => GlassEffect();
-  static MediaSliderItemEffect _createSoftWipe() => SoftWipeEffect();
-  static MediaSliderItemEffect _createLightSweep() =>
-      SoftWipeEffect(style: SoftWipeStyle.lightSweep);
-  static MediaSliderItemEffect _createSlice() => SliceEffect();
-  static MediaSliderItemEffect _createLumaFade() => LumaFadeEffect();
-  static MediaSliderItemEffect _createPagePeel() => PagePeelEffect();
-  static MediaSliderItemEffect _createAccordionEffect() => AccordionEffect();
-  static MediaSliderItemEffect _createNoiseDissolve() =>
-      ProceduralRevealEffect(ProceduralRevealKind.noiseDissolve);
-  static MediaSliderItemEffect _createRippleReveal() =>
-      ProceduralRevealEffect(ProceduralRevealKind.rippleReveal);
-  static MediaSliderItemEffect _createWaterRefraction() =>
-      WaterRefractionEffect();
-  static MediaSliderItemEffect _createBackgroundToForegroundEffect() =>
-      BackgroundToForegroundEffect();
-  static MediaSliderItemEffect _createCubeEffect() => CubeEffect();
-  static MediaSliderItemEffect _createDefaultEffect() => DefaultEffect();
-  static MediaSliderItemEffect _createDepthEffect() => DepthEffect();
-  static MediaSliderItemEffect _createFlipHorizontalEffect() =>
-      FlipHorizontalEffect();
-  static MediaSliderItemEffect _createFlipVerticalEffect() =>
-      FlipVerticalEffect();
-  static MediaSliderItemEffect _createForegroundToBackgroundEffect() =>
-      ForegroundToBackgroundEffect();
-  static MediaSliderItemEffect _createParallaxEffect() => ParallaxEffect();
-  static MediaSliderItemEffect _createRotateDownEffect() => RotateDownEffect();
-  static MediaSliderItemEffect _createRotateUpEffect() => RotateUpEffect();
-  static MediaSliderItemEffect _createStackEffect() => StackEffect();
-  static MediaSliderItemEffect _createTabletEffect() => TabletEffect();
-  static MediaSliderItemEffect _createZoomOutSlideEffect() => ZoomOutEffect();
-  static MediaSliderItemEffect _createFadeEffect() => FadeEffect();
-  static MediaSliderItemEffect _createMosaicEffect() =>
-      MosaicTransitionEffect();
-  static MediaSliderItemEffect _createMosaicFadeEffect() => MosaicFadeEffect();
-  static MediaSliderItemEffect _createMosaicTLFadeEffect() =>
-      MosaicFadeEffect(direction: MosaicDirection.topLeft);
-  static MediaSliderItemEffect _createMosaicBRFadeEffect() =>
-      MosaicFadeEffect(direction: MosaicDirection.bottomRight);
-  static MediaSliderItemEffect _createLiquidMorphEffect() =>
-      LiquidMorphEffect();
-  static MediaSliderItemEffect _createBlindsEffect() => BlindsEffect();
-  static MediaSliderItemEffect _createBlurFadeEffect() => BlurFadeEffect();
-  static MediaSliderItemEffect _createZoomOverEffect() => ZoomOverEffect();
-
-  static MediaSliderItemEffect _createMosaicTRFade() =>
-      MosaicFadeEffect(direction: MosaicDirection.topRight);
-  static MediaSliderItemEffect _createMosaicBLFade() =>
-      MosaicFadeEffect(direction: MosaicDirection.bottomLeft);
-  static MediaSliderItemEffect _createWipeLeft() =>
-      RevealEffect(direction: AxisDirection.left);
-  static MediaSliderItemEffect _createWipeRight() =>
-      RevealEffect(direction: AxisDirection.right);
-  static MediaSliderItemEffect _createWipeUp() =>
-      RevealEffect(direction: AxisDirection.up);
-  static MediaSliderItemEffect _createWipeDown() =>
-      RevealEffect(direction: AxisDirection.down);
-  static MediaSliderItemEffect _createCurtainHorizontal() =>
-      RevealEffect(shape: RevealShape.curtain, direction: AxisDirection.left);
-  static MediaSliderItemEffect _createCurtainVertical() =>
-      RevealEffect(shape: RevealShape.curtain, direction: AxisDirection.up);
-  static MediaSliderItemEffect _createDiagonalTopLeft() =>
-      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.topLeft);
-  static MediaSliderItemEffect _createDiagonalTopRight() =>
-      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.topRight);
-  static MediaSliderItemEffect _createDiagonalBottomLeft() =>
-      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.bottomLeft);
-  static MediaSliderItemEffect _createDiagonalBottomRight() =>
-      RevealEffect(shape: RevealShape.diagonal, origin: Alignment.bottomRight);
-  static MediaSliderItemEffect _createIris() =>
-      RevealEffect(shape: RevealShape.iris, origin: Alignment.center);
-  static MediaSliderItemEffect _createFadeThroughBlack() =>
-      FadeThroughColorEffect();
-  static MediaSliderItemEffect _createFadeThroughWhite() =>
-      FadeThroughColorEffect(color: Colors.white);
-  static MediaSliderItemEffect _createPushRight() => DirectionalSlideEffect(
-    mode: SlideMode.push,
-    direction: AxisDirection.right,
-  );
-  static MediaSliderItemEffect _createPushUp() =>
-      DirectionalSlideEffect(mode: SlideMode.push, direction: AxisDirection.up);
-  static MediaSliderItemEffect _createPushDown() => DirectionalSlideEffect(
-    mode: SlideMode.push,
-    direction: AxisDirection.down,
-  );
-  static MediaSliderItemEffect _createCoverRight() => DirectionalSlideEffect(
-    mode: SlideMode.cover,
-    direction: AxisDirection.right,
-  );
-  static MediaSliderItemEffect _createCoverUp() => DirectionalSlideEffect(
-    mode: SlideMode.cover,
-    direction: AxisDirection.up,
-  );
-  static MediaSliderItemEffect _createCoverDown() => DirectionalSlideEffect(
-    mode: SlideMode.cover,
-    direction: AxisDirection.down,
-  );
-  static MediaSliderItemEffect _createRevealLeft() => DirectionalSlideEffect(
-    mode: SlideMode.reveal,
-    direction: AxisDirection.left,
-  );
-  static MediaSliderItemEffect _createRevealRight() => DirectionalSlideEffect(
-    mode: SlideMode.reveal,
-    direction: AxisDirection.right,
-  );
-  static MediaSliderItemEffect _createRevealUp() => DirectionalSlideEffect(
-    mode: SlideMode.reveal,
-    direction: AxisDirection.up,
-  );
-  static MediaSliderItemEffect _createRevealDown() => DirectionalSlideEffect(
-    mode: SlideMode.reveal,
-    direction: AxisDirection.down,
-  );
-
-  static Effect parse(String name) {
-    return values.firstWhere(
-      (element) => element.name == name,
-      orElse: () => defaultEffect,
-    );
-  }
 }

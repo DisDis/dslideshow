@@ -1,3 +1,5 @@
+import 'effects_editor_page.dart';
+
 import 'dart:async';
 
 import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
@@ -412,12 +414,24 @@ class ConfigScreenState extends State<ConfigScreen> {
           icon: Icons.slideshow,
           children: [
             SettingsTileNavigation(
-              title: context.localizations.general_and_effects_title,
+              title: context.localizations.effects_general,
               subtitle: context.localizations.slideshow_summary(
                 _editingConfig!.slideshow.displayTimeMs / 1000,
               ),
               icon: Icons.photo_library,
               onTap: () => _navigateToSlideshowEditor(context),
+            ),
+            SettingsTileNavigation(
+              title: context.localizations.effects_title,
+              subtitle:
+                  '${_editingConfig!.slideshow.effects.playable.length} / ${EffectType.values.length - 1}',
+              icon: Icons.auto_awesome,
+              onTap: () => _edit(
+                EffectsEditorPage(
+                  config: _editingConfig!.slideshow,
+                  registerDraft: _registerLocalDraft,
+                ),
+              ),
             ),
             SettingsTileNavigation(
               title: context.localizations.welcome_screen_title,

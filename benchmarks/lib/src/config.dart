@@ -1,7 +1,21 @@
+import 'package:dslideshow_flutter/effect.dart'
+    show EffectConfig, StrictIntConverter;
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'dart:convert';
 import 'dart:io';
 
-class BenchmarkConfig {
+part 'config.freezed.dart';
+part 'config.g.dart';
+
+@freezed
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  disallowUnrecognizedKeys: true,
+  converters: [StrictIntConverter()],
+)
+class BenchmarkConfig with _$BenchmarkConfig {
   final String suite;
   final int repeats;
   final int warmups;
@@ -15,6 +29,8 @@ class BenchmarkConfig {
   final List<int> grids;
   final List<String> backends;
   final List<String>? effects;
+  @JsonKey(includeIfNull: false)
+  final List<EffectConfig>? effectConfigs;
   final List<String>? mediaCases;
   final bool captureFrames;
   final bool exitWhenDone;
@@ -37,9 +53,10 @@ class BenchmarkConfig {
     int? soakSeconds,
     this.seed = 42,
     List<int>? grids,
-    this.backends = const ['canvas', 'shader'],
-    this.effects,
-    this.mediaCases,
+    List<String> backends = const ['canvas', 'shader'],
+    List<String>? effects,
+    List<EffectConfig>? effectConfigs,
+    List<String>? mediaCases,
     bool? captureFrames,
     this.exitWhenDone = true,
     this.requireTimings = true,
@@ -50,9 +67,22 @@ class BenchmarkConfig {
     this.expectedHeight = 1600,
   }) : repeats = repeats ?? (suite == 'smoke' ? 1 : 3),
        warmups = warmups ?? (suite == 'smoke' ? 0 : 1),
-       grids = grids ?? (suite == 'smoke' ? [100, 200] : [100, 150, 200]),
+       grids = List.unmodifiable(
+         grids ?? (suite == 'smoke' ? [100, 200] : [100, 150, 200]),
+       ),
+       backends = List.unmodifiable(backends),
+       effects = effects == null ? null : List.unmodifiable(effects),
+       effectConfigs = effectConfigs == null
+           ? null
+           : List.unmodifiable(effectConfigs),
+       mediaCases = mediaCases == null ? null : List.unmodifiable(mediaCases),
        captureFrames = captureFrames ?? (suite == 'standard'),
        soakSeconds = soakSeconds ?? (suite == 'soak' ? 86400 : 0) {
+    for (final effect in effectConfigs ?? <EffectConfig>[]) {
+      if (effect.validate().isNotEmpty) {
+        throw FormatException('Invalid effect_configs: ${effect.validate()}');
+      }
+    }
     if (!['smoke', 'standard', 'soak'].contains(suite)) {
       throw ArgumentError('Unknown suite: $suite');
     }
@@ -82,68 +112,22 @@ class BenchmarkConfig {
         backends.any((v) => !['canvas', 'shader'].contains(v))) {
       throw ArgumentError('backends must contain canvas and/or shader');
     }
-    if (effects != null && effects!.isEmpty ||
-        mediaCases != null && mediaCases!.isEmpty) {
+    if ((effects != null &&
+            effects.isEmpty &&
+            (effectConfigs == null || effectConfigs.isEmpty)) ||
+        mediaCases != null && mediaCases.isEmpty) {
       throw ArgumentError('Effect/media filters cannot be empty');
     }
   }
 
   factory BenchmarkConfig.fromJson(Map<String, dynamic> json) {
-    const keys = {
-      'suite',
-      'repeats',
-      'warmups',
-      'transition_ms',
-      'transition_timeout_seconds',
-      'prepare_timeout_seconds',
-      'telemetry_ms',
-      'timing_drain_ms',
-      'soak_seconds',
-      'seed',
-      'grids',
-      'backends',
-      'effects',
-      'media_cases',
-      'capture_frames',
-      'exit_when_done',
-      'require_timings',
-      'vulkan_video',
-      'visual_audit',
-      'media_directory',
-      'expected_width',
-      'expected_height',
-    };
-    final unknown = json.keys.where((key) => !keys.contains(key));
-    if (unknown.isNotEmpty) {
-      throw FormatException('Unknown config fields: ${unknown.join(', ')}');
+    try {
+      return _$BenchmarkConfigFromJson(json);
+    } on UnrecognizedKeysException catch (error) {
+      throw FormatException(
+        'Unknown config fields: ${error.unrecognizedKeys.join(', ')}',
+      );
     }
-    return BenchmarkConfig(
-      suite: json['suite'] as String? ?? 'standard',
-      repeats: json['repeats'] as int?,
-      warmups: json['warmups'] as int?,
-      transitionMs: json['transition_ms'] as int? ?? 1000,
-      transitionTimeoutSeconds:
-          json['transition_timeout_seconds'] as int? ?? 45,
-      prepareTimeoutSeconds: json['prepare_timeout_seconds'] as int? ?? 60,
-      telemetryMs: json['telemetry_ms'] as int? ?? 500,
-      timingDrainMs: json['timing_drain_ms'] as int? ?? 1200,
-      soakSeconds: json['soak_seconds'] as int?,
-      seed: json['seed'] as int? ?? 42,
-      grids: (json['grids'] as List?)?.cast<int>(),
-      backends:
-          (json['backends'] as List?)?.cast<String>() ??
-          const ['canvas', 'shader'],
-      effects: (json['effects'] as List?)?.cast<String>(),
-      mediaCases: (json['media_cases'] as List?)?.cast<String>(),
-      captureFrames: json['capture_frames'] as bool?,
-      exitWhenDone: json['exit_when_done'] as bool? ?? true,
-      requireTimings: json['require_timings'] as bool? ?? true,
-      vulkanVideo: json['vulkan_video'] as bool? ?? false,
-      visualAudit: json['visual_audit'] as bool? ?? false,
-      mediaDirectory: json['media_directory'] as String?,
-      expectedWidth: json['expected_width'] as int? ?? 2560,
-      expectedHeight: json['expected_height'] as int? ?? 1600,
-    );
   }
 
   static Future<BenchmarkConfig> load(Map<String, String> environment) async {
@@ -171,28 +155,5 @@ class BenchmarkConfig {
     return BenchmarkConfig.fromJson(json);
   }
 
-  Map<String, Object?> toJson() => {
-    'suite': suite,
-    'repeats': repeats,
-    'warmups': warmups,
-    'transition_ms': transitionMs,
-    'transition_timeout_seconds': transitionTimeoutSeconds,
-    'prepare_timeout_seconds': prepareTimeoutSeconds,
-    'telemetry_ms': telemetryMs,
-    'timing_drain_ms': timingDrainMs,
-    'soak_seconds': soakSeconds,
-    'seed': seed,
-    'grids': grids,
-    'backends': backends,
-    'effects': effects,
-    'media_cases': mediaCases,
-    'capture_frames': captureFrames,
-    'exit_when_done': exitWhenDone,
-    'require_timings': requireTimings,
-    'vulkan_video': vulkanVideo,
-    'visual_audit': visualAudit,
-    'media_directory': mediaDirectory,
-    'expected_width': expectedWidth,
-    'expected_height': expectedHeight,
-  };
+  Map<String, dynamic> toJson() => _$BenchmarkConfigToJson(this);
 }

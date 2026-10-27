@@ -98,7 +98,12 @@ class Fixture {
   final frontend = TestFrontend();
   final config = AppConfig.fromJson({
     'slideshow': {
-      'allowedEffects': ['Fade'],
+      'effects': {
+        'defaultDurationMs': 1000,
+        'items': [
+          {'type': 'fade', 'enabled': true},
+        ],
+      },
       'displayTimeMs': 5000,
       'fadeTimeMs': 2000,
     },

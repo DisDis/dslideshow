@@ -37,7 +37,13 @@ void main() {
       );
       final names = [
         for (final mode in MosaicProbe.values)
-          for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect])
+          for (final effect in [
+            (const Effect(
+              EffectType.mosaic,
+              options: MosaicEffectOptions(fadeFraction: 0),
+            )),
+            (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
+          ])
             mode.effectName(effect),
       ];
       final plan = buildPlan(
@@ -67,7 +73,7 @@ void main() {
     final audit = BenchmarkConfig(grids: [100, 150, 200], visualAudit: true);
     for (final grid in [100, 150, 200]) {
       final test = BenchmarkCase(
-        Effect.mosaicFadeEffect,
+        (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
         mediaPairs.first,
         grid: grid,
       );
@@ -75,12 +81,21 @@ void main() {
       expect(test.supportsCapture(audit), true);
     }
     expect(
-      BenchmarkCase(Effect.mosaicEffect, mediaPairs[1]).supportsCapture(audit),
+      BenchmarkCase(
+        (const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        )),
+        mediaPairs[1],
+      ).supportsCapture(audit),
       false,
     );
     expect(
       BenchmarkCase(
-        Effect.mosaicEffect,
+        (const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        )),
         mediaPairs.first,
         injectStall: true,
       ).supportsCapture(audit),

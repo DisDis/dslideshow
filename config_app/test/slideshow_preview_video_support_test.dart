@@ -47,7 +47,7 @@ void main() {
             SlideshowPreview(
               key: key,
               config: SlideShowConfig.fromJson({
-                'transitionTimeMs': 10,
+                'effects': {'defaultDurationMs': 10},
                 'displayTimeMs': 60000,
               }),
               images: [image],
@@ -102,7 +102,7 @@ void main() {
         SlideshowPreview(
           key: key,
           config: SlideShowConfig.fromJson({
-            'transitionTimeMs': 10,
+            'effects': {'defaultDurationMs': 10},
             'displayTimeMs': 60000,
           }),
           images: [_PendingProvider()],
@@ -149,7 +149,7 @@ void main() {
           SlideshowPreview(
             key: key,
             config: SlideShowConfig.fromJson({
-              'transitionTimeMs': 10,
+              'effects': {'defaultDurationMs': 10},
               'displayTimeMs': 60000,
             }),
             images: [_PendingProvider()],
@@ -194,7 +194,7 @@ void main() {
             SlideshowPreview(
               key: key,
               config: SlideShowConfig.fromJson({
-                'transitionTimeMs': 100,
+                'effects': {'defaultDurationMs': 100},
                 'displayTimeMs': 50,
               }),
               images: [_PendingProvider()],
@@ -236,7 +236,12 @@ void main() {
         if (phase == _VideoErrorPhase.currentDuringNextLoad) {
           // Starting another preparation changes the generation but the
           // current decoder must remain observed until it is actually replaced.
-          key.currentState!.onChanged(Effect.wipeLeftEffect);
+          key.currentState!.onChanged(
+            (const Effect(
+              EffectType.revealMask,
+              options: RevealMaskEffectOptions(direction: EffectDirection.left),
+            )),
+          );
           await tester.pump();
         }
         session.controller.value = session.controller.value.copyWith(

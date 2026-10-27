@@ -275,7 +275,7 @@ void main() {
                 child: SlideshowPreview(
                   key: key,
                   config: SlideShowConfig.fromJson({
-                    'transitionTimeMs': 100,
+                    'effects': {'defaultDurationMs': 100},
                     'displayTimeMs': 60000,
                   }),
                   images: [pendingImage],

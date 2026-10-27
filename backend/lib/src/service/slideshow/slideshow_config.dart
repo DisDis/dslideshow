@@ -1,13 +1,17 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
 import 'special_screen_config.dart';
 import 'photo_motion_config.dart';
 
 part 'slideshow_config.g.dart';
+part 'slideshow_config.freezed.dart';
 
+@unfreezed
 @JsonSerializable()
-class SlideShowConfig {
+class SlideShowConfig with _$SlideShowConfig {
   static final Logger _log = new Logger('SlideShowConfig');
 
   @JsonKey(fromJson: _parseButtons)
@@ -88,18 +92,8 @@ class SlideShowConfig {
   @JsonKey(defaultValue: 2000)
   int fadeTimeMs;
 
-  /// How long do images change
-  @JsonKey(defaultValue: 1000)
-  int transitionTimeMs;
-
-  /// Allowed effects
-  @JsonKey(fromJson: _parseAllowedEffects)
-  Iterable<String> allowedEffects;
-
-  static List<String> _parseAllowedEffects(dynamic value) {
-    final valueI = value is List<dynamic> ? value : <dynamic>[];
-    return List<String>.from(valueI.map<String>((dynamic i) => i.toString()));
-  }
+  @JsonKey(fromJson: parseEffectsConfig)
+  EffectsConfig effects;
 
   ///create a blurred background
   @JsonKey(defaultValue: true)
@@ -132,19 +126,19 @@ class SlideShowConfig {
   }
 
   SlideShowConfig({
-    required this.allowedEffects,
+    EffectsConfig? effects,
     required this.backgroundBlurSigma,
     required this.backgroundColor,
     required this.backgroundOpacity,
     required this.displayTimeMs,
     required this.fadeTimeMs,
     required this.isBlurredBackground,
-    required this.transitionTimeMs,
     required this.buttons,
     required this.menu,
     List<SpecialScreenConfig>? specialScreens,
     PhotoMotionConfig? photoMotion,
-  }) : specialScreens = specialScreens ?? [],
+  }) : effects = effects ?? EffectsConfig.defaults(),
+       specialScreens = specialScreens ?? [],
        photoMotion = photoMotion ?? PhotoMotionConfig();
 
   factory SlideShowConfig.fromJson(Map<String, dynamic> json) =>

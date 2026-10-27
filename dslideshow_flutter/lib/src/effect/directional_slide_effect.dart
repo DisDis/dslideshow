@@ -1,8 +1,8 @@
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart' show SlideMode;
 import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
-
-enum SlideMode { push, cover, reveal }
 
 class DirectionalSlideEffect extends MediaSliderItemEffect {
   final AxisDirection direction;

@@ -9,7 +9,8 @@ enum MosaicProbe {
   vertices,
   points;
 
-  String effectName(Effect effect) => 'MosaicProbe-$name-${effect.name}';
+  String effectName(Effect effect) =>
+      'MosaicProbe-$name-${(effect.options as MosaicEffectOptions).fadeFraction == 0 ? 'binary' : 'fade'}';
 }
 
 class MosaicProbeEffect extends MediaSliderItemEffect {

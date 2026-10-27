@@ -109,6 +109,7 @@ void main() {
     final stored = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
     expect(stored, {
       'slideshow': {
+        'effects': EffectsConfig.defaults().toJson(),
         'specialScreens': [
           {'id': 'clock', 'type': 'clock', 'enabled': true},
         ],

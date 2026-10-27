@@ -10,11 +10,13 @@ class DraftEditorForm extends StatefulWidget {
     required this.child,
     this.registerDraft,
     this.onChanged,
+    this.hasInvalidInput,
     this.confirmInvalidOnBack = true,
   });
   final Widget child;
   final RegisterUnsavedDraft? registerDraft;
   final VoidCallback? onChanged;
+  final ValueGetter<bool>? hasInvalidInput;
   final bool confirmInvalidOnBack;
 
   @override
@@ -34,10 +36,11 @@ class _DraftEditorFormState extends State<DraftEditorForm> {
   }
 
   bool _hasInvalidInput() =>
-      _form.currentState?.fields.any(
-        (field) => field.hasInteractedByUser && !field.isValid,
-      ) ??
-      false;
+      widget.hasInvalidInput?.call() == true ||
+      (_form.currentState?.fields.any(
+            (field) => field.hasInteractedByUser && !field.isValid,
+          ) ??
+          false);
 
   void _changed() {
     setState(() {});

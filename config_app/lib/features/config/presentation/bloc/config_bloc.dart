@@ -42,6 +42,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     try {
       // The form is mutable. Keep the sent and acknowledged values independent
       // from edits made while the repository is waiting for its response.
+      event.config.slideshow.effects.validateForSave();
       final snapshot = cloneConfig(event.config);
       emit(const ConfigState.saving());
       await _repository.saveConfig(snapshot);

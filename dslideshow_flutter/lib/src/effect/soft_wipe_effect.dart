@@ -1,3 +1,6 @@
+import 'package:dslideshow_common/effects.dart';
+export 'package:dslideshow_common/effects.dart' show SoftWipeStyle;
+
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -5,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'media_slider_item_effect.dart';
-
-enum SoftWipeStyle { soft, lightSweep, neon }
 
 /// A feathered mask over the live outgoing layer, optionally lit at its edge.
 class SoftWipeEffect extends MediaSliderItemEffect {

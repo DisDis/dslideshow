@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 class SlideshowPreview extends StatefulWidget {
   final SlideShowConfig config;
+  final Effect? selectedEffect;
   final List<ImageProvider>? images;
 
   /// An injected client is owned and closed by this preview.
@@ -26,6 +27,7 @@ class SlideshowPreview extends StatefulWidget {
   const SlideshowPreview({
     super.key,
     required this.config,
+    this.selectedEffect,
     this.images,
     this.mediaClient,
     this.videoFactory,
@@ -45,6 +47,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   late final FixedAnimationController _controller;
   final _videoUrl = TextEditingController();
   Timer? _hold;
+  Timer? _updateDebounce;
   VoidCallback? _cancelImage;
   Effect currentEffect = Effect.fadeEffect;
   late MediaSliderItemEffect _effect;
@@ -58,12 +61,17 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   bool _transitioning = false, _loading = false, _failed = false;
   bool _active = false, _routeActive = true, _resumed = true, _paused = false;
   int _index = 0, _generation = 0;
+  int? _currentPhotoIndex, _nextPhotoIndex;
+  int? _repeatFromIndex, _repeatToIndex;
   PreviewAspectRatio _aspect = PreviewAspectRatio.frame;
   bool get _supportsVideo =>
       supportsConfigAppVideo || widget.videoFactory != null;
   Size get _deviceSize => Size(2560, 2560 / _aspect.ratio);
-  Duration get _transitionTime =>
-      Duration(milliseconds: widget.config.transitionTimeMs.clamp(1, 3600000));
+  Duration get _transitionTime => Duration(
+    milliseconds: widget.config.effects
+        .durationFor(currentEffect.options)
+        .clamp(1, 3600000),
+  );
   Duration get _displayTime =>
       Duration(milliseconds: widget.config.displayTimeMs.clamp(1, 3600000));
 
@@ -78,6 +86,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
             receiveTimeout: const Duration(seconds: 30),
           ),
         );
+    currentEffect = widget.selectedEffect ?? currentEffect;
     _configSignature = jsonEncode(widget.config.toJson());
     _effect = currentEffect.createEffect(seed: 42);
     _controller = FixedAnimationController(
@@ -122,6 +131,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           motion = _currentMotion;
       _currentVideo = null;
       _currentPhoto = null;
+      _currentPhotoIndex = null;
+      _repeatFromIndex = _repeatToIndex = null;
       _currentMotion = null;
       setState(() => _current = const ColoredBox(color: Colors.black));
       _afterFrame(() {
@@ -139,11 +150,16 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   @override
   void didUpdateWidget(covariant SlideshowPreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.duration = _transitionTime;
+    currentEffect = widget.selectedEffect ?? currentEffect;
     final signature = jsonEncode(widget.config.toJson());
-    if (signature != _configSignature || oldWidget.images != widget.images) {
+    if (signature != _configSignature ||
+        oldWidget.images != widget.images ||
+        oldWidget.selectedEffect != widget.selectedEffect) {
       _configSignature = signature;
-      if (_active && !_paused) _loadNext();
+      _updateDebounce?.cancel();
+      _updateDebounce = Timer(const Duration(milliseconds: 150), () {
+        if (mounted && _active && !_paused) _loadNext();
+      });
     }
   }
 
@@ -208,6 +224,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     final video = _nextVideo, photo = _nextPhoto, motion = _nextMotion;
     _nextVideo = null;
     _nextPhoto = null;
+    _nextPhotoIndex = null;
     _nextMotion = null;
     _afterFrame(() {
       _release(video);
@@ -231,6 +248,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       _currentVideo = _nextVideo;
       _nextVideo = null;
       _currentPhoto = _nextPhoto;
+      _currentPhotoIndex = _nextPhotoIndex;
+      _nextPhotoIndex = null;
       _nextPhoto = null;
       _currentMotion = _nextMotion;
       _nextMotion = null;
@@ -350,10 +369,56 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     }
   }
 
-  Future<void> _loadNext() async {
+  Future<ui.Image> _photoAt(int index, bool Function() stale) async {
+    final images = widget.images;
+    if (images != null) {
+      if (images.isEmpty) throw StateError('No preview images');
+      return _preparePhoto(images[index % images.length]);
+    }
+    final cancellation = CancelToken();
+    _photoRequest = cancellation;
+    try {
+      final response = await _mediaClient.get<List<int>>(
+        _sampleUrls[index % _sampleUrls.length],
+        options: Options(responseType: ResponseType.bytes),
+        cancelToken: cancellation,
+      );
+      if (stale()) throw const _PreviewCancelled();
+      final bytes = response.data;
+      if (bytes == null || bytes.isEmpty) throw const FormatException();
+      return await _preparePhoto(
+        MemoryImage(Uint8List.fromList(bytes)),
+        evict: true,
+      );
+    } finally {
+      if (identical(_photoRequest, cancellation)) _photoRequest = null;
+    }
+  }
+
+  PhotoMotionSession? _photoMotion(int index) =>
+      widget.config.photoMotion.mode == PhotoMotionMode.kenBurns
+      ? PhotoMotionSession(
+          vsync: this,
+          duration: _displayTime,
+          config: widget.config.photoMotion,
+          seed: index,
+        )
+      : null;
+
+  void _repeat() {
+    _updateDebounce?.cancel();
+    _loadNext(fromPhotoIndex: _repeatFromIndex, targetIndex: _repeatToIndex);
+  }
+
+  Future<void> _loadNext({int? fromPhotoIndex, int? targetIndex}) async {
     if (!mounted || !_active || _paused) return;
     _cancelPending();
     final generation = _generation;
+    final selectedEffect = currentEffect;
+    final selectedDuration = _transitionTime;
+    final fallbackDuration = Duration(
+      milliseconds: widget.config.effects.safeDefaultDurationMs,
+    );
     setState(() {
       _loading = true;
       _failed = false;
@@ -364,11 +429,47 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     bool stale() =>
         !mounted || generation != _generation || !_active || _paused;
     try {
+      // The effects editor starts with a prepared photo, so even the first
+      // transition demonstrates the selected effect between two real images.
+      if (fromPhotoIndex != null ||
+          (widget.selectedEffect != null &&
+              _currentPhoto == null &&
+              _currentVideo == null)) {
+        final sourceIndex = fromPhotoIndex ?? _index++;
+        photo = await _photoAt(sourceIndex, stale);
+        if (stale()) {
+          photo.dispose();
+          return;
+        }
+        final oldPhoto = _currentPhoto;
+        final oldVideo = _currentVideo;
+        final oldMotion = _currentMotion;
+        final source = RawImage(
+          image: photo,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+        );
+        _currentPhoto = photo;
+        _currentPhotoIndex = sourceIndex;
+        _currentVideo = null;
+        _currentMotion = _photoMotion(sourceIndex);
+        photo = null;
+        setState(
+          () => _current = SizedBox.expand(
+            child: _currentMotion?.view(source) ?? source,
+          ),
+        );
+        _afterFrame(() {
+          oldPhoto?.dispose();
+          oldMotion?.dispose();
+          _release(oldVideo);
+        });
+      }
       final url = _videoUrl.text.trim();
-      final index = _index++;
+      final index = targetIndex ?? _index++;
       Widget next;
       if (_supportsVideo &&
-          currentEffect != Effect.waterRefractionEffect &&
+          selectedEffect.type != EffectType.waterRefraction &&
           url.isNotEmpty &&
           index.isOdd) {
         final uri = Uri.tryParse(url);
@@ -384,27 +485,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         await video.prepare().timeout(const Duration(seconds: 15));
         next = VideoWidget(MediaItem('preview-video', uri), session: video);
       } else {
-        final images = widget.images;
-        if (images != null) {
-          if (images.isEmpty) throw StateError('No preview images');
-          photo = await _preparePhoto(images[index % images.length]);
-        } else {
-          final cancellation = CancelToken();
-          _photoRequest = cancellation;
-          final response = await _mediaClient.get<List<int>>(
-            _sampleUrls[index % _sampleUrls.length],
-            options: Options(responseType: ResponseType.bytes),
-            cancelToken: cancellation,
-          );
-          if (stale()) return;
-          if (identical(_photoRequest, cancellation)) _photoRequest = null;
-          final bytes = response.data;
-          if (bytes == null || bytes.isEmpty) throw const FormatException();
-          photo = await _preparePhoto(
-            MemoryImage(Uint8List.fromList(bytes)),
-            evict: true,
-          );
-        }
+        photo = await _photoAt(index, stale);
         next = RawImage(
           image: photo,
           fit: BoxFit.contain,
@@ -417,13 +498,13 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         return;
       }
       final descriptor =
-          currentEffect.supportsMedia(
+          selectedEffect.supportsMedia(
             _currentPhoto != null
                 ? TransitionMedia.photo
                 : TransitionMedia.special,
             photo != null ? TransitionMedia.photo : TransitionMedia.video,
           )
-          ? currentEffect
+          ? selectedEffect
           : Effect.fadeEffect;
       final effect = descriptor.createEffect(seed: 42);
       await effect.prepare();
@@ -442,16 +523,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           ),
         );
       }
-      motion =
-          photo != null &&
-              widget.config.photoMotion.mode == PhotoMotionMode.kenBurns
-          ? PhotoMotionSession(
-              vsync: this,
-              duration: _displayTime,
-              config: widget.config.photoMotion,
-              seed: index,
-            )
-          : null;
+      motion = photo == null ? null : _photoMotion(index);
       if (video != null) await video.setPlaying(true);
       if (stale()) {
         _release(video);
@@ -460,6 +532,11 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         return;
       }
       if (identical(_preparingVideo, video)) _preparingVideo = null;
+      _repeatFromIndex = _currentPhoto != null && photo != null
+          ? _currentPhotoIndex
+          : null;
+      _repeatToIndex = _repeatFromIndex == null ? null : index;
+      _nextPhotoIndex = photo == null ? null : index;
       _nextVideo = video;
       _nextPhoto = photo;
       _nextMotion = motion;
@@ -472,6 +549,9 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         _loading = false;
         _transitioning = true;
       });
+      _controller.duration = descriptor.type == selectedEffect.type
+          ? selectedDuration
+          : fallbackDuration;
       _controller.forward(from: 0);
     } catch (e) {
       photo?.dispose();
@@ -523,6 +603,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     WidgetsBinding.instance.removeObserver(this);
     ++_generation;
     _hold?.cancel();
+    _updateDebounce?.cancel();
     _cancelImage?.call();
     _photoRequest?.cancel();
     _mediaClient.close(force: true);
@@ -570,23 +651,24 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        DropdownButtonFormField<Effect>(
-          key: const ValueKey('preview-effect'),
-          initialValue: currentEffect,
-          isExpanded: true,
-          decoration: InputDecoration(labelText: l.preview_effect),
-          onChanged: onChanged,
-          items: [
-            for (final effect in Effect.values)
-              DropdownMenuItem(
-                value: effect,
-                child: Text(
-                  effectLabel(context, effect),
-                  overflow: TextOverflow.ellipsis,
+        if (widget.selectedEffect == null)
+          DropdownButtonFormField<Effect>(
+            key: const ValueKey('preview-effect'),
+            initialValue: Effect(currentEffect.type),
+            isExpanded: true,
+            decoration: InputDecoration(labelText: l.preview_effect),
+            onChanged: onChanged,
+            items: [
+              for (final effect in Effect.values)
+                DropdownMenuItem(
+                  value: effect,
+                  child: Text(
+                    effectLabel(context, effect),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-          ],
-        ),
+            ],
+          ),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -617,6 +699,13 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           ],
         ),
         const SizedBox(height: 12),
+        OutlinedButton.icon(
+          key: const ValueKey('preview-repeat'),
+          onPressed: _paused || _loading ? null : _repeat,
+          icon: const Icon(Icons.replay),
+          label: Text(l.preview_repeat),
+        ),
+        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
@@ -625,7 +714,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
                 key: const ValueKey('preview-video-url'),
                 enabled:
                     _supportsVideo &&
-                    currentEffect != Effect.waterRefractionEffect,
+                    currentEffect.type != EffectType.waterRefraction,
                 decoration: InputDecoration(labelText: l.preview_video_url),
                 onSubmitted: (_) => _loadNext(),
               ),
@@ -642,9 +731,12 @@ class SlideshowPreviewState extends State<SlideshowPreview>
             l.video_platform_unavailable,
             key: const ValueKey('preview-video-unavailable'),
           )
-        else if (currentEffect == Effect.waterRefractionEffect)
+        else if (currentEffect.type == EffectType.waterRefraction)
           Text(l.water_photo_only),
-        if (_loading) const LinearProgressIndicator(),
+        SizedBox(
+          height: 4,
+          child: _loading ? const LinearProgressIndicator(minHeight: 4) : null,
+        ),
         if (_failed)
           Text(
             l.preview_failed,
@@ -654,7 +746,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         const SizedBox(height: 8),
         Text(
           l.transition_display_times(
-            widget.config.transitionTimeMs,
+            _transitionTime.inMilliseconds,
             widget.config.displayTimeMs,
           ),
           style: Theme.of(context).textTheme.bodySmall,

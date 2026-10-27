@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.20.3
+  flutter_colorpicker: ^1.1.0
   flutter_localizations:
     sdk: flutter
   dslideshow_common:

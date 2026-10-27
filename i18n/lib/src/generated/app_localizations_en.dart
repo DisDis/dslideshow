@@ -627,6 +627,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_video_url => 'Video URL (optional)';
 
   @override
+  String get preview_repeat => 'Repeat';
+
+  @override
   String get preview_play => 'Preview';
 
   @override
@@ -672,9 +675,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_mirror => 'Mirror';
 
   @override
-  String get effect_neon_wipe => 'Neon Wipe';
-
-  @override
   String get effect_clock_wipe => 'Clock Wipe';
 
   @override
@@ -706,9 +706,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get effect_soft_wipe => 'Soft Wipe';
-
-  @override
-  String get effect_light_sweep => 'Light Sweep';
 
   @override
   String get effect_slice => 'Slice';
@@ -967,16 +964,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_foreground_to_background => 'Foreground to background';
 
   @override
-  String get effect_default => 'Slide';
-
-  @override
   String get effect_depth => 'Depth';
-
-  @override
-  String get effect_flip_horizontal => 'Horizontal flip';
-
-  @override
-  String get effect_flip_vertical => 'Vertical flip';
 
   @override
   String get effect_parallax => 'Parallax';
@@ -988,12 +976,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_tablet => 'Tablet';
 
   @override
-  String get effect_rotate_down => 'Rotate down';
-
-  @override
-  String get effect_rotate_up => 'Rotate up';
-
-  @override
   String get effect_zoom_out_slide => 'Zoom out';
 
   @override
@@ -1001,15 +983,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get effect_mosaic => 'Mosaic';
-
-  @override
-  String get effect_mosaic_fade => 'Mosaic fade';
-
-  @override
-  String get effect_mosaic_tl_fade => 'Mosaic from top left';
-
-  @override
-  String get effect_mosaic_br_fade => 'Mosaic from bottom right';
 
   @override
   String get effect_liquid_morph => 'Liquid morph';
@@ -1022,81 +995,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get effect_zoom_over => 'Zoom over';
-
-  @override
-  String get effect_mosaic_tr_fade => 'Mosaic from top right';
-
-  @override
-  String get effect_mosaic_bl_fade => 'Mosaic from bottom left';
-
-  @override
-  String get effect_wipe_left => 'Wipe left';
-
-  @override
-  String get effect_wipe_right => 'Wipe right';
-
-  @override
-  String get effect_wipe_up => 'Wipe up';
-
-  @override
-  String get effect_wipe_down => 'Wipe down';
-
-  @override
-  String get effect_curtain_horizontal => 'Horizontal curtain';
-
-  @override
-  String get effect_curtain_vertical => 'Vertical curtain';
-
-  @override
-  String get effect_diagonal_top_left => 'Diagonal from top left';
-
-  @override
-  String get effect_diagonal_top_right => 'Diagonal from top right';
-
-  @override
-  String get effect_diagonal_bottom_left => 'Diagonal from bottom left';
-
-  @override
-  String get effect_diagonal_bottom_right => 'Diagonal from bottom right';
-
-  @override
-  String get effect_iris => 'Iris';
-
-  @override
-  String get effect_fade_through_black => 'Fade through black';
-
-  @override
-  String get effect_fade_through_white => 'Fade through white';
-
-  @override
-  String get effect_push_right => 'Push right';
-
-  @override
-  String get effect_push_up => 'Push up';
-
-  @override
-  String get effect_push_down => 'Push down';
-
-  @override
-  String get effect_cover_right => 'Cover right';
-
-  @override
-  String get effect_cover_up => 'Cover up';
-
-  @override
-  String get effect_cover_down => 'Cover down';
-
-  @override
-  String get effect_reveal_left => 'Reveal left';
-
-  @override
-  String get effect_reveal_right => 'Reveal right';
-
-  @override
-  String get effect_reveal_up => 'Reveal up';
-
-  @override
-  String get effect_reveal_down => 'Reveal down';
 
   @override
   String get sync_settings_title => 'Sync settings';
@@ -1613,4 +1511,228 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rpc_receiver_stale => 'Receiver handler metrics are out of date.';
+
+  @override
+  String get effects_title => 'Transition effects';
+
+  @override
+  String get effects_general => 'General slideshow settings';
+
+  @override
+  String get effects_search => 'Search effects';
+
+  @override
+  String get effects_all => 'All';
+
+  @override
+  String get effects_enabled => 'Enabled';
+
+  @override
+  String get effects_modified => 'Modified';
+
+  @override
+  String get effects_group => 'Group';
+
+  @override
+  String get effects_fades => 'Fades';
+
+  @override
+  String get effects_movement => 'Movement';
+
+  @override
+  String get effects_masks => 'Masks';
+
+  @override
+  String get effects_geometric => 'Geometric';
+
+  @override
+  String get effects_cinematic => 'Cinematic';
+
+  @override
+  String get effects_creative => 'Creative';
+
+  @override
+  String get effects_global_duration => 'Global duration, ms';
+
+  @override
+  String get effects_duration => 'Duration, ms';
+
+  @override
+  String get effects_inherit => 'Global';
+
+  @override
+  String get effects_custom => 'Custom';
+
+  @override
+  String get effects_enable_all => 'Enable all effects';
+
+  @override
+  String get effects_disable_all => 'Disable all effects';
+
+  @override
+  String get effects_inherit_all => 'Use global duration for all effects';
+
+  @override
+  String get effects_reset => 'Reset parameters';
+
+  @override
+  String get effects_empty =>
+      'No compatible effect selected: Fade uses the global duration.';
+
+  @override
+  String get effects_invalid =>
+      'Invalid effect configuration. Fix the fields or reset the effect set.';
+
+  @override
+  String get effects_restore => 'Reset effect set';
+
+  @override
+  String get effects_no_results => 'No effects found';
+
+  @override
+  String get effects_enable => 'Enabled';
+
+  @override
+  String get effects_grid => 'Grid size';
+
+  @override
+  String get effects_fade_fraction => 'Cell fade duration';
+
+  @override
+  String get effects_fade_help =>
+      'Fraction of transition time spent fading each cell. 0% gives a hard cutoff.';
+
+  @override
+  String get effects_direction => 'Direction';
+
+  @override
+  String get effects_random => 'Random cells';
+
+  @override
+  String get effects_topLeft => 'Top left';
+
+  @override
+  String get effects_topRight => 'Top right';
+
+  @override
+  String get effects_bottomLeft => 'Bottom left';
+
+  @override
+  String get effects_bottomRight => 'Bottom right';
+
+  @override
+  String get effects_center => 'Center';
+
+  @override
+  String get effects_left => 'Left';
+
+  @override
+  String get effects_right => 'Right';
+
+  @override
+  String get effects_up => 'Up';
+
+  @override
+  String get effects_down => 'Down';
+
+  @override
+  String get effects_mode => 'Mode';
+
+  @override
+  String get effects_push => 'Push';
+
+  @override
+  String get effects_cover => 'Cover';
+
+  @override
+  String get effects_reveal => 'Reveal';
+
+  @override
+  String get effects_shape => 'Shape';
+
+  @override
+  String get effects_wipe => 'Wipe';
+
+  @override
+  String get effects_curtain => 'Curtain';
+
+  @override
+  String get effects_diagonal => 'Diagonal';
+
+  @override
+  String get effects_iris => 'Iris';
+
+  @override
+  String get effects_axis => 'Axis';
+
+  @override
+  String get effects_horizontal => 'Horizontal';
+
+  @override
+  String get effects_vertical => 'Vertical';
+
+  @override
+  String get effects_origin => 'Origin';
+
+  @override
+  String get color_choose => 'Choose color';
+
+  @override
+  String get color_apply => 'Apply';
+
+  @override
+  String get effects_color => 'Color, AARRGGBB';
+
+  @override
+  String get effects_black => 'Black';
+
+  @override
+  String get effects_white => 'White';
+
+  @override
+  String get effects_style => 'Style';
+
+  @override
+  String get effects_soft => 'Soft';
+
+  @override
+  String get effects_lightSweep => 'Light sweep';
+
+  @override
+  String get effects_neon => 'Neon';
+
+  @override
+  String get effects_edge => 'Pivot edge';
+
+  @override
+  String get effects_top => 'Top';
+
+  @override
+  String get effects_bottom => 'Bottom';
+
+  @override
+  String get effects_angle => 'Angle, degrees';
+
+  @override
+  String get effects_count => 'Strip / panel count';
+
+  @override
+  String get effects_slide => 'Slide';
+
+  @override
+  String get effects_reveal_mask => 'Reveal mask';
+
+  @override
+  String get effects_fade_color => 'Fade through color';
+
+  @override
+  String get effects_flip => 'Flip';
+
+  @override
+  String get effects_rotate => 'Rotate';
+
+  @override
+  String effects_milliseconds(int value) {
+    return '$value ms';
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:benchmarks/src/effect_variants.dart';
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -12,6 +14,82 @@ import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+    'Freezed benchmark configuration keeps independent immutable variants',
+    () {
+      final source = [EffectConfig(type: EffectType.fade)];
+      final config = BenchmarkConfig(suite: 'smoke', effectConfigs: source);
+      source.clear();
+      expect(config.effectConfigs, hasLength(1));
+      expect(() => config.effectConfigs!.clear(), throwsUnsupportedError);
+      expect(() => config.grids.clear(), throwsUnsupportedError);
+      final changed = config.copyWith(transitionMs: 1500);
+      expect(config.transitionMs, 1000);
+      expect(changed.transitionMs, 1500);
+      expect(changed, BenchmarkConfig.fromJson(changed.toJson()));
+    },
+  );
+
+  test(
+    'explicit typed variants retain independent IDs and effective duration',
+    () {
+      final config = BenchmarkConfig.fromJson({
+        'suite': 'smoke',
+        'media_cases': ['photo-photo'],
+        'grids': [100],
+        'backends': ['canvas'],
+        'transition_ms': 900,
+        'effect_configs': [
+          {
+            'type': 'mosaic',
+            'options': {'durationMs': 0, 'fadeFraction': 0},
+          },
+          {
+            'type': 'mosaic',
+            'options': {'durationMs': 1400, 'fadeFraction': .3},
+          },
+        ],
+      });
+      final plan = buildPlan(config);
+      expect(plan.length, 2);
+      expect(plan.map((c) => c.id).toSet().length, 2);
+      expect(plan.map((c) => c.durationMs(config)), [900, 1400]);
+      final gridCase = BenchmarkCase(
+        Effect.mosaicEffect,
+        mediaPairs.first,
+        grid: 200,
+      );
+      expect(
+        (gridCase.toJson()['effect_config'] as Map)['options']['gridSize'],
+        200,
+      );
+      expect(
+        () => buildPlan(
+          BenchmarkConfig(
+            effectConfigs: [
+              EffectConfig(type: EffectType.fade),
+              EffectConfig(type: EffectType.fade),
+            ],
+          ),
+        ),
+        throwsArgumentError,
+      );
+
+      expect(
+        (plan.last.toJson()['effect_config'] as Map)['options']['durationMs'],
+        1400,
+      );
+      expect(
+        BenchmarkConfig.fromJson(config.toJson())
+            .effectConfigs!
+            .last
+            .options
+            .durationMs,
+        1400,
+      );
+    },
+  );
+
   test('visual audit distinguishes motion, two discrete frames and unavailable readback', () {
     final from = Uint8List.fromList([255, 0, 0, 255]),
         to = Uint8List.fromList([0, 0, 255, 255]);
@@ -129,11 +207,13 @@ void main() {
         plan.map((c) => c.media.name).toSet(),
         mediaPairs.map((p) => p.name).toSet(),
       );
-      expect(plan.map((c) => c.effect).toSet(), {null, ...Effect.values});
+      expect(plan.map((c) => c.effect).toSet(), {null, ...benchmarkEffects});
       for (final effect in Effect.values) {
         for (final pair in mediaPairs.where((p) => p.name != 'large-photo')) {
           expect(
-            plan.any((c) => c.effect == effect && c.media.name == pair.name),
+            plan.any(
+              (c) => c.effect?.type == effect.type && c.media.name == pair.name,
+            ),
             isTrue,
             reason: '${effect.name} must cover ${pair.name}',
           );

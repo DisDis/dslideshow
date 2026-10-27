@@ -208,7 +208,12 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         ? MosaicProbeEffect(
             test.mosaicProbe!,
             grid: test.grid,
-            binary: test.effect == Effect.mosaicEffect,
+            binary:
+                test.effect ==
+                (const Effect(
+                  EffectType.mosaic,
+                  options: MosaicEffectOptions(fadeFraction: 0),
+                )),
             seed: widget.config.seed,
           )
         : test.effect?.createEffect(
@@ -222,6 +227,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
     }
     effectWatch.stop();
+    _controller.duration = Duration(
+      milliseconds: test.durationMs(widget.config),
+    );
     if (generation != _generation) throw StateError('Preparation cancelled');
     _from = from;
     _to = to;
@@ -480,26 +488,27 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _frames = null;
     final errors = <String>[
       if (failure != null) '$failure',
-      if (!probe.smooth(widget.config.transitionMs)) 'Progress discontinuity',
+      if (!probe.smooth(test.durationMs(widget.config)))
+        'Progress discontinuity',
       if (frames.length < 2 && widget.config.requireTimings)
         'Insufficient FrameTiming samples received',
       for (final state in videoStates)
         if (state['error'] != null) 'Video: ${state['error']}',
       for (final state in videoStates)
         if (state['position_advances'] == 0 &&
-            widget.config.transitionMs >= 500)
+            test.durationMs(widget.config) >= 500)
           'Video position did not advance',
     ];
     return RunMeasurement({
       'status': errors.isEmpty ? 'passed' : 'failed',
       if (errors.isNotEmpty) 'error': errors.join('; '),
-      'requested_ms': widget.config.transitionMs,
+      'requested_ms': test.durationMs(widget.config),
       'actual_ms': watch.elapsedMicroseconds / 1000,
       'duration_stretch':
-          watch.elapsedMicroseconds / 1000 / widget.config.transitionMs,
+          watch.elapsedMicroseconds / 1000 / test.durationMs(widget.config),
       'max_progress_step': probe.maxStep,
       'monotonic_progress': probe.monotonic,
-      'smooth_progress': probe.smooth(widget.config.transitionMs),
+      'smooth_progress': probe.smooth(test.durationMs(widget.config)),
       'ticks': probe.ticks,
       'progress': progress,
       'videos': videoStates,

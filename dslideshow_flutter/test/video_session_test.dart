@@ -56,7 +56,10 @@ void main() {
     (tester) async {
       for (final effect in [
         Effect.softWipeEffect,
-        Effect.lightSweepEffect,
+        (const Effect(
+          EffectType.softWipe,
+          options: SoftWipeEffectOptions(style: SoftWipeStyle.lightSweep),
+        )),
         Effect.sliceEffect,
         Effect.lumaFadeEffect,
         Effect.pagePeelEffect,
@@ -74,7 +77,10 @@ void main() {
         Effect.frameEffect,
         Effect.louverEffect,
         Effect.mirrorEffect,
-        Effect.neonWipeEffect,
+        (const Effect(
+          EffectType.softWipe,
+          options: SoftWipeEffectOptions(style: SoftWipeStyle.neon),
+        )),
         Effect.burnAlphaEffect,
         Effect.foldMotionEffect,
         Effect.glowEffect,

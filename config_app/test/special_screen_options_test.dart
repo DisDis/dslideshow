@@ -5,6 +5,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/clock
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _host(
@@ -51,6 +52,56 @@ Future<void> _selectFont(
 }
 
 void main() {
+  testWidgets('clock color pickers keep alpha in the local draft until Done', (
+    tester,
+  ) async {
+    final config = SpecialScreenConfig(
+      id: 'clock',
+      type: SpecialScreenType.clock,
+    );
+    final original = (config.options as ClockScreenOptions).toJson();
+    SpecialScreenConfig? result;
+    await tester.pumpWidget(_host(config, (value) => result = value));
+    await tester.tap(find.text('Edit'));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(SpecialScreenEditorPage)),
+    );
+    Future<void> choose(String label, int color) async {
+      final field = find.widgetWithText(TextFormField, label);
+      await tester.ensureVisible(field);
+      await tester.tap(
+        find.descendant(
+          of: field,
+          matching: find.byIcon(Icons.palette_outlined),
+        ),
+      );
+      await tester.pumpAndSettle();
+      tester
+          .widget<ColorPicker>(find.byType(ColorPicker))
+          .onColorChanged(Color(color));
+      await tester.pump();
+      await tester.tap(find.text(l.color_apply));
+      await tester.pumpAndSettle();
+    }
+
+    await choose(l.special_text_color, 0x80123456);
+    await choose(l.special_background_color, 0x40887766);
+    expect((config.options as ClockScreenOptions).toJson(), original);
+    await tester.tap(find.text(l.special_done));
+    await tester.pumpAndSettle();
+    final saved = result!.options as ClockScreenOptions;
+    expect(saved.textColor, 0x80123456);
+    expect(saved.backgroundColor, 0x40887766);
+    final reloaded =
+        SpecialScreenConfig.fromJson(result!.toJson()).options
+            as ClockScreenOptions;
+    expect(reloaded.textColor, saved.textColor);
+    expect(reloaded.backgroundColor, saved.backgroundColor);
+    await tester.pumpWidget(const SizedBox());
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'clock font and weekday edits preview locally and transfer on Done',
     (tester) async {

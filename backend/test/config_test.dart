@@ -10,14 +10,18 @@ void main() {
         "slideshow": {
           "displayTimeMs": 5000,
           "fadeTimeMs": 2000,
-          "transitionTimeMs": 1000,
-          "allowedEffects": ["Fade"],
+          'effects': {
+            'defaultDurationMs': 1000,
+            'items': [
+              {'type': 'fade', 'enabled': true},
+            ],
+          },
           "isBlurredBackground": false,
         },
       };
 
       final _config = new AppConfig.fromJson(testData);
-      expect(_config.slideshow.allowedEffects, equals(['Fade']));
+      expect(_config.slideshow.effects.items.single.type, EffectType.fade);
     });
 
     test('parse button', () {
@@ -40,11 +44,16 @@ void main() {
     });
 
     group('SlideShowConfig', () {
-      test('parse allowedEffects', () {
+      test('parse effects', () {
         final _slideShowConfig = new SlideShowConfig.fromJson(<String, dynamic>{
-          'allowedEffects': ['Fade'],
+          'effects': {
+            'defaultDurationMs': 1000,
+            'items': [
+              {'type': 'fade', 'enabled': true},
+            ],
+          },
         });
-        expect(_slideShowConfig.allowedEffects, equals(['Fade']));
+        expect(_slideShowConfig.effects.items.single.type, EffectType.fade);
       });
     });
 

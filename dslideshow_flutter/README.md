@@ -1,5 +1,9 @@
 # DSlideShow: сборка
 
+[Персональные настройки эффектов](../doc/effect-settings.md): новый формат
+`slideshow.effects`, общая/своя длительность, объединение вариантов, каталог
+и предпросмотр. Старые `allowedEffects`/`transitionTimeMs` не поддерживаются.
+
 Проверяемая конфигурация обновления: Flutter 3.47.7 stable, Dart 3.13.5.
 Основные пакеты требуют Dart >=3.13, Flutter-приложения — Flutter >=3.47.
 `flutter.config.enable-native-assets` включён в pubspec приложений и пакета

@@ -85,13 +85,19 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
     if (_closing || emit.isDone || _initialized) return;
     _initialized = true;
     // Настройка эффектов
-    final allowedETmp = config.allowedEffects;
-    if (allowedETmp.isNotEmpty) {
-      _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
+    for (final issue in config.effects.validate()) {
+      _log.warning('Invalid slideshow configuration: $issue');
     }
-    if (_allowedEffects.isEmpty) {
-      _allowedEffects.addAll(Effect.values);
-    }
+    _allowedEffects.addAll(
+      config.effects.playable.map(
+        (entry) => Effect(
+          entry.type,
+          options: entry.options.withDuration(
+            config.effects.durationFor(entry.options),
+          ),
+        ),
+      ),
+    );
     _log.info('Allowed effects: $_allowedEffects');
 
     // Подписки
@@ -176,17 +182,20 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   }
 
   Effect _nextEffect(SlideshowSlide incoming) {
-    final compatible =
-        (_allowedEffects.isEmpty ? Effect.values : _allowedEffects)
-            .where(
-              (effect) => effect.supportsMedia(
-                state.currentSlide?.transitionMedia ?? TransitionMedia.special,
-                incoming.transitionMedia,
-              ),
-            )
-            .toList();
+    final compatible = _allowedEffects
+        .where(
+          (effect) => effect.supportsMedia(
+            state.currentSlide?.transitionMedia ?? TransitionMedia.special,
+            incoming.transitionMedia,
+          ),
+        )
+        .toList();
     // A photo-only selection must still allow videos, GIFs and clocks to play.
-    if (compatible.isEmpty) return Effect.fadeEffect;
+    if (compatible.isEmpty) {
+      return Effect.fadeEffect.configured(
+        BasicEffectOptions(durationMs: config.effects.safeDefaultDurationMs),
+      );
+    }
     _effectPool.removeWhere((effect) => !compatible.contains(effect));
     if (_effectPool.isEmpty) {
       _effectPool.addAll(compatible);

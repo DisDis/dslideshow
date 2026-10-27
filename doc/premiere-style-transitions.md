@@ -137,32 +137,17 @@ Phosphor использует четыре исходящих представл
 
 ## Настройка
 
-В настройках слайдшоу выберите переходы в списке разрешённых эффектов.
-Все тридцать также доступны в выпадающем списке предпросмотра с русскими и
-английскими подписями; выбор немедленно запускает демонстрацию. Отдельных
-параметров этих эффектов в форме нет. Длительность задаёт общее поле
-`transitionTimeMs`, например:
+Переходы выбираются на странице «Эффекты перехода»: поиск/фильтры,
+включение, параметры и связанный предпросмотр. Light Sweep и Neon Wipe
+стали стилями одного Soft Wipe; остальные самостоятельные алгоритмы
+сохранились. У каждого типа есть `options.durationMs`: 0 наследует общую
+`slideshow.effects.defaultDurationMs`, положительное значение задаёт свою
+длительность. Glass/Panel Wipe/Louver/Slice также имеют счётчики элементов.
 
-```json
-{
-  "slideshow": {
-    "allowedEffects": [
-      "Soft Wipe", "Light Sweep", "Slice", "Luma Fade", "Page Peel",
-      "Light Leak", "Film Roll", "Cross Zoom", "Whip", "Glass",
-      "Clock Wipe", "Split", "Panel Wipe", "Stretch", "Star Wipe",
-      "Film Dissolve", "Frame", "Louver", "Mirror", "Neon Wipe",
-      "Burn Alpha", "Fold Motion", "Glow", "Kaleidoscope", "TV Power",
-      "Spring Motion", "Shape Dissolve", "VHS Damage", "Radial Blur", "Phosphor"
-    ],
-    "transitionTimeMs": 1000
-  }
-}
-```
-
-Пустой `allowedEffects` разрешает весь реестр, включая новые переходы.
-Имена API остаются английскими независимо от языка панели; прежние имена и
-поведение разбора неизвестного имени сохранены. Локализованные подписи
-хранятся в ARB; генерация — `flutter gen-l10n` из `i18n/`.
+[Новый формат JSON и правила редактора](effect-settings.md). Прежний
+`allowedEffects` и строковые имена вариантов не поддерживаются. Пустой
+набор использует служебный Fade. Подписи остаются в RU/EN ARB; генерация —
+`flutter gen-l10n` из `i18n/`.
 
 ## Локальные проверки
 

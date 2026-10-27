@@ -132,7 +132,9 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     slideshow.add(const SlideshowInitEvent());
 
     _effectController = FixedAnimationController(
-      duration: Duration(milliseconds: _appConfig.slideshow.transitionTimeMs),
+      duration: Duration(
+        milliseconds: _appConfig.slideshow.effects.safeDefaultDurationMs,
+      ),
       vsync: this,
       animationBehavior: AnimationBehavior.preserve,
     );
@@ -452,6 +454,9 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     // Получаем эффект из стейта
     var currentEffect = _nextEffect ?? state.effect.createEffect();
     _nextEffect = null;
+    var durationMs = state.effect.options.durationMs == 0
+        ? _appConfig.slideshow.effects.safeDefaultDurationMs
+        : state.effect.options.durationMs;
     _currentPhotoMotion?.setPlaying(false);
     if (currentEffect is WaterRefractionEffect) {
       final from = _currentImage?.preparedBitmap;
@@ -461,6 +466,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
           'Water Refraction requires two prepared photos; using Fade.',
         );
         currentEffect = FadeEffect();
+        durationMs = _appConfig.slideshow.effects.safeDefaultDurationMs;
       } else {
         currentEffect.bindPhotos(
           from,
@@ -472,6 +478,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         );
       }
     }
+    _effectController.duration = Duration(milliseconds: durationMs);
     // Capture both slides: completion promotes _nextWidget before Bloc rebuilds.
     final outgoing = _currentWidget;
     final incoming = _nextWidget;

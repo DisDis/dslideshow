@@ -5,6 +5,33 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+    'invalid overflowing effect settings remain editable and protected on Save',
+    () {
+      final config = AppConfig.fromJson(
+        jsonDecode(
+          '{"slideshow":{"effects":{"items":[{"type":"mosaic",'
+          '"options":{"fadeFraction":1e999}}]}}}',
+        ) as Map<String, dynamic>,
+      );
+      final draft = ConfigDraft()..replaceSaved(config);
+      expect(draft.hasChanges, isFalse);
+      expect(
+        draft.value!.slideshow.effects.validateForSave,
+        throwsFormatException,
+      );
+      draft.value!.slideshow.effects = EffectsConfig.defaults();
+      expect(draft.hasChanges, isTrue);
+      expect(draft.value!.slideshow.effects.validate(), isEmpty);
+      draft.discard();
+      expect(draft.hasChanges, isFalse);
+      expect(
+        draft.value!.slideshow.effects.validateForSave,
+        throwsFormatException,
+      );
+    },
+  );
+
   test('edits and discard never mutate the saved configuration', () {
     final saved = AppConfig.fromJson({
       'welcome': {'text': 'Saved welcome'},

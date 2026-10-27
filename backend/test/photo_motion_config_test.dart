@@ -1,3 +1,5 @@
+import 'support/storage_sections.dart';
+
 import 'package:dslideshow_backend/config.dart';
 import 'package:test/test.dart';
 
@@ -19,17 +21,20 @@ void main() {
       },
     });
     expect(config.slideshow.photoMotion.mode, PhotoMotionMode.kenBurns);
-    expect(config.toStorageJson(), {
+    expect(otherStorageSections(config), {
       'slideshow': {
         'photoMotion': {'mode': 'kenBurns', 'maxZoom': 1.12},
       },
     });
     expect(
-      AppConfig.fromJson(config.toStorageJson()).slideshow.photoMotion.maxZoom,
+      AppConfig.fromJson(otherStorageSections(config))
+          .slideshow
+          .photoMotion
+          .maxZoom,
       1.12,
     );
     config.slideshow.photoMotion = PhotoMotionConfig();
-    expect(config.toStorageJson(), isEmpty);
+    expect(otherStorageSections(config), isEmpty);
   });
   test('zoom is bounded without accepting non-finite numbers', () {
     for (final (input, expected) in [

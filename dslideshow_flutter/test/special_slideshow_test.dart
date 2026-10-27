@@ -125,8 +125,12 @@ void main() {
       final frontend = TestFrontend();
       final config = AppConfig.fromJson({
         'slideshow': {
-          'allowedEffects': ['Fade'],
-          'transitionTimeMs': 20,
+          'effects': {
+            'defaultDurationMs': 20,
+            'items': [
+              {'type': 'fade', 'enabled': true},
+            ],
+          },
           'displayTimeMs': 100,
           'specialScreens': [
             {
@@ -192,7 +196,12 @@ void main() {
     (tester) async {
       final frontend = TestFrontend();
       final config = SlideShowConfig.fromJson({
-        'allowedEffects': ['Fade'],
+        'effects': {
+          'defaultDurationMs': 1000,
+          'items': [
+            {'type': 'fade', 'enabled': true},
+          ],
+        },
         'displayTimeMs': 100,
         'specialScreens': [
           {

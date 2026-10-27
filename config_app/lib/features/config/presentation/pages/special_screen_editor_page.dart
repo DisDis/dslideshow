@@ -1,3 +1,5 @@
+import 'package:config_app/features/config/presentation/wigdgets/argb_color_field.dart';
+
 import 'dart:convert';
 
 import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
@@ -47,7 +49,6 @@ class SpecialScreenEditorPage extends StatefulWidget {
 }
 
 class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
-  static final _argbColorPattern = RegExp(r'^[0-9a-fA-F]{8}$');
   final _form = GlobalKey<FormState>();
   late final SpecialScreenConfig _draft;
   late final String _initialJson;
@@ -174,22 +175,12 @@ class _SpecialScreenEditorPageState extends State<SpecialScreenEditorPage> {
   ) => Padding(
     key: ValueKey(field),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-    child: TextFormField(
-      key: ValueKey(field),
-      initialValue: value.toRadixString(16).padLeft(8, '0'),
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        suffixIcon: Icon(Icons.circle, color: Color(value)),
-      ),
-      validator: (text) => _argbColorPattern.hasMatch(text ?? '')
-          ? null
-          : context.localizations.special_invalid_color,
-      onChanged: (text) {
-        if (_argbColorPattern.hasMatch(text)) {
-          _change(() => change(int.parse(text, radix: 16)));
-        }
-      },
+    child: ArgbColorField(
+      fieldKey: ValueKey(field),
+      label: label,
+      value: value,
+      border: const OutlineInputBorder(),
+      onChanged: (color) => _change(() => change(color)),
     ),
   );
   void _done() {

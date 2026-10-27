@@ -14,6 +14,8 @@ dependencies:
     path: ../dslideshow_flutter
   dslideshow_backend:
     path: ../backend
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
   crypto: ^3.0.7
   path: ^1.9.1
   video_player: ^2.14.1
@@ -23,6 +25,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  freezed: ^4.0.3
+  json_serializable: ^6.15.2
+  build_runner: ^2.17.1
 
 flutter:
   config:

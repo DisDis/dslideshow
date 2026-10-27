@@ -15,7 +15,10 @@ import 'zoom_blur_effect_test.dart' as pixels;
 
 final _effects = <Effect>[
   Effect.softWipeEffect,
-  Effect.lightSweepEffect,
+  (const Effect(
+    EffectType.softWipe,
+    options: SoftWipeEffectOptions(style: SoftWipeStyle.lightSweep),
+  )),
   Effect.sliceEffect,
   Effect.lumaFadeEffect,
   Effect.pagePeelEffect,
@@ -33,7 +36,10 @@ final _effects = <Effect>[
   Effect.frameEffect,
   Effect.louverEffect,
   Effect.mirrorEffect,
-  Effect.neonWipeEffect,
+  (const Effect(
+    EffectType.softWipe,
+    options: SoftWipeEffectOptions(style: SoftWipeStyle.neon),
+  )),
   Effect.burnAlphaEffect,
   Effect.foldMotionEffect,
   Effect.glowEffect,
@@ -73,7 +79,7 @@ void main() {
   test('new persisted names round-trip and support every media pair', () {
     expect(_effects.map((e) => e.name), [
       'Soft Wipe',
-      'Light Sweep',
+      'Soft Wipe',
       'Slice',
       'Luma Fade',
       'Page Peel',
@@ -91,7 +97,7 @@ void main() {
       'Frame',
       'Louver',
       'Mirror',
-      'Neon Wipe',
+      'Soft Wipe',
       'Burn Alpha',
       'Fold Motion',
       'Glow',
@@ -104,8 +110,12 @@ void main() {
       'Phosphor',
     ]);
     for (final effect in _effects) {
-      expect(Effect.values, contains(effect));
-      expect(Effect.parse(effect.name), effect);
+      expect(Effect.values.map((e) => e.type), contains(effect.type));
+      expect(Effect.parse(effect.name).type, effect.type);
+      expect(
+        Effect.fromConfig(EffectConfig.fromJson(effect.toConfig().toJson())),
+        effect,
+      );
       for (final from in TransitionMedia.values) {
         for (final to in TransitionMedia.values) {
           expect(effect.supportsMedia(from, to), isTrue);
@@ -170,7 +180,14 @@ void main() {
     tester,
   ) async {
     final soft = await _frame(tester, Effect.softWipeEffect, .5);
-    final light = await _frame(tester, Effect.lightSweepEffect, .5);
+    final light = await _frame(
+      tester,
+      (const Effect(
+        EffectType.softWipe,
+        options: SoftWipeEffectOptions(style: SoftWipeStyle.lightSweep),
+      )),
+      .5,
+    );
     expect(_pixel(soft, 5, 50), [0, 0, 255, 255]);
     expect(_pixel(soft, 155, 50), [255, 0, 0, 255]);
     final edge = _pixel(soft, 80, 50);
@@ -666,7 +683,10 @@ void main() {
     const black = ColoredBox(color: Colors.black);
     final frame = await _frame(
       tester,
-      Effect.neonWipeEffect,
+      (const Effect(
+        EffectType.softWipe,
+        options: SoftWipeEffectOptions(style: SoftWipeStyle.neon),
+      )),
       .5,
       from: black,
       to: black,

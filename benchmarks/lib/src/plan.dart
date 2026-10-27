@@ -1,3 +1,5 @@
+import 'effect_variants.dart';
+
 import 'package:dslideshow_flutter/effect.dart';
 
 import 'config.dart';
@@ -53,6 +55,19 @@ class BenchmarkCase {
     this.compositionProbe,
   });
 
+  int durationMs(BenchmarkConfig config) =>
+      (effect?.options.durationMs ?? 0) == 0
+      ? config.transitionMs
+      : effect!.options.durationMs;
+
+  Effect? get effectiveEffect {
+    final value = effect;
+    if (value == null || !value.isMosaic) return value;
+    return value.configured(
+      (value.options as MosaicEffectOptions).copyWith(gridSize: grid),
+    );
+  }
+
   String? get unsupportedReason =>
       photoMotion && !media.staticPhotos ||
           effect?.supportsMedia(media.type(media.from), media.type(media.to)) ==
@@ -70,6 +85,7 @@ class BenchmarkCase {
   String get id =>
       '${name.replaceAll(' ', '_')}--${media.name}'
       '${effect?.isMosaic == true ? '--$grid--${backend.name}' : ''}'
+      '${effect == null || effectSettingsId(effectiveEffect!).isEmpty ? '' : '--${effectSettingsId(effectiveEffect!)}'}'
       '${injectStall ? '--stall80ms' : ''}';
 
   bool supportsCapture(BenchmarkConfig config) =>
@@ -82,6 +98,7 @@ class BenchmarkCase {
   Map<String, Object?> toJson() => {
     'id': id,
     'effect': name,
+    if (effect != null) 'effect_config': effectiveEffect!.toConfig().toJson(),
     'media': media.name,
     'from': media.from,
     if (photoMotion) 'photo_motion': 'kenBurns',
@@ -102,7 +119,13 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
   names.addAll(CompositionProbe.values.map((probe) => probe.effectName));
   for (final probe in MosaicProbe.values) {
-    for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
+    for (final effect in [
+      (const Effect(
+        EffectType.mosaic,
+        options: MosaicEffectOptions(fadeFraction: 0),
+      )),
+      (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
+    ]) {
       names.add(probe.effectName(effect));
     }
   }
@@ -118,11 +141,21 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   final pairs = config.mediaCases == null
       ? mediaPairs
       : mediaPairs.where((p) => config.mediaCases!.contains(p.name));
-  final effects = <Effect?>[null, ...Effect.values].where(
-    (e) =>
-        config.effects == null ||
-        config.effects!.contains(e?.name ?? 'Baseline'),
-  );
+  final effects = config.effectConfigs == null
+      ? <Effect?>[null, ...benchmarkEffects]
+            .where(
+              (effect) =>
+                  config.effects == null ||
+                  config.effects!.contains(effect?.name ?? 'Baseline'),
+            )
+            .toList()
+      : <Effect?>[
+          if (config.effects?.contains('Baseline') == true) null,
+          ...benchmarkEffects.where(
+            (effect) => config.effects?.contains(effect.name) == true,
+          ),
+          ...config.effectConfigs!.map(Effect.fromConfig),
+        ];
   for (final pair in pairs) {
     if (config.effects?.contains(photoMotionProbeName) == true) {
       result.add(BenchmarkCase(null, pair, photoMotion: true));
@@ -133,7 +166,13 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
       }
     }
     for (final probe in MosaicProbe.values) {
-      for (final effect in [Effect.mosaicEffect, Effect.mosaicFadeEffect]) {
+      for (final effect in [
+        (const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        )),
+        (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
+      ]) {
         if (config.effects?.contains(probe.effectName(effect)) != true) {
           continue;
         }
@@ -156,23 +195,25 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
       if (config.suite == 'smoke' &&
           pair.name != 'photo-photo' &&
           config.effects == null &&
+          config.effectConfigs == null &&
           effect != null &&
           ![
             Effect.fadeEffect,
             Effect.cubeEffect,
             Effect.blindsEffect,
-            Effect.mosaicFadeEffect,
+            (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
           ].contains(effect)) {
         continue;
       }
       // 48 MP originals exercise preparation plus the most demanding reuse paths.
       if (pair.name == 'large-photo' &&
           config.effects == null &&
+          config.effectConfigs == null &&
           effect != null &&
           ![
             Effect.fadeEffect,
             Effect.blindsEffect,
-            Effect.mosaicFadeEffect,
+            (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
           ].contains(effect)) {
         continue;
       }
@@ -198,7 +239,7 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
     for (final effect in [
       Effect.fadeEffect,
       Effect.blindsEffect,
-      Effect.mosaicFadeEffect,
+      (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
     ]) {
       if (effects.contains(effect) && pairs.contains(mediaPairs.first)) {
         result.add(BenchmarkCase(effect, mediaPairs.first, injectStall: true));
@@ -206,5 +247,8 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
     }
   }
   if (result.isEmpty) throw ArgumentError('The selected matrix is empty');
+  if (result.map((test) => test.id).toSet().length != result.length) {
+    throw ArgumentError('Duplicate effect settings in the selected matrix');
+  }
   return result;
 }

@@ -1,5 +1,15 @@
 # Автоматические бенчмарки DSlideShow на Raspberry Pi
 
+[Новый формат эффектов и локальные проверки](../doc/effect-settings.md):
+51 тип в приложении; standard сохраняет 684 сценария за счёт явных вариантов
+в `lib/src/effect_variants.dart`. ID включает параметры; отчёт — `effect_config`.
+`effect_configs` задаёт точечные typed-конфигурации, их `options.durationMs=0`
+наследует `transition_ms`. Диагностические MosaicProbe используют суффиксы
+`binary`/`fade`. Аппаратные прогоны этой работы исключены пользователем.
+
+Модель `BenchmarkConfig` использует Freezed и json_serializable; после изменения
+полей запустите в `benchmarks/` команду `dart run build_runner build`.
+
 Отдельное Flutter-приложение с path-зависимостью от `../dslideshow_flutter`.
 В основном приложении нет точки входа, телеметрии или переключателей для бенчмарков.
 Мышь, клавиатура и действия пользователя для прогона не нужны.
@@ -446,10 +456,10 @@ BENCHMARK_MEDIA_DIR=/home/pi/benchmark-originals ./run.sh --suite standard
 При необходимости изменить настройки без сборки: `--config /path/custom.json`.
 Все поля перечислены в `lib/src/config.dart`; неизвестные поля/имена вызывают ошибку.
 `BENCHMARK_SUITE`, `BENCHMARK_SOAK_SECONDS`, `BENCHMARK_MEDIA_DIR` имеют приоритет над JSON.
-Например для исследования сетки 250×250:
+Например для явной настройки мозаики (штатные сетки 100/150/200):
 
 ```json
-{"effects":["MosaicFade"],"media_cases":["photo-photo","video-video"],"grids":[100,200,250],"backends":["canvas","shader"],"capture_frames":false}
+{"effect_configs":[{"type":"mosaic","enabled":true,"options":{"durationMs":0,"gridSize":100,"fadeFraction":0.3,"direction":"topLeft"}}],"media_cases":["photo-photo","video-video"],"grids":[100,150,200],"backends":["canvas","shader"],"capture_frames":false}
 ```
 
 ## Метрики и отчёты
