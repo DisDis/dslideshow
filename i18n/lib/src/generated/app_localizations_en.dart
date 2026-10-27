@@ -630,6 +630,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_play => 'Preview';
 
   @override
+  String get effect_burn_alpha => 'Burn Alpha';
+
+  @override
+  String get effect_fold_motion => 'Fold Motion';
+
+  @override
+  String get effect_glow => 'Glow';
+
+  @override
+  String get effect_kaleidoscope => 'Kaleidoscope';
+
+  @override
+  String get effect_tv_power => 'TV Power';
+
+  @override
+  String get effect_spring_motion => 'Spring Motion';
+
+  @override
+  String get effect_shape_dissolve => 'Shape Dissolve';
+
+  @override
+  String get effect_vhs_damage => 'VHS Damage';
+
+  @override
+  String get effect_radial_blur => 'Radial Blur';
+
+  @override
+  String get effect_phosphor => 'Phosphor';
+
+  @override
   String get effect_film_dissolve => 'Film Dissolve';
 
   @override

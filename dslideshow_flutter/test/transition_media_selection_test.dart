@@ -33,6 +33,16 @@ void main() {
     Effect.louverEffect,
     Effect.mirrorEffect,
     Effect.neonWipeEffect,
+    Effect.burnAlphaEffect,
+    Effect.foldMotionEffect,
+    Effect.glowEffect,
+    Effect.kaleidoscopeEffect,
+    Effect.tvPowerEffect,
+    Effect.springMotionEffect,
+    Effect.shapeDissolveEffect,
+    Effect.vhsDamageEffect,
+    Effect.radialBlurEffect,
+    Effect.phosphorEffect,
   ]) {
     testWidgets(
       '${effect.name} is selected from saved settings for photos/GIF/video',

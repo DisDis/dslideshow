@@ -1,5 +1,11 @@
 # Unreleased
 
+* Add Burn Alpha, Fold Motion, Glow, Kaleidoscope, TV Power, Spring Motion,
+  Shape Dissolve, VHS Damage, Radial Blur and Phosphor to the frame and settings
+  preview, with Russian/English labels and shared live media sessions. Cover
+  visuals, endpoints, configuration, preview and resource ownership locally;
+  device testing is omitted at the user's request.
+
 # 13.1.0+1 — 2026-10-27
 
 * Update the benchmark matrix regression and documentation to 624 cases;

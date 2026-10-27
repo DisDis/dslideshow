@@ -34,6 +34,16 @@ final _effects = <Effect>[
   Effect.louverEffect,
   Effect.mirrorEffect,
   Effect.neonWipeEffect,
+  Effect.burnAlphaEffect,
+  Effect.foldMotionEffect,
+  Effect.glowEffect,
+  Effect.kaleidoscopeEffect,
+  Effect.tvPowerEffect,
+  Effect.springMotionEffect,
+  Effect.shapeDissolveEffect,
+  Effect.vhsDamageEffect,
+  Effect.radialBlurEffect,
+  Effect.phosphorEffect,
 ];
 
 List<int> _pixel(Uint8List image, int x, int y, {int width = 160}) =>
@@ -82,6 +92,16 @@ void main() {
       'Louver',
       'Mirror',
       'Neon Wipe',
+      'Burn Alpha',
+      'Fold Motion',
+      'Glow',
+      'Kaleidoscope',
+      'TV Power',
+      'Spring Motion',
+      'Shape Dissolve',
+      'VHS Damage',
+      'Radial Blur',
+      'Phosphor',
     ]);
     for (final effect in _effects) {
       expect(Effect.values, contains(effect));
@@ -750,21 +770,31 @@ void main() {
           ),
         ),
       );
+      final copies = <Effect, (int, int)>{
+        Effect.foldMotionEffect: (2, 2),
+        Effect.glowEffect: (2, 2),
+        Effect.kaleidoscopeEffect: (7, 7),
+        Effect.vhsDamageEffect: (4, 4),
+        Effect.radialBlurEffect: (9, 9),
+        Effect.phosphorEffect: (4, 1),
+      };
       final expectedTo =
-          descriptor == Effect.glassEffect || descriptor == Effect.louverEffect
-          ? 8
-          : descriptor == Effect.mirrorEffect
-          ? 2
-          : 1;
+          copies[descriptor]?.$2 ??
+          (descriptor == Effect.glassEffect || descriptor == Effect.louverEffect
+              ? 8
+              : descriptor == Effect.mirrorEffect
+              ? 2
+              : 1);
       final expectedFrom =
-          (descriptor == Effect.sliceEffect ||
-              descriptor == Effect.glassEffect ||
-              descriptor == Effect.louverEffect)
-          ? 8
-          : descriptor == Effect.splitEffect ||
-                descriptor == Effect.mirrorEffect
-          ? 2
-          : 1;
+          copies[descriptor]?.$1 ??
+          ((descriptor == Effect.sliceEffect ||
+                  descriptor == Effect.glassEffect ||
+                  descriptor == Effect.louverEffect)
+              ? 8
+              : descriptor == Effect.splitEffect ||
+                    descriptor == Effect.mirrorEffect
+              ? 2
+              : 1);
       for (final t in [0.0, .01, .5, .99, 1.0, .5, 0.0]) {
         await pump(t);
         expect(fromMounts, expectedFrom, reason: '${descriptor.name} at $t');

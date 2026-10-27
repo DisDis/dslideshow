@@ -1268,6 +1268,66 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview_play;
 
+  /// No description provided for @effect_burn_alpha.
+  ///
+  /// In en, this message translates to:
+  /// **'Burn Alpha'**
+  String get effect_burn_alpha;
+
+  /// No description provided for @effect_fold_motion.
+  ///
+  /// In en, this message translates to:
+  /// **'Fold Motion'**
+  String get effect_fold_motion;
+
+  /// No description provided for @effect_glow.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow'**
+  String get effect_glow;
+
+  /// No description provided for @effect_kaleidoscope.
+  ///
+  /// In en, this message translates to:
+  /// **'Kaleidoscope'**
+  String get effect_kaleidoscope;
+
+  /// No description provided for @effect_tv_power.
+  ///
+  /// In en, this message translates to:
+  /// **'TV Power'**
+  String get effect_tv_power;
+
+  /// No description provided for @effect_spring_motion.
+  ///
+  /// In en, this message translates to:
+  /// **'Spring Motion'**
+  String get effect_spring_motion;
+
+  /// No description provided for @effect_shape_dissolve.
+  ///
+  /// In en, this message translates to:
+  /// **'Shape Dissolve'**
+  String get effect_shape_dissolve;
+
+  /// No description provided for @effect_vhs_damage.
+  ///
+  /// In en, this message translates to:
+  /// **'VHS Damage'**
+  String get effect_vhs_damage;
+
+  /// No description provided for @effect_radial_blur.
+  ///
+  /// In en, this message translates to:
+  /// **'Radial Blur'**
+  String get effect_radial_blur;
+
+  /// No description provided for @effect_phosphor.
+  ///
+  /// In en, this message translates to:
+  /// **'Phosphor'**
+  String get effect_phosphor;
+
   /// No description provided for @effect_film_dissolve.
   ///
   /// In en, this message translates to:

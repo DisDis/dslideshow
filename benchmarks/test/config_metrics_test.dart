@@ -124,7 +124,7 @@ void main() {
       final config = BenchmarkConfig();
       final plan = buildPlan(config);
       expect(plan.map((c) => c.id).toSet().length, plan.length);
-      expect(plan.length, 624);
+      expect(plan.length, 684);
       expect(
         plan.map((c) => c.media.name).toSet(),
         mediaPairs.map((p) => p.name).toSet(),

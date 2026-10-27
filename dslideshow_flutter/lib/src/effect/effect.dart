@@ -14,6 +14,7 @@ import 'cinematic_transition_effect.dart';
 import 'glass_effect.dart';
 import 'geometric_transition_effect.dart';
 import 'optical_transition_effect.dart';
+import 'creative_transition_effect.dart';
 export 'transition_media.dart';
 
 import 'package:dslideshow_flutter/src/effect/accordion_effect.dart';
@@ -43,6 +44,38 @@ import 'mosaic_transition_effect.dart';
 typedef EffectImplementor = MediaSliderItemEffect Function();
 
 class Effect {
+  static const Effect burnAlphaEffect = Effect._(
+    'Burn Alpha',
+    _createBurnAlpha,
+  );
+  static const Effect foldMotionEffect = Effect._(
+    'Fold Motion',
+    _createFoldMotion,
+  );
+  static const Effect glowEffect = Effect._('Glow', _createGlow);
+  static const Effect kaleidoscopeEffect = Effect._(
+    'Kaleidoscope',
+    _createKaleidoscope,
+  );
+  static const Effect tvPowerEffect = Effect._('TV Power', _createTvPower);
+  static const Effect springMotionEffect = Effect._(
+    'Spring Motion',
+    _createSpringMotion,
+  );
+  static const Effect shapeDissolveEffect = Effect._(
+    'Shape Dissolve',
+    _createShapeDissolve,
+  );
+  static const Effect vhsDamageEffect = Effect._(
+    'VHS Damage',
+    _createVhsDamage,
+  );
+  static const Effect radialBlurEffect = Effect._(
+    'Radial Blur',
+    _createRadialBlur,
+  );
+  static const Effect phosphorEffect = Effect._('Phosphor', _createPhosphor);
+
   static const Effect filmDissolveEffect = Effect._(
     'Film Dissolve',
     _createFilmDissolve,
@@ -311,6 +344,16 @@ class Effect {
     louverEffect,
     mirrorEffect,
     neonWipeEffect,
+    burnAlphaEffect,
+    foldMotionEffect,
+    glowEffect,
+    kaleidoscopeEffect,
+    tvPowerEffect,
+    springMotionEffect,
+    shapeDissolveEffect,
+    vhsDamageEffect,
+    radialBlurEffect,
+    phosphorEffect,
   ];
   final String name;
 
@@ -380,6 +423,26 @@ class Effect {
   @override
   String toString() => name;
 
+  static MediaSliderItemEffect _createBurnAlpha() =>
+      CreativeTransitionEffect(CreativeTransitionKind.burnAlpha);
+  static MediaSliderItemEffect _createFoldMotion() =>
+      CreativeTransitionEffect(CreativeTransitionKind.foldMotion);
+  static MediaSliderItemEffect _createGlow() =>
+      CreativeTransitionEffect(CreativeTransitionKind.glow);
+  static MediaSliderItemEffect _createKaleidoscope() =>
+      CreativeTransitionEffect(CreativeTransitionKind.kaleidoscope);
+  static MediaSliderItemEffect _createTvPower() =>
+      CreativeTransitionEffect(CreativeTransitionKind.tvPower);
+  static MediaSliderItemEffect _createSpringMotion() =>
+      CreativeTransitionEffect(CreativeTransitionKind.springMotion);
+  static MediaSliderItemEffect _createShapeDissolve() =>
+      CreativeTransitionEffect(CreativeTransitionKind.shapeDissolve);
+  static MediaSliderItemEffect _createVhsDamage() =>
+      CreativeTransitionEffect(CreativeTransitionKind.vhsDamage);
+  static MediaSliderItemEffect _createRadialBlur() =>
+      CreativeTransitionEffect(CreativeTransitionKind.radialBlur);
+  static MediaSliderItemEffect _createPhosphor() =>
+      CreativeTransitionEffect(CreativeTransitionKind.phosphor);
   static MediaSliderItemEffect _createFilmDissolve() =>
       OpticalTransitionEffect(OpticalTransitionKind.filmDissolve);
   static MediaSliderItemEffect _createFrame() =>

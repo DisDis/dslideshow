@@ -6,6 +6,16 @@ import 'package:flutter/widgets.dart';
 String effectLabel(BuildContext context, Effect effect) {
   final l = context.localizations;
   return <Effect, String>{
+        Effect.burnAlphaEffect: l.effect_burn_alpha,
+        Effect.foldMotionEffect: l.effect_fold_motion,
+        Effect.glowEffect: l.effect_glow,
+        Effect.kaleidoscopeEffect: l.effect_kaleidoscope,
+        Effect.tvPowerEffect: l.effect_tv_power,
+        Effect.springMotionEffect: l.effect_spring_motion,
+        Effect.shapeDissolveEffect: l.effect_shape_dissolve,
+        Effect.vhsDamageEffect: l.effect_vhs_damage,
+        Effect.radialBlurEffect: l.effect_radial_blur,
+        Effect.phosphorEffect: l.effect_phosphor,
         Effect.filmDissolveEffect: l.effect_film_dissolve,
         Effect.frameEffect: l.effect_frame,
         Effect.louverEffect: l.effect_louver,

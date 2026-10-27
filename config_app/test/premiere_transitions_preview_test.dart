@@ -32,6 +32,16 @@ final _effects = [
   Effect.louverEffect,
   Effect.mirrorEffect,
   Effect.neonWipeEffect,
+  Effect.burnAlphaEffect,
+  Effect.foldMotionEffect,
+  Effect.glowEffect,
+  Effect.kaleidoscopeEffect,
+  Effect.tvPowerEffect,
+  Effect.springMotionEffect,
+  Effect.shapeDissolveEffect,
+  Effect.vhsDamageEffect,
+  Effect.radialBlurEffect,
+  Effect.phosphorEffect,
 ];
 
 Widget _app(Widget child, Locale locale) => MaterialApp(
@@ -86,6 +96,16 @@ void main() {
                   'Поворотные жалюзи',
                   'Зеркало',
                   'Неоновое раскрытие',
+                  'Выгорание',
+                  'Складывание',
+                  'Свечение',
+                  'Калейдоскоп',
+                  'Выключение телевизора',
+                  'Пружина',
+                  'Растворение фигурами',
+                  'Видеокассета',
+                  'Радиальное размытие',
+                  'Послесвечение',
                 ]
               : [
                   'Soft Wipe',
@@ -108,6 +128,16 @@ void main() {
                   'Louver',
                   'Mirror',
                   'Neon Wipe',
+                  'Burn Alpha',
+                  'Fold Motion',
+                  'Glow',
+                  'Kaleidoscope',
+                  'TV Power',
+                  'Spring Motion',
+                  'Shape Dissolve',
+                  'VHS Damage',
+                  'Radial Blur',
+                  'Phosphor',
                 ],
         );
         selector.onChanged(_effects);
@@ -121,7 +151,7 @@ void main() {
     );
 
     testWidgets(
-      'preview plays all twenty and changes safely (${locale.languageCode})',
+      'preview plays all thirty and changes safely (${locale.languageCode})',
       (tester) async {
         final recorder = ui.PictureRecorder();
         Canvas(recorder).drawColor(Colors.orange, BlendMode.src);

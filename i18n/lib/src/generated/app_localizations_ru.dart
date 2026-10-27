@@ -631,6 +631,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_play => 'Предпросмотр';
 
   @override
+  String get effect_burn_alpha => 'Выгорание';
+
+  @override
+  String get effect_fold_motion => 'Складывание';
+
+  @override
+  String get effect_glow => 'Свечение';
+
+  @override
+  String get effect_kaleidoscope => 'Калейдоскоп';
+
+  @override
+  String get effect_tv_power => 'Выключение телевизора';
+
+  @override
+  String get effect_spring_motion => 'Пружина';
+
+  @override
+  String get effect_shape_dissolve => 'Растворение фигурами';
+
+  @override
+  String get effect_vhs_damage => 'Видеокассета';
+
+  @override
+  String get effect_radial_blur => 'Радиальное размытие';
+
+  @override
+  String get effect_phosphor => 'Послесвечение';
+
+  @override
   String get effect_film_dissolve => 'Кинематографическое растворение';
 
   @override

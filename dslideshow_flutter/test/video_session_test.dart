@@ -75,6 +75,16 @@ void main() {
         Effect.louverEffect,
         Effect.mirrorEffect,
         Effect.neonWipeEffect,
+        Effect.burnAlphaEffect,
+        Effect.foldMotionEffect,
+        Effect.glowEffect,
+        Effect.kaleidoscopeEffect,
+        Effect.tvPowerEffect,
+        Effect.springMotionEffect,
+        Effect.shapeDissolveEffect,
+        Effect.vhsDamageEffect,
+        Effect.radialBlurEffect,
+        Effect.phosphorEffect,
       ]) {
         final from = FakeVideoController(), to = FakeVideoController();
         VideoSession session(FakeVideoController player) => VideoSession(
@@ -126,15 +136,23 @@ void main() {
           expect(
             find.byType(VideoWidget),
             findsNWidgets(
-              effect == Effect.glassEffect || effect == Effect.louverEffect
-                  ? 16
-                  : effect == Effect.mirrorEffect
-                  ? 4
-                  : effect == Effect.sliceEffect
-                  ? 9
-                  : effect == Effect.splitEffect
-                  ? 3
-                  : 2,
+              <Effect, int>{
+                    Effect.foldMotionEffect: 4,
+                    Effect.glowEffect: 4,
+                    Effect.kaleidoscopeEffect: 14,
+                    Effect.vhsDamageEffect: 8,
+                    Effect.radialBlurEffect: 18,
+                    Effect.phosphorEffect: 5,
+                  }[effect] ??
+                  (effect == Effect.glassEffect || effect == Effect.louverEffect
+                      ? 16
+                      : effect == Effect.mirrorEffect
+                      ? 4
+                      : effect == Effect.sliceEffect
+                      ? 9
+                      : effect == Effect.splitEffect
+                      ? 3
+                      : 2),
             ),
           );
           for (final player in [from, to]) {
