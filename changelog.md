@@ -1,5 +1,9 @@
 # Unreleased
 
+* Extract WebSocketUser into its own file and device-event subscriptions into
+  DeviceEventBindings. Preserve isolate boundaries, event mapping, logging and
+  cleanup order; add protocol/subscription regressions and backend documentation.
+
 # 12.0.0+2 — 2026-10-27
 
 * Run production package and build-tool tests automatically before DEB staging,

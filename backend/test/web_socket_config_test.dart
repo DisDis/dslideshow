@@ -1,15 +1,14 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/serializers.dart';
-import 'package:dslideshow_backend/src/web_server/web_service.dart';
+import 'package:dslideshow_backend/src/web_server/web_socket_user.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:test/test.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'support/web_socket_channel.dart';
 
 void main() {
   test('WebSocket downloads saved config and reports save/read failures', () {
@@ -20,7 +19,7 @@ void main() {
       'web': {'port': 8090},
     })..fullConfigFilename = file.path;
     fakeAsync((clock) {
-      final channel = _Channel();
+      final channel = TestWebSocketChannel();
       WebSocketUser(active, 'code', channel, {}, _UnusedRemoteService());
       channel.receive(
         const WSAuthCommand(userName: 'admin', code: 'code', id: 1),
@@ -80,41 +79,6 @@ void main() {
 }
 
 class _UnusedRemoteService implements RemoteService {
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-
-class _Channel implements WebSocketChannel {
-  final incoming = StreamController<dynamic>(sync: true);
-  final sent = <WebSocketResult>[];
-
-  void receive(WebSocketCommand command) =>
-      incoming.add(jsonEncode(serializers.serialize(command)));
-
-  @override
-  late final WebSocketSink sink = _Sink(sent);
-
-  @override
-  Stream<dynamic> get stream => incoming.stream;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-
-class _Sink implements WebSocketSink {
-  _Sink(this.sent);
-  final List<WebSocketResult> sent;
-
-  @override
-  void add(dynamic message) {
-    sent.add(
-      serializers.deserialize(jsonDecode(message as String)) as WebSocketResult,
-    );
-  }
-
-  @override
-  Future<void> close([int? closeCode, String? closeReason]) async {}
-
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

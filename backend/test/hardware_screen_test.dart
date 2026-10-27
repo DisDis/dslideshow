@@ -36,11 +36,13 @@ class FakeGPIO implements GPIOService {
 }
 
 class FakeRemote implements RemoteService {
+  final commands = <RpcCommand>[];
   final screenCommands = <ScreenTurnCommand>[];
   final pending = <Completer<RpcResult>>[];
   bool hold = false;
   @override
   Future<RpcResult> send<T extends RpcCommand>(T command) async {
+    commands.add(command);
     if (command is ScreenTurnCommand) {
       screenCommands.add(command);
       if (hold) {
@@ -175,6 +177,94 @@ class HardwareFixture {
 }
 
 void main() {
+  test('GPIO button fields reach the frontend through the bindings', () async {
+    final fixture = HardwareFixture();
+    addTearDown(() async {
+      await fixture.hardware.dispose();
+      await fixture.mqtt.close();
+    });
+    fixture.gpio.buttons.add(
+      ButtonEvent(
+        button: ButtonType.button2,
+        event: ButtonEventType.released,
+        durationMs: 875,
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
+    final command = fixture.remote.commands.single as ButtonChangeStateCommand;
+    expect(command.button, ButtonType.button2);
+    expect(command.event, ButtonEventType.released);
+    expect(command.durationMs, 875);
+  });
+
+  test('MQTT actions preserve values and the screen inversion', () async {
+    final fixture = HardwareFixture();
+    addTearDown(() async {
+      await fixture.hardware.dispose();
+      await fixture.mqtt.close();
+    });
+    for (final value in [true, false]) {
+      fixture.mqtt.pause.add(value);
+      await Future<void>.delayed(Duration.zero);
+      fixture.mqtt.screen.add(value);
+      await Future<void>.delayed(Duration.zero);
+      fixture.mqtt.menu.add(value);
+      await Future<void>.delayed(Duration.zero);
+    }
+    expect(
+      fixture.remote.commands.map((command) {
+        final action = command as ExecuteSSActionCommand;
+        return (action.action, action.value);
+      }),
+      [
+        (SlideshowAction.pause, true),
+        (SlideshowAction.toggleScreen, false),
+        (SlideshowAction.showMenu, true),
+        (SlideshowAction.pause, false),
+        (SlideshowAction.toggleScreen, true),
+        (SlideshowAction.showMenu, false),
+      ],
+    );
+  });
+
+  test(
+    'dispose detaches queued device events before releasing services',
+    () async {
+      final fixture = HardwareFixture();
+      addTearDown(() async {
+        await fixture.hardware.dispose();
+        await fixture.mqtt.close();
+      });
+      fixture.gpio.buttons.add(
+        ButtonEvent(
+          button: ButtonType.button0,
+          event: ButtonEventType.pressed,
+          durationMs: 0,
+        ),
+      );
+      fixture.gpio.motion.add(false);
+      fixture.mqtt.pause.add(true);
+      fixture.mqtt.screen.add(true);
+      fixture.mqtt.menu.add(true);
+      final closing = fixture.hardware.dispose();
+      expect(identical(fixture.hardware.dispose(), closing), isTrue);
+      await closing;
+      expect(fixture.remote.commands, isEmpty);
+      expect(fixture.gpio.buttons.hasListener, isFalse);
+      expect(fixture.gpio.motion.hasListener, isFalse);
+      expect(fixture.mqtt.pause.hasListener, isFalse);
+      expect(fixture.mqtt.screen.hasListener, isFalse);
+      expect(fixture.mqtt.menu.hasListener, isFalse);
+      fixture.mqtt.pause.add(false);
+      fixture.mqtt.screen.add(false);
+      fixture.mqtt.menu.add(false);
+      await Future<void>.delayed(Duration.zero);
+      expect(fixture.remote.commands, isEmpty);
+      expect(fixture.storage.released, isTrue);
+      expect(fixture.systemInfo.released, isTrue);
+    },
+  );
+
   for (final duringDisposal in [false, true]) {
     test(
       'system-info failure returns its RPC id (disposed=$duringDisposal)',

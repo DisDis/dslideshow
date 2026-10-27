@@ -12,6 +12,7 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 
+import 'device_event_bindings.dart';
 import 'gpio_service.dart';
 
 class HardwareService implements RpcService {
@@ -46,7 +47,7 @@ class HardwareService implements RpcService {
   }
 
   final List<Future> _initFutures = <Future>[];
-  final _subscriptions = <StreamSubscription<dynamic>>[];
+  late final DeviceEventBindings _eventBindings;
   bool _disposed = false;
   Future<void>? _disposeFuture;
   Future<void> _screenNotifications = Future.value();
@@ -61,45 +62,14 @@ class HardwareService implements RpcService {
     } else {
       _log.warning('GPIO does not support except Linux');
     }
-    _subscriptions.add(
-      _gpioService.onButtonEvent.listen((event) {
-        _log.info('onButtonEvent button${event.button.index} = $event');
-        _sendButtonEvent(event);
-      }),
-    );
-    _subscriptions.add(
-      _screenService.onStateChangePreparation.listen((newState) {
-        screenConfigure(newState);
-      }),
-    );
-    _subscriptions.add(
-      _gpioService.onMotion.listen((event) {
-        _log.info('Motion = $event');
-        if (event) {
-          unawaited(_screenService.screenOn());
-        } else {
-          _screenService.scheduleScreenOff();
-        }
-      }),
-    );
-    _subscriptions.add(
-      _mqttService.onPause.listen((event) {
-        _log.info("MQTT: onPause, $event");
-        _executeAction(SlideshowAction.pause, event);
-      }),
-    );
-    _subscriptions.add(
-      _mqttService.onScreen.listen((event) {
-        _log.info("MQTT: onScreenToggle, $event");
-        // Because toggleScreen has invert logic :(
-        _executeAction(SlideshowAction.toggleScreen, !event);
-      }),
-    );
-    _subscriptions.add(
-      _mqttService.onMenu.listen((event) {
-        _log.info("MQTT: onMenu, $event");
-        _executeAction(SlideshowAction.showMenu, event);
-      }),
+    _eventBindings = DeviceEventBindings(
+      gpioService: _gpioService,
+      mqttService: _mqttService,
+      screenService: _screenService,
+      onButtonEvent: _sendButtonEvent,
+      onScreenPreparation: screenConfigure,
+      onAction: _executeAction,
+      logger: _log,
     );
     _initFutures.add(_systemInfoService.init());
   }
@@ -149,9 +119,7 @@ class HardwareService implements RpcService {
     final notification = _notificationWait;
     if (notification != null && !notification.isCompleted)
       notification.complete();
-    await Future.wait(
-      _subscriptions.map((subscription) => subscription.cancel()),
-    );
+    await _eventBindings.dispose();
     await _applicationStateService.dispose();
     await _screenService.dispose();
     await _gpioService.release();
