@@ -9,6 +9,11 @@
 
 ## Unreleased
 
+* Add bounded native EGL/GBM/DRM diagnostics and an owned V3D/DRM tracefs session
+  on a frozen photo-only release bundle. Verify the actual mapped engine and
+  correlate raw FrameTiming windows with native spans and GPU submissions/IRQs;
+  preserve losses and incomplete data instead of treating diagnostic FPS as an
+  optimization result.
 * Add photo-only screening generated from all 37 effect families and 82 presets,
   deduplicating identical settings. Follow slow settings with warmed repetitions;
   exclude video, GIF and 48-MP preparation from this investigation. Preserve

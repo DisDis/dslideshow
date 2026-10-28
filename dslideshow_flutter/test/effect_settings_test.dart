@@ -4,7 +4,10 @@ import 'package:dslideshow_flutter/src/effect/soft_wipe_effect.dart';
 import 'package:dslideshow_flutter/src/effect/flip_horizontal_effect.dart';
 import 'package:dslideshow_flutter/src/effect/flip_vertical_effect.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/pixel_capture.dart';
 
 void main() {
   test(
@@ -70,7 +73,7 @@ void main() {
     );
   });
   testWidgets(
-    'all former direction, shape, color and style variants render intermediate states',
+    'direction, shape, color and style variants preserve endpoints and change pixels',
     (tester) async {
       final variants = <Effect>[
         for (final mode in SlideMode.values)
@@ -124,33 +127,47 @@ void main() {
         for (final edge in RotationEdge.values)
           Effect(EffectType.rotate, options: RotateEffectOptions(edge: edge)),
       ];
+      Future<Uint8List> frame(MediaSliderItemEffect? effect, double progress) =>
+          capture(tester, (context) {
+            const from = ColoredBox(color: Colors.red);
+            const to = ColoredBox(color: Colors.blue);
+            return effect?.createTransformWidget(
+                  context,
+                  from,
+                  to,
+                  AlwaysStoppedAnimation(progress),
+                  160,
+                  100,
+                ) ??
+                (progress == 0 ? from : to);
+          });
+      final initial = await frame(null, 0);
+      final last = await frame(null, 1);
       for (final descriptor in variants) {
         final effect = descriptor.createEffect();
-        for (final progress in [0.0, .25, .5, .75, 1.0]) {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: Builder(
-                builder: (context) => SizedBox(
-                  width: 2560,
-                  height: 1600,
-                  child: effect.createTransformWidget(
-                    context,
-                    const ColoredBox(color: Colors.red),
-                    const ColoredBox(color: Colors.blue),
-                    AlwaysStoppedAnimation(progress),
-                    2560,
-                    1600,
-                  ),
-                ),
-              ),
-            ),
-          );
-          expect(
-            tester.takeException(),
-            isNull,
-            reason: '${descriptor.toConfig().toJson()} at $progress',
-          );
-        }
+        final reason = descriptor.toConfig().toJson().toString();
+        expect(
+          listEquals(await frame(effect, 0), initial),
+          isTrue,
+          reason: '$reason must start with the outgoing slide',
+        );
+        final middle = await frame(effect, .37);
+        expect(
+          listEquals(middle, initial),
+          isFalse,
+          reason: '$reason must leave the initial frame',
+        );
+        expect(
+          listEquals(middle, last),
+          isFalse,
+          reason: '$reason must render an intermediate frame',
+        );
+        expect(
+          listEquals(await frame(effect, 1), last),
+          isTrue,
+          reason: '$reason must end with the incoming slide',
+        );
+        expect(tester.takeException(), isNull, reason: reason);
       }
       await tester.pumpWidget(const SizedBox());
     },

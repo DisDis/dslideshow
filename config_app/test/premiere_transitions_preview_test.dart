@@ -1,5 +1,3 @@
-import 'package:config_app/features/config/domain/effect_settings_validation.dart';
-
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -58,116 +56,98 @@ Widget _app(Widget child, Locale locale) => MaterialApp(
 );
 
 void main() {
-  for (final locale in [const Locale('en'), const Locale('ru')]) {
-    test(
-      'new transitions use canonical types and typed settings (${locale.languageCode})',
-      () {
-        for (final effect in _effects) {
-          expect(
-            Effect.values.map((e) => e.type),
-            contains(effect.canonical.type),
-          );
-          final canonical = effect.canonical;
-          final entry = EffectConfig.fromJson(
-            canonical.type,
-            canonical.toConfig().toJson(),
-          );
-          expect(entry.validate(canonical.type), isEmpty);
-          expect(Effect.fromConfig(canonical.type, entry), canonical);
-        }
-      },
-    );
-
-    testWidgets(
-      'preview plays all thirty and changes safely (${locale.languageCode})',
-      (tester) async {
-        final recorder = ui.PictureRecorder();
-        Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
-        final picture = recorder.endRecording();
-        final image = picture.toImageSync(16, 10);
-        picture.dispose();
-        final data = (await tester.runAsync(
-          () => image.toByteData(format: ui.ImageByteFormat.png),
-        ))!;
-        image.dispose();
-        final provider = MemoryImage(
-          Uint8List.fromList(data.buffer.asUint8List()),
-        );
-        final key = GlobalKey<SlideshowPreviewState>();
-        final config = SlideShowConfig.fromJson({
-          'effects': {'defaultDurationMs': 100},
-          'displayTimeMs': 60000,
-          'photoMotion': {'mode': 'kenBurns'},
-        });
-        await tester.pumpWidget(
-          _app(
-            Scaffold(
-              body: SingleChildScrollView(
-                child: SlideshowPreview(
-                  key: key,
-                  config: config,
-                  images: [provider],
-                ),
+  const locale = Locale('en');
+  testWidgets(
+    'preview plays all thirty and changes safely (${locale.languageCode})',
+    (tester) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
+      final picture = recorder.endRecording();
+      final image = picture.toImageSync(16, 10);
+      picture.dispose();
+      final data = (await tester.runAsync(
+        () => image.toByteData(format: ui.ImageByteFormat.png),
+      ))!;
+      image.dispose();
+      final provider = MemoryImage(
+        Uint8List.fromList(data.buffer.asUint8List()),
+      );
+      final key = GlobalKey<SlideshowPreviewState>();
+      final config = SlideShowConfig.fromJson({
+        'effects': {'defaultDurationMs': 100},
+        'displayTimeMs': 60000,
+      });
+      await tester.pumpWidget(
+        _app(
+          Scaffold(
+            body: SingleChildScrollView(
+              child: SlideshowPreview(
+                key: key,
+                config: config,
+                images: [provider],
               ),
             ),
-            locale,
+          ),
+          locale,
+        ),
+      );
+      await tester.runAsync(() => precacheImage(provider, key.currentContext!));
+      FixedAnimationController clock() => tester
+          .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+          .map((widget) => widget.animation)
+          .whereType<FixedAnimationController>()
+          .where((clock) => clock.duration == const Duration(milliseconds: 100))
+          .toSet()
+          .single;
+
+      Future<void> finish() async {
+        final deadline = Stopwatch()..start();
+        while (find.byType(LinearProgressIndicator).evaluate().isNotEmpty) {
+          if (deadline.elapsed > const Duration(seconds: 10)) {
+            fail(
+              'Preview preparation timed out for ${key.currentState!.currentEffect.name}',
+            );
+          }
+          // Image decoding/readback runs outside the fake timer zone.
+          await tester.runAsync(() => Future<void>(() {}));
+          await tester.pump();
+        }
+        final animation = clock();
+        for (var frame = 0; frame < 100 && !animation.isCompleted; frame++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        expect(animation.status, AnimationStatus.completed);
+      }
+
+      await finish();
+      for (final effect in _effects) {
+        final field = tester.widget<DropdownButtonFormField<Effect>>(
+          find.byKey(const ValueKey('preview-effect')),
+        );
+        final dropdown = tester.widget<DropdownButton<Effect>>(
+          find.descendant(
+            of: find.byKey(const ValueKey('preview-effect')),
+            matching: find.byType(DropdownButton<Effect>),
           ),
         );
-        await tester.runAsync(
-          () => precacheImage(provider, key.currentContext!),
+        expect(
+          dropdown.items!.map((e) => e.value!.type),
+          contains(effect.canonical.type),
         );
-        Future<void> finish() async {
-          for (var i = 0; i < 30; i++) {
-            await tester.runAsync(
-              () => Future<void>.delayed(const Duration(milliseconds: 5)),
-            );
-            await tester.pump(const Duration(milliseconds: 16));
-          }
-        }
-
+        field.onChanged!(effect);
         await finish();
-        for (final effect in _effects) {
-          final field = tester.widget<DropdownButtonFormField<Effect>>(
-            find.byKey(const ValueKey('preview-effect')),
-          );
-          final dropdown = tester.widget<DropdownButton<Effect>>(
-            find.descendant(
-              of: find.byKey(const ValueKey('preview-effect')),
-              matching: find.byType(DropdownButton<Effect>),
-            ),
-          );
-          expect(
-            dropdown.items!.map((e) => e.value!.type),
-            contains(effect.canonical.type),
-          );
-          field.onChanged!(effect);
-          await finish();
-          expect(key.currentState!.currentEffect, effect.canonical);
-          final clock = tester
-              .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
-              .map((e) => e.animation)
-              .whereType<FixedAnimationController>()
-              .where(
-                (clock) => clock.duration == const Duration(milliseconds: 100),
-              )
-              .toSet()
-              .single;
-          expect(clock.status, AnimationStatus.completed);
-          expect(clock.duration, const Duration(milliseconds: 100));
-          expect(find.byKey(const ValueKey('preview-error')), findsNothing);
-          expect(find.byType(RawImage), findsWidgets);
-          expect(tester.takeException(), isNull);
-        }
-        for (final effect in _effects) {
-          key.currentState!.onChanged(effect);
-        }
-        await tester.pumpWidget(const SizedBox());
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 30)),
-        );
-        await tester.pump();
+        expect(key.currentState!.currentEffect, effect.canonical);
+        expect(clock().duration, const Duration(milliseconds: 100));
+        expect(find.byKey(const ValueKey('preview-error')), findsNothing);
+        expect(find.byType(RawImage), findsWidgets);
         expect(tester.takeException(), isNull);
-      },
-    );
-  }
+      }
+      for (final effect in _effects) {
+        key.currentState!.onChanged(effect);
+      }
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

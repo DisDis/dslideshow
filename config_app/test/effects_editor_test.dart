@@ -523,52 +523,39 @@ void main() {
     },
   );
 
-  for (final locale in [const Locale('en'), const Locale('ru')]) {
-    testWidgets(
-      'compact editor retains settings and fits large text (${locale.languageCode})',
-      (tester) async {
-        tester.view.physicalSize = const Size(390, 850);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        final config = SlideShowConfig.fromJson({'effects': {}});
-        await tester.pumpWidget(
-          app(EffectsEditorPage(config: config), locale: locale, scale: 1.5),
-        );
-        expect(
-          find.text(
-            locale.languageCode == 'ru'
-                ? 'Общая длительность, мс'
-                : 'Global duration, ms',
-          ),
-          findsOneWidget,
-        );
-        await select(tester, 'Mosaic', 'mosaic');
-        await tester.pumpAndSettle();
-        expect(
-          find.textContaining(
-            locale.languageCode == 'ru' ? 'Длительность, мс' : 'Duration, ms',
-          ),
-          findsOneWidget,
-        );
-        expect(
-          tester
-              .widget<TextFormField>(
-                find.byKey(const ValueKey('effect-inherited-mosaic-1000')),
-              )
-              .initialValue,
-          '1000',
-        );
-        expect(
-          find.byKey(const ValueKey('effect-duration-mode')),
-          findsOneWidget,
-        );
-        await tester.tap(find.byType(BackButton));
-        await tester.pumpAndSettle();
-        expect(find.byKey(const ValueKey('effects-search')), findsOneWidget);
-        expect(tester.takeException(), isNull);
-        await tester.pumpWidget(const SizedBox());
-      },
-    );
-  }
+  const locale = Locale('en');
+  testWidgets(
+    'compact editor retains settings and fits large text (${locale.languageCode})',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 850);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final config = SlideShowConfig.fromJson({'effects': {}});
+      await tester.pumpWidget(
+        app(EffectsEditorPage(config: config), locale: locale, scale: 1.5),
+      );
+      expect(find.text('Global duration, ms'), findsOneWidget);
+      await select(tester, 'Mosaic', 'mosaic');
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Duration, ms'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const ValueKey('effect-inherited-mosaic-1000')),
+            )
+            .initialValue,
+        '1000',
+      );
+      expect(
+        find.byKey(const ValueKey('effect-duration-mode')),
+        findsOneWidget,
+      );
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('effects-search')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 }

@@ -7,63 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:video_player/video_player.dart';
 
-enum _Failure { none, initialize, looping, play, pause, dispose }
-
-class _Controller extends VideoPlayerController {
-  _Controller({this.failure = _Failure.none, this.initializeGate})
-    : super.networkUrl(Uri.parse('https://frame.local/video.mp4'));
-
-  _Failure failure;
-  final Completer<void>? initializeGate;
-  int initializeCalls = 0;
-  int loopingCalls = 0;
-  int playCalls = 0;
-  int pauseCalls = 0;
-  int disposeCalls = 0;
-  bool disposed = false;
-
-  @override
-  Future<void> initialize() async {
-    initializeCalls++;
-    await initializeGate?.future;
-    if (failure == _Failure.initialize) throw StateError('private media URL');
-    if (!disposed) {
-      value = value.copyWith(
-        duration: const Duration(seconds: 10),
-        size: const Size(320, 180),
-        isInitialized: true,
-      );
-    }
-  }
-
-  @override
-  Future<void> setLooping(bool looping) async {
-    loopingCalls++;
-    if (failure == _Failure.looping) throw StateError('private media URL');
-  }
-
-  @override
-  Future<void> play() async {
-    playCalls++;
-    if (failure == _Failure.play) throw StateError('private media URL');
-    value = value.copyWith(isPlaying: true);
-  }
-
-  @override
-  Future<void> pause() async {
-    pauseCalls++;
-    if (failure == _Failure.pause) throw StateError('private media URL');
-    value = value.copyWith(isPlaying: false);
-  }
-
-  @override
-  Future<void> dispose() async {
-    disposeCalls++;
-    disposed = true;
-    await super.dispose();
-    if (failure == _Failure.dispose) throw StateError('private media URL');
-  }
-}
+import 'support/controlled_video_controller.dart';
 
 Widget _app({
   required VideoPlayerController Function(Uri) factory,
@@ -108,7 +52,7 @@ void main() {
     tester,
   ) async {
     var calls = 0;
-    final controller = _Controller();
+    final controller = ControlledVideoController();
     await tester.pumpWidget(
       _app(
         poster: const Text('JPEG poster'),
@@ -153,7 +97,7 @@ void main() {
       _app(
         factory: (_) {
           factoryCalls++;
-          return _Controller();
+          return ControlledVideoController();
         },
       ),
     );
@@ -173,7 +117,7 @@ void main() {
     tester,
   ) async {
     final gate = Completer<void>();
-    final controller = _Controller(initializeGate: gate);
+    final controller = ControlledVideoController(initializeGate: gate);
     var factoryCalls = 0;
     VideoPlayerController factory(Uri uri) {
       factoryCalls++;
@@ -208,14 +152,14 @@ void main() {
   });
 
   for (final failure in [
-    _Failure.initialize,
-    _Failure.looping,
-    _Failure.play,
+    VideoControllerFailure.initialize,
+    VideoControllerFailure.looping,
+    VideoControllerFailure.play,
   ]) {
     _videoTest(
       '${failure.name} failure shows a safe message and releases player',
       (tester) async {
-        final controller = _Controller(failure: failure);
+        final controller = ControlledVideoController(failure: failure);
         await tester.pumpWidget(_app(factory: (_) => controller));
         await tester.tap(find.byTooltip(_strings(tester).video_load));
         await tester.pumpAndSettle();
@@ -231,7 +175,9 @@ void main() {
   _videoTest('pause failures are caught and release the playing controller', (
     tester,
   ) async {
-    final controller = _Controller(failure: _Failure.pause);
+    final controller = ControlledVideoController(
+      failure: VideoControllerFailure.pause,
+    );
     await tester.pumpWidget(_app(factory: (_) => controller));
     await tester.tap(find.byTooltip(_strings(tester).video_load));
     await tester.pumpAndSettle();
@@ -246,7 +192,7 @@ void main() {
     tester,
   ) async {
     final gate = Completer<void>();
-    final controller = _Controller(initializeGate: gate);
+    final controller = ControlledVideoController(initializeGate: gate);
     await tester.pumpWidget(
       _app(
         factory: (_) => controller,
@@ -269,8 +215,8 @@ void main() {
     tester,
   ) async {
     final gate = Completer<void>();
-    final oldController = _Controller(initializeGate: gate);
-    final newController = _Controller();
+    final oldController = ControlledVideoController(initializeGate: gate);
+    final newController = ControlledVideoController();
     VideoPlayerController factory(Uri uri) =>
         uri.path.endsWith('other.mp4') ? newController : oldController;
     await tester.pumpWidget(_app(factory: factory));
@@ -299,9 +245,9 @@ void main() {
     tester,
   ) async {
     final gate = Completer<void>();
-    final controller = _Controller(
+    final controller = ControlledVideoController(
       initializeGate: gate,
-      failure: _Failure.dispose,
+      failure: VideoControllerFailure.dispose,
     );
     await tester.pumpWidget(_app(factory: (_) => controller));
     await tester.tap(find.byTooltip(_strings(tester).video_load));
@@ -318,7 +264,7 @@ void main() {
   _videoTest('asynchronous player error switches to the localized fallback', (
     tester,
   ) async {
-    final controller = _Controller();
+    final controller = ControlledVideoController();
     await tester.pumpWidget(_app(factory: (_) => controller));
     await tester.tap(find.byTooltip(_strings(tester).video_load));
     await tester.pumpAndSettle();

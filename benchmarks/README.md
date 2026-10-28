@@ -27,11 +27,16 @@
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
 с восстановлением службы фоторамки, точечные тесты и получение отчётов.
 
-Отдельный [короткий A/B flutter-pi](tool/pageflip_ab/README.md) сравнивает
+Отдельный короткий A/B flutter-pi сравнивает
 `integration_dpms_and_video` и `remove-page-flip` на одинаковом frozen release-bundle внутри каждой пары,
 с ABBA, тяжёлыми эффектами, видео и независимыми DRM completion-событиями.
 Результаты 27.10.2026: [отчёт по всем эффектам](reports/flutter-pi-pageflip-2026-10-27/report.md)
 и [English report for the MR](reports/flutter-pi-pageflip-2026-10-27/mr-report.md).
+
+[Раздельная диагностика native pipeline](tool/native_pipeline/README.md)
+сопоставляет время EGL/GBM/KMS, GPU-задания V3D и DRM completion на одном frozen
+release bundle. Инструментированные данные предназначены для поиска узкого места;
+результаты и ограничения — в [разборе flutter-pi](../doc/flutter-pi-native-pipeline-2026-10.md).
 
 ## Пресеты и расширенные настройки
 

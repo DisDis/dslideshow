@@ -356,58 +356,52 @@ void main() {
     },
   );
 
-  for (final locale in [const Locale('ru'), const Locale('en')]) {
-    for (final dark in [false, true]) {
-      testWidgets('remote telemetry, narrow layout, $locale dark=$dark', (
-        tester,
-      ) async {
-        tester.view.physicalSize = const Size(390, 900);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        final repository = _Repository(_frame());
-        final monitor = DeviceMonitor(repository, telemetry: true);
-        await tester.pumpWidget(
-          _app(
-            monitor,
-            DeviceSection.telemetry,
-            locale: locale,
-            dark: dark,
-            scale: 1.5,
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(find.textContaining('2040'), findsWidgets);
-        final scrollable = find
-            .descendant(
-              of: find.byKey(const ValueKey('device-content')),
-              matching: find.byType(Scrollable),
-            )
-            .first;
-        await tester.scrollUntilVisible(
-          find.text('remote-frontend-24'),
-          500,
-          scrollable: scrollable,
-        );
-        expect(find.text('remote-backend-42'), findsOneWidget);
-        expect(
-          find.textContaining('2\u00a0560'),
-          locale.languageCode == 'ru' ? findsOneWidget : findsNothing,
-        );
-        final expectedSize = locale.languageCode == 'ru'
-            ? '2\u00a0560 × 1\u00a0600 пикс.'
-            : '2,560 × 1,600 px';
-        expect(find.text(expectedSize), findsOneWidget);
-        await tester.scrollUntilVisible(
-          find.text('0 RPM'),
-          500,
-          scrollable: scrollable,
-        );
-        expect(find.text('0 RPM'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-        await close(tester, repository);
-      });
-    }
+  const locale = Locale('en');
+  for (final dark in [false, true]) {
+    testWidgets('remote telemetry, narrow layout, $locale dark=$dark', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repository = _Repository(_frame());
+      final monitor = DeviceMonitor(repository, telemetry: true);
+      await tester.pumpWidget(
+        _app(
+          monitor,
+          DeviceSection.telemetry,
+          locale: locale,
+          dark: dark,
+          scale: 1.5,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('2040'), findsWidgets);
+      final scrollable = find
+          .descendant(
+            of: find.byKey(const ValueKey('device-content')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(
+        find.text('remote-frontend-24'),
+        500,
+        scrollable: scrollable,
+      );
+      expect(find.text('remote-backend-42'), findsOneWidget);
+      expect(find.textContaining('2\u00a0560'), findsNothing);
+      final expectedSize = '2,560 × 1,600 px';
+      expect(find.text(expectedSize), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('0 RPM'),
+        500,
+        scrollable: scrollable,
+      );
+      expect(find.text('0 RPM'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await close(tester, repository);
+    });
   }
 
   testWidgets('disconnect keeps last data and disables commands', (

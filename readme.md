@@ -10,7 +10,7 @@ Features:
 * [Optional/**WIP**] Can download photos/video from Google Photo (non-trivial setting)  
 * Over-the-air update (OTA)
 * Support MQTT
-* Web config [**Work in Progress**]
+* Web config
 
 # Demo version - v7
 [![Demo](https://img.youtube.com/vi/eRx7BAgu3N0/0.jpg)](https://youtu.be/eRx7BAgu3N0)
@@ -27,6 +27,7 @@ More [info](https://github.com/DisDis/article-dslideshow)
 # Разработка
 
 * [Инструкции для агентов и карта проекта](AGENTS.md)
+* [Локальные тесты: покрытие, стоимость и замер времени](doc/testing.md)
 * [Backend: сервисы, изоляты, подписки и проверки](backend/README.md)
 * [Генератор RPC-реестра и аннотация RpcSerializers](rpc_serializers_generator/README.md)
 * [Отложенный план проверки полноты RPC-контрактов](doc/rpc-contract-coverage-plan.md)

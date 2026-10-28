@@ -1,12 +1,13 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dslideshow_flutter/src/effect/blure_fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/zoom_over_effect.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/pixel_capture.dart';
+export 'support/pixel_capture.dart' show capture;
 
 // Keep the previous composition as a pixel reference, including the original
 // high-quality bitmap sampling and transparent/overlapping content.
@@ -47,42 +48,6 @@ Widget reference(
           ),
         ],
       );
-
-Future<Uint8List> capture(
-  WidgetTester tester,
-  Widget Function(BuildContext) scene, {
-  Size size = const Size(160, 100),
-}) async {
-  final key = GlobalKey();
-  await tester.pumpWidget(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: Center(
-        child: RepaintBoundary(
-          key: key,
-          child: SizedBox.fromSize(
-            size: size,
-            child: ColoredBox(
-              color: Colors.black,
-              child: ClipRect(child: Builder(builder: scene)),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-  return (await tester.runAsync(() async {
-    final boundary =
-        key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage();
-    try {
-      final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-      return Uint8List.fromList(data!.buffer.asUint8List());
-    } finally {
-      image.dispose();
-    }
-  }))!;
-}
 
 ui.Image bitmap(bool alternate, {Size size = const Size(160, 100)}) {
   final recorder = ui.PictureRecorder();

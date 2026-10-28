@@ -1,4 +1,4 @@
-# Подготовка DEB 14.0.0 — 28 октября 2026
+# DEB 14.0.0+1 — 28 октября 2026
 
 Мажорный выпуск нового каталога и настроек эффектов после `13.1.0`.
 Исходный коммит перед подготовкой — `2bbd2be`.
@@ -57,3 +57,52 @@ baseline/candidate, условия и границы переноса измер
 отдельных прогонов сохранены в отчёте и [аппаратном руководстве](raspberry-pi-benchmarks.md).
 ОС, драйверы, прошивка и runtime рамки не изменялись. Vulkan и 24-часовой прогон
 не запускались. Установка DEB на рамку и публикация OTA не выполнялись.
+
+## Локальная сборка и проверки
+
+Штатный `deb_factory/build.sh` без изменения конвейера повторил обязательный
+этап: 1060 Dart/Flutter-тестов и 32 Python-теста, все прошли.
+
+| Набор | Результат |
+| --- | --- |
+| common | 30 тестов |
+| rpc_serializers_generator | 23 теста |
+| backend | 436 тестов, последовательно |
+| i18n | 3 теста |
+| system_metrics_widget | 10 тестов |
+| dslideshow_flutter | 217 тестов |
+| config_app | 341 тест |
+| Python: Linux tools / упаковка | 6 / 26 тестов |
+
+Дополнительные анализаторы, наборы benchmarks, Chrome/integration и аппаратные
+прогоны в этой подготовке не запускались: пользователь сообщил об уже
+успешных проверках. Локальные логи сборки, SDK и проверки артефакта:
+`deb_factory/.buildlog/14.0.0/` (игнорируемый каталог).
+
+## Артефакт
+
+Собран через `deb_factory/build.sh`: AOT release arm64/CPU pi4 и release
+веб-панель, Flutter 3.47.7 / Dart 3.13.5.
+
+* Файл: `deb_factory/dslideshow-14.0.0+1-arm64-pi4.deb`.
+* Размер: 19 221 884 байт.
+* SHA-256: `8933cbed135ce28b734f20127a6d092c088be52fa561ed5efb6b18b5b12aa799`.
+* AOT SHA-256: `ed1e163aa30c51978fc594052014156c06b335ea22aff33ee4eaf676d26d2834`.
+* Engine SHA-256: `71803501234a54ee4d5b4b998dd201b2cf1dd537187d69c60d598a4aaf12b426`.
+* Flutter-pi SHA-256: `9e60974e3bdb9e0bb8e3c77061e83f55b7c9cad53b45360f01281e825c498d67`.
+
+Оба pubspec, generated ApplicationInfo, DEB control, файл version и Flutter
+version.json согласованы на `14.0.0+1`; строка версии найдена в AOT.
+Lock-файлы синхронизированы штатным pub get: только версии path-зависимостей.
+После распаковки проверены все 137 контрольных сумм opt/, полнота манифеста
+и относительные пути. AOT/engine/runtime — AArch64, web bundle присутствует.
+Runtime побайтово совпал с source_arm64, его SHA-256 также сверен по SSH
+с `/opt/dslideshow/flutter-pi` на рамке. При подготовке он не пересобирался.
+Changelog оформлен под фактической версией DEB; сверху оставлен Unreleased.
+
+Проверка из корня репозитория:
+
+```sh
+dpkg-deb -f deb_factory/dslideshow-14.0.0+1-arm64-pi4.deb Package Version Architecture Description
+sha256sum deb_factory/dslideshow-14.0.0+1-arm64-pi4.deb
+```

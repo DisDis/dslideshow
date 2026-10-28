@@ -216,6 +216,16 @@ void main() {
     });
   }
 
+  test('ErrorResult decodes the real registry envelope into the model', () {
+    expect(
+      serializers.deserialize([
+        'ErrorResult',
+        {'error': 'failed', 'id': 7},
+      ]),
+      const ErrorResult(id: 7, error: 'failed'),
+    );
+  });
+
   test('EchoCommand has the original envelope, payload and error behavior', () {
     expect(
       serializers.serialize<Object>(const EchoCommand(id: 7, text: 'hi')),

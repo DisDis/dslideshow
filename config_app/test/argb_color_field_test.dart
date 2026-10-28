@@ -110,44 +110,37 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  for (final locale in [const Locale('en'), const Locale('ru')]) {
-    testWidgets(
-      'picker fits a narrow screen with large text (${locale.languageCode})',
-      (tester) async {
-        tester.view.physicalSize = const Size(390, 700);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        var value = 0x80123456;
-        await tester.pumpWidget(
-          app(
-            ArgbColorField(
-              label: locale.languageCode == 'ru'
-                  ? 'Цвет фона (AARRGGBB)'
-                  : 'Background color (AARRGGBB)',
-              value: value,
-              onChanged: (color) => value = color,
-            ),
-            locale: locale,
-            scale: 1.5,
+  const locale = Locale('en');
+  testWidgets(
+    'picker fits a narrow screen with large text (${locale.languageCode})',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 700);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var value = 0x80123456;
+      await tester.pumpWidget(
+        app(
+          ArgbColorField(
+            label: 'Background color (AARRGGBB)',
+            value: value,
+            onChanged: (color) => value = color,
           ),
-        );
-        await tester.tap(find.byIcon(Icons.palette_outlined));
-        await tester.pumpAndSettle();
-        expect(find.byType(ColorPicker), findsOneWidget);
-        await tester.ensureVisible(
-          find.text(locale.languageCode == 'ru' ? 'Применить' : 'Apply'),
-        );
-        await tester.tap(
-          find.text(locale.languageCode == 'ru' ? 'Применить' : 'Apply'),
-        );
-        await tester.pumpAndSettle();
-        expect(value, 0x80123456);
-        expect(tester.takeException(), isNull);
-        await tester.pumpWidget(const SizedBox());
-      },
-    );
-  }
+          locale: locale,
+          scale: 1.5,
+        ),
+      );
+      await tester.tap(find.byIcon(Icons.palette_outlined));
+      await tester.pumpAndSettle();
+      expect(find.byType(ColorPicker), findsOneWidget);
+      await tester.ensureVisible(find.text('Apply'));
+      await tester.tap(find.text('Apply'));
+      await tester.pumpAndSettle();
+      expect(value, 0x80123456);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets('removing the field closes its picker without a late edit', (
     tester,

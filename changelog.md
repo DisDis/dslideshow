@@ -1,5 +1,12 @@
 # Unreleased
 
+# 14.0.0+1 — 2026-10-28
+
+* Breaking settings change: replace slideshow.allowedEffects and
+  slideshow.transitionTimeMs with slideshow.effects. Old fields are ignored;
+  without the new block the frame uses Fade. Re-select effects and timing
+  in the new settings catalog after updating.
+
 * Improve photo transition performance by caching prepared photos and Phosphor
   trails, bounding Radial Blur/Glass blend surfaces and reducing Water Refraction
   texture lookups. Preserve full-resolution photos and dense Mosaic grids.

@@ -1,19 +1,18 @@
-import 'dart:async';
-
-import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc_models.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/controlled_photoframe_repository.dart';
+
 void main() {
-  late _Repository repository;
+  late ControlledPhotoframeRepository repository;
   late ConfigBloc bloc;
   late List<ConfigState> states;
 
   setUp(() {
-    repository = _Repository();
+    repository = ControlledPhotoframeRepository();
     bloc = ConfigBloc(
       initialState: const ConfigState.initial(),
       client: repository,
@@ -267,27 +266,3 @@ void main() {
 AppConfig _config(int port) => AppConfig.fromJson({
   'web': {'port': port},
 });
-
-class _Repository implements PhotoframeRepository {
-  final loads = <Completer<AppConfig>>[];
-  final saves = <Completer<WebSocketResult>>[];
-  final saved = <AppConfig>[];
-
-  @override
-  Future<AppConfig> getConfig() {
-    final result = Completer<AppConfig>();
-    loads.add(result);
-    return result.future;
-  }
-
-  @override
-  Future<WebSocketResult> saveConfig(AppConfig config) {
-    saved.add(config);
-    final result = Completer<WebSocketResult>();
-    saves.add(result);
-    return result.future;
-  }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}

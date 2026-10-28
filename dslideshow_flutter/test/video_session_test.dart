@@ -134,40 +134,37 @@ void main() {
               ),
             ),
           );
-          from.value = from.value.copyWith(
-            position: const Duration(seconds: 7),
-          );
-          to.value = to.value.copyWith(position: const Duration(seconds: 3));
+          from.value = from.value.copyWith(size: Size(640 + t * 100, 320));
+          to.value = to.value.copyWith(size: Size(240, 480 + t * 100));
           await tester.pump();
           expect(
-            find.byType(VideoWidget),
-            findsNWidgets(
-              <Effect, int>{
-                    Effect.foldMotionEffect: 4,
-                    Effect.glowEffect: 4,
-                    Effect.kaleidoscopeEffect: 14,
-                    Effect.vhsDamageEffect: 8,
-                    Effect.radialBlurEffect: 18,
-                    Effect.phosphorEffect: 5,
-                  }[effect] ??
-                  (effect == Effect.glassEffect || effect == Effect.louverEffect
-                      ? 16
-                      : effect == Effect.mirrorEffect
-                      ? 4
-                      : effect == Effect.sliceEffect
-                      ? 9
-                      : effect == Effect.splitEffect
-                      ? 3
-                      : 2),
-            ),
+            tester
+                .widgetList<VideoPlayer>(find.byType(VideoPlayer))
+                .map((view) => view.controller)
+                .toSet(),
+            unorderedEquals([from, to]),
           );
+          for (final player in [from, to]) {
+            final views = find.byWidgetPredicate(
+              (widget) =>
+                  widget is VideoWidget &&
+                  identical(widget.session?.controller, player),
+            );
+            final ratios = tester.widgetList<AspectRatio>(
+              find.descendant(of: views, matching: find.byType(AspectRatio)),
+            );
+            expect(ratios, isNotEmpty);
+            expect(
+              ratios.map((view) => view.aspectRatio),
+              everyElement(player.value.aspectRatio),
+              reason: '${effect.name} must update its live video views at $t',
+            );
+          }
           for (final player in [from, to]) {
             expect(player.initializations, 1);
             expect(player.disposals, 0);
             expect(player.plays, 1);
           }
-          expect(from.value.position, const Duration(seconds: 7));
-          expect(to.value.position, const Duration(seconds: 3));
           expect(tester.takeException(), isNull);
         }
         await tester.pumpWidget(const SizedBox());
@@ -255,7 +252,13 @@ void main() {
       );
       await tester.pumpWidget(shell(view));
       await tester.pumpWidget(effect(false, 0));
-      expect(find.byType(VideoWidget), findsNWidgets(10));
+      expect(
+        tester
+            .widgetList<VideoPlayer>(find.byType(VideoPlayer))
+            .map((view) => view.controller)
+            .toSet(),
+        {player},
+      );
       await tester.pumpWidget(effect(false, 0.6));
       await tester.pumpWidget(effect(true, 0.49));
       await tester.pumpWidget(effect(true, 0.51));

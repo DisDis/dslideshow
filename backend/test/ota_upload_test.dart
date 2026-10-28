@@ -9,6 +9,7 @@ import 'package:dslideshow_backend/src/service/ota/ota_service.dart';
 import 'package:dslideshow_backend/src/service/ota/release_info.dart';
 import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:path/path.dart' as path;
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shelf/shelf.dart';
@@ -170,6 +171,7 @@ void main() {
     UploadLimits limits = const UploadLimits(maxFiles: 1, maxParts: 2),
     UploadWriterFactory? writerFactory,
     Future<ReleaseInfo?> Function()? latestRelease,
+    HttpClient Function()? downloadClientFactory,
     Duration restartDelay = const Duration(seconds: 5),
     Duration autostopDelay = const Duration(minutes: 5),
     Duration networkTimeout = const Duration(seconds: 60),
@@ -189,6 +191,7 @@ void main() {
         writerFactory: writerFactory,
       ),
       latestRelease: latestRelease,
+      downloadClientFactory: downloadClientFactory,
       restartDelay: restartDelay,
       autostopDelay: autostopDelay,
       networkTimeout: networkTimeout,
@@ -530,6 +533,35 @@ void main() {
     },
   );
 
+  for (final version in [
+    Version.parse(ApplicationInfo.frontendVersion),
+    Version(0, 0, 0),
+  ]) {
+    test(
+      'release $version does not download or install an existing version',
+      () async {
+        var downloads = 0;
+        final ota = service(
+          latestRelease: () async => ReleaseInfo(
+            version: version,
+            debUrl: 'https://example.invalid/should-not-download.deb',
+          ),
+          downloadClientFactory: () {
+            downloads++;
+            throw StateError('An installed version must not be downloaded');
+          },
+        );
+        await ota.checkLatestRelease();
+        expect(downloads, 0);
+        expect(ota.busy, isFalse);
+        expect(installer.files, isEmpty);
+        expect(remote.commands, isEmpty);
+        expect(directory.listSync(), isEmpty);
+        expect(ota.info.status, OTAStatus.disabled);
+      },
+    );
+  }
+
   test('close does not wait for an external release lookup', () async {
     final lookup = Completer<ReleaseInfo?>();
     final ota = service(latestRelease: () => lookup.future);
@@ -542,7 +574,7 @@ void main() {
   });
 
   test(
-    'automatic chunked download uses the same save-before-install path',
+    'automatic chunked download decodes the package name before installation',
     () async {
       final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       addTearDown(() => server.close(force: true));
@@ -556,7 +588,7 @@ void main() {
       final ota = service(
         latestRelease: () async => ReleaseInfo(
           version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1:${server.port}/automatic.deb',
+          debUrl: 'http://127.0.0.1:${server.port}/automatic%2B7.deb',
         ),
       );
       await ota.checkLatestRelease();
@@ -564,7 +596,7 @@ void main() {
       expect(installer.data.single, utf8.encode('downloaded package'));
       expect(
         installer.files.single,
-        path.join(directory.path, 'automatic.deb'),
+        path.join(directory.path, 'automatic+7.deb'),
       );
       expect(directory.listSync().whereType<File>().length, 1);
       expect(

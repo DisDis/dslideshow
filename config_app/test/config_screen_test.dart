@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
 import 'package:config_app/features/config/presentation/pages/config_screen.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -9,17 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/controlled_photoframe_repository.dart';
+
 final _save = find.byKey(const Key('config-save'));
 final _reload = find.byKey(const Key('config-reload'));
 final _gpio = find.widgetWithText(TextFormField, 'GPIO Smoothing (ms)');
 final _restartPattern = RegExp('restart', caseSensitive: false);
 
 void main() {
-  late _Repository repository;
+  late ControlledPhotoframeRepository repository;
   late GlobalKey<ConfigScreenState> screen;
 
   setUp(() {
-    repository = _Repository();
+    repository = ControlledPhotoframeRepository();
     screen = GlobalKey<ConfigScreenState>();
   });
 
@@ -403,27 +402,3 @@ void main() {
 AppConfig _config(int smoothing) => AppConfig.fromJson({
   'hardware': {'smoothingGPIOMs': smoothing},
 });
-
-class _Repository implements PhotoframeRepository {
-  final loads = <Completer<AppConfig>>[];
-  final saves = <Completer<WebSocketResult>>[];
-  final saved = <AppConfig>[];
-
-  @override
-  Future<AppConfig> getConfig() {
-    final result = Completer<AppConfig>();
-    loads.add(result);
-    return result.future;
-  }
-
-  @override
-  Future<WebSocketResult> saveConfig(AppConfig config) {
-    saved.add(config);
-    final result = Completer<WebSocketResult>();
-    saves.add(result);
-    return result.future;
-  }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}

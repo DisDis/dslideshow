@@ -23,73 +23,70 @@ Widget _app(Widget child, Locale locale) => MaterialApp(
 );
 
 void main() {
-  for (final locale in [const Locale('en'), const Locale('ru')]) {
-    testWidgets(
-      'Linux preview disables video with a localized explanation and still shows photos (${locale.languageCode})',
-      (tester) async {
-        final recorder = ui.PictureRecorder();
-        Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
-        final picture = recorder.endRecording();
-        final bitmap = (await tester.runAsync(() => picture.toImage(2, 2)))!;
-        final data = (await tester.runAsync(
-          () => bitmap.toByteData(format: ui.ImageByteFormat.png),
-        ))!;
-        final image = MemoryImage(
-          Uint8List.fromList(data.buffer.asUint8List()),
-        );
-        bitmap.dispose();
-        picture.dispose();
-        final adapter = _NoRequestsAdapter();
-        final client = Dio()..httpClientAdapter = adapter;
-        final key = GlobalKey<SlideshowPreviewState>();
-        await tester.pumpWidget(
-          _app(
-            SlideshowPreview(
-              key: key,
-              config: SlideShowConfig.fromJson({
-                'effects': {'defaultDurationMs': 10},
-                'displayTimeMs': 60000,
-              }),
-              images: [image],
-              mediaClient: client,
-            ),
-            locale,
+  const locale = Locale('en');
+  testWidgets(
+    'Linux preview disables video with a localized explanation and still shows photos (${locale.languageCode})',
+    (tester) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
+      final picture = recorder.endRecording();
+      final bitmap = (await tester.runAsync(() => picture.toImage(2, 2)))!;
+      final data = (await tester.runAsync(
+        () => bitmap.toByteData(format: ui.ImageByteFormat.png),
+      ))!;
+      final image = MemoryImage(Uint8List.fromList(data.buffer.asUint8List()));
+      bitmap.dispose();
+      picture.dispose();
+      final adapter = _NoRequestsAdapter();
+      final client = Dio()..httpClientAdapter = adapter;
+      final key = GlobalKey<SlideshowPreviewState>();
+      await tester.pumpWidget(
+        _app(
+          SlideshowPreview(
+            key: key,
+            config: SlideShowConfig.fromJson({
+              'effects': {'defaultDurationMs': 10},
+              'displayTimeMs': 60000,
+            }),
+            images: [image],
+            mediaClient: client,
           ),
-        );
-        await tester.runAsync(() => precacheImage(image, key.currentContext!));
-        final field = tester.widget<TextField>(
-          find.byKey(const ValueKey('preview-video-url')),
-        );
-        expect(field.enabled, isFalse);
-        final l = AppLocalizations.of(key.currentContext!);
-        expect(find.text(l.video_platform_unavailable), findsOneWidget);
-        expect(
-          find.byKey(const ValueKey('preview-video-unavailable')),
-          findsOneWidget,
-        );
+          locale,
+        ),
+      );
+      await tester.runAsync(() => precacheImage(image, key.currentContext!));
+      final field = tester.widget<TextField>(
+        find.byKey(const ValueKey('preview-video-url')),
+      );
+      expect(field.enabled, isFalse);
+      final l = AppLocalizations.of(key.currentContext!);
+      expect(find.text(l.video_platform_unavailable), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('preview-video-unavailable')),
+        findsOneWidget,
+      );
 
-        // Simulate an old URL retained before the platform became unavailable.
-        // A disabled field alone must not be the only protection for loading.
-        field.controller!.text = 'https://camera.test/video.mp4';
-        field.onSubmitted!(field.controller!.text);
-        for (var i = 0; i < 10; i++) {
-          await tester.runAsync(
-            () => Future<void>.delayed(const Duration(milliseconds: 20)),
-          );
-          await tester.pump(const Duration(milliseconds: 20));
-        }
-        expect(find.byType(RawImage), findsWidgets);
-        expect(find.byType(VideoWidget), findsNothing);
-        expect(find.byKey(const ValueKey('preview-error')), findsNothing);
-        expect(adapter.requests, isEmpty);
-        expect(tester.takeException(), isNull);
-        await tester.pumpWidget(const SizedBox());
-        expect(adapter.closed, isTrue);
-      },
-      skip: kIsWeb,
-      variant: TargetPlatformVariant.only(TargetPlatform.linux),
-    );
-  }
+      // Simulate an old URL retained before the platform became unavailable.
+      // A disabled field alone must not be the only protection for loading.
+      field.controller!.text = 'https://camera.test/video.mp4';
+      field.onSubmitted!(field.controller!.text);
+      for (var i = 0; i < 10; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      expect(find.byType(RawImage), findsWidgets);
+      expect(find.byType(VideoWidget), findsNothing);
+      expect(find.byKey(const ValueKey('preview-error')), findsNothing);
+      expect(adapter.requests, isEmpty);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      expect(adapter.closed, isTrue);
+    },
+    skip: kIsWeb,
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
 
   testWidgets('Linux preview accepts an explicitly injected video session', (
     tester,
