@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'screen_transition_test.dart' show TestFrontend, HiddenHints;
+import 'support/slideshow_frontend.dart';
 
 class PhotoFrontend extends TestFrontend {
   final Directory folder;

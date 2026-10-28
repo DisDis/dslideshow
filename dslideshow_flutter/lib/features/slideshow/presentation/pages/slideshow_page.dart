@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
@@ -14,18 +12,11 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/s
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state_notify_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
-import 'package:dslideshow_flutter/src/effect/creative_transition_effect.dart'
-    show PhotoVhsDamageEffect;
 import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
-import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
-import 'package:dslideshow_flutter/src/effect/radial_blur_effect.dart';
-import 'package:dslideshow_flutter/src/effect/photo_shader_effects.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -33,13 +24,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 import '../bloc/slideshow_slide.dart';
-import '../sessions/cameras_screen_session.dart';
-import '../sessions/special_screen_session.dart';
-import '../widgets/special_screen_renderers.dart';
-import '../widgets/photo_motion.dart';
+import '../sessions/slide_session.dart';
+import '../sessions/slide_session_factory.dart';
+import '../sessions/slide_transition.dart';
 
 class SlideShowPage extends StatelessWidget {
-  const SlideShowPage({super.key});
+  final SlideSessionFactory sessionFactory;
+
+  const SlideShowPage({
+    super.key,
+    this.sessionFactory = const SlideSessionFactory(),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +43,7 @@ class SlideShowPage extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           // Рендеринг слайдшоу (Stateful часть для анимаций)
-          const _SlideshowRenderer(),
+          _SlideshowRenderer(sessionFactory: sessionFactory),
 
           // Оверлеи (Инфо, Меню, Дебаг, Fade)
           const _SlideshowOverlays(),
@@ -97,7 +92,9 @@ class _SlideshowOverlays extends StatelessWidget {
 // Stateful виджет для управления контроллерами анимации и прекэшем
 // Логика принятия решений вынесена в Bloc, здесь только исполнение.
 class _SlideshowRenderer extends StatefulWidget {
-  const _SlideshowRenderer();
+  final SlideSessionFactory sessionFactory;
+
+  const _SlideshowRenderer({required this.sessionFactory});
 
   @override
   _SlideshowRendererState createState() => _SlideshowRendererState();
@@ -110,17 +107,10 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   late FixedAnimationController _effectController;
   late AnimationController _fadeController; // Для Screen Lock
 
-  Widget _currentWidget = slideShowLoaderWidget;
-  Widget _nextWidget = slideShowLoaderWidget;
+  SlideSession? _current;
+  SlideSession? _next;
+  final Set<SlideSession> _retired = {};
   Widget _transitionWidget = slideShowLoaderWidget;
-  VideoSession? _currentVideo;
-  VideoSession? _nextVideo;
-  ImageWidget? _currentImage;
-  ImageWidget? _nextImage;
-  PhotoMotionSession? _currentPhotoMotion;
-  PhotoMotionSession? _nextPhotoMotion;
-  SpecialScreenSession? _currentSpecial;
-  SpecialScreenSession? _nextSpecial;
   SlideshowPhase? _lastPhase;
   bool _screenLocked = false;
   int _loadGeneration = 0;
@@ -145,29 +135,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        final oldVideo = _currentVideo;
-        final oldImage = _currentImage;
-        final oldSpecial = _currentSpecial;
-        final oldMotion = _currentPhotoMotion;
-        // Меняем виджеты местами
-        setState(() {
-          _currentWidget = _nextWidget;
-          _currentVideo = _nextVideo;
-          _currentImage = _nextImage;
-          _currentSpecial = _nextSpecial;
-          _currentPhotoMotion = _nextPhotoMotion;
-          _nextPhotoMotion = null;
-          _nextSpecial = null;
-          _nextVideo = null;
-          _nextImage = null;
-          _nextWidget = slideShowLoaderWidget;
-        });
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (oldVideo != null) _releaseVideo(oldVideo);
-          oldImage?.dispose();
-          oldSpecial?.dispose();
-          oldMotion?.dispose();
-        });
+        _promoteNext();
 
         // Сообщаем блоку, что переход завершен
         context.read<SlideshowBloc>().add(
@@ -187,14 +155,10 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   @override
   void dispose() {
     _loadGeneration++;
-    if (_currentVideo != null) _releaseVideo(_currentVideo!);
-    if (_nextVideo != null) _releaseVideo(_nextVideo!);
-    _currentImage?.dispose();
-    _nextImage?.dispose();
-    _currentPhotoMotion?.dispose();
-    _nextPhotoMotion?.dispose();
-    _currentSpecial?.dispose();
-    _nextSpecial?.dispose();
+    for (final session in [_current, _next, ..._retired]) {
+      if (session != null) _releaseSession(session);
+    }
+    _retired.clear();
     _effectController.dispose();
     _fadeController.dispose();
     super.dispose();
@@ -212,31 +176,16 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         _lastPhase = state.phase;
         if (state.isScreenLocked &&
             state.phase == SlideshowPhase.precaching &&
-            state.nextSlide is SpecialSlide) {
-          // Sleeping cancels preparation, without consuming this screen's turn.
+            (_next?.cancelPreparationOnSleep ?? false)) {
+          // Retry the same special-screen turn after waking.
           _loadGeneration++;
-          _nextSpecial?.dispose();
-          _nextSpecial = null;
+          _replaceNext(null);
+          _nextEffect = null;
         }
-        final playing = !state.isPaused && !state.isScreenLocked;
-        _currentPhotoMotion?.setPlaying(
-          playing && state.phase != SlideshowPhase.transition,
-        );
+        _updateActivity(state);
         final animate =
             !state.isScreenLocked &&
             (!state.isPaused || state.currentSlide == null);
-        _currentSpecial?.setActive(!state.isScreenLocked);
-        if (_nextSpecial != null) {
-          if (state.isScreenLocked) {
-            _nextSpecial!.setActive(false);
-          } else if (state.phase == SlideshowPhase.transition) {
-            _nextSpecial!.setActive(true);
-          }
-        }
-        if (_currentVideo != null) _playVideo(_currentVideo!, playing);
-        if (_nextVideo != null && state.phase == SlideshowPhase.transition) {
-          _playVideo(_nextVideo!, playing);
-        }
         // 1. Логика затемнения экрана (Screen Lock)
         if (state.fadeOut) {
           _fadeController.forward();
@@ -249,10 +198,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
             state.phase == SlideshowPhase.precaching &&
             state.nextSlide != null) {
           final slide = state.nextSlide!;
-          if (slide is SpecialSlide && !state.isScreenLocked) {
-            _handleSpecialPrecache(slide, size, state.effect.createEffect());
-          } else if (slide is MediaSlide) {
-            _handlePrecache(slide.item, size, state.effect.createEffect());
+          if (!state.isScreenLocked || slide is MediaSlide) {
+            unawaited(_prepareNext(slide, size, state.effect.createEffect()));
           }
         }
 
@@ -286,7 +233,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
               // иначе просто текущий виджет.
               child: state.phase == SlideshowPhase.transition
                   ? _transitionWidget
-                  : _currentWidget,
+                  : _current?.view ?? slideShowLoaderWidget,
             ),
 
             // Fade Widget (Черный экран поверх)
@@ -297,159 +244,106 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     );
   }
 
-  // Создание виджета и прекэш
-  Future<void> _handleSpecialPrecache(
-    SpecialSlide slide,
-    Size size,
-    MediaSliderItemEffect effect,
-  ) async {
-    final generation = ++_loadGeneration;
-    final renderer = SpecialScreenRenderers.definitions[slide.config.type];
-    if (renderer == null) {
-      context.read<SlideshowBloc>().add(
-        SlideshowSpecialUnavailableEvent(slide.config.id),
-      );
-      return;
-    }
-    final session = renderer.createSession(slide.config, slide.cameraIndex);
-    _nextSpecial?.dispose();
-    _nextSpecial = session;
-    try {
-      final locked = context.read<SlideshowBloc>().state.isScreenLocked;
-      final ready = !locked && await session.prepare();
-      if (ready) await effect.prepare();
-      if (!mounted || generation != _loadGeneration) return;
-      if (!ready) {
-        session.dispose();
-        _nextSpecial = null;
-        context.read<SlideshowBloc>().add(
-          SlideshowSpecialUnavailableEvent(slide.config.id),
-        );
-        return;
-      }
-      if (session is CamerasScreenSession) {
-        slide.cameraIndex = session.cameraIndex;
-      }
-      if (_nextVideo != null) _releaseVideo(_nextVideo!);
-      _nextImage?.dispose();
-      _nextPhotoMotion?.dispose();
-      setState(() {
-        _nextVideo = null;
-        _nextImage = null;
-        _nextPhotoMotion = null;
-        _nextEffect = effect;
-        _nextWidget = SizedBox(
-          width: size.width,
-          height: size.height,
-          child: renderer.build(session),
-        );
-      });
-      context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
-    } catch (e, st) {
-      if (!session.closed) session.dispose();
-      if (!mounted || generation != _loadGeneration) return;
-      _nextSpecial = null;
-      _log.warning('Special screen unavailable: ${slide.config.id}', e, st);
-      context.read<SlideshowBloc>().add(
-        SlideshowSpecialUnavailableEvent(slide.config.id),
-      );
-    }
+  void _updateActivity(SlideshowState state) {
+    final transitioning = state.phase == SlideshowPhase.transition;
+    final playing = !state.isPaused && !state.isScreenLocked;
+    final screenOn = !state.isScreenLocked;
+    _current?.setActivity(
+      role: transitioning
+          ? SlideSessionRole.outgoing
+          : SlideSessionRole.current,
+      playing: playing,
+      screenOn: screenOn,
+    );
+    _next?.setActivity(
+      role: transitioning
+          ? SlideSessionRole.incoming
+          : SlideSessionRole.pending,
+      playing: playing,
+      screenOn: screenOn,
+    );
   }
 
-  Future<void> _handlePrecache(
-    MediaItem mediaItem,
+  void _replaceNext(SlideSession? session) {
+    final previous = _next;
+    _next = session;
+    if (previous != null) _releaseSession(previous);
+  }
+
+  void _promoteNext() {
+    final previous = _current;
+    setState(() {
+      _current = _next;
+      _next = null;
+    });
+    if (previous == null) return;
+    _retired.add(previous);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_retired.remove(previous)) _releaseSession(previous);
+    });
+  }
+
+  bool _acceptsPreparation(int generation, SlideSession session) =>
+      mounted &&
+      generation == _loadGeneration &&
+      identical(_next, session) &&
+      !session.disposed;
+
+  Future<void> _prepareNext(
+    SlideshowSlide slide,
     Size size,
     MediaSliderItemEffect effect,
   ) async {
     final generation = ++_loadGeneration;
-    _nextSpecial?.dispose();
-    _nextSpecial = null;
-    final video = mediaItem.isVideo
-        ? VideoSession(File(mediaItem.uri!.toFilePath()))
-        : null;
-    final itemWidget = mediaItem.uri == null
-        ? slideShowLoaderWidget
-        : mediaItem.isVideo
-        ? VideoWidget(mediaItem, session: video)
-        : ImageWidget(
-            mediaItem,
-            _appConfig.slideshow,
-            size,
-            pixelRatio:
-                MediaQuery.devicePixelRatioOf(context) *
-                (_appConfig.slideshow.photoMotion.mode ==
-                        PhotoMotionMode.kenBurns
-                    ? PhotoMotionPath.preparationScale
-                    : 1),
-          );
-
+    final slideshow = context.read<SlideshowBloc>();
+    SlideSession? session;
+    _nextEffect = null;
+    _replaceNext(null);
     try {
-      if (itemWidget is ImageWidget) {
-        await itemWidget.precache(context);
-      }
-      await video?.prepare();
-      await effect.prepare();
-
-      if (mounted && generation == _loadGeneration) {
-        if (_nextVideo != null) _releaseVideo(_nextVideo!);
-        _nextImage?.dispose();
-        _nextPhotoMotion?.dispose();
-        final motion =
-            itemWidget is ImageWidget &&
-                !itemWidget.isGif &&
-                _appConfig.slideshow.photoMotion.mode ==
-                    PhotoMotionMode.kenBurns
-            ? PhotoMotionSession(
-                vsync: this,
-                duration: Duration(
-                  milliseconds: _appConfig.slideshow.displayTimeMs,
-                ),
-                config: _appConfig.slideshow.photoMotion,
-                seed: PhotoMotionPath.seedFor(
-                  mediaItem.id ?? mediaItem.uri.toString(),
-                ),
-              )
-            : null;
-        setState(() {
-          _nextVideo = video;
-          _nextImage = itemWidget is ImageWidget ? itemWidget : null;
-          _nextPhotoMotion = motion;
-          _nextEffect = effect;
-          _nextWidget = SizedBox(
-            width: size.width,
-            height: size.height,
-            child: motion?.view(itemWidget) ?? itemWidget,
-          );
-        });
-        // Сообщаем блоку, что картинка готова к показу
-        context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
-      } else {
-        if (video != null) _releaseVideo(video);
-        if (itemWidget is ImageWidget) itemWidget.dispose();
-      }
-    } catch (e, st) {
-      if (video != null) _releaseVideo(video);
-      if (itemWidget is ImageWidget) itemWidget.dispose();
-      if (!mounted || generation != _loadGeneration) return;
-      _log.warning(
-        'Error loading file: "${mediaItem.uri?.toFilePath()}"',
-        e,
-        st,
+      session = widget.sessionFactory.create(
+        slide,
+        config: _appConfig.slideshow,
+        size: size,
+        pixelRatio: MediaQuery.devicePixelRatioOf(context),
+        vsync: this,
       );
-      // В случае ошибки загружаем лоадер как fallback
-      setState(() {
-        if (_nextVideo != null) _releaseVideo(_nextVideo!);
-        _nextImage?.dispose();
-        _nextPhotoMotion?.dispose();
-        _nextVideo = null;
-        _nextImage = null;
-        _nextPhotoMotion = null;
-        _nextEffect = effect;
-        _nextWidget = slideShowLoaderWidget;
-      });
-      // Все равно сообщаем о готовности, чтобы не заблокировать очередь
-      // ignore: use_build_context_synchronously
-      context.read<SlideshowBloc>().add(const SlideshowImageReadyEvent());
+      // Own pending resources before the first await, including native video.
+      _next = session;
+      final ready = await session.prepare(context);
+      if (!_acceptsPreparation(generation, session)) return;
+      if (!ready) {
+        if (slide is SpecialSlide) {
+          _replaceNext(null);
+          slideshow.add(SlideshowSpecialUnavailableEvent(slide.config.id));
+          return;
+        }
+        throw StateError('Media preparation unavailable');
+      }
+      await effect.prepare();
+      if (!_acceptsPreparation(generation, session)) return;
+      session.commitPreparation();
+      setState(() => _nextEffect = effect);
+      _updateActivity(slideshow.state);
+      slideshow.add(const SlideshowImageReadyEvent());
+    } catch (e, st) {
+      if (!mounted || generation != _loadGeneration) return;
+      if (session != null && !identical(_next, session)) return;
+      _replaceNext(null);
+      if (slide is SpecialSlide) {
+        _log.warning('Special screen unavailable: ${slide.config.id}', e, st);
+        slideshow.add(SlideshowSpecialUnavailableEvent(slide.config.id));
+      } else {
+        _log.warning(
+          'Error loading slide: ${(slide as MediaSlide).item.uri}',
+          e,
+          st,
+        );
+        setState(() {
+          _next = PlaceholderSlideSession();
+          _nextEffect = effect;
+        });
+        slideshow.add(const SlideshowImageReadyEvent());
+      }
     }
   }
 
@@ -461,57 +355,17 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     var durationMs = state.effect.options.durationMs == 0
         ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
-    _currentPhotoMotion?.setPlaying(false);
-    if (currentEffect is PhotoVhsDamageEffect) {
-      currentEffect.bindPhotos(
-        _currentImage?.preparedBitmap,
-        _nextImage?.preparedBitmap,
+    if (!bindSlideTransitionPhotos(currentEffect, _current, _next, size)) {
+      _log.warning(
+        'Water Refraction requires two prepared photos; using Fade.',
       );
-    }
-    final bindPhotos = switch (currentEffect) {
-      RadialBlurEffect radial => radial.bindPhotos,
-      PhotoGlassEffect glass => glass.bindPhotos,
-      PhotoFilmDissolveEffect film => film.bindPhotos,
-      _ => null,
-    };
-    if (bindPhotos != null) {
-      final from = _currentImage?.preparedBitmap;
-      final to = _nextImage?.preparedBitmap;
-      if (from != null && to != null) {
-        bindPhotos(
-          from,
-          to,
-          fromCamera: _currentPhotoMotion?.path.transform(
-            size,
-            _currentPhotoMotion!.progress,
-          ),
-        );
-      }
-    }
-    if (currentEffect is WaterRefractionEffect) {
-      final from = _currentImage?.preparedBitmap;
-      final to = _nextImage?.preparedBitmap;
-      if (from == null || to == null) {
-        _log.warning(
-          'Water Refraction requires two prepared photos; using Fade.',
-        );
-        currentEffect = FadeEffect();
-        durationMs = _appConfig.slideshow.effects.defaultDurationMs;
-      } else {
-        currentEffect.bindPhotos(
-          from,
-          to,
-          fromCamera: _currentPhotoMotion?.path.transform(
-            size,
-            _currentPhotoMotion!.progress,
-          ),
-        );
-      }
+      currentEffect = FadeEffect();
+      durationMs = _appConfig.slideshow.effects.defaultDurationMs;
     }
     _effectController.duration = Duration(milliseconds: durationMs);
-    // Capture both slides: completion promotes _nextWidget before Bloc rebuilds.
-    final outgoing = _currentWidget;
-    final incoming = _nextWidget;
+    // Capture views: completion promotes the session before the Bloc rebuilds.
+    final outgoing = _current?.view ?? slideShowLoaderWidget;
+    final incoming = _next?.view ?? slideShowLoaderWidget;
 
     setState(() {
       _transitionWidget = AnimatedBuilder(
@@ -541,18 +395,10 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     }
   }
 
-  void _playVideo(VideoSession session, bool playing) {
-    unawaited(
-      session.setPlaying(playing).catchError((Object e, StackTrace st) {
-        _log.warning('Video playback failed', e, st);
-      }),
-    );
-  }
-
-  void _releaseVideo(VideoSession session) {
+  void _releaseSession(SlideSession session) {
     unawaited(
       session.dispose().catchError((Object e, StackTrace st) {
-        _log.warning('Video disposal failed', e, st);
+        _log.warning('Slide disposal failed', e, st);
       }),
     );
   }

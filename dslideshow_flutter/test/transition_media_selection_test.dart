@@ -9,7 +9,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slidesho
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'screen_transition_test.dart' show TestFrontend;
+import 'support/slideshow_frontend.dart';
 
 void main() {
   for (final effect in [

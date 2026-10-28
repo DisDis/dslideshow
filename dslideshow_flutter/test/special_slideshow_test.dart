@@ -13,7 +13,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/clock
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
-import 'screen_transition_test.dart' show TestFrontend, HiddenHints;
+import 'support/slideshow_frontend.dart';
 
 void main() {
   testWidgets(
@@ -175,6 +175,12 @@ void main() {
           .widget<ClockScreenWidget>(find.byType(ClockScreenWidget))
           .session;
       expect(session.active, true);
+      bloc.add(const SlideshowTogglePauseEvent(true));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      expect(session.active, true);
+      expect(bloc.state.currentSlide, isA<SpecialSlide>());
+      expect(frontend.loads, 1);
       frontend.screens.add(false);
       await tester.pump();
       expect(session.active, false);
