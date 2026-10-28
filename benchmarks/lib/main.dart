@@ -16,7 +16,14 @@ import 'src/runner.dart';
 import 'src/telemetry.dart';
 import 'src/viewport.dart';
 
-Future<void> main() async {
+Future<void> main() => runBenchmark();
+
+/// Runs the same measurement harness with an optional benchmark-only candidate.
+Future<void> runBenchmark({
+  BenchmarkEffectFactory? effectFactory,
+  BenchmarkEffectPreparedCallback? onEffectPrepared,
+  Map<String, Object?>? experimentMetadata,
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
   final output = Directory(
     Platform.environment['BENCHMARK_OUTPUT'] ??
@@ -78,6 +85,7 @@ Future<void> main() async {
         await rootBundle.loadString('assets/build-info.json'),
       ),
       'hardware': await telemetry.initialize(),
+      'experiment': ?experimentMetadata,
     });
     if (!kReleaseMode) {
       store.warnings.add(
@@ -134,6 +142,8 @@ Future<void> main() async {
             catalog: catalog,
             reportDirectory: output,
             onVideoOperation: runner.videoOperation,
+            effectFactory: effectFactory,
+            onEffectPrepared: onEffectPrepared,
             onReady: (driver) async {
               var code = 2;
               try {

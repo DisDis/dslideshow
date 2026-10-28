@@ -413,6 +413,14 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     _loadNext(fromPhotoIndex: _repeatFromIndex, targetIndex: _repeatToIndex);
   }
 
+  Widget _photoView(ui.Image photo) => RepaintBoundary(
+    child: RawImage(
+      image: photo,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+    ),
+  );
+
   Future<void> _loadNext({int? fromPhotoIndex, int? targetIndex}) async {
     if (!mounted || !_active || _paused) return;
     _cancelPending();
@@ -447,11 +455,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         final oldPhoto = _currentPhoto;
         final oldVideo = _currentVideo;
         final oldMotion = _currentMotion;
-        final source = RawImage(
-          image: photo,
-          fit: BoxFit.contain,
-          filterQuality: FilterQuality.high,
-        );
+        final source = _photoView(photo);
         _currentPhoto = photo;
         _currentPhotoIndex = sourceIndex;
         _currentVideo = null;
@@ -489,11 +493,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         next = VideoWidget(MediaItem('preview-video', uri), session: video);
       } else {
         photo = await _photoAt(index, stale);
-        next = RawImage(
-          image: photo,
-          fit: BoxFit.contain,
-          filterQuality: FilterQuality.high,
-        );
+        next = _photoView(photo);
       }
       if (stale()) {
         _release(video);

@@ -1,28 +1,23 @@
 # Unreleased
 
-* Consolidate transition effects into 37 catalog families with 82 built-in
-  presets, including Slice/Panel Wipe. Add typed visual settings throughout,
-  localized preset selection and dependent controls, five Water/Ripple origins,
-  deterministic legacy-family normalization and canonical benchmark reports.
-  Preserve disabled options, personal timing, FixedAnimationController, dense
-  mosaics and full-quality photo refraction. Compare all presets against frozen
-  renderers at 21 phases locally. User visually accepted all replacements;
-  remove temporary reference renderers, comparison tool and generated report
-  after approval, retaining the preset mapping. Device runs are excluded by
-  the user's decision.
+* Improve photo transition performance by caching prepared photos and Phosphor
+  trails, bounding Radial Blur/Glass blend surfaces and reducing Water Refraction
+  texture lookups. Preserve full-resolution photos and dense Mosaic grids.
 
-* Generate special-screen, schedule, clock and camera copyWith with Freezed,
-  preserving mutable editor contracts and compact JSON. Skip unknown screen
-  types while parsing the settings list, log the omission and remove obsolete
-  opaque options/type preservation. Keep nested camera drafts isolated.
+* Consolidate transition effects into 37 catalog families with 82 built-in
+  presets, including Slice/Panel Wipe. Add typed visual settings, localized preset
+  selection, dependent controls, five Water/Ripple origins and deterministic
+  legacy-family normalization. Preserve disabled options, personal timing,
+  dense mosaics and full-quality photo refraction.
+
+* Skip unknown special-screen types while parsing settings and log the omission.
+  Keep nested camera drafts isolated from the saved configuration.
 
 * Store per-effect settings in an immutable map keyed by EffectType; remove
-  the redundant type field from EffectConfig. Keep field and Save validation
-  in config_app only. Let effect settings strip their own defaults; omit empty
-  sections normally and use Fade for absent or empty selections on the frame.
-  Apply the same self-contained JSON serialization to special screens, schedules
-  and camera settings; remove the slideshow storage wrapper and preserve required
-  identities and sources.
+  the redundant type field from EffectConfig. Validate fields and Save in
+  config_app. Omit default values and empty sections from effect, special-screen,
+  schedule and camera JSON while preserving required identities and sources.
+  Use Fade for absent or empty effect selections on the frame.
 
 * Add a shared ARGB ColorPicker with alpha and Apply/Cancel to effect, slideshow
   background and clock settings. Preserve incomplete manual input and close
@@ -34,113 +29,63 @@
   catalog, including global/custom timing and RU/EN labels.
 
 * Match global/custom duration field spacing in the effect editor and reserve
-  preview loading indicator space to prevent layout shifts. Add layout regressions.
+  preview loading indicator space to prevent layout shifts.
 
-* Require Freezed for data models; generate effect settings copyWith/equality and
-  keep per-effect configuration immutable.
-* Store transition effects as typed per-effect settings with durationMs=0 for
-  global timing, retained disabled custom options and empty-set Fade fallback.
-  Consolidate 81 entries into 51 configurable types, add the searchable adaptive
-  settings catalog and shared preview between photos with a Repeat button,
-  validate settings in config_app, and retain all 684 benchmark
-  scenarios as parameterized variants. Cover storage, options, rendering, draft
-  validation and RU/EN editing locally; device runs are excluded at the user's request.
+* Add a searchable adaptive effect settings catalog and shared photo-to-photo
+  preview with a Repeat button. Retain custom options for disabled effects,
+  support inherited or personal timing and validate changes before Save.
 
 * Add Burn Alpha, Fold Motion, Glow, Kaleidoscope, TV Power, Spring Motion,
   Shape Dissolve, VHS Damage, Radial Blur and Phosphor to the frame and settings
-  preview, with Russian/English labels and shared live media sessions. Cover
-  visuals, endpoints, configuration, preview and resource ownership locally;
-  device testing is omitted at the user's request.
+  preview, with Russian/English labels and shared live media sessions.
 
 # 13.1.0+1 — 2026-10-27
 
-* Update the benchmark matrix regression and documentation to 624 cases;
-  verify every registered effect across all six primary media directions.
-
 * Add linear-light Film Dissolve, Frame, Louver, Mirror and Neon Wipe to the
   frame and settings preview, with Russian/English labels and shared live media
-  sessions. Cover color blending, geometry, mask replacement, endpoints and
-  resource ownership locally; no device run is performed at the user's request.
+  sessions.
 
 * Add Clock Wipe, Split, Panel Wipe, Stretch and Star Wipe to the frame and
   settings preview, with Russian/English labels, live media layers and shared
-  video sessions. Add local geometry, endpoint, resource and preview regressions;
-  device testing is omitted at the user's request.
+  video sessions.
 
 * Add Light Leak, Film Roll, Cross Zoom, Whip and faceted Glass to the frame
-  and settings preview, with localized labels, live GIF/video composition,
-  shared video sessions and local visual/configuration/lifecycle regressions.
+  and settings preview, with localized labels, live GIF/video composition and
+  shared video sessions.
 
 * Add Soft Wipe, Light Sweep, Slice, Luma Fade and Page Peel to the shared
   slideshow registry and settings preview, with Russian/English labels and
-  live GIF/video composition. Add local pixel, lifecycle and configuration
-  regressions; device testing is omitted at the user's request.
+  live GIF/video composition.
 
 # 13.0.0+1 — 2026-10-27
 
 * Fix FFmpeg 5.1 SIGSEGV while flattening thumbnail alpha: draw the opaque
   background in RGB before overlay and advance thumbnail policy to 4. Add gallery
   request/cache/catalog/process diagnostics with bounded native stderr, exit codes
-  and timings; print supplied stack traces in console logs. Reproduce the failure
-  and verify the fix on RaPi, FFmpeg 5.1.9 and 8.0.1; add local logging regressions.
+  and timings; print supplied stack traces in console logs.
 
-* Reuse static final regular expressions throughout backend, configuration UI,
-  metrics widgets, tests and benchmark tools. Remove interpolated patterns from
-  disk/proc parsing and record the repository-wide RegExp lifetime rule in AGENTS.md.
-
-* Generate all gallery thumbnails as JPEG through one FFmpeg process per job,
-  without ffprobe or per-request Dart isolates. Preserve EXIF and square sizes,
-  flatten alpha on a configurable background, select representative animation/video
-  frames with the thumbnail filter, and show video posters in the grid. Add gallery
-  configuration with enum size choices, quality, frame selection, four default
-  workers, queue/cache/timeout and media-stream limits. Use policy 3 plus render
-  settings in cache identities, MD5 content ETags and cache checksums; discard old
-  derivatives. Remove the runtime image dependency, require ffmpeg in the DEB,
-  and cover codecs, cancellation, settings and caches with local tests.
-
-* Add a standalone local Ambient API probe for device OAuth, album-source
-  selection, paginated media listing and photo/video downloads. Preserve
-  backend code; add resumable private state, bounded downloads, diagnostics,
-  loopback HTTP regressions and local setup documentation.
-
-* Record the deferred three-level RPC contract coverage checks and a proposed
-  Google Photos client/FFmpeg thumbnail implementation plan; implementation
-  of the Google Photos client automation remains pending; the FFmpeg step is
-  tracked separately above.
-
-* Generate the RPC serializer registry from @RpcSerializers using a separate
-  local rpc_serializers_generator build_runner package. Preserve all 57 wire
-  tags and codec behavior, remove the stale CLI registry generator, and add
-  builder/codec regressions, pre-build tests and generation documentation.
-
-* Extract frame snapshot collection and frontend-state request coalescing into
-  FrameStateReader. Preserve isolate boundaries, shared frontend deadlines,
-  control acknowledgement freshness and shutdown behavior; add local reader
-  and RPC race regressions and update backend documentation.
-
-* Extract WebSocketUser into its own file and device-event subscriptions into
-  DeviceEventBindings. Preserve isolate boundaries, event mapping, logging and
-  cleanup order; add protocol/subscription regressions and backend documentation.
+* Generate gallery thumbnails as JPEG through one FFmpeg process per job.
+  Preserve EXIF and square sizes, flatten alpha on a configurable background,
+  select representative animation/video frames and show video posters in the grid.
+  Add gallery settings for thumbnail size, quality, frame selection, four default
+  workers, queue/cache/timeout and media-stream limits. Include policy 3 and render
+  settings in cache identities, use MD5 content ETags and discard old derivatives.
+  Require FFmpeg at runtime for thumbnail generation.
 
 # 12.0.0+2 — 2026-10-27
 
-* Run production package and build-tool tests automatically before DEB staging,
-  version increments and compilation. Stop on failure, preserving previous
-  staging and versions; add failure-propagation and packaging regressions.
-
-* Speed up new Linux gallery cache entries by completing writes and atomic
-  publication without per-file durability flushes. Increase the native encoded
-  cache to 512 MiB / 2048 objects and document power-loss recovery limits.
-  Abort failed HTTP-to-cache transfers and cover corruption recovery, capacity
-  and cleanup. Keep returning consumers and cancelling prefetches behind actual
-  transport cleanup; preserve original media and server thumbnail generation.
+* Speed up new Linux gallery cache entries with atomic publication without
+  per-file durability flushes. Increase the encoded cache to 512 MiB / 2048
+  objects. Abort failed HTTP-to-cache transfers and wait for transport cleanup
+  before returning consumers or cancelling prefetches. Preserve original media
+  and server thumbnail generation.
 
 * Increase the default server thumbnail disk cache to 512 MiB / 2048 objects.
 
 * Remove synchronous metadata rewrites/fsync from Linux gallery cache hits.
-  Keep live LRU updates in memory and coalesce advisory recency at backing close,
-  preserving atomic payload publication, bounded storage and decoder pins.
-  Add warm-hit/read-only metadata regressions and a frozen native-cache probe.
+  Keep live LRU updates in memory and coalesce advisory recency when the backing
+  store closes, preserving atomic payload publication, bounded storage and decoder
+  pins.
 
 * Add RPC telemetry per direction: occupied slots, waiting requests, peaks,
   counters/rates, durations, oldest requests and receiver handlers. Collect
@@ -149,27 +94,24 @@
 
 * Increase the default inter-isolate RPC capacity from 5 to 25 outstanding
   requests per direction, preserving explicit limits and existing timeout
-  behavior. Add a regression for saturation and slot reuse.
+  behavior.
 
 * Add lazy server gallery thumbnails and a revisioned catalog while preserving
   originals for fullscreen and the frame. Share a viewport-prioritized image
   queue with cancellation, single-flight, bounded encoded caches and decode
   admission across gallery routes. Publish uploads/GooglePhoto atomically with
-  persistent revisions; add conditional/Range/CORS responses, resource budgets,
-  lifecycle regressions and frozen local HTTP/Chrome comparisons. Raspberry Pi
-  performance and visual acceptance remain pending a separate hardware run.
+  persistent revisions; add conditional/Range/CORS responses and resource budgets.
 
 * Add authenticated frame telemetry and remote pause/resume, menu and screen
-  controls to config_app. Read presence from the MQTT source and report actual
-  frame software/display details, screen transitions and stale samples. Bound
-  polling to visible pages, confirm control intent, handle timeouts without
-  replaying commands, and cover protocol, lifecycle and localized adaptive UI
-  with local tests. Hardware checks are excluded by agreement.
+  controls to config_app. Read presence from MQTT and report actual frame
+  software/display details, screen transitions and stale samples. Bound polling
+  to visible pages, confirm control intent and handle timeouts without replaying
+  commands.
 
 * Report measured Raspberry Pi 5 fan RPM through the existing sensor script,
   DTOs and widget. Discover the board tachometer without a fixed hwmon index;
   omit unavailable readings, preserve valid zero RPM and other sensors, and
-  log partial collection diagnostics. Add local sysfs, RPC and widget regressions.
+  log partial collection diagnostics.
 
 * Add Linux desktop video playback to config_app with a media_kit/libmpv
   backend while retaining video_player_web for browsers. Handle gallery player
@@ -177,9 +119,8 @@
   stop failed video previews and guard them when a backend is unavailable.
   Hidden gallery overlays no longer intercept player controls.
 
-* Fix replaying the welcome preview throwing a Flutter assertion with an
-  explicitly synchronous replay handler that keeps TickerFuture out of setState;
-  cover replay during forward/reverse playback and after completion.
+* Fix replaying the welcome preview throwing a Flutter assertion during or
+  after playback.
 
 * Add configurable snapshot timeouts and localized no-image placeholders to
   special camera screens, including failed refreshes and recovery. Add separate
@@ -191,126 +132,84 @@
   preserve the active route and draft. Add a persistent Save/Undo bar, readable
   validated forms and masked secrets. Provide adaptive live slideshow, welcome
   and special-screen previews with device-scale composition and bounded cleanup.
-  Localize the media, Wi-Fi, OTA and power screens and cover UI state/lifecycle
-  regressions without changing the photoframe renderer or runtime.
+  Localize the media, Wi-Fi, OTA and power screens.
 
 * Fix config_app startup getting stuck on `/splash` when authentication status
-  arrives before the UI mounts. Resolve login/home from the current state in
-  the router and remove delayed splash navigation; cover startup transitions.
+  arrives before the UI mounts. Resolve login/home from the current connection
+  state and remove delayed splash navigation.
 
 * Make backend media selection linear over a full random cycle and build disk
   indexes asynchronously with serialized selection and lifecycle guards.
   Coalesce SystemInfo requests, reuse short-lived snapshots and bound system
   commands while preserving metric DTOs and legacy missing-value behaviour.
-  Reduce routine RPC/WebSocket logging and add local backend regressions and
-  baseline/candidate measurements without changing frontend rendering.
+  Reduce routine RPC/WebSocket logging.
 
 * Keep config_app edits in an isolated in-memory draft, serialize Save/Reload,
   acknowledge successful writes and retain drafts on operation errors. Confirm
   discard on navigation, logout and reload; guard browser unload and disable
   pointer/keyboard editing during requests. Download the saved configuration
   from disk while preserving active services until an application restart.
-  Add backend, widget, navigation and Chrome DOM regressions.
 
 * Stream media and manual/automatic OTA downloads into temporary files, enforce
   actual byte and concurrency limits, and await close before atomic publication.
-  Authenticate legacy OTA uploads before the file body, serialize installation,
-  and add local failure/lifecycle regressions with a fake installer.
+  Authenticate legacy OTA uploads before the file body and serialize installation.
 
 * Harden config_app WebSocket/RPC connection ownership, client close codes,
   handshake/request timeouts and cleanup. Cancel stale authentication attempts,
-  handle network-operation failures, and remove sensitive payloads from client
-  diagnostics. Add lifecycle/error regressions and the staged improvement plan.
-
-Build verification and remaining hardware limitations are recorded in
-[the release record](doc/release-12.0.0.md).
+  handle network-operation failures and remove sensitive payloads from client
+  diagnostics.
 
 # 10.1.0+1 — 2026-10-25
 
 * Align generated clock JSON defaults with the configured 50% time font size;
-  preserve explicit sizes and cover compact save/reload without default drift.
+  preserve explicit sizes and compact save/reload without default drift.
+
 * Add Noise Dissolve, circular Ripple Reveal and photo-only Water Refraction
   with localized wave-front displacement and full-quality image sampling.
   Filter transitions by media capability before selection/preparation.
 * Add opt-in Ken Burns photo motion, bounded pause/sleep/resume and stable camera
   ownership across transitions; retain extra prepared pixels for zoom quality.
-  Add typed configuration, localized controls, previews and lifecycle regressions.
-* Add focused OpenGL photo/GIF/video and visual suites in the separate benchmark
-  application, including camera-specific audits and explicit unsupported media.
+  Add typed configuration, localized controls and previews.
 
-* Batch LiquidMorph path vertices without changing wave geometry, sampling or
-  source lifetimes; verify lower UI cost with reverse-order RaPi5 OpenGL A/B.
-  Retain the original Accordion after its grouped-transform experiment failed
-  to show a repeatable gain. Add opt-in composition controls, pixel regressions
-  and focused photo/GIF/video suites; report raster bottlenecks separately.
+* Reduce LiquidMorph path-processing cost while preserving wave geometry,
+  image sampling and source lifetimes.
 
 * Hold the screen black for 2000 ms after a successful hardware ON before fading
-  in. Keep the delay in ScreenService.wakeUpDelay; preserve cancellation,
-  duplicate-event handling and manual sleep priority during display warm-up.
-  Derive wake-delay regression timings from the constant so it can be tuned
-  without retaining assumptions about the earlier 500 ms delay.
+  in. Preserve cancellation, duplicate-event handling and manual sleep priority
+  during display warm-up.
 
 * Reduce Canvas Mosaic/MosaicFade mask work by sorting thresholds during
   preparation and drawing exact alpha groups as points. Preserve dense grids,
   cell boundaries, original schedules and FixedAnimationController behaviour.
-* Add opt-in mosaic drawing probes and focused RaPi5 OpenGL photo/GIF/video
-  suites; audit every selected grid with full-resolution RGBA fingerprints.
 * Add an explicit, cancellable fadingIn screen phase after hardware wake and
   fade-out reversal. Preserve manual sleep priority and the original reveal
   deadline across brief presence changes; initialize sleeping renderers black.
-* Add backend and widget regressions for full wake, reverse transitions, duplicate
-  ON events, stale completion and cleanup. Physical frame validation is pending.
-
-Build verification and remaining hardware limitations are recorded in
-[the release record](doc/release-10.1.0.md).
 
 # 10.0.0+2 — 2026-10-25
 
-* Fix DEB checksum manifests to use paths relative to the package root;
-  add a regression check that builds and extracts a fixture package.
 * Add extensible special slideshow screens with clocks and direct HTTP/HTTPS
   JPEG/PNG cameras, grid/round-robin playback, scheduling and lifecycle cleanup.
-* Add config_app screen editors/previews and per-type default stripping on save;
-  use enums and JsonSerializable configuration models with round-trip tests.
+* Add config_app screen editors/previews and per-type default stripping on save.
+
 * Fix camera cursor advancement, refresh deadlines and snapshot cancellation;
-  retain pending screens and freeze transitions during pause/sleep. Keep compact
-  serialization in the owning configuration models and add regression tests.
-* Split clock/camera widgets, playback sessions and the renderer registry into
-  separate files.
+  retain pending screens and freeze transitions during pause/sleep. Preserve
+  compact configuration serialization.
 
 * Reduce ZoomOver opacity-layer bounds to the viewport while preserving visible
-  pixels and animation curves; verify the improvement with OpenGL A/B on RaPi5.
+  pixels and animation curves.
+
 * Reduce BlurFade compositing overhead with a composed Gaussian/alpha filter
-  and explicit decal edges; preserve the original fade for zero sigma and verify
-  exact full-resolution RGBA frames and smooth progress on RaPi5 OpenGL.
-* Add opt-in BlurFade component/composition probes, focused photo/GIF/video
-  configurations and full-frame RGBA fingerprints to the separate benchmark app.
-* Use OpenGL as the default benchmark renderer; defer Vulkan device runs until
-  the native runtime supports video. Add focused ZoomOver/BlurFade photo/GIF,
-  video and visual regression configurations.
+  and explicit decal edges; preserve the original fade for zero sigma.
+
 * Cancel screen sleep and reverse fading immediately when presence returns;
   serialize hardware power changes and ignore superseded asynchronous results.
   Preserve manual sleep priority and handle stale manual lock RPC responses.
 * Replace dropped GPIO edges with immediate presence and confirmed absence;
-  dispose screen timers/subscriptions and add Linux backend/Flutter regressions.
-  Physical display/GPIO acceptance remains pending.
-* Update Flutter/Dart dependencies and Linux desktop build support, including
-  GTK dependency checks and the Snap VS Code environment fix.
+  dispose screen timers and subscriptions.
+
 * Improve image/video resource handling and transition rendering; preserve
   FixedAnimationController behaviour, original image quality and dense mosaic grids.
 * Correct Cube, Tablet, Flip and Zoom Out transforms for the 2560×1600 display.
-* Add the standalone automatic Raspberry Pi benchmark app with OpenGL/Vulkan
-  suites, large media fixtures, telemetry, visual audits and portable reports.
-* Skip unsupported Vulkan video by default, with an explicit opt-in for future
-  runtimes. Preserve native crash and cleanup errors in aggregated reports.
-* Document RaPi5 deployment, unattended test runs, flutter-pi source locations,
-  performance validation, agent workflow and DEB release/version handling.
-* Synchronize backend/frontend release versions to 10.0.0+2. Native OpenGL
-  video-to-video crashes remain under investigation; flutter-pi changes,
-  device firmware updates and the 24-hour soak test are deferred.
-
-Build verification and remaining hardware limitations are recorded in
-[the release record](doc/release-10.0.0.md).
 
 # 9.5.3+2
 
@@ -371,7 +270,6 @@ New menu UX
 
 # 9.0.0
 
-Migrate SlideShowPage to StatelessWidget
 SlideshowPreview: displayTime = 1000ms
 
 # 8.4.6

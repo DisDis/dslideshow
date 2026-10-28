@@ -1,5 +1,8 @@
 # Автоматические бенчмарки DSlideShow на Raspberry Pi
 
+История стенда и его инструментов — в [собственном changelog](changelog.md).
+Изменения приложений описываются в [корневом changelog](../changelog.md).
+
 [Новый формат эффектов и локальные проверки](../doc/effect-settings.md):
 37 типов и 82 пресета в приложении; standard сохраняет 684 сценария за счёт явных вариантов
 в `lib/src/effect_variants.dart`. ID включает параметры; отчёт — `effect_config`.
@@ -42,6 +45,150 @@
 и `effect-options-performance.json` остаются для необязательной последующей
 диагностики, без Vulkan/24h и без изменения runtime. В текущей задаче аппаратный
 прогон не требуется по решению пользователя.
+
+Для отдельного исследования производительности после обновления каталога
+используйте [двухэтапный фото-прогон](../doc/effect-performance-2026-10.md).
+`flutter test --no-pub tool/prepare_effect_screening_test.dart` создаёт
+`build/effect-screening/screening.json` и `catalog.json` непосредственно из
+production-каталога: все 37 defaults и 82 пресета, одинаковые настройки
+измеряются один раз. Первый проход — только фото→фото, без прогрева,
+один повтор, Mosaic 100×100/Canvas, без захвата кадров и намеренных stall.
+Отбор для повторного измерения — `sampled_fps < 25`; ошибки и отсутствующие
+измерения требуют отдельного разбора. Это предварительный отбор, не A/B.
+
+### Входные фото как в основном приложении
+
+Для измерения обычных переходов фото→фото включите в JSON
+`"production_photo_inputs": true`. Подготовленное фото передаётся эффекту в
+`SizedBox` размера viewport, как в основном слайдшоу, без добавочных чёрной
+подложки и `RepaintBoundary` на каждом входе. Общая граница захвата стенда
+сохраняется; качество, размер подготовки и освобождение
+изображений не меняются. По умолчанию поле выключено для воспроизводимости
+прежних отчётов. GIF/видео, Ken Burns, компонентные blur/mosaic/composition-пробы
+и случаи с намеренным stall сохраняют прежние входные слои даже при opt-in.
+Включайте одинаковое значение в baseline и candidate; результаты с разными
+входными слоями требуют нового baseline и не являются A/B оптимизации эффекта.
+
+Обычные входы не имеют `GlobalKey`: эффекты Glass, Radial Blur и Phosphor
+монтируют несколько представлений одного медиа. Глобальный ключ оставлен
+только у исходящего слайда bitmap-проб BlurProbe, где он нужен для доступа
+к одному `RenderImage`. Прежний общий ключ переносил исходящий виджет между
+ветками даже в release и искажал многослойную нагрузку; для таких эффектов
+нужны новые baseline/candidate с исправленным стендом. Общие подготовленные
+bitmap и видеосессии по-прежнему принадлежат одному владельцу на медиа.
+
+После ручного визуального принятия оптимизированных эффектов временные копии
+original/reference, их shader и одноразовый pixel-comparison target удалены из
+рабочих исходников. Завершённый audit, его release-bundle и source archive
+сохранены в `reports/effect-performance-2026-10-28/corrected-harness/egl-pixels-painted-bootstrap/`;
+сырые результаты и строгие статусы проверок остаются прежними. Ручное принятие
+визуальных отличий не превращает несовпавшие пиксельные проверки в passed.
+
+Универсальные [EGL backbuffer capture](tool/egl_capture/README.md), Dart IPC helper
+и его тесты сохранены: wrapper с `LD_PRELOAD`, native swap-barrier и RGBA8
+readback проверяют реально закешированные OpenGL-текстуры. Для повторения
+завершённого audit используйте сохранённые архивы; измерения производительности
+с interposer недействительны. Отдельные эксперименты Stretch/CrossZoom/Radial
+и их тесты продолжают существовать независимо от удалённых эталонных копий.
+
+### Эксперимент Stretch / CrossZoom с retained sampling
+
+`lib/src/experimental/retained_transform_effects.dart` содержит отдельные
+`OptimizedStretchEffect` и `OptimizedZoomOverEffect` (режимы over/cross).
+Они используют исходные production-классы как неизменённые композиции и сохраняют
+формулы, easing, origin/axis, opacity, clipping, blur и живые дочерние виджеты.
+Только собственные масштабирующие `Transform` эффекта получают
+`filterQuality: FilterQuality.high`: Flutter рисует дочерний слой через retained
+matrix filter. Чужие трансформации внутри медиа не переписываются; снимки,
+дополнительные декодеры и bitmap-ресурсы не создаются.
+
+Это **эксперимент с изменением пикселей**, пока не принятая оптимизация.
+Предыдущая локальная проверка этой схемы на 2560×1600 дала максимум 3 уровня
+канала для CrossZoom и 23 для Stretch; измерения не доказывают визуальную
+эквивалентность или выигрыш FPS. Небольшие отличия разрешены пользователем только
+после ручного сравнения. Обычный `lib/main.dart` и каталог приложения используют
+текущие production-классы без экспериментальной подстановки.
+
+Отдельный `lib/effect_transform_experiment.dart` запускает обычный стенд через
+необязательную `BenchmarkViewport.effectFactory`; `null` сохраняет production
+фабрику, компонентные composition/mosaic-пробы не подменяются. В metadata
+сохраняется `experiment.id=retained-high-transform` и экспериментальный статус.
+Новых конфигурационных моделей или флагов основного приложения нет.
+Дополнительный optional `onEffectPrepared(effect, from, to)` вызывается после
+`prepare()` перед монтированием: shader-кандидат может заимствовать подготовленные
+bitmap до `release()`, без клонирования/освобождения владельца. Для GIF/видео
+соответствующий аргумент равен `null`; обычный entrypoint callback не задаёт.
+
+Тот же entrypoint также включает эксперимент `ShaderRadialBlurEffect`;
+его `onEffectPrepared` binder требует два подготовленных статических фото.
+Свойства Radial описаны в разделе его эксперимента ниже.
+
+`tool/build_info.py` включает в `source_sha256` исходники `benchmarks/shaders/`
+наряду с Dart-кодом, конфигурацией и инструментами. Изменение `.frag` или его
+asset-пути меняет fingerprint; `assets/build-info.json`, `build/` и `.dart_tool/`
+в него не входят. Перед matched baseline/candidate сборками сохраните одинаковые
+исходники и сгенерируйте provenance штатной командой, а каждый bundle архивируйте
+отдельно. Регрессии fingerprint:
+`PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p test_build_info.py -v`.
+
+`config/retained-transform-experiment.json` задаёт Stretch, CrossZoom и Radial Blur,
+фото→фото, production-входы, один прогрев и три измеряемых повтора. Для matched
+release-пары на одном frozen SDK/engine/source используйте разные targets:
+
+```sh
+# Из benchmarks/, с уже разрешёнными зависимостями; сохранить каждый bundle
+# вместе с build-info и SHA до сборки следующего target.
+python3 tool/build_info.py pi5 release
+flutterpi_tool build --arch=arm64 --cpu=pi5 --release --target=lib/main.dart
+# Архивировать build/flutter-pi/pi5-64 как baseline.
+flutterpi_tool build --arch=arm64 --cpu=pi5 --release --target=lib/effect_transform_experiment.dart
+# Архивировать build/flutter-pi/pi5-64 как experimental candidate.
+./run.sh --renderers opengl --bundle /path/to/baseline \
+  --config config/retained-transform-experiment.json --output reports/transform-baseline
+./run.sh --renderers opengl --bundle /path/to/candidate \
+  --config config/retained-transform-experiment.json --output reports/transform-candidate
+```
+
+Остановка службы и независимое восстановление обязательны по
+[аппаратному руководству](../doc/raspberry-pi-benchmarks.md). Не используйте EGL
+capture interposer для этих FPS-прогонов. Сравнивайте одинаковые оригиналы,
+runtime, разрешение и условия; кандидат требует отдельного ручного сравнения
+в preview перед переносом в production. Локальные проверки эксперимента:
+`flutter test --no-pub test/retained_transform_effects_test.dart test/viewport_test.dart`
+и `flutter analyze --no-pub`.
+
+### Эксперимент RadialBlur с одним fragment shader
+
+`lib/src/experimental/shader_radial_blur_effect.dart` содержит отдельный
+`ShaderRadialBlurEffect`. Совмещённый `lib/effect_transform_experiment.dart`
+подставляет его только для RadialBlur наряду с экспериментами Stretch/CrossZoom.
+Обычный production-каталог не меняется; исторические эталоны доступны в source archives.
+
+Шейдер читает два **исходных подготовленных bitmap полного разрешения** и
+сохраняет все девять лучей, формулы масштаба и поворота, выбранный origin и
+`Curves.easeInOutCubic`. Вместо девяти поверхностей композиции он выполняет
+девять пар bilinear lookup в одном проходе. Sampling отличается от
+`FilterQuality.high`, а source-over вычисляется в float без округления каждой
+промежуточной RGBA8-поверхности. Это визуальный эксперимент с допустимыми для
+ручной оценки отличиями; локальные тесты не доказывают совпадение произвольных
+фото или выигрыш FPS. Число лучей, углы и разрешение не уменьшаются.
+
+API: `prepare()`, затем `bindPhotos(from, to, fromCamera: matrix)`. Изображения
+заимствуются до снятия всех представлений; декодирование, снимки и клоны не
+создаются. Необязательная исходящая камера копируется и поддерживает контракт
+PhotoMotion: положительный uniform scale и translation вокруг центра viewport.
+Произвольные rotation/skew/perspective отвергаются. Endpoint-виджеты остаются
+живыми входами вызывающего кода, уже содержащими его камеру. В FPS-прогоне
+камера по умолчанию единичная. Каждый render object освобождает свой shader при
+снятии, не освобождая bitmap владельца; GIF/видео не поддерживаются экспериментом.
+
+Локальная проверка без RaPi5:
+`flutter test --no-pub test/shader_radial_blur_effect_test.dart`. Она проверяет
+пять origin, smooth-gradient геометрию, endpoints, camera, повторное использование
+shader, смену sampler и раздельное освобождение ресурсов. Для аппаратной пары
+используйте тот же входной JSON с RadialBlur для `lib/main.dart` и совмещённого
+экспериментального target, один frozen runtime/SDK/engine и отдельные архивы.
+EGL capture не включают в FPS-прогон; визуальные отличия оценивают отдельно.
 
 ## Диагностика Accordion / LiquidMorph
 
@@ -506,6 +653,13 @@ rsync -a --partial --append-verify --timeout=600 \
 Процессный CPU может превышать 100% на нескольких ядрах. HWM — максимум процесса с запуска;
 периодический RSS может не поймать короткий пик. RSS сам по себе не доказывает утечку.
 Приоритет имеют тенденции после прогрева, HWM, FD/потоки и ошибки в длительном прогоне.
+
+`tool/compare_effect_performance.py` сравнивает raw-коллекции с проверкой условий
+и полноты измерений. Прогрев в `runs.jsonl`/`frames.jsonl` имеет `phase=warmup`,
+`cycle=0`, отрицательные `repeat` от `-config.warmups` до `-1`; измеряемые повторы
+начинаются с нуля. Прогрев не входит в FPS и хвосты FrameTiming, но его валидные
+`warmup:<case>:-N` telemetry samples входят в память/SwapFree. Некорректные номера,
+ошибки прогрева и дубликаты не превращаются в успешные измерения.
 
 В release FrameTiming доставляется пакетами примерно раз в секунду, поэтому
 сбор хвоста ожидается отдельно (`timing_drain_ms>=1000`, по умолчанию 1200).

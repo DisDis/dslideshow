@@ -167,8 +167,10 @@ class _RenderWater extends RenderBox {
       ..setFloat(12, _data.options.refractionStrength)
       ..setFloat(13, _data.options.waveFrequency)
       ..setFloat(14, _data.options.bandWidth)
-      ..setImageSampler(0, from)
-      ..setImageSampler(1, to);
+      // The shader combines the positive middle Catmull-Rom weights through
+      // bilinear sampling; its negative lobes remain separate lookups.
+      ..setImageSampler(0, from, filterQuality: ui.FilterQuality.low)
+      ..setImageSampler(1, to, filterQuality: ui.FilterQuality.low);
     final canvas = context.canvas;
     canvas.save();
     canvas.translate(offset.dx, offset.dy);

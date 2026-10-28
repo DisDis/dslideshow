@@ -380,14 +380,18 @@ class CreativeTransitionEffect extends MediaSliderItemEffect {
             for (var i = 0; i < 9; i++)
               Opacity(
                 opacity: 1 / (i + 1),
-                child: Transform.rotate(
-                  alignment: effectOrigin(o.origin),
-                  angle: (i - 4) / 4 * (o.angleDegrees * math.pi / 180) * e,
-                  child: Transform.scale(
-                    // Inverse rotation moves a point by at most
-                    // 2*sin(angle/2)*diagonal; centred scaling covers it.
-                    scale: scale,
-                    child: _blend(from, to, motion),
+                // Keep each averaging surface within the final viewport.
+                // The rotated/scaled scene can have much larger paint bounds.
+                child: ClipRect(
+                  child: Transform.rotate(
+                    alignment: effectOrigin(o.origin),
+                    angle: (i - 4) / 4 * (o.angleDegrees * math.pi / 180) * e,
+                    child: Transform.scale(
+                      // Inverse rotation moves a point by at most
+                      // 2*sin(angle/2)*diagonal; centred scaling covers it.
+                      scale: scale,
+                      child: _blend(from, to, motion),
+                    ),
                   ),
                 ),
               ),
@@ -409,27 +413,31 @@ class CreativeTransitionEffect extends MediaSliderItemEffect {
               ),
             ),
             for (var i = o.trailCount; i >= 1; i--)
-              Opacity(
-                opacity:
-                    (e *
-                            (1 - motion) *
-                            (o.trailCount == 3
-                                ? (4 - i)
-                                : (o.trailCount + 1 - i) *
-                                      12 /
-                                      (o.trailCount * (o.trailCount + 1))) *
-                            .18 *
-                            o.trailStrength *
-                            _trailColor.a)
-                        .clamp(0, 1),
-                child: Transform.translate(
-                  offset: Offset(
-                    -screenW * o.driftFraction * math.max(0, motion - i * .09),
-                    0,
-                  ),
-                  child: _blur(
-                    ColorFiltered(colorFilter: _trailFilter, child: from),
-                    unit * .012 * i,
+              Transform.translate(
+                offset: Offset(
+                  -screenW * o.driftFraction * math.max(0, motion - i * .09),
+                  0,
+                ),
+                child: Opacity(
+                  opacity:
+                      (e *
+                              (1 - motion) *
+                              (o.trailCount == 3
+                                  ? (4 - i)
+                                  : (o.trailCount + 1 - i) *
+                                        12 /
+                                        (o.trailCount * (o.trailCount + 1))) *
+                              .18 *
+                              o.trailStrength *
+                              _trailColor.a)
+                          .clamp(0, 1),
+                  // Alpha now sees stable filter children, before translation
+                  // changes their position in the parent composition.
+                  child: RepaintBoundary(
+                    child: _blur(
+                      ColorFiltered(colorFilter: _trailFilter, child: from),
+                      unit * .012 * i,
+                    ),
                   ),
                 ),
               ),

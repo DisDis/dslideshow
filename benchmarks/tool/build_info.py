@@ -16,18 +16,24 @@ def output(*args):
     return result.stdout.strip()
 
 
-def main():
+def source_fingerprint(root: Path, app: Path) -> str:
+    """Hash build inputs, excluding generated build-info and build outputs."""
     source = hashlib.sha256()
-    for folder in [APP / "lib", ROOT / "dslideshow_flutter/lib", ROOT / "backend/lib", ROOT / "common/lib"]:
+    for folder in [app / "lib", app / "shaders", root / "dslideshow_flutter/lib",
+                   root / "backend/lib", root / "common/lib"]:
         for file in sorted(f for f in folder.rglob("*") if f.is_file()):
-            source.update(str(file.relative_to(ROOT)).encode())
+            source.update(str(file.relative_to(root)).encode())
             source.update(file.read_bytes())
-    for file in [APP / "pubspec.lock", APP / "pubspec.yaml", APP / "assets/media/manifest.json",
-                 ROOT / "dslideshow_flutter/pubspec.yaml", *sorted((APP / "tool").glob("*.py")),
-                 *sorted(APP.glob("*.sh")), *sorted((APP / "config").glob("*.json"))]:
+    for file in [app / "pubspec.lock", app / "pubspec.yaml", app / "assets/media/manifest.json",
+                 root / "dslideshow_flutter/pubspec.yaml", *sorted((app / "tool").glob("*.py")),
+                 *sorted(app.glob("*.sh")), *sorted((app / "config").glob("*.json"))]:
         source.update(file.read_bytes())
+    return source.hexdigest()
+
+
+def main():
     result = dict(application="benchmarks", built_utc=datetime.now(timezone.utc).isoformat(),
-                  cpu=sys.argv[1], mode=sys.argv[2], source_sha256=source.hexdigest(),
+                  cpu=sys.argv[1], mode=sys.argv[2], source_sha256=source_fingerprint(ROOT, APP),
                   git_commit=output("git", "rev-parse", "HEAD"),
                   git_status=output("git", "status", "--porcelain", "--untracked-files=normal"),
                   flutter=json.loads(output("flutter", "--version", "--machine")))

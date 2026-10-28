@@ -39,6 +39,31 @@ class GlassEffect extends MediaSliderItemEffect {
     final t = controller.value.clamp(0.0, 1.0);
     final envelope = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
     final blend = Curves.easeInOut.transform(t);
+    Widget paneView(Widget child, int i) => OverflowBox(
+      alignment: Alignment.topLeft,
+      minWidth: screenW,
+      maxWidth: screenW,
+      minHeight: screenH,
+      maxHeight: screenH,
+      child: Transform.translate(
+        offset: Offset(-screenW * i / paneCount, 0),
+        child: Transform.translate(
+          offset: Offset(
+            math.sin(i * 2.4 + .7) *
+                screenW *
+                .018 *
+                envelope *
+                refractionStrength,
+            math.cos(i * 1.7) * screenH * .012 * envelope * refractionStrength,
+          ),
+          child: Transform.scale(
+            // Overscan covers both axes even at the largest shift.
+            scale: 1 + .05 * envelope * refractionStrength,
+            child: child,
+          ),
+        ),
+      ),
+    );
     return ClipRect(
       child: Stack(
         fit: StackFit.expand,
@@ -52,49 +77,23 @@ class GlassEffect extends MediaSliderItemEffect {
               child: ClipRect(
                 child: CustomPaint(
                   foregroundPainter: _GlassGlint(envelope, glintStrength),
-                  child: OverflowBox(
-                    alignment: Alignment.topLeft,
-                    minWidth: screenW,
-                    maxWidth: screenW,
-                    minHeight: screenH,
-                    maxHeight: screenH,
-                    child: Transform.translate(
-                      offset: Offset(-screenW * i / paneCount, 0),
-                      child: Transform.translate(
-                        offset: Offset(
-                          math.sin(i * 2.4 + .7) *
-                              screenW *
-                              .018 *
-                              envelope *
-                              refractionStrength,
-                          math.cos(i * 1.7) *
-                              screenH *
-                              .012 *
-                              envelope *
-                              refractionStrength,
-                        ),
-                        child: Transform.scale(
-                          // Overscan covers both axes even at the largest shift.
-                          scale: 1 + .05 * envelope * refractionStrength,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              ColoredBox(
-                                color: Colors.black,
-                                child: currentWidget,
-                              ),
-                              Opacity(
-                                opacity: blend,
-                                child: ColoredBox(
-                                  color: Colors.black,
-                                  child: nextWidget,
-                                ),
-                              ),
-                            ],
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      paneView(
+                        ColoredBox(color: Colors.black, child: currentWidget),
+                        i,
+                      ),
+                      Opacity(
+                        opacity: blend,
+                        child: ClipRect(
+                          child: paneView(
+                            ColoredBox(color: Colors.black, child: nextWidget),
+                            i,
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),

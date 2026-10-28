@@ -41,6 +41,7 @@ class BenchmarkConfig with _$BenchmarkConfig {
   final bool requireTimings;
   final bool vulkanVideo;
   final bool visualAudit;
+  final bool productionPhotoInputs;
   final String? mediaDirectory;
   final int expectedWidth;
   final int expectedHeight;
@@ -66,6 +67,7 @@ class BenchmarkConfig with _$BenchmarkConfig {
     this.requireTimings = true,
     this.vulkanVideo = false,
     this.visualAudit = false,
+    this.productionPhotoInputs = false,
     this.mediaDirectory,
     this.expectedWidth = 2560,
     this.expectedHeight = 1600,

@@ -33,6 +33,8 @@ flutter:
   config:
     enable-native-assets: true
   uses-material-design: true
+  shaders:
+    - shaders/radial_blur_experiment.frag
   assets:
     - assets/media/
     - assets/build-info.json

@@ -30,6 +30,7 @@ BenchmarkConfig _$BenchmarkConfigFromJson(Map<String, dynamic> json) {
       'require_timings',
       'vulkan_video',
       'visual_audit',
+      'production_photo_inputs',
       'media_directory',
       'expected_width',
       'expected_height',
@@ -93,6 +94,7 @@ BenchmarkConfig _$BenchmarkConfigFromJson(Map<String, dynamic> json) {
     requireTimings: json['require_timings'] as bool? ?? true,
     vulkanVideo: json['vulkan_video'] as bool? ?? false,
     visualAudit: json['visual_audit'] as bool? ?? false,
+    productionPhotoInputs: json['production_photo_inputs'] as bool? ?? false,
     mediaDirectory: json['media_directory'] as String?,
     expectedWidth: json['expected_width'] == null
         ? 2560
@@ -132,6 +134,7 @@ Map<String, dynamic> _$BenchmarkConfigToJson(
   'require_timings': instance.requireTimings,
   'vulkan_video': instance.vulkanVideo,
   'visual_audit': instance.visualAudit,
+  'production_photo_inputs': instance.productionPhotoInputs,
   'media_directory': instance.mediaDirectory,
   'expected_width': const StrictIntConverter().toJson(instance.expectedWidth),
   'expected_height': const StrictIntConverter().toJson(instance.expectedHeight),

@@ -14,6 +14,19 @@ import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('production photo inputs are opt-in and round-trip through Freezed', () {
+    final legacy = BenchmarkConfig.fromJson({});
+    expect(legacy.productionPhotoInputs, isFalse);
+    final production = legacy.copyWith(productionPhotoInputs: true);
+    expect(production.toJson()['production_photo_inputs'], isTrue);
+    expect(BenchmarkConfig.fromJson(production.toJson()), production);
+    expect(legacy.productionPhotoInputs, isFalse);
+    expect(
+      () => BenchmarkConfig.fromJson({'production_photo_inputs': 'true'}),
+      throwsA(isA<TypeError>()),
+    );
+  });
+
   test(
     'Freezed benchmark configuration keeps independent immutable variants',
     () {
@@ -47,6 +60,11 @@ void main() {
         continue;
       }
       final config = BenchmarkConfig.fromJson(json);
+      expect(buildPlan(config), isNotEmpty, reason: file.path);
+      expect(BenchmarkConfig.fromJson(config.toJson()), config);
+      // Keep the historical Mosaic pair checks while accepting other typed
+      // matrices, including explicit benchmark-only experiments.
+      if (!config.effectConfigs!.containsKey(EffectType.mosaic)) continue;
       expect(config.effectConfigs!.keys, [
         EffectType.mosaic,
       ], reason: file.path);
@@ -55,8 +73,6 @@ void main() {
         hasLength(2),
         reason: file.path,
       );
-      expect(buildPlan(config), isNotEmpty, reason: file.path);
-      expect(BenchmarkConfig.fromJson(config.toJson()), config);
       checked++;
     }
     expect(checked, 6);

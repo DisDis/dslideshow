@@ -160,6 +160,26 @@ void main() {
       }
 
       await prepared();
+      final initialPhotos = tester
+          .widgetList<RawImage>(find.byType(RawImage))
+          .map((raw) => raw.image!)
+          .toList();
+      expect(
+        initialPhotos.every(
+          (photo) =>
+              photo.width == 2560 &&
+              photo.height == 1600 &&
+              !photo.debugDisposed,
+        ),
+        isTrue,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(DevicePreviewViewport),
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsNWidgets(2),
+      );
       expect(await colors(), [
         [244, 67, 54, 255],
         [33, 150, 243, 255],
@@ -171,6 +191,15 @@ void main() {
           .single;
       clock.value = 1;
       await tester.pump();
+      expect(initialPhotos.first.debugDisposed, isTrue);
+      expect(initialPhotos.last.debugDisposed, isFalse);
+      expect(
+        find.descendant(
+          of: find.byType(DevicePreviewViewport),
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsOneWidget,
+      );
       expect(await colors(), [
         [33, 150, 243, 255],
       ]);
@@ -180,12 +209,25 @@ void main() {
       await tester.pump();
       await prepared();
       expect(clock.value, 0);
+      expect(initialPhotos.every((photo) => photo.debugDisposed), isTrue);
+      expect(
+        find.descendant(
+          of: find.byType(DevicePreviewViewport),
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsNWidgets(2),
+      );
       expect(await colors(), [
         [244, 67, 54, 255],
         [33, 150, 243, 255],
       ]);
+      final repeatedPhotos = tester
+          .widgetList<RawImage>(find.byType(RawImage))
+          .map((raw) => raw.image!)
+          .toList();
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
+      expect(repeatedPhotos.every((photo) => photo.debugDisposed), isTrue);
       expect(tester.takeException(), isNull);
     },
   );

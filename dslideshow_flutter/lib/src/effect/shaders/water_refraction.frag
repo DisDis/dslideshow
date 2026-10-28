@@ -14,7 +14,9 @@ uniform sampler2D uTo;
 out vec4 fragColor;
 
 // Interpolating Catmull-Rom reconstruction preserves pixel centres exactly.
-// All 16 taps are retained; no downsampled transition texture is used.
+// The two positive middle weights share one bilinear lookup per axis.
+// Nine lookups retain all sixteen Catmull-Rom contributions, including the
+// negative outer lobes. No downsampled transition texture is used.
 float cubic(float x) {
   x = abs(x);
   if (x < 1.0) return 1.5*x*x*x - 2.5*x*x + 1.0;
@@ -32,12 +34,18 @@ vec4 photo(bool from, vec2 imageSize, vec2 position) {
   vec2 p = uv * imageSize - 0.5;
   vec2 base = floor(p);
   vec2 f = p - base;
+  vec4 wx = vec4(cubic(-1.0-f.x), cubic(-f.x), cubic(1.0-f.x), cubic(2.0-f.x));
+  vec4 wy = vec4(cubic(-1.0-f.y), cubic(-f.y), cubic(1.0-f.y), cubic(2.0-f.y));
+  vec3 gx = vec3(wx.x, wx.y+wx.z, wx.w);
+  vec3 gy = vec3(wy.x, wy.y+wy.z, wy.w);
+  vec3 px = vec3(base.x-0.5, base.x+0.5+wx.z/gx.y, base.x+2.5);
+  vec3 py = vec3(base.y-0.5, base.y+0.5+wy.z/gy.y, base.y+2.5);
   vec4 color = vec4(0.0);
-  for (int y = -1; y <= 2; y++) {
-    for (int x = -1; x <= 2; x++) {
-      vec2 tap = clamp(base + vec2(float(x), float(y)) + 0.5, vec2(0.5), imageSize - 0.5);
+  for (int y = 0; y < 3; y++) {
+    for (int x = 0; x < 3; x++) {
+      vec2 tap = clamp(vec2(px[x], py[y]), vec2(0.5), imageSize - 0.5);
       vec4 pixel = from ? texture(uFrom, tap / imageSize) : texture(uTo, tap / imageSize);
-      color += pixel * cubic(float(x)-f.x) * cubic(float(y)-f.y);
+      color += pixel * gx[x] * gy[y];
     }
   }
   // Match the black backing even when the source has transparent pixels.
@@ -62,8 +70,16 @@ void main() {
       * envelope * sin(distance * uWaveFrequency - uProgress * 12.5663706144);
   vec2 fromPosition = (xy + refraction - uSize*0.5 - uFromCamera.yz)
       / uFromCamera.x + uSize*0.5;
-  vec4 a = photo(true,uFromSize,fromPosition);
-  vec4 b = photo(false,uToSize,xy - refraction * 0.65);
   float reveal = 1.0 - smoothstep(front - 0.04, front + 0.04, radius);
-  fragColor = mix(a,b,reveal) * coverage;
+  // Most of the refracted band is wholly on one side of the reveal. Avoid
+  // reconstructing an image whose exact blend weight is zero.
+  if (reveal <= 0.0) {
+    fragColor = photo(true,uFromSize,fromPosition) * coverage;
+  } else if (reveal >= 1.0) {
+    fragColor = photo(false,uToSize,xy - refraction * 0.65) * coverage;
+  } else {
+    vec4 a = photo(true,uFromSize,fromPosition);
+    vec4 b = photo(false,uToSize,xy - refraction * 0.65);
+    fragColor = mix(a,b,reveal) * coverage;
+  }
 }

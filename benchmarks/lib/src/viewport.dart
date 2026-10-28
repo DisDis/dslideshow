@@ -28,12 +28,27 @@ import 'photo_motion_probe.dart';
 
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart';
 
+/// Optional benchmark-entrypoint substitution; null keeps the production effect.
+typedef BenchmarkEffectFactory = MediaSliderItemEffect? Function(
+  BenchmarkCase test,
+  int seed,
+);
+
+/// Borrows prepared static photos until release; GIF/video inputs are null.
+typedef BenchmarkEffectPreparedCallback = void Function(
+  MediaSliderItemEffect effect,
+  ui.Image? from,
+  ui.Image? to,
+);
+
 class BenchmarkViewport extends StatefulWidget {
   final BenchmarkConfig config;
   final MediaCatalog catalog;
   final Directory reportDirectory;
   final Future<void> Function(BenchmarkDriver driver) onReady;
   final Future<void> Function(String operation, String file)? onVideoOperation;
+  final BenchmarkEffectFactory? effectFactory;
+  final BenchmarkEffectPreparedCallback? onEffectPrepared;
   const BenchmarkViewport({
     super.key,
     required this.config,
@@ -41,6 +56,8 @@ class BenchmarkViewport extends StatefulWidget {
     required this.reportDirectory,
     required this.onReady,
     this.onVideoOperation,
+    this.effectFactory,
+    this.onEffectPrepared,
   });
 
   @override
@@ -130,11 +147,24 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     await _paint();
     if (!mounted) throw StateError('Viewport detached');
     final details = <Map<String, Object?>>[];
+    final preparedPhotos = <String, ui.Image>{};
     final videoViews = <(String, VideoSession, Widget)>[];
     final size = MediaQuery.sizeOf(context);
     final ratio = View.of(context).devicePixelRatio;
     final slideshow = SlideShowConfig.fromJson({});
-    final sourceKey = GlobalKey();
+    // Repeated transition views must mount independently. Only the bitmap
+    // diagnostic needs to locate one outgoing RenderImage by a global key.
+    final sourceKey = test.blurProbe?.needsBitmap == true ? GlobalKey() : null;
+    // Ordinary photo transitions receive the same sized media view as the
+    // slideshow. Retain the historical layer tree for component diagnostics.
+    final productionPhotoInputs =
+        widget.config.productionPhotoInputs &&
+        test.media.staticPhotos &&
+        !test.photoMotion &&
+        !test.injectStall &&
+        test.blurProbe == null &&
+        test.mosaicProbe == null &&
+        test.compositionProbe == null;
     Future<Widget> load(String name) async {
       final watch = Stopwatch()..start();
       final rssBefore = ProcessInfo.currentRss;
@@ -170,6 +200,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         );
         _images.add(image);
         await image.precache(context);
+        if (image.preparedBitmap case final bitmap?) {
+          preparedPhotos[name] = bitmap;
+        }
         videoInfo = {
           'prepared_width': image.preparedBitmap?.width,
           'prepared_height': image.preparedBitmap?.height,
@@ -189,10 +222,13 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         )['VmHWM'],
         ...videoInfo,
       });
-      final slide = ColoredBox(color: Colors.black, child: view);
+      final slide = productionPhotoInputs
+          ? SizedBox(width: size.width, height: size.height, child: view)
+          : ColoredBox(color: Colors.black, child: view);
       return KeyedSubtree(
         key: name == test.media.from ? sourceKey : null,
-        child: test.blurProbe == BlurFadeProbe.noBoundary
+        child:
+            productionPhotoInputs || test.blurProbe == BlurFadeProbe.noBoundary
             ? slide
             : RepaintBoundary(child: slide),
       );
@@ -216,15 +252,26 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
                 )),
             seed: widget.config.seed,
           )
-        : test.effect?.createEffect(
-            seed: widget.config.seed,
-            mosaicGridSize: test.grid,
-            mosaicBackend: test.backend,
-          );
+        : widget.effectFactory?.call(test, widget.config.seed) ??
+              test.effect?.createEffect(
+                seed: widget.config.seed,
+                mosaicGridSize: test.grid,
+                mosaicBackend: test.backend,
+              );
     final effectWatch = Stopwatch()..start();
     await _effect?.prepare();
+    if (generation != _generation || !mounted) {
+      throw StateError('Preparation cancelled');
+    }
     if (_effect case WaterRefractionEffect water) {
       water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
+    }
+    if (_effect case final effect?) {
+      widget.onEffectPrepared?.call(
+        effect,
+        preparedPhotos[test.media.from],
+        preparedPhotos[test.media.to],
+      );
     }
     effectWatch.stop();
     _controller.duration = Duration(
@@ -247,7 +294,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
           if (bitmap == null) element.visitChildElements(visit);
         }
 
-        visit(sourceKey.currentContext! as Element);
+        visit(sourceKey!.currentContext! as Element);
         if (bitmap == null) {
           throw StateError('Prepared photo bitmap unavailable');
         }

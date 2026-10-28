@@ -1,0 +1,31 @@
+{
+  "suite": "standard",
+  "warmups": 1,
+  "repeats": 3,
+  "transition_ms": 1000,
+  "transition_timeout_seconds": 120,
+  "effects": [],
+  "effect_configs": {
+    "stretch": [{}],
+    "zoomOver": [
+      {
+        "options": {
+          "mode": "cross",
+          "startScale": 1.6,
+          "outgoingScale": 1.6,
+          "blurFraction": 0.012
+        }
+      }
+    ],
+    "radialBlur": [{}]
+  },
+  "media_cases": ["photo-photo"],
+  "production_photo_inputs": true,
+  "capture_frames": false,
+  "visual_audit": false,
+  "grids": [100],
+  "backends": ["canvas"],
+  "soak_seconds": 0,
+  "expected_width": 2560,
+  "expected_height": 1600
+}

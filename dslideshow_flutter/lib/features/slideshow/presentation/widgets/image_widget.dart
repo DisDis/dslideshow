@@ -34,7 +34,13 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
       super(key: ValueKey('img:${item.uri!.toFilePath()}'));
 
   @override
-  Widget build(BuildContext context) => _image ?? const SizedBox.shrink();
+  Widget build(BuildContext context) {
+    final image = _image;
+    if (image == null) return const SizedBox.shrink();
+    // Keep prepared photo paint commands independent of changing transition
+    // masks and transforms. GIFs retain their existing live Image subtree.
+    return _bitmap == null ? image : RepaintBoundary(child: image);
+  }
 
   Future<void> precache(BuildContext context) =>
       _preparation ??= _prepare(context);
