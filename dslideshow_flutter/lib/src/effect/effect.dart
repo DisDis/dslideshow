@@ -7,13 +7,14 @@ import 'directional_slide_effect.dart';
 import 'reveal_effect.dart';
 import 'procedural_reveal_effect.dart';
 import 'water_refraction_effect.dart';
+import 'radial_blur_effect.dart';
 import 'transition_media.dart';
 import 'soft_wipe_effect.dart';
 import 'slice_effect.dart';
 import 'luma_fade_effect.dart';
 import 'page_peel_effect.dart';
 import 'cinematic_transition_effect.dart';
-import 'glass_effect.dart';
+import 'photo_shader_effects.dart';
 import 'geometric_transition_effect.dart';
 import 'optical_transition_effect.dart';
 import 'creative_transition_effect.dart';
@@ -321,15 +322,17 @@ class Effect {
         CreativeTransitionKind.vhsDamage,
         options: settings,
       ),
-      EffectType.radialBlur => CreativeTransitionEffect(
-        CreativeTransitionKind.radialBlur,
-        options: settings,
+      EffectType.radialBlur => RadialBlurEffect(
+        options: settings as RadialBlurEffectOptions,
       ),
       EffectType.phosphor => CreativeTransitionEffect(
         CreativeTransitionKind.phosphor,
         options: settings,
       ),
-      EffectType.fade => ConfiguredFadeEffect(settings as FadeEffectOptions),
+      EffectType.fade =>
+        (settings as FadeEffectOptions).style == FadeStyle.linearLight
+            ? PhotoFilmDissolveEffect(options: settings)
+            : ConfiguredFadeEffect(settings),
       EffectType.slide => DirectionalSlideEffect(
         mode: (settings as SlideEffectOptions).mode,
         direction: _direction(settings.direction),
@@ -424,14 +427,8 @@ class Effect {
         settings.axis,
         EffectAxis.horizontal,
       ),
-      EffectType.glass => _axis(
-        GlassEffect(
-          paneCount: (settings as GlassEffectOptions).paneCount,
-          refractionStrength: settings.refractionStrength,
-          glintStrength: settings.glintStrength,
-        ),
-        settings.axis,
-        EffectAxis.vertical,
+      EffectType.glass => PhotoGlassEffect(
+        options: settings as GlassEffectOptions,
       ),
       EffectType.louver => _axis(
         OpticalTransitionEffect(

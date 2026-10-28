@@ -73,6 +73,7 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
             Transform.scale(
               alignment: effectOrigin(zoom.origin),
               scale: 1 + (zoom.outgoingScale - 1) * motion,
+              filterQuality: FilterQuality.high,
               child: from,
             ),
             Opacity(
@@ -81,6 +82,7 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
                 child: Transform.scale(
                   alignment: effectOrigin(zoom.origin),
                   scale: 1 + (zoom.startScale - 1) * (1 - motion),
+                  filterQuality: FilterQuality.high,
                   child: to,
                 ),
               ),

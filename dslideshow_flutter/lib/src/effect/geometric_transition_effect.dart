@@ -125,6 +125,7 @@ class GeometricTransitionEffect extends MediaSliderItemEffect {
           children: [
             Transform.scale(
               scaleX: 1 + (stretchOptions.maxScale - 1) * motion,
+              filterQuality: FilterQuality.high,
               child: from,
             ),
             Opacity(
@@ -132,6 +133,7 @@ class GeometricTransitionEffect extends MediaSliderItemEffect {
               child: ClipRect(
                 child: Transform.scale(
                   scaleX: 1 + (stretchOptions.maxScale - 1) * (1 - motion),
+                  filterQuality: FilterQuality.high,
                   child: to,
                 ),
               ),

@@ -232,6 +232,98 @@ void main() {
     },
   );
 
+  for (final descriptor in [
+    Effect.radialBlurEffect,
+    Effect.glassEffect,
+    const Effect(
+      EffectType.glass,
+      options: GlassEffectOptions(axis: EffectAxis.horizontal),
+    ),
+    Effect.filmDissolveEffect.canonical,
+  ]) {
+    testWidgets(
+      '${descriptor.name}/${descriptor.options.toJson()} photo preview borrows pixels and cancels safely',
+      (tester) async {
+        final recorder = ui.PictureRecorder();
+        Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
+        final picture = recorder.endRecording();
+        final image = (await tester.runAsync(() => picture.toImage(2, 2)))!;
+        final bytes = (await tester.runAsync(
+          () => image.toByteData(format: ui.ImageByteFormat.png),
+        ))!;
+        final provider = MemoryImage(
+          Uint8List.fromList(bytes.buffer.asUint8List()),
+        );
+        image.dispose();
+        picture.dispose();
+        final key = GlobalKey<SlideshowPreviewState>();
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SlideshowPreview(
+                  key: key,
+                  selectedEffect: descriptor,
+                  config: SlideShowConfig.fromJson({
+                    'effects': {'defaultDurationMs': 1000},
+                    'displayTimeMs': 60000,
+                    'photoMotion': {'mode': 'kenBurns'},
+                  }),
+                  images: [provider],
+                ),
+              ),
+            ),
+          ),
+        );
+        for (var i = 0; i < 80; i++) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+          await tester.pump();
+          if (find.byType(LinearProgressIndicator).evaluate().isEmpty) break;
+        }
+        expect(find.byKey(const ValueKey('preview-error')), findsNothing);
+        final outgoing = tester.widget<RawImage>(find.byType(RawImage)).image!;
+        expect(outgoing.width, 2560);
+        expect(outgoing.height, 1600);
+        final clock = tester
+            .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+            .map((widget) => widget.animation)
+            .whereType<FixedAnimationController>()
+            .where(
+              (clock) => clock.duration == const Duration(milliseconds: 1000),
+            )
+            .single;
+        clock.stop();
+        clock.value = .5;
+        await tester.pump();
+        expect(
+          find.byType(RawImage),
+          findsNothing,
+          reason: 'The prepared pair uses the photo shader, not repeated views',
+        );
+        expect(outgoing.debugDisposed, isFalse);
+        expect(tester.takeException(), isNull);
+        clock.value = 1;
+        await tester.pump();
+        final incoming = tester.widget<RawImage>(find.byType(RawImage)).image!;
+        expect(outgoing.debugDisposed, isTrue);
+        expect(incoming.debugDisposed, isFalse);
+        key.currentState!.onChanged(Effect.waterRefractionEffect);
+        key.currentState!.onChanged(descriptor);
+        await tester.pumpWidget(const SizedBox());
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 30)),
+        );
+        await tester.pump();
+        expect(incoming.debugDisposed, isTrue);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'fallback duration is captured before asynchronous photo preparation',
     (tester) async {

@@ -26,9 +26,19 @@
   runtime/engine provenance. Keep capture runs separate from performance timings.
   Archive completed strict pixel-audit results independently of manual visual
   acceptance.
-* Add benchmark-only retained-transform Stretch/CrossZoom and photo-shader Radial
-  experiments with explicit opt-in, resource/lifecycle checks and dedicated trial
-  configuration; leave production effect defaults unchanged.
+* Archive the completed retained-transform Stretch/CrossZoom and photo-shader
+  Radial trials, then retire their temporary entrypoint/classes/assets after
+  promotion to the application. Keep normal viewport binding and regressions.
+* Add separate full-resolution Glass and linear-light Film Dissolve photo-shader
+  trials, a four-case matched A/B configuration and geometry/resource tests.
+  Record fractional pane seams and intermediate gamma-surface quantization as
+  visual differences; preserve strict historical audit results. Archive both
+  builds and retire temporary implementations after production promotion.
+* Investigate sharing Glass reconstruction weights for exactly matching photo
+  coordinates and sizes, with strict image/resource regressions and an isolated
+  three-case A/B configuration. Archive the completed trial after production
+  promotion; retain its preceding shader only as a strict reconstruction-test
+  fixture, without a separate reference effect or preview mode.
 * Parameterize the historical standard matrix for configured effects and retain
   canonical effect settings in reports as the catalog becomes 37 families /
   82 presets. Compare presets at 21 phases with temporary frozen renderers.

@@ -79,6 +79,9 @@ void main() {
     'Phosphor': () => CreativeTransitionEffect(CreativeTransitionKind.phosphor),
     'FilmDissolve': () =>
         OpticalTransitionEffect(OpticalTransitionKind.filmDissolve),
+    'Stretch': () => Effect.stretchEffect.createEffect(),
+    'CrossZoom': () => Effect.crossZoomEffect.createEffect(),
+    'ZoomOver control': () => Effect.zoomOverEffect.createEffect(),
   };
   for (final entry in effects.entries) {
     testWidgets('${entry.key} filters repaint live retained sources', (
@@ -112,7 +115,10 @@ void main() {
           final repainted = await _capture(tester, key);
           expect(repainted, isNot(orderedEquals(previous)));
           expect(builds, 1, reason: 'Only the source painter should repaint');
-          expect(key.currentContext!.findRenderObject(), same(retainedBoundary));
+          expect(
+            key.currentContext!.findRenderObject(),
+            same(retainedBoundary),
+          );
           updatedFrames.add((repainted, from.value, to.value));
           previous = repainted;
           for (var i = 0; i < 5; i++) {

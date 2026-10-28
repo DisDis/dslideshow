@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:benchmarks/src/experimental/shader_radial_blur_effect.dart';
 import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -36,6 +35,8 @@ Widget _scene(
   ui.Image from,
   ui.Image to, {
   Matrix4? fromCamera,
+  Widget? fromView,
+  Widget? toView,
 }) => Directionality(
   textDirection: TextDirection.ltr,
   child: Center(
@@ -46,14 +47,18 @@ Widget _scene(
         child: Builder(
           builder: (context) => effect.createTransformWidget(
             context,
-            ClipRect(
-              child: Transform(
-                alignment: Alignment.center,
-                transform: fromCamera ?? Matrix4.identity(),
-                child: RawImage(image: from, filterQuality: FilterQuality.high),
-              ),
-            ),
-            RawImage(image: to, filterQuality: FilterQuality.high),
+            fromView ??
+                ClipRect(
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: fromCamera ?? Matrix4.identity(),
+                    child: RawImage(
+                      image: from,
+                      filterQuality: FilterQuality.high,
+                    ),
+                  ),
+                ),
+            toView ?? RawImage(image: to, filterQuality: FilterQuality.high),
             AlwaysStoppedAnimation(progress),
             _size.width,
             _size.height,
@@ -82,6 +87,77 @@ Future<Uint8List> _pixels(WidgetTester tester, GlobalKey key) async =>
     }))!;
 
 void main() {
+  test(
+    'normal factory preserves Radial settings and all media capabilities',
+    () {
+      const options = RadialBlurEffectOptions(
+        angleDegrees: 23,
+        origin: EffectOrigin.topRight,
+        durationMs: 1450,
+      );
+      const descriptor = Effect(EffectType.radialBlur, options: options);
+      final effect = descriptor.createEffect();
+      expect(effect, isA<RadialBlurEffect>());
+      expect((effect as RadialBlurEffect).options, same(options));
+      for (final from in TransitionMedia.values) {
+        for (final to in TransitionMedia.values) {
+          expect(descriptor.supportsMedia(from, to), isTrue);
+        }
+      }
+    },
+  );
+
+  testWidgets('unbound GIF/video views keep updating without snapshots', (
+    tester,
+  ) async {
+    final from = (await tester.runAsync(() => _photo(incoming: false)))!;
+    final to = (await tester.runAsync(() => _photo(incoming: true)))!;
+    final color = ValueNotifier<Color>(const Color(0xffff0000));
+    var shaderCreations = 0;
+    final effect = RadialBlurEffect(
+      shaderFactory: (program) {
+        shaderCreations++;
+        return program.fragmentShader();
+      },
+    );
+    final key = GlobalKey();
+    final live = ValueListenableBuilder<Color>(
+      valueListenable: color,
+      builder: (context, value, child) => ColoredBox(color: value),
+    );
+    try {
+      await tester.runAsync(effect.prepare);
+      await tester.pumpWidget(
+        _scene(effect, key, .5, from, to, fromView: live, toView: live),
+      );
+      expect(
+        (await _pixels(
+          tester,
+          key,
+        )).sublist((50 * 160 + 80) * 4, (50 * 160 + 80) * 4 + 4),
+        [255, 0, 0, 255],
+      );
+      color.value = const Color(0xff00ff00);
+      await tester.pump();
+      expect(
+        (await _pixels(
+          tester,
+          key,
+        )).sublist((50 * 160 + 80) * 4, (50 * 160 + 80) * 4 + 4),
+        [0, 255, 0, 255],
+      );
+      expect(shaderCreations, 0);
+      expect(from.debugDisposed, isFalse);
+      expect(to.debugDisposed, isFalse);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      color.dispose();
+      from.dispose();
+      to.dispose();
+    }
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'full-resolution shader preserves smooth geometry and selected origins',
     (tester) async {
@@ -97,14 +173,14 @@ void main() {
             EffectType.radialBlur,
             options: options,
           ).createEffect();
-          final experiment = ShaderRadialBlurEffect(options: options)
+          final effect = RadialBlurEffect(options: options)
             ..bindPhotos(from, to);
-          await tester.runAsync(experiment.prepare);
+          await tester.runAsync(effect.prepare);
           for (final phase in [0.0, .2, .5, .8, 1.0]) {
             final key = GlobalKey();
             await tester.pumpWidget(_scene(original, key, phase, from, to));
             final expected = await _pixels(tester, key);
-            await tester.pumpWidget(_scene(experiment, key, phase, from, to));
+            await tester.pumpWidget(_scene(effect, key, phase, from, to));
             final actual = await _pixels(tester, key);
             expect(
               actual.length,
@@ -118,7 +194,7 @@ void main() {
             }
             // Smooth gradients isolate geometry from the intentional bilinear
             // detail change. This is a local regression bound, not hardware or
-            // arbitrary-photo visual acceptance of the experiment.
+            // arbitrary-photo visual acceptance of the effect.
             expect(maximum, lessThanOrEqualTo(6), reason: '$origin/$phase');
             expect(sum / actual.length, lessThan(3), reason: '$origin/$phase');
             if (phase == 0 || phase == 1) expect(actual, expected);
@@ -139,7 +215,7 @@ void main() {
       final from = (await tester.runAsync(() => _photo(incoming: false)))!;
       final to = (await tester.runAsync(() => _photo(incoming: true)))!;
       final shaders = <ui.FragmentShader>[];
-      final effect = ShaderRadialBlurEffect(
+      final effect = RadialBlurEffect(
         shaderFactory: (program) {
           final shader = program.fragmentShader();
           shaders.add(shader);
@@ -200,12 +276,12 @@ void main() {
       EffectType.radialBlur,
       options: options,
     ).createEffect();
-    final experiment = ShaderRadialBlurEffect(options: options)
+    final effect = RadialBlurEffect(options: options)
       ..bindPhotos(from, to, fromCamera: camera);
     camera.storage[12] =
         999; // Later caller mutations must not affect the view.
     try {
-      await tester.runAsync(experiment.prepare);
+      await tester.runAsync(effect.prepare);
       for (final phase in [0.0, .2, .5, .8, 1.0]) {
         final key = GlobalKey();
         await tester.pumpWidget(
@@ -213,7 +289,7 @@ void main() {
         );
         final expected = await _pixels(tester, key);
         await tester.pumpWidget(
-          _scene(experiment, key, phase, from, to, fromCamera: expectedCamera),
+          _scene(effect, key, phase, from, to, fromCamera: expectedCamera),
         );
         final actual = await _pixels(tester, key);
         var maximum = 0, sum = 0;
@@ -232,7 +308,7 @@ void main() {
         Matrix4.zero(),
       ]) {
         expect(
-          () => experiment.bindPhotos(from, to, fromCamera: invalid),
+          () => effect.bindPhotos(from, to, fromCamera: invalid),
           throwsArgumentError,
         );
       }
@@ -244,25 +320,26 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('an unprepared or unbound intermediate phase fails explicitly', (
-    tester,
-  ) async {
-    final from = (await tester.runAsync(() => _photo(incoming: false)))!;
-    final to = (await tester.runAsync(() => _photo(incoming: true)))!;
-    try {
-      final effect = ShaderRadialBlurEffect();
-      await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
-      expect(tester.takeException(), isA<StateError>());
-      await tester.runAsync(effect.prepare);
-      await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
-      expect(tester.takeException(), isA<StateError>());
-      effect.bindPhotos(from, to);
-      await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
-      expect(tester.takeException(), isNull);
-    } finally {
-      await tester.pumpWidget(const SizedBox.shrink());
-      from.dispose();
-      to.dispose();
-    }
-  });
+  testWidgets(
+    'bound photos require prepare, while live input needs no shader',
+    (tester) async {
+      final from = (await tester.runAsync(() => _photo(incoming: false)))!;
+      final to = (await tester.runAsync(() => _photo(incoming: true)))!;
+      try {
+        final effect = RadialBlurEffect();
+        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        expect(tester.takeException(), isNull);
+        effect.bindPhotos(from, to);
+        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        expect(tester.takeException(), isA<StateError>());
+        await tester.runAsync(effect.prepare);
+        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        from.dispose();
+        to.dispose();
+      }
+    },
+  );
 }

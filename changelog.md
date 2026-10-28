@@ -4,6 +4,13 @@
   trails, bounding Radial Blur/Glass blend surfaces and reducing Water Refraction
   texture lookups. Preserve full-resolution photos and dense Mosaic grids.
 
+* Use retained high-quality scaling for Stretch and CrossZoom, and a
+  full-resolution nine-ray Radial Blur shader for prepared photo transitions.
+  Preserve outgoing photo motion and live GIF/video composition.
+
+* Fuse Glass refraction and linear-light Film Dissolve into full-resolution
+  photo shaders. Preserve effect options, photo motion and live media fallback.
+
 * Consolidate transition effects into 37 catalog families with 82 built-in
   presets, including Slice/Panel Wipe. Add typed visual settings, localized preset
   selection, dependent controls, five Water/Ripple origins and deterministic

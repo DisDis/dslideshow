@@ -1,23 +1,13 @@
 {
-  "suite": "standard",
+  "suite": "smoke",
   "warmups": 1,
   "repeats": 3,
   "transition_ms": 1000,
-  "transition_timeout_seconds": 120,
-  "effects": [],
+  "transition_timeout_seconds": 180,
+  "effects": ["Baseline"],
   "effect_configs": {
-    "stretch": [{}],
-    "zoomOver": [
-      {
-        "options": {
-          "mode": "cross",
-          "startScale": 1.6,
-          "outgoingScale": 1.6,
-          "blurFraction": 0.012
-        }
-      }
-    ],
-    "radialBlur": [{}]
+    "glass": [{}],
+    "fade": [{}, {"options": {"style": "linearLight"}}]
   },
   "media_cases": ["photo-photo"],
   "production_photo_inputs": true,

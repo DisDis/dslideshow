@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 13.1.0+5
+version: 13.1.0+6
 publish_to: none
 
 environment:
@@ -60,3 +60,6 @@ flutter:
     - packages/dslideshow_flutter/src/effect/shaders/mosaic_mask.frag
     - packages/dslideshow_flutter/src/effect/shaders/procedural_reveal.frag
     - packages/dslideshow_flutter/src/effect/shaders/water_refraction.frag
+    - packages/dslideshow_flutter/src/effect/shaders/radial_blur.frag
+    - packages/dslideshow_flutter/src/effect/shaders/photo_glass.frag
+    - packages/dslideshow_flutter/src/effect/shaders/photo_film_dissolve.frag

@@ -266,6 +266,17 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     if (_effect case WaterRefractionEffect water) {
       water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
     }
+    final bindPhotos = switch (_effect) {
+      RadialBlurEffect radial => radial.bindPhotos,
+      PhotoGlassEffect glass => glass.bindPhotos,
+      PhotoFilmDissolveEffect film => film.bindPhotos,
+      _ => null,
+    };
+    if (bindPhotos != null) {
+      final from = preparedPhotos[test.media.from];
+      final to = preparedPhotos[test.media.to];
+      if (from != null && to != null) bindPhotos(from, to);
+    }
     if (_effect case final effect?) {
       widget.onEffectPrepared?.call(
         effect,

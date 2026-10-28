@@ -5,7 +5,6 @@ import 'package:benchmarks/src/blur_probes.dart';
 import 'package:benchmarks/src/composition_probes.dart';
 import 'package:benchmarks/src/config.dart';
 import 'package:benchmarks/src/driver.dart';
-import 'package:benchmarks/src/experimental/retained_transform_effects.dart';
 import 'package:benchmarks/src/media.dart';
 import 'package:benchmarks/src/mosaic_probes.dart';
 import 'package:benchmarks/src/plan.dart';
@@ -65,6 +64,81 @@ class _PreparedProbeEffect extends MediaSliderItemEffect {
 }
 
 void main() {
+  for (final descriptor in [
+    Effect.radialBlurEffect,
+    Effect.glassEffect,
+    Effect.filmDissolveEffect,
+  ]) {
+    testWidgets(
+      '${descriptor.name} borrows static inputs and leaves GIF views live',
+      (tester) async {
+        tester.view.physicalSize = const Size(160, 100);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        late BenchmarkDriver driver;
+        final borrowed = <(MediaSliderItemEffect, ui.Image?, ui.Image?)>[];
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: MediaQuery.fromView(
+              view: tester.view,
+              child: BenchmarkViewport(
+                config: BenchmarkConfig(productionPhotoInputs: true),
+                catalog: MediaCatalog(Directory('assets/media'), []),
+                reportDirectory: Directory.systemTemp,
+                onReady: (value) async => driver = value,
+                onEffectPrepared: (effect, from, to) =>
+                    borrowed.add((effect, from, to)),
+              ),
+            ),
+          ),
+        );
+        for (final pair in [mediaPairs.first, mediaPairs[4], mediaPairs[5]]) {
+          await _withFrames(
+            tester,
+            driver.prepare(BenchmarkCase(descriptor, pair)),
+          );
+          final (effect, from, to) = borrowed.last;
+          expect(effect, switch (descriptor.canonical.type) {
+            EffectType.glass => isA<PhotoGlassEffect>(),
+            EffectType.fade => isA<PhotoFilmDissolveEffect>(),
+            _ => isA<RadialBlurEffect>(),
+          });
+          final clock = tester
+              .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+              .map((widget) => widget.animation)
+              .whereType<AnimationController>()
+              .single;
+          clock.value = .5;
+          await tester.pump();
+          expect(
+            find.byType(ImageWidget),
+            pair.staticPhotos
+                ? findsNothing
+                : findsNWidgets(switch (descriptor.canonical.type) {
+                    EffectType.glass => 16,
+                    EffectType.fade => 2,
+                    _ => 18,
+                  }),
+          );
+          for (final bitmap in [from, to].nonNulls) {
+            expect(bitmap.width, 160);
+            expect(bitmap.height, 100);
+            expect(bitmap.debugDisposed, isFalse);
+          }
+          await _withFrames(tester, driver.release());
+          expect(
+            [from, to].nonNulls.every((image) => image.debugDisposed),
+            isTrue,
+          );
+          expect(tester.takeException(), isNull);
+        }
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
   testWidgets(
     'prepared-effect callback borrows only static photos after prepare',
     (tester) async {
@@ -139,6 +213,7 @@ void main() {
       late BenchmarkDriver driver;
       final substituted = <String>[];
       final seeds = <int>[];
+      final injected = <_PreparedProbeEffect>[];
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -152,9 +227,13 @@ void main() {
               effectFactory: (test, seed) {
                 seeds.add(seed);
                 substituted.add(test.id);
-                return test.effect == null
-                    ? null
-                    : createRetainedTransformExperiment(test.effect!);
+                final type = test.effect?.canonical.type;
+                if (type != EffectType.stretch && type != EffectType.zoomOver) {
+                  return null;
+                }
+                final effect = _PreparedProbeEffect();
+                injected.add(effect);
+                return effect;
               },
             ),
           ),
@@ -165,18 +244,15 @@ void main() {
         await _withFrames(tester, driver.prepare(test));
         expect(substituted.last, test.id);
         expect(seeds.last, 42);
-        final transforms = tester.widgetList<Transform>(find.byType(Transform));
-        expect(transforms, hasLength(2));
-        expect(
-          transforms.map((widget) => widget.filterQuality),
-          everyElement(FilterQuality.high),
-        );
+        expect(injected.last.prepared, isTrue);
+        expect(find.byType(Transform), findsNothing);
+        expect(find.byType(ImageWidget), findsNWidgets(2));
         await _withFrames(tester, driver.release());
       }
       final glass = BenchmarkCase(Effect.glassEffect, mediaPairs.first);
       await _withFrames(tester, driver.prepare(glass));
       expect(substituted.last, glass.id);
-      expect(find.byType(ImageWidget), findsNWidgets(16));
+      expect(find.byType(ImageWidget), findsOneWidget);
       await _withFrames(tester, driver.release());
       final callsBeforeDiagnostic = substituted.length;
       await _withFrames(
@@ -228,6 +304,7 @@ void main() {
           ),
           for (final effect in [
             Effect.glassEffect,
+            Effect.filmDissolveEffect,
             Effect.radialBlurEffect,
             Effect.phosphorEffect,
           ])
@@ -284,8 +361,8 @@ void main() {
               .toList();
           expect(images, isNotEmpty);
           final expectedViews = switch (test.effect?.type) {
-            EffectType.glass => (8, 8),
-            EffectType.radialBlur => (9, 9),
+            EffectType.glass || EffectType.filmDissolve => (1, 0),
+            EffectType.radialBlur => (1, 0),
             EffectType.phosphor => (4, 1),
             _ => null,
           };

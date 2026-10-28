@@ -7,3 +7,5 @@ export 'src/effect/directional_slide_effect.dart';
 export 'src/effect/fade_through_color_effect.dart';
 export 'src/effect/procedural_reveal_effect.dart';
 export 'src/effect/water_refraction_effect.dart';
+export 'src/effect/radial_blur_effect.dart';
+export 'src/effect/photo_shader_effects.dart';

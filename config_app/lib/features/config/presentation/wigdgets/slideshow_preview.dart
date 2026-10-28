@@ -526,6 +526,22 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           ),
         );
       }
+      final bindPhotos = switch (effect) {
+        RadialBlurEffect radial => radial.bindPhotos,
+        PhotoGlassEffect glass => glass.bindPhotos,
+        PhotoFilmDissolveEffect film => film.bindPhotos,
+        _ => null,
+      };
+      if (bindPhotos != null && _currentPhoto != null && photo != null) {
+        bindPhotos(
+          _currentPhoto!,
+          photo,
+          fromCamera: _currentMotion?.path.transform(
+            _deviceSize,
+            _currentMotion!.progress,
+          ),
+        );
+      }
       motion = photo == null ? null : _photoMotion(index);
       if (video != null) await video.setPlaying(true);
       if (stale()) {

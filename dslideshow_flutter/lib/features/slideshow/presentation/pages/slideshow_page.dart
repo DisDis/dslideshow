@@ -22,6 +22,8 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
+import 'package:dslideshow_flutter/src/effect/radial_blur_effect.dart';
+import 'package:dslideshow_flutter/src/effect/photo_shader_effects.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -458,6 +460,26 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
     _currentPhotoMotion?.setPlaying(false);
+    final bindPhotos = switch (currentEffect) {
+      RadialBlurEffect radial => radial.bindPhotos,
+      PhotoGlassEffect glass => glass.bindPhotos,
+      PhotoFilmDissolveEffect film => film.bindPhotos,
+      _ => null,
+    };
+    if (bindPhotos != null) {
+      final from = _currentImage?.preparedBitmap;
+      final to = _nextImage?.preparedBitmap;
+      if (from != null && to != null) {
+        bindPhotos(
+          from,
+          to,
+          fromCamera: _currentPhotoMotion?.path.transform(
+            size,
+            _currentPhotoMotion!.progress,
+          ),
+        );
+      }
+    }
     if (currentEffect is WaterRefractionEffect) {
       final from = _currentImage?.preparedBitmap;
       final to = _nextImage?.preparedBitmap;

@@ -1,33 +1,44 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:dslideshow_flutter/effect.dart';
+import 'package:dslideshow_common/effects.dart';
+
+import 'creative_transition_effect.dart';
+import 'media_slider_item_effect.dart';
+
 import 'package:flutter/material.dart';
 
-const shaderRadialBlurAsset = 'shaders/radial_blur_experiment.frag';
+const radialBlurAsset =
+    'packages/dslideshow_flutter/src/effect/shaders/radial_blur.frag';
 Future<ui.FragmentProgram>? _pendingProgram;
+ui.FragmentProgram? _cachedProgram;
 
 ui.FragmentShader _createShader(ui.FragmentProgram program) =>
     program.fragmentShader();
 
-/// Photo-only visual experiment, not a production RadialBlur replacement.
+/// Nine-ray Radial Blur with borrowed prepared photos and a live-layer fallback.
 ///
 /// One shader retains all nine original rays at full prepared-photo resolution.
 /// Sampling is bilinear and source-over is evaluated in floating point rather
 /// than through nine separately rounded RGBA8 compositor surfaces. The caller
 /// owns both images and must keep them alive until all effect views detach.
-class ShaderRadialBlurEffect extends MediaSliderItemEffect {
+class RadialBlurEffect extends MediaSliderItemEffect {
   final RadialBlurEffectOptions options;
+  final CreativeTransitionEffect _liveEffect;
   final ui.FragmentShader Function(ui.FragmentProgram) _shaderFactory;
   ui.FragmentProgram? _program;
   ui.Image? _from, _to;
   Matrix4 _fromCamera = Matrix4.identity();
 
-  ShaderRadialBlurEffect({
+  RadialBlurEffect({
     this.options = const RadialBlurEffectOptions(),
     @visibleForTesting
     ui.FragmentShader Function(ui.FragmentProgram)? shaderFactory,
-  }) : _shaderFactory = shaderFactory ?? _createShader;
+  }) : _shaderFactory = shaderFactory ?? _createShader,
+       _liveEffect = CreativeTransitionEffect(
+         CreativeTransitionKind.radialBlur,
+         options: options,
+       );
 
   /// Borrows existing prepared pixels; no decode, snapshot or image clone.
   /// [fromCamera] matches PhotoMotion's positive uniform scale and translation
@@ -67,11 +78,15 @@ class ShaderRadialBlurEffect extends MediaSliderItemEffect {
 
   @override
   Future<void> prepare() async {
+    if (_cachedProgram case final program?) {
+      _program = program;
+      return;
+    }
     final pending = _pendingProgram ??= ui.FragmentProgram.fromAsset(
-      shaderRadialBlurAsset,
+      radialBlurAsset,
     );
     try {
-      _program = await pending;
+      _program = _cachedProgram = await pending;
     } catch (_) {
       if (identical(_pendingProgram, pending)) _pendingProgram = null;
       rethrow;
@@ -97,6 +112,19 @@ class ShaderRadialBlurEffect extends MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) {
+    final from = _from, to = _to;
+    // GIFs, video and special screens remain live widgets. They have no stable
+    // prepared bitmap and must never be captured or downsampled for this shader.
+    if (from == null || to == null) {
+      return _liveEffect.createTransformWidget(
+        context,
+        currentWidget,
+        nextWidget,
+        controller,
+        screenW,
+        screenH,
+      );
+    }
     final t = controller.value.clamp(0.0, 1.0);
     if (t == 0 || t == 1) {
       return ClipRect(
@@ -106,11 +134,10 @@ class ShaderRadialBlurEffect extends MediaSliderItemEffect {
         ),
       );
     }
-    final program = _program, from = _from, to = _to;
-    if (program == null || from == null || to == null) {
+    final program = _program;
+    if (program == null) {
       throw StateError(
-        'Prepare ShaderRadialBlurEffect and bind two static prepared photos '
-        'before rendering an intermediate phase.',
+        'Prepare RadialBlurEffect before rendering bound photos.',
       );
     }
     return ClipRect(
