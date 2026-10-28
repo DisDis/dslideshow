@@ -13,9 +13,8 @@ import 'package:logging/logging.dart';
 class PowerBloc extends Bloc<PowerEvent, PowerState> {
   static final Logger _log = Logger('PowerBloc');
   final RealtimeService _client;
-  PowerBloc({required PowerState initialState, required RealtimeService client})
-    : _client = client,
-      super(initialState) {
+  PowerBloc({required PowerState initialState, required this._client})
+    : super(initialState) {
     on<RestartAppPowerEvent>(_restartApp);
     on<PowerOffPowerEvent>(_powerOff);
     on<LoadPowerEvent>(_loadData);

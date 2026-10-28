@@ -15,9 +15,6 @@ CPU_TYPE=pi4
 DEST=$DIR/opt/dslideshow/
 SOURCE_BIN=./source_$PROFILE_ARC
 
-# Keep versions and the previous staging directory intact if tests fail.
-./run_tests.sh || error_exit "pre-build tests"
-
 if [ -d "$DIR" ]; then
   echo "Folder '${DIR}' is exist"
   rm -r -f ./$DIR
@@ -27,15 +24,30 @@ cp -r ./template_build_$PROFILE_ARC ./$DIR || error_exit "copy"
 
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true || error_exit "version generation"
-echo "--- Build 'DSlideshow' ---"
-./build_aot_$CPU_TYPE.sh || error_exit "DSlideshow AOT '$CPU_TYPE'"
+cd ../deb_factory
 
-echo "--- Build 'config_app' ---"
-cd ../config_app
-./build_web.sh || error_exit "Config app"
+# Forward interruption to the supervisor, which owns all worker process groups.
+PARALLEL_PID=
+stop_parallel()
+{
+  trap '' INT TERM
+  # $! also covers a signal between spawning the supervisor and saving its PID.
+  WORKER_PID=${PARALLEL_PID:-${!:-}}
+  if [ -n "$WORKER_PID" ]; then
+    kill -TERM "$WORKER_PID" 2>/dev/null || :
+    wait "$WORKER_PID" || :
+  fi
+}
+trap 'stop_parallel; exit 130' INT
+trap 'stop_parallel; exit 143' TERM
+python3 ./run_parallel.py "../dslideshow_flutter/build_aot_$CPU_TYPE.sh" &
+PARALLEL_PID=$!
+PARALLEL_RESULT=0
+wait "$PARALLEL_PID" || PARALLEL_RESULT=$?
+trap - INT TERM
+[ "$PARALLEL_RESULT" -eq 0 ] || error_exit "checks or application builds"
 
 echo "--- Create DEB package 'DSlideshow' ---"
-cd ../deb_factory
 cp -r ../dslideshow_flutter/build/flutter-pi/${CPU_TYPE}-64/* $DEST/ || error_exit "copy flutter_assets"
 cp -f $SOURCE_BIN/flutter-pi/flutter-pi $DEST/ || error_exit "copy flutter-pi"
 cp -r ../config_app/build/web $DEST/ || error_exit "copy config_app web"

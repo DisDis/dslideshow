@@ -19,7 +19,7 @@ class MainMenuWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: ThemeColors.menuBgColor,
           border: Border.all(
-            color: ThemeColors.menuBorderColor.withOpacity(0.5),
+            color: ThemeColors.menuBorderColor.withAlpha(128),
             width: 1,
           ),
           // Убираем скругление для производительности и стиля "Терминал"
@@ -37,7 +37,7 @@ class MainMenuWidget extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              color: ThemeColors.menuBorderColor.withOpacity(0.1),
+              color: ThemeColors.menuBorderColor.withAlpha(26),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -56,7 +56,7 @@ class MainMenuWidget extends StatelessWidget {
                       Container(
                         width: 8,
                         height: 8,
-                        color: ThemeColors.menuBorderColor.withOpacity(0.5),
+                        color: ThemeColors.menuBorderColor.withAlpha(128),
                       ),
                       const SizedBox(width: 4),
                       Container(

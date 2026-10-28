@@ -16,7 +16,7 @@ class CpuInfoWidget extends StatelessWidget {
   // Оптимальный размер для кружков внутри плитки
   static const double gaugeSize = ThemeSettings.systemMetricsCpuGaugeSize;
 
-  CpuInfoWidget({
+  const CpuInfoWidget({
     required this.cpu,
     required this.cpuLoad1,
     required this.cpuLoad5,

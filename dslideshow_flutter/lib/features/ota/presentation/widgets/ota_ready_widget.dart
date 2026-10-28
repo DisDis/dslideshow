@@ -60,11 +60,11 @@ class OtaReadyWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: ThemeColors.QRCodeBackground,
+        color: ThemeColors.qrCodeBackground,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: ThemeColors.QRCodeShadow, blurRadius: 15, offset: const Offset(0, 10))],
+        boxShadow: [BoxShadow(color: ThemeColors.qrCodeShadow, blurRadius: 15, offset: const Offset(0, 10))],
       ),
-      child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, backgroundColor: ThemeColors.QRCodeBackground),
+      child: QrImageView(data: state.otaStartUrl, version: QrVersions.auto, backgroundColor: ThemeColors.qrCodeBackground),
     );
   }
 

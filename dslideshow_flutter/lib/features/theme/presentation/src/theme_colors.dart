@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:xterm/xterm.dart';
 
 abstract class ThemeColors {
-  static const QRCodeBackground = Colors.white;
-  static final QRCodeShadow = Colors.black.withAlpha((255.0 * 0.3).round());
+  static const qrCodeBackground = Colors.white;
+  static final qrCodeShadow = Colors.black.withAlpha((255.0 * 0.3).round());
 
   // Config Page Colors
   static const configBackgroundColor = Color(0xFF1E1E1E);

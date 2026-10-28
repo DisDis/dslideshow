@@ -3,6 +3,8 @@ set -eu
 
 REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
+"$REPO_DIR/deb_factory/run_analysis.sh"
+
 for PACKAGE in common rpc_serializers_generator backend; do
   echo "--- Test '$PACKAGE' ---"
   (

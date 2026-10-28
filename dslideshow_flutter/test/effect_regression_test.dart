@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
+import 'package:dslideshow_flutter/src/effect/background_to_foreground_effect.dart';
 import 'package:dslideshow_flutter/src/effect/cube_effect.dart';
 import 'package:dslideshow_flutter/src/effect/depth_effect.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
@@ -100,6 +101,33 @@ class _MountProbeState extends State<MountProbe> {
 }
 
 void main() {
+  testWidgets(
+    'BackgroundToForeground preserves rounded shadows and clean endpoints',
+    (tester) async {
+      final effect = BackgroundToForegroundEffect(startScale: 1);
+      const next = ColoredBox(color: Color(0xff0000ff));
+      expect(await pixel(tester, frame(effect, 0, next: next)), [
+        255,
+        255,
+        255,
+        255,
+      ]);
+      final middle = await snapshot(tester, frame(effect, .5, next: next));
+      List<int> at(int x) =>
+          middle.sublist((30 * 160 + x) * 4, (30 * 160 + x) * 4 + 4);
+      // Independent 8-bit references: a quarter-strength black shadow on
+      // opaque white/blue leaves 191 in each nonzero channel.
+      expect(at(20), [191, 191, 191, 255]);
+      expect(at(120), [0, 0, 191, 255]);
+      expect(await pixel(tester, frame(effect, 1, next: next)), [
+        0,
+        0,
+        255,
+        255,
+      ]);
+    },
+  );
+
   testWidgets(
     'Fixed controller preserves bounded progress under frame stalls',
     (tester) async {

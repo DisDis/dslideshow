@@ -15,15 +15,11 @@ part 'authentication_bloc.freezed.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
-    required AuthenticationRepository authenticationRepository,
-    required UserRepository userRepository,
+    required this._authenticationRepository,
+    required this._userRepository,
     // required RealtimeService realtimeService,
-    required PermissionService permissionService,
-  }) : _authenticationRepository = authenticationRepository,
-       _userRepository = userRepository,
-       // _realtimeService = realtimeService,
-       _permissionService = permissionService,
-       super(
+    required this._permissionService,
+  }) : super(
          const AuthenticationState.unknown(),
          //
        ) {

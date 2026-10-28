@@ -16,8 +16,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/version_info_widget.da
 class SystemInfoMetrics extends StatelessWidget {
   final SystemInfo _model;
 
-  const SystemInfoMetrics({required SystemInfo model, super.key})
-    : _model = model;
+  const SystemInfoMetrics({required this._model, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -55,6 +55,10 @@ frontend находится в `dslideshow_flutter/test/support/pixel_capture.da
 Проверки backend требуют локальных сокетов; сценарии установки подменяют
 installer и не устанавливают пакет в систему. Анализаторы запускаются отдельно:
 `dart analyze` в common/backend, `flutter analyze --no-pub` в приложениях.
+Общий запуск для всех Dart/Flutter-пакетов: `./deb_factory/run_analysis.sh`.
+Он останавливается при ошибках и предупреждениях, но оставляет `info`
+неблокирующими для DEB. Перед любым релизом требуется исправить все три уровня
+замечаний до `No issues found`, см. [правило выпуска](releasing.md#анализатор-перед-любым-релизом).
 Полный выпускной набор описан в [deb_factory/readme.md](../deb_factory/readme.md).
 
 ## Как сравнивать скорость

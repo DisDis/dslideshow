@@ -14,9 +14,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final _log = Logger('LoginBloc');
   static final defaultConnectUri = 'ws://${Uri.base.host}:${Uri.base.port}/ws';
 
-  LoginBloc({required AuthenticationRepository authenticationRepository})
-    : _authenticationRepository = authenticationRepository,
-      super(
+  LoginBloc({required this._authenticationRepository})
+    : super(
         kIsWeb
             ? LoginState(
                 connectUri: ConnectUri.pure(defaultValue: defaultConnectUri),

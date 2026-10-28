@@ -51,9 +51,10 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
           // В конце (progress 1) она исчезает (слайд вышел на свет).
           if (shadowIntensity > 0)
             Container(
-              color: Colors.black.withOpacity(
+              color: Colors.black.withAlpha(
                 // Используем (1 - progress), чтобы тень исчезала
-                (1.0 - progress).clamp(0.0, 1.0) * shadowIntensity,
+                (255 * ((1.0 - progress).clamp(0.0, 1.0) * shadowIntensity))
+                    .round(),
               ),
             ),
         ],
@@ -74,9 +75,9 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
             // По мере ухода она темнеет, чтобы акцентировать внимание на новом слайде.
             if (shadowIntensity > 0)
               Container(
-                color: Colors.black.withOpacity(
+                color: Colors.black.withAlpha(
                   // ИСПРАВЛЕНИЕ: Используем progress, чтобы тень появлялась плавно
-                  progress.clamp(0.0, 1.0) * shadowIntensity,
+                  (255 * (progress.clamp(0.0, 1.0) * shadowIntensity)).round(),
                 ),
               ),
           ],

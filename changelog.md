@@ -1,4 +1,4 @@
-# Unreleased
+# 14.1.0+1 — 2026-10-28
 
 * Run slideshow and effect previews on bundled sample photos without external
   media downloads or a video URL field. Keep draft settings, pause and Repeat
