@@ -12,8 +12,14 @@ import 'media_slider_item_effect.dart';
 /// A feathered mask over the live outgoing layer, optionally lit at its edge.
 class SoftWipeEffect extends MediaSliderItemEffect {
   final SoftWipeStyle style;
+  final double? featherFraction;
+  final double lightStrength;
 
-  SoftWipeEffect({this.style = SoftWipeStyle.soft});
+  SoftWipeEffect({
+    this.style = SoftWipeStyle.soft,
+    this.featherFraction,
+    this.lightStrength = 1,
+  });
 
   @override
   Widget transform(
@@ -37,8 +43,16 @@ class SoftWipeEffect extends MediaSliderItemEffect {
     child: CustomPaint(
       foregroundPainter: switch (style) {
         SoftWipeStyle.soft => null,
-        SoftWipeStyle.lightSweep => _SweepLight(controller.value),
-        SoftWipeStyle.neon => _NeonEdge(controller.value),
+        SoftWipeStyle.lightSweep => _SweepLight(
+          controller.value,
+          featherFraction ?? .12,
+          lightStrength,
+        ),
+        SoftWipeStyle.neon => _NeonEdge(
+          controller.value,
+          featherFraction ?? .02,
+          lightStrength,
+        ),
       },
       child: Stack(
         fit: StackFit.expand,
@@ -46,7 +60,8 @@ class SoftWipeEffect extends MediaSliderItemEffect {
           ColoredBox(color: Colors.black, child: nextWidget),
           _WipeMask(
             progress: controller.value,
-            featherFraction: style == SoftWipeStyle.neon ? .02 : .12,
+            featherFraction:
+                featherFraction ?? (style == SoftWipeStyle.neon ? .02 : .12),
             child: ColoredBox(color: Colors.black, child: currentWidget),
           ),
         ],
@@ -149,14 +164,18 @@ class _RenderWipeMask extends RenderProxyBox {
 class _SweepLight extends CustomPainter {
   final double progress;
 
-  _SweepLight(this.progress);
+  final double featherFraction, lightStrength;
+  _SweepLight(this.progress, this.featherFraction, this.lightStrength);
 
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || progress <= 0 || progress >= 1) return;
-    final feather = size.width * .12;
+    final feather = size.width * featherFraction;
     final front = -feather + (size.width + 2 * feather) * progress;
-    final strength = math.sin(math.pi * progress) * .7;
+    final strength = (math.sin(math.pi * progress) * .7 * lightStrength).clamp(
+      0.0,
+      1.0,
+    );
     final shader = ui.Gradient.linear(
       Offset(front - feather, 0),
       Offset(front + feather, 0),
@@ -175,20 +194,26 @@ class _SweepLight extends CustomPainter {
 
   @override
   bool shouldRepaint(_SweepLight oldDelegate) =>
-      progress != oldDelegate.progress;
+      progress != oldDelegate.progress ||
+      featherFraction != oldDelegate.featherFraction ||
+      lightStrength != oldDelegate.lightStrength;
 }
 
 class _NeonEdge extends CustomPainter {
   final double progress;
-  _NeonEdge(this.progress);
+  final double featherFraction, lightStrength;
+  _NeonEdge(this.progress, this.featherFraction, this.lightStrength);
 
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || progress <= 0 || progress >= 1) return;
-    final feather = size.width * .02;
+    final feather = size.width * featherFraction;
     final front = -feather + (size.width + 2 * feather) * progress;
     final glow = size.width * .045;
-    final strength = math.sin(math.pi * progress);
+    final strength = (math.sin(math.pi * progress) * lightStrength).clamp(
+      0.0,
+      1.0,
+    );
     final shader = ui.Gradient.linear(
       Offset(front - glow, 0),
       Offset(front + glow, 0),
@@ -208,5 +233,8 @@ class _NeonEdge extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_NeonEdge oldDelegate) => progress != oldDelegate.progress;
+  bool shouldRepaint(_NeonEdge oldDelegate) =>
+      progress != oldDelegate.progress ||
+      featherFraction != oldDelegate.featherFraction ||
+      lightStrength != oldDelegate.lightStrength;
 }

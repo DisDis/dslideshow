@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class FlipHorizontalEffect extends MediaSliderItemEffect with TranslateEffect {
   final double perspectiveScale;
+  final bool reverse;
 
-  FlipHorizontalEffect({this.perspectiveScale = 0.002});
+  FlipHorizontalEffect({this.perspectiveScale = 0.002, this.reverse = false});
 
   @override
   Widget transform(
@@ -27,7 +28,7 @@ class FlipHorizontalEffect extends MediaSliderItemEffect with TranslateEffect {
         transform: translateNext(
           Matrix4.identity()
             ..setEntry(3, 2, perspectiveScale * 320 / screenW)
-            ..rotateY(math.pi * (pageDelta - 1))
+            ..rotateY((reverse ? -1 : 1) * math.pi * (pageDelta - 1))
             ..leftTranslateByDouble(-screenW * (1 - pageDelta), 0.0, 0.0, 1.0),
           pageDelta,
           screenW,
@@ -42,7 +43,7 @@ class FlipHorizontalEffect extends MediaSliderItemEffect with TranslateEffect {
         transform: translateCurrent(
           Matrix4.identity()
             ..setEntry(3, 2, perspectiveScale * 320 / screenW)
-            ..rotateY(math.pi * pageDelta)
+            ..rotateY((reverse ? -1 : 1) * math.pi * pageDelta)
             ..leftTranslateByDouble(screenW * pageDelta, 0.0, 0.0, 1.0),
           pageDelta,
           screenW,

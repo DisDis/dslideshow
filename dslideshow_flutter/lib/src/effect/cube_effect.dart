@@ -7,8 +7,9 @@ class CubeEffect extends MediaSliderItemEffect {
   // Поставьте 0.0, чтобы отключить тени и проверить
   // Поставьте 0.3 - 0.5 для реализма
   final double shadowIntensity;
+  final double perspectiveStrength;
 
-  CubeEffect({this.shadowIntensity = 0.5});
+  CubeEffect({this.shadowIntensity = 0.5, this.perspectiveStrength = 1});
 
   @override
   Widget transform(
@@ -50,7 +51,7 @@ class CubeEffect extends MediaSliderItemEffect {
           alignment: alignment,
           // Keep the same relative camera distance as the viewport grows.
           transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.0015 * 320 / screenW)
+            ..setEntry(3, 2, perspectiveStrength * 0.0015 * 320 / screenW)
             ..rotateY(rotateAngle),
           child: Stack(
             fit: StackFit.expand,

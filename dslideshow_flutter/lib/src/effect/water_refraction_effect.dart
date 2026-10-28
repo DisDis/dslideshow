@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
 import 'procedural_reveal_effect.dart';
+import 'effect_geometry.dart';
+
+import 'package:dslideshow_common/effects.dart';
 
 const waterRefractionAsset =
     'packages/dslideshow_flutter/src/effect/shaders/water_refraction.frag';
@@ -13,7 +16,14 @@ ui.FragmentProgram? _cachedProgram;
 /// Static photo inputs are borrowed from their owners for the transition.
 /// No decoder, framebuffer snapshot or reduced-resolution copy is created.
 class WaterRefractionEffect extends MediaSliderItemEffect {
-  final _base = ProceduralRevealEffect(ProceduralRevealKind.waterBase, seed: 0);
+  final WaterRefractionEffectOptions options;
+  final ProceduralRevealEffect _base;
+  WaterRefractionEffect({this.options = const WaterRefractionEffectOptions()})
+    : _base = ProceduralRevealEffect(
+        ProceduralRevealKind.waterBase,
+        seed: 0,
+        origin: options.origin,
+      );
   ui.FragmentProgram? _program;
   ui.Image? _from, _to;
   Matrix4 _fromCamera = Matrix4.identity();
@@ -82,6 +92,7 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
             to: _to,
             camera: _fromCamera,
             progress: t,
+            options: options,
           ),
       ],
     );
@@ -93,12 +104,14 @@ class _WaterFrame extends LeafRenderObjectWidget {
   final ui.Image? from, to;
   final Matrix4 camera;
   final double progress;
+  final WaterRefractionEffectOptions options;
   const _WaterFrame({
     required this.program,
     required this.from,
     required this.to,
     required this.camera,
     required this.progress,
+    required this.options,
   });
 
   @override
@@ -137,6 +150,7 @@ class _RenderWater extends RenderBox {
       );
     }
     final shader = _shader ??= program.fragmentShader();
+    final origin = effectOrigin(_data.options.origin).alongSize(size);
     shader
       ..setFloat(0, size.width)
       ..setFloat(1, size.height)
@@ -148,6 +162,11 @@ class _RenderWater extends RenderBox {
       ..setFloat(7, _data.camera.storage[0])
       ..setFloat(8, _data.camera.storage[12])
       ..setFloat(9, _data.camera.storage[13])
+      ..setFloat(10, origin.dx)
+      ..setFloat(11, origin.dy)
+      ..setFloat(12, _data.options.refractionStrength)
+      ..setFloat(13, _data.options.waveFrequency)
+      ..setFloat(14, _data.options.bandWidth)
       ..setImageSampler(0, from)
       ..setImageSampler(1, to);
     final canvas = context.canvas;

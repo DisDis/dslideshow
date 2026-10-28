@@ -89,7 +89,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
             receiveTimeout: const Duration(seconds: 30),
           ),
         );
-    currentEffect = widget.selectedEffect ?? currentEffect;
+    currentEffect = widget.selectedEffect?.canonical ?? currentEffect;
     _configSignature = jsonEncode(widget.config.toJson());
     _effect = currentEffect.createEffect(seed: 42);
     _controller = FixedAnimationController(
@@ -153,7 +153,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   @override
   void didUpdateWidget(covariant SlideshowPreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    currentEffect = widget.selectedEffect ?? currentEffect;
+    currentEffect = widget.selectedEffect?.canonical ?? currentEffect;
     final signature = jsonEncode(widget.config.toJson());
     if (signature != _configSignature ||
         oldWidget.images != widget.images ||
@@ -573,7 +573,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
   void onChanged(Effect? effect) {
     if (effect == null) return;
-    setState(() => currentEffect = effect);
+    setState(() => currentEffect = effect.canonical);
     _loadNext();
   }
 

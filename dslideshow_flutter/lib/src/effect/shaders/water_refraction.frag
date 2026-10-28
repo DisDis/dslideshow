@@ -5,6 +5,10 @@ uniform float uProgress;
 uniform vec2 uFromSize;
 uniform vec2 uToSize;
 uniform vec3 uFromCamera;
+uniform vec2 uOrigin;
+uniform float uRefractionStrength;
+uniform float uWaveFrequency;
+uniform float uBandWidth;
 uniform sampler2D uFrom;
 uniform sampler2D uTo;
 out vec4 fragColor;
@@ -42,20 +46,20 @@ vec4 photo(bool from, vec2 imageSize, vec2 position) {
 
 void main() {
   vec2 xy = FlutterFragCoord().xy;
-  vec2 delta = xy - uSize * 0.5;
-  float diagonalRadius = length(uSize) * 0.5;
+  vec2 delta = xy - uOrigin;
+  float diagonalRadius = max(length(max(uOrigin, uSize-uOrigin)), 0.0001);
   float radius = length(delta) / diagonalRadius;
   float front = uProgress * 1.08 - 0.04;
   float distance = radius - front;
-  float coverage = 1.0 - smoothstep(0.10, 0.20, abs(distance));
+  float coverage = 1.0 - smoothstep(0.10*uBandWidth, 0.20*uBandWidth, abs(distance));
   if (coverage <= 0.0) {
     fragColor = vec4(0.0);
     return;
   }
-  float envelope = sin(3.14159265359 * uProgress) * exp(-distance*distance / 0.008);
+  float envelope = sin(3.14159265359 * uProgress) * exp(-distance*distance / (0.008*uBandWidth*uBandWidth));
   vec2 direction = delta / max(length(delta), 0.0001);
-  vec2 refraction = direction * (min(uSize.x,uSize.y) * 0.012)
-      * envelope * sin(distance * 92.0 - uProgress * 12.5663706144);
+  vec2 refraction = direction * (min(uSize.x,uSize.y) * uRefractionStrength)
+      * envelope * sin(distance * uWaveFrequency - uProgress * 12.5663706144);
   vec2 fromPosition = (xy + refraction - uSize*0.5 - uFromCamera.yz)
       / uFromCamera.x + uSize*0.5;
   vec4 a = photo(true,uFromSize,fromPosition);

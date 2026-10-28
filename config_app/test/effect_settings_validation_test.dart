@@ -5,6 +5,20 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('all default families and boundary values can be saved', () {
     expect(EffectsConfig().validate(), isEmpty);
+    for (final type in catalogEffectTypes) {
+      expect(
+        EffectConfig.defaults(type).validate(type),
+        isEmpty,
+        reason: type.name,
+      );
+    }
+    for (final preset in effectPresets) {
+      expect(
+        EffectConfig(options: preset.options).validate(preset.type),
+        isEmpty,
+        reason: preset.id.name,
+      );
+    }
     for (final grid in [100, 150, 200]) {
       for (final fade in [0.0, .3, 1.0]) {
         expect(
@@ -38,12 +52,12 @@ void main() {
           in <(EffectType, EffectOptions, String)>[
             (
               EffectType.fade,
-              const BasicEffectOptions(durationMs: -1),
+              const FadeEffectOptions(durationMs: -1),
               'durationMs',
             ),
             (
               EffectType.fade,
-              const BasicEffectOptions(durationMs: 3600001),
+              const FadeEffectOptions(durationMs: 3600001),
               'durationMs',
             ),
             (
@@ -79,14 +93,10 @@ void main() {
               ),
               'origin',
             ),
+            (EffectType.fade, const FadeEffectOptions(color: -1), 'color'),
             (
-              EffectType.fadeThroughColor,
-              const FadeThroughColorEffectOptions(color: -1),
-              'color',
-            ),
-            (
-              EffectType.fadeThroughColor,
-              const FadeThroughColorEffectOptions(color: 0x100000000),
+              EffectType.fade,
+              const FadeEffectOptions(color: 0x100000000),
               'color',
             ),
             (
@@ -120,14 +130,52 @@ void main() {
               'paneCount',
             ),
             (
-              EffectType.panelWipe,
-              const PanelWipeEffectOptions(panelCount: 33),
-              'panelCount',
+              EffectType.slice,
+              const SliceEffectOptions(mode: SliceMode.reveal, stripCount: 33),
+              'stripCount',
             ),
             (
               EffectType.louver,
               const LouverEffectOptions(slatCount: 0),
               'slatCount',
+            ),
+            (
+              EffectType.fade,
+              const FadeEffectOptions(
+                style: FadeStyle.throughColor,
+                fadeOutShare: 1,
+              ),
+              'fadeOutShare',
+            ),
+            (
+              EffectType.fade,
+              const FadeEffectOptions(style: FadeStyle.blur, maxSigma: -1),
+              'maxSigma',
+            ),
+            (
+              EffectType.waterRefraction,
+              const WaterRefractionEffectOptions(bandWidth: 0),
+              'bandWidth',
+            ),
+            (
+              EffectType.rippleReveal,
+              const RippleRevealEffectOptions(softness: 0),
+              'softness',
+            ),
+            (
+              EffectType.kaleidoscope,
+              const KaleidoscopeEffectOptions(sectorCount: 1),
+              'sectorCount',
+            ),
+            (
+              EffectType.shapeDissolve,
+              const ShapeDissolveEffectOptions(cellsAcross: 0),
+              'cellsAcross',
+            ),
+            (
+              EffectType.phosphor,
+              const PhosphorEffectOptions(trailCount: 7),
+              'trailCount',
             ),
           ]) {
         final config = EffectsConfig(

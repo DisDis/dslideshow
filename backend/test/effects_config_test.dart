@@ -41,7 +41,7 @@ void main() {
               .copyWith(enabled: true),
           EffectType.fade: const EffectConfig(
             enabled: true,
-            options: BasicEffectOptions(durationMs: 2100),
+            options: FadeEffectOptions(durationMs: 2100),
           ),
         },
       );

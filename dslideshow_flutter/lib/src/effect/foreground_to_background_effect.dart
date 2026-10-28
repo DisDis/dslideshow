@@ -2,7 +2,8 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
-class ForegroundToBackgroundEffect extends MediaSliderItemEffect with TranslateEffect {
+class ForegroundToBackgroundEffect extends MediaSliderItemEffect
+    with TranslateEffect {
   final double endScale;
   final double shadowIntensity; // Настройка силы тени
 
@@ -15,15 +16,17 @@ class ForegroundToBackgroundEffect extends MediaSliderItemEffect with TranslateE
   Widget transform(
     BuildContext context,
     Widget page,
-    bool isCurrentPage, /*int index, int currentPage*/
-    double pageDelta, /*, int itemCount*/
+    bool isCurrentPage,
+    /*int index, int currentPage*/
+    double pageDelta,
+    /*, int itemCount*/
     double screenW,
     double screenH,
   ) {
     if (isCurrentPage) {
       // --- ТЕКУЩАЯ СТРАНИЦА (Уходит на задний план) ---
       final double scale = endScale + (1 - endScale) * (1 - pageDelta);
-      
+
       return Transform(
         transformHitTests: false,
         alignment: Alignment.center,
@@ -42,9 +45,10 @@ class ForegroundToBackgroundEffect extends MediaSliderItemEffect with TranslateE
             // Появляется по мере того, как страница уходит (pageDelta растет от 0 до 1)
             if (shadowIntensity > 0)
               Container(
-                color: Colors.black.withAlpha((255.0 * 
-                  (pageDelta * shadowIntensity).clamp(0.0, 1.0)
-                ).round()),
+                color: Colors.black.withAlpha(
+                  (255.0 * (pageDelta * shadowIntensity).clamp(0.0, 1.0))
+                      .round(),
+                ),
               ),
           ],
         ),
@@ -58,7 +62,7 @@ class ForegroundToBackgroundEffect extends MediaSliderItemEffect with TranslateE
             : translateNext(Matrix4.identity(), pageDelta, screenW, screenH),
         child: page,
         // Для верхнего слайда тень обычно не нужна, он "на свету".
-        // Но если захочешь добавить легкую тень при появлении, 
+        // Но если захочешь добавить легкую тень при появлении,
         // оберни в Stack здесь по аналогии.
       );
     }

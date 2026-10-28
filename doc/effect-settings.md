@@ -1,16 +1,17 @@
 # Настройки эффектов перехода
 
 Формат `slideshow.effects`, введённый 27.10.2026, хранит один тип эффекта
-с собственными параметрами. В каталоге 51 тип. Направления, оси, цвета и стили
+с собственными параметрами. В каталоге 37 типов и 82 встроенных пресета. Направления, оси, цвета и стили
 одного алгоритма выбираются в его настройках. `items` — карта
 `Map<EffectType, EffectConfig>`: тип хранится только в ключе,
 а значение содержит `enabled` и типизированные `options`.
 [Согласованный план и таблица объединений](effect-settings-plan.md).
 
-[План расширения настроек всего каталога (51 эффект)](effect-options-expansion-plan.md)
+[План расширения и объединения эффектов](effect-options-expansion-plan.md)
 содержит анализ рендеров, параметры, defaults, диапазоны и порядок реализации.
-Это следующий этап для согласования; перечисленные в нём новые поля пока
-не реализованы.
+Реализованы пять основных объединений, Slice/Panel Wipe и персональные
+параметры всего каталога. Визуальное сравнение принято пользователем;
+аппаратный прогон в текущей задаче не требуется. Локальные проверки описаны ниже.
 
 ## Формат
 
@@ -100,7 +101,7 @@
 Здесь выключенный `slide` сохраняет персональный `mode=cover`. Пустая
 конфигурация `{}` использует Fade с длительностью 1000 мс.
 
-**Миграции нет:** прежние `allowedEffects` и `transitionTimeMs` не читаются
+**Старый формат:** прежние `allowedEffects` и `transitionTimeMs` не читаются
 и не записываются. В файле без нового блока рамка использует служебный Fade.
 Время показа `displayTimeMs` и затухание экрана `fadeTimeMs` независимы.
 
@@ -113,25 +114,110 @@ JSON-сериализация генерируется json_serializable. Кол
 и вычисленную длительность до подготовки и сохраняет их до завершения.
 `FixedAnimationController` продолжает плавно замедляться под нагрузкой.
 
-## Параметры объединённых эффектов
+## Пресеты и объединение каталога
 
-| Тип | Настройки |
+Одна запись семейства хранит один выбранный режим. Пресеты — неизменяемые
+готовые наборы визуальных параметров из `effectPresets` / `EffectPresetId`
+в `common/lib/effects.dart`; идентификатор пресета не записывается в конфиг.
+После применения сохраняются обычные `options`. Ручные изменения дают
+«Свои параметры»; совпадение с пресетом определяется по визуальным полям.
+Выбор пресета сохраняет включённость и текущую длительность, заменяет
+визуальные параметры и очищает их незавершённый ввод. Ошибка длительности
+сохраняется до исправления. Переключение отдельного режима сохраняет скрытые
+поля; «Сбросить параметры» возвращает default семейства.
+
+| Семейство | Прежние эффекты / пресеты |
 | --- | --- |
-| `mosaic` | `gridSize`: целое 100–200, default 100; `fadeFraction`: 0–1, default 0.3; `direction`: random/topLeft/topRight/bottomLeft/bottomRight. 0 даёт бинарную Mosaic. Random означает случайный порядок ячеек. |
-| `slide` | `mode`: push/cover/reveal, default push; `direction`: left/right/up/down, default left. Включает прежний Default. |
-| `revealMask` | `shape`: wipe/curtain/diagonal/iris; для wipe — direction, curtain — axis horizontal/vertical, diagonal/iris — origin. У diagonal допустимы четыре угла, у iris также center. |
-| `fadeThroughColor` | `color`: целое ARGB, default 4278190080 (чёрный). В интерфейсе ColorPicker с прозрачностью, AARRGGBB и быстрые варианты чёрного/белого. |
-| `softWipe` | `style`: soft/lightSweep/neon. |
-| `flip` | `axis`: horizontal/vertical. |
-| `rotate` | `edge`: top/bottom; `angleDegrees`: 0–90, default 45. |
-| `blinds`, `slice` | `stripCount`: 1–32, default 10/8. |
-| `glass`, `panelWipe`, `louver` | `paneCount` / `panelCount` / `slatCount`: 1–32, default 8. |
+| `fade` | Fade, Film Dissolve, Blur Fade, Fade Through Color; дополнительно вариант через белый |
+| `slide` | Slide, Stack, Whip, Film Roll; направления и Push/Cover/Reveal |
+| `depth` | Depth, Background To Foreground, Foreground To Background |
+| `zoomOver` | Zoom Over, Cross Zoom |
+| `revealMask` | Reveal Mask, Soft Wipe, Light Sweep, Neon, Frame, Star Wipe, Clock Wipe; прежние направления и формы |
+| `slice` | Slice и Panel Wipe: режимы slide / reveal |
 
-Все типы имеют `options.durationMs`. Остальные самостоятельные алгоритмы
-остались отдельными типами. Water Refraction требует двух статичных фото;
-фото/GIF/видео/специальные экраны продолжают фильтроваться по совместимости.
-Canvas остаётся рабочим backend мозаики. Seed и диагностический выбор
-Canvas/shader не являются сохраняемыми пользовательскими настройками.
+Blinds и Louver остаются отдельными. Ripple Reveal и Water Refraction остаются
+отдельными; у обоих есть пять точек начала волны.
+
+Старые ключи объединяемых типов читаются как aliases и преобразуются в
+семейство с прежними параметрами. Персональное время и выключенные настройки
+сохраняются. Если в старом файле несколько записей одного семейства, приоритет:
+явная запись нового семейства, затем включённый прежний эффект, затем порядок
+`EffectType`. Конфликт записывается в журнал; результат не зависит от порядка
+JSON-полей. Само чтение файл не переписывает, следующий Save сохраняет одну
+запись. Перед переносом собственной конфигурации с несколькими такими
+эффектами полезно сохранить её копию: одновременно выбранных режимов больше нет.
+Ошибочные прежние параметры преобразуются в диагностируемую invalid-запись,
+а не теряются при следующем сохранении.
+
+`EffectType` сохраняет старые aliases для чтения и инструментов; пользовательский
+каталог определяется `catalogEffectTypes` и `Effect.values`, в каждом 37 типов.
+[Таблица визуального соответствия и команды воспроизведения](effect-presets-review.md).
+
+## Параметры эффектов
+
+Все типы имеют `durationMs=0`. Ниже — defaults и границы редактора. Доли
+показываются в процентах, масштабы задаются множителями; sigma/clipAmount/
+waveIntensity используют логические пиксели. Отсутствующее/`null` новое поле
+получает default. `featherFraction=null` означает мягкость по стилю: `.12`
+для Soft/Light Sweep и `.02` для Neon. Режимы и варианты перечислены в форме;
+неприменимые поля скрываются и сохраняют свои значения.
+
+| Тип | Персональные визуальные параметры |
+| --- | --- |
+| `burnAlpha` | `direction=right`; `roughness=0.065` (0…0.12); `edgeWidth=0.065` (0.01…0.12); `emberColor=0xFFFF4B00` (0…4294967295) |
+| `foldMotion` | `axis=vertical`; `shadowIntensity=0.65` (0…1); `perspectiveStrength=1` (0…1.25) |
+| `glow` | `strength=0.7` (0…1); `radius=0.045` (0…0.08); `gain=2.4` (1…3) |
+| `kaleidoscope` | `sectorCount=6` (чётное, 2…12); `rotationDegrees=54` (0…180); `origin=center` |
+| `tvPower` | `lineAxis=horizontal`; `glowStrength=1` (0…1.5); `glowColor=0xFF80EDFF` (0…4294967295) |
+| `springMotion` | `direction=left`; `springStrength=1` (0…1.5); `startScale=0.85` (0.6…1) |
+| `shapeDissolve` | `shape=hexagon`; `cellsAcross=12` (6…32); `staggerFraction=0.28` (0…0.6) |
+| `vhsDamage` | `colorShiftFraction=0.035` (0…0.06); `trackingStrength=1` (0…2); `noiseStrength=1` (0…2) |
+| `radialBlur` | `angleDegrees=0.2 * 180 / π` (0…20); `origin=center` |
+| `phosphor` | `trailCount=3` (1…6); `driftFraction=0.32` (0…0.5); `trailStrength=1` (0…1.5); `trailColor=0xFF50FFC8` (0…4294967295) |
+| `louver` | `slatCount=8` (1…32); `axis=vertical`; `staggerFraction=0.25` (0…0.8); `shadowIntensity=0.35` (0…1); `rotationSense=forward` |
+| `mirror` | `axis=vertical`; `side=leading`; `strength=1` (0…1) |
+| `split` | `axis=horizontal`; `splitPosition=0.5` (0.2…0.8) |
+| `stretch` | `axis=horizontal`; `maxScale=3` (1…4) |
+| `lightLeak` | `direction=right`; `strength=1` (0…1.5); `radius=0.8` (0.3…1.2); `warmColor=0xFFFFC26B` (0…4294967295) |
+| `glass` | `paneCount=8` (1…32); `axis=vertical`; `refractionStrength=1` (0…2); `glintStrength=1` (0…2) |
+| `slice` | `stripCount=8` (1…32); `mode=slide`; `axis=horizontal`; `staggerFraction=0.32` (0…0.8); `pattern=alternating` |
+| `lumaFade` | `order=brightFirst`; `softness=0.18` (0.02…0.5) |
+| `pagePeel` | `corner=topRight`; `foldWidth=0.12` (0.04…0.25); `paperColor=0xFFFFFDF5` (0…4294967295); `shadowStrength=0.55` (0…1) |
+| `noiseDissolve` | `noiseScale=28` (8…80); `softness=0.08` (0.01…0.2) |
+| `rippleReveal` | `origin=center`; `waveAmplitude=0.045` (0…0.08); `waveFrequency=82` (20…140); `softness=0.025` (0.005…0.08) |
+| `waterRefraction` | `origin=center`; `refractionStrength=0.012` (0…0.025); `waveFrequency=92` (40…140); `bandWidth=1` (0.5…1.5) |
+| `cube` | `direction=left`; `shadowIntensity=0.5` (0…1); `perspectiveStrength=1` (0…1.25) |
+| `accordion` | `direction=left`; `shadowIntensity=0.5` (0…1) |
+| `depth` | `mode=recedeStill`; `scale=0.5` (0.2…1); `shadowIntensity=0.5` (0…1); `direction=left` |
+| `parallax` | `clipAmount=200` (0…400); `direction=left` |
+| `tablet` | `direction=left`; `tiltDegrees=45` (0…70); `perspectiveStrength=1` (0…1.25) |
+| `zoomOut` | `zoomOutScale=0.8` (0.5…1); `enableOpacity=true`; `direction=left` |
+| `fade` | `style=plain`; `blendCurve=linear`; `maxSigma=10` (0…30); `blurTarget=outgoing`; `color=0xFF000000` (0…4294967295); `holdFraction=0` (0…0.4); `fadeOutShare=0.5` (0.2…0.8) |
+| `mosaic` | `gridSize=100` (100…200); `fadeFraction=0.3` (0…1); `direction=random`; `randomness=0.2` (0…1) |
+| `liquidMorph` | `waveCount=12` (3…32); `waveIntensity=15` (0…60); `outgoingScale=1.1` (1…1.3); `origin=center` |
+| `blinds` | `stripCount=10` (1…32); `axis=horizontal`; `order=forward`; `staggerFraction=0.5` (0…0.8) |
+| `zoomOver` | `mode=over`; `startScale=1.5` (1…2); `outgoingScale=0.9` (0.7…2); `blurFraction=0` (0…0.03); `origin=center` |
+| `slide` | `mode=push`; `direction=left`; `motionCurve=linear`; `blurFraction=0` (0…0.08); `decoration=none`; `edgeWidth=0.055` (0.02…0.1); `tiltDegrees=0` (-12…12); `shadowStrength=0` (0…0.6) |
+| `revealMask` | `shape=wipe`; `direction=left`; `axis=horizontal`; `origin=topLeft`; `operation=revealIncoming`; `edgeStyle=hard`; `featherFraction=null` (0.005…0.3); `lightStrength=1` (0…1.5); `frameEnabled=false`; `borderWidth=0.004` (0…0.02); `borderColor=0xFFFFF4DC` (0…4294967295); `shadowStrength=0.8` (0…1); `pointCount=5` (3…12); `innerRadiusRatio=0.42` (0.2…0.8); `rotationDegrees=0` (0…359.999); `startAngleDegrees=0` (0…359.999); `circularDirection=clockwise` |
+| `flip` | `axis=horizontal`; `rotationSense=forward`; `perspectiveStrength=1` (0…1.25) |
+| `rotate` | `edge=top`; `angleDegrees=45` (0…90); `direction=left` |
+
+У Kaleidoscope число секторов чётное. У Page Peel доступны четыре угла без
+центра. У диагональной маски центр недопустим; переключение с центрированной
+формы автоматически выбирает верхний левый угол, оставляя форму редактируемой.
+Служебный Fade всегда обычный, с глобальным временем, независимо от пресетов.
+
+**Water Refraction:** «Начало волны» — центр (default), верхний левый,
+верхний правый, нижний левый или нижний правый угол. Радиус считается до самого
+дальнего угла; маска и преломление используют одно начало. Точка волны не
+меняет центр камеры Ken Burns. Water требует двух статичных фото; Ripple
+Reveal допускает также GIF, видео и специальные экраны.
+
+Canvas остаётся рабочим backend Mosaic; сетки 100×100, 150×150 и 200×200
+сохраняются. Seed и диагностический выбор Canvas/shader не являются
+сохраняемыми пользовательскими настройками. Фильтрация Water остаётся
+16-точечной Catmull–Rom; исходные медиа не уменьшаются. FixedAnimationController
+сохраняет плавное замедление под нагрузкой.
 
 ## Редактор config_app
 
@@ -214,7 +300,8 @@ bash -n run.sh build_aot_pi5.sh
 Проверки включают JSON/хранение карты, удаление defaults, сохранение
 выключенных персональных параметров, Fade для отсутствующего/пустого набора,
 отказ Save в панели до отправки запроса, сохранение backend без валидации,
-пустой набор, параметры фабрики, прежние визуальные варианты, renderer,
+пустой набор, параметры фабрики,
+влияние каждого активного поля на пиксели, пять начал волны, границы 3D, renderer,
 видео/паузы/cleanup, переключение Общая/Своя и адаптивный редактор RU/EN.
 Матрица standard сохраняет 684 сценария: прежние варианты представлены
 типизированными settings только внутри `benchmarks/`. В `effect_configs`
@@ -227,6 +314,9 @@ bash -n run.sh build_aot_pi5.sh
 (default 100 может быть опущен), а поле `grid` всегда содержит её явно.
 Повторяющиеся ID сценариев отклоняются до запуска.
 
-**По указанию пользователя аппаратные прогоны, включая OpenGL A/B, в этой
-работе не выполняются.** Локальные проверки не подтверждают производительность
-или аппаратную приёмку на RaPi5. Служба устройства не изменяется.
+82 пресета были сравнены с прежними рендерами, затем визуально подтверждены
+пользователем 28.10.2026. Временные эталоны, тест сравнения и локальный отчёт
+удалены после согласования. [Таблица проверки пресетов](effect-presets-review.md)
+сохраняет соответствие и результаты. По решению пользователя аппаратный прогон
+в этой задаче не требуется; команды OpenGL оставлены для возможной будущей
+диагностики. Локальные проверки не подтверждают производительность на RaPi5.

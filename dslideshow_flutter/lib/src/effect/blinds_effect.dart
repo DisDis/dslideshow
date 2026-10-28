@@ -1,10 +1,17 @@
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:flutter/material.dart';
+import 'package:dslideshow_common/effects.dart';
 
 class BlindsEffect extends MediaSliderItemEffect {
   final int stripCount;
+  final double staggerFraction;
+  final SequenceOrder order;
 
-  BlindsEffect({this.stripCount = 10}) : assert(stripCount > 0);
+  BlindsEffect({
+    this.stripCount = 10,
+    this.staggerFraction = .5,
+    this.order = SequenceOrder.forward,
+  }) : assert(stripCount > 0);
 
   @override
   Widget transform(
@@ -35,10 +42,10 @@ class BlindsEffect extends MediaSliderItemEffect {
     // 0.4 означает, что полоска закрывается за 40% от общего времени перехода.
     // Оставшиеся 60% времени распределяются на задержки (волну).
     // Если хотите более быструю волну (меньше наложений), уменьшите это число (например до 0.3).
-    const double oneStripDuration = 0.5;
+    final double oneStripDuration = 1 - staggerFraction;
 
     // Общее время, доступное для разброса задержек (stagger)
-    const double totalStaggerTime = 1.0 - oneStripDuration;
+    final double totalStaggerTime = 1.0 - oneStripDuration;
 
     // Вычисляем шаг задержки между соседними полосками
     // Защита от деления на 0, если вдруг stripCount = 1
@@ -58,7 +65,11 @@ class BlindsEffect extends MediaSliderItemEffect {
             // --- НОВАЯ МАТЕМАТИКА ---
 
             // Рассчитываем точную задержку для этого индекса
-            final double start = index * delayStep;
+            final double start =
+                (order == SequenceOrder.forward
+                    ? index
+                    : stripCount - 1 - index) *
+                delayStep;
 
             // Считаем прогресс:
             // (Текущее время - время старта) / длительность одной полоски

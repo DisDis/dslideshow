@@ -4,6 +4,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
+import 'effect_geometry.dart';
+
+import 'package:dslideshow_common/effects.dart';
 
 enum CinematicTransitionKind { lightLeak, filmRoll, crossZoom, whip }
 
@@ -12,7 +15,18 @@ enum CinematicTransitionKind { lightLeak, filmRoll, crossZoom, whip }
 class CinematicTransitionEffect extends MediaSliderItemEffect {
   final CinematicTransitionKind kind;
 
-  CinematicTransitionEffect(this.kind);
+  final ZoomOverEffectOptions zoom;
+  final LightLeakEffectOptions light;
+  CinematicTransitionEffect(
+    this.kind, {
+    this.zoom = const ZoomOverEffectOptions(
+      mode: ZoomMode.cross,
+      startScale: 1.6,
+      outgoingScale: 1.6,
+      blurFraction: .012,
+    ),
+    this.light = const LightLeakEffectOptions(),
+  });
 
   @override
   Widget transform(
@@ -52,15 +66,23 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
           ],
         );
       case CinematicTransitionKind.crossZoom:
-        sigmaX = sigmaY = unit * .012 * envelope;
+        sigmaX = sigmaY = unit * zoom.blurFraction * envelope;
         scene = Stack(
           fit: StackFit.expand,
           children: [
-            Transform.scale(scale: 1 + .6 * motion, child: from),
+            Transform.scale(
+              alignment: effectOrigin(zoom.origin),
+              scale: 1 + (zoom.outgoingScale - 1) * motion,
+              child: from,
+            ),
             Opacity(
               opacity: motion,
               child: ClipRect(
-                child: Transform.scale(scale: 1 + .6 * (1 - motion), child: to),
+                child: Transform.scale(
+                  alignment: effectOrigin(zoom.origin),
+                  scale: 1 + (zoom.startScale - 1) * (1 - motion),
+                  child: to,
+                ),
               ),
             ),
           ],
@@ -101,7 +123,7 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
     return ClipRect(
       child: CustomPaint(
         foregroundPainter: switch (kind) {
-          CinematicTransitionKind.lightLeak => _LightLeak(t, envelope),
+          CinematicTransitionKind.lightLeak => _LightLeak(t, envelope, light),
           CinematicTransitionKind.filmRoll => _FilmEdges(t, envelope),
           _ => null,
         },
@@ -123,7 +145,8 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
 class _LightLeak extends CustomPainter {
   final double progress, envelope;
 
-  _LightLeak(this.progress, this.envelope);
+  final LightLeakEffectOptions options;
+  _LightLeak(this.progress, this.envelope, this.options);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -132,14 +155,21 @@ class _LightLeak extends CustomPainter {
       size.width * (-.25 + progress * 1.5),
       size.height * .3,
     );
-    final radius = math.max(size.width, size.height) * .8;
+    final radius = math.max(size.width, size.height) * options.radius;
     final shader = ui.Gradient.radial(
       center,
       radius,
       [
-        Colors.white.withValues(alpha: .8 * envelope),
-        const Color(0xffffc26b).withValues(alpha: .65 * envelope),
-        const Color(0xffff5722).withValues(alpha: .22 * envelope),
+        Colors.white.withValues(
+          alpha: (.8 * envelope * options.strength).clamp(0, 1),
+        ),
+        Color(options.warmColor).withValues(
+          alpha:
+              (.65 * envelope * options.strength * Color(options.warmColor).a)
+                  .clamp(0, 1),
+        ),
+        const Color(0xffff5722)
+            .withValues(alpha: (.22 * envelope * options.strength).clamp(0, 1)),
         const Color(0x00ff5722),
       ],
       const [0, .22, .55, 1],
@@ -150,7 +180,9 @@ class _LightLeak extends CustomPainter {
 
   @override
   bool shouldRepaint(_LightLeak oldDelegate) =>
-      progress != oldDelegate.progress || envelope != oldDelegate.envelope;
+      progress != oldDelegate.progress ||
+      envelope != oldDelegate.envelope ||
+      options != oldDelegate.options;
 }
 
 class _FilmEdges extends CustomPainter {

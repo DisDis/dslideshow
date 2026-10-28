@@ -17,7 +17,7 @@ void main() {
   test(
     'Freezed benchmark configuration keeps independent immutable variants',
     () {
-      final variants = [const EffectConfig()];
+      final variants = [const EffectConfig(options: FadeEffectOptions())];
       final source = {EffectType.fade: variants};
       final config = BenchmarkConfig(suite: 'smoke', effectConfigs: source);
       source.clear();
@@ -42,7 +42,10 @@ void main() {
     for (final file in Directory('config').listSync().whereType<File>()) {
       if (!file.path.endsWith('.json')) continue;
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-      if (!json.containsKey('effect_configs')) continue;
+      if (!json.containsKey('effect_configs') ||
+          file.uri.pathSegments.last.startsWith('effect-options-')) {
+        continue;
+      }
       final config = BenchmarkConfig.fromJson(json);
       expect(config.effectConfigs!.keys, [
         EffectType.mosaic,
@@ -57,6 +60,35 @@ void main() {
       checked++;
     }
     expect(checked, 6);
+  });
+
+  test('all historical variants have presets and expanded device configs retain unique cases', () {
+    for (final effect in benchmarkEffects) {
+      final canonical = effect.canonical;
+      expect(
+        effectPresets.any(
+          (preset) =>
+              preset.type == canonical.type &&
+              preset.options == canonical.options.withDuration(0),
+        ),
+        isTrue,
+        reason: effect.name,
+      );
+    }
+    for (final file in [
+      'effect-options-visual.json',
+      'effect-options-performance.json',
+    ]) {
+      final config = BenchmarkConfig.fromJson(
+        jsonDecode(File('config/$file').readAsStringSync())
+            as Map<String, dynamic>,
+      );
+      expect(config.effectConfigs!.keys.toSet(), catalogEffectTypes.toSet());
+      final plan = buildPlan(config);
+      expect(plan.map((item) => item.id).toSet().length, plan.length);
+      expect(plan, isNotEmpty);
+      expect(config.vulkanVideo, isFalse);
+    }
   });
 
   test(

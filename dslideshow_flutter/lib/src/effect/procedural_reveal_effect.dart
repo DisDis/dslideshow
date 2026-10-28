@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'media_slider_item_effect.dart';
+import 'effect_geometry.dart';
+
+import 'package:dslideshow_common/effects.dart';
 
 enum ProceduralRevealKind { noiseDissolve, rippleReveal, waterBase }
 
@@ -26,19 +29,32 @@ Future<ui.FragmentProgram> _loadProgram() async {
   }
 }
 
-/// A compositing mask: live Texture and GIF descendants remain live, and no
-/// snapshot, media resampling or per-cell widget tree is needed.
+/// A compositing mask over the live media layer. GPU parameters are fixed for
+/// the transition; each render object owns and disposes its shader instance.
 class ProceduralRevealEffect extends MediaSliderItemEffect {
   final ProceduralRevealKind kind;
   final int seed;
+  final EffectOrigin origin;
+  final double noiseScale, softness, waveAmplitude, waveFrequency;
   ui.FragmentProgram? _program;
-
-  ProceduralRevealEffect(this.kind, {int? seed})
-    : seed = (seed ?? math.Random().nextInt(4096)) % 4096;
-
+  ProceduralRevealEffect(
+    this.kind, {
+    int? seed,
+    this.origin = EffectOrigin.center,
+    this.noiseScale = 28,
+    double? softness,
+    this.waveAmplitude = .045,
+    this.waveFrequency = 82,
+  }) : seed = (seed ?? math.Random().nextInt(4096)) % 4096,
+       softness =
+           softness ??
+           (kind == ProceduralRevealKind.noiseDissolve
+               ? .08
+               : kind == ProceduralRevealKind.waterBase
+               ? .04
+               : .025);
   @override
   Future<void> prepare() async => _program = await _loadProgram();
-
   @override
   Widget transform(
     BuildContext context,
@@ -48,7 +64,6 @@ class ProceduralRevealEffect extends MediaSliderItemEffect {
     double screenW,
     double screenH,
   ) => page;
-
   @override
   Widget createTransformWidget(
     BuildContext context,
@@ -63,8 +78,7 @@ class ProceduralRevealEffect extends MediaSliderItemEffect {
       ColoredBox(color: Colors.black, child: nextWidget),
       _RevealMask(
         program: _program,
-        kind: kind,
-        seed: seed,
+        effect: this,
         progress: controller.value,
         child: ColoredBox(color: Colors.black, child: currentWidget),
       ),
@@ -74,79 +88,71 @@ class ProceduralRevealEffect extends MediaSliderItemEffect {
 
 class _RevealMask extends SingleChildRenderObjectWidget {
   final ui.FragmentProgram? program;
-  final ProceduralRevealKind kind;
-  final int seed;
+  final ProceduralRevealEffect effect;
   final double progress;
   const _RevealMask({
     required this.program,
-    required this.kind,
-    required this.seed,
+    required this.effect,
     required this.progress,
     required super.child,
   });
-
   @override
   RenderObject createRenderObject(BuildContext context) =>
-      _RenderRevealMask(program, kind, seed, progress);
-
+      _RenderRevealMask(this);
   @override
   void updateRenderObject(
     BuildContext context,
     covariant _RenderRevealMask renderObject,
-  ) => renderObject.update(program, kind, seed, progress);
+  ) => renderObject.update(this);
 }
 
 class _RenderRevealMask extends RenderProxyBox {
-  ui.FragmentProgram? _program;
+  _RevealMask _data;
   ui.FragmentShader? _shader;
-  ProceduralRevealKind _kind;
-  int _seed;
-  double _progress;
-  _RenderRevealMask(this._program, this._kind, this._seed, this._progress);
-
-  void update(
-    ui.FragmentProgram? program,
-    ProceduralRevealKind kind,
-    int seed,
-    double progress,
-  ) {
-    if (_program != program) {
+  _RenderRevealMask(this._data);
+  void update(_RevealMask data) {
+    if (_data.program != data.program) {
       layer = null;
       _shader?.dispose();
       _shader = null;
-      _program = program;
     }
-    _kind = kind;
-    _seed = seed;
-    _progress = progress;
+    _data = data;
     markNeedsPaint();
   }
 
   @override
   bool get alwaysNeedsCompositing => child != null;
-
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (child == null || size.isEmpty || _progress >= 1) {
+    final progress = _data.progress;
+    if (child == null || size.isEmpty || progress >= 1) {
       layer = null;
       return;
     }
-    if (_progress <= 0) {
+    if (progress <= 0) {
       layer = null;
       context.paintChild(child!, offset);
       return;
     }
-    final program = _program;
+    final program = _data.program;
     if (program == null) {
       throw StateError('Call effect.prepare() before painting the reveal.');
     }
+    final effect = _data.effect;
+    final origin = effectOrigin(effect.origin).alongSize(size);
     final shader = _shader ??= program.fragmentShader();
     shader
       ..setFloat(0, size.width)
       ..setFloat(1, size.height)
-      ..setFloat(2, _progress)
-      ..setFloat(3, _seed.toDouble())
-      ..setFloat(4, _kind.index.toDouble());
+      ..setFloat(2, progress)
+      ..setFloat(3, effect.seed.toDouble())
+      ..setFloat(4, effect.kind.index.toDouble())
+      ..setFloat(5, origin.dx)
+      ..setFloat(6, origin.dy)
+      ..setFloat(7, effect.noiseScale)
+      ..setFloat(8, effect.softness)
+      ..setFloat(9, effect.waveAmplitude)
+      ..setFloat(10, effect.waveFrequency);
     final mask = (layer ??= ShaderMaskLayer()) as ShaderMaskLayer;
     mask
       ..shader = shader

@@ -63,13 +63,17 @@ void main() {
       'new transitions use canonical types and typed settings (${locale.languageCode})',
       () {
         for (final effect in _effects) {
-          expect(Effect.values.map((e) => e.type), contains(effect.type));
-          final entry = EffectConfig.fromJson(
-            effect.type,
-            effect.toConfig().toJson(),
+          expect(
+            Effect.values.map((e) => e.type),
+            contains(effect.canonical.type),
           );
-          expect(entry.validate(effect.type), isEmpty);
-          expect(Effect.fromConfig(effect.type, entry), effect);
+          final canonical = effect.canonical;
+          final entry = EffectConfig.fromJson(
+            canonical.type,
+            canonical.toConfig().toJson(),
+          );
+          expect(entry.validate(canonical.type), isEmpty);
+          expect(Effect.fromConfig(canonical.type, entry), canonical);
         }
       },
     );
@@ -134,11 +138,11 @@ void main() {
           );
           expect(
             dropdown.items!.map((e) => e.value!.type),
-            contains(effect.type),
+            contains(effect.canonical.type),
           );
           field.onChanged!(effect);
           await finish();
-          expect(key.currentState!.currentEffect, effect);
+          expect(key.currentState!.currentEffect, effect.canonical);
           final clock = tester
               .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
               .map((e) => e.animation)

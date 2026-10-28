@@ -709,7 +709,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_soft_wipe => 'Мягкое раскрытие';
 
   @override
-  String get effect_slice => 'Сдвиг полос';
+  String get effect_slice => 'Полосы';
 
   @override
   String get effect_luma_fade => 'Растворение по яркости';
@@ -997,7 +997,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_blur_fade => 'Растворение с размытием';
 
   @override
-  String get effect_zoom_over => 'Увеличение поверх';
+  String get effect_zoom_over => 'Масштабирование';
 
   @override
   String get sync_settings_title => 'Синхронизация';
@@ -1740,4 +1740,667 @@ class AppLocalizationsRu extends AppLocalizations {
   String effects_milliseconds(int value) {
     return '$value мс';
   }
+
+  @override
+  String get effect_parameter_gridSize => 'Плотность сетки';
+
+  @override
+  String get effect_parameter_fadeFraction => 'Плавность ячеек';
+
+  @override
+  String get effect_parameter_direction => 'Направление';
+
+  @override
+  String get effect_parameter_randomness => 'Случайность порядка';
+
+  @override
+  String get effect_parameter_mode => 'Режим';
+
+  @override
+  String get effect_parameter_motionCurve => 'Плавность движения';
+
+  @override
+  String get effect_parameter_blurFraction => 'Сила размытия';
+
+  @override
+  String get effect_parameter_decoration => 'Оформление';
+
+  @override
+  String get effect_parameter_edgeWidth => 'Ширина края';
+
+  @override
+  String get effect_parameter_tiltDegrees => 'Наклон';
+
+  @override
+  String get effect_parameter_shadowStrength => 'Сила тени';
+
+  @override
+  String get effect_parameter_shape => 'Форма';
+
+  @override
+  String get effect_parameter_axis => 'Ориентация';
+
+  @override
+  String get effect_parameter_origin => 'Начало / центр';
+
+  @override
+  String get effect_parameter_operation => 'Действие маски';
+
+  @override
+  String get effect_parameter_edgeStyle => 'Стиль границы';
+
+  @override
+  String get effect_parameter_featherFraction => 'Мягкость границы';
+
+  @override
+  String get effect_parameter_lightStrength => 'Сила подсветки';
+
+  @override
+  String get effect_parameter_frameEnabled => 'Окантовка и тень';
+
+  @override
+  String get effect_parameter_borderWidth => 'Толщина окантовки';
+
+  @override
+  String get effect_parameter_borderColor => 'Цвет окантовки';
+
+  @override
+  String get effect_parameter_pointCount => 'Число лучей';
+
+  @override
+  String get effect_parameter_innerRadiusRatio => 'Глубина вырезов';
+
+  @override
+  String get effect_parameter_rotationDegrees => 'Угол поворота';
+
+  @override
+  String get effect_parameter_startAngleDegrees => 'Начальный угол';
+
+  @override
+  String get effect_parameter_circularDirection => 'Направление вращения';
+
+  @override
+  String get effect_parameter_color => 'Цвет перехода';
+
+  @override
+  String get effect_parameter_style => 'Стиль';
+
+  @override
+  String get effect_parameter_rotationSense => 'Направление вращения';
+
+  @override
+  String get effect_parameter_perspectiveStrength => 'Перспектива';
+
+  @override
+  String get effect_parameter_edge => 'Край вращения';
+
+  @override
+  String get effect_parameter_angleDegrees => 'Угол';
+
+  @override
+  String get effect_parameter_stripCount => 'Число полос';
+
+  @override
+  String get effect_parameter_order => 'Порядок';
+
+  @override
+  String get effect_parameter_staggerFraction => 'Задержка элементов';
+
+  @override
+  String get effect_parameter_pattern => 'Чередование';
+
+  @override
+  String get effect_parameter_paneCount => 'Число граней';
+
+  @override
+  String get effect_parameter_refractionStrength => 'Сила преломления';
+
+  @override
+  String get effect_parameter_glintStrength => 'Сила бликов';
+
+  @override
+  String get effect_parameter_panelCount => 'Число панелей';
+
+  @override
+  String get effect_parameter_slatCount => 'Число планок';
+
+  @override
+  String get effect_parameter_shadowIntensity => 'Сила теней';
+
+  @override
+  String get effect_parameter_blendCurve => 'Плавность смешивания';
+
+  @override
+  String get effect_parameter_maxSigma => 'Сила размытия (px)';
+
+  @override
+  String get effect_parameter_blurTarget => 'Размываемый кадр';
+
+  @override
+  String get effect_parameter_holdFraction => 'Выдержка цвета';
+
+  @override
+  String get effect_parameter_fadeOutShare => 'Доля исчезновения';
+
+  @override
+  String get effect_parameter_softness => 'Мягкость';
+
+  @override
+  String get effect_parameter_noiseScale => 'Частота шума';
+
+  @override
+  String get effect_parameter_waveAmplitude => 'Амплитуда волны';
+
+  @override
+  String get effect_parameter_waveFrequency => 'Частота волны';
+
+  @override
+  String get effect_parameter_bandWidth => 'Ширина полосы преломления';
+
+  @override
+  String get effect_parameter_waveCount => 'Число волн';
+
+  @override
+  String get effect_parameter_waveIntensity => 'Сила волны (px)';
+
+  @override
+  String get effect_parameter_outgoingScale => 'Конечный масштаб старого кадра';
+
+  @override
+  String get effect_parameter_scale => 'Масштаб в глубине';
+
+  @override
+  String get effect_parameter_clipAmount => 'Отставание изображения (px)';
+
+  @override
+  String get effect_parameter_zoomOutScale => 'Минимальный масштаб';
+
+  @override
+  String get effect_parameter_enableOpacity => 'Затухание прозрачности';
+
+  @override
+  String get effect_parameter_startScale => 'Начальный масштаб';
+
+  @override
+  String get effect_parameter_corner => 'Угол загиба';
+
+  @override
+  String get effect_parameter_foldWidth => 'Ширина сгиба';
+
+  @override
+  String get effect_parameter_paperColor => 'Цвет бумаги';
+
+  @override
+  String get effect_parameter_splitPosition => 'Положение разреза';
+
+  @override
+  String get effect_parameter_maxScale => 'Максимальный масштаб';
+
+  @override
+  String get effect_parameter_side => 'Сторона';
+
+  @override
+  String get effect_parameter_strength => 'Интенсивность';
+
+  @override
+  String get effect_parameter_radius => 'Радиус';
+
+  @override
+  String get effect_parameter_warmColor => 'Тёплый цвет засветки';
+
+  @override
+  String get effect_parameter_roughness => 'Неровность кромки';
+
+  @override
+  String get effect_parameter_emberColor => 'Цвет огня';
+
+  @override
+  String get effect_parameter_gain => 'Усиление яркости';
+
+  @override
+  String get effect_parameter_sectorCount => 'Число секторов';
+
+  @override
+  String get effect_parameter_lineAxis => 'Ориентация светящейся линии';
+
+  @override
+  String get effect_parameter_glowStrength => 'Сила свечения';
+
+  @override
+  String get effect_parameter_glowColor => 'Цвет свечения';
+
+  @override
+  String get effect_parameter_springStrength => 'Сила пружины';
+
+  @override
+  String get effect_parameter_cellsAcross =>
+      'Число фигур вдоль длинной стороны';
+
+  @override
+  String get effect_parameter_colorShiftFraction => 'Цветовой сдвиг';
+
+  @override
+  String get effect_parameter_trackingStrength => 'Сила tracking-полос';
+
+  @override
+  String get effect_parameter_noiseStrength => 'Сила помех';
+
+  @override
+  String get effect_parameter_trailCount => 'Число световых следов';
+
+  @override
+  String get effect_parameter_driftFraction => 'Смещение следов';
+
+  @override
+  String get effect_parameter_trailStrength => 'Сила следов';
+
+  @override
+  String get effect_parameter_trailColor => 'Цвет следов';
+
+  @override
+  String get effect_choice_FadeStyle_plain => 'Обычное';
+
+  @override
+  String get effect_choice_FadeStyle_linearLight =>
+      'Линейное цветовое пространство';
+
+  @override
+  String get effect_choice_FadeStyle_blur => 'С размытием';
+
+  @override
+  String get effect_choice_FadeStyle_throughColor => 'Через цвет';
+
+  @override
+  String get effect_choice_BlendCurve_linear => 'Равномерно';
+
+  @override
+  String get effect_choice_BlendCurve_easeIn => 'С ускорением';
+
+  @override
+  String get effect_choice_BlendCurve_easeOut => 'С замедлением';
+
+  @override
+  String get effect_choice_BlendCurve_easeInOut => 'Плавный разгон и остановка';
+
+  @override
+  String get effect_choice_BlurTarget_outgoing => 'Старый кадр';
+
+  @override
+  String get effect_choice_BlurTarget_incoming => 'Новый кадр';
+
+  @override
+  String get effect_choice_BlurTarget_both => 'Оба кадра';
+
+  @override
+  String get effect_choice_DepthMode_recedeStill => 'Уход в глубину на месте';
+
+  @override
+  String get effect_choice_DepthMode_recedeSlide => 'Уход в глубину со сдвигом';
+
+  @override
+  String get effect_choice_DepthMode_approach => 'Появление из глубины';
+
+  @override
+  String get effect_choice_ZoomMode_over => 'Наложение';
+
+  @override
+  String get effect_choice_ZoomMode_cross => 'Встречный зум';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_hard => 'Жёсткая';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_soft => 'Мягкая';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_lightSweep => 'Световой проход';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_neon => 'Неоновая';
+
+  @override
+  String get effect_choice_RevealOperation_revealIncoming =>
+      'Раскрывать новый кадр';
+
+  @override
+  String get effect_choice_RevealOperation_hideOutgoing =>
+      'Закрывать старый кадр';
+
+  @override
+  String get effect_choice_SliceMode_slide => 'Сдвиг';
+
+  @override
+  String get effect_choice_SliceMode_reveal => 'Раскрытие';
+
+  @override
+  String get effect_choice_StripPattern_alternating => 'Встречное';
+
+  @override
+  String get effect_choice_StripPattern_sameDirection =>
+      'Одинаковое направление';
+
+  @override
+  String get effect_choice_SequenceOrder_forward => 'Прямой';
+
+  @override
+  String get effect_choice_SequenceOrder_backward => 'Обратный';
+
+  @override
+  String get effect_choice_RotationSense_forward => 'Прямой';
+
+  @override
+  String get effect_choice_RotationSense_backward => 'Обратный';
+
+  @override
+  String get effect_choice_CircularDirection_clockwise => 'По часовой стрелке';
+
+  @override
+  String get effect_choice_CircularDirection_counterclockwise =>
+      'Против часовой стрелки';
+
+  @override
+  String get effect_choice_LumaOrder_brightFirst => 'Сначала светлые';
+
+  @override
+  String get effect_choice_LumaOrder_darkFirst => 'Сначала тёмные';
+
+  @override
+  String get effect_choice_CellShape_hexagon => 'Шестиугольник';
+
+  @override
+  String get effect_choice_CellShape_circle => 'Круг';
+
+  @override
+  String get effect_choice_CellShape_diamond => 'Ромб';
+
+  @override
+  String get effect_choice_CellShape_square => 'Квадрат';
+
+  @override
+  String get effect_choice_MirrorSide_leading => 'Начальная сторона';
+
+  @override
+  String get effect_choice_MirrorSide_trailing => 'Конечная сторона';
+
+  @override
+  String get effect_choice_SlideDecoration_none => 'Нет';
+
+  @override
+  String get effect_choice_SlideDecoration_filmPerforation =>
+      'Перфорация плёнки';
+
+  @override
+  String get effect_choice_RevealShape_rectangle => 'Прямоугольник';
+
+  @override
+  String get effect_choice_RevealShape_star => 'Звезда';
+
+  @override
+  String get effect_choice_RevealShape_clock => 'Сектор';
+
+  @override
+  String get effects_preset => 'Пресет';
+
+  @override
+  String get effects_custom_preset => 'Свои параметры';
+
+  @override
+  String get effects_automatic => 'По стилю';
+
+  @override
+  String get effect_preset_burnAlpha => 'Выгорание';
+
+  @override
+  String get effect_preset_foldMotion => 'Складывание';
+
+  @override
+  String get effect_preset_glow => 'Свечение';
+
+  @override
+  String get effect_preset_kaleidoscope => 'Калейдоскоп';
+
+  @override
+  String get effect_preset_tvPower => 'Выключение телевизора';
+
+  @override
+  String get effect_preset_springMotion => 'Пружина';
+
+  @override
+  String get effect_preset_shapeDissolve => 'Растворение фигурами';
+
+  @override
+  String get effect_preset_vhsDamage => 'Видеокассета';
+
+  @override
+  String get effect_preset_radialBlur => 'Радиальное размытие';
+
+  @override
+  String get effect_preset_phosphor => 'Послесвечение';
+
+  @override
+  String get effect_preset_filmDissolve => 'Кинематографическое растворение';
+
+  @override
+  String get effect_preset_frame => 'Рамка';
+
+  @override
+  String get effect_preset_louver => 'Поворотные жалюзи';
+
+  @override
+  String get effect_preset_mirror => 'Зеркало';
+
+  @override
+  String get effect_preset_clockWipe => 'Часовое раскрытие';
+
+  @override
+  String get effect_preset_split => 'Раздвижение половин';
+
+  @override
+  String get effect_preset_panelWipe => 'Раскрытие панелями';
+
+  @override
+  String get effect_preset_stretch => 'Растяжение';
+
+  @override
+  String get effect_preset_starWipe => 'Раскрытие звездой';
+
+  @override
+  String get effect_preset_lightLeak => 'Световая засветка';
+
+  @override
+  String get effect_preset_filmRoll => 'Прокрутка плёнки';
+
+  @override
+  String get effect_preset_crossZoom => 'Встречный зум';
+
+  @override
+  String get effect_preset_whip => 'Резкая панорама';
+
+  @override
+  String get effect_preset_glass => 'Стекло';
+
+  @override
+  String get effect_preset_softWipe => 'Мягкое раскрытие';
+
+  @override
+  String get effect_preset_slice => 'Сдвиг полос';
+
+  @override
+  String get effect_preset_lumaFade => 'Растворение по яркости';
+
+  @override
+  String get effect_preset_pagePeel => 'Загиб страницы';
+
+  @override
+  String get effect_preset_noiseDissolve => 'Растворение в шуме';
+
+  @override
+  String get effect_preset_rippleReveal => 'Раскрытие волнами';
+
+  @override
+  String get effect_preset_waterRefraction => 'Преломление воды';
+
+  @override
+  String get effect_preset_cube => 'Куб';
+
+  @override
+  String get effect_preset_accordion => 'Гармошка';
+
+  @override
+  String get effect_preset_backgroundToForeground => 'Из фона на передний план';
+
+  @override
+  String get effect_preset_foregroundToBackground => 'С переднего плана в фон';
+
+  @override
+  String get effect_preset_depth => 'Глубина';
+
+  @override
+  String get effect_preset_parallax => 'Параллакс';
+
+  @override
+  String get effect_preset_stack => 'Стопка';
+
+  @override
+  String get effect_preset_tablet => 'Планшет';
+
+  @override
+  String get effect_preset_zoomOut => 'Уменьшение';
+
+  @override
+  String get effect_preset_fade => 'Растворение';
+
+  @override
+  String get effect_preset_mosaic => 'Мозаика';
+
+  @override
+  String get effect_preset_liquidMorph => 'Жидкое преобразование';
+
+  @override
+  String get effect_preset_blinds => 'Жалюзи';
+
+  @override
+  String get effect_preset_blurFade => 'Растворение с размытием';
+
+  @override
+  String get effect_preset_zoomOver => 'Увеличение поверх';
+
+  @override
+  String get effect_preset_slide => 'Сдвиг';
+
+  @override
+  String get effect_preset_revealMask => 'Раскрытие маской';
+
+  @override
+  String get effect_preset_fadeThroughColor => 'Через цвет';
+
+  @override
+  String get effect_preset_flip => 'Переворот';
+
+  @override
+  String get effect_preset_rotate => 'Поворот';
+
+  @override
+  String get effect_preset_softWipeLightSweep => 'Световой проход';
+
+  @override
+  String get effect_preset_softWipeNeon => 'Неоновое раскрытие';
+
+  @override
+  String get effect_preset_fadeThroughWhite => 'Через белый';
+
+  @override
+  String get effect_preset_flipVertical => 'Вертикальный переворот';
+
+  @override
+  String get effect_preset_rotateBottom => 'Вращение от нижнего края';
+
+  @override
+  String get effect_preset_mosaicBinary => 'Мозаика без затухания';
+
+  @override
+  String get effect_preset_mosaicTopLeft => 'Мозаика из верхнего левого угла';
+
+  @override
+  String get effect_preset_mosaicTopRight => 'Мозаика из верхнего правого угла';
+
+  @override
+  String get effect_preset_mosaicBottomLeft => 'Мозаика из нижнего левого угла';
+
+  @override
+  String get effect_preset_mosaicBottomRight =>
+      'Мозаика из нижнего правого угла';
+
+  @override
+  String get effect_preset_slidePushRight => 'Вытеснение вправо';
+
+  @override
+  String get effect_preset_slidePushUp => 'Вытеснение вверх';
+
+  @override
+  String get effect_preset_slidePushDown => 'Вытеснение вниз';
+
+  @override
+  String get effect_preset_slideCoverLeft => 'Наложение влево';
+
+  @override
+  String get effect_preset_slideCoverRight => 'Наложение вправо';
+
+  @override
+  String get effect_preset_slideCoverUp => 'Наложение вверх';
+
+  @override
+  String get effect_preset_slideCoverDown => 'Наложение вниз';
+
+  @override
+  String get effect_preset_slideRevealLeft => 'Открытие сдвигом влево';
+
+  @override
+  String get effect_preset_slideRevealRight => 'Открытие сдвигом вправо';
+
+  @override
+  String get effect_preset_slideRevealUp => 'Открытие сдвигом вверх';
+
+  @override
+  String get effect_preset_slideRevealDown => 'Открытие сдвигом вниз';
+
+  @override
+  String get effect_preset_wipeRight => 'Раскрытие вправо';
+
+  @override
+  String get effect_preset_wipeUp => 'Раскрытие вверх';
+
+  @override
+  String get effect_preset_wipeDown => 'Раскрытие вниз';
+
+  @override
+  String get effect_preset_curtainHorizontal => 'Горизонтальная штора';
+
+  @override
+  String get effect_preset_curtainVertical => 'Вертикальная штора';
+
+  @override
+  String get effect_preset_diagonalTopRight =>
+      'Диагональ из верхнего правого угла';
+
+  @override
+  String get effect_preset_diagonalBottomLeft =>
+      'Диагональ из нижнего левого угла';
+
+  @override
+  String get effect_preset_diagonalBottomRight =>
+      'Диагональ из нижнего правого угла';
+
+  @override
+  String get effect_preset_diagonalTopLeft =>
+      'Диагональ из верхнего левого угла';
+
+  @override
+  String get effect_preset_irisCenter => 'Круг из центра';
+
+  @override
+  String get effects_wave_origin => 'Начало волны';
+
+  @override
+  String get effects_advanced => 'Дополнительно';
 }

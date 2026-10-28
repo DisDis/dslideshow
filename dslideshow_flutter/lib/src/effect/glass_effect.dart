@@ -9,8 +9,13 @@ import 'media_slider_item_effect.dart';
 /// to the next. All panes borrow the same prepared media and video sessions.
 class GlassEffect extends MediaSliderItemEffect {
   final int paneCount;
+  final double refractionStrength, glintStrength;
 
-  GlassEffect({this.paneCount = 8}) : assert(paneCount > 0);
+  GlassEffect({
+    this.paneCount = 8,
+    this.refractionStrength = 1,
+    this.glintStrength = 1,
+  }) : assert(paneCount > 0);
 
   @override
   Widget transform(
@@ -46,7 +51,7 @@ class GlassEffect extends MediaSliderItemEffect {
               width: screenW * (i + 1) / paneCount - screenW * i / paneCount,
               child: ClipRect(
                 child: CustomPaint(
-                  foregroundPainter: _GlassGlint(envelope),
+                  foregroundPainter: _GlassGlint(envelope, glintStrength),
                   child: OverflowBox(
                     alignment: Alignment.topLeft,
                     minWidth: screenW,
@@ -57,12 +62,20 @@ class GlassEffect extends MediaSliderItemEffect {
                       offset: Offset(-screenW * i / paneCount, 0),
                       child: Transform.translate(
                         offset: Offset(
-                          math.sin(i * 2.4 + .7) * screenW * .018 * envelope,
-                          math.cos(i * 1.7) * screenH * .012 * envelope,
+                          math.sin(i * 2.4 + .7) *
+                              screenW *
+                              .018 *
+                              envelope *
+                              refractionStrength,
+                          math.cos(i * 1.7) *
+                              screenH *
+                              .012 *
+                              envelope *
+                              refractionStrength,
                         ),
                         child: Transform.scale(
                           // Overscan covers both axes even at the largest shift.
-                          scale: 1 + .05 * envelope,
+                          scale: 1 + .05 * envelope * refractionStrength,
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
@@ -95,7 +108,8 @@ class GlassEffect extends MediaSliderItemEffect {
 class _GlassGlint extends CustomPainter {
   final double envelope;
 
-  _GlassGlint(this.envelope);
+  final double strength;
+  _GlassGlint(this.envelope, this.strength);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -104,10 +118,11 @@ class _GlassGlint extends CustomPainter {
       Offset.zero,
       Offset(size.width, 0),
       [
-        Colors.white.withValues(alpha: .25 * envelope),
+        Colors.white.withValues(alpha: (.25 * envelope * strength).clamp(0, 1)),
         const Color(0x00e0f7ff),
-        const Color(0xff03263d).withValues(alpha: .14 * envelope),
-        Colors.white.withValues(alpha: .1 * envelope),
+        const Color(0xff03263d)
+            .withValues(alpha: (.14 * envelope * strength).clamp(0, 1)),
+        Colors.white.withValues(alpha: (.1 * envelope * strength).clamp(0, 1)),
       ],
       const [0, .1, .9, 1],
     );
@@ -117,5 +132,5 @@ class _GlassGlint extends CustomPainter {
 
   @override
   bool shouldRepaint(_GlassGlint oldDelegate) =>
-      envelope != oldDelegate.envelope;
+      envelope != oldDelegate.envelope || strength != oldDelegate.strength;
 }

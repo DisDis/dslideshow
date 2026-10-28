@@ -1,8 +1,9 @@
 # Новые визуальные возможности: Ken Burns, Noise Dissolve и две волны
 
 В `dslideshow_flutter` доступны три новых перехода. Имена в JSON/API:
-`Noise Dissolve`, `Ripple Reveal`, `Water Refraction`. Прежние имена и эффекты
-сохранены; BlurFade в этой работе не менялся. `FixedAnimationController` остаётся
+`noiseDissolve`, `rippleReveal`, `waterRefraction`. В исходной работе
+BlurFade не менялся; [текущее расширение настроек](effect-presets-review.md)
+добавляет параметры, пресеты и объединение других типов. `FixedAnimationController` остаётся
 общим часом переходов: при перегрузке время увеличивается плавно, без перескока
 по wall clock. Flutter-pi, прошивка, драйверы и Vulkan не менялись.
 
@@ -39,6 +40,9 @@ GIF, видео и специальных экранов используетс�
 
 В панели настроек слайдшоу три перехода доступны в списке эффектов и в
 предпросмотре. Для Water Refraction поле видео отключено и показано ограничение.
+У Water/Ripple «Начало волны» выбирает центр либо один из четырёх углов.
+Water также настраивает силу преломления, частоту и ширину полосы; Ripple —
+амплитуду, частоту и мягкость маски.
 Первое появление фото в пустом предпросмотре использует Fade; следующая пара
 показывает рефракцию. Смена эффекта прерывает текущую демонстрацию, освобождает
 отброшенные ресурсы после удаления их виджетов и начинает следующую пару.
@@ -65,11 +69,11 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 ```json
 {
   "slideshow": {
-    "effects": {"schemaVersion": 1, "defaultDurationMs": 1000, "items": [
-      {"type": "noiseDissolve", "enabled": true, "options": {"durationMs": 0}},
-      {"type": "rippleReveal", "enabled": true, "options": {"durationMs": 0}},
-      {"type": "waterRefraction", "enabled": true, "options": {"durationMs": 0}}
-    ]},
+    "effects": {"schemaVersion": 1, "defaultDurationMs": 1000, "items": {
+      "noiseDissolve": {"enabled": true},
+      "rippleReveal": {"enabled": true, "options": {"origin": "topLeft"}},
+      "waterRefraction": {"enabled": true, "options": {"origin": "bottomRight"}}
+    }},
     "photoMotion": {"mode": "kenBurns", "maxZoom": 1.06}
   }
 }
@@ -79,7 +83,7 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 структура настройки также отключает движение. Некорректный zoom заменяется
 на ×1.06, числовой zoom ограничивается допустимым диапазоном.
 Значения по умолчанию удаляются при компактном сохранении, как остальные поля
-слайдшоу. Набор `effects.items` сохраняется явно; пустой набор использует
+слайдшоу. Пустые/default-записи `effects.items` могут быть опущены; пустой набор использует
 служебный Fade с общей длительностью. [Формат и редактор](effect-settings.md).
 
 ## Проверки и воспроизведение

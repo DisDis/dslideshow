@@ -21,12 +21,14 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
     double fadeFraction = 0.3,
     this.direction = MosaicDirection.random,
     int? seed,
+    double randomness = .2,
     this.backend = MosaicBackend.canvas,
   }) : schedule = MosaicSchedule(
          gridSize: gridSize,
          fadeFraction: fadeFraction,
          direction: direction,
          seed: seed,
+         randomness: randomness,
        );
 
   @override

@@ -50,6 +50,126 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
 
 void main() {
   testWidgets(
+    'presets preserve timing and enabled state and replace invalid visual input',
+    (tester) async {
+      final config = SlideShowConfig.fromJson({
+        'effects': {
+          'items': {
+            'fade': {
+              'options': {'durationMs': 1700},
+            },
+          },
+        },
+      });
+      ValueGetter<bool>? invalid;
+      await wide(
+        tester,
+        config,
+        register: (check) {
+          invalid = check;
+          return () {};
+        },
+      );
+      Future<void> preset(EffectPresetId id) async {
+        final dropdown = find.byType(DropdownButtonFormField<EffectPresetId>);
+        await tester.ensureVisible(dropdown);
+        tester
+            .widget<DropdownButtonFormField<EffectPresetId>>(dropdown)
+            .onChanged!(id);
+        await tester.pump();
+      }
+
+      await preset(EffectPresetId.blurFade);
+      final blur = config.effects.get(EffectType.fade);
+      expect(blur.enabled, isFalse);
+      expect(blur.options.durationMs, 1700);
+      expect((blur.options as FadeEffectOptions).style, FadeStyle.blur);
+      final sigma = find.byKey(const ValueKey('effect-fade-maxSigma'));
+      await tester.enterText(sigma, 'invalid');
+      await tester.pump();
+      expect(invalid!(), isTrue);
+      await preset(EffectPresetId.filmDissolve);
+      expect(invalid!(), isFalse);
+      expect(config.effects.get(EffectType.fade).options.durationMs, 1700);
+      expect(
+        (config.effects.get(EffectType.fade).options as FadeEffectOptions)
+            .style,
+        FadeStyle.linearLight,
+      );
+      expect(find.byKey(const ValueKey('effect-fade-maxSigma')), findsNothing);
+      expect(EffectsConfig.fromJson(config.effects.toJson()), config.effects);
+      await tester.pumpWidget(const SizedBox());
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'changing a centered mask to diagonal keeps an editable valid origin',
+    (tester) async {
+      final config = SlideShowConfig.fromJson({
+        'effects': {
+          'items': {
+            'revealMask': {
+              'options': {'shape': 'iris', 'origin': 'center'},
+            },
+          },
+        },
+      });
+      await wide(tester, config);
+      await select(tester, 'Reveal', 'revealMask');
+      tester
+          .widget<DropdownButtonFormField<RevealShape>>(
+            find.byType(DropdownButtonFormField<RevealShape>),
+          )
+          .onChanged!(RevealShape.diagonal);
+      await tester.pump();
+      final options =
+          config.effects.get(EffectType.revealMask).options
+              as RevealMaskEffectOptions;
+      expect(options.origin, EffectOrigin.topLeft);
+      expect(config.effects.validate(), isEmpty);
+      expect(
+        find.byType(DropdownButtonFormField<EffectOrigin>),
+        findsOneWidget,
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'Water exposes exactly the five wave origins and keeps disabled editing',
+    (tester) async {
+      final config = SlideShowConfig.fromJson({});
+      await wide(tester, config);
+      await select(tester, 'Water', 'waterRefraction');
+      final dropdown = find.byType(DropdownButtonFormField<EffectOrigin>);
+      expect(
+        tester
+            .widget<DropdownButton<EffectOrigin>>(
+              find.descendant(
+                of: dropdown,
+                matching: find.byType(DropdownButton<EffectOrigin>),
+              ),
+            )
+            .items!
+            .map((item) => item.value),
+        EffectOrigin.values,
+      );
+      for (final origin in EffectOrigin.values) {
+        tester
+            .widget<DropdownButtonFormField<EffectOrigin>>(dropdown)
+            .onChanged!(origin);
+        await tester.pump();
+        final entry = config.effects.get(EffectType.waterRefraction);
+        expect((entry.options as WaterRefractionEffectOptions).origin, origin);
+        expect(entry.enabled, isFalse);
+      }
+      expect(config.effects.validate(), isEmpty);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
     'invalid stored options can be inspected and reset without crashing',
     (tester) async {
       for (final (type, options) in <(EffectType, Map<String, dynamic>)>[
@@ -116,8 +236,8 @@ void main() {
           return () {};
         },
       );
-      await select(tester, 'Fade through', 'fadeThroughColor');
-      final field = find.byKey(const ValueKey('effect-fadeThroughColor-color'));
+      await select(tester, 'Fade', 'fade');
+      final field = find.byKey(const ValueKey('effect-fade-color'));
       await tester.enterText(field, 'invalid');
       await tester.pump();
       expect(hasInvalid!(), isTrue);
@@ -130,11 +250,8 @@ void main() {
       await tester.pump();
       await tester.tap(find.text('Apply'));
       await tester.pumpAndSettle();
-      final entry = config.effects.get(EffectType.fadeThroughColor);
-      expect(
-        (entry.options as FadeThroughColorEffectOptions).color,
-        0x40887766,
-      );
+      final entry = config.effects.get(EffectType.fade);
+      expect((entry.options as FadeEffectOptions).color, 0x40887766);
       expect(entry.options.durationMs, 1700);
       expect(entry.enabled, isTrue);
       expect(hasInvalid!(), isFalse);
@@ -394,7 +511,7 @@ void main() {
       await tapVisible(tester, find.text('Custom'));
       expect(config.effects.get(EffectType.mosaic).options.durationMs, 1800);
       await menuAction('Enable all effects');
-      expect(config.effects.playable.length, 51);
+      expect(config.effects.playable.length, 37);
       await menuAction('Disable all effects');
       expect(config.effects.playable, isEmpty);
       expect(

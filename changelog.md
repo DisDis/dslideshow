@@ -1,5 +1,16 @@
 # Unreleased
 
+* Consolidate transition effects into 37 catalog families with 82 built-in
+  presets, including Slice/Panel Wipe. Add typed visual settings throughout,
+  localized preset selection and dependent controls, five Water/Ripple origins,
+  deterministic legacy-family normalization and canonical benchmark reports.
+  Preserve disabled options, personal timing, FixedAnimationController, dense
+  mosaics and full-quality photo refraction. Compare all presets against frozen
+  renderers at 21 phases locally. User visually accepted all replacements;
+  remove temporary reference renderers, comparison tool and generated report
+  after approval, retaining the preset mapping. Device runs are excluded by
+  the user's decision.
+
 * Generate special-screen, schedule, clock and camera copyWith with Freezed,
   preserving mutable editor contracts and compact JSON. Skip unknown screen
   types while parsing the settings list, log the omission and remove obsolete

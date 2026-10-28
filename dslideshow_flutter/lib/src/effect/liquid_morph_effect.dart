@@ -3,15 +3,24 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
+import 'effect_geometry.dart';
+
+import 'package:dslideshow_common/effects.dart';
 
 class LiquidMorphEffect extends MediaSliderItemEffect {
+  final double outgoingScale;
+  final EffectOrigin origin;
   final int waveCount;
   final double waveIntensity;
   final _WaveGeometry _geometry;
-  LiquidMorphEffect({this.waveCount = 12, this.waveIntensity = 15})
-    : assert(waveCount > 0),
-      assert(waveIntensity >= 0),
-      _geometry = _WaveGeometry(waveCount);
+  LiquidMorphEffect({
+    this.waveCount = 12,
+    this.waveIntensity = 15,
+    this.outgoingScale = 1.1,
+    this.origin = EffectOrigin.center,
+  }) : assert(waveCount > 0),
+       assert(waveIntensity >= 0),
+       _geometry = _WaveGeometry(waveCount);
 
   @override
   Widget transform(
@@ -34,12 +43,16 @@ class LiquidMorphEffect extends MediaSliderItemEffect {
   ) => Stack(
     fit: StackFit.expand,
     children: [
-      Transform.scale(scale: 1 + 0.1 * controller.value, child: currentWidget),
+      Transform.scale(
+        scale: 1 + (outgoingScale - 1) * controller.value,
+        child: currentWidget,
+      ),
       ClipPath(
         clipper: _LiquidRevealClipper(
           controller.value,
           waveIntensity,
           _geometry,
+          origin,
         ),
         child: nextWidget,
       ),
@@ -64,18 +77,24 @@ class _LiquidRevealClipper extends CustomClipper<Path> {
   final double progress;
   final double intensity;
   final _WaveGeometry geometry;
-  _LiquidRevealClipper(this.progress, this.intensity, this.geometry);
+  final EffectOrigin origin;
+  _LiquidRevealClipper(
+    this.progress,
+    this.intensity,
+    this.geometry,
+    this.origin,
+  );
   @override
   Path getClip(Size size) {
     final path = Path();
     if (progress <= 0) return path;
     if (progress >= 1) return path..addRect(Offset.zero & size);
-    final center = size.center(Offset.zero);
+    final center = effectOrigin(origin).alongSize(size);
+    final dx = math.max(center.dx, size.width - center.dx);
+    final dy = math.max(center.dy, size.height - center.dy);
     final radius = size.longestSide == 0
         ? 0.0
-        : math.sqrt(size.width * size.width + size.height * size.height) /
-              1.8 *
-              progress;
+        : math.sqrt(dx * dx + dy * dy) / .9 * progress;
     final phase = progress * math.pi * 4;
     final phaseSin = math.sin(phase);
     final phaseCos = math.cos(phase);
@@ -101,5 +120,6 @@ class _LiquidRevealClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant _LiquidRevealClipper old) =>
       old.progress != progress ||
       old.intensity != intensity ||
+      old.origin != origin ||
       !identical(old.geometry, geometry);
 }

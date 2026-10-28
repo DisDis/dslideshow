@@ -62,6 +62,27 @@ void main() {
       .controller
       .text;
 
+  testWidgets('effects summary counts canonical families after migration', (
+    tester,
+  ) async {
+    await mount(tester);
+    repository.loads.single.complete(
+      AppConfig.fromJson({
+        'slideshow': {
+          'effects': {
+            'items': {
+              'filmDissolve': {'enabled': true},
+              'blurFade': {'enabled': true},
+            },
+          },
+        },
+      }),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('1 / 37'), findsOneWidget);
+    expect(find.textContaining('/ 51'), findsNothing);
+  });
+
   testWidgets('initial load failure offers a working retry', (tester) async {
     await mount(tester);
     repository.loads.single.completeError(StateError('download failed'));

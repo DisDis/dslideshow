@@ -110,14 +110,17 @@ void main() {
       'Phosphor',
     ]);
     for (final effect in _effects) {
-      expect(Effect.values.map((e) => e.type), contains(effect.type));
+      expect(
+        Effect.values.map((e) => e.type),
+        contains(canonicalEffectType(effect.type)),
+      );
       expect(Effect.parse(effect.name).type, effect.type);
       expect(
         Effect.fromConfig(
           effect.type,
           EffectConfig.fromJson(effect.type, effect.toConfig().toJson()),
         ),
-        effect,
+        effect.canonical,
       );
       for (final from in TransitionMedia.values) {
         for (final to in TransitionMedia.values) {

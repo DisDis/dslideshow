@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
 
+import 'package:dslideshow_common/effects.dart';
+
 /// Peels the top-right corner towards the bottom-left. The plain paper back
 /// and shaded fold are painted independently of the single live media view.
 class PagePeelEffect extends MediaSliderItemEffect {
+  final PagePeelEffectOptions options;
+  PagePeelEffect({this.options = const PagePeelEffectOptions()});
   @override
   Widget transform(
     BuildContext context,
@@ -28,7 +32,7 @@ class PagePeelEffect extends MediaSliderItemEffect {
     double screenH,
   ) => ClipRect(
     child: CustomPaint(
-      foregroundPainter: _PaperBack(controller.value),
+      foregroundPainter: _PaperBack(controller.value, options),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -90,7 +94,8 @@ class _PageClipper extends CustomClipper<Path> {
 class _PaperBack extends CustomPainter {
   final double progress;
 
-  _PaperBack(this.progress);
+  final PagePeelEffectOptions options;
+  _PaperBack(this.progress, this.options);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -101,14 +106,25 @@ class _PaperBack extends CustomPainter {
     final back = _polygonPath([
       for (final p in peeled) Offset(p.dy + crease, p.dx - crease),
     ]);
-    final foldWidth = math.min(size.width, size.height) * .12;
+    final foldWidth = math.min(size.width, size.height) * options.foldWidth;
     final normal = Offset(1 / math.sqrt(2), -1 / math.sqrt(2));
     final onCrease = Offset(crease / 2, -crease / 2);
-    canvas.drawShadow(back, Colors.black.withValues(alpha: .55), 6, false);
+    canvas.drawShadow(
+      back,
+      Colors.black.withValues(alpha: options.shadowStrength),
+      6,
+      false,
+    );
     final shader = ui.Gradient.linear(
       onCrease,
       onCrease - normal * foldWidth,
-      const [Color(0xff96918a), Color(0xfffffdf5), Color(0xffe6e1d5)],
+      options.paperColor == 0xFFFFFDF5
+          ? const [Color(0xff96918a), Color(0xfffffdf5), Color(0xffe6e1d5)]
+          : [
+              Color.lerp(Colors.black, Color(options.paperColor), .58)!,
+              Color(options.paperColor),
+              Color.lerp(Colors.black, Color(options.paperColor), .9)!,
+            ],
       const [0, .35, 1],
     );
     canvas.drawPath(back, Paint()..shader = shader);
@@ -117,5 +133,5 @@ class _PaperBack extends CustomPainter {
 
   @override
   bool shouldRepaint(_PaperBack oldDelegate) =>
-      progress != oldDelegate.progress;
+      progress != oldDelegate.progress || options != oldDelegate.options;
 }

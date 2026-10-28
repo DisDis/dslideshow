@@ -5,6 +5,8 @@ import 'package:dslideshow_flutter/src/effect/translate_effect.dart';
 import 'package:flutter/material.dart';
 
 class TabletEffect extends MediaSliderItemEffect with TranslateEffect {
+  final double tiltDegrees, perspectiveStrength;
+  TabletEffect({this.tiltDegrees = 45, this.perspectiveStrength = 1});
   @override
   Widget transform(
     BuildContext context,
@@ -24,8 +26,8 @@ class TabletEffect extends MediaSliderItemEffect with TranslateEffect {
             translateCurrent(Matrix4.identity(), pageDelta, screenW, screenH)
               ..multiply(
                 Matrix4.identity()
-                  ..setEntry(3, 2, 0.002 * 320 / screenW)
-                  ..rotateY(-math.pi / 4 * pageDelta),
+                  ..setEntry(3, 2, perspectiveStrength * 0.002 * 320 / screenW)
+                  ..rotateY(-math.pi / 180 * tiltDegrees * pageDelta),
               ),
         child: page,
       );
@@ -37,8 +39,8 @@ class TabletEffect extends MediaSliderItemEffect with TranslateEffect {
             translateNext(Matrix4.identity(), pageDelta, screenW, screenH)
               ..multiply(
                 Matrix4.identity()
-                  ..setEntry(3, 2, 0.002 * 320 / screenW)
-                  ..rotateY(math.pi / 4 * (1 - pageDelta)),
+                  ..setEntry(3, 2, perspectiveStrength * 0.002 * 320 / screenW)
+                  ..rotateY(math.pi / 180 * tiltDegrees * (1 - pageDelta)),
               ),
         child: page,
       );

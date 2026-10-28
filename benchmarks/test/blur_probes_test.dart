@@ -20,7 +20,7 @@ void main() {
       );
       expect(plan.single.blurProbe, probe);
       expect(plan.single.toJson()['blur_probe'], probe.name);
-      expect(plan.single.id, '${probe.effectName}--photo-photo');
+      expect(plan.single.id, '${probe.effectName}--photo-photo--style_blur');
     }
     expect(BlurFadeProbe.parseEffect('BlurProbe-typo'), null);
     expect(

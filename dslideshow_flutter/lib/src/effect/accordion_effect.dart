@@ -2,6 +2,8 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:flutter/material.dart';
 
 class AccordionEffect extends MediaSliderItemEffect {
+  final double shadowIntensity;
+  AccordionEffect({this.shadowIntensity = .5});
   @override
   Widget transform(
     BuildContext context,
@@ -81,7 +83,9 @@ class AccordionEffect extends MediaSliderItemEffect {
             height: screenH,
             // Тень становится темнее по мере сжатия
             child: Container(
-              color: Colors.black.withAlpha((255.0 * (progress * 0.5)).round()),
+              color: Colors.black.withAlpha(
+                (255.0 * (progress * shadowIntensity)).round(),
+              ),
             ),
           ),
         ),
@@ -102,7 +106,7 @@ class AccordionEffect extends MediaSliderItemEffect {
             // Тень светлеет по мере расширения
             child: Container(
               color: Colors.black.withAlpha(
-                (255.0 * ((1.0 - progress) * 0.5)).round(),
+                (255.0 * ((1.0 - progress) * shadowIntensity)).round(),
               ),
             ),
           ),

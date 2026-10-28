@@ -1,0 +1,579 @@
+{
+  "suite": "standard",
+  "effects": [
+    "Baseline"
+  ],
+  "effect_configs": {
+    "burnAlpha": [
+      {
+        "options": {}
+      }
+    ],
+    "foldMotion": [
+      {
+        "options": {}
+      }
+    ],
+    "glow": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "radius": 0.08,
+          "strength": 1,
+          "gain": 3
+        }
+      }
+    ],
+    "kaleidoscope": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "sectorCount": 12,
+          "rotationDegrees": 180
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomRight",
+          "sectorCount": 12,
+          "rotationDegrees": 180
+        }
+      }
+    ],
+    "tvPower": [
+      {
+        "options": {}
+      }
+    ],
+    "springMotion": [
+      {
+        "options": {}
+      }
+    ],
+    "shapeDissolve": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "cellsAcross": 32
+        }
+      }
+    ],
+    "vhsDamage": [
+      {
+        "options": {}
+      }
+    ],
+    "radialBlur": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "origin": "bottomRight",
+          "angleDegrees": 20
+        }
+      }
+    ],
+    "phosphor": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "trailCount": 6,
+          "trailStrength": 1.5
+        }
+      }
+    ],
+    "fade": [
+      {
+        "options": {
+          "style": "linearLight"
+        }
+      },
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "style": "blur"
+        }
+      },
+      {
+        "options": {
+          "style": "throughColor"
+        }
+      },
+      {
+        "options": {
+          "style": "throughColor",
+          "color": 4294967295
+        }
+      },
+      {
+        "options": {
+          "style": "blur",
+          "maxSigma": 30,
+          "blurTarget": "both"
+        }
+      }
+    ],
+    "revealMask": [
+      {
+        "options": {
+          "shape": "rectangle",
+          "origin": "center",
+          "frameEnabled": true
+        }
+      },
+      {
+        "options": {
+          "shape": "clock",
+          "origin": "center"
+        }
+      },
+      {
+        "options": {
+          "shape": "star",
+          "origin": "center"
+        }
+      },
+      {
+        "options": {
+          "direction": "right",
+          "edgeStyle": "soft"
+        }
+      },
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "direction": "right",
+          "edgeStyle": "lightSweep"
+        }
+      },
+      {
+        "options": {
+          "direction": "right",
+          "edgeStyle": "neon"
+        }
+      },
+      {
+        "options": {
+          "direction": "right"
+        }
+      },
+      {
+        "options": {
+          "direction": "up"
+        }
+      },
+      {
+        "options": {
+          "direction": "down"
+        }
+      },
+      {
+        "options": {
+          "shape": "curtain"
+        }
+      },
+      {
+        "options": {
+          "shape": "curtain",
+          "axis": "vertical"
+        }
+      },
+      {
+        "options": {
+          "shape": "diagonal",
+          "origin": "topRight"
+        }
+      },
+      {
+        "options": {
+          "shape": "diagonal",
+          "origin": "bottomLeft"
+        }
+      },
+      {
+        "options": {
+          "shape": "diagonal",
+          "origin": "bottomRight"
+        }
+      },
+      {
+        "options": {
+          "shape": "diagonal"
+        }
+      },
+      {
+        "options": {
+          "shape": "iris",
+          "origin": "center"
+        }
+      }
+    ],
+    "louver": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "slatCount": 32,
+          "staggerFraction": 0.8
+        }
+      }
+    ],
+    "mirror": [
+      {
+        "options": {}
+      }
+    ],
+    "split": [
+      {
+        "options": {}
+      }
+    ],
+    "slice": [
+      {
+        "options": {
+          "mode": "reveal",
+          "staggerFraction": 0.28
+        }
+      },
+      {
+        "options": {}
+      }
+    ],
+    "stretch": [
+      {
+        "options": {}
+      }
+    ],
+    "lightLeak": [
+      {
+        "options": {}
+      }
+    ],
+    "slide": [
+      {
+        "options": {
+          "direction": "up",
+          "motionCurve": "easeInOut",
+          "blurFraction": 0.018,
+          "decoration": "filmPerforation"
+        }
+      },
+      {
+        "options": {
+          "motionCurve": "easeInOut",
+          "blurFraction": 0.045
+        }
+      },
+      {
+        "options": {
+          "mode": "cover"
+        }
+      },
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "direction": "right"
+        }
+      },
+      {
+        "options": {
+          "direction": "up"
+        }
+      },
+      {
+        "options": {
+          "direction": "down"
+        }
+      },
+      {
+        "options": {
+          "mode": "cover",
+          "direction": "right"
+        }
+      },
+      {
+        "options": {
+          "mode": "cover",
+          "direction": "up"
+        }
+      },
+      {
+        "options": {
+          "mode": "cover",
+          "direction": "down"
+        }
+      },
+      {
+        "options": {
+          "mode": "reveal"
+        }
+      },
+      {
+        "options": {
+          "mode": "reveal",
+          "direction": "right"
+        }
+      },
+      {
+        "options": {
+          "mode": "reveal",
+          "direction": "up"
+        }
+      },
+      {
+        "options": {
+          "mode": "reveal",
+          "direction": "down"
+        }
+      }
+    ],
+    "zoomOver": [
+      {
+        "options": {
+          "mode": "cross",
+          "startScale": 1.6,
+          "outgoingScale": 1.6,
+          "blurFraction": 0.012
+        }
+      },
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "mode": "cross",
+          "startScale": 2,
+          "outgoingScale": 2,
+          "blurFraction": 0.03
+        }
+      }
+    ],
+    "glass": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "paneCount": 32,
+          "refractionStrength": 2,
+          "glintStrength": 2
+        }
+      }
+    ],
+    "lumaFade": [
+      {
+        "options": {}
+      }
+    ],
+    "pagePeel": [
+      {
+        "options": {}
+      }
+    ],
+    "noiseDissolve": [
+      {
+        "options": {}
+      }
+    ],
+    "rippleReveal": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "origin": "topLeft"
+        }
+      },
+      {
+        "options": {
+          "origin": "topRight"
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomLeft"
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomRight"
+        }
+      }
+    ],
+    "waterRefraction": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "bandWidth": 1.5,
+          "refractionStrength": 0.025
+        }
+      },
+      {
+        "options": {
+          "origin": "topLeft"
+        }
+      },
+      {
+        "options": {
+          "origin": "topRight"
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomLeft"
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomRight"
+        }
+      },
+      {
+        "options": {
+          "origin": "bottomRight",
+          "bandWidth": 1.5,
+          "refractionStrength": 0.025
+        }
+      }
+    ],
+    "cube": [
+      {
+        "options": {}
+      }
+    ],
+    "accordion": [
+      {
+        "options": {}
+      }
+    ],
+    "depth": [
+      {
+        "options": {
+          "mode": "approach"
+        }
+      },
+      {
+        "options": {
+          "mode": "recedeSlide",
+          "scale": 0.4
+        }
+      },
+      {
+        "options": {}
+      }
+    ],
+    "parallax": [
+      {
+        "options": {}
+      }
+    ],
+    "tablet": [
+      {
+        "options": {}
+      }
+    ],
+    "zoomOut": [
+      {
+        "options": {}
+      }
+    ],
+    "mosaic": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "fadeFraction": 0.0
+        }
+      },
+      {
+        "options": {
+          "direction": "topLeft"
+        }
+      },
+      {
+        "options": {
+          "direction": "topRight"
+        }
+      },
+      {
+        "options": {
+          "direction": "bottomLeft"
+        }
+      },
+      {
+        "options": {
+          "direction": "bottomRight"
+        }
+      }
+    ],
+    "liquidMorph": [
+      {
+        "options": {}
+      }
+    ],
+    "blinds": [
+      {
+        "options": {}
+      }
+    ],
+    "flip": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "axis": "vertical"
+        }
+      }
+    ],
+    "rotate": [
+      {
+        "options": {}
+      },
+      {
+        "options": {
+          "edge": "bottom"
+        }
+      }
+    ]
+  },
+  "media_cases": [
+    "photo-photo",
+    "large-photo",
+    "gif-photo",
+    "photo-video",
+    "video-photo",
+    "video-video"
+  ],
+  "warmups": 1,
+  "repeats": 3,
+  "grids": [
+    100,
+    150,
+    200
+  ],
+  "backends": [
+    "canvas"
+  ],
+  "capture_frames": false,
+  "visual_audit": false
+}

@@ -119,6 +119,48 @@ class _RevealClipper extends CustomClipper<Path> {
                 ))
               .storage,
         );
+      case RevealShape.rectangle:
+        final point = origin.alongSize(size);
+        final growth = Curves.easeInOutCubic.transform(progress);
+        path.addRect(
+          Rect.fromCenter(
+            center: Offset.lerp(point, size.center(Offset.zero), growth)!,
+            width: w * growth,
+            height: h * growth,
+          ),
+        );
+      case RevealShape.star:
+        final center = origin.alongSize(size);
+        final radius = math.sqrt(
+          math.pow(math.max(center.dx, w - center.dx), 2) +
+              math.pow(math.max(center.dy, h - center.dy), 2),
+        );
+        final outer = (radius + 1) / .42 * Curves.easeIn.transform(progress);
+        path.addPolygon([
+          for (var i = 0; i < 10; i++)
+            center +
+                Offset(
+                      math.cos(-math.pi / 2 + i * math.pi / 5),
+                      math.sin(-math.pi / 2 + i * math.pi / 5),
+                    ) *
+                    outer *
+                    (i.isEven ? 1 : .42),
+        ], true);
+      case RevealShape.clock:
+        final center = origin.alongSize(size);
+        final radius = math.sqrt(
+          math.pow(math.max(center.dx, w - center.dx), 2) +
+              math.pow(math.max(center.dy, h - center.dy), 2),
+        );
+        path
+          ..moveTo(center.dx, center.dy)
+          ..arcTo(
+            Rect.fromCircle(center: center, radius: radius + 1),
+            -math.pi / 2,
+            math.pi * 2 * progress,
+            false,
+          )
+          ..close();
       case RevealShape.iris:
         final center = origin.alongSize(size);
         final dx = math.max(center.dx, w - center.dx);

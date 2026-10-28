@@ -1,15 +1,17 @@
 # Тридцать переходов для фоторамки и предпросмотра
 
-В общем реестре `Effect.values` доступны `Soft Wipe`, `Light Sweep`, `Slice`,
+Ниже описаны визуальные варианты переходов `Soft Wipe`, `Light Sweep`, `Slice`,
 `Luma Fade`, `Page Peel`, `Light Leak`, `Film Roll`, `Cross Zoom`, `Whip`,
 `Glass`, `Clock Wipe`, `Split`, `Panel Wipe`, `Stretch`, `Star Wipe`,
 `Film Dissolve`, `Frame`, `Louver`, `Mirror`, `Neon Wipe`,
 `Burn Alpha`, `Fold Motion`, `Glow`, `Kaleidoscope`, `TV Power`, `Spring Motion`,
 `Shape Dissolve`, `VHS Damage`, `Radial Blur`, `Phosphor`.
-Это самостоятельные реализации визуальных приёмов,
+В текущем каталоге часть этих вариантов выбирается пресетами одного семейства;
+[37 семейств и 82 пресета](effect-presets-review.md). Сами визуальные приёмы
+сохранены. Это реализации переходов,
 известных по видеоредакторам, включая Premiere Pro.
 
-| Имя JSON/API | Русская подпись | Поведение |
+| Визуальный вариант / пресет | Русская подпись | Поведение |
 | --- | --- | --- |
 | `Soft Wipe` | Мягкое раскрытие | Следующее медиа открывается слева направо через широкую мягкую границу. |
 | `Light Sweep` | Световой проход | Такое же раскрытие, дополненное тёплым световым бликом на границе. Блик плавно появляется и исчезает. |
@@ -138,11 +140,13 @@ Phosphor использует четыре исходящих представл
 ## Настройка
 
 Переходы выбираются на странице «Эффекты перехода»: поиск/фильтры,
-включение, параметры и связанный предпросмотр. Light Sweep и Neon Wipe
-стали стилями одного Soft Wipe; остальные самостоятельные алгоритмы
-сохранились. У каждого типа есть `options.durationMs`: 0 наследует общую
-`slideshow.effects.defaultDurationMs`, положительное значение задаёт свою
-длительность. Glass/Panel Wipe/Louver/Slice также имеют счётчики элементов.
+включение, параметры, пресеты и связанный предпросмотр. Soft Wipe, Light Sweep,
+Neon, Frame, Star Wipe и Clock Wipe входят в Reveal Mask; Film Dissolve и
+Fade Through Color — в Fade; Whip и Film Roll — в Slide; Cross Zoom —
+в Zoom; Panel Wipe и Slice — в одно семейство полос. Остальные варианты
+сохранили свои строки. Выбор пресета применяет визуальные параметры, сохраняя
+включённость и `options.durationMs`: 0 наследует общую длительность,
+положительное значение задаёт свою. [Таблица соответствия](effect-presets-review.md).
 
 [Новый формат JSON и правила редактора](effect-settings.md). Прежний
 `allowedEffects` и строковые имена вариантов не поддерживаются. Пустой

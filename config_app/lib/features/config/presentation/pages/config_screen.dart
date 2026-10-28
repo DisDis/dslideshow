@@ -424,7 +424,7 @@ class ConfigScreenState extends State<ConfigScreen> {
             SettingsTileNavigation(
               title: context.localizations.effects_title,
               subtitle:
-                  '${_editingConfig!.slideshow.effects.playable.length} / ${EffectType.values.length - 1}',
+                  '${_editingConfig!.slideshow.effects.playable.length} / ${catalogEffectTypes.length}',
               icon: Icons.auto_awesome,
               onTap: () => _edit(
                 EffectsEditorPage(

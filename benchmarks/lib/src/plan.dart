@@ -62,7 +62,7 @@ class BenchmarkCase {
 
   Effect? get effectiveEffect {
     final value = effect;
-    if (value == null || !value.isMosaic) return value;
+    if (value == null || !value.isMosaic) return value?.canonical;
     return value.configured(
       (value.options as MosaicEffectOptions).copyWith(gridSize: grid),
     );
@@ -116,9 +116,10 @@ class BenchmarkCase {
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
-  final names = Effect.values.map((e) => e.name).toSet()
-    ..add('Baseline')
-    ..add(photoMotionProbeName);
+  final names =
+      [...Effect.values, ...benchmarkEffects].map((e) => e.name).toSet()
+        ..add('Baseline')
+        ..add(photoMotionProbeName);
   names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
   names.addAll(CompositionProbe.values.map((probe) => probe.effectName));
   for (final probe in MosaicProbe.values) {

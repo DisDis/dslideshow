@@ -91,7 +91,9 @@ void main() {
           await tester.pump();
           expect(
             bloc.state.effect,
-            effect.configured(effect.options.withDuration(1000)),
+            effect.canonical.configured(
+              effect.canonical.options.withDuration(1000),
+            ),
             reason: path,
           );
           bloc.add(const SlideshowImageReadyEvent());

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'media_slider_item_effect.dart';
 
+import 'package:dslideshow_common/effects.dart';
+
+import 'effect_geometry.dart';
+
 enum OpticalTransitionKind { filmDissolve, frame, louver, mirror }
 
 /// Optical transitions over live media. Repeated faces borrow the same prepared
@@ -11,9 +15,17 @@ enum OpticalTransitionKind { filmDissolve, frame, louver, mirror }
 class OpticalTransitionEffect extends MediaSliderItemEffect {
   final OpticalTransitionKind kind;
   final int slatCount;
+  final LouverEffectOptions louver;
+  final MirrorEffectOptions mirror;
+  final RevealMaskEffectOptions frame;
 
-  OpticalTransitionEffect(this.kind, {this.slatCount = 8})
-    : assert(slatCount > 0);
+  OpticalTransitionEffect(
+    this.kind, {
+    this.slatCount = 8,
+    this.louver = const LouverEffectOptions(),
+    this.mirror = const MirrorEffectOptions(),
+    this.frame = const RevealMaskEffectOptions(origin: EffectOrigin.center),
+  }) : assert(slatCount > 0);
 
   @override
   Widget transform(
@@ -93,13 +105,17 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
           children: [
             from,
             CustomPaint(
-              painter: _FrameDecoration(motion, envelope, shadow: true),
+              painter: _FrameDecoration(motion, envelope, frame, shadow: true),
               foregroundPainter: _FrameDecoration(
                 motion,
                 envelope,
+                frame,
                 shadow: false,
               ),
-              child: ClipRect(clipper: _FrameClipper(motion), child: to),
+              child: ClipRect(
+                clipper: _FrameClipper(motion, frame.origin),
+                child: to,
+              ),
             ),
           ],
         );
@@ -109,10 +125,13 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
           children: [
             _blend(from, to, motion),
             ClipRect(
-              clipper: _MirrorClipper(envelope),
-              child: Transform.flip(
-                flipX: true,
-                child: _blend(from, to, motion),
+              clipper: _MirrorClipper(envelope, mirror.side),
+              child: Opacity(
+                opacity: mirror.strength,
+                child: Transform.flip(
+                  flipX: true,
+                  child: _blend(from, to, motion),
+                ),
               ),
             ),
           ],
@@ -128,9 +147,15 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
                   builder: (context) {
                     final start = slatCount == 1
                         ? 0.0
-                        : .25 * i / (slatCount - 1);
-                    final phase = ((t - start) / .75).clamp(0.0, 1.0);
-                    final angle = math.pi * phase;
+                        : louver.staggerFraction * i / (slatCount - 1);
+                    final phase = ((t - start) / (1 - louver.staggerFraction))
+                        .clamp(0.0, 1.0);
+                    final angle =
+                        (louver.rotationSense == RotationSense.forward
+                            ? 1
+                            : -1) *
+                        math.pi *
+                        phase;
                     return Positioned(
                       left: screenW * i / slatCount,
                       top: 0,
@@ -148,7 +173,10 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
                           )
                           ..rotateY(angle),
                         child: CustomPaint(
-                          foregroundPainter: _SlatShade(phase),
+                          foregroundPainter: _SlatShade(
+                            phase,
+                            louver.shadowIntensity,
+                          ),
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
@@ -181,43 +209,63 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
 
 class _FrameClipper extends CustomClipper<Rect> {
   final double progress;
-  _FrameClipper(this.progress);
+  final EffectOrigin origin;
+  _FrameClipper(this.progress, this.origin);
 
   @override
   Rect getClip(Size size) => Rect.fromCenter(
-    center: size.center(Offset.zero),
+    center: Offset.lerp(
+      effectOrigin(origin).alongSize(size),
+      size.center(Offset.zero),
+      progress,
+    )!,
     width: size.width * progress,
     height: size.height * progress,
   );
 
   @override
   bool shouldReclip(_FrameClipper oldClipper) =>
-      progress != oldClipper.progress;
+      progress != oldClipper.progress || origin != oldClipper.origin;
 }
 
 class _MirrorClipper extends CustomClipper<Rect> {
   final double envelope;
-  _MirrorClipper(this.envelope);
+  final MirrorSide side;
+  _MirrorClipper(this.envelope, this.side);
 
   @override
-  Rect getClip(Size size) =>
-      Rect.fromLTWH(0, 0, size.width * .5 * envelope, size.height);
+  Rect getClip(Size size) => Rect.fromLTWH(
+    side == MirrorSide.leading ? 0 : size.width * (1 - .5 * envelope),
+    0,
+    size.width * .5 * envelope,
+    size.height,
+  );
 
   @override
   bool shouldReclip(_MirrorClipper oldClipper) =>
-      envelope != oldClipper.envelope;
+      envelope != oldClipper.envelope || side != oldClipper.side;
 }
 
 class _FrameDecoration extends CustomPainter {
   final double progress, envelope;
   final bool shadow;
-  _FrameDecoration(this.progress, this.envelope, {required this.shadow});
+  final RevealMaskEffectOptions options;
+  _FrameDecoration(
+    this.progress,
+    this.envelope,
+    this.options, {
+    required this.shadow,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || envelope <= 0) return;
     final rect = Rect.fromCenter(
-      center: size.center(Offset.zero),
+      center: Offset.lerp(
+        effectOrigin(options.origin).alongSize(size),
+        size.center(Offset.zero),
+        progress,
+      )!,
       width: size.width * progress,
       height: size.height * progress,
     );
@@ -225,17 +273,18 @@ class _FrameDecoration extends CustomPainter {
     if (shadow) {
       canvas.drawShadow(
         Path()..addRect(rect),
-        Colors.black.withValues(alpha: envelope * .8),
+        Colors.black.withValues(alpha: envelope * options.shadowStrength),
         unit * .012,
         false,
       );
-    } else {
+    } else if (options.borderWidth > 0) {
       canvas.drawRect(
         rect,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = math.max(1, unit * .004)
-          ..color = const Color(0xfffff4dc).withValues(alpha: envelope),
+          ..strokeWidth = math.max(1, unit * options.borderWidth)
+          ..color = Color(options.borderColor)
+              .withValues(alpha: Color(options.borderColor).a * envelope),
       );
     }
   }
@@ -244,12 +293,14 @@ class _FrameDecoration extends CustomPainter {
   bool shouldRepaint(_FrameDecoration oldDelegate) =>
       progress != oldDelegate.progress ||
       envelope != oldDelegate.envelope ||
-      shadow != oldDelegate.shadow;
+      shadow != oldDelegate.shadow ||
+      options != oldDelegate.options;
 }
 
 class _SlatShade extends CustomPainter {
   final double progress;
-  _SlatShade(this.progress);
+  final double intensity;
+  _SlatShade(this.progress, this.intensity);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -258,12 +309,12 @@ class _SlatShade extends CustomPainter {
       Offset.zero & size,
       Paint()
         ..color = Colors.black.withValues(
-          alpha: .35 * math.sin(math.pi * progress),
+          alpha: intensity * math.sin(math.pi * progress),
         ),
     );
   }
 
   @override
   bool shouldRepaint(_SlatShade oldDelegate) =>
-      progress != oldDelegate.progress;
+      progress != oldDelegate.progress || intensity != oldDelegate.intensity;
 }

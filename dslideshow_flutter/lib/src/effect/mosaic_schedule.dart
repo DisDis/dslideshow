@@ -27,12 +27,13 @@ class MosaicSchedule {
     double fadeFraction = 0.3,
     MosaicDirection direction = MosaicDirection.random,
     int? seed,
+    double randomness = .2,
   }) : assert(gridSize > 0),
        assert(fadeFraction >= 0 && fadeFraction <= 1),
        gridSize = gridSize,
        fadeFraction = fadeFraction,
        startTimes = List.unmodifiable(
-         _generate(gridSize, fadeFraction, direction, seed),
+         _generate(gridSize, fadeFraction, direction, seed, randomness),
        );
 
   static List<double> _generate(
@@ -40,6 +41,7 @@ class MosaicSchedule {
     double fade,
     MosaicDirection direction,
     int? seed,
+    double randomness,
   ) {
     final random = Random(seed);
     return List.generate(grid * grid, (index) {
@@ -56,7 +58,8 @@ class MosaicSchedule {
         MosaicDirection.random => 0,
       };
       final position = grid == 1 ? 0.0 : distance / (2 * (grid - 1));
-      return (position * 0.8 + random.nextDouble() * 0.2) * (1 - fade);
+      return (position * (1 - randomness) + random.nextDouble() * randomness) *
+          (1 - fade);
     });
   }
 

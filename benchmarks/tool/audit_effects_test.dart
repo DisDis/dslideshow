@@ -22,142 +22,179 @@ const slideB = DecoratedBox(
 );
 
 void main() {
-  testWidgets(
-    'Every effect has correct endpoints and evolving control frames',
-    (tester) async {
-      final results = <Map<String, Object?>>[];
-      Future<Uint8List> snapshot(Widget child) async {
-        final key = GlobalKey();
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Center(
-              child: SizedBox(
-                width: 160,
-                height: 100,
-                child: RepaintBoundary(
-                  key: key,
-                  child: ColoredBox(
-                    color: Colors.black,
-                    child: ClipRect(child: child),
-                  ),
+  test(
+    'camera-plane audit uses local slat bounds and detects real crossings',
+    () {
+      final valid = Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 1 / 70)
+          ..rotateY(1.5707963267948966),
+        child: const SizedBox(),
+      );
+      expect(
+        cameraPlaneDepths(valid, const Size(20, 100)).every((w) => w > 0),
+        isTrue,
+      );
+      expect(
+        cameraPlaneDepths(valid, const Size(160, 100)).any((w) => w <= 0),
+        isTrue,
+      );
+      final crossing = Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 1 / 8)
+          ..rotateY(1.5707963267948966),
+        child: const SizedBox(),
+      );
+      expect(
+        cameraPlaneDepths(crossing, const Size(20, 100)).any((w) => w <= 0),
+        isTrue,
+      );
+    },
+  );
+
+  testWidgets('Every effect has correct endpoints and evolving control frames', (
+    tester,
+  ) async {
+    final results = <Map<String, Object?>>[];
+    Future<Uint8List> snapshot(Widget child) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Center(
+            child: SizedBox(
+              width: 160,
+              height: 100,
+              child: RepaintBoundary(
+                key: key,
+                child: ColoredBox(
+                  color: Colors.black,
+                  child: ClipRect(child: child),
                 ),
               ),
             ),
           ),
-        );
-        await tester.pump();
-        return (await tester.runAsync(() async {
-          final image =
-              await (key.currentContext!.findRenderObject()!
-                      as RenderRepaintBoundary)
-                  .toImage();
-          try {
-            final bytes = await image.toByteData(
-              format: ui.ImageByteFormat.rawRgba,
-            );
-            return Uint8List.fromList(bytes!.buffer.asUint8List());
-          } finally {
-            image.dispose();
-          }
-        }))!;
-      }
+        ),
+      );
+      await tester.pump();
+      return (await tester.runAsync(() async {
+        final image =
+            await (key.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary)
+                .toImage();
+        try {
+          final bytes = await image.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          );
+          return Uint8List.fromList(bytes!.buffer.asUint8List());
+        } finally {
+          image.dispose();
+        }
+      }))!;
+    }
 
-      Future<ui.Image> bitmap(List<Color> colors) async {
-        final recorder = ui.PictureRecorder();
-        Canvas(recorder).drawRect(
-          const Rect.fromLTWH(0, 0, 160, 100),
-          Paint()
-            ..shader = ui.Gradient.linear(
-              const Offset(0, 50),
-              const Offset(160, 50),
-              colors,
-            ),
-        );
-        final picture = recorder.endRecording();
-        final image = (await tester.runAsync(() => picture.toImage(160, 100)))!;
-        picture.dispose();
-        return image;
-      }
+    Future<ui.Image> bitmap(List<Color> colors) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawRect(
+        const Rect.fromLTWH(0, 0, 160, 100),
+        Paint()
+          ..shader = ui.Gradient.linear(
+            const Offset(0, 50),
+            const Offset(160, 50),
+            colors,
+          ),
+      );
+      final picture = recorder.endRecording();
+      final image = (await tester.runAsync(() => picture.toImage(160, 100)))!;
+      picture.dispose();
+      return image;
+    }
 
-      final a = await bitmap([
-        const Color(0xffff4000),
-        const Color(0xff902060),
-      ]);
-      final b = await bitmap([
-        const Color(0xff20d040),
-        const Color(0xff2060e0),
-      ]);
-      addTearDown(a.dispose);
-      addTearDown(b.dispose);
-      final from = await snapshot(slideA), to = await snapshot(slideB);
-      for (final size in [const Size(160, 100), const Size(2560, 1600)]) {
-        for (final descriptor in Effect.values) {
-          final effect = descriptor.createEffect(seed: 42);
-          await tester.runAsync(effect.prepare);
-          if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
-          final frames = <Uint8List>[];
-          for (var i = 0; i <= 20; i++) {
-            frames.add(
-              await snapshot(
-                FittedBox(
-                  child: SizedBox(
-                    width: size.width,
-                    height: size.height,
-                    child: Builder(
-                      builder: (context) => effect.createTransformWidget(
-                        context,
-                        slideA,
-                        slideB,
-                        AlwaysStoppedAnimation(i / 20),
-                        size.width,
-                        size.height,
-                      ),
+    final a = await bitmap([const Color(0xffff4000), const Color(0xff902060)]);
+    final b = await bitmap([const Color(0xff20d040), const Color(0xff2060e0)]);
+    addTearDown(a.dispose);
+    addTearDown(b.dispose);
+    final from = await snapshot(slideA), to = await snapshot(slideB);
+    for (final size in [const Size(160, 100), const Size(2560, 1600)]) {
+      for (final descriptor in Effect.values) {
+        final effect = descriptor.createEffect(seed: 42);
+        await tester.runAsync(effect.prepare);
+        if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
+        final frames = <Uint8List>[];
+        for (var i = 0; i <= 20; i++) {
+          frames.add(
+            await snapshot(
+              FittedBox(
+                child: SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: Builder(
+                    builder: (context) => effect.createTransformWidget(
+                      context,
+                      slideA,
+                      slideB,
+                      AlwaysStoppedAnimation(i / 20),
+                      size.width,
+                      size.height,
                     ),
                   ),
                 ),
               ),
-            );
-            // At a native 2560px viewport fixed pixel perspective used to put
-            // vertices behind the camera, clipping a rectangle into polygons.
-            for (final transform in tester.widgetList<Transform>(
-              find.byType(Transform),
+            ),
+          );
+          // At a native 2560px viewport fixed pixel perspective used to put
+          // vertices behind the camera, clipping a rectangle into polygons.
+          for (final element in find.byType(Transform).evaluate()) {
+            final transform = element.widget as Transform;
+            final render = element.renderObject! as RenderTransform;
+            // Slats/panes have their own local extent. Using the full viewport
+            // here reports fictitious crossings for valid narrow 3D layers.
+            for (final depth in cameraPlaneDepths(
+              transform,
+              render.child!.size,
             )) {
-              final matrix = transform.transform;
-              final origin = (transform.alignment ?? Alignment.topLeft)
-                  .resolve(TextDirection.ltr)
-                  .alongSize(size);
-              for (final x in [-origin.dx, size.width - origin.dx]) {
-                for (final y in [-origin.dy, size.height - origin.dy]) {
-                  final w =
-                      matrix.entry(3, 0) * x +
-                      matrix.entry(3, 1) * y +
-                      matrix.entry(3, 3);
-                  expect(
-                    w,
-                    greaterThan(0),
-                    reason: '${descriptor.name} camera plane at $size',
-                  );
-                }
-              }
+              expect(
+                depth,
+                greaterThan(0),
+                reason:
+                    '${descriptor.name} camera plane at $size, child ${render.child!.size}',
+              );
             }
           }
-          results.add({
-            'effect': descriptor.name,
-            'size': size.toString(),
-            ...assessVisualFrames(frames, from, to),
-          });
-          expect(tester.takeException(), isNull, reason: descriptor.name);
         }
+        results.add({
+          'effect': descriptor.name,
+          'size': size.toString(),
+          ...assessVisualFrames(frames, from, to),
+        });
+        expect(tester.takeException(), isNull, reason: descriptor.name);
       }
-      await tester.runAsync(() async {
-        await Directory('build/effects').create(recursive: true);
-        await File('build/effects/visual-audit.json')
-            .writeAsString(const JsonEncoder.withIndent('  ').convert(results));
-      });
-      await tester.pumpWidget(const SizedBox());
-      final failed = results.where((r) => r['status'] != 'passed').toList();
-      expect(failed, isEmpty, reason: jsonEncode(failed));
-    },
-  );
+    }
+    await tester.runAsync(() async {
+      await Directory('build/effects').create(recursive: true);
+      await File('build/effects/visual-audit.json')
+          .writeAsString(const JsonEncoder.withIndent('  ').convert(results));
+    });
+    await tester.pumpWidget(const SizedBox());
+    final failed = results.where((r) => r['status'] != 'passed').toList();
+    expect(failed, isEmpty, reason: jsonEncode(failed));
+  });
+}
+
+Iterable<double> cameraPlaneDepths(Transform transform, Size extent) sync* {
+  final matrix = transform.transform;
+  final origin =
+      (transform.alignment ?? Alignment.topLeft)
+          .resolve(TextDirection.ltr)
+          .alongSize(extent) +
+      (transform.origin ?? Offset.zero);
+  for (final x in [-origin.dx, extent.width - origin.dx]) {
+    for (final y in [-origin.dy, extent.height - origin.dy]) {
+      yield matrix.entry(3, 0) * x +
+          matrix.entry(3, 1) * y +
+          matrix.entry(3, 3);
+    }
+  }
 }

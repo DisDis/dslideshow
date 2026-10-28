@@ -708,7 +708,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_soft_wipe => 'Soft Wipe';
 
   @override
-  String get effect_slice => 'Slice';
+  String get effect_slice => 'Strips';
 
   @override
   String get effect_luma_fade => 'Luma Fade';
@@ -994,7 +994,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_blur_fade => 'Blur fade';
 
   @override
-  String get effect_zoom_over => 'Zoom over';
+  String get effect_zoom_over => 'Zoom';
 
   @override
   String get sync_settings_title => 'Sync settings';
@@ -1735,4 +1735,657 @@ class AppLocalizationsEn extends AppLocalizations {
   String effects_milliseconds(int value) {
     return '$value ms';
   }
+
+  @override
+  String get effect_parameter_gridSize => 'Grid size';
+
+  @override
+  String get effect_parameter_fadeFraction => 'Fade fraction';
+
+  @override
+  String get effect_parameter_direction => 'Direction';
+
+  @override
+  String get effect_parameter_randomness => 'Randomness';
+
+  @override
+  String get effect_parameter_mode => 'Mode';
+
+  @override
+  String get effect_parameter_motionCurve => 'Motion curve';
+
+  @override
+  String get effect_parameter_blurFraction => 'Blur fraction';
+
+  @override
+  String get effect_parameter_decoration => 'Decoration';
+
+  @override
+  String get effect_parameter_edgeWidth => 'Edge width';
+
+  @override
+  String get effect_parameter_tiltDegrees => 'Tilt degrees';
+
+  @override
+  String get effect_parameter_shadowStrength => 'Shadow strength';
+
+  @override
+  String get effect_parameter_shape => 'Shape';
+
+  @override
+  String get effect_parameter_axis => 'Axis';
+
+  @override
+  String get effect_parameter_origin => 'Origin';
+
+  @override
+  String get effect_parameter_operation => 'Operation';
+
+  @override
+  String get effect_parameter_edgeStyle => 'Edge style';
+
+  @override
+  String get effect_parameter_featherFraction => 'Feather fraction';
+
+  @override
+  String get effect_parameter_lightStrength => 'Light strength';
+
+  @override
+  String get effect_parameter_frameEnabled => 'Frame enabled';
+
+  @override
+  String get effect_parameter_borderWidth => 'Border width';
+
+  @override
+  String get effect_parameter_borderColor => 'Border color';
+
+  @override
+  String get effect_parameter_pointCount => 'Point count';
+
+  @override
+  String get effect_parameter_innerRadiusRatio => 'Inner radius ratio';
+
+  @override
+  String get effect_parameter_rotationDegrees => 'Rotation degrees';
+
+  @override
+  String get effect_parameter_startAngleDegrees => 'Start angle degrees';
+
+  @override
+  String get effect_parameter_circularDirection => 'Circular direction';
+
+  @override
+  String get effect_parameter_color => 'Color';
+
+  @override
+  String get effect_parameter_style => 'Style';
+
+  @override
+  String get effect_parameter_rotationSense => 'Rotation sense';
+
+  @override
+  String get effect_parameter_perspectiveStrength => 'Perspective strength';
+
+  @override
+  String get effect_parameter_edge => 'Edge';
+
+  @override
+  String get effect_parameter_angleDegrees => 'Angle degrees';
+
+  @override
+  String get effect_parameter_stripCount => 'Strip count';
+
+  @override
+  String get effect_parameter_order => 'Order';
+
+  @override
+  String get effect_parameter_staggerFraction => 'Stagger fraction';
+
+  @override
+  String get effect_parameter_pattern => 'Pattern';
+
+  @override
+  String get effect_parameter_paneCount => 'Pane count';
+
+  @override
+  String get effect_parameter_refractionStrength => 'Refraction strength';
+
+  @override
+  String get effect_parameter_glintStrength => 'Glint strength';
+
+  @override
+  String get effect_parameter_panelCount => 'Panel count';
+
+  @override
+  String get effect_parameter_slatCount => 'Slat count';
+
+  @override
+  String get effect_parameter_shadowIntensity => 'Shadow intensity';
+
+  @override
+  String get effect_parameter_blendCurve => 'Blend curve';
+
+  @override
+  String get effect_parameter_maxSigma => 'Max sigma';
+
+  @override
+  String get effect_parameter_blurTarget => 'Blur target';
+
+  @override
+  String get effect_parameter_holdFraction => 'Hold fraction';
+
+  @override
+  String get effect_parameter_fadeOutShare => 'Fade out share';
+
+  @override
+  String get effect_parameter_softness => 'Softness';
+
+  @override
+  String get effect_parameter_noiseScale => 'Noise scale';
+
+  @override
+  String get effect_parameter_waveAmplitude => 'Wave amplitude';
+
+  @override
+  String get effect_parameter_waveFrequency => 'Wave frequency';
+
+  @override
+  String get effect_parameter_bandWidth => 'Band width';
+
+  @override
+  String get effect_parameter_waveCount => 'Wave count';
+
+  @override
+  String get effect_parameter_waveIntensity => 'Wave intensity';
+
+  @override
+  String get effect_parameter_outgoingScale => 'Outgoing scale';
+
+  @override
+  String get effect_parameter_scale => 'Scale';
+
+  @override
+  String get effect_parameter_clipAmount => 'Clip amount';
+
+  @override
+  String get effect_parameter_zoomOutScale => 'Zoom out scale';
+
+  @override
+  String get effect_parameter_enableOpacity => 'Enable opacity';
+
+  @override
+  String get effect_parameter_startScale => 'Start scale';
+
+  @override
+  String get effect_parameter_corner => 'Corner';
+
+  @override
+  String get effect_parameter_foldWidth => 'Fold width';
+
+  @override
+  String get effect_parameter_paperColor => 'Paper color';
+
+  @override
+  String get effect_parameter_splitPosition => 'Split position';
+
+  @override
+  String get effect_parameter_maxScale => 'Max scale';
+
+  @override
+  String get effect_parameter_side => 'Side';
+
+  @override
+  String get effect_parameter_strength => 'Strength';
+
+  @override
+  String get effect_parameter_radius => 'Radius';
+
+  @override
+  String get effect_parameter_warmColor => 'Warm color';
+
+  @override
+  String get effect_parameter_roughness => 'Roughness';
+
+  @override
+  String get effect_parameter_emberColor => 'Ember color';
+
+  @override
+  String get effect_parameter_gain => 'Gain';
+
+  @override
+  String get effect_parameter_sectorCount => 'Sector count';
+
+  @override
+  String get effect_parameter_lineAxis => 'Line axis';
+
+  @override
+  String get effect_parameter_glowStrength => 'Glow strength';
+
+  @override
+  String get effect_parameter_glowColor => 'Glow color';
+
+  @override
+  String get effect_parameter_springStrength => 'Spring strength';
+
+  @override
+  String get effect_parameter_cellsAcross => 'Cells across';
+
+  @override
+  String get effect_parameter_colorShiftFraction => 'Color shift fraction';
+
+  @override
+  String get effect_parameter_trackingStrength => 'Tracking strength';
+
+  @override
+  String get effect_parameter_noiseStrength => 'Noise strength';
+
+  @override
+  String get effect_parameter_trailCount => 'Trail count';
+
+  @override
+  String get effect_parameter_driftFraction => 'Drift fraction';
+
+  @override
+  String get effect_parameter_trailStrength => 'Trail strength';
+
+  @override
+  String get effect_parameter_trailColor => 'Trail color';
+
+  @override
+  String get effect_choice_FadeStyle_plain => 'Plain';
+
+  @override
+  String get effect_choice_FadeStyle_linearLight => 'Linear light';
+
+  @override
+  String get effect_choice_FadeStyle_blur => 'Blur';
+
+  @override
+  String get effect_choice_FadeStyle_throughColor => 'Through color';
+
+  @override
+  String get effect_choice_BlendCurve_linear => 'Linear';
+
+  @override
+  String get effect_choice_BlendCurve_easeIn => 'Ease in';
+
+  @override
+  String get effect_choice_BlendCurve_easeOut => 'Ease out';
+
+  @override
+  String get effect_choice_BlendCurve_easeInOut => 'Ease in out';
+
+  @override
+  String get effect_choice_BlurTarget_outgoing => 'Outgoing';
+
+  @override
+  String get effect_choice_BlurTarget_incoming => 'Incoming';
+
+  @override
+  String get effect_choice_BlurTarget_both => 'Both';
+
+  @override
+  String get effect_choice_DepthMode_recedeStill => 'Recede still';
+
+  @override
+  String get effect_choice_DepthMode_recedeSlide => 'Recede slide';
+
+  @override
+  String get effect_choice_DepthMode_approach => 'Approach';
+
+  @override
+  String get effect_choice_ZoomMode_over => 'Over';
+
+  @override
+  String get effect_choice_ZoomMode_cross => 'Cross';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_hard => 'Hard';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_soft => 'Soft';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_lightSweep => 'Light sweep';
+
+  @override
+  String get effect_choice_WipeEdgeStyle_neon => 'Neon';
+
+  @override
+  String get effect_choice_RevealOperation_revealIncoming => 'Reveal incoming';
+
+  @override
+  String get effect_choice_RevealOperation_hideOutgoing => 'Hide outgoing';
+
+  @override
+  String get effect_choice_SliceMode_slide => 'Slide';
+
+  @override
+  String get effect_choice_SliceMode_reveal => 'Reveal';
+
+  @override
+  String get effect_choice_StripPattern_alternating => 'Alternating';
+
+  @override
+  String get effect_choice_StripPattern_sameDirection => 'Same direction';
+
+  @override
+  String get effect_choice_SequenceOrder_forward => 'Forward';
+
+  @override
+  String get effect_choice_SequenceOrder_backward => 'Backward';
+
+  @override
+  String get effect_choice_RotationSense_forward => 'Forward';
+
+  @override
+  String get effect_choice_RotationSense_backward => 'Backward';
+
+  @override
+  String get effect_choice_CircularDirection_clockwise => 'Clockwise';
+
+  @override
+  String get effect_choice_CircularDirection_counterclockwise =>
+      'Counterclockwise';
+
+  @override
+  String get effect_choice_LumaOrder_brightFirst => 'Bright first';
+
+  @override
+  String get effect_choice_LumaOrder_darkFirst => 'Dark first';
+
+  @override
+  String get effect_choice_CellShape_hexagon => 'Hexagon';
+
+  @override
+  String get effect_choice_CellShape_circle => 'Circle';
+
+  @override
+  String get effect_choice_CellShape_diamond => 'Diamond';
+
+  @override
+  String get effect_choice_CellShape_square => 'Square';
+
+  @override
+  String get effect_choice_MirrorSide_leading => 'Leading';
+
+  @override
+  String get effect_choice_MirrorSide_trailing => 'Trailing';
+
+  @override
+  String get effect_choice_SlideDecoration_none => 'None';
+
+  @override
+  String get effect_choice_SlideDecoration_filmPerforation =>
+      'Film perforation';
+
+  @override
+  String get effect_choice_RevealShape_rectangle => 'Rectangle';
+
+  @override
+  String get effect_choice_RevealShape_star => 'Star';
+
+  @override
+  String get effect_choice_RevealShape_clock => 'Clock';
+
+  @override
+  String get effects_preset => 'Preset';
+
+  @override
+  String get effects_custom_preset => 'Custom settings';
+
+  @override
+  String get effects_automatic => 'From style';
+
+  @override
+  String get effect_preset_burnAlpha => 'Burn Alpha';
+
+  @override
+  String get effect_preset_foldMotion => 'Fold Motion';
+
+  @override
+  String get effect_preset_glow => 'Glow';
+
+  @override
+  String get effect_preset_kaleidoscope => 'Kaleidoscope';
+
+  @override
+  String get effect_preset_tvPower => 'TV Power';
+
+  @override
+  String get effect_preset_springMotion => 'Spring Motion';
+
+  @override
+  String get effect_preset_shapeDissolve => 'Shape Dissolve';
+
+  @override
+  String get effect_preset_vhsDamage => 'VHS Damage';
+
+  @override
+  String get effect_preset_radialBlur => 'Radial Blur';
+
+  @override
+  String get effect_preset_phosphor => 'Phosphor';
+
+  @override
+  String get effect_preset_filmDissolve => 'Film Dissolve';
+
+  @override
+  String get effect_preset_frame => 'Frame';
+
+  @override
+  String get effect_preset_louver => 'Louver';
+
+  @override
+  String get effect_preset_mirror => 'Mirror';
+
+  @override
+  String get effect_preset_clockWipe => 'Clock Wipe';
+
+  @override
+  String get effect_preset_split => 'Split';
+
+  @override
+  String get effect_preset_panelWipe => 'Panel Wipe';
+
+  @override
+  String get effect_preset_stretch => 'Stretch';
+
+  @override
+  String get effect_preset_starWipe => 'Star Wipe';
+
+  @override
+  String get effect_preset_lightLeak => 'Light Leak';
+
+  @override
+  String get effect_preset_filmRoll => 'Film Roll';
+
+  @override
+  String get effect_preset_crossZoom => 'Cross Zoom';
+
+  @override
+  String get effect_preset_whip => 'Whip';
+
+  @override
+  String get effect_preset_glass => 'Glass';
+
+  @override
+  String get effect_preset_softWipe => 'Soft Wipe';
+
+  @override
+  String get effect_preset_slice => 'Slice';
+
+  @override
+  String get effect_preset_lumaFade => 'Luma Fade';
+
+  @override
+  String get effect_preset_pagePeel => 'Page Peel';
+
+  @override
+  String get effect_preset_noiseDissolve => 'Noise Dissolve';
+
+  @override
+  String get effect_preset_rippleReveal => 'Ripple Reveal';
+
+  @override
+  String get effect_preset_waterRefraction => 'Water Refraction';
+
+  @override
+  String get effect_preset_cube => 'Cube';
+
+  @override
+  String get effect_preset_accordion => 'Accordion';
+
+  @override
+  String get effect_preset_backgroundToForeground => 'Background to foreground';
+
+  @override
+  String get effect_preset_foregroundToBackground => 'Foreground to background';
+
+  @override
+  String get effect_preset_depth => 'Depth';
+
+  @override
+  String get effect_preset_parallax => 'Parallax';
+
+  @override
+  String get effect_preset_stack => 'Stack';
+
+  @override
+  String get effect_preset_tablet => 'Tablet';
+
+  @override
+  String get effect_preset_zoomOut => 'Zoom out';
+
+  @override
+  String get effect_preset_fade => 'Fade';
+
+  @override
+  String get effect_preset_mosaic => 'Mosaic';
+
+  @override
+  String get effect_preset_liquidMorph => 'Liquid morph';
+
+  @override
+  String get effect_preset_blinds => 'Blinds';
+
+  @override
+  String get effect_preset_blurFade => 'Blur fade';
+
+  @override
+  String get effect_preset_zoomOver => 'Zoom over';
+
+  @override
+  String get effect_preset_slide => 'Slide';
+
+  @override
+  String get effect_preset_revealMask => 'Reveal mask';
+
+  @override
+  String get effect_preset_fadeThroughColor => 'Fade through color';
+
+  @override
+  String get effect_preset_flip => 'Flip';
+
+  @override
+  String get effect_preset_rotate => 'Rotate';
+
+  @override
+  String get effect_preset_softWipeLightSweep => 'Soft wipe light sweep';
+
+  @override
+  String get effect_preset_softWipeNeon => 'Soft wipe neon';
+
+  @override
+  String get effect_preset_fadeThroughWhite => 'Fade through white';
+
+  @override
+  String get effect_preset_flipVertical => 'Flip vertical';
+
+  @override
+  String get effect_preset_rotateBottom => 'Rotate bottom';
+
+  @override
+  String get effect_preset_mosaicBinary => 'Mosaic binary';
+
+  @override
+  String get effect_preset_mosaicTopLeft => 'Mosaic top left';
+
+  @override
+  String get effect_preset_mosaicTopRight => 'Mosaic top right';
+
+  @override
+  String get effect_preset_mosaicBottomLeft => 'Mosaic bottom left';
+
+  @override
+  String get effect_preset_mosaicBottomRight => 'Mosaic bottom right';
+
+  @override
+  String get effect_preset_slidePushRight => 'Slide push right';
+
+  @override
+  String get effect_preset_slidePushUp => 'Slide push up';
+
+  @override
+  String get effect_preset_slidePushDown => 'Slide push down';
+
+  @override
+  String get effect_preset_slideCoverLeft => 'Slide cover left';
+
+  @override
+  String get effect_preset_slideCoverRight => 'Slide cover right';
+
+  @override
+  String get effect_preset_slideCoverUp => 'Slide cover up';
+
+  @override
+  String get effect_preset_slideCoverDown => 'Slide cover down';
+
+  @override
+  String get effect_preset_slideRevealLeft => 'Slide reveal left';
+
+  @override
+  String get effect_preset_slideRevealRight => 'Slide reveal right';
+
+  @override
+  String get effect_preset_slideRevealUp => 'Slide reveal up';
+
+  @override
+  String get effect_preset_slideRevealDown => 'Slide reveal down';
+
+  @override
+  String get effect_preset_wipeRight => 'Wipe right';
+
+  @override
+  String get effect_preset_wipeUp => 'Wipe up';
+
+  @override
+  String get effect_preset_wipeDown => 'Wipe down';
+
+  @override
+  String get effect_preset_curtainHorizontal => 'Curtain horizontal';
+
+  @override
+  String get effect_preset_curtainVertical => 'Curtain vertical';
+
+  @override
+  String get effect_preset_diagonalTopRight => 'Diagonal top right';
+
+  @override
+  String get effect_preset_diagonalBottomLeft => 'Diagonal bottom left';
+
+  @override
+  String get effect_preset_diagonalBottomRight => 'Diagonal bottom right';
+
+  @override
+  String get effect_preset_diagonalTopLeft => 'Diagonal top left';
+
+  @override
+  String get effect_preset_irisCenter => 'Iris center';
+
+  @override
+  String get effects_wave_origin => 'Wave origin';
+
+  @override
+  String get effects_advanced => 'Advanced';
 }
