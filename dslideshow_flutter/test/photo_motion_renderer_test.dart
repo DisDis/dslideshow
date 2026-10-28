@@ -226,9 +226,24 @@ void main() {
             reason: 'Old bitmap released after transition views detach',
           );
           expect(firstPixels.debugDisposed, isTrue);
+          expect(
+            firstPixels.debugGetOpenHandleStackTraces(),
+            isEmpty,
+            reason:
+                'Detached outgoing photo releases every borrowed image handle',
+          );
           expect(tester.takeException(), isNull);
+          final currentPixels = tester
+              .widget<ImageWidget>(find.byType(ImageWidget))
+              .preparedBitmap!;
           // Close inside the test body so fake display timers are cancelled before invariant checks.
           await cleanup();
+          expect(currentPixels.debugDisposed, isTrue);
+          expect(
+            currentPixels.debugGetOpenHandleStackTraces(),
+            isEmpty,
+            reason: 'Page removal releases every borrowed current photo handle',
+          );
         },
       );
     }

@@ -218,6 +218,11 @@ void main() {
       expect(tester.takeException(), isNull);
       await f.close(tester);
       expect(bitmap.debugDisposed, true);
+      expect(
+        bitmap.debugGetOpenHandleStackTraces(),
+        isEmpty,
+        reason: 'Video disposal failure cannot retain borrowed photo handles',
+      );
       expect(image.preparedBitmap, isNull);
       expect(tester.takeException(), isNull);
     },
@@ -258,7 +263,14 @@ void main() {
     });
     await f.until(tester, () => !f.visible.value);
     expect(find.byType(SlideShowPage), findsNothing);
-    expect(pixels.every((image) => image.debugDisposed), true);
+    for (final image in pixels) {
+      expect(image.debugDisposed, true);
+      expect(
+        image.debugGetOpenHandleStackTraces(),
+        isEmpty,
+        reason: 'Completion-frame unmount releases every borrowed photo handle',
+      );
+    }
     expect(tester.takeException(), isNull);
     await f.close(tester);
   });

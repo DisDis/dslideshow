@@ -27,6 +27,8 @@
 [стенд настоящего renderer](renderer-harness.md): он монтирует production-страницу,
 Bloc, фото, плееры и специальные экраны. Обычный `BenchmarkViewport` создаёт
 ресурсы самостоятельно и не проверяет такой рефакторинг.
+Аппаратный [A/B и визуальная проверка SlideSession 28.10.2026](reports/slide-session-2026-10-28/report.md)
+сохраняют frozen release/source, исходные ошибки калибровки и границы приёмки.
 
 Пошаговое [руководство для RaPi5](../doc/raspberry-pi-benchmarks.md) содержит
 актуальные пути к flutter-pi, установку, запуск через нестабильный SSH в фоне
