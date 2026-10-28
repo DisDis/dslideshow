@@ -84,6 +84,7 @@ class _CancellingReceiver extends StreamingUploadReceiver {
     FutureOr<void> Function(String filename)? beforeFile,
     UploadProgress? onProgress,
     UploadCancellationToken? cancellation,
+    UploadRejectionPolicy rejectionPolicy = UploadRejectionPolicy.cancel,
   }) async {
     final batch = await super.receiveMultipart(
       request,
@@ -92,6 +93,7 @@ class _CancellingReceiver extends StreamingUploadReceiver {
       beforeFile: beforeFile,
       onProgress: onProgress,
       cancellation: cancellation,
+      rejectionPolicy: rejectionPolicy,
     );
     cancellation!.cancel();
     return batch;

@@ -649,6 +649,75 @@ void main() {
     );
   }
 
+  test('large wrong-code HTTP upload returns a complete HTML error without resetting the connection', () async {
+    var createdWriter = false;
+    final ota = service(
+      writerFactory: (file) async {
+        createdWriter = true;
+        return _Writer(await file.open(mode: FileMode.write));
+      },
+    );
+    await ota.start();
+    final client = HttpClient();
+    addTearDown(() => client.close(force: true));
+    final endpoint = Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_upload');
+    final request = await client.postUrl(endpoint);
+    request.headers.set(HttpHeaders.acceptHeader, 'text/html');
+    request.headers.set(HttpHeaders.acceptLanguageHeader, 'en');
+    request.headers.set(
+      HttpHeaders.contentTypeHeader,
+      'multipart/form-data; boundary=$_boundary',
+    );
+    final prefix = utf8.encode(
+      '${_field('code', 'wrong-access-code')}${_fileHeader()}',
+    );
+    final suffix = utf8.encode('\r\n--$_boundary--\r\n');
+    const fileBytes = 32 * 1024 * 1024;
+    final chunk = List<int>.filled(64 * 1024, 1);
+    request.contentLength = prefix.length + fileBytes + suffix.length;
+    Stream<List<int>> body() async* {
+      yield prefix;
+      for (var sent = 0; sent < fileBytes; sent += chunk.length) {
+        yield chunk;
+      }
+      yield suffix;
+    }
+
+    // Exceed socket buffers so the wrong code is rejected during transmission,
+    // rather than after a small body has already arrived at the server.
+    await request.addStream(body()).timeout(const Duration(seconds: 10));
+    final response = await request.close().timeout(const Duration(seconds: 10));
+    final html = await utf8.decoder
+        .bind(response)
+        .join()
+        .timeout(const Duration(seconds: 10));
+    expect(response.statusCode, HttpStatus.forbidden);
+    expect(response.headers.contentType?.mimeType, 'text/html');
+    expect(html, contains('<html lang="en">'));
+    expect(
+      html,
+      contains(
+        'The code does not match. Return to the form and enter it exactly as shown on the frame.',
+      ),
+    );
+    expect(html, contains('</html>'));
+    expect(createdWriter, isFalse);
+    expect(directory.listSync(), isEmpty);
+    expect(installer.files, isEmpty);
+    expect(installer.restarts, 0);
+    expect(ota.busy, isFalse);
+
+    final next = await client.getUrl(endpoint.resolve('/ota_start'));
+    final nextResponse = await next.close().timeout(
+      const Duration(seconds: 10),
+    );
+    expect(nextResponse.statusCode, HttpStatus.ok);
+    expect(
+      await utf8.decoder.bind(nextResponse).join(),
+      contains('DSlideshow'),
+    );
+  });
+
   test(
     'extension, duplicate files and duplicate code never start installer',
     () async {

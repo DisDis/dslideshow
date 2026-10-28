@@ -65,6 +65,7 @@ String renderOtaPage({
       --tint: #edf5ff; --notice: #fff7df; --notice-line: #d9b047;
       --error: #a92834; --error-bg: #fff1f1;
       --version-color: #b91c1c;
+      --disabled-bg: #d1d5db; --disabled-text: #4b5563;
     }
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.55; }
@@ -76,8 +77,8 @@ String renderOtaPage({
     p { margin: 0 0 16px; }
     .description, .hint { color: var(--muted); }
     .versions { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
-    .version { padding: 4px 10px; border: 1px solid var(--line); border-radius: 7px; font-size: .8rem; overflow-wrap: anywhere; max-width: 100%; }
-    .version-number { color: var(--version-color); font-weight: 800; }
+    .version { padding: 6px 12px; border: 1px solid var(--line); border-radius: 7px; font-size: 1rem; overflow-wrap: anywhere; max-width: 100%; }
+    .version-number { color: var(--version-color); font-size: 1.15rem; font-weight: 800; }
     .section + .section { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 28px; }
     ol { margin: 14px 0 22px; padding-left: 24px; color: var(--muted); }
     li { padding-left: 3px; margin-bottom: 6px; }
@@ -97,6 +98,7 @@ String renderOtaPage({
     .button-quiet { color: var(--text); background: var(--surface); border-color: var(--line); width: 100%; }
     .button-secondary:hover, .button-quiet:hover { border-color: var(--accent); }
     button:disabled { cursor: default; }
+    button.button-primary:disabled { background: var(--disabled-bg); color: var(--disabled-text); border-color: var(--disabled-bg); cursor: not-allowed; }
     a { color: var(--accent); text-underline-offset: 3px; }
     a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
     .config-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
@@ -110,7 +112,7 @@ String renderOtaPage({
     footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 18px 12px; }
     @media (prefers-color-scheme: dark) {
       :root { --bg: #111922; --surface: #1b2734; --text: #eaf0f8; --muted: #afbed0; --line: #405165; --accent: #8cc5ff; --accent-hover: #b0d7ff; --tint: #223b52; --notice: #3c341f; --notice-line: #937d43; --error: #ffadb5; --error-bg: #41272e; }
-      :root { --version-color: #ff8a8a; }
+      :root { --version-color: #ff8a8a; --disabled-bg: #4b5563; --disabled-text: #e5e7eb; }
       .button-primary { background: #2669ae; color: #fff; }
       .button-primary:hover { background: #317bc9; }
     }

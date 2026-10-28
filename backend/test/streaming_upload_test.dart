@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
 
 const _boundary = 'upload-test-boundary';
+
+enum _DrainInterruption { idleTimeout, totalTimeout, cancellation }
 
 class _Part {
   final String disposition;
@@ -314,6 +317,137 @@ void main() {
       await batch.cleanup();
     },
   );
+
+  test('rejected input can be discarded without opening a file', () async {
+    var opened = false;
+    var tailConsumed = false;
+    final receiver = StreamingUploadReceiver(
+      writerFactory: (_) async {
+        opened = true;
+        throw StateError('Rejected input must not open a file');
+      },
+    );
+    Stream<List<int>> source() async* {
+      yield _multipart([
+        _Part.field('code', 'wrong'),
+        _Part.file('x.deb', 'discard'),
+      ]);
+      tailConsumed = true;
+      yield [1, 2, 3];
+    }
+
+    await expectLater(
+      receiver.receiveMultipart(
+        _request([], stream: source()),
+        destinationFor: destination,
+        rejectionPolicy: UploadRejectionPolicy.drain,
+        onField: (_, __) => throw const UploadFailure(403, 'Incorrect code'),
+      ),
+      throwsA(_status(403)),
+    );
+    expect(tailConsumed, isTrue);
+    expect(opened, isFalse);
+    expect(await leftovers(), isEmpty);
+  });
+
+  test(
+    'discarding a rejected request stops at the actual byte limit',
+    () async {
+      final prefix = _multipart([
+        _Part.field('code', 'wrong'),
+        _Part.file('x.deb', 'discard'),
+      ]);
+      var beyondLimitRead = false;
+      Stream<List<int>> source() async* {
+        yield prefix;
+        yield [1, 2, 3, 4, 5];
+        beyondLimitRead = true;
+        yield [6];
+      }
+
+      await expectLater(
+        StreamingUploadReceiver(
+          limits: UploadLimits(maxBytes: prefix.length + 4),
+        ).receiveMultipart(
+          _request([], stream: source()),
+          destinationFor: destination,
+          rejectionPolicy: UploadRejectionPolicy.drain,
+          onField: (_, __) => throw const UploadFailure(403, 'Incorrect code'),
+        ),
+        throwsA(_status(403)),
+      );
+      expect(beyondLimitRead, isFalse);
+      expect(await leftovers(), isEmpty);
+    },
+  );
+
+  for (final (interruption, limits) in [
+    (
+      _DrainInterruption.idleTimeout,
+      const UploadLimits(
+        idleTimeout: Duration(seconds: 2),
+        totalTimeout: Duration(seconds: 10),
+      ),
+    ),
+    (
+      _DrainInterruption.totalTimeout,
+      const UploadLimits(
+        idleTimeout: Duration(seconds: 10),
+        totalTimeout: Duration(seconds: 2),
+      ),
+    ),
+    (_DrainInterruption.cancellation, const UploadLimits()),
+  ]) {
+    test('discarding rejected input respects ${interruption.name}', () {
+      fakeAsync((clock) {
+        var cancelled = false;
+        Object? failure;
+        final token = UploadCancellationToken();
+        final source = StreamController<List<int>>(
+          onCancel: () {
+            cancelled = true;
+          },
+        );
+        StreamingUploadReceiver(limits: limits)
+            .receiveMultipart(
+              _request([], stream: source.stream),
+              destinationFor: destination,
+              cancellation: token,
+              rejectionPolicy: UploadRejectionPolicy.drain,
+              onField: (_, __) =>
+                  throw const UploadFailure(403, 'Incorrect code'),
+            )
+            .then<void>(
+              (_) => fail('Rejected request must fail'),
+              onError: (Object error) {
+                failure = error;
+              },
+            );
+        source.add(
+          _multipart([
+            _Part.field('code', 'wrong'),
+            _Part.file('x.deb', 'discard'),
+          ]),
+        );
+        clock.flushMicrotasks();
+        expect(
+          failure,
+          isNull,
+          reason: 'The rejected body is still being discarded',
+        );
+        if (interruption == _DrainInterruption.cancellation) {
+          token.cancel();
+        } else {
+          clock.elapse(const Duration(seconds: 2));
+        }
+        clock.flushMicrotasks();
+        expect(failure, _status(403));
+        expect(cancelled, isTrue);
+        unawaited(source.close());
+        clock.flushMicrotasks();
+      });
+    });
+  }
 
   test(
     'real bytes enforce limit without Content-Length, including epilogue',

@@ -40,6 +40,9 @@ class UploadFailure implements Exception {
   String toString() => 'UploadFailure($statusCode, $message)';
 }
 
+/// Drain a live HTTP body before cancelling it so an error page can be sent.
+enum UploadRejectionPolicy { cancel, drain }
+
 /// Do not expose OS paths, exception text, or credentials to HTTP clients.
 UploadFailure uploadFailureFor(Object error) {
   if (error is UploadFailure) return error;
@@ -414,6 +417,22 @@ class _RawUploadReader {
     _input.cancel().catchError((Object _) {});
   }
 
+  Future<void> discardRemaining() async {
+    scope.check();
+    if (receivedBytes > scope.limits.maxBytes) {
+      throw const UploadFailure(413, 'Upload exceeds size limit');
+    }
+    // Bytes already fetched into the parsing buffer were counted in chunk().
+    _buffer = const [];
+    _offset = 0;
+    while (await _moveNext()) {
+      receivedBytes += _input.current.length;
+      if (receivedBytes > scope.limits.maxBytes) {
+        throw const UploadFailure(413, 'Upload exceeds size limit');
+      }
+    }
+  }
+
   static List<int> _slice(List<int> data, int start, [int? end]) {
     if (data is Uint8List) return Uint8List.sublistView(data, start, end);
     return data.sublist(start, end);
@@ -451,6 +470,7 @@ class StreamingUploadReceiver {
     FutureOr<void> Function(String filename)? beforeFile,
     UploadProgress? onProgress,
     UploadCancellationToken? cancellation,
+    UploadRejectionPolicy rejectionPolicy = UploadRejectionPolicy.cancel,
   }) async {
     final scope = _UploadScope(limits, cancellation);
     final files = <StagedUploadFile>[];
@@ -570,6 +590,19 @@ class StreamingUploadReceiver {
           scope: scope,
         );
         await file._cleanup;
+      }
+      if (rejectionPolicy == UploadRejectionPolicy.drain &&
+          reader != null &&
+          !scope.isAborted) {
+        try {
+          // Do not parse or save rejected input. Draining retains the same
+          // byte/deadline/cancellation limits and emits no upload progress.
+          await reader.discardRemaining();
+        } catch (drainError) {
+          // An oversized, disconnected or stalled sender cannot be drained
+          // safely. Cancel below, retaining the original application failure.
+          _log.fine('Could not finish rejected upload', drainError);
+        }
       }
       throw uploadFailureFor(error);
     } finally {

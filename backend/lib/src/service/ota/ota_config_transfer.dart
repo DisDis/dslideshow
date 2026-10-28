@@ -44,6 +44,9 @@ class OtaConfigTransfer {
       batch = await _uploadReceiver.receiveMultipart(
         request,
         cancellation: cancellation,
+        rejectionPolicy: request.canHijack
+            ? UploadRejectionPolicy.drain
+            : UploadRejectionPolicy.cancel,
         destinationFor: (_) => _filename,
         onField: (name, value) {
           if (name != 'code' || authorized) {

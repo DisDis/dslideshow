@@ -1,5 +1,11 @@
 # Unreleased
 
+* Return an OTA error page for an incorrect firmware code after discarding the
+  rejected upload, avoiding a connection reset during normal file transfer.
+
+* Keep OTA installation log lines aligned at the left edge on the frame while
+  preserving progress updates within the current line.
+
 * Add self-contained Russian/English OTA pages with firmware upload, configuration
   backup/import and a return-to-slideshow action. Preserve damaged configuration
   downloads and replace imported settings atomically after validation; apply them

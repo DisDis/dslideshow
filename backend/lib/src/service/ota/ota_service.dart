@@ -822,6 +822,9 @@ class OTAService implements RpcService {
       batch = await _uploadReceiver.receiveMultipart(
         request,
         cancellation: operation.cancellation,
+        rejectionPolicy: request.canHijack
+            ? UploadRejectionPolicy.drain
+            : UploadRejectionPolicy.cancel,
         onField: (name, value) {
           if (name != 'code' || authorized) {
             throw UploadFailure(400, 'Expected one code field before the file');
