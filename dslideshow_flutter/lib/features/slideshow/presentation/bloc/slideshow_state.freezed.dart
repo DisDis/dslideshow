@@ -211,8 +211,8 @@ return $default(_that.currentSlide,_that.nextSlide,_that.effect,_that.phase,_tha
 /// @nodoc
 
 
-class _SlideshowState extends SlideshowState {
-  const _SlideshowState({this.currentSlide, this.nextSlide, required this.effect, this.phase = SlideshowPhase.initial, this.isScreenLocked = false, this.isPaused = false, this.fadeOut = false}): super._();
+class _SlideshowState implements SlideshowState {
+  const _SlideshowState({this.currentSlide, this.nextSlide, required this.effect, this.phase = SlideshowPhase.initial, this.isScreenLocked = false, this.isPaused = false, this.fadeOut = false});
   
 
 @override final  SlideshowSlide? currentSlide;

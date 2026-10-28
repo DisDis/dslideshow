@@ -1,4 +1,3 @@
-import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/effect/effect.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -18,11 +17,6 @@ enum SlideshowPhase {
 
 @freezed
 sealed class SlideshowState with _$SlideshowState {
-  const SlideshowState._();
-  MediaItem? get currentItem =>
-      currentSlide is MediaSlide ? (currentSlide as MediaSlide).item : null;
-  MediaItem? get nextItem =>
-      nextSlide is MediaSlide ? (nextSlide as MediaSlide).item : null;
   const factory SlideshowState({
     SlideshowSlide? currentSlide,
     SlideshowSlide? nextSlide,
