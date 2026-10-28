@@ -526,6 +526,9 @@ class SlideshowPreviewState extends State<SlideshowPreview>
           ),
         );
       }
+      if (effect is PhotoVhsDamageEffect) {
+        effect.bindPhotos(_currentPhoto, photo);
+      }
       final bindPhotos = switch (effect) {
         RadialBlurEffect radial => radial.bindPhotos,
         PhotoGlassEffect glass => glass.bindPhotos,

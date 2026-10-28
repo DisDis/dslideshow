@@ -20,6 +20,8 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/system_info_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
+import 'package:dslideshow_flutter/src/effect/creative_transition_effect.dart'
+    show PhotoVhsDamageEffect;
 import 'package:dslideshow_flutter/src/effect/fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
 import 'package:dslideshow_flutter/src/effect/radial_blur_effect.dart';
@@ -460,6 +462,12 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
     _currentPhotoMotion?.setPlaying(false);
+    if (currentEffect is PhotoVhsDamageEffect) {
+      currentEffect.bindPhotos(
+        _currentImage?.preparedBitmap,
+        _nextImage?.preparedBitmap,
+      );
+    }
     final bindPhotos = switch (currentEffect) {
       RadialBlurEffect radial => radial.bindPhotos,
       PhotoGlassEffect glass => glass.bindPhotos,

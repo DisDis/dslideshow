@@ -170,6 +170,27 @@ flutter analyze --no-pub
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p test_build_info.py -v
 ```
 
+## Radial / VHS после обновления flutter-pi и частот
+
+[Продолжение GPU-оптимизации](../doc/gpu-effect-performance-2026-10.md) содержит
+отдельные ABBA на runtime `30669…ea4b`, CPU max 2600 / GPU max 900 МГц.
+Принятые реализации перенесены в production: общий UV Radial и кешируемый tint VHS.
+Наборы `config/gpu-radial-focus.json` и `config/gpu-vhs-cache-focus.json` теперь
+измеряют обычные фабрики; стенд связывает VHS с двумя существующими bitmap.
+GIF/видео передают null и сохраняют исходный живой путь.
+
+`test/radial_shared_uv_test.dart` сравнивает production shader с замороженным
+`shaders/radial_shared_uv_reference.frag`, включая все origins, камеры и разные
+аспекты. `test/cached_vhs_test.dart` проверяет фабрику, сброс к живым входам и
+цвет/полосы/noise на контрастных полупрозрачных фото. Локальные тесты не заменяют
+реальный EGL-аудит raster cache; его исходный failed-статус VHS сохранён в отчёте.
+Временные shader/painter-кандидаты и entrypoints удалены после сохранения
+release/source архивов. Более медленные варианты Kaleidoscope не перенесены.
+
+```sh
+flutter test --no-pub test/cached_vhs_test.dart test/radial_shared_uv_test.dart
+```
+
 ## Диагностика Accordion / LiquidMorph
 
 Наборы `composition-confirm.json`, `composition-visual.json`,

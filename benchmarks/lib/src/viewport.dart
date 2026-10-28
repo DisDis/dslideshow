@@ -266,6 +266,12 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     if (_effect case WaterRefractionEffect water) {
       water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
     }
+    if (_effect case PhotoVhsDamageEffect vhs) {
+      vhs.bindPhotos(
+        preparedPhotos[test.media.from],
+        preparedPhotos[test.media.to],
+      );
+    }
     final bindPhotos = switch (_effect) {
       RadialBlurEffect radial => radial.bindPhotos,
       PhotoGlassEffect glass => glass.bindPhotos,

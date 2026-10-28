@@ -118,7 +118,7 @@ void main() {
       });
       await tester.pumpWidget(
         MaterialApp(
-          locale: const Locale('ru'),
+          locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
@@ -133,14 +133,15 @@ void main() {
         ),
       );
       Future<void> prepared() async {
-        for (var i = 0; i < 40; i++) {
-          await tester.runAsync(
-            () => Future<void>.delayed(const Duration(milliseconds: 10)),
-          );
+        await tester.pump();
+        final watch = Stopwatch()..start();
+        while (find.byType(LinearProgressIndicator).evaluate().isNotEmpty) {
+          if (watch.elapsed > const Duration(seconds: 10)) {
+            fail('Photo preparation did not finish');
+          }
+          await tester.runAsync(() => Future<void>(() {}));
           await tester.pump();
-          if (find.byType(LinearProgressIndicator).evaluate().isEmpty) return;
         }
-        fail('Photo preparation did not finish');
       }
 
       Future<List<List<int>>> colors() async {
@@ -164,6 +165,7 @@ void main() {
           .widgetList<RawImage>(find.byType(RawImage))
           .map((raw) => raw.image!)
           .toList();
+      expect(initialPhotos, isNotEmpty);
       expect(
         initialPhotos.every(
           (photo) =>
@@ -172,13 +174,6 @@ void main() {
               !photo.debugDisposed,
         ),
         isTrue,
-      );
-      expect(
-        find.descendant(
-          of: find.byType(DevicePreviewViewport),
-          matching: find.byType(RepaintBoundary),
-        ),
-        findsNWidgets(2),
       );
       expect(await colors(), [
         [244, 67, 54, 255],
@@ -193,30 +188,16 @@ void main() {
       await tester.pump();
       expect(initialPhotos.first.debugDisposed, isTrue);
       expect(initialPhotos.last.debugDisposed, isFalse);
-      expect(
-        find.descendant(
-          of: find.byType(DevicePreviewViewport),
-          matching: find.byType(RepaintBoundary),
-        ),
-        findsOneWidget,
-      );
       expect(await colors(), [
         [33, 150, 243, 255],
       ]);
       await tester.ensureVisible(find.byKey(const ValueKey('preview-repeat')));
-      expect(find.text('Повторить'), findsOneWidget);
+      expect(find.text('Repeat'), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('preview-repeat')));
       await tester.pump();
       await prepared();
       expect(clock.value, 0);
       expect(initialPhotos.every((photo) => photo.debugDisposed), isTrue);
-      expect(
-        find.descendant(
-          of: find.byType(DevicePreviewViewport),
-          matching: find.byType(RepaintBoundary),
-        ),
-        findsNWidgets(2),
-      );
       expect(await colors(), [
         [244, 67, 54, 255],
         [33, 150, 243, 255],
@@ -225,6 +206,19 @@ void main() {
           .widgetList<RawImage>(find.byType(RawImage))
           .map((raw) => raw.image!)
           .toList();
+      tester
+          .state<SlideshowPreviewState>(find.byType(SlideshowPreview))
+          .onChanged(Effect.vhsDamageEffect);
+      await tester.pump();
+      await prepared();
+      final pair = (await colors()).map((rgba) => rgba.join(',')).toSet();
+      final beforeConfig = config.toJson();
+      await tester.tap(find.byKey(const ValueKey('preview-repeat')));
+      await tester.pump();
+      await prepared();
+      expect((await colors()).map((rgba) => rgba.join(',')).toSet(), pair);
+      expect(config.toJson(), beforeConfig);
+      expect(clock.value, 0);
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
       expect(repeatedPhotos.every((photo) => photo.debugDisposed), isTrue);

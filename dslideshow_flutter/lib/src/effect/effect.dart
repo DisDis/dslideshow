@@ -318,9 +318,8 @@ class Effect {
         CreativeTransitionKind.shapeDissolve,
         options: settings,
       ),
-      EffectType.vhsDamage => CreativeTransitionEffect(
-        CreativeTransitionKind.vhsDamage,
-        options: settings,
+      EffectType.vhsDamage => PhotoVhsDamageEffect(
+        options: settings as VhsDamageEffectOptions,
       ),
       EffectType.radialBlur => RadialBlurEffect(
         options: settings as RadialBlurEffectOptions,

@@ -36,6 +36,10 @@ void main() {
     fragColor = accumulated;
     return;
   }
+  // A prepared photo pair normally shares the full viewport and identity camera.
+  // Keep the original general sampling path for other dimensions/cameras.
+  bool samePhotoUv = all(equal(uFromSize, uSize)) && all(equal(uToSize, uSize)) &&
+      all(equal(uFromCamera, vec3(1.0, 0.0, 0.0)));
   for (int i = 0; i < 9; i++) {
     float angle = float(i - 4) / 4.0 * uAngle;
     float c = cos(angle);
@@ -51,8 +55,14 @@ void main() {
         position.x <= uSize.x && position.y <= uSize.y) {
       vec2 fromPosition = (position - center - uFromCamera.yz)
           / uFromCamera.x + center;
-      sampleColor = mix(photo(true, uFromSize, fromPosition),
-                        photo(false, uToSize, position), uMotion);
+      if (samePhotoUv) {
+        vec2 uv = clamp(position, vec2(0.5), uSize - 0.5) / uSize;
+        vec3 color = mix(texture(uFrom, uv).rgb, texture(uTo, uv).rgb, uMotion);
+        sampleColor = vec4(color, 1.0);
+      } else {
+        sampleColor = mix(photo(true, uFromSize, fromPosition),
+                          photo(false, uToSize, position), uMotion);
+      }
     }
     // The original stack uses 1, 1/2, ... 1/9 source-over opacity. With opaque
     // covered rays this is the equal nine-ray average. Keep source-over for

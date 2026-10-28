@@ -129,6 +129,13 @@ Linux runner восстанавливает исходный `XDG_DATA_DIRS` и�
 
 ## Raspberry Pi
 
+Последующее [ускорение Radial Blur и VHS](../doc/gpu-effect-performance-2026-10.md)
+проверено на новом flutter-pi и GPU 900 МГц. Radial повторно использует UV только
+для двух фото размера viewport и неподвижной камеры; остальные входы сохраняют
+независимый расчёт. VHS кеширует цветовой фильтр двух подготовленных фото до
+меняющегося смешивания. `bindPhotos(null, ...)` возвращает исходную живую
+композицию; bitmap не копируются и не удерживаются самим VHS-эффектом.
+
 Существующий `./build_aot_pi4.sh` собирает arm64/CPU pi4 через `flutterpi_tool`.
 `../deb_factory/build.sh` собирает также веб-панель и DEB. Flutter SDK,
 `flutterpi_tool` и engine binaries должны быть согласованы по версии.

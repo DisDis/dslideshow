@@ -34,6 +34,7 @@ flutter:
     enable-native-assets: true
   uses-material-design: true
   shaders:
+    - shaders/radial_shared_uv_reference.frag
     - shaders/glass_reconstruction_reference.frag
   assets:
     - assets/media/

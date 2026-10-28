@@ -1,5 +1,10 @@
 # Unreleased
 
+* Reuse sampling coordinates for matching prepared photos in nine-ray Radial
+  Blur. Preserve all rays, resolution and independent photo-motion sampling.
+* Cache stable tinted photo inputs in VHS Damage before the animated blend.
+  Preserve the original live-media path.
+
 # 14.0.0+1 — 2026-10-28
 
 * Breaking settings change: replace slideshow.allowedEffects and

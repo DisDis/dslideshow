@@ -9,6 +9,11 @@
 
 ## Unreleased
 
+* Preserve matched OpenGL photo ABBA and EGL backbuffer evidence for the new
+  flutter-pi/900-MHz profile. Keep failed visual/performance trials explicit;
+  retain focused production Radial/VHS configurations and independent shader
+  reconstruction/resource/live-input regressions.
+
 * Add bounded native EGL/GBM/DRM diagnostics and an owned V3D/DRM tracefs session
   on a frozen photo-only release bundle. Verify the actual mapped engine and
   correlate raw FrameTiming windows with native spans and GPU submissions/IRQs;

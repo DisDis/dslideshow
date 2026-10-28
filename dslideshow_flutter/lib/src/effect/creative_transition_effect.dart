@@ -355,7 +355,7 @@ class CreativeTransitionEffect extends MediaSliderItemEffect {
                   ),
                 ),
               ),
-            CustomPaint(painter: _TapeNoise(t, e, o.noiseStrength)),
+            CustomPaint(painter: TapeNoisePainter(t, e, o.noiseStrength)),
           ],
         );
       case CreativeTransitionKind.radialBlur:
@@ -693,10 +693,11 @@ class _TrackingClipper extends CustomClipper<Rect> {
       t != oldClipper.t || index != oldClipper.index;
 }
 
-class _TapeNoise extends CustomPainter {
+/// Shared overlay for the live and prepared-photo VHS renderers.
+class TapeNoisePainter extends CustomPainter {
   final double t, envelope;
   final double intensity;
-  _TapeNoise(this.t, this.envelope, this.intensity);
+  TapeNoisePainter(this.t, this.envelope, this.intensity);
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || envelope <= 0) return;
@@ -719,8 +720,103 @@ class _TapeNoise extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TapeNoise oldDelegate) =>
+  bool shouldRepaint(TapeNoisePainter oldDelegate) =>
       t != oldDelegate.t ||
       envelope != oldDelegate.envelope ||
       intensity != oldDelegate.intensity;
+}
+
+/// VHS for prepared photos with stable tinted inputs before the changing blend.
+/// Live GIF/video/special-screen inputs retain the original composition.
+class PhotoVhsDamageEffect extends CreativeTransitionEffect {
+  bool _preparedPhotos = false;
+  VhsDamageEffectOptions get settings => options as VhsDamageEffectOptions;
+
+  PhotoVhsDamageEffect({
+    VhsDamageEffectOptions options = const VhsDamageEffectOptions(),
+  }) : super(CreativeTransitionKind.vhsDamage, options: options);
+
+  /// Marks or clears a stable prepared-photo pair. Pixel handles are neither
+  /// retained nor cloned; the caller's widgets already contain their camera.
+  void bindPhotos(ui.Image? from, ui.Image? to) {
+    _preparedPhotos = from != null && to != null;
+  }
+
+  Widget _mix(Widget from, Widget to, double motion) => Stack(
+    fit: StackFit.expand,
+    children: [
+      from,
+      Opacity(opacity: motion, child: to),
+    ],
+  );
+
+  Widget _tint(Widget child) => RepaintBoundary(
+    child: ColorFiltered(
+      colorFilter: const ColorFilter.mode(
+        Color(0xffff4060),
+        BlendMode.modulate,
+      ),
+      child: child,
+    ),
+  );
+
+  @override
+  Widget createTransformWidget(
+    BuildContext context,
+    Widget currentWidget,
+    Widget nextWidget,
+    Animation<double> controller,
+    double screenW,
+    double screenH,
+  ) {
+    if (!_preparedPhotos) {
+      return super.createTransformWidget(
+        context,
+        currentWidget,
+        nextWidget,
+        controller,
+        screenW,
+        screenH,
+      );
+    }
+    final t = controller.value.clamp(0.0, 1.0);
+    final motion = Curves.easeInOutCubic.transform(t);
+    final e = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
+    final shift = screenW * settings.colorShiftFraction * e;
+    final from = ColoredBox(color: Colors.black, child: currentWidget);
+    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    return ClipRect(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _mix(from, to, motion),
+          Opacity(
+            opacity: .35 * e,
+            child: Transform.translate(
+              offset: Offset(shift, 0),
+              child: _mix(_tint(from), _tint(to), motion),
+            ),
+          ),
+          for (var index = 0; index < 2; index++)
+            Opacity(
+              opacity: e,
+              child: ClipRect(
+                clipper: _TrackingClipper(t, index),
+                child: Transform.translate(
+                  offset: Offset(
+                    settings.trackingStrength *
+                        shift *
+                        (index == 0 ? -2 : 3) *
+                        math.sin(t * 29 + index),
+                    0,
+                  ),
+                  child: _mix(from, to, motion),
+                ),
+              ),
+            ),
+          CustomPaint(painter: TapeNoisePainter(t, e, settings.noiseStrength)),
+        ],
+      ),
+    );
+  }
 }
