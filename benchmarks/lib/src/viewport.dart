@@ -34,11 +34,11 @@ typedef BenchmarkEffectFactory = MediaSliderItemEffect? Function(
   int seed,
 );
 
-/// Borrows prepared static photos until release; GIF/video inputs are null.
+/// Borrows the same stable inputs used by rendering until release.
 typedef BenchmarkEffectPreparedCallback = void Function(
   MediaSliderItemEffect effect,
-  ui.Image? from,
-  ui.Image? to,
+  EffectSlideInput current,
+  EffectSlideInput next,
 );
 
 class BenchmarkViewport extends StatefulWidget {
@@ -69,7 +69,8 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     implements BenchmarkDriver {
   late final FixedAnimationController _controller;
   MediaSliderItemEffect? _effect;
-  Widget _from = const SizedBox.expand(), _to = const SizedBox.expand();
+  EffectSlideInput _from = const EffectSlideInput(view: SizedBox.expand()),
+      _to = const EffectSlideInput(view: SizedBox.expand());
   final List<ImageWidget> _images = [];
   final List<ui.Image> _probeBitmaps = [];
   final List<VideoSession> _videos = [];
@@ -147,7 +148,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     await _paint();
     if (!mounted) throw StateError('Viewport detached');
     final details = <Map<String, Object?>>[];
-    final preparedPhotos = <String, ui.Image>{};
     final videoViews = <(String, VideoSession, Widget)>[];
     final size = MediaQuery.sizeOf(context);
     final ratio = View.of(context).devicePixelRatio;
@@ -165,11 +165,12 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         test.blurProbe == null &&
         test.mosaicProbe == null &&
         test.compositionProbe == null;
-    Future<Widget> load(String name) async {
+    Future<EffectSlideInput> load(String name) async {
       final watch = Stopwatch()..start();
       final rssBefore = ProcessInfo.currentRss;
       final item = MediaItem(name, widget.catalog.file(name).uri);
       Widget view;
+      PreparedPhoto? photo;
       Map<String, Object?> videoInfo = {};
       if (name.endsWith('.mp4')) {
         final session = VideoSession(widget.catalog.file(name));
@@ -201,7 +202,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
         _images.add(image);
         await image.precache(context);
         if (image.preparedBitmap case final bitmap?) {
-          preparedPhotos[name] = bitmap;
+          photo = PreparedPhoto(bitmap: bitmap);
         }
         videoInfo = {
           'prepared_width': image.preparedBitmap?.width,
@@ -225,12 +226,16 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       final slide = productionPhotoInputs
           ? SizedBox(width: size.width, height: size.height, child: view)
           : ColoredBox(color: Colors.black, child: view);
-      return KeyedSubtree(
-        key: name == test.media.from ? sourceKey : null,
-        child:
-            productionPhotoInputs || test.blurProbe == BlurFadeProbe.noBoundary
-            ? slide
-            : RepaintBoundary(child: slide),
+      return EffectSlideInput(
+        photo: photo,
+        view: KeyedSubtree(
+          key: name == test.media.from ? sourceKey : null,
+          child:
+              productionPhotoInputs ||
+                  test.blurProbe == BlurFadeProbe.noBoundary
+              ? slide
+              : RepaintBoundary(child: slide),
+        ),
       );
     }
 
@@ -263,32 +268,11 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     if (generation != _generation || !mounted) {
       throw StateError('Preparation cancelled');
     }
-    if (_effect case WaterRefractionEffect water) {
-      water.bindPhotos(_images[0].preparedBitmap!, _images[1].preparedBitmap!);
-    }
-    if (_effect case PhotoVhsDamageEffect vhs) {
-      vhs.bindPhotos(
-        preparedPhotos[test.media.from],
-        preparedPhotos[test.media.to],
-      );
-    }
-    final bindPhotos = switch (_effect) {
-      RadialBlurEffect radial => radial.bindPhotos,
-      PhotoGlassEffect glass => glass.bindPhotos,
-      PhotoFilmDissolveEffect film => film.bindPhotos,
-      _ => null,
-    };
-    if (bindPhotos != null) {
-      final from = preparedPhotos[test.media.from];
-      final to = preparedPhotos[test.media.to];
-      if (from != null && to != null) bindPhotos(from, to);
-    }
     if (_effect case final effect?) {
-      widget.onEffectPrepared?.call(
-        effect,
-        preparedPhotos[test.media.from],
-        preparedPhotos[test.media.to],
-      );
+      if (!effect.supportsInputs(from, to)) {
+        throw StateError('Effect does not support the prepared media inputs');
+      }
+      widget.onEffectPrepared?.call(effect, from, to);
     }
     effectWatch.stop();
     _controller.duration = Duration(
@@ -373,7 +357,9 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     };
     try {
       _effect = null;
-      _from = ColoredBox(color: Colors.black, child: view);
+      _from = EffectSlideInput(
+        view: ColoredBox(color: Colors.black, child: view),
+      );
       await session.controller!.seekTo(Duration.zero);
       await session.setPlaying(true);
       final samples = <List<int>>[];
@@ -757,8 +743,8 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _frames = null;
     _scene = false;
     _captureLabel = null;
-    _from = const SizedBox.expand();
-    _to = const SizedBox.expand();
+    _from = const EffectSlideInput(view: SizedBox.expand());
+    _to = const EffectSlideInput(view: SizedBox.expand());
     _effect = null;
     final videos = [..._videos];
     _videos.clear();
@@ -838,7 +824,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
                             size.width,
                             size.height,
                           ) ??
-                          _from;
+                          _from.view;
                     },
                   ),
                 ),

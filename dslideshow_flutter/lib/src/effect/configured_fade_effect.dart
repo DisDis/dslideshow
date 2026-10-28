@@ -25,8 +25,8 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -38,8 +38,8 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
       case FadeStyle.plain:
         return FadeEffect().createTransformWidget(
           context,
-          currentWidget,
-          nextWidget,
+          current,
+          next,
           animation,
           screenW,
           screenH,
@@ -48,8 +48,8 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
         return OpticalTransitionEffect(OpticalTransitionKind.filmDissolve)
             .createTransformWidget(
               context,
-              currentWidget,
-              nextWidget,
+              current,
+              next,
               animation,
               screenW,
               screenH,
@@ -59,8 +59,8 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
           return FadeThroughColorEffect(color: Color(options.color))
               .createTransformWidget(
                 context,
-                currentWidget,
-                nextWidget,
+                current,
+                next,
                 animation,
                 screenW,
                 screenH,
@@ -74,14 +74,14 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
             ColoredBox(color: Color(options.color)),
             Opacity(
               opacity: (1 - t / fadeOut).clamp(0, 1),
-              child: currentWidget,
+              child: current.view,
             ),
             Opacity(
               opacity: ((t - fadeOut - options.holdFraction) / fadeIn).clamp(
                 0,
                 1,
               ),
-              child: nextWidget,
+              child: next.view,
             ),
           ],
         );
@@ -90,8 +90,8 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
           return BlurFadeEffect(maxSigma: options.maxSigma)
               .createTransformWidget(
                 context,
-                currentWidget,
-                nextWidget,
+                current,
+                next,
                 animation,
                 screenW,
                 screenH,
@@ -109,12 +109,12 @@ class ConfiguredFadeEffect extends MediaSliderItemEffect {
         return Stack(
           fit: StackFit.expand,
           children: [
-            blur(nextWidget, options.maxSigma * (1 - t)),
+            blur(next.view, options.maxSigma * (1 - t)),
             Opacity(
               opacity: 1 - t,
               child: options.blurTarget == BlurTarget.both
-                  ? blur(currentWidget, options.maxSigma * t)
-                  : currentWidget,
+                  ? blur(current.view, options.maxSigma * t)
+                  : current.view,
             ),
           ],
         );

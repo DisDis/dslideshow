@@ -59,11 +59,31 @@ Renderer хранит `_current` и `_next`. Следующая сессия н�
 Обычные обновления состояния не деактивируют готовящуюся камеру: такой вызов
 отменяет её запросы. GIF сохраняет существующий живой путь рендеринга.
 
-`bindSlideTransitionPhotos` предоставляет фото-эффектам существующие bitmap
-и матрицу исходящей камеры. Эффекты заимствуют пиксели до удаления своих
-представлений; дополнительных копий, декодирований или снимков экрана нет.
-Water при отсутствии пары подготовленных фото использует Fade с общей
-длительностью. Правила живых входов Radial, Glass, Film и VHS сохраняются.
+Перед переходом сессия формирует `EffectSlideInput`: существующее `view` и,
+для подготовленного статичного фото, `PreparedPhoto` с заимствованным bitmap
+и неизменяемым `PhotoCamera`. Камера хранит масштаб и смещение, а не изменяемую
+`Matrix4`. Оба входа фиксируются один раз перед запуском контроллера; завершение
+и перенос сессий не меняют уже начатый переход. Размер viewport задаётся всему
+переходу и не дублируется в каждом входе.
+
+Все эффекты принимают эти входы непосредственно в `createTransformWidget`.
+Отдельной привязки фото и сохранённого состояния пары внутри эффекта нет.
+Общий `supportsInputs` проверяет совместимость перед запуском: Water требует
+два подготовленных фото и неподвижную входящую камеру; иначе вызывающая сторона
+выбирает Fade с общей длительностью. Radial, Glass, Film и VHS выбирают фото-
+или живую композицию по данным входов. Фото-шейдеры также сохраняют живой путь,
+если входящая камера уже движется, поскольку их shader принимает камеру только
+исходящего фото. Ошибки подготовки shader не считаются несовместимостью входов.
+
+Обёртка обратного перехода переставляет входы целиком. Общие обёртки поворота
+и отражения используют живые представления: исходный bitmap не описывает их
+новую систему координат. Прямые фото-реализации каталога сохраняют свои шейдеры.
+Приложение, предпросмотр панели и benchmark используют один контракт без списков
+конкретных классов эффектов в местах передачи входов.
+
+Эффекты заимствуют пиксели до удаления своих представлений; дополнительных
+копий, декодирований или снимков экрана нет. Входы не освобождают ресурсы,
+их владельцами остаются сессии и существующий lifecycle после кадра.
 `FixedAnimationController`, размеры подготовки, фильтрация и запас пикселей
 Ken Burns остаются прежними.
 
@@ -73,7 +93,7 @@ Ken Burns остаются прежними.
 
 ```sh
 flutter analyze --no-pub
-flutter test --no-pub test/slide_session_test.dart test/slideshow_renderer_lifecycle_test.dart test/special_screen_lifecycle_test.dart test/special_slideshow_test.dart test/screen_transition_test.dart test/video_session_test.dart test/photo_motion_renderer_test.dart test/image_preparation_test.dart test/transition_media_selection_test.dart
+flutter test --no-pub test/effect_slide_input_test.dart test/slide_session_test.dart test/slideshow_renderer_lifecycle_test.dart test/special_screen_lifecycle_test.dart test/special_slideshow_test.dart test/screen_transition_test.dart test/video_session_test.dart test/photo_motion_renderer_test.dart test/photo_shader_effects_test.dart test/radial_blur_effect_test.dart test/image_preparation_test.dart test/transition_media_selection_test.dart
 ```
 
 Эти проверки используют настоящий renderer и проверяют ошибки/отмену
@@ -83,9 +103,15 @@ flutter test --no-pub test/slide_session_test.dart test/slideshow_renderer_lifec
 Нативное воспроизведение и аппаратные задержки требуют отдельной проверки
 на RaPi5 по [аппаратному руководству](raspberry-pi-benchmarks.md).
 
+`EffectSlideInput`, `PreparedPhoto` и `PhotoCamera` — модели Freezed без JSON.
+После изменения их исходников из того же пакета выполните
+`dart run build_runner build`; сгенерированные файлы вручную не редактируются.
+
 Отдельный [стенд реального renderer](../benchmarks/README.md) запускает
-`SlideShowPage` через `benchmarks/lib/renderer_main.dart`. Для этого рефакторинга
-согласован ограниченный набор эффектов, покрывающий привязку фото-шейдеров,
-живые GIF/видео, Ken Burns, часы/камеры, pause/sleep и cleanup. A/B выполняется
-в release, OpenGL, на одном runtime и одинаковых оригиналах. Сценарии и
-телеметрия остаются в `benchmarks/`.
+`SlideShowPage` через `benchmarks/lib/renderer_main.dart`. Для предыдущего рефакторинга
+владения сессиями уже сохранён ограниченный
+[аппаратный A/B](../benchmarks/reports/slide-session-2026-10-28/report.md),
+покрывающий фото-шейдеры, живые GIF/видео, Ken Burns, часы/камеры, pause/sleep
+и cleanup. Последующая миграция на единый вход эффекта по указанию пользователя
+проверяется только локально; прежний A/B не является измерением новой миграции.
+Сценарии и телеметрия остаются в `benchmarks/`.

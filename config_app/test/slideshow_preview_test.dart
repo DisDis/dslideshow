@@ -5,11 +5,24 @@ import 'package:config_app/features/config/presentation/wigdgets/preview_editor_
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/effect.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+Future<void> _untilPrepared(WidgetTester tester) async {
+  await tester.pump();
+  final watch = Stopwatch()..start();
+  while (find.byType(LinearProgressIndicator).evaluate().isNotEmpty) {
+    if (watch.elapsed > const Duration(seconds: 10)) {
+      fail('Photo preparation did not finish');
+    }
+    await tester.runAsync(() => Future<void>(() {}));
+    await tester.pump();
+  }
+}
 
 void main() {
   testWidgets(
@@ -271,13 +284,7 @@ void main() {
             ),
           ),
         );
-        for (var i = 0; i < 80; i++) {
-          await tester.runAsync(
-            () => Future<void>.delayed(const Duration(milliseconds: 10)),
-          );
-          await tester.pump();
-          if (find.byType(LinearProgressIndicator).evaluate().isEmpty) break;
-        }
+        await _untilPrepared(tester);
         expect(find.byKey(const ValueKey('preview-error')), findsNothing);
         final outgoing = tester.widget<RawImage>(find.byType(RawImage)).image!;
         expect(outgoing.width, 2560);
@@ -305,6 +312,43 @@ void main() {
         final incoming = tester.widget<RawImage>(find.byType(RawImage)).image!;
         expect(outgoing.debugDisposed, isTrue);
         expect(incoming.debugDisposed, isFalse);
+        var camera = tester
+            .widget<PhotoMotionFrame>(find.byType(PhotoMotionFrame))
+            .progress;
+        var waited = Duration.zero;
+        while (camera == 0) {
+          if (waited >= const Duration(seconds: 1)) {
+            fail('PhotoMotion did not start after transition completion');
+          }
+          const frame = Duration(milliseconds: 16);
+          await tester.pump(frame);
+          waited += frame;
+          camera = tester
+              .widget<PhotoMotionFrame>(find.byType(PhotoMotionFrame))
+              .progress;
+        }
+        expect(camera, greaterThan(0));
+        key.currentState!.onChanged(descriptor);
+        await _untilPrepared(tester);
+        clock.stop();
+        expect(
+          tester
+              .widget<PhotoMotionFrame>(find.byType(PhotoMotionFrame))
+              .progress,
+          camera,
+          reason: 'The next transition keeps the outgoing camera frozen',
+        );
+        clock.value = .5;
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(find.byType(RawImage), findsNothing);
+        clock.value = 0;
+        await tester.pump();
+        expect(
+          tester
+              .widget<PhotoMotionFrame>(find.byType(PhotoMotionFrame))
+              .progress,
+          camera,
+        );
         key.currentState!.onChanged(Effect.waterRefractionEffect);
         key.currentState!.onChanged(descriptor);
         await tester.pumpWidget(const SizedBox());

@@ -160,6 +160,12 @@ void main() {
       );
       Future<Uint8List> capture(MediaSliderItemEffect? effect, double t) async {
         final key = GlobalKey();
+        final prepared =
+            effect != null &&
+            !effect.supportsInputs(
+              EffectSlideInput(view: source),
+              EffectSlideInput(view: target),
+            );
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
@@ -173,8 +179,14 @@ void main() {
                     builder: (context) =>
                         effect?.createTransformWidget(
                           context,
-                          RepaintBoundary(child: source),
-                          RepaintBoundary(child: target),
+                          EffectSlideInput(
+                            view: RepaintBoundary(child: source),
+                            photo: prepared ? PreparedPhoto(bitmap: a) : null,
+                          ),
+                          EffectSlideInput(
+                            view: RepaintBoundary(child: target),
+                            photo: prepared ? PreparedPhoto(bitmap: b) : null,
+                          ),
                           AlwaysStoppedAnimation(t),
                           160,
                           100,
@@ -209,7 +221,7 @@ void main() {
         ProceduralRevealKind.waterBase,
         seed: 0,
       );
-      final water = WaterRefractionEffect()..bindPhotos(a, b);
+      final water = WaterRefractionEffect();
       for (final effect in [
         noise,
         sameNoise,

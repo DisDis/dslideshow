@@ -50,6 +50,12 @@ void main() {
         final key = GlobalKey();
         final from = RawImage(image: a, fit: BoxFit.contain),
             to = RawImage(image: b, fit: BoxFit.contain);
+        final prepared =
+            effect != null &&
+            !effect.supportsInputs(
+              EffectSlideInput(view: from),
+              EffectSlideInput(view: to),
+            );
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
@@ -63,8 +69,14 @@ void main() {
                     builder: (context) =>
                         effect?.createTransformWidget(
                           context,
-                          from,
-                          to,
+                          EffectSlideInput(
+                            view: from,
+                            photo: prepared ? PreparedPhoto(bitmap: a) : null,
+                          ),
+                          EffectSlideInput(
+                            view: to,
+                            photo: prepared ? PreparedPhoto(bitmap: b) : null,
+                          ),
                           AlwaysStoppedAnimation(t),
                           160,
                           100,
@@ -101,7 +113,6 @@ void main() {
           Effect(type, options: high).createEffect(seed: 42),
         ];
         for (final effect in variants) {
-          if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
           await tester.runAsync(effect.prepare);
         }
         var differs = false;

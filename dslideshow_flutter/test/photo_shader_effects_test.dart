@@ -55,6 +55,8 @@ Widget _scene(
   ui.Image from,
   ui.Image to, {
   Matrix4? fromCamera,
+  PhotoCamera? frozenCamera,
+  bool prepared = false,
   Widget? current,
   Widget? next,
 }) => Directionality(
@@ -69,18 +71,33 @@ Widget _scene(
           child: Builder(
             builder: (context) => effect.createTransformWidget(
               context,
-              current ??
-                  ClipRect(
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: fromCamera ?? Matrix4.identity(),
-                      child: RawImage(
-                        image: from,
-                        filterQuality: FilterQuality.high,
+              EffectSlideInput(
+                view:
+                    current ??
+                    ClipRect(
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform: fromCamera ?? Matrix4.identity(),
+                        child: RawImage(
+                          image: from,
+                          filterQuality: FilterQuality.high,
+                        ),
                       ),
                     ),
-                  ),
-              next ?? RawImage(image: to, filterQuality: FilterQuality.high),
+                photo: prepared
+                    ? PreparedPhoto(
+                        bitmap: from,
+                        camera:
+                            frozenCamera ?? PhotoCamera.fromMatrix(fromCamera),
+                      )
+                    : null,
+              ),
+              EffectSlideInput(
+                view:
+                    next ??
+                    RawImage(image: to, filterQuality: FilterQuality.high),
+                photo: prepared ? PreparedPhoto(bitmap: to) : null,
+              ),
               AlwaysStoppedAnimation(progress),
               _size.width,
               _size.height,
@@ -221,60 +238,68 @@ void main() {
     },
   );
 
-  testWidgets(
-    'unbound live inputs update in both effects without photo shaders',
-    (tester) async {
-      final from = (await tester.runAsync(() => _solid(Colors.red)))!;
-      final to = (await tester.runAsync(() => _solid(Colors.blue)))!;
-      final color = ValueNotifier<Color>(const Color(0xffff0000));
-      final live = ValueListenableBuilder<Color>(
-        valueListenable: color,
-        builder: (context, value, child) => ColoredBox(color: value),
-      );
-      var shaderCreations = 0;
-      ui.FragmentShader factory(ui.FragmentProgram program) {
-        shaderCreations++;
-        return program.fragmentShader();
-      }
+  testWidgets('live inputs update in both effects without photo shaders', (
+    tester,
+  ) async {
+    final from = (await tester.runAsync(() => _solid(Colors.red)))!;
+    final to = (await tester.runAsync(() => _solid(Colors.blue)))!;
+    final color = ValueNotifier<Color>(const Color(0xffff0000));
+    final live = ValueListenableBuilder<Color>(
+      valueListenable: color,
+      builder: (context, value, child) => ColoredBox(color: value),
+    );
+    var shaderCreations = 0;
+    ui.FragmentShader factory(ui.FragmentProgram program) {
+      shaderCreations++;
+      return program.fragmentShader();
+    }
 
-      try {
-        for (final effect in [
-          PhotoGlassEffect(
-            options: const GlassEffectOptions(
-              axis: EffectAxis.horizontal,
-              glintStrength: 0,
-            ),
-            shaderFactory: factory,
+    try {
+      for (final effect in [
+        PhotoGlassEffect(
+          options: const GlassEffectOptions(
+            axis: EffectAxis.horizontal,
+            glintStrength: 0,
           ),
-          PhotoFilmDissolveEffect(shaderFactory: factory),
-        ]) {
-          await tester.runAsync(effect.prepare);
-          color.value = const Color(0xffff0000);
-          final key = GlobalKey();
-          await tester.pumpWidget(
-            _scene(effect, key, .5, from, to, current: live, next: live),
-          );
-          final before = await _pixels(tester, key);
-          color.value = const Color(0xff00ff00);
-          await tester.pump();
-          final after = await _pixels(tester, key);
-          final center = (50 * 160 + 80) * 4;
-          expect(before.sublist(center, center + 4), [255, 0, 0, 255]);
-          expect(after.sublist(center, center + 4), [0, 255, 0, 255]);
-          expect(shaderCreations, 0);
-          await tester.pumpWidget(const SizedBox());
-        }
-        expect(from.debugDisposed, isFalse);
-        expect(to.debugDisposed, isFalse);
-      } finally {
+          shaderFactory: factory,
+        ),
+        PhotoFilmDissolveEffect(shaderFactory: factory),
+      ]) {
+        await tester.runAsync(effect.prepare);
+        color.value = const Color(0xffff0000);
+        final key = GlobalKey();
+        await tester.pumpWidget(
+          _scene(
+            effect,
+            key,
+            .5,
+            from,
+            to,
+            current: live,
+            next: live,
+            prepared: false,
+          ),
+        );
+        final before = await _pixels(tester, key);
+        color.value = const Color(0xff00ff00);
+        await tester.pump();
+        final after = await _pixels(tester, key);
+        final center = (50 * 160 + 80) * 4;
+        expect(before.sublist(center, center + 4), [255, 0, 0, 255]);
+        expect(after.sublist(center, center + 4), [0, 255, 0, 255]);
+        expect(shaderCreations, 0);
         await tester.pumpWidget(const SizedBox());
-        color.dispose();
-        from.dispose();
-        to.dispose();
       }
-      expect(tester.takeException(), isNull);
-    },
-  );
+      expect(from.debugDisposed, isFalse);
+      expect(to.debugDisposed, isFalse);
+    } finally {
+      await tester.pumpWidget(const SizedBox());
+      color.dispose();
+      from.dispose();
+      to.dispose();
+    }
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'Glass keeps both axes, pane geometry, overscan and glints on smooth photos',
@@ -297,15 +322,14 @@ void main() {
                 EffectType.glass,
                 options: options,
               ).createEffect();
-              final candidate = PhotoGlassEffect(options: options)
-                ..bindPhotos(from, to);
+              final candidate = PhotoGlassEffect(options: options);
               await tester.runAsync(candidate.prepare);
               for (final phase in [0.0, .2, .5, .8, 1.0]) {
                 final key = GlobalKey();
                 await tester.pumpWidget(_scene(original, key, phase, from, to));
                 final expected = await _pixels(tester, key);
                 await tester.pumpWidget(
-                  _scene(candidate, key, phase, from, to),
+                  _scene(candidate, key, phase, from, to, prepared: true),
                 );
                 final actual = await _pixels(tester, key);
                 _expectGlassPixels(
@@ -347,14 +371,15 @@ void main() {
             EffectType.fade,
             options: options,
           ).createEffect();
-          final candidate = PhotoFilmDissolveEffect(options: options)
-            ..bindPhotos(from, to);
+          final candidate = PhotoFilmDissolveEffect(options: options);
           await tester.runAsync(candidate.prepare);
           for (final phase in [0.0, .2, .5, .8, 1.0]) {
             final key = GlobalKey();
             await tester.pumpWidget(_scene(original, key, phase, from, to));
             final expected = await _pixels(tester, key);
-            await tester.pumpWidget(_scene(candidate, key, phase, from, to));
+            await tester.pumpWidget(
+              _scene(candidate, key, phase, from, to, prepared: true),
+            );
             final actual = await _pixels(tester, key);
             final delta = _difference(expected, actual);
             // Original filter layers quantize linear values before the final
@@ -368,10 +393,12 @@ void main() {
             if (phase == 0 || phase == 1) expect(actual, expected);
           }
         }
-        final candidate = PhotoFilmDissolveEffect()..bindPhotos(black, white);
+        final candidate = PhotoFilmDissolveEffect();
         await tester.runAsync(candidate.prepare);
         final key = GlobalKey();
-        await tester.pumpWidget(_scene(candidate, key, .5, black, white));
+        await tester.pumpWidget(
+          _scene(candidate, key, .5, black, white, prepared: true),
+        );
         final actual = await _pixels(tester, key);
         expect(actual.take(4), orderedEquals([188, 188, 188, 255]));
       } finally {
@@ -405,28 +432,28 @@ void main() {
               shaderFactory: factory,
             ),
           };
-          if (candidate is PhotoGlassEffect) candidate.bindPhotos(from, to);
-          if (candidate is PhotoFilmDissolveEffect) {
-            candidate.bindPhotos(from, to);
-          }
           await tester.runAsync(candidate.prepare);
           final key = GlobalKey();
-          await tester.pumpWidget(_scene(candidate, key, .3, from, to));
+          await tester.pumpWidget(
+            _scene(candidate, key, .3, from, to, prepared: true),
+          );
           final before = await _pixels(tester, key);
-          await tester.pumpWidget(_scene(candidate, key, .6, from, to));
+          await tester.pumpWidget(
+            _scene(candidate, key, .6, from, to, prepared: true),
+          );
           expect(await _pixels(tester, key), isNot(orderedEquals(before)));
-          if (candidate is PhotoGlassEffect) candidate.bindPhotos(to, from);
-          if (candidate is PhotoFilmDissolveEffect) {
-            candidate.bindPhotos(to, from);
-          }
-          await tester.pumpWidget(_scene(candidate, key, .3, to, from));
+          await tester.pumpWidget(
+            _scene(candidate, key, .3, to, from, prepared: true),
+          );
           expect(await _pixels(tester, key), isNot(orderedEquals(before)));
           expect(shaders, hasLength(1));
           await tester.pumpWidget(const SizedBox.shrink());
           expect(shaders.single.debugDisposed, isTrue);
           expect(from.debugDisposed, isFalse);
           expect(to.debugDisposed, isFalse);
-          await tester.pumpWidget(_scene(candidate, GlobalKey(), .3, to, from));
+          await tester.pumpWidget(
+            _scene(candidate, GlobalKey(), .3, to, from, prepared: true),
+          );
           expect(shaders, hasLength(2));
           await tester.pumpWidget(const SizedBox.shrink());
           expect(shaders.every((shader) => shader.debugDisposed), isTrue);
@@ -441,7 +468,7 @@ void main() {
   );
 
   testWidgets(
-    'outgoing camera is copied, unsupported matrices fail and endpoints stay live',
+    'immutable outgoing camera matches composition and endpoints stay live',
     (tester) async {
       final from = (await tester.runAsync(() => _photo(incoming: false)))!;
       final to = (await tester.runAsync(() => _photo(incoming: true)))!;
@@ -449,12 +476,12 @@ void main() {
         ..translateByDouble(-5, 3, 0, 1)
         ..scaleByDouble(1.12, 1.12, 1, 1);
       final expectedCamera = Matrix4.copy(camera);
+      final frozenCamera = PhotoCamera.fromMatrix(camera);
       final glass = PhotoGlassEffect(
         options: const GlassEffectOptions(axis: EffectAxis.horizontal),
       );
       final film = PhotoFilmDissolveEffect();
-      glass.bindPhotos(from, to, fromCamera: camera);
-      film.bindPhotos(from, to, fromCamera: camera);
+
       camera.storage[12] = 999;
       try {
         for (final candidate in [glass, film]) {
@@ -495,6 +522,8 @@ void main() {
                 from,
                 to,
                 fromCamera: expectedCamera,
+                prepared: true,
+                frozenCamera: frozenCamera,
               ),
             );
             final actual = await _pixels(tester, key);
@@ -515,16 +544,6 @@ void main() {
               expect(delta.mean, lessThan(1), reason: 'camera/$phase $delta');
             }
           }
-          for (final invalid in [
-            Matrix4.rotationZ(.1),
-            Matrix4.diagonal3Values(1.2, 1.1, 1),
-            Matrix4.zero(),
-          ]) {
-            expect(
-              () => candidate.bindPhotos(from, to, fromCamera: invalid),
-              throwsArgumentError,
-            );
-          }
           final color = ValueNotifier(Colors.red);
           final current = ValueListenableBuilder<Color>(
             valueListenable: color,
@@ -532,7 +551,15 @@ void main() {
           );
           final key = GlobalKey();
           await tester.pumpWidget(
-            _scene(candidate, key, 0, from, to, current: current),
+            _scene(
+              candidate,
+              key,
+              0,
+              from,
+              to,
+              current: current,
+              prepared: true,
+            ),
           );
           final before = await _pixels(tester, key);
           color.value = Colors.blue;
@@ -550,30 +577,31 @@ void main() {
     },
   );
 
-  testWidgets(
-    'bound photo phases require prepare and unbound phases remain live',
-    (tester) async {
-      final from = (await tester.runAsync(() => _solid(Colors.red)))!;
-      final to = (await tester.runAsync(() => _solid(Colors.blue)))!;
-      try {
-        for (final candidate in [
-          PhotoGlassEffect(),
-          PhotoFilmDissolveEffect(),
-        ]) {
-          await tester.pumpWidget(_scene(candidate, GlobalKey(), .5, from, to));
-          expect(tester.takeException(), isNull);
-          candidate.bindPhotos(from, to);
-          await tester.pumpWidget(_scene(candidate, GlobalKey(), .5, from, to));
-          expect(tester.takeException(), isA<StateError>());
-          await tester.runAsync(candidate.prepare);
-          await tester.pumpWidget(_scene(candidate, GlobalKey(), .5, from, to));
-          expect(tester.takeException(), isNull);
-        }
-      } finally {
-        await tester.pumpWidget(const SizedBox.shrink());
-        from.dispose();
-        to.dispose();
+  testWidgets('prepared photo phases require shaders and live phases do not', (
+    tester,
+  ) async {
+    final from = (await tester.runAsync(() => _solid(Colors.red)))!;
+    final to = (await tester.runAsync(() => _solid(Colors.blue)))!;
+    try {
+      for (final candidate in [PhotoGlassEffect(), PhotoFilmDissolveEffect()]) {
+        await tester.pumpWidget(
+          _scene(candidate, GlobalKey(), .5, from, to, prepared: false),
+        );
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(
+          _scene(candidate, GlobalKey(), .5, from, to, prepared: true),
+        );
+        expect(tester.takeException(), isA<StateError>());
+        await tester.runAsync(candidate.prepare);
+        await tester.pumpWidget(
+          _scene(candidate, GlobalKey(), .5, from, to, prepared: true),
+        );
+        expect(tester.takeException(), isNull);
       }
-    },
-  );
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      from.dispose();
+      to.dispose();
+    }
+  });
 }

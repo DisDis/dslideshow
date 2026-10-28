@@ -30,8 +30,8 @@ class SliceEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -39,7 +39,7 @@ class SliceEffect extends MediaSliderItemEffect {
     child: Stack(
       fit: StackFit.expand,
       children: [
-        ColoredBox(color: Colors.black, child: nextWidget),
+        ColoredBox(color: Colors.black, child: next.view),
         for (var i = 0; i < stripCount; i++)
           Positioned(
             left: 0,
@@ -71,7 +71,7 @@ class SliceEffect extends MediaSliderItemEffect {
                         ),
                     -screenH * i / stripCount,
                   ),
-                  child: ColoredBox(color: Colors.black, child: currentWidget),
+                  child: ColoredBox(color: Colors.black, child: current.view),
                 ),
               ),
             ),

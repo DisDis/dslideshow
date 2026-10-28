@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'effect_slide_input.dart';
+
+export 'effect_slide_input.dart';
+
 abstract class MediaSliderItemEffect {
   /// Prepare optional GPU resources before the transition clock starts.
   Future<void> prepare() async {}
+
+  /// Whether these actual prepared inputs can be rendered by this effect.
+  /// Callers choose their normal Fade fallback before starting the controller.
+  bool supportsInputs(EffectSlideInput current, EffectSlideInput next) => true;
   Widget transform(
     BuildContext context,
     Widget page,
@@ -13,8 +21,8 @@ abstract class MediaSliderItemEffect {
   );
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -24,7 +32,7 @@ abstract class MediaSliderItemEffect {
       children: <Widget>[
         transform(
           context,
-          currentWidget,
+          current.view,
           true,
           controller.value,
           screenW,
@@ -32,7 +40,7 @@ abstract class MediaSliderItemEffect {
         ),
         transform(
           context,
-          nextWidget,
+          next.view,
           false,
           controller.value,
           screenW,

@@ -50,8 +50,8 @@ class BlurProbeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -66,12 +66,12 @@ class BlurProbeEffect extends MediaSliderItemEffect {
     final Widget outgoing;
     switch (probe) {
       case BlurFadeProbe.fadeOnly:
-        outgoing = Opacity(opacity: 1 - t, child: currentWidget);
+        outgoing = Opacity(opacity: 1 - t, child: current.view);
       case BlurFadeProbe.blurOnly:
         outgoing = ImageFiltered(
           imageFilter: blur,
           enabled: t > 0,
-          child: currentWidget,
+          child: current.view,
         );
       case BlurFadeProbe.composeDecal:
         outgoing = ImageFiltered(
@@ -79,13 +79,13 @@ class BlurProbeEffect extends MediaSliderItemEffect {
             outer: ColorFilter.mode(alpha, BlendMode.modulate),
             inner: blur,
           ),
-          child: currentWidget,
+          child: current.view,
         );
       case BlurFadeProbe.opacityInside:
         outgoing = ImageFiltered(
           imageFilter: blur,
           enabled: t > 0,
-          child: Opacity(opacity: 1 - t, child: currentWidget),
+          child: Opacity(opacity: 1 - t, child: current.view),
         );
       case BlurFadeProbe.reference:
       case BlurFadeProbe.noBoundary:
@@ -94,7 +94,7 @@ class BlurProbeEffect extends MediaSliderItemEffect {
           child: ImageFiltered(
             imageFilter: blur,
             enabled: t > 0,
-            child: currentWidget,
+            child: current.view,
           ),
         );
       case BlurFadeProbe.directImage:
@@ -105,12 +105,12 @@ class BlurProbeEffect extends MediaSliderItemEffect {
           children: [
             // Keep source ownership and state alive while drawing its cloned
             // prepared pixels. No snapshots, decode or resampling in the window.
-            Opacity(opacity: 0, child: currentWidget),
+            Opacity(opacity: 0, child: current.view),
             CustomPaint(painter: _BitmapBlur(bitmap!, t, probe: probe)),
           ],
         );
     }
-    return Stack(fit: StackFit.expand, children: [nextWidget, outgoing]);
+    return Stack(fit: StackFit.expand, children: [next.view, outgoing]);
   }
 }
 

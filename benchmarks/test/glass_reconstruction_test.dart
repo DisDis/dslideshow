@@ -56,21 +56,30 @@ Widget _scene(
           child: Builder(
             builder: (context) => effect.createTransformWidget(
               context,
-              ClipRect(
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: camera ?? Matrix4.identity(),
-                  child: RawImage(
-                    image: from,
-                    fit: BoxFit.contain,
-                    filterQuality: FilterQuality.high,
+              EffectSlideInput(
+                photo: PreparedPhoto(
+                  bitmap: from,
+                  camera: PhotoCamera.fromMatrix(camera),
+                ),
+                view: ClipRect(
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: camera ?? Matrix4.identity(),
+                    child: RawImage(
+                      image: from,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                    ),
                   ),
                 ),
               ),
-              RawImage(
-                image: to,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.high,
+              EffectSlideInput(
+                photo: PreparedPhoto(bitmap: to),
+                view: RawImage(
+                  image: to,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                ),
               ),
               AlwaysStoppedAnimation(t),
               size.width,
@@ -123,8 +132,8 @@ void main() {
         '5c3cec3c02c0a0b673dd5e4ce91755f84d02a8271e388a42d1aee9e85235e974',
       );
       expect(
-      sha256.convert(production).toString(),
-      isNot(sha256.convert(reference).toString()),
+        sha256.convert(production).toString(),
+        isNot(sha256.convert(reference).toString()),
         reason: 'The strict pixel test must exercise the previous kernel',
       );
     },
@@ -151,9 +160,8 @@ void main() {
               final reference = PhotoGlassEffect(
                 options: options,
                 shaderFactory: (_) => referenceProgram.fragmentShader(),
-              )..bindPhotos(from, to);
-              final candidate = PhotoGlassEffect(options: options)
-                ..bindPhotos(from, to);
+              );
+              final candidate = PhotoGlassEffect(options: options);
               await tester.runAsync(reference.prepare);
               await tester.runAsync(candidate.prepare);
               for (final phase in [0.0, .2, .5, .8, 1.0]) {
@@ -217,9 +225,8 @@ void main() {
               final reference = PhotoGlassEffect(
                 options: options,
                 shaderFactory: (_) => referenceProgram.fragmentShader(),
-              )..bindPhotos(from, to, fromCamera: camera);
-              final candidate = PhotoGlassEffect(options: options)
-                ..bindPhotos(from, to, fromCamera: camera);
+              );
+              final candidate = PhotoGlassEffect(options: options);
               await tester.runAsync(reference.prepare);
               await tester.runAsync(candidate.prepare);
               for (final phase in [.1, .37, .8]) {
@@ -268,7 +275,7 @@ void main() {
   );
 
   testWidgets(
-    'production view reuses shader, rebinds borrowed photos and disposes only its resource',
+    'production view reuses shader, updates borrowed inputs and disposes only its resource',
     (tester) async {
       final from = (await tester.runAsync(() => _photo(160, 100, seed: 0)))!;
       final to = (await tester.runAsync(() => _photo(160, 100, seed: 3)))!;
@@ -279,7 +286,7 @@ void main() {
           shaders.add(shader);
           return shader;
         },
-      )..bindPhotos(from, to);
+      );
       try {
         await tester.runAsync(candidate.prepare);
         final key = GlobalKey();
@@ -287,7 +294,6 @@ void main() {
           _scene(candidate, key, .3, from, to, const Size(160, 100)),
         );
         final before = await _pixels(tester, key);
-        candidate.bindPhotos(to, from);
         await tester.pumpWidget(
           _scene(candidate, key, .3, to, from, const Size(160, 100)),
         );

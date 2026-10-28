@@ -28,8 +28,16 @@ Widget _scene(
             onBuild();
             return effect.createTransformWidget(
               context,
-              RepaintBoundary(child: CustomPaint(painter: _LiveColor(from))),
-              RepaintBoundary(child: CustomPaint(painter: _LiveColor(to))),
+              EffectSlideInput(
+                view: RepaintBoundary(
+                  child: CustomPaint(painter: _LiveColor(from)),
+                ),
+              ),
+              EffectSlideInput(
+                view: RepaintBoundary(
+                  child: CustomPaint(painter: _LiveColor(to)),
+                ),
+              ),
               const AlwaysStoppedAnimation(.5),
               _size.width,
               _size.height,

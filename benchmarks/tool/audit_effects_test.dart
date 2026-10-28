@@ -121,7 +121,14 @@ void main() {
       for (final descriptor in Effect.values) {
         final effect = descriptor.createEffect(seed: 42);
         await tester.runAsync(effect.prepare);
-        if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
+        var current = const EffectSlideInput(view: slideA);
+        var next = const EffectSlideInput(view: slideB);
+        // Keep the historical live composition audit. Only effects requiring
+        // prepared photos receive them; optional shader paths have own fixtures.
+        if (!effect.supportsInputs(current, next)) {
+          current = current.copyWith(photo: PreparedPhoto(bitmap: a));
+          next = next.copyWith(photo: PreparedPhoto(bitmap: b));
+        }
         final frames = <Uint8List>[];
         for (var i = 0; i <= 20; i++) {
           frames.add(
@@ -133,8 +140,8 @@ void main() {
                   child: Builder(
                     builder: (context) => effect.createTransformWidget(
                       context,
-                      slideA,
-                      slideB,
+                      current,
+                      next,
                       AlwaysStoppedAnimation(i / 20),
                       size.width,
                       size.height,

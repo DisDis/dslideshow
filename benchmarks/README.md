@@ -70,6 +70,25 @@ production-каталога: все 37 defaults и 82 пресета, одина
 
 ### Входные фото как в основном приложении
 
+Viewport создаёт два неизменяемых `EffectSlideInput` при подготовке сценария и
+передаёт те же экземпляры в каждый кадр `createTransformWidget`. `view` сохраняет
+исходное дерево слоёв; `photo` заимствует подготовленный bitmap у `ImageWidget`
+и содержит `PhotoCamera` без изменяемой матрицы. У GIF/видео `photo == null`.
+Отдельного `bindPhotos` и выбора конкретного класса для передачи фото больше нет;
+`supportsInputs` проверяется до запуска анимации. Callback `onEffectPrepared`
+получает те же входы и может заимствовать их ресурсы только до `release()`.
+`PhotoMotionProbe` сам применяет камеру к `view`, поэтому его входная камера
+остаётся единичной. Bitmap-пробы BlurProbe по-прежнему владеют отдельными клонами
+из смонтированного `RenderImage`; обычный `photo.bitmap` не заменяет этот клон.
+
+Локальные shader-regression targets явно передают подготовленные фото; live
+reference, blur/mosaic/composition-пробы и галерея сохраняют прежние пути.
+В галерее и общем pixel audit фото добавляются только при отказе
+`supportsInputs` от live-входов. Frozen shader fixtures, плотность Mosaic,
+размеры, фазы и допуски сравнения сохраняются. Для миграции этого API аппаратный
+прогон исключён пользователем: исторические release/source-отчёты подтверждают
+только зафиксированные в них сборки, а не текущий интерфейс.
+
 Для измерения обычных переходов фото→фото включите в JSON
 `"production_photo_inputs": true`. Подготовленное фото передаётся эффекту в
 `SizedBox` размера viewport, как в основном слайдшоу, без добавочных чёрной
@@ -112,18 +131,21 @@ readback проверяют реально закешированные OpenGL-�
 Результаты и условия — в [отчёте](../doc/effect-performance-2026-10.md#перенос-трёх-измеренных-реализаций).
 Повторные замеры этих трёх реализаций пользователь исключил.
 
-Обычный `BenchmarkViewport` после `prepare()` связывает два подготовленных фото
-с production `RadialBlurEffect`. GIF/видео используют его живую композицию.
+Обычный `BenchmarkViewport` передаёт два подготовленных фото через
+`EffectSlideInput` в production `RadialBlurEffect`. GIF/видео используют его
+живую композицию.
 Тесты перенесённых эффектов и ресурсов находятся в `dslideshow_flutter/test/`;
-viewport отдельно проверяет static binding и отсутствие capture для GIF.
+viewport отдельно проверяет заимствование статичных фото и отсутствие capture
+для GIF.
 
 ### Основные фото-шейдеры Glass / Film Dissolve
 
 Измеренные `PhotoGlassEffect` и `PhotoFilmDissolveEffect` перенесены в обычную
-production-фабрику. Стенд, слайдшоу и preview связывают с ними заимствованные
-подготовленные фото после `prepare()`, до монтирования. Исходящая PhotoMotion-камера
-копируется; render object владеет своим FragmentShader. Снимки, декодеры и клоны
-фото не создаются. Endpoints и GIF/видео сохраняют живые входы.
+production-фабрику. Стенд, слайдшоу и preview передают заимствованные
+подготовленные фото и камеру через `EffectSlideInput`. Исходящая PhotoMotion-камера
+сохраняется как неизменяемые scale/dx/dy; render object владеет своим
+FragmentShader. Снимки, декодеры и клоны фото не создаются. Endpoints и GIF/видео
+сохраняют живые входы.
 
 Glass объединяет pane transforms, blend и glint в один проход. Mitchell
 reconstruction B=C=1/3 сохраняет все 16 вкладов через 9 bilinear lookup;
@@ -166,8 +188,8 @@ weights и координаты только при точном совпаде�
 `tool/build_info.py` включает `benchmarks/shaders/` в `source_sha256` наряду с
 Dart-кодом и конфигурацией. Изменение shader или asset-пути меняет fingerprint;
 генерируемые build-info/build outputs исключены. Callback подготовки вызывается
-после `prepare()` до монтирования и заимствует имеющиеся bitmap до release;
-для GIF/видео соответствующий аргумент равен null.
+после `prepare()` до монтирования и получает `EffectSlideInput`, заимствующие
+имеющиеся bitmap до release; для GIF/видео поле `photo` равно null.
 
 Локальные проверки из `benchmarks/`:
 
@@ -183,8 +205,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p test_build_inf
 отдельные ABBA на runtime `30669…ea4b`, CPU max 2600 / GPU max 900 МГц.
 Принятые реализации перенесены в production: общий UV Radial и кешируемый tint VHS.
 Наборы `config/gpu-radial-focus.json` и `config/gpu-vhs-cache-focus.json` теперь
-измеряют обычные фабрики; стенд связывает VHS с двумя существующими bitmap.
-GIF/видео передают null и сохраняют исходный живой путь.
+измеряют обычные фабрики; стенд передаёт VHS два входа с существующими bitmap.
+GIF/видео передают `photo == null` и сохраняют исходный живой путь.
 
 `test/radial_shared_uv_test.dart` сравнивает production shader с замороженным
 `shaders/radial_shared_uv_reference.frag`, включая все origins, камеры и разные

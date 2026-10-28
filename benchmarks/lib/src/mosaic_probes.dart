@@ -38,20 +38,20 @@ class MosaicProbeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) => Stack(
     fit: StackFit.expand,
     children: [
-      nextWidget,
+      next.view,
       MosaicProbeMask(
         schedule: schedule,
         progress: controller.value,
         mode: mode,
-        child: currentWidget,
+        child: current.view,
       ),
     ],
   );

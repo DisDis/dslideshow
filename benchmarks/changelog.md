@@ -9,6 +9,11 @@
 
 ## Unreleased
 
+* Pass stable immutable effect inputs through the viewport, probes and capture
+  tools. Preserve borrowed photo ownership, separate BlurProbe clones, identity
+  PhotoMotionProbe cameras and existing shader/live regression paths; no new
+  hardware acceptance run accompanies this interface migration.
+
 * Preserve matched OpenGL photo ABBA and EGL backbuffer evidence for the new
   flutter-pi/900-MHz profile. Keep failed visual/performance trials explicit;
   retain focused production Radial/VHS configurations and independent shader

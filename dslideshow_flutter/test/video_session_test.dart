@@ -85,8 +85,8 @@ void main() {
                     builder: (context) =>
                         effect.createEffect().createTransformWidget(
                           context,
-                          current,
-                          next,
+                          EffectSlideInput(view: current),
+                          EffectSlideInput(view: next),
                           AlwaysStoppedAnimation(t),
                           320,
                           240,
@@ -204,8 +204,8 @@ void main() {
           builder: (context) =>
               (cube ? CubeEffect() : BlindsEffect()).createTransformWidget(
                 context,
-                view,
-                const SizedBox.expand(),
+                EffectSlideInput(view: view),
+                EffectSlideInput(view: const SizedBox.expand()),
                 AlwaysStoppedAnimation(progress),
                 320,
                 240,

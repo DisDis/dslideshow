@@ -98,8 +98,6 @@ MediaSliderItemEffect _glassLiveEffect(GlassEffectOptions options) {
 abstract class _PreparedPhotoShaderEffect extends MediaSliderItemEffect {
   final ui.FragmentShader Function(ui.FragmentProgram) _shaderFactory;
   ui.FragmentProgram? _program;
-  ui.Image? _from, _to;
-  Matrix4 _fromCamera = Matrix4.identity();
 
   _PreparedPhotoShaderEffect({
     ui.FragmentShader Function(ui.FragmentProgram)? shaderFactory,
@@ -108,41 +106,6 @@ abstract class _PreparedPhotoShaderEffect extends MediaSliderItemEffect {
   String get _asset;
   MediaSliderItemEffect get _liveEffect;
   void _writeUniforms(ui.FragmentShader shader, Size size, double progress);
-
-  /// Borrows prepared photos. The optional outgoing camera is copied and has
-  /// PhotoMotion's positive uniform scale/translation contract. Endpoint views
-  /// remain live caller widgets and already include that same camera.
-  void bindPhotos(ui.Image from, ui.Image to, {Matrix4? fromCamera}) {
-    final camera = fromCamera == null
-        ? Matrix4.identity()
-        : Matrix4.copy(fromCamera);
-    final matrix = camera.storage;
-    if (!matrix[0].isFinite ||
-        matrix[0] <= 0 ||
-        matrix[0] != matrix[5] ||
-        !matrix[12].isFinite ||
-        !matrix[13].isFinite) {
-      throw ArgumentError.value(
-        fromCamera,
-        'fromCamera',
-        'Expected positive uniform scale and translation',
-      );
-    }
-    for (var index = 0; index < matrix.length; index++) {
-      if (index == 0 || index == 5 || index == 12 || index == 13) continue;
-      final expected = index == 10 || index == 15 ? 1.0 : 0.0;
-      if (matrix[index] != expected) {
-        throw ArgumentError.value(
-          fromCamera,
-          'fromCamera',
-          'Rotation, skew and perspective are unsupported',
-        );
-      }
-    }
-    _from = from;
-    _to = to;
-    _fromCamera = camera;
-  }
 
   @override
   Future<void> prepare() async {
@@ -179,20 +142,20 @@ abstract class _PreparedPhotoShaderEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) {
-    final from = _from, to = _to;
+    final from = current.photo?.bitmap, to = next.photo?.bitmap;
     // GIF/video/special screens keep their live widgets and shared sessions.
     // Only callers with two stable prepared photos opt into texture sampling.
-    if (from == null || to == null) {
+    if (from == null || to == null || !next.photo!.camera.isIdentity) {
       return _liveEffect.createTransformWidget(
         context,
-        currentWidget,
-        nextWidget,
+        current,
+        next,
         controller,
         screenW,
         screenH,
@@ -203,20 +166,20 @@ abstract class _PreparedPhotoShaderEffect extends MediaSliderItemEffect {
       return ClipRect(
         child: ColoredBox(
           color: Colors.black,
-          child: t == 0 ? currentWidget : nextWidget,
+          child: t == 0 ? current.view : next.view,
         ),
       );
     }
     final program = _program;
     if (program == null) {
-      throw StateError('Prepare $runtimeType before rendering bound photos.');
+      throw StateError('Prepare $runtimeType before rendering photo inputs.');
     }
     return ClipRect(
       child: _PhotoShaderFrame(
         program: program,
         from: from,
         to: to,
-        fromCamera: _fromCamera,
+        fromCamera: current.photo!.camera,
         progress: t,
         writeUniforms: _writeUniforms,
         shaderFactory: _shaderFactory,
@@ -228,7 +191,7 @@ abstract class _PreparedPhotoShaderEffect extends MediaSliderItemEffect {
 class _PhotoShaderFrame extends LeafRenderObjectWidget {
   final ui.FragmentProgram program;
   final ui.Image from, to;
-  final Matrix4 fromCamera;
+  final PhotoCamera fromCamera;
   final double progress;
   final void Function(ui.FragmentShader, Size, double) writeUniforms;
   final ui.FragmentShader Function(ui.FragmentProgram) shaderFactory;
@@ -284,9 +247,9 @@ class _RenderPhotoShader extends RenderBox {
       ..setFloat(3, from.height.toDouble())
       ..setFloat(4, to.width.toDouble())
       ..setFloat(5, to.height.toDouble())
-      ..setFloat(6, _data.fromCamera.storage[0])
-      ..setFloat(7, _data.fromCamera.storage[12])
-      ..setFloat(8, _data.fromCamera.storage[13])
+      ..setFloat(6, _data.fromCamera.scale)
+      ..setFloat(7, _data.fromCamera.dx)
+      ..setFloat(8, _data.fromCamera.dy)
       ..setImageSampler(0, from, filterQuality: ui.FilterQuality.low)
       ..setImageSampler(1, to, filterQuality: ui.FilterQuality.low);
     _data.writeUniforms(shader, size, _data.progress);

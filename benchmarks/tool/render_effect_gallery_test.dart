@@ -77,12 +77,23 @@ void main() {
     ))!;
     addTearDown(from.dispose);
     addTearDown(to.dispose);
-    final prepared = <Effect, MediaSliderItemEffect>{};
+    final prepared =
+        <Effect, (MediaSliderItemEffect, EffectSlideInput, EffectSlideInput)>{};
     for (final descriptor in Effect.values) {
       final effect = descriptor.createEffect(seed: 42);
       await tester.runAsync(effect.prepare);
-      if (effect is WaterRefractionEffect) effect.bindPhotos(from, to);
-      prepared[descriptor] = effect;
+      var current = EffectSlideInput(
+        view: slide('A', [Colors.orange, Colors.deepPurple]),
+      );
+      var next = EffectSlideInput(
+        view: slide('B', [Colors.cyan, Colors.indigo]),
+      );
+      // Preserve live gallery paths unless prepared photos are required.
+      if (!effect.supportsInputs(current, next)) {
+        current = current.copyWith(photo: PreparedPhoto(bitmap: from));
+        next = next.copyWith(photo: PreparedPhoto(bitmap: to));
+      }
+      prepared[descriptor] = (effect, current, next);
     }
     final all = Effect.values.toList();
     for (var offset = 0; offset < all.length; offset += 12) {
@@ -110,7 +121,7 @@ void main() {
                     for (final descriptor in effects)
                       Builder(
                         builder: (context) {
-                          final effect = prepared[descriptor]!;
+                          final (effect, current, next) = prepared[descriptor]!;
                           return Row(
                             children: [
                               SizedBox(
@@ -131,11 +142,8 @@ void main() {
                                   child: ClipRect(
                                     child: effect.createTransformWidget(
                                       context,
-                                      slide('A', [
-                                        Colors.orange,
-                                        Colors.deepPurple,
-                                      ]),
-                                      slide('B', [Colors.cyan, Colors.indigo]),
+                                      current,
+                                      next,
                                       AlwaysStoppedAnimation(t),
                                       160,
                                       96,

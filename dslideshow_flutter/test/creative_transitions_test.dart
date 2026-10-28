@@ -25,8 +25,8 @@ Future<Uint8List> _frame(
   tester,
   (context) => effect.createEffect().createTransformWidget(
     context,
-    from,
-    to,
+    EffectSlideInput(view: from),
+    EffectSlideInput(view: to),
     AlwaysStoppedAnimation(t),
     size.width,
     size.height,

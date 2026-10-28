@@ -28,8 +28,8 @@ class BlindsEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -57,7 +57,7 @@ class BlindsEffect extends MediaSliderItemEffect {
       fit: StackFit.expand,
       children: [
         // 1. Новое изображение (лежит на дне)
-        nextWidget,
+        next.view,
 
         // 2. Жалюзи из старого изображения
         Column(
@@ -102,7 +102,7 @@ class BlindsEffect extends MediaSliderItemEffect {
                           child: Transform.translate(
                             // Корректируем позицию большой картинки
                             offset: Offset(0, contentOffset),
-                            child: currentWidget,
+                            child: current.view,
                           ),
                         ),
                       ),

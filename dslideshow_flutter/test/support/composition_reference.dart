@@ -20,8 +20,8 @@ class ReferenceAccordionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput currentInput,
+    EffectSlideInput nextInput,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -48,7 +48,7 @@ class ReferenceAccordionEffect extends MediaSliderItemEffect {
             // чтобы контент внутри сжимался (эффект гармошки), а не перестраивался.
             width: screenW,
             height: screenH,
-            child: currentWidget,
+            child: currentInput.view,
           ),
         ),
       );
@@ -63,7 +63,11 @@ class ReferenceAccordionEffect extends MediaSliderItemEffect {
           alignment: Alignment.centerRight, // Растягиваем от правого края
           transform: Matrix4.identity()
             ..scaleByDouble(progress, 1.0, progress, 1.0),
-          child: SizedBox(width: screenW, height: screenH, child: nextWidget),
+          child: SizedBox(
+            width: screenW,
+            height: screenH,
+            child: nextInput.view,
+          ),
         ),
       );
     }
@@ -149,22 +153,25 @@ class ReferenceLiquidMorphEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput currentInput,
+    EffectSlideInput nextInput,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) => Stack(
     fit: StackFit.expand,
     children: [
-      Transform.scale(scale: 1 + 0.1 * controller.value, child: currentWidget),
+      Transform.scale(
+        scale: 1 + 0.1 * controller.value,
+        child: currentInput.view,
+      ),
       ClipPath(
         clipper: _LiquidRevealClipper(
           controller.value,
           waveIntensity,
           _geometry,
         ),
-        child: nextWidget,
+        child: nextInput.view,
       ),
     ],
   );

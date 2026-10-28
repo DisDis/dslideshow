@@ -26,8 +26,8 @@ class CubeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -75,7 +75,7 @@ class CubeEffect extends MediaSliderItemEffect {
     // 1. Current (Уходит, становится темнее)
     final currentFace = buildFace(
       key: const ValueKey('cube-current'),
-      child: currentWidget,
+      child: current.view,
       translateOffset: -screenW * progress,
       alignment: Alignment.centerRight,
       rotateAngle: angle,
@@ -85,7 +85,7 @@ class CubeEffect extends MediaSliderItemEffect {
     // 2. Next (Приходит, становится светлее)
     final nextFace = buildFace(
       key: const ValueKey('cube-next'),
-      child: nextWidget,
+      child: next.view,
       translateOffset: screenW * (1 - progress),
       alignment: Alignment.centerLeft,
       rotateAngle: angle - (pi / 2),

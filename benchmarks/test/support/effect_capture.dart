@@ -17,6 +17,8 @@ Future<Uint8List> captureEffect(
   Matrix4? camera,
   Widget? current,
   Widget? next,
+  PreparedPhoto? fromPhoto,
+  PreparedPhoto? toPhoto,
 }) async {
   await tester.pumpWidget(
     Directionality(
@@ -29,24 +31,32 @@ Future<Uint8List> captureEffect(
             child: Builder(
               builder: (context) => effect.createTransformWidget(
                 context,
-                current ??
-                    ClipRect(
-                      child: Transform(
-                        alignment: Alignment.center,
-                        transform: camera ?? Matrix4.identity(),
-                        child: RawImage(
-                          image: from,
-                          fit: BoxFit.contain,
-                          filterQuality: FilterQuality.high,
+                EffectSlideInput(
+                  photo: fromPhoto,
+                  view:
+                      current ??
+                      ClipRect(
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: camera ?? Matrix4.identity(),
+                          child: RawImage(
+                            image: from,
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.high,
+                          ),
                         ),
                       ),
-                    ),
-                next ??
-                    RawImage(
-                      image: to,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
-                    ),
+                ),
+                EffectSlideInput(
+                  photo: toPhoto,
+                  view:
+                      next ??
+                      RawImage(
+                        image: to,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                      ),
+                ),
                 AlwaysStoppedAnimation(phase),
                 size.width,
                 size.height,

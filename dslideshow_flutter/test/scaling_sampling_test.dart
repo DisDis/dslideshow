@@ -36,8 +36,8 @@ Widget _scene(
   Builder(
     builder: (context) => effect.createTransformWidget(
       context,
-      from,
-      to,
+      EffectSlideInput(view: from),
+      EffectSlideInput(view: to),
       AlwaysStoppedAnimation(progress),
       _size.width,
       _size.height,

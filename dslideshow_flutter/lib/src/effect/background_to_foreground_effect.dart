@@ -25,8 +25,8 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -44,7 +44,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
           Transform.scale(
             scale: nextScale,
             alignment: Alignment.center,
-            child: nextWidget,
+            child: next.view,
           ),
           // Тень для заднего плана:
           // В начале (progress 0) она максимальна (слайд в глубине).
@@ -68,7 +68,7 @@ class BackgroundToForegroundEffect extends MediaSliderItemEffect {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            currentWidget,
+            current.view,
             // Тень для переднего плана:
             // В начале (progress 0) её НЕТ (0.0), картинка чистая.
             // По мере ухода она темнеет, чтобы акцентировать внимание на новом слайде.

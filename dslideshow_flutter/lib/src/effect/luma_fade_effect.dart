@@ -22,8 +22,8 @@ class LumaFadeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -33,7 +33,7 @@ class LumaFadeEffect extends MediaSliderItemEffect {
     return Stack(
       fit: StackFit.expand,
       children: [
-        ColoredBox(color: Colors.black, child: nextWidget),
+        ColoredBox(color: Colors.black, child: next.view),
         ColorFiltered(
           colorFilter: ColorFilter.matrix([
             1,
@@ -61,7 +61,7 @@ class LumaFadeEffect extends MediaSliderItemEffect {
           ]),
           // Back transparent areas before deriving alpha; otherwise zero-alpha
           // source pixels could acquire opacity from the matrix's bias term.
-          child: ColoredBox(color: Colors.black, child: currentWidget),
+          child: ColoredBox(color: Colors.black, child: current.view),
         ),
       ],
     );

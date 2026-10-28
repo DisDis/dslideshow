@@ -63,8 +63,8 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -72,8 +72,8 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
     final t = controller.value.clamp(0.0, 1.0);
     final motion = Curves.easeInOutCubic.transform(t);
     final envelope = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
-    final from = ColoredBox(color: Colors.black, child: currentWidget);
-    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    final from = ColoredBox(color: Colors.black, child: current.view);
+    final to = ColoredBox(color: Colors.black, child: next.view);
     final Widget scene;
     switch (kind) {
       case OpticalTransitionKind.filmDissolve:

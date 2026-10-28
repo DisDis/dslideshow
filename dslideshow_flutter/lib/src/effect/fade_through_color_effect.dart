@@ -17,8 +17,8 @@ class FadeThroughColorEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -28,11 +28,11 @@ class FadeThroughColorEffect extends MediaSliderItemEffect {
       ColoredBox(color: color),
       Opacity(
         opacity: (1 - 2 * controller.value).clamp(0, 1),
-        child: currentWidget,
+        child: current.view,
       ),
       Opacity(
         opacity: (2 * controller.value - 1).clamp(0, 1),
-        child: nextWidget,
+        child: next.view,
       ),
     ],
   );

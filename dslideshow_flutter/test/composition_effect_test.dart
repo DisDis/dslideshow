@@ -22,8 +22,8 @@ Future<void> compare(
         tester,
         (context) => effect.createTransformWidget(
           context,
-          pixels.slide(a),
-          pixels.slide(b),
+          EffectSlideInput(view: pixels.slide(a)),
+          EffectSlideInput(view: pixels.slide(b)),
           AlwaysStoppedAnimation(t),
           size.width,
           size.height,
@@ -122,8 +122,8 @@ void main() {
               child: Builder(
                 builder: (context) => effect.createTransformWidget(
                   context,
-                  from,
-                  to,
+                  EffectSlideInput(view: from),
+                  EffectSlideInput(view: to),
                   AlwaysStoppedAnimation(t),
                   160,
                   100,

@@ -106,8 +106,8 @@ void main() {
             child: Builder(
               builder: (context) => effect.createTransformWidget(
                 context,
-                source,
-                const SizedBox.expand(),
+                EffectSlideInput(view: source),
+                EffectSlideInput(view: const SizedBox.expand()),
                 AlwaysStoppedAnimation(t),
                 160,
                 100,
@@ -146,8 +146,8 @@ void main() {
                 tester,
                 (context) => effect.createTransformWidget(
                   context,
-                  slide(a),
-                  slide(b),
+                  EffectSlideInput(view: slide(a)),
+                  EffectSlideInput(view: slide(b)),
                   AlwaysStoppedAnimation(t),
                   160,
                   100,
@@ -211,8 +211,8 @@ void main() {
               tester,
               (context) => effect.createTransformWidget(
                 context,
-                slide(a),
-                slide(b),
+                EffectSlideInput(view: slide(a)),
+                EffectSlideInput(view: slide(b)),
                 AlwaysStoppedAnimation(t),
                 size.width,
                 size.height,

@@ -23,8 +23,8 @@ class BlurFadeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -34,8 +34,8 @@ class BlurFadeEffect extends MediaSliderItemEffect {
       return Stack(
         fit: StackFit.expand,
         children: [
-          nextWidget,
-          Opacity(opacity: 1.0 - controller.value, child: currentWidget),
+          next.view,
+          Opacity(opacity: 1.0 - controller.value, child: current.view),
         ],
       );
     }
@@ -43,7 +43,7 @@ class BlurFadeEffect extends MediaSliderItemEffect {
       fit: StackFit.expand,
       children: [
         // 1. Новое изображение (внизу)
-        nextWidget,
+        next.view,
 
         // 2. Старое изображение (сверху) с эффектами
         ImageFiltered(
@@ -61,7 +61,7 @@ class BlurFadeEffect extends MediaSliderItemEffect {
             ),
           ),
           enabled: controller.value > 0,
-          child: currentWidget,
+          child: current.view,
         ),
       ],
     );

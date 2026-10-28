@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:benchmarks/src/blur_probes.dart';
 import 'package:benchmarks/src/composition_probes.dart';
@@ -48,6 +47,27 @@ Future<T> _withFrames<T>(WidgetTester tester, Future<T> work) async {
 
 class _PreparedProbeEffect extends MediaSliderItemEffect {
   bool prepared = false;
+  final rendered = <(EffectSlideInput, EffectSlideInput)>[];
+
+  @override
+  Widget createTransformWidget(
+    BuildContext context,
+    EffectSlideInput current,
+    EffectSlideInput next,
+    Animation<double> controller,
+    double screenW,
+    double screenH,
+  ) {
+    rendered.add((current, next));
+    return super.createTransformWidget(
+      context,
+      current,
+      next,
+      controller,
+      screenW,
+      screenH,
+    );
+  }
 
   @override
   Future<void> prepare() async => prepared = true;
@@ -77,7 +97,8 @@ void main() {
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
         late BenchmarkDriver driver;
-        final borrowed = <(MediaSliderItemEffect, ui.Image?, ui.Image?)>[];
+        final borrowed =
+            <(MediaSliderItemEffect, EffectSlideInput, EffectSlideInput)>[];
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
@@ -122,14 +143,20 @@ void main() {
                     _ => 18,
                   }),
           );
-          for (final bitmap in [from, to].nonNulls) {
+          for (final bitmap in [
+            from.photo?.bitmap,
+            to.photo?.bitmap,
+          ].nonNulls) {
             expect(bitmap.width, 160);
             expect(bitmap.height, 100);
             expect(bitmap.debugDisposed, isFalse);
           }
           await _withFrames(tester, driver.release());
           expect(
-            [from, to].nonNulls.every((image) => image.debugDisposed),
+            [
+              from.photo?.bitmap,
+              to.photo?.bitmap,
+            ].nonNulls.every((image) => image.debugDisposed),
             isTrue,
           );
           expect(tester.takeException(), isNull);
@@ -147,7 +174,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       late BenchmarkDriver driver;
-      final borrowed = <(bool, ui.Image?, ui.Image?)>[];
+      final borrowed = <(bool, EffectSlideInput, EffectSlideInput)>[];
+      final effects = <_PreparedProbeEffect>[];
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -158,7 +186,11 @@ void main() {
               catalog: MediaCatalog(Directory('assets/media'), []),
               reportDirectory: Directory.systemTemp,
               onReady: (value) async => driver = value,
-              effectFactory: (test, seed) => _PreparedProbeEffect(),
+              effectFactory: (test, seed) {
+                final effect = _PreparedProbeEffect();
+                effects.add(effect);
+                return effect;
+              },
               onEffectPrepared: (effect, from, to) {
                 borrowed.add((
                   (effect as _PreparedProbeEffect).prepared,
@@ -177,9 +209,32 @@ void main() {
         );
         final (prepared, from, to) = borrowed.last;
         expect(prepared, isTrue);
-        expect(from == null, pair.type(pair.from) != TransitionMedia.photo);
-        expect(to == null, pair.type(pair.to) != TransitionMedia.photo);
-        for (final bitmap in [from, to].nonNulls) {
+        final effect = effects.last;
+        final clock = tester
+            .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+            .map((widget) => widget.animation)
+            .whereType<AnimationController>()
+            .single;
+        for (final phase in [.2, .5]) {
+          clock.value = phase;
+          await tester.pump();
+        }
+        expect(effect.rendered, isNotEmpty);
+        expect(
+          effect.rendered.every(
+            (inputs) => identical(inputs.$1, from) && identical(inputs.$2, to),
+          ),
+          isTrue,
+          reason: 'preparation and animation share the same immutable inputs',
+        );
+        expect(from.photo?.camera.isIdentity ?? true, isTrue);
+        expect(to.photo?.camera.isIdentity ?? true, isTrue);
+        expect(
+          from.photo == null,
+          pair.type(pair.from) != TransitionMedia.photo,
+        );
+        expect(to.photo == null, pair.type(pair.to) != TransitionMedia.photo);
+        for (final bitmap in [from.photo?.bitmap, to.photo?.bitmap].nonNulls) {
           expect(bitmap.width, 160);
           expect(bitmap.height, 100);
           expect(bitmap.debugDisposed, isFalse);
@@ -193,7 +248,10 @@ void main() {
         }
         await _withFrames(tester, driver.release());
         expect(
-          [from, to].nonNulls.every((bitmap) => bitmap.debugDisposed),
+          [
+            from.photo?.bitmap,
+            to.photo?.bitmap,
+          ].nonNulls.every((bitmap) => bitmap.debugDisposed),
           isTrue,
         );
       }

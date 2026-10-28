@@ -10,7 +10,6 @@ import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_mask.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_transition_effect.dart';
-import 'package:dslideshow_flutter/src/effect/water_refraction_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,6 +23,7 @@ Widget frame(
   Widget current = white,
   Widget next = black,
   Key? capture,
+  PreparedPhoto? photo,
 }) => RepaintBoundary(
   key: capture,
   child: Directionality(
@@ -36,8 +36,8 @@ Widget frame(
         child: Builder(
           builder: (context) => effect.createTransformWidget(
             context,
-            current,
-            next,
+            EffectSlideInput(view: current, photo: photo),
+            EffectSlideInput(view: next, photo: photo),
             AlwaysStoppedAnimation(progress),
             160,
             90,
@@ -415,9 +415,18 @@ void main() {
       for (final descriptor in Effect.values) {
         final effect = descriptor.createEffect();
         await tester.runAsync(effect.prepare);
-        if (effect is WaterRefractionEffect) effect.bindPhotos(photo, photo);
+        final prepared = !effect.supportsInputs(
+          const EffectSlideInput(view: white),
+          const EffectSlideInput(view: black),
+        );
         for (final t in [0.0, 0.25, 0.5, 0.75, 1.0]) {
-          await tester.pumpWidget(frame(effect, t));
+          await tester.pumpWidget(
+            frame(
+              effect,
+              t,
+              photo: prepared ? PreparedPhoto(bitmap: photo) : null,
+            ),
+          );
           expect(
             tester.takeException(),
             isNull,

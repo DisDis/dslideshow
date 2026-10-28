@@ -35,8 +35,8 @@ class LiquidMorphEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -45,7 +45,7 @@ class LiquidMorphEffect extends MediaSliderItemEffect {
     children: [
       Transform.scale(
         scale: 1 + (outgoingScale - 1) * controller.value,
-        child: currentWidget,
+        child: current.view,
       ),
       ClipPath(
         clipper: _LiquidRevealClipper(
@@ -54,7 +54,7 @@ class LiquidMorphEffect extends MediaSliderItemEffect {
           _geometry,
           origin,
         ),
-        child: nextWidget,
+        child: next.view,
       ),
     ],
   );

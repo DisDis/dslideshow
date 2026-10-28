@@ -36,8 +36,8 @@ class DirectionalSlideEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -53,11 +53,11 @@ class DirectionalSlideEffect extends MediaSliderItemEffect {
     };
     final cinematic = blurFraction > 0 || decoration != SlideDecoration.none;
     Widget from = cinematic
-        ? ColoredBox(color: Colors.black, child: currentWidget)
-        : currentWidget;
+        ? ColoredBox(color: Colors.black, child: current.view)
+        : current.view;
     Widget to = cinematic
-        ? ColoredBox(color: Colors.black, child: nextWidget)
-        : nextWidget;
+        ? ColoredBox(color: Colors.black, child: next.view)
+        : next.view;
     Widget upper(Widget child, double angle) {
       if (shadowStrength > 0) {
         child = DecoratedBox(
@@ -81,17 +81,19 @@ class DirectionalSlideEffect extends MediaSliderItemEffect {
 
     if (mode == SlideMode.cover) to = upper(to, tiltDegrees * envelope);
     if (mode == SlideMode.reveal) from = upper(from, tiltDegrees * envelope);
-    final current = Transform.translate(
+    final outgoing = Transform.translate(
       offset: mode == SlideMode.cover ? Offset.zero : vector * motion,
       child: from,
     );
-    final next = Transform.translate(
+    final incoming = Transform.translate(
       offset: mode == SlideMode.reveal ? Offset.zero : vector * (motion - 1),
       child: to,
     );
     Widget scene = Stack(
       fit: StackFit.expand,
-      children: mode == SlideMode.reveal ? [next, current] : [current, next],
+      children: mode == SlideMode.reveal
+          ? [incoming, outgoing]
+          : [outgoing, incoming],
     );
     if (cinematic) {
       final sigma = math.min(screenW, screenH) * blurFraction * envelope;

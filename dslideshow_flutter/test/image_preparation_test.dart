@@ -106,8 +106,15 @@ void main() {
                   builder: (context, t, child) => ClipRect(
                     child: effect.createTransformWidget(
                       context,
-                      const ColoredBox(color: Colors.blue),
-                      Transform.scale(scale: 1.1 + t * .1, child: child),
+                      EffectSlideInput(
+                        view: const ColoredBox(color: Colors.blue),
+                      ),
+                      EffectSlideInput(
+                        view: Transform.scale(
+                          scale: 1.1 + t * .1,
+                          child: child,
+                        ),
+                      ),
                       AlwaysStoppedAnimation(t),
                       160,
                       90,

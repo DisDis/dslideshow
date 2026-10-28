@@ -180,8 +180,8 @@ class CreativeTransitionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -190,8 +190,8 @@ class CreativeTransitionEffect extends MediaSliderItemEffect {
     final motion = Curves.easeInOutCubic.transform(t);
     final e = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
     final unit = math.min(screenW, screenH);
-    final from = ColoredBox(color: Colors.black, child: currentWidget);
-    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    final from = ColoredBox(color: Colors.black, child: current.view);
+    final to = ColoredBox(color: Colors.black, child: next.view);
     final Widget scene;
     switch (kind) {
       case CreativeTransitionKind.burnAlpha:
@@ -729,18 +729,11 @@ class TapeNoisePainter extends CustomPainter {
 /// VHS for prepared photos with stable tinted inputs before the changing blend.
 /// Live GIF/video/special-screen inputs retain the original composition.
 class PhotoVhsDamageEffect extends CreativeTransitionEffect {
-  bool _preparedPhotos = false;
   VhsDamageEffectOptions get settings => options as VhsDamageEffectOptions;
 
   PhotoVhsDamageEffect({
     VhsDamageEffectOptions options = const VhsDamageEffectOptions(),
   }) : super(CreativeTransitionKind.vhsDamage, options: options);
-
-  /// Marks or clears a stable prepared-photo pair. Pixel handles are neither
-  /// retained nor cloned; the caller's widgets already contain their camera.
-  void bindPhotos(ui.Image? from, ui.Image? to) {
-    _preparedPhotos = from != null && to != null;
-  }
 
   Widget _mix(Widget from, Widget to, double motion) => Stack(
     fit: StackFit.expand,
@@ -763,17 +756,17 @@ class PhotoVhsDamageEffect extends CreativeTransitionEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) {
-    if (!_preparedPhotos) {
+    if (current.photo == null || next.photo == null) {
       return super.createTransformWidget(
         context,
-        currentWidget,
-        nextWidget,
+        current,
+        next,
         controller,
         screenW,
         screenH,
@@ -783,8 +776,8 @@ class PhotoVhsDamageEffect extends CreativeTransitionEffect {
     final motion = Curves.easeInOutCubic.transform(t);
     final e = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
     final shift = screenW * settings.colorShiftFraction * e;
-    final from = ColoredBox(color: Colors.black, child: currentWidget);
-    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    final from = ColoredBox(color: Colors.black, child: current.view);
+    final to = ColoredBox(color: Colors.black, child: next.view);
     return ClipRect(
       child: Stack(
         fit: StackFit.expand,

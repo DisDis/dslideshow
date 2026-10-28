@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:ui' as ui;
 
+import 'package:dslideshow_flutter/src/effect/effect_slide_input.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -25,9 +25,8 @@ abstract class SlideSession {
   bool get disposed => _disposed;
   Widget get view;
 
-  /// Borrowed pixels; transitions must detach before the owner is disposed.
-  ui.Image? get preparedBitmap => null;
-  Matrix4? photoCamera(Size size) => null;
+  /// Capture once before a transition; this session retains resource ownership.
+  EffectSlideInput createEffectInput(Size size) => EffectSlideInput(view: view);
   bool get cancelPreparationOnSleep => false;
 
   Future<bool> prepare(BuildContext context) {
@@ -80,11 +79,20 @@ class ImageSlideSession extends SlideSession {
   Widget get view => _view;
 
   @override
-  ui.Image? get preparedBitmap => image.preparedBitmap;
-
-  @override
-  Matrix4? photoCamera(Size size) =>
-      _motion?.path.transform(size, _motion!.progress);
+  EffectSlideInput createEffectInput(Size size) {
+    final bitmap = image.preparedBitmap;
+    return EffectSlideInput(
+      view: view,
+      photo: bitmap == null
+          ? null
+          : PreparedPhoto(
+              bitmap: bitmap,
+              camera: PhotoCamera.fromMatrix(
+                _motion?.path.transform(size, _motion!.progress),
+              ),
+            ),
+    );
+  }
 
   @override
   Future<bool> prepareContents(BuildContext context) async {

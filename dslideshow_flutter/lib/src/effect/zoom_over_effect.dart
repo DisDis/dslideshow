@@ -35,8 +35,8 @@ class ZoomOverEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -51,7 +51,7 @@ class ZoomOverEffect extends MediaSliderItemEffect {
               ((1 - outgoingScale) *
                   controller.value), // Едва заметное отдаление
           alignment: effectOrigin(origin),
-          child: currentWidget,
+          child: current.view,
         ),
 
         // 2. Новое изображение (появляется сверху)
@@ -62,7 +62,7 @@ class ZoomOverEffect extends MediaSliderItemEffect {
             child: Transform.scale(
               scale: startScale - (startScale - 1.0) * controller.value,
               alignment: effectOrigin(origin),
-              child: nextWidget,
+              child: next.view,
             ),
           ),
         ),

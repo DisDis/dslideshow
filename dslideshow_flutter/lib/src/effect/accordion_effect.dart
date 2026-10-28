@@ -19,8 +19,8 @@ class AccordionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -47,7 +47,7 @@ class AccordionEffect extends MediaSliderItemEffect {
             // чтобы контент внутри сжимался (эффект гармошки), а не перестраивался.
             width: screenW,
             height: screenH,
-            child: currentWidget,
+            child: current.view,
           ),
         ),
       );
@@ -62,7 +62,7 @@ class AccordionEffect extends MediaSliderItemEffect {
           alignment: Alignment.centerRight, // Растягиваем от правого края
           transform: Matrix4.identity()
             ..scaleByDouble(progress, 1.0, progress, 1.0),
-          child: SizedBox(width: screenW, height: screenH, child: nextWidget),
+          child: SizedBox(width: screenW, height: screenH, child: next.view),
         ),
       );
     }

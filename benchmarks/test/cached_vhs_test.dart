@@ -20,15 +20,13 @@ void main() {
     expect((effect as PhotoVhsDamageEffect).options, same(options));
   });
 
-  testWidgets('partial photo unbinding restores the live composition', (
+  testWidgets('partial prepared inputs restore the live composition', (
     tester,
   ) async {
     final from = (await tester.runAsync(() => testPhoto(0)))!;
     final to = (await tester.runAsync(() => testPhoto(2)))!;
-    final effect = PhotoVhsDamageEffect()..bindPhotos(from, to);
-    effect.bindPhotos(from, null);
-    from.dispose();
-    to.dispose();
+    final effect = PhotoVhsDamageEffect();
+    var photosDisposed = false;
     final color = ValueNotifier<Color>(Colors.red);
     final live = ValueListenableBuilder<Color>(
       valueListenable: color,
@@ -36,6 +34,16 @@ void main() {
     );
     try {
       final key = GlobalKey();
+      await captureEffect(
+        tester,
+        effect,
+        key,
+        .5,
+        from,
+        to,
+        fromPhoto: PreparedPhoto(bitmap: from),
+        toPhoto: PreparedPhoto(bitmap: to),
+      );
       final before = await captureEffect(
         tester,
         effect,
@@ -45,7 +53,13 @@ void main() {
         to,
         current: live,
         next: live,
+        fromPhoto: PreparedPhoto(bitmap: from),
       );
+      expect(from.debugDisposed, isFalse);
+      expect(to.debugDisposed, isFalse);
+      from.dispose();
+      to.dispose();
+      photosDisposed = true;
       color.value = Colors.green;
       final after = await captureEffect(
         tester,
@@ -56,6 +70,9 @@ void main() {
         to,
         current: live,
         next: live,
+        // A partial descriptor must remain on the live path and never sample
+        // this caller-disposed handle.
+        fromPhoto: PreparedPhoto(bitmap: from),
       );
       expect(after, isNot(orderedEquals(before)));
       final original = CreativeTransitionEffect(
@@ -75,6 +92,10 @@ void main() {
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       color.dispose();
+      if (!photosDisposed) {
+        from.dispose();
+        to.dispose();
+      }
     }
   });
 
@@ -97,8 +118,7 @@ void main() {
           CreativeTransitionKind.vhsDamage,
           options: options,
         );
-        final candidate = PhotoVhsDamageEffect(options: options)
-          ..bindPhotos(from, to);
+        final candidate = PhotoVhsDamageEffect(options: options);
         for (final phase in [0.0, .13, .5, .87, 1.0]) {
           final expected = await captureEffect(
             tester,
@@ -115,6 +135,8 @@ void main() {
             phase,
             from,
             to,
+            fromPhoto: PreparedPhoto(bitmap: from),
+            toPhoto: PreparedPhoto(bitmap: to),
           );
           var maximum = 0;
           for (var index = 0; index < actual.length; index++) {

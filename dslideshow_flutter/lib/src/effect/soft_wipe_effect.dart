@@ -34,8 +34,8 @@ class SoftWipeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -57,12 +57,12 @@ class SoftWipeEffect extends MediaSliderItemEffect {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          ColoredBox(color: Colors.black, child: nextWidget),
+          ColoredBox(color: Colors.black, child: next.view),
           _WipeMask(
             progress: controller.value,
             featherFraction:
                 featherFraction ?? (style == SoftWipeStyle.neon ? .02 : .12),
-            child: ColoredBox(color: Colors.black, child: currentWidget),
+            child: ColoredBox(color: Colors.black, child: current.view),
           ),
         ],
       ),

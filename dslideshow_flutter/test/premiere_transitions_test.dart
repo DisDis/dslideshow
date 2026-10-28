@@ -66,8 +66,8 @@ Future<Uint8List> _frame(
   tester,
   (context) => descriptor.createEffect().createTransformWidget(
     context,
-    from,
-    to,
+    EffectSlideInput(view: from),
+    EffectSlideInput(view: to),
     AlwaysStoppedAnimation(progress),
     size.width,
     size.height,
@@ -532,8 +532,12 @@ void main() {
                 panelCount: count,
               ).createTransformWidget(
                 context,
-                const ColoredBox(color: Color(0xffff0000)),
-                const ColoredBox(color: Color(0xff0000ff)),
+                EffectSlideInput(
+                  view: const ColoredBox(color: Color(0xffff0000)),
+                ),
+                EffectSlideInput(
+                  view: const ColoredBox(color: Color(0xff0000ff)),
+                ),
                 AlwaysStoppedAnimation(t),
                 size.width,
                 size.height,
@@ -642,8 +646,12 @@ void main() {
                 slatCount: count,
               ).createTransformWidget(
                 context,
-                const ColoredBox(color: Color(0xffff0000)),
-                const ColoredBox(color: Color(0xff0000ff)),
+                EffectSlideInput(
+                  view: const ColoredBox(color: Color(0xffff0000)),
+                ),
+                EffectSlideInput(
+                  view: const ColoredBox(color: Color(0xff0000ff)),
+                ),
                 AlwaysStoppedAnimation(t),
                 size.width,
                 size.height,
@@ -725,8 +733,12 @@ void main() {
                     builder: (context) =>
                         SoftWipeEffect(style: style).createTransformWidget(
                           context,
-                          const ColoredBox(color: Color(0xffff0000)),
-                          const ColoredBox(color: Color(0xff0000ff)),
+                          EffectSlideInput(
+                            view: const ColoredBox(color: Color(0xffff0000)),
+                          ),
+                          EffectSlideInput(
+                            view: const ColoredBox(color: Color(0xff0000ff)),
+                          ),
                           const AlwaysStoppedAnimation(.5),
                           size.width,
                           size.height,
@@ -784,8 +796,8 @@ void main() {
                   builder: (context) =>
                       descriptor.createEffect().createTransformWidget(
                         context,
-                        from,
-                        to,
+                        EffectSlideInput(view: from),
+                        EffectSlideInput(view: to),
                         AlwaysStoppedAnimation(t),
                         160,
                         100,
@@ -868,8 +880,8 @@ void main() {
         tester,
         (context) => SliceEffect(stripCount: count).createTransformWidget(
           context,
-          const ColoredBox(color: Color(0xffff0000)),
-          const ColoredBox(color: Color(0xff0000ff)),
+          EffectSlideInput(view: const ColoredBox(color: Color(0xffff0000))),
+          EffectSlideInput(view: const ColoredBox(color: Color(0xff0000ff))),
           const AlwaysStoppedAnimation(0),
           size.width,
           size.height,
@@ -892,8 +904,8 @@ void main() {
           tester,
           (context) => GlassEffect(paneCount: count).createTransformWidget(
             context,
-            const ColoredBox(color: Color(0xffff0000)),
-            const ColoredBox(color: Color(0xffff0000)),
+            EffectSlideInput(view: const ColoredBox(color: Color(0xffff0000))),
+            EffectSlideInput(view: const ColoredBox(color: Color(0xffff0000))),
             AlwaysStoppedAnimation(t),
             size.width,
             size.height,

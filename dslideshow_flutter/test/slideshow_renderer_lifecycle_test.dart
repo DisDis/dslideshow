@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/effect.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
@@ -165,6 +166,62 @@ void main() {
       expect((f.bloc.state.currentSlide as MediaSlide).item.id, 'media-2');
       expect(f.frontend.loads, 2);
       expect(find.byKey(const Key('loader')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await f.close(tester);
+    },
+  );
+
+  testWidgets(
+    'unsupported prepared Water inputs use Fade with the default duration',
+    (tester) async {
+      final folder = await _photoFolder(tester);
+      const water = Effect(
+        EffectType.waterRefraction,
+        options: WaterRefractionEffectOptions(durationMs: 1400),
+      );
+      final f = SlideshowRendererHarness(
+        frontend: _MediaFrontend(
+          (index) => index == 1
+              ? Uri.file('${folder.path}/missing.png')
+              : Uri.file('${folder.path}/2.png'),
+        ),
+        config: AppConfig.fromJson({
+          'slideshow': {
+            'effects': {
+              'defaultDurationMs': 100,
+              'items': {'waterRefraction': water.toConfig().toJson()},
+            },
+            'displayTimeMs': 100000,
+          },
+        }),
+      );
+      await f.mount(tester);
+      await f.until(tester, () => f.bloc.state.phase == SlideshowPhase.display);
+      expect(find.byKey(const Key('loader')), findsOneWidget);
+      f.bloc.add(const SlideshowLoadNextEvent());
+      await f.until(
+        tester,
+        () => f.bloc.state.phase == SlideshowPhase.transition,
+      );
+      expect(f.bloc.state.effect.type, EffectType.waterRefraction);
+      expect(f.bloc.state.effect.options.durationMs, 1400);
+      final animation =
+          tester
+                  .widget<AnimatedBuilder>(
+                    find.byWidgetPredicate(
+                      (view) =>
+                          view is AnimatedBuilder &&
+                          view.child == null &&
+                          view.animation is FixedAnimationController,
+                    ),
+                  )
+                  .animation
+              as FixedAnimationController;
+      expect(animation.duration, const Duration(milliseconds: 100));
+      await f.until(tester, () => f.bloc.state.phase == SlideshowPhase.display);
+      expect((f.bloc.state.currentSlide as MediaSlide).item.id, 'media-2');
+      expect(find.byType(ImageWidget), findsOneWidget);
+      expect(find.byKey(const Key('loader')), findsNothing);
       expect(tester.takeException(), isNull);
       await f.close(tester);
     },

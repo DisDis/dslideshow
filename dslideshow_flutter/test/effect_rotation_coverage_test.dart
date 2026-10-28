@@ -40,8 +40,12 @@ void main() {
                         child: Builder(
                           builder: (context) => effect.createTransformWidget(
                             context,
-                            RawImage(image: bitmap, fit: BoxFit.fill),
-                            RawImage(image: bitmap, fit: BoxFit.fill),
+                            EffectSlideInput(
+                              view: RawImage(image: bitmap, fit: BoxFit.fill),
+                            ),
+                            EffectSlideInput(
+                              view: RawImage(image: bitmap, fit: BoxFit.fill),
+                            ),
                             AlwaysStoppedAnimation(t),
                             size.width,
                             size.height,

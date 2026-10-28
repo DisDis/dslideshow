@@ -133,8 +133,8 @@ void main() {
             const to = ColoredBox(color: Colors.blue);
             return effect?.createTransformWidget(
                   context,
-                  from,
-                  to,
+                  EffectSlideInput(view: from),
+                  EffectSlideInput(view: to),
                   AlwaysStoppedAnimation(progress),
                   160,
                   100,

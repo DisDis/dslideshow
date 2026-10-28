@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
@@ -134,6 +135,93 @@ void main() {
     expect(session.disposed, isTrue);
     expect(tester.takeException(), isNull);
   }, variant: TargetPlatformVariant.only(TargetPlatform.linux));
+
+  testWidgets(
+    'live inputs retain video and photo-only fallback uses captured global timing',
+    (tester) async {
+      final session = _FakeVideoSession();
+      final key = GlobalKey<SlideshowPreviewState>();
+      final photo = MemoryImage(
+        base64Decode(
+          'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEUlEQVR4nGP4z8DwH4QZYAwAR8oH+WdZbrcAAAAASUVORK5CYII=',
+        ),
+      );
+      await tester.pumpWidget(
+        _app(
+          SlideshowPreview(
+            key: key,
+            config: SlideShowConfig.fromJson({
+              'effects': {'defaultDurationMs': 900},
+              'displayTimeMs': 60000,
+            }),
+            images: [_PendingProvider(), _PendingProvider(), photo],
+            videoFactory: (_) => session,
+          ),
+          const Locale('en'),
+        ),
+      );
+      await tester.pump();
+      await tester.enterText(
+        find.byKey(const ValueKey('preview-video-url')),
+        'https://camera.test/video.mp4',
+      );
+      key.currentState!.onChanged(
+        const Effect(
+          EffectType.radialBlur,
+          options: RadialBlurEffectOptions(durationMs: 250),
+        ),
+      );
+      Future<void> prepared() async {
+        await tester.pump();
+        final watch = Stopwatch()..start();
+        while (find.byType(LinearProgressIndicator).evaluate().isNotEmpty) {
+          if (watch.elapsed > const Duration(seconds: 10)) {
+            fail('Mixed preview preparation did not finish');
+          }
+          await tester.runAsync(() => Future<void>(() {}));
+          await tester.pump();
+        }
+      }
+
+      FixedAnimationController clock() => tester
+          .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+          .map((widget) => widget.animation)
+          .whereType<FixedAnimationController>()
+          .single;
+      await prepared();
+      expect(clock().duration, const Duration(milliseconds: 250));
+      clock().stop();
+      clock().value = .5;
+      await tester.pump();
+      expect(find.byType(VideoWidget), findsWidgets);
+      expect(session.disposed, isFalse);
+      clock().value = 1;
+      await tester.pump();
+      key.currentState!.onChanged(
+        const Effect(
+          EffectType.waterRefraction,
+          options: WaterRefractionEffectOptions(durationMs: 2500),
+        ),
+      );
+      await prepared();
+      expect(clock().duration, const Duration(milliseconds: 900));
+      clock().stop();
+      clock().value = .5;
+      await tester.pump();
+      expect(find.byType(VideoWidget), findsWidgets);
+      expect(find.byType(RawImage), findsWidgets);
+      expect(session.disposed, isFalse);
+      final incoming = tester.widget<RawImage>(find.byType(RawImage)).image!;
+      clock().value = 1;
+      await tester.pump();
+      expect(session.disposed, isTrue);
+      expect(incoming.debugDisposed, isFalse);
+      await tester.pumpWidget(const SizedBox());
+      expect(incoming.debugDisposed, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
 
   testWidgets(
     'video preparation timeout releases the session and ignores a late result',

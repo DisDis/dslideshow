@@ -41,8 +41,8 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -51,8 +51,8 @@ class CinematicTransitionEffect extends MediaSliderItemEffect {
     final motion = Curves.easeInOutCubic.transform(t);
     final envelope = t <= 0 || t >= 1 ? 0.0 : math.sin(math.pi * t);
     final unit = math.min(screenW, screenH);
-    final from = ColoredBox(color: Colors.black, child: currentWidget);
-    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    final from = ColoredBox(color: Colors.black, child: current.view);
+    final to = ColoredBox(color: Colors.black, child: next.view);
     final Widget scene;
     final double sigmaX, sigmaY;
     switch (kind) {

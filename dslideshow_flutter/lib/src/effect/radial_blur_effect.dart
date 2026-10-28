@@ -27,8 +27,6 @@ class RadialBlurEffect extends MediaSliderItemEffect {
   final CreativeTransitionEffect _liveEffect;
   final ui.FragmentShader Function(ui.FragmentProgram) _shaderFactory;
   ui.FragmentProgram? _program;
-  ui.Image? _from, _to;
-  Matrix4 _fromCamera = Matrix4.identity();
 
   RadialBlurEffect({
     this.options = const RadialBlurEffectOptions(),
@@ -39,42 +37,6 @@ class RadialBlurEffect extends MediaSliderItemEffect {
          CreativeTransitionKind.radialBlur,
          options: options,
        );
-
-  /// Borrows existing prepared pixels; no decode, snapshot or image clone.
-  /// [fromCamera] matches PhotoMotion's positive uniform scale and translation
-  /// about the viewport centre; rotation, skew and perspective are unsupported.
-  /// Endpoint widgets remain the caller's live views, including their camera.
-  void bindPhotos(ui.Image from, ui.Image to, {Matrix4? fromCamera}) {
-    final camera = fromCamera == null
-        ? Matrix4.identity()
-        : Matrix4.copy(fromCamera);
-    final matrix = camera.storage;
-    if (!matrix[0].isFinite ||
-        matrix[0] <= 0 ||
-        matrix[0] != matrix[5] ||
-        !matrix[12].isFinite ||
-        !matrix[13].isFinite) {
-      throw ArgumentError.value(
-        fromCamera,
-        'fromCamera',
-        'Expected positive uniform scale and translation',
-      );
-    }
-    for (var index = 0; index < matrix.length; index++) {
-      if (index == 0 || index == 5 || index == 12 || index == 13) continue;
-      final expected = index == 10 || index == 15 ? 1.0 : 0.0;
-      if (matrix[index] != expected) {
-        throw ArgumentError.value(
-          fromCamera,
-          'fromCamera',
-          'Rotation, skew and perspective are unsupported',
-        );
-      }
-    }
-    _from = from;
-    _to = to;
-    _fromCamera = camera;
-  }
 
   @override
   Future<void> prepare() async {
@@ -106,20 +68,20 @@ class RadialBlurEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) {
-    final from = _from, to = _to;
+    final from = current.photo?.bitmap, to = next.photo?.bitmap;
     // GIFs, video and special screens remain live widgets. They have no stable
     // prepared bitmap and must never be captured or downsampled for this shader.
-    if (from == null || to == null) {
+    if (from == null || to == null || !next.photo!.camera.isIdentity) {
       return _liveEffect.createTransformWidget(
         context,
-        currentWidget,
-        nextWidget,
+        current,
+        next,
         controller,
         screenW,
         screenH,
@@ -130,14 +92,14 @@ class RadialBlurEffect extends MediaSliderItemEffect {
       return ClipRect(
         child: ColoredBox(
           color: Colors.black,
-          child: t == 0 ? currentWidget : nextWidget,
+          child: t == 0 ? current.view : next.view,
         ),
       );
     }
     final program = _program;
     if (program == null) {
       throw StateError(
-        'Prepare RadialBlurEffect before rendering bound photos.',
+        'Prepare RadialBlurEffect before rendering photo inputs.',
       );
     }
     return ClipRect(
@@ -147,7 +109,7 @@ class RadialBlurEffect extends MediaSliderItemEffect {
         to: to,
         progress: t,
         options: options,
-        fromCamera: _fromCamera,
+        fromCamera: current.photo!.camera,
         shaderFactory: _shaderFactory,
       ),
     );
@@ -159,7 +121,7 @@ class _RadialFrame extends LeafRenderObjectWidget {
   final ui.Image from, to;
   final double progress;
   final RadialBlurEffectOptions options;
-  final Matrix4 fromCamera;
+  final PhotoCamera fromCamera;
   final ui.FragmentShader Function(ui.FragmentProgram) shaderFactory;
 
   const _RadialFrame({
@@ -243,9 +205,9 @@ class _RenderRadial extends RenderBox {
       ..setFloat(8, from.height.toDouble())
       ..setFloat(9, to.width.toDouble())
       ..setFloat(10, to.height.toDouble())
-      ..setFloat(11, _data.fromCamera.storage[0])
-      ..setFloat(12, _data.fromCamera.storage[12])
-      ..setFloat(13, _data.fromCamera.storage[13])
+      ..setFloat(11, _data.fromCamera.scale)
+      ..setFloat(12, _data.fromCamera.dx)
+      ..setFloat(13, _data.fromCamera.dy)
       ..setImageSampler(0, from, filterQuality: ui.FilterQuality.low)
       ..setImageSampler(1, to, filterQuality: ui.FilterQuality.low);
     final canvas = context.canvas;

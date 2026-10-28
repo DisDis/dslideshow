@@ -88,9 +88,8 @@ void main() {
               final baseline = RadialBlurEffect(
                 options: options,
                 shaderFactory: (_) => referenceProgram.fragmentShader(),
-              )..bindPhotos(from, to, fromCamera: camera);
-              final candidate = RadialBlurEffect(options: options)
-                ..bindPhotos(from, to, fromCamera: camera);
+              );
+              final candidate = RadialBlurEffect(options: options);
               await tester.runAsync(() async {
                 await baseline.prepare();
                 await candidate.prepare();
@@ -103,6 +102,12 @@ void main() {
                   phase,
                   from,
                   to,
+                  camera: camera,
+                  fromPhoto: PreparedPhoto(
+                    bitmap: from,
+                    camera: PhotoCamera.fromMatrix(camera),
+                  ),
+                  toPhoto: PreparedPhoto(bitmap: to),
                 );
                 final actual = await captureEffect(
                   tester,
@@ -111,6 +116,12 @@ void main() {
                   phase,
                   from,
                   to,
+                  camera: camera,
+                  fromPhoto: PreparedPhoto(
+                    bitmap: from,
+                    camera: PhotoCamera.fromMatrix(camera),
+                  ),
+                  toPhoto: PreparedPhoto(bitmap: to),
                 );
                 var maximum = 0, sum = 0;
                 for (var index = 0; index < actual.length; index++) {
@@ -153,21 +164,47 @@ void main() {
           shaders.add(shader);
           return shader;
         },
-      )..bindPhotos(from, to);
+      );
       try {
         await tester.runAsync(effect.prepare);
         final key = GlobalKey();
         for (final phase in [.2, .4, .6]) {
           expect(
-            await captureEffect(tester, effect, key, phase, from, to),
+            await captureEffect(
+              tester,
+              effect,
+              key,
+              phase,
+              from,
+              to,
+              fromPhoto: PreparedPhoto(bitmap: from),
+              toPhoto: PreparedPhoto(bitmap: to),
+            ),
             hasLength(160 * 100 * 4),
           );
         }
         expect(shaders, hasLength(1));
         expect(shaders.single.debugDisposed, isFalse);
-        final before = await captureEffect(tester, effect, key, .6, from, to);
-        effect.bindPhotos(to, from);
-        final after = await captureEffect(tester, effect, key, .6, to, from);
+        final before = await captureEffect(
+          tester,
+          effect,
+          key,
+          .6,
+          from,
+          to,
+          fromPhoto: PreparedPhoto(bitmap: from),
+          toPhoto: PreparedPhoto(bitmap: to),
+        );
+        final after = await captureEffect(
+          tester,
+          effect,
+          key,
+          .6,
+          to,
+          from,
+          fromPhoto: PreparedPhoto(bitmap: to),
+          toPhoto: PreparedPhoto(bitmap: from),
+        );
         expect(after, isNot(orderedEquals(before)));
         expect(shaders, hasLength(1));
         await tester.pumpWidget(const SizedBox.shrink());
@@ -199,8 +236,8 @@ void main() {
     final baseline = RadialBlurEffect(
       options: options,
       shaderFactory: (_) => reference.fragmentShader(),
-    )..bindPhotos(from, to);
-    final candidate = RadialBlurEffect(options: options)..bindPhotos(from, to);
+    );
+    final candidate = RadialBlurEffect(options: options);
     try {
       await tester.runAsync(() async {
         await baseline.prepare();
@@ -213,6 +250,8 @@ void main() {
         .43,
         from,
         to,
+        fromPhoto: PreparedPhoto(bitmap: from),
+        toPhoto: PreparedPhoto(bitmap: to),
       );
       final actual = await captureEffect(
         tester,
@@ -221,6 +260,8 @@ void main() {
         .43,
         from,
         to,
+        fromPhoto: PreparedPhoto(bitmap: from),
+        toPhoto: PreparedPhoto(bitmap: to),
       );
       var maximum = 0;
       for (var index = 0; index < actual.length; index++) {

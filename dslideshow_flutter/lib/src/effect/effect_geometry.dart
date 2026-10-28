@@ -25,6 +25,15 @@ class DirectedEffect extends MediaSliderItemEffect {
   DirectedEffect(this.inner, this.direction);
   @override
   Future<void> prepare() => inner.prepare();
+
+  @override
+  bool supportsInputs(EffectSlideInput current, EffectSlideInput next) =>
+      direction == EffectDirection.left
+      ? inner.supportsInputs(current, next)
+      : inner.supportsInputs(
+          current.liveView(current.view),
+          next.liveView(next.view),
+        );
   @override
   Widget transform(
     BuildContext context,
@@ -37,8 +46,8 @@ class DirectedEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -46,8 +55,8 @@ class DirectedEffect extends MediaSliderItemEffect {
     if (direction == EffectDirection.left) {
       return inner.createTransformWidget(
         context,
-        currentWidget,
-        nextWidget,
+        current,
+        next,
         controller,
         screenW,
         screenH,
@@ -58,8 +67,8 @@ class DirectedEffect extends MediaSliderItemEffect {
         flipX: true,
         child: inner.createTransformWidget(
           context,
-          Transform.flip(flipX: true, child: currentWidget),
-          Transform.flip(flipX: true, child: nextWidget),
+          current.liveView(Transform.flip(flipX: true, child: current.view)),
+          next.liveView(Transform.flip(flipX: true, child: next.view)),
           controller,
           screenW,
           screenH,
@@ -71,8 +80,10 @@ class DirectedEffect extends MediaSliderItemEffect {
       quarterTurns: turns,
       child: inner.createTransformWidget(
         context,
-        RotatedBox(quarterTurns: 4 - turns, child: currentWidget),
-        RotatedBox(quarterTurns: 4 - turns, child: nextWidget),
+        current.liveView(
+          RotatedBox(quarterTurns: 4 - turns, child: current.view),
+        ),
+        next.liveView(RotatedBox(quarterTurns: 4 - turns, child: next.view)),
         controller,
         screenH,
         screenW,
@@ -86,6 +97,10 @@ class ReversedMaskEffect extends MediaSliderItemEffect {
   ReversedMaskEffect(this.inner);
   @override
   Future<void> prepare() => inner.prepare();
+
+  @override
+  bool supportsInputs(EffectSlideInput current, EffectSlideInput next) =>
+      inner.supportsInputs(next, current);
   @override
   Widget transform(
     BuildContext context,
@@ -98,15 +113,15 @@ class ReversedMaskEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) => inner.createTransformWidget(
     context,
-    nextWidget,
-    currentWidget,
+    next,
+    current,
     AlwaysStoppedAnimation(1 - controller.value),
     screenW,
     screenH,
@@ -119,6 +134,15 @@ class ReflectedEffect extends MediaSliderItemEffect {
   ReflectedEffect(this.inner, {required this.flipX, required this.flipY});
   @override
   Future<void> prepare() => inner.prepare();
+
+  @override
+  bool supportsInputs(EffectSlideInput current, EffectSlideInput next) =>
+      !flipX && !flipY
+      ? inner.supportsInputs(current, next)
+      : inner.supportsInputs(
+          current.liveView(current.view),
+          next.liveView(next.view),
+        );
   @override
   Widget transform(
     BuildContext context,
@@ -131,21 +155,37 @@ class ReflectedEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
-  ) => Transform.flip(
-    flipX: flipX,
-    flipY: flipY,
-    child: inner.createTransformWidget(
-      context,
-      Transform.flip(flipX: flipX, flipY: flipY, child: currentWidget),
-      Transform.flip(flipX: flipX, flipY: flipY, child: nextWidget),
-      controller,
-      screenW,
-      screenH,
-    ),
-  );
+  ) {
+    if (!flipX && !flipY) {
+      return inner.createTransformWidget(
+        context,
+        current,
+        next,
+        controller,
+        screenW,
+        screenH,
+      );
+    }
+    return Transform.flip(
+      flipX: flipX,
+      flipY: flipY,
+      child: inner.createTransformWidget(
+        context,
+        current.liveView(
+          Transform.flip(flipX: flipX, flipY: flipY, child: current.view),
+        ),
+        next.liveView(
+          Transform.flip(flipX: flipX, flipY: flipY, child: next.view),
+        ),
+        controller,
+        screenW,
+        screenH,
+      ),
+    );
+  }
 }

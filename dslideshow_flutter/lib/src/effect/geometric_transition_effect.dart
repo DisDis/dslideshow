@@ -46,16 +46,16 @@ class GeometricTransitionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) {
     final t = controller.value.clamp(0.0, 1.0);
     final motion = Curves.easeInOutCubic.transform(t);
-    final from = ColoredBox(color: Colors.black, child: currentWidget);
-    final to = ColoredBox(color: Colors.black, child: nextWidget);
+    final from = ColoredBox(color: Colors.black, child: current.view);
+    final to = ColoredBox(color: Colors.black, child: next.view);
     return ClipRect(
       child: switch (kind) {
         GeometricTransitionKind.clockWipe ||

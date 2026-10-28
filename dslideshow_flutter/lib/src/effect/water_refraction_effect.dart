@@ -25,16 +25,11 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
         origin: options.origin,
       );
   ui.FragmentProgram? _program;
-  ui.Image? _from, _to;
-  Matrix4 _fromCamera = Matrix4.identity();
-
-  void bindPhotos(ui.Image from, ui.Image to, {Matrix4? fromCamera}) {
-    _from = from;
-    _to = to;
-    _fromCamera = fromCamera == null
-        ? Matrix4.identity()
-        : Matrix4.copy(fromCamera);
-  }
+  @override
+  bool supportsInputs(EffectSlideInput current, EffectSlideInput next) =>
+      current.photo != null &&
+      next.photo != null &&
+      next.photo!.camera.isIdentity;
 
   @override
   Future<void> prepare() async {
@@ -67,8 +62,8 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -79,8 +74,8 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
       children: [
         _base.createTransformWidget(
           context,
-          currentWidget,
-          nextWidget,
+          current,
+          next,
           controller,
           screenW,
           screenH,
@@ -88,9 +83,9 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
         if (t > 0 && t < 1)
           _WaterFrame(
             program: _program,
-            from: _from,
-            to: _to,
-            camera: _fromCamera,
+            from: current.photo?.bitmap,
+            to: next.photo?.bitmap,
+            camera: current.photo?.camera ?? const PhotoCamera(),
             progress: t,
             options: options,
           ),
@@ -102,7 +97,7 @@ class WaterRefractionEffect extends MediaSliderItemEffect {
 class _WaterFrame extends LeafRenderObjectWidget {
   final ui.FragmentProgram? program;
   final ui.Image? from, to;
-  final Matrix4 camera;
+  final PhotoCamera camera;
   final double progress;
   final WaterRefractionEffectOptions options;
   const _WaterFrame({
@@ -146,7 +141,7 @@ class _RenderWater extends RenderBox {
     final from = _data.from, to = _data.to, program = _data.program;
     if (from == null || to == null || program == null) {
       throw StateError(
-        'Prepare WaterRefraction and bind two live photo bitmaps before painting.',
+        'Prepare WaterRefraction and provide two prepared photo inputs before painting.',
       );
     }
     final shader = _shader ??= program.fragmentShader();
@@ -159,9 +154,9 @@ class _RenderWater extends RenderBox {
       ..setFloat(4, from.height.toDouble())
       ..setFloat(5, to.width.toDouble())
       ..setFloat(6, to.height.toDouble())
-      ..setFloat(7, _data.camera.storage[0])
-      ..setFloat(8, _data.camera.storage[12])
-      ..setFloat(9, _data.camera.storage[13])
+      ..setFloat(7, _data.camera.scale)
+      ..setFloat(8, _data.camera.dx)
+      ..setFloat(9, _data.camera.dy)
       ..setFloat(10, origin.dx)
       ..setFloat(11, origin.dy)
       ..setFloat(12, _data.options.refractionStrength)

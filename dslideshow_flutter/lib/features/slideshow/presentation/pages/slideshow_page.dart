@@ -26,7 +26,6 @@ import 'package:logging/logging.dart';
 import '../bloc/slideshow_slide.dart';
 import '../sessions/slide_session.dart';
 import '../sessions/slide_session_factory.dart';
-import '../sessions/slide_transition.dart';
 
 class SlideShowPage extends StatelessWidget {
   final SlideSessionFactory sessionFactory;
@@ -347,26 +346,28 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     }
   }
 
-  // Создание виджета перехода (старая логика AnimatedBuilder + createTransformWidget)
   void _startTransition(SlideshowState state, Size size) {
+    // Capture both views and their sampling geometry before either owner moves.
+    final outgoing =
+        _current?.createEffectInput(size) ??
+        EffectSlideInput(view: slideShowLoaderWidget);
+    final incoming =
+        _next?.createEffectInput(size) ??
+        EffectSlideInput(view: slideShowLoaderWidget);
     // Получаем эффект из стейта
     var currentEffect = _nextEffect ?? state.effect.createEffect();
     _nextEffect = null;
     var durationMs = state.effect.options.durationMs == 0
         ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
-    if (!bindSlideTransitionPhotos(currentEffect, _current, _next, size)) {
+    if (!currentEffect.supportsInputs(outgoing, incoming)) {
       _log.warning(
-        'Water Refraction requires two prepared photos; using Fade.',
+        '${currentEffect.runtimeType} does not support prepared inputs; using Fade.',
       );
       currentEffect = FadeEffect();
       durationMs = _appConfig.slideshow.effects.defaultDurationMs;
     }
     _effectController.duration = Duration(milliseconds: durationMs);
-    // Capture views: completion promotes the session before the Bloc rebuilds.
-    final outgoing = _current?.view ?? slideShowLoaderWidget;
-    final incoming = _next?.view ?? slideShowLoaderWidget;
-
     setState(() {
       _transitionWidget = AnimatedBuilder(
         key: UniqueKey(), // Важно для пересоздания анимации

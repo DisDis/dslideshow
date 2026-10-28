@@ -67,14 +67,23 @@ void main() {
               type,
               options: options,
             ).createEffect(seed: 42);
-            if (effect is WaterRefractionEffect) effect.bindPhotos(a, b);
+            final prepared = !effect.supportsInputs(
+              EffectSlideInput(view: from),
+              EffectSlideInput(view: to),
+            );
             await tester.runAsync(effect.prepare);
             Future<Uint8List> frame(double t) => pixels.capture(
               tester,
               (context) => effect.createTransformWidget(
                 context,
-                from,
-                to,
+                EffectSlideInput(
+                  view: from,
+                  photo: prepared ? PreparedPhoto(bitmap: a) : null,
+                ),
+                EffectSlideInput(
+                  view: to,
+                  photo: prepared ? PreparedPhoto(bitmap: b) : null,
+                ),
                 AlwaysStoppedAnimation(t),
                 size.width,
                 size.height,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:benchmarks/src/mosaic_probes.dart';
 import 'package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart';
+import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -27,8 +28,8 @@ void main() {
                 tester,
                 (context) => reference.createTransformWidget(
                   context,
-                  pixels.slide(a),
-                  pixels.slide(b),
+                  EffectSlideInput(view: pixels.slide(a)),
+                  EffectSlideInput(view: pixels.slide(b)),
                   AlwaysStoppedAnimation(t),
                   160,
                   100,
@@ -45,8 +46,8 @@ void main() {
                   tester,
                   (context) => effect.createTransformWidget(
                     context,
-                    pixels.slide(a),
-                    pixels.slide(b),
+                    EffectSlideInput(view: pixels.slide(a)),
+                    EffectSlideInput(view: pixels.slide(b)),
                     AlwaysStoppedAnimation(t),
                     160,
                     100,
@@ -115,8 +116,8 @@ void main() {
               tester,
               (c) => reference.createTransformWidget(
                 c,
-                pixels.slide(a),
-                pixels.slide(b),
+                EffectSlideInput(view: pixels.slide(a)),
+                EffectSlideInput(view: pixels.slide(b)),
                 AlwaysStoppedAnimation(t),
                 size.width,
                 size.height,
@@ -134,8 +135,8 @@ void main() {
                 tester,
                 (c) => effect.createTransformWidget(
                   c,
-                  pixels.slide(a),
-                  pixels.slide(b),
+                  EffectSlideInput(view: pixels.slide(a)),
+                  EffectSlideInput(view: pixels.slide(b)),
                   AlwaysStoppedAnimation(t),
                   size.width,
                   size.height,

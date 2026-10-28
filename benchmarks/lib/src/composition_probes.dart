@@ -54,8 +54,8 @@ class _CompositionDiagnostic extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -64,8 +64,8 @@ class _CompositionDiagnostic extends MediaSliderItemEffect {
         (probe == CompositionProbe.accordionNoShadow ? _accordion : _liquid)
                 .createTransformWidget(
                   context,
-                  currentWidget,
-                  nextWidget,
+                  current,
+                  next,
                   controller,
                   screenW,
                   screenH,
@@ -76,8 +76,8 @@ class _CompositionDiagnostic extends MediaSliderItemEffect {
         source.children[0],
         source.children[2],
       ],
-      CompositionProbe.liquidNoScale => [currentWidget, source.children[1]],
-      CompositionProbe.liquidNoClip => [source.children[0], nextWidget],
+      CompositionProbe.liquidNoScale => [current.view, source.children[1]],
+      CompositionProbe.liquidNoClip => [source.children[0], next.view],
       CompositionProbe.liquidBounded => [
         ClipRect(child: source.children[0]),
         source.children[1],
@@ -89,7 +89,7 @@ class _CompositionDiagnostic extends MediaSliderItemEffect {
             controller.value,
             (source.children[1] as ClipPath).clipper!,
           ),
-          child: nextWidget,
+          child: next.view,
         ),
       ],
       _ => throw StateError('Not a component probe'),
@@ -139,8 +139,8 @@ class _GroupedAccordionProbe extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -179,8 +179,8 @@ class _GroupedAccordionProbe extends MediaSliderItemEffect {
     return Stack(
       fit: StackFit.expand,
       children: [
-        panel(currentWidget, Alignment.centerLeft, 1 - progress, progress * .5),
-        panel(nextWidget, Alignment.centerRight, progress, (1 - progress) * .5),
+        panel(current.view, Alignment.centerLeft, 1 - progress, progress * .5),
+        panel(next.view, Alignment.centerRight, progress, (1 - progress) * .5),
       ],
     );
   }

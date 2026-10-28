@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:benchmarks/src/blur_probes.dart';
+import 'package:dslideshow_flutter/effect.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:ui' as ui;
@@ -39,8 +40,8 @@ void main() {
             tester,
             (context) => effect.createTransformWidget(
               context,
-              slide(a),
-              slide(b),
+              EffectSlideInput(view: slide(a)),
+              EffectSlideInput(view: slide(b)),
               AlwaysStoppedAnimation(t),
               160,
               100,

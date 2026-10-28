@@ -19,14 +19,14 @@ class PhotoMotionProbe extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) => PhotoMotionFrame(
     path: path,
     progress: controller.value,
-    child: currentWidget,
+    child: current.view,
   );
 }

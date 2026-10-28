@@ -71,8 +71,12 @@ void main() {
                       child: Builder(
                         builder: (context) => effect.createTransformWidget(
                           context,
-                          const ColoredBox(color: Colors.orange),
-                          const ColoredBox(color: Colors.blue),
+                          EffectSlideInput(
+                            view: const ColoredBox(color: Colors.orange),
+                          ),
+                          EffectSlideInput(
+                            view: const ColoredBox(color: Colors.blue),
+                          ),
                           AlwaysStoppedAnimation(phase / 20),
                           size.width,
                           size.height,

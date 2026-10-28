@@ -53,8 +53,8 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -62,12 +62,12 @@ class MosaicFadeEffect extends MediaSliderItemEffect {
     return Stack(
       fit: StackFit.expand,
       children: [
-        nextWidget,
+        next.view,
         MosaicMask(
           schedule: schedule,
           progress: controller.value,
           program: _program,
-          child: currentWidget,
+          child: current.view,
         ),
       ],
     );

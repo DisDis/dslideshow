@@ -30,8 +30,8 @@ class GlassEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
@@ -81,14 +81,14 @@ class GlassEffect extends MediaSliderItemEffect {
                     fit: StackFit.expand,
                     children: [
                       paneView(
-                        ColoredBox(color: Colors.black, child: currentWidget),
+                        ColoredBox(color: Colors.black, child: current.view),
                         i,
                       ),
                       Opacity(
                         opacity: blend,
                         child: ClipRect(
                           child: paneView(
-                            ColoredBox(color: Colors.black, child: nextWidget),
+                            ColoredBox(color: Colors.black, child: next.view),
                             i,
                           ),
                         ),

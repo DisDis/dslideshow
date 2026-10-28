@@ -30,18 +30,18 @@ class RevealEffect extends MediaSliderItemEffect {
   @override
   Widget createTransformWidget(
     BuildContext context,
-    Widget currentWidget,
-    Widget nextWidget,
+    EffectSlideInput current,
+    EffectSlideInput next,
     Animation<double> controller,
     double screenW,
     double screenH,
   ) => Stack(
     fit: StackFit.expand,
     children: [
-      currentWidget,
+      current.view,
       ClipPath(
         clipper: _RevealClipper(controller.value, shape, direction, origin),
-        child: nextWidget,
+        child: next.view,
       ),
     ],
   );

@@ -53,7 +53,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   Effect currentEffect = Effect.fadeEffect;
   late MediaSliderItemEffect _effect;
   Widget _current = const ColoredBox(color: Colors.black);
-  Widget _next = const ColoredBox(color: Colors.black);
+  EffectSlideInput? _outgoingInput, _incomingInput;
   VideoSession? _currentVideo, _nextVideo, _preparingVideo;
   final _videoListeners = <VideoSession, VoidCallback>{};
   ui.Image? _currentPhoto, _nextPhoto;
@@ -67,6 +67,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
   PreviewAspectRatio _aspect = PreviewAspectRatio.frame;
   bool get _supportsVideo =>
       supportsConfigAppVideo || widget.videoFactory != null;
+  bool get _supportsLiveInputs =>
+      currentEffect.supportsMedia(TransitionMedia.photo, TransitionMedia.video);
   Size get _deviceSize => Size(2560, 2560 / _aspect.ratio);
   Duration get _transitionTime => Duration(
     milliseconds:
@@ -229,6 +231,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     _nextPhoto = null;
     _nextPhotoIndex = null;
     _nextMotion = null;
+    _outgoingInput = _incomingInput = null;
     _afterFrame(() {
       _release(video);
       photo?.dispose();
@@ -240,6 +243,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
 
   void _onStatus(AnimationStatus status) {
     if (status != AnimationStatus.completed ||
+        !_transitioning ||
         !mounted ||
         !_active ||
         _paused) {
@@ -247,7 +251,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
     }
     final video = _currentVideo, photo = _currentPhoto, motion = _currentMotion;
     setState(() {
-      _current = _next;
+      _current = _incomingInput!.view;
       _currentVideo = _nextVideo;
       _nextVideo = null;
       _currentPhoto = _nextPhoto;
@@ -258,6 +262,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       _nextMotion = null;
       _currentMotion?.setPlaying(true);
       _transitioning = false;
+      _outgoingInput = _incomingInput = null;
     });
     _afterFrame(() {
       _release(video);
@@ -476,7 +481,10 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       final index = targetIndex ?? _index++;
       Widget next;
       if (_supportsVideo &&
-          selectedEffect.type != EffectType.waterRefraction &&
+          selectedEffect.supportsMedia(
+            TransitionMedia.photo,
+            TransitionMedia.video,
+          ) &&
           url.isNotEmpty &&
           index.isOdd) {
         final uri = Uri.tryParse(url);
@@ -500,52 +508,42 @@ class SlideshowPreviewState extends State<SlideshowPreview>
         photo?.dispose();
         return;
       }
-      final descriptor =
-          selectedEffect.supportsMedia(
-            _currentPhoto != null
-                ? TransitionMedia.photo
-                : TransitionMedia.special,
-            photo != null ? TransitionMedia.photo : TransitionMedia.video,
-          )
-          ? selectedEffect
-          : Effect.fadeEffect;
-      final effect = descriptor.createEffect(seed: 42);
+      final outgoing = EffectSlideInput(
+        view: _current,
+        photo: _currentPhoto == null
+            ? null
+            : PreparedPhoto(
+                bitmap: _currentPhoto!,
+                camera: PhotoCamera.fromMatrix(
+                  _currentMotion?.path.transform(
+                    _deviceSize,
+                    _currentMotion!.progress,
+                  ),
+                ),
+              ),
+      );
+      final candidate = EffectSlideInput(
+        view: next,
+        photo: photo == null ? null : PreparedPhoto(bitmap: photo),
+      );
+      var effect = selectedEffect.createEffect(seed: 42);
+      var supported = effect.supportsInputs(outgoing, candidate);
+      if (!supported) effect = Effect.fadeEffect.createEffect(seed: 42);
       await effect.prepare();
       if (stale()) {
         _release(video);
         photo?.dispose();
         return;
       }
-      if (effect is WaterRefractionEffect) {
-        effect.bindPhotos(
-          _currentPhoto!,
-          photo!,
-          fromCamera: _currentMotion?.path.transform(
-            _deviceSize,
-            _currentMotion!.progress,
-          ),
-        );
-      }
-      if (effect is PhotoVhsDamageEffect) {
-        effect.bindPhotos(_currentPhoto, photo);
-      }
-      final bindPhotos = switch (effect) {
-        RadialBlurEffect radial => radial.bindPhotos,
-        PhotoGlassEffect glass => glass.bindPhotos,
-        PhotoFilmDissolveEffect film => film.bindPhotos,
-        _ => null,
-      };
-      if (bindPhotos != null && _currentPhoto != null && photo != null) {
-        bindPhotos(
-          _currentPhoto!,
-          photo,
-          fromCamera: _currentMotion?.path.transform(
-            _deviceSize,
-            _currentMotion!.progress,
-          ),
-        );
-      }
       motion = photo == null ? null : _photoMotion(index);
+      final incoming = candidate.copyWith(
+        view: SizedBox.expand(child: motion?.view(next) ?? next),
+      );
+      // Recheck the final view while keeping motion allocation after prepare.
+      if (!effect.supportsInputs(outgoing, incoming)) {
+        effect = Effect.fadeEffect.createEffect(seed: 42);
+        supported = false;
+      }
       if (video != null) await video.setPlaying(true);
       if (stale()) {
         _release(video);
@@ -566,14 +564,13 @@ class SlideshowPreviewState extends State<SlideshowPreview>
       video = null;
       motion = null;
       setState(() {
-        _next = SizedBox.expand(child: _nextMotion?.view(next) ?? next);
+        _outgoingInput = outgoing;
+        _incomingInput = incoming;
         _effect = effect;
         _loading = false;
         _transitioning = true;
       });
-      _controller.duration = descriptor.type == selectedEffect.type
-          ? selectedDuration
-          : fallbackDuration;
+      _controller.duration = supported ? selectedDuration : fallbackDuration;
       _controller.forward(from: 0);
     } catch (e) {
       photo?.dispose();
@@ -657,8 +654,8 @@ class SlideshowPreviewState extends State<SlideshowPreview>
               builder: (context, _) => _transitioning
                   ? _effect.createTransformWidget(
                       context,
-                      _current,
-                      _next,
+                      _outgoingInput!,
+                      _incomingInput!,
                       _controller,
                       _deviceSize.width,
                       _deviceSize.height,
@@ -734,9 +731,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
               child: TextField(
                 controller: _videoUrl,
                 key: const ValueKey('preview-video-url'),
-                enabled:
-                    _supportsVideo &&
-                    currentEffect.type != EffectType.waterRefraction,
+                enabled: _supportsVideo && _supportsLiveInputs,
                 decoration: InputDecoration(labelText: l.preview_video_url),
                 onSubmitted: (_) => _loadNext(),
               ),
@@ -753,7 +748,7 @@ class SlideshowPreviewState extends State<SlideshowPreview>
             l.video_platform_unavailable,
             key: const ValueKey('preview-video-unavailable'),
           )
-        else if (currentEffect.type == EffectType.waterRefraction)
+        else if (!_supportsLiveInputs)
           Text(l.water_photo_only),
         SizedBox(
           height: 4,

@@ -35,6 +35,8 @@ Widget _scene(
   ui.Image from,
   ui.Image to, {
   Matrix4? fromCamera,
+  PhotoCamera? frozenCamera,
+  bool prepared = false,
   Widget? fromView,
   Widget? toView,
 }) => Directionality(
@@ -47,18 +49,33 @@ Widget _scene(
         child: Builder(
           builder: (context) => effect.createTransformWidget(
             context,
-            fromView ??
-                ClipRect(
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: fromCamera ?? Matrix4.identity(),
-                    child: RawImage(
-                      image: from,
-                      filterQuality: FilterQuality.high,
+            EffectSlideInput(
+              view:
+                  fromView ??
+                  ClipRect(
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: fromCamera ?? Matrix4.identity(),
+                      child: RawImage(
+                        image: from,
+                        filterQuality: FilterQuality.high,
+                      ),
                     ),
                   ),
-                ),
-            toView ?? RawImage(image: to, filterQuality: FilterQuality.high),
+              photo: prepared
+                  ? PreparedPhoto(
+                      bitmap: from,
+                      camera:
+                          frozenCamera ?? PhotoCamera.fromMatrix(fromCamera),
+                    )
+                  : null,
+            ),
+            EffectSlideInput(
+              view:
+                  toView ??
+                  RawImage(image: to, filterQuality: FilterQuality.high),
+              photo: prepared ? PreparedPhoto(bitmap: to) : null,
+            ),
             AlwaysStoppedAnimation(progress),
             _size.width,
             _size.height,
@@ -107,7 +124,7 @@ void main() {
     },
   );
 
-  testWidgets('unbound GIF/video views keep updating without snapshots', (
+  testWidgets('live GIF/video views keep updating without snapshots', (
     tester,
   ) async {
     final from = (await tester.runAsync(() => _photo(incoming: false)))!;
@@ -128,7 +145,16 @@ void main() {
     try {
       await tester.runAsync(effect.prepare);
       await tester.pumpWidget(
-        _scene(effect, key, .5, from, to, fromView: live, toView: live),
+        _scene(
+          effect,
+          key,
+          .5,
+          from,
+          to,
+          fromView: live,
+          toView: live,
+          prepared: false,
+        ),
       );
       expect(
         (await _pixels(
@@ -173,14 +199,15 @@ void main() {
             EffectType.radialBlur,
             options: options,
           ).createEffect();
-          final effect = RadialBlurEffect(options: options)
-            ..bindPhotos(from, to);
+          final effect = RadialBlurEffect(options: options);
           await tester.runAsync(effect.prepare);
           for (final phase in [0.0, .2, .5, .8, 1.0]) {
             final key = GlobalKey();
             await tester.pumpWidget(_scene(original, key, phase, from, to));
             final expected = await _pixels(tester, key);
-            await tester.pumpWidget(_scene(effect, key, phase, from, to));
+            await tester.pumpWidget(
+              _scene(effect, key, phase, from, to, prepared: true),
+            );
             final actual = await _pixels(tester, key);
             expect(
               actual.length,
@@ -221,19 +248,22 @@ void main() {
           shaders.add(shader);
           return shader;
         },
-      )..bindPhotos(from, to);
+      );
       try {
         await tester.runAsync(effect.prepare);
         final key = GlobalKey();
         for (final phase in [.2, .4, .6]) {
-          await tester.pumpWidget(_scene(effect, key, phase, from, to));
+          await tester.pumpWidget(
+            _scene(effect, key, phase, from, to, prepared: true),
+          );
           expect(await _pixels(tester, key), hasLength(160 * 100 * 4));
         }
         expect(shaders, hasLength(1));
         expect(shaders.single.debugDisposed, isFalse);
         final before = await _pixels(tester, key);
-        effect.bindPhotos(to, from);
-        await tester.pumpWidget(_scene(effect, key, .6, to, from));
+        await tester.pumpWidget(
+          _scene(effect, key, .6, to, from, prepared: true),
+        );
         expect(await _pixels(tester, key), isNot(orderedEquals(before)));
         expect(shaders, hasLength(1));
 
@@ -243,7 +273,9 @@ void main() {
         expect(to.debugDisposed, isFalse);
         // Reusing an effect instance after its view detaches creates a fresh
         // shader rather than accessing the disposed renderer-owned object.
-        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, to, from));
+        await tester.pumpWidget(
+          _scene(effect, GlobalKey(), .5, to, from, prepared: true),
+        );
         expect(shaders, hasLength(2));
         expect(shaders.last.debugDisposed, isFalse);
         await tester.pumpWidget(const SizedBox.shrink());
@@ -259,7 +291,7 @@ void main() {
     },
   );
 
-  testWidgets('outgoing camera is copied and inverted before photo sampling', (
+  testWidgets('immutable outgoing camera is inverted before photo sampling', (
     tester,
   ) async {
     final from = (await tester.runAsync(() => _photo(incoming: false)))!;
@@ -268,6 +300,7 @@ void main() {
       ..translateByDouble(-5, 3, 0, 1)
       ..scaleByDouble(1.12, 1.12, 1, 1);
     final expectedCamera = Matrix4.copy(camera);
+    final frozenCamera = PhotoCamera.fromMatrix(camera);
     const options = RadialBlurEffectOptions(
       origin: EffectOrigin.bottomRight,
       angleDegrees: 23,
@@ -276,8 +309,7 @@ void main() {
       EffectType.radialBlur,
       options: options,
     ).createEffect();
-    final effect = RadialBlurEffect(options: options)
-      ..bindPhotos(from, to, fromCamera: camera);
+    final effect = RadialBlurEffect(options: options);
     camera.storage[12] =
         999; // Later caller mutations must not affect the view.
     try {
@@ -289,7 +321,16 @@ void main() {
         );
         final expected = await _pixels(tester, key);
         await tester.pumpWidget(
-          _scene(effect, key, phase, from, to, fromCamera: expectedCamera),
+          _scene(
+            effect,
+            key,
+            phase,
+            from,
+            to,
+            fromCamera: expectedCamera,
+            prepared: true,
+            frozenCamera: frozenCamera,
+          ),
         );
         final actual = await _pixels(tester, key);
         var maximum = 0, sum = 0;
@@ -302,16 +343,6 @@ void main() {
         expect(sum / actual.length, lessThan(3), reason: 'camera/$phase');
         if (phase == 0 || phase == 1) expect(actual, expected);
       }
-      for (final invalid in [
-        Matrix4.rotationZ(.1),
-        Matrix4.diagonal3Values(1.2, 1.1, 1),
-        Matrix4.zero(),
-      ]) {
-        expect(
-          () => effect.bindPhotos(from, to, fromCamera: invalid),
-          throwsArgumentError,
-        );
-      }
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       from.dispose();
@@ -321,19 +352,24 @@ void main() {
   });
 
   testWidgets(
-    'bound photos require prepare, while live input needs no shader',
+    'prepared photos require prepare, while live input needs no shader',
     (tester) async {
       final from = (await tester.runAsync(() => _photo(incoming: false)))!;
       final to = (await tester.runAsync(() => _photo(incoming: true)))!;
       try {
         final effect = RadialBlurEffect();
-        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        await tester.pumpWidget(
+          _scene(effect, GlobalKey(), .5, from, to, prepared: false),
+        );
         expect(tester.takeException(), isNull);
-        effect.bindPhotos(from, to);
-        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        await tester.pumpWidget(
+          _scene(effect, GlobalKey(), .5, from, to, prepared: true),
+        );
         expect(tester.takeException(), isA<StateError>());
         await tester.runAsync(effect.prepare);
-        await tester.pumpWidget(_scene(effect, GlobalKey(), .5, from, to));
+        await tester.pumpWidget(
+          _scene(effect, GlobalKey(), .5, from, to, prepared: true),
+        );
         expect(tester.takeException(), isNull);
       } finally {
         await tester.pumpWidget(const SizedBox.shrink());
