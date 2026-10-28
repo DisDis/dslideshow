@@ -1,6 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -8,6 +5,9 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/controlled_preview_asset_bundle.dart';
+import 'support/slideshow_preview_harness.dart';
 
 final _effects = [
   Effect.softWipeEffect,
@@ -60,38 +60,27 @@ void main() {
   testWidgets(
     'preview plays all thirty and changes safely (${locale.languageCode})',
     (tester) async {
-      final recorder = ui.PictureRecorder();
-      Canvas(recorder).drawColor(Colors.orange, BlendMode.src);
-      final picture = recorder.endRecording();
-      final image = picture.toImageSync(16, 10);
-      picture.dispose();
-      final data = (await tester.runAsync(
-        () => image.toByteData(format: ui.ImageByteFormat.png),
+      final bundle = (await tester.runAsync(
+        ControlledPreviewAssetBundle.create,
       ))!;
-      image.dispose();
-      final provider = MemoryImage(
-        Uint8List.fromList(data.buffer.asUint8List()),
-      );
       final key = GlobalKey<SlideshowPreviewState>();
       final config = SlideShowConfig.fromJson({
         'effects': {'defaultDurationMs': 100},
         'displayTimeMs': 60000,
       });
       await tester.pumpWidget(
-        _app(
-          Scaffold(
-            body: SingleChildScrollView(
-              child: SlideshowPreview(
-                key: key,
-                config: config,
-                images: [provider],
+        DefaultAssetBundle(
+          bundle: bundle,
+          child: _app(
+            Scaffold(
+              body: SingleChildScrollView(
+                child: SlideshowPreview(key: key, config: config),
               ),
             ),
+            locale,
           ),
-          locale,
         ),
       );
-      await tester.runAsync(() => precacheImage(provider, key.currentContext!));
       FixedAnimationController clock() => tester
           .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
           .map((widget) => widget.animation)
@@ -100,24 +89,7 @@ void main() {
           .toSet()
           .single;
 
-      Future<void> finish() async {
-        final deadline = Stopwatch()..start();
-        while (find.byType(LinearProgressIndicator).evaluate().isNotEmpty) {
-          if (deadline.elapsed > const Duration(seconds: 10)) {
-            fail(
-              'Preview preparation timed out for ${key.currentState!.currentEffect.name}',
-            );
-          }
-          // Image decoding/readback runs outside the fake timer zone.
-          await tester.runAsync(() => Future<void>(() {}));
-          await tester.pump();
-        }
-        final animation = clock();
-        for (var frame = 0; frame < 100 && !animation.isCompleted; frame++) {
-          await tester.pump(const Duration(milliseconds: 16));
-        }
-        expect(animation.status, AnimationStatus.completed);
-      }
+      Future<void> finish() => finishPreview(tester);
 
       await finish();
       for (final effect in _effects) {

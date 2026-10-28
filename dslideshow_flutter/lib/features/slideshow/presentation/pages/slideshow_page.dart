@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 import '../bloc/slideshow_slide.dart';
+import '../sessions/slide_content_sessions.dart' show PlaceholderSlideSession;
 import '../sessions/slide_session.dart';
 import '../sessions/slide_session_factory.dart';
 

@@ -8,6 +8,7 @@ import '../widgets/image_widget.dart';
 import '../widgets/photo_motion.dart';
 import '../widgets/special_screen_renderers.dart';
 import '../widgets/video_widget.dart';
+import 'slide_content_sessions.dart';
 import 'slide_session.dart';
 
 /// Creates slide owners; platform video allocation can be supplied separately.

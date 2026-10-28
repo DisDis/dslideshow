@@ -26,7 +26,10 @@ layout-тестов выполняются на `en`. Проверки выбо�
 остаются самостоятельными и могут использовать другие локали.
 
 Fake-зависимости панели находятся в `config_app/test/support/`: управляемый
-репозиторий конфигурации и видеоконтроллер с gates/ошибками. Общий захват пикселей
+репозиторий конфигурации, bundle встроенных фото и видеоконтроллер галереи
+с gates/ошибками. Предпросмотр слайдшоу использует настоящие asset-сессии;
+bundle подменяет только получение байтов и контролирует поздние ответы/ошибки.
+Общий захват пикселей
 frontend находится в `dslideshow_flutter/test/support/pixel_capture.dart`.
 
 ## Запуск
@@ -46,7 +49,7 @@ frontend находится в `dslideshow_flutter/test/support/pixel_capture.da
 (cd common && dart test test/encode_decode_test.dart)
 (cd backend && dart test --concurrency=1 test/serializers_test.dart test/ota_test.dart test/ota_upload_test.dart)
 (cd dslideshow_flutter && flutter test --no-pub test/effect_settings_test.dart test/video_session_test.dart test/zoom_blur_effect_test.dart)
-(cd config_app && flutter test --no-pub test/premiere_transitions_preview_test.dart test/config_bloc_test.dart test/config_screen_test.dart test/single_video_player_test.dart test/video_grid_item_test.dart test/effects_editor_test.dart test/argb_color_field_test.dart test/device_page_test.dart test/rpc_telemetry_widget_test.dart test/slideshow_preview_video_support_test.dart)
+(cd config_app && flutter test --no-pub test/premiere_transitions_preview_test.dart test/config_bloc_test.dart test/config_screen_test.dart test/single_video_player_test.dart test/video_grid_item_test.dart test/effects_editor_test.dart test/argb_color_field_test.dart test/device_page_test.dart test/rpc_telemetry_widget_test.dart test/slideshow_preview_test.dart)
 ```
 
 Проверки backend требуют локальных сокетов; сценарии установки подменяют

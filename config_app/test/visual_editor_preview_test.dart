@@ -5,19 +5,21 @@ import 'package:config_app/features/config/presentation/pages/slideshow_editor_p
 import 'package:config_app/features/config/presentation/pages/special_screen_editor_page.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart';
 import 'package:dslideshow_flutter/effect.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart';
 import 'package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart';
 import 'package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart';
+import 'package:config_app/features/config/presentation/sessions/preview_photo.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:config_app/features/config/presentation/wigdgets/special_screen_preview.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dio/dio.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart';
 import 'package:dslideshow_flutter/features/welcome/presrntation/widgets/animated_logo.dart';
 import 'package:dslideshow_i18n/i18n.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/controlled_preview_asset_bundle.dart';
+import 'support/slideshow_preview_harness.dart';
 
 Widget _app(Widget child, {Locale locale = const Locale('en')}) => MaterialApp(
   locale: locale,
@@ -256,104 +258,6 @@ void main() {
     },
   );
 
-  for (final completeTransition in [false, true]) {
-    testWidgets(
-      'lifecycle sends pause intent without another frame to ${completeTransition ? 'current' : 'pending'} video',
-      (tester) async {
-        final pendingImage = _PendingProvider();
-        final session = _FakeVideoSession();
-        final key = GlobalKey<SlideshowPreviewState>();
-        addTearDown(
-          () => tester.binding.handleAppLifecycleStateChanged(
-            AppLifecycleState.resumed,
-          ),
-        );
-        await tester.pumpWidget(
-          _app(
-            Scaffold(
-              body: SingleChildScrollView(
-                child: SlideshowPreview(
-                  key: key,
-                  config: SlideShowConfig.fromJson({
-                    'effects': {'defaultDurationMs': 100},
-                    'displayTimeMs': 60000,
-                  }),
-                  images: [pendingImage],
-                  videoFactory: (_) => session,
-                ),
-              ),
-            ),
-          ),
-        );
-        await tester.pump();
-        await tester.enterText(
-          find.byKey(const ValueKey('preview-video-url')),
-          'https://camera.test/video.mp4',
-        );
-        key.currentState!.onChanged(Effect.fadeEffect);
-        await tester.pump();
-        await tester.pump();
-        expect(session.playing, contains(true));
-        if (completeTransition) {
-          for (var i = 0; i < 15; i++) {
-            await tester.pump(const Duration(milliseconds: 16));
-          }
-        }
-        session.playing.clear();
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.inactive,
-        );
-        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
-        // There is intentionally no pump/frame between suspension and assertion.
-        expect(session.playing, contains(false));
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.inactive,
-        );
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.resumed,
-        );
-        await tester.pumpWidget(const SizedBox());
-        expect(session.disposed, isTrue);
-        expect(tester.takeException(), isNull);
-      },
-    );
-  }
-  testWidgets(
-    'collapsing preview aborts its HTTP request and ignores a late response',
-    (tester) async {
-      final adapter = _PendingAdapter();
-      final dio = Dio()..httpClientAdapter = adapter;
-      await tester.pumpWidget(
-        _app(
-          Scaffold(
-            body: PreviewEditorLayout(
-              editor: const Text('Editor'),
-              previewBuilder: (_) => SlideshowPreview(
-                config: SlideShowConfig.fromJson({}),
-                mediaClient: dio,
-              ),
-            ),
-          ),
-        ),
-      );
-      for (var i = 0; i < 10 && adapter.requests == 0; i++) {
-        await tester.pump(const Duration(milliseconds: 1));
-      }
-      expect(adapter.requests, 1);
-      await tester.tap(find.byKey(const ValueKey('preview-toggle')));
-      await tester.pump();
-      expect(adapter.cancelled, isTrue);
-      expect(adapter.closed, isTrue);
-      adapter.response.complete(
-        ResponseBody.fromString('late invalid image', 200),
-      );
-      await tester.pump();
-      expect(find.byType(SlideshowPreview), findsNothing);
-      expect(find.byKey(const ValueKey('preview-error')), findsNothing);
-      await tester.pumpWidget(const SizedBox());
-      expect(tester.takeException(), isNull);
-    },
-  );
   testWidgets(
     'welcome preview reflects draft text and size, keeps invalid last-valid input across layout changes',
     (tester) async {
@@ -412,76 +316,148 @@ void main() {
   );
 
   testWidgets(
-    'collapsed and lifecycle-hidden preview releases pending image listener and timer',
+    'collapsed and lifecycle-hidden preview discards late assets and timers',
     (tester) async {
-      final provider = _PendingProvider();
+      final bundle = (await tester.runAsync(
+        ControlledPreviewAssetBundle.create,
+      ))!;
+      final gate = Completer<void>();
+      bundle.gates[PreviewPhoto.mountainLake] = gate;
+      addTearDown(
+        () => tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        ),
+      );
       await tester.pumpWidget(
-        _app(
-          Scaffold(
-            body: PreviewEditorLayout(
-              editor: const Text('Editor'),
-              previewBuilder: (_) => SlideshowPreview(
-                config: SlideShowConfig.fromJson({}),
-                images: [provider],
+        DefaultAssetBundle(
+          bundle: bundle,
+          child: _app(
+            Scaffold(
+              body: PreviewEditorLayout(
+                editor: const Text('Editor'),
+                previewBuilder: (_) =>
+                    SlideshowPreview(config: SlideShowConfig.fromJson({})),
               ),
             ),
           ),
         ),
       );
-      await tester.pump();
-      expect(provider.completers, hasLength(1));
-      expect(provider.completers.single.listeners, isNotEmpty);
+      await waitForPreview(tester, () => bundle.requests.isNotEmpty);
+      expect(bundle.requests, [PreviewPhoto.mountainLake]);
       await tester.tap(find.byKey(const ValueKey('preview-toggle')));
       await tester.pump();
       expect(find.byType(SlideshowPreview), findsNothing);
-      expect(provider.completers.single.listeners, isEmpty);
+      gate.complete();
+      await waitForPreview(tester, () => bundle.settled.isNotEmpty);
       await tester.pump(const Duration(seconds: 35));
-      expect(provider.completers, hasLength(1));
+      expect(bundle.requests, [PreviewPhoto.mountainLake]);
+      bundle.gates.clear();
       await tester.tap(find.byKey(const ValueKey('preview-toggle')));
-      await tester.pump();
-      await tester.pump();
-      expect(provider.completers, hasLength(2));
+      await preparePreview(tester);
+      final photos = previewPhotos(tester);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
       await tester.pump();
       expect(find.byType(SlideshowPreview), findsNothing);
-      expect(provider.completers.last.listeners, isEmpty);
+      for (final photo in photos) {
+        expectPhotoReleased(photo);
+      }
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await tester.pump();
-      await tester.pump();
-      expect(provider.completers, hasLength(3));
+      await preparePreview(tester);
+      final resumed = previewPhotos(tester);
+      expect(resumed, isNotEmpty);
       await tester.pumpWidget(const SizedBox());
+      final count = bundle.requests.length;
       await tester.pump(const Duration(seconds: 35));
-      expect(provider.completers.every((c) => c.listeners.isEmpty), isTrue);
+      expect(bundle.requests.length, count);
+      for (final photo in resumed) {
+        expectPhotoReleased(photo);
+      }
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets(
-    'preview image errors are localized and do not retry automatically',
-    (tester) async {
-      final provider = _PendingProvider();
-      await tester.pumpWidget(
-        _app(
+  testWidgets('preview asset errors are localized and retry is explicit', (
+    tester,
+  ) async {
+    final bundle = (await tester.runAsync(
+      ControlledPreviewAssetBundle.create,
+    ))!;
+    bundle.failures[PreviewPhoto.mountainLake] = StateError(
+      'secret asset details',
+    );
+    await tester.pumpWidget(
+      DefaultAssetBundle(
+        bundle: bundle,
+        child: _app(
           Scaffold(
             body: SingleChildScrollView(
-              child: SlideshowPreview(
-                config: SlideShowConfig.fromJson({}),
-                images: [provider],
+              child: SlideshowPreview(config: SlideShowConfig.fromJson({})),
+            ),
+          ),
+        ),
+      ),
+    );
+    await waitForPreview(
+      tester,
+      () => find.byKey(const ValueKey('preview-error')).evaluate().isNotEmpty,
+    );
+    expect(find.textContaining('secret asset details'), findsNothing);
+    await tester.pump(const Duration(seconds: 35));
+    expect(bundle.requests, [PreviewPhoto.mountainLake]);
+    bundle.failures.clear();
+    await tester.ensureVisible(find.byKey(const ValueKey('preview-repeat')));
+    await tester.tap(find.byKey(const ValueKey('preview-repeat')));
+    await preparePreview(tester);
+    expect(find.byKey(const ValueKey('preview-error')), findsNothing);
+    expect(previewPhotos(tester), isNotEmpty);
+    await tester.pumpWidget(const SizedBox());
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'lifecycle freezes current photo motion before another frame and releases it',
+    (tester) async {
+      final bundle = (await tester.runAsync(
+        ControlledPreviewAssetBundle.create,
+      ))!;
+      addTearDown(
+        () => tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        ),
+      );
+      await tester.pumpWidget(
+        DefaultAssetBundle(
+          bundle: bundle,
+          child: _app(
+            Scaffold(
+              body: SingleChildScrollView(
+                child: SlideshowPreview(
+                  selectedEffect: Effect.fadeEffect,
+                  config: SlideShowConfig.fromJson({
+                    'effects': {'defaultDurationMs': 100},
+                    'displayTimeMs': 60000,
+                    'photoMotion': {'mode': 'kenBurns'},
+                  }),
+                ),
               ),
             ),
           ),
         ),
       );
+      await finishPreview(tester);
+      final photo = previewPhotos(tester).single;
+      final motion = tester
+          .widgetList<AnimatedBuilder>(find.byType(AnimatedBuilder))
+          .where((builder) => builder.child != null)
+          .map((builder) => builder.animation)
+          .whereType<FixedAnimationController>()
+          .single;
+      expect(motion.isAnimating, true);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      expect(motion.isAnimating, false);
       await tester.pump();
-      provider.completers.single.reportError(
-        context: ErrorDescription('Preview test'),
-        exception: StateError('secret-url'),
-      );
-      await tester.pump();
-      expect(find.byKey(const ValueKey('preview-error')), findsOneWidget);
-      expect(find.textContaining('secret-url'), findsNothing);
-      await tester.pump(const Duration(seconds: 35));
-      expect(provider.completers, hasLength(1));
+      expectPhotoReleased(photo);
       await tester.pumpWidget(const SizedBox());
       expect(tester.takeException(), isNull);
     },
@@ -533,77 +509,4 @@ class _PendingSession extends SpecialScreenSession {
   _PendingSession(super.config);
   @override
   Future<bool> prepare() => preparation.future;
-}
-
-class _PendingProvider extends ImageProvider<int> {
-  final completers = <_TrackedCompleter>[];
-  @override
-  Future<int> obtainKey(ImageConfiguration configuration) =>
-      SynchronousFuture(identityHashCode(this));
-  @override
-  void resolveStreamForKey(
-    ImageConfiguration configuration,
-    ImageStream stream,
-    int key,
-    ImageErrorListener handleError,
-  ) {
-    final completer = _TrackedCompleter();
-    completers.add(completer);
-    stream.setCompleter(completer);
-  }
-}
-
-class _TrackedCompleter extends ImageStreamCompleter {
-  final listeners = <ImageStreamListener>{};
-  @override
-  void addListener(ImageStreamListener listener) {
-    listeners.add(listener);
-    super.addListener(listener);
-  }
-
-  @override
-  void removeListener(ImageStreamListener listener) {
-    listeners.remove(listener);
-    super.removeListener(listener);
-  }
-}
-
-class _PendingAdapter implements HttpClientAdapter {
-  final response = Completer<ResponseBody>();
-  int requests = 0;
-  bool cancelled = false;
-  bool closed = false;
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<void>? cancelFuture,
-  ) {
-    requests++;
-    cancelFuture?.then((_) => cancelled = true);
-    return response.future;
-  }
-
-  @override
-  void close({bool force = false}) {
-    closed = true;
-  }
-}
-
-class _FakeVideoSession implements VideoSession {
-  final playing = <bool>[];
-  bool disposed = false;
-  @override
-  final controller = null;
-  @override
-  Future<void> prepare() async {}
-  @override
-  Future<void> setPlaying(bool value) async {
-    playing.add(value);
-  }
-
-  @override
-  Future<void> dispose() async {
-    disposed = true;
-  }
 }

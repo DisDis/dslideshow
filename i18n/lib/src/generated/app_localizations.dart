@@ -1250,29 +1250,11 @@ abstract class AppLocalizations {
   /// **'Maximum zoom'**
   String get photo_motion_zoom;
 
-  /// No description provided for @water_photo_only.
-  ///
-  /// In en, this message translates to:
-  /// **'Water Refraction requires two static photos. GIF and video use another allowed transition.'**
-  String get water_photo_only;
-
-  /// No description provided for @preview_video_url.
-  ///
-  /// In en, this message translates to:
-  /// **'Video URL (optional)'**
-  String get preview_video_url;
-
   /// No description provided for @preview_repeat.
   ///
   /// In en, this message translates to:
   /// **'Repeat'**
   String get preview_repeat;
-
-  /// No description provided for @preview_play.
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get preview_play;
 
   /// No description provided for @effect_burn_alpha.
   ///
@@ -1745,7 +1727,7 @@ abstract class AppLocalizations {
   /// No description provided for @preview_failed.
   ///
   /// In en, this message translates to:
-  /// **'Could not load media. Check the address and network access.'**
+  /// **'Could not prepare the preview. Try again.'**
   String get preview_failed;
 
   /// No description provided for @preview_last_valid.
@@ -1763,7 +1745,7 @@ abstract class AppLocalizations {
   /// No description provided for @preview_environment_help.
   ///
   /// In en, this message translates to:
-  /// **'Sample media loads from the network. Preview does not confirm device codec support.'**
+  /// **'Uses bundled sample photos. No external media is loaded.'**
   String get preview_environment_help;
 
   /// No description provided for @preview_clock_help.

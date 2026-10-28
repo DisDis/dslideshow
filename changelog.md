@@ -1,5 +1,9 @@
 # Unreleased
 
+* Run slideshow and effect previews on bundled sample photos without external
+  media downloads or a video URL field. Keep draft settings, pause and Repeat
+  available while disconnected from the frame.
+
 * Reuse sampling coordinates for matching prepared photos in nine-ray Radial
   Blur. Preserve all rays, resolution and independent photo-motion sampling.
 * Cache stable tinted photo inputs in VHS Damage before the animated blend.

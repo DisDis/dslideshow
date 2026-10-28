@@ -3,7 +3,11 @@
 `SlideShowPage` связывает `SlideshowBloc` с рендерингом. Bloc выбирает следующий
 слайд, эффект и фазу; renderer управляет подготовкой, анимацией перехода и
 затемнением. Ресурсами каждого слайда владеет отдельная `SlideSession` из
-`dslideshow_flutter/lib/features/slideshow/presentation/sessions/`.
+`dslideshow_flutter/lib/features/slideshow/presentation/sessions/slide_session.dart`.
+Этот лёгкий общий контракт подготовки, активности, входа эффекта и освобождения
+используют и фоторамка, и предпросмотр панели. Конкретные сессии фоторамки
+находятся в соседнем `slide_content_sessions.dart` и могут зависеть от её
+медиа, видеоплееров и специальных экранов; эти зависимости не нужны базе.
 
 | Сессия | Ресурсы |
 | --- | --- |
@@ -11,6 +15,7 @@
 | `VideoSlideSession` | Один `VideoSession` с общим декодером и текстурой для всех представлений эффекта. |
 | `SpecialSlideSession` | Существующая сессия часов или камер и её представление из реестра. |
 | `PlaceholderSlideSession` | Загрузчик для пустого медиа и ошибок его подготовки. |
+| `AssetPhotoSlideSession` (`config_app`) | Фото из assets панели, подготовленный bitmap и необязательный `PhotoMotionSession`; без внешних медиа и плееров. |
 
 Фабрика `SlideSessionFactory` создаёт сессии. По умолчанию `SlideShowPage`
 использует штатную фабрику; параметр `sessionFactory` позволяет подменить
@@ -87,6 +92,23 @@ Renderer хранит `_current` и `_next`. Следующая сессия н�
 `FixedAnimationController`, размеры подготовки, фильтрация и запас пикселей
 Ken Burns остаются прежними.
 
+## Фотопредпросмотр панели
+
+`SlideshowPreview` использует две сессии того же общего типа: текущую и
+следующую. Каждая `AssetPhotoSlideSession` подготавливает одну встроенную
+фотографию `PreviewPhoto`; enum выбирает горное озеро, лесную тропу или береговые
+скалы из assets панели. Источники и способ получения фото относятся к конкретной
+сессии, а пауза, камера и заимствование `EffectSlideInput` следуют общему контракту.
+
+Пара перехода фиксирует входы эффекта, а сессии сохраняют владение фото. После
+завершения старое представление удаляется из дерева до освобождения его bitmap. Повтор использует
+последнюю фотопару с текущими настройками; отменённая или поздняя подготовка
+не заменяет новую пару. Скрытие и закрытие preview освобождают его владельцев.
+Этот preview не создаёт видео, HTTP-клиент для внешних фото или сетевой источник
+медиа и работает при отключённом frontend. В Web сам bundle и его assets могут
+доставляться по HTTP с того же origin. Галерея и preview специальных камер
+сохраняют собственные источники и ограничения доступа к сети.
+
 ## Проверки
 
 Из `dslideshow_flutter/`:
@@ -106,6 +128,11 @@ flutter test --no-pub test/effect_slide_input_test.dart test/slide_session_test.
 `EffectSlideInput`, `PreparedPhoto` и `PhotoCamera` — модели Freezed без JSON.
 После изменения их исходников из того же пакета выполните
 `dart run build_runner build`; сгенерированные файлы вручную не редактируются.
+
+Из `config_app/` проверки asset-фото, повторения пары, отмены подготовки и
+освобождения предпросмотра запускаются через
+`flutter test --no-pub test/asset_photo_slide_session_test.dart test/slideshow_preview_test.dart`. Тесты и ограничения
+панели описаны в её [README](../config_app/README.md).
 
 Отдельный [стенд реального renderer](../benchmarks/README.md) запускает
 `SlideShowPage` через `benchmarks/lib/renderer_main.dart`. Для предыдущего рефакторинга

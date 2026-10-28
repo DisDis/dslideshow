@@ -621,17 +621,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get photo_motion_zoom => 'Максимальное увеличение';
 
   @override
-  String get water_photo_only =>
-      'Для эффекта «Преломление воды» нужны два неподвижных фото. Для GIF и видео используется другой разрешённый переход.';
-
-  @override
-  String get preview_video_url => 'Адрес видео (необязательно)';
-
-  @override
   String get preview_repeat => 'Повторить';
-
-  @override
-  String get preview_play => 'Предпросмотр';
 
   @override
   String get effect_burn_alpha => 'Выгорание';
@@ -892,7 +882,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get preview_failed =>
-      'Не удалось загрузить медиа. Проверьте адрес и доступ к сети.';
+      'Не удалось подготовить предпросмотр. Повторите попытку.';
 
   @override
   String get preview_last_valid =>
@@ -903,7 +893,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get preview_environment_help =>
-      'Тестовые медиа загружаются из сети. Предпросмотр не подтверждает поддержку кодеков устройством.';
+      'Используются встроенные фотографии. Внешние медиа не загружаются.';
 
   @override
   String get preview_clock_help => 'Используется время этого компьютера';

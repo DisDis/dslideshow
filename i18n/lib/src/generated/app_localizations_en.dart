@@ -620,17 +620,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photo_motion_zoom => 'Maximum zoom';
 
   @override
-  String get water_photo_only =>
-      'Water Refraction requires two static photos. GIF and video use another allowed transition.';
-
-  @override
-  String get preview_video_url => 'Video URL (optional)';
-
-  @override
   String get preview_repeat => 'Repeat';
-
-  @override
-  String get preview_play => 'Preview';
 
   @override
   String get effect_burn_alpha => 'Burn Alpha';
@@ -888,8 +878,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_resume => 'Resume';
 
   @override
-  String get preview_failed =>
-      'Could not load media. Check the address and network access.';
+  String get preview_failed => 'Could not prepare the preview. Try again.';
 
   @override
   String get preview_last_valid =>
@@ -900,7 +889,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preview_environment_help =>
-      'Sample media loads from the network. Preview does not confirm device codec support.';
+      'Uses bundled sample photos. No external media is loaded.';
 
   @override
   String get preview_clock_help => 'Uses this computer’s current time.';

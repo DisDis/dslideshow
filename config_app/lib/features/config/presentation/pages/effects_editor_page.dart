@@ -107,11 +107,9 @@ class EffectsEditorPage extends StatefulWidget {
     super.key,
     required this.config,
     this.registerDraft,
-    this.previewImages,
   });
   final SlideShowConfig config;
   final RegisterUnsavedDraft? registerDraft;
-  final List<ImageProvider>? previewImages;
   @override
   State<EffectsEditorPage> createState() => _EffectsEditorPageState();
 }
@@ -2270,7 +2268,6 @@ class _EffectsEditorPageState extends State<EffectsEditorPage> {
       selectedEffect: _entry.validate(_selected).isEmpty
           ? Effect.fromConfig(_selected, _entry)
           : Effect(_selected),
-      images: widget.previewImages,
     ),
     help: context.localizations.preview_environment_help,
     editor: _form(),

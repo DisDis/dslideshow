@@ -105,6 +105,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/preview/mountain_lake.jpg
+    - assets/preview/forest_trail.jpg
+    - assets/preview/coastal_cliffs.jpg
+
   fonts:
     - family: Roboto
       fonts:
