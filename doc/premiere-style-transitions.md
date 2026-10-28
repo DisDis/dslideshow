@@ -167,7 +167,7 @@ flutter test --no-pub
 ```sh
 flutter analyze --no-pub
 flutter test --no-pub
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 ```
 
 Новые регрессии находятся в `creative_transitions_test.dart`,

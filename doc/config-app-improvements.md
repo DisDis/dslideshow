@@ -283,11 +283,13 @@ Wi-Fi и форма входа также не записывают эти да�
 ```sh
 flutter analyze --no-pub
 flutter test --no-pub
-flutter test --no-pub --platform chrome test/browser_exit_guard_test.dart \
-  test/single_video_player_test.dart test/single_item_viewer_page_test.dart
 flutter test --no-pub test/slideshow_preview_test.dart
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 ```
+
+Браузерные тесты удалены; прежние результаты Chrome ниже относятся к
+историческим прогонам. Текущие проверки выполняются в VM, браузерные прогоны —
+только с согласия пользователя, см. [правила тестирования](testing.md#браузерные-проверки).
 
 Из каталога `backend`:
 

@@ -1,3 +1,8 @@
+# Unreleased
+
+* Build the web settings panel with WebAssembly and skwasm by default, retaining
+  JavaScript/CanvasKit fallback. Fix web environment initialization for Wasm.
+
 # 14.1.0+1 — 2026-10-28
 
 * Run slideshow and effect previews on bundled sample photos without external

@@ -293,7 +293,7 @@ flutter gen-l10n
 flutter analyze --no-pub
 flutter test --no-pub
 # config_app/
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 # benchmarks/
 dart run build_runner build
 flutter analyze --no-pub

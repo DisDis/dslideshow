@@ -104,7 +104,7 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
  flutter test test/new_visual_effects_test.dart test/transition_media_selection_test.dart test/photo_motion_renderer_test.dart test/effect_regression_test.dart
 # config_app
  flutter test test/slideshow_preview_test.dart
- flutter build web --release
+ ./build_web.sh
 # benchmarks
  flutter test
  flutter test tool/audit_effects_test.dart

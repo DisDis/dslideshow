@@ -6,6 +6,22 @@ Web release собирается через `./build_web.sh`: скрипт по�
 [`deb_factory/build.sh`](../deb_factory/readme.md), запуская web-сборку параллельно
 AOT и проверкам; менять зависимости во время такого запуска нельзя.
 
+По умолчанию web release собирается с `--wasm`: Dart-код и renderer `skwasm`
+используют WebAssembly в поддерживаемом браузере. Flutter также сохраняет
+JavaScript/CanvasKit fallback; bootstrap и взаимодействие с браузером остаются
+на JavaScript. `--no-web-resources-cdn` сохраняет ресурсы renderer в bundle.
+Выбор web-окружения использует `dart.library.js_interop` и работает как с Wasm,
+так и с JavaScript. Выходной каталог — `build/web`; при развёртывании копируйте
+его целиком, включая `main.dart.wasm`, `main.dart.mjs` и `canvaskit/`.
+
+Для многопоточного `skwasm` серверу нужны HTTPS (либо localhost),
+`Cross-Origin-Opener-Policy: same-origin` и
+`Cross-Origin-Embedder-Policy: credentialless` (либо `require-corp`).
+Штатный HTTP-сервер фоторамки эти заголовки не добавляет: используется
+однопоточный `skwasm`, без требования менять сервер для запуска панели.
+Поддержка браузеров и ограничения — в
+[документации Flutter](https://docs.flutter.dev/platform-integration/web/wasm).
+
 [Расширенные настройки и пресеты](../doc/effect-presets-review.md): 37 семейств,
 82 пресета прежних эффектов, пять точек начала Water/Ripple и таблица
 визуально принятого объединения каталога. Последующее исследование
@@ -150,8 +166,15 @@ Stop → Start отладки: Hot reload не регистрирует новы
 Проверка сборки из `config_app`:
 
 ```sh
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 ```
+
+Автоматические браузерные тесты удалены из-за стоимости компиляции и запуска
+Chrome. Обычные unit/widget-тесты выполняются в VM; браузерные тесты пишем
+и запускаем только с согласия пользователя. VM-тесты не проверяют web-точку
+входа, выбор окружения JavaScript/Wasm и DOM-событие `beforeunload`.
+Правило и границы покрытия описаны в
+[руководстве тестирования](../doc/testing.md#браузерные-проверки).
 
 Если после исправления обработчика стек ошибки по-прежнему указывает на старую
 строку или выражение, выполните полный Restart отладки (Stop → Start) из

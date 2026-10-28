@@ -320,7 +320,7 @@ dart test --concurrency=1
 # config_app:
 flutter analyze --no-pub
 flutter test --no-pub
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 flutter build linux --release --no-pub
 ```
 

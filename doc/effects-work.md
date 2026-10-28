@@ -84,7 +84,7 @@ callback не подключён; доступный ему embedder header API 
 (cd config_app && flutter test --no-pub)
 (cd dslideshow_flutter && flutter analyze --no-pub --no-fatal-infos)
 (cd config_app && flutter analyze --no-pub --no-fatal-infos)
-(cd config_app && flutter build web --release --no-pub)
+(cd config_app && ./build_web.sh --no-pub)
 (cd benchmarks && flutter analyze --no-pub)
 (cd benchmarks && flutter test --no-pub)
 (cd benchmarks && python3 -m unittest discover -s tool -p 'test_*.py')

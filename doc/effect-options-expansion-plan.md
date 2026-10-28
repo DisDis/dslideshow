@@ -364,7 +364,7 @@ flutter analyze --no-pub
 flutter test --no-pub
 
 # config_app/
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 
 # benchmarks/
 flutter analyze --no-pub

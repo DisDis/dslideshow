@@ -9,6 +9,10 @@
 
 ## Unreleased
 
+* Remove the automated Chrome BrowserClient/CORS probe. Preserve archived browser
+  results and report generation from those results; writing and running browser
+  tests require user consent.
+
 * Pass stable immutable effect inputs through the viewport, probes and capture
   tools. Preserve borrowed photo ownership, separate BlurProbe clones, identity
   PhotoMotionProbe cameras and existing shader/live regression paths; no new

@@ -156,7 +156,7 @@ flutter test --no-pub
 # config_app/
 flutter analyze --no-pub --no-fatal-infos
 flutter test --no-pub
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 
 # i18n/ — после изменений ARB
 flutter gen-l10n

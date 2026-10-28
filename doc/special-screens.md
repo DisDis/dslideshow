@@ -225,7 +225,7 @@ Backend не скачивает и не проксирует изображен�
 ```sh
 (cd backend && dart run build_runner build && dart test)
 (cd dslideshow_flutter && dart run build_runner build && flutter test --no-pub)
-(cd config_app && flutter test --no-pub && flutter build web --release --no-pub)
+(cd config_app && flutter test --no-pub && ./build_web.sh --no-pub)
 (cd i18n && flutter gen-l10n && flutter test --no-pub)
 ```
 

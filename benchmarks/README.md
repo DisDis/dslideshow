@@ -266,10 +266,9 @@ flutter test --no-pub test/cached_vhs_test.dart test/radial_shared_uv_test.dart
 
 `flutter analyze --no-pub` проверяет живые исходники стенда. Каталоги `build/`
 и `reports/` исключены: они содержат сгенерированные targets и замороженные
-копии чужих пакетов. Отдельная `tool/gallery_browser_probe.dart` также исключена
-из контекста пакета benchmarks: её зависимости принадлежат config_app.
-Проверка этой пробы — компиляция с замороженным package config панели и запуск
-настоящего Chrome через `gallery_browser_probe.py`, как описано ниже.
+копии чужих пакетов. Автоматическая Chrome-проба галереи удалена; браузерные
+проверки пишутся и запускаются только с согласия
+пользователя, см. [правила тестирования](../doc/testing.md#браузерные-проверки).
 
 Исследовательские `tool/camera_rpc_probe.dart` и `tool/rpc_timeout_probe.dart`
 проверяют настоящий HTTP при отказах камер и удержание межизолятных RPC-слотов.
@@ -346,19 +345,11 @@ python3 -m unittest discover -s benchmarks/tool -p test_gallery_http.py
 `--harness PATH` фиксирует исходный harness. `--reuse-binary --run-name NAME`
 повторяет уже собранную версию в новом подкаталоге без перезаписи предыдущих данных.
 
-`gallery_browser_probe.py` компилирует копию production `MediaImageLoader` в JS
-и запускает уже установленный Chrome/Chromium с отдельным временным профилем.
-Два локальных origin проверяют настоящий BrowserClient: abort до headers и
-во время body, общий cap, single-flight, cache/revision и CORS/OPTIONS/validators.
-Новый браузер не устанавливается:
-
-```sh
-python3 benchmarks/tool/gallery_browser_probe.py \
-  --output benchmarks/reports/gallery-browser-EXPERIMENT
-```
-
-Это сетевой тест, а не Flutter UI/scroll/FPS. Локальные исходные данные и выводы
-сохранены в [итоговом HTTP/Chrome-отчёте](reports/gallery-implementation-2026-10-26/report.md).
+Прежняя автоматическая Chrome-проба BrowserClient/CORS удалена 29.10.2026.
+Её локальные исходные данные и выводы сохранены в
+[итоговом HTTP/Chrome-отчёте](reports/gallery-implementation-2026-10-26/report.md).
+`gallery_http_report.py --browser` читает уже сохранённые результаты браузера
+из архива и не запускает новый браузерный прогон.
 Отдельный [прототип scaled JPEG decode](reports/gallery-thumbnail-local-2026-10-26/report.md)
 описывает `gallery_thumbnail_probe.dart`, время, RSS и неизменность оригиналов.
 Для повторного показа в Linux отдельно сохранён

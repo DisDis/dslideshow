@@ -12,6 +12,11 @@ thumbnail service, общий клиентский loader, viewport и верс�
 полный scroll/FrameTiming A/B Web/Linux, Wi-Fi и аппаратная приёмка этапа 6
 остаются открыты. RaPi5, runtime и служба фоторамки не изменялись.
 
+Обновление 29.10.2026: автоматическая Chrome-проба удалена по решению пользователя.
+Упоминания браузерных проверок ниже сохраняют исторический план; новые прогоны
+возможны только с согласия пользователя, см.
+[правила тестирования](testing.md#браузерные-проверки).
+
 ## Результат и границы
 
 Сетка получает серверные миниатюры нужного физического размера. Один клиентский
@@ -369,7 +374,7 @@ FD/threads/I/O backend/workers, память/frame time клиента и зад
 # config_app
 flutter analyze --no-pub
 flutter test --no-pub
-flutter build web --release --no-pub --no-web-resources-cdn
+./build_web.sh --no-pub
 flutter build linux --release --no-pub
 # i18n, только при изменении ARB:
 flutter gen-l10n

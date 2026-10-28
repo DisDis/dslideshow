@@ -345,7 +345,7 @@ Fade. Файл при чтении автоматически не перепи�
 | `backend/` | `dart run build_runner build`, `dart analyze`, `dart test` |
 | `i18n/` | `flutter gen-l10n`, `flutter analyze --no-pub` |
 | `dslideshow_flutter/` | `dart run build_runner build`, `flutter analyze --no-pub`, `flutter test --no-pub` |
-| `config_app/` | `flutter analyze --no-pub`, `flutter test --no-pub`, `flutter build web --release --no-pub --no-web-resources-cdn` |
+| `config_app/` | `flutter analyze --no-pub`, `flutter test --no-pub`, `./build_web.sh --no-pub` |
 | `benchmarks/` | `flutter analyze --no-pub`, `flutter test --no-pub`, `python3 -m unittest discover -s tool -p 'test_*.py'`, `bash -n run.sh build_aot_pi5.sh` |
 
 По последующему указанию пользователя аппаратные прогоны, включая OpenGL A/B,

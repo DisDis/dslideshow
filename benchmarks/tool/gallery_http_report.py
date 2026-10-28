@@ -187,14 +187,13 @@ def main():
         f'  --output {args.output} --variant baseline --reuse-binary --run-name repeat-1',
         'python3 benchmarks/tool/gallery_http.py \\',
         f'  --output {args.output} --variant candidate-next --freeze-current',
-        'python3 benchmarks/tool/gallery_browser_probe.py \\',
-        f'  --output {args.output}/browser-next \\',
-        f'  --backend-binary {args.output}/{args.candidate}/execution/gallery-http-server',
         'python3 benchmarks/tool/gallery_http_report.py \\',
         f'  --output {args.output} --candidate {args.candidate} --browser {args.browser}',
         "python3 -m unittest discover -s benchmarks/tool -p 'test_gallery_http.py' -v",
         '```', '',
-        'Loopback/Chrome и Flutter SDK lockfile требуют соответствующего разрешения sandbox. '
+        'Автоматическая Chrome-проба удалена; --browser читает сохранённые архивные результаты '
+        'без нового браузерного прогона. '
+        'Loopback и Flutter SDK lockfile требуют соответствующего разрешения sandbox. '
         'Первоначальные compiler telemetry и socket-denial диагностики сохранены отдельно; '
         'окончательные raw/compile logs относятся к указанным вариантам. '
         'Native encoded cache проверен 17 regression cases, включая atomic publication, отмену/close, '

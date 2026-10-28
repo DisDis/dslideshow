@@ -1,4 +1,4 @@
-"""Check the web build's dependency preparation without invoking Flutter."""
+"""Check Wasm build arguments and dependency preparation without Flutter."""
 
 import json
 import os
@@ -40,14 +40,14 @@ class WebBuildTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(commands, [
             ["pub", "get"],
-            ["build", "web", "--release", "--no-pub", "--no-web-resources-cdn"],
+            ["build", "web", "--release", "--no-pub", "--no-web-resources-cdn", "--wasm"],
         ])
 
     def test_parallel_mode_builds_without_changing_dependencies(self):
         result, commands = self.run_fixture(("--no-pub", "--dart-define=EXAMPLE=value"))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(commands, [[
-            "build", "web", "--release", "--no-pub", "--no-web-resources-cdn",
+            "build", "web", "--release", "--no-pub", "--no-web-resources-cdn", "--wasm",
             "--dart-define=EXAMPLE=value",
         ]])
 
