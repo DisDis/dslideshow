@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_installer.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_page.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_page_localizations.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_service.dart';
 import 'package:dslideshow_backend/src/service/ota/release_info.dart';
 import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
@@ -16,6 +19,12 @@ import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
 
 const _boundary = 'ota-test-boundary';
+final _inputTag = RegExp(r'<input\b[^>]*>');
+final _formTag = RegExp(r'<form\b[^>]*>');
+final _scriptTag = RegExp(r'<script>(.*?)</script>', dotAll: true);
+final _codeConstraint = RegExp(
+  r'\b(?:pattern|minlength|maxlength|inputmode)\s*=',
+);
 
 String _field(String name, String value) =>
     '--$_boundary\r\n'
@@ -37,12 +46,18 @@ List<int> _multipart(
   '$extra--$_boundary--\r\n',
 );
 
-Request _request(Stream<List<int>> body, {int? contentLength}) => Request(
+Request _request(
+  Stream<List<int>> body, {
+  int? contentLength,
+  String endpoint = '/ota_upload',
+  String? accept,
+}) => Request(
   'POST',
-  Uri.parse('http://localhost/ota_upload'),
+  Uri.parse('http://localhost$endpoint'),
   headers: {
     'content-type': 'multipart/form-data; boundary=$_boundary',
     if (contentLength != null) 'content-length': '$contentLength',
+    if (accept != null) 'accept': accept,
   },
   body: body,
 );
@@ -170,16 +185,18 @@ void main() {
   OTAService service({
     UploadLimits limits = const UploadLimits(maxFiles: 1, maxParts: 2),
     UploadWriterFactory? writerFactory,
+    StreamingUploadReceiver? configUploadReceiver,
     Future<ReleaseInfo?> Function()? latestRelease,
     HttpClient Function()? downloadClientFactory,
     Duration restartDelay = const Duration(seconds: 5),
     Duration autostopDelay = const Duration(minutes: 5),
     Duration networkTimeout = const Duration(seconds: 60),
     bool alwaysEnabled = true,
+    int port = 0,
   }) {
     final config = AppConfig.fromJson({
       'ota': {'alwaysEnabled': alwaysEnabled, 'autoUpdateEnabled': false},
-    });
+    })..fullConfigFilename = path.join(directory.path, 'config.json');
     final result = OTAService(
       config: config,
       frontendService: remote,
@@ -190,12 +207,13 @@ void main() {
         limits: limits,
         writerFactory: writerFactory,
       ),
+      configUploadReceiver: configUploadReceiver,
       latestRelease: latestRelease,
       downloadClientFactory: downloadClientFactory,
       restartDelay: restartDelay,
       autostopDelay: autostopDelay,
       networkTimeout: networkTimeout,
-      port: 0,
+      port: port,
     );
     services.add(result);
     return result;
@@ -224,12 +242,336 @@ void main() {
     await directory.delete(recursive: true);
   });
 
+  for (final (endpoint, action, fileType) in [
+    ('/ota_start', '/ota_upload', '.deb'),
+    ('/ota_download_config', '/ota_download_config', null),
+    ('/ota_upload_config', '/ota_upload_config', '.json'),
+  ]) {
+    test('$endpoint provides an autonomous native form and slideshow exit', () async {
+      final ota = service();
+      final response = await ota.handler(
+        Request('GET', Uri.parse('http://localhost$endpoint')),
+      );
+      final html = await response.readAsString();
+      expect(response.statusCode, 200);
+      expect(response.headers['content-type'], contains('text/html'));
+      expect(response.headers['cache-control'], 'no-store');
+      expect(html, contains('<html lang="en">'));
+      expect(html, contains('DSlideshow · OTA'));
+      expect(html, contains(' · DSlideshow</title>'));
+      expect(
+        html,
+        contains(
+          'frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>',
+        ),
+      );
+      expect(
+        html,
+        contains(
+          'backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>',
+        ),
+      );
+      final form = _formTag.firstMatch(html)!.group(0)!;
+      expect(form, contains('method="post"'));
+      expect(form, contains('action="$action"'));
+      final inputs = _inputTag
+          .allMatches(html)
+          .map((match) => match.group(0)!)
+          .toList();
+      final code = inputs.singleWhere((input) => input.contains('name="code"'));
+      expect(code, contains('type="text"'));
+      expect(
+        _codeConstraint.hasMatch(code),
+        isFalse,
+        reason: 'Codes can contain arbitrary text',
+      );
+      if (fileType != null) {
+        final file = inputs.singleWhere(
+          (input) => input.contains('name="file"'),
+        );
+        expect(form, contains('enctype="multipart/form-data"'));
+        expect(file, contains('accept="$fileType"'));
+        expect(file, isNot(contains('multiple')));
+        expect(html.indexOf(code), lessThan(html.indexOf(file)));
+      }
+      expect(html, contains('href="/ota_stop"'));
+      expect(html, isNot(contains('src="http')));
+      expect(html, isNot(contains('href="http')));
+      if (endpoint == '/ota_start') {
+        expect(html, contains('href="/ota_download_config"'));
+        expect(html, contains('href="/ota_upload_config"'));
+        expect(html, contains('data-uploading-label="Uploading…"'));
+        final scripts = _scriptTag.allMatches(html).toList();
+        expect(scripts, hasLength(1));
+        final scriptHash = base64.encode(
+          crypto.sha256.convert(utf8.encode(scripts.single.group(1)!)).bytes,
+        );
+        expect(
+          response.headers['content-security-policy'],
+          contains("script-src 'sha256-$scriptHash'"),
+        );
+      } else {
+        expect(html, isNot(contains('<script')));
+        expect(
+          response.headers['content-security-policy'],
+          isNot(contains('script-src')),
+        );
+      }
+    });
+  }
+
+  test('browser language preferences select RU while unsupported languages use EN', () async {
+    final ota = service();
+    final response = await ota.handler(
+      Request(
+        'GET',
+        Uri.parse('http://localhost/ota_start'),
+        headers: {'accept-language': 'ru-RU, en;q=0.5'},
+      ),
+    );
+    final html = await response.readAsString();
+    expect(html, contains('<html lang="ru">'));
+    expect(html, contains('Отменить и вернуться к слайдшоу'));
+    expect(html, contains('data-uploading-label="Загрузка…"'));
+    expect(html, contains('DSlideshow · OTA'));
+    expect(
+      html,
+      contains(
+        'frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>',
+      ),
+    );
+    expect(
+      html,
+      contains(
+        'backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>',
+      ),
+    );
+    for (final (header, expected) in <(String?, OtaPageLanguage)>[
+      (null, OtaPageLanguage.en),
+      ('fr', OtaPageLanguage.en),
+      ('en;q=0.5,ru;q=0.9', OtaPageLanguage.ru),
+      ('ru;q=0,en;q=1', OtaPageLanguage.en),
+      ('en;q=0,*;q=1', OtaPageLanguage.ru),
+      ('ru;q=NaN', OtaPageLanguage.en),
+    ]) {
+      expect(otaPageLanguage(header), expected, reason: '$header');
+    }
+  });
+
+  test('result pages escape interpolated content and versions', () {
+    final html = renderOtaResultPage(
+      frontendVersion: '<img src=x>',
+      backendVersion: '"<&',
+      language: OtaPageLanguage.en,
+      title: '<script>title</script>',
+      message: '<b>message</b>',
+      error: true,
+    );
+    expect(html, contains('&lt;script&gt;title&lt;/script&gt;'));
+    expect(html, contains('&lt;b&gt;message&lt;/b&gt;'));
+    expect(html, isNot(contains('<script>')));
+    expect(html, isNot(contains('<img src=x>')));
+  });
+
+  test('return to slideshow sends the exit command and preserves plain API response', () async {
+    final ota = service();
+    final response = await ota.handler(
+      Request('GET', Uri.parse('http://localhost/ota_stop')),
+    );
+    expect(await response.readAsString(), 'Return to normal mode');
+    expect(remote.commands.whereType<OTAReadyCommand>().single.ready, isFalse);
+    final htmlResponse = await ota.handler(
+      Request(
+        'GET',
+        Uri.parse('http://localhost/ota_stop'),
+        headers: {'accept': 'text/html'},
+      ),
+    );
+    expect(htmlResponse.statusCode, 200);
+    final html = await htmlResponse.readAsString();
+    expect(htmlResponse.headers['content-type'], contains('text/html'));
+    expect(html, contains('href="/ota_start"'));
+    expect(html, isNot(contains('href="/ota_stop"')));
+  });
+
+  test('configuration download returns original damaged bytes as an attachment after authorization', () async {
+    final ota = service();
+    final original = [0xff, ...utf8.encode('{broken config')];
+    await File(ota.config.fullConfigFilename).writeAsBytes(original);
+    Request download(String code) => Request(
+      'POST',
+      Uri.parse('http://localhost/ota_download_config'),
+      body: Uri(queryParameters: {'code': code}).query,
+    );
+    final response = await ota.handler(download(ota.code));
+    expect(response.statusCode, 200);
+    expect(await response.read().expand((bytes) => bytes).toList(), original);
+    expect(
+      response.headers['content-disposition'],
+      'attachment; filename="config.json"',
+    );
+    expect(response.headers['cache-control'], 'no-store');
+    final denied = await ota.handler(download('wrong'));
+    expect(denied.statusCode, 403);
+    expect(await denied.readAsString(), 'Incorrect code');
+    final missing = await ota.handler(
+      Request(
+        'POST',
+        Uri.parse('http://localhost/ota_download_config'),
+        body: '',
+      ),
+    );
+    expect(missing.statusCode, 400);
+    final repeated = await ota.handler(
+      Request(
+        'POST',
+        Uri.parse('http://localhost/ota_download_config'),
+        body: 'code=${ota.code}&code=${ota.code}',
+      ),
+    );
+    expect(repeated.statusCode, 400);
+    await File(ota.config.fullConfigFilename).delete();
+    final unavailable = await ota.handler(download(ota.code));
+    expect(unavailable.statusCode, 500);
+    expect(await unavailable.readAsString(), isNot(contains(directory.path)));
+    final htmlUnavailable = await ota.handler(
+      Request(
+        'POST',
+        Uri.parse('http://localhost/ota_download_config'),
+        headers: {'accept': 'text/html'},
+        body: 'code=${ota.code}',
+      ),
+    );
+    expect(htmlUnavailable.statusCode, 500);
+    expect(
+      await htmlUnavailable.readAsString(),
+      contains('The saved configuration could not be read.'),
+    );
+  });
+
+  test('configuration import changes saved bytes while active services and installer remain untouched', () async {
+    final ota = service();
+    final oldPort = ota.config.webServer.port;
+    const content = '{"web":{"port":8123},"future-setting":"keep"}\n';
+    final response = await ota.handler(
+      _request(
+        Stream.value(
+          _multipart(ota.code, filename: 'config.json', data: content),
+        ),
+        endpoint: '/ota_upload_config',
+      ),
+    );
+    expect(response.statusCode, 200);
+    expect(await response.readAsString(), 'Config updated');
+    expect(await File(ota.config.fullConfigFilename).readAsString(), content);
+    expect(ota.config.webServer.port, oldPort);
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+    expect(installer.restarts, 0);
+    final rejected = await ota.handler(
+      _request(
+        Stream.value(
+          _multipart(ota.code, filename: 'config.json', data: '{bad'),
+        ),
+        endpoint: '/ota_upload_config',
+        accept: 'text/html',
+      ),
+    );
+    expect(rejected.statusCode, 400);
+    expect(rejected.headers['content-type'], contains('text/html'));
+    expect(await rejected.readAsString(), contains('href="/ota_start"'));
+    expect(await File(ota.config.fullConfigFilename).readAsString(), content);
+    expect(ota.busy, isFalse);
+  });
+
+  test('closing a pending configuration transfer cancels input and retains the previous file', () async {
+    final ota = service();
+    const oldConfig = '{"web":{"port":8081}}';
+    await File(ota.config.fullConfigFilename).writeAsString(oldConfig);
+    final body = StreamController<List<int>>();
+    addTearDown(() => body.close());
+    final pending = ota.handler(
+      _request(body.stream, endpoint: '/ota_upload_config'),
+    );
+    body.add(
+      utf8.encode('${_field('code', ota.code)}${_fileHeader('config.json')}{'),
+    );
+    expect(ota.busy, isTrue);
+    expect((await upload(ota)).statusCode, 409);
+    await ota.close();
+    expect((await pending).statusCode, 408);
+    expect(await File(ota.config.fullConfigFilename).readAsString(), oldConfig);
+    expect(ota.busy, isFalse);
+    expect(directory.listSync().map((entry) => path.basename(entry.path)), [
+      'config.json',
+    ]);
+    expect(
+      (await ota.handler(
+        Request('GET', Uri.parse('http://localhost/ota_start')),
+      )).statusCode,
+      503,
+    );
+  });
+
+  test('HTTP remains usable when the frontend never responds', () async {
+    remote.blockedAll = Completer<RpcResult>();
+    addTearDown(() => remote.blockedAll!.complete(const EmptyResult(id: 1)));
+    final ota = service();
+    await ota.start();
+    final client = HttpClient();
+    addTearDown(() => client.close(force: true));
+    final request = await client.getUrl(
+      Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_start'),
+    );
+    final response = await request.close();
+    expect(response.statusCode, 200);
+    expect(
+      await utf8.decoder.bind(response).join(),
+      contains('action="/ota_upload"'),
+    );
+    expect(remote.commands, hasLength(1));
+    final configRequest = await client.getUrl(
+      Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_upload_config'),
+    );
+    final configResponse = await configRequest.close();
+    expect(configResponse.statusCode, 200);
+    await configResponse.drain<void>();
+    await ota.close();
+    expect(ota.boundPort, isNull);
+  });
+
+  test('failed bind leaves the lifecycle queue reusable and retry clears the startup error', () async {
+    final occupied = await ServerSocket.bind(InternetAddress.anyIPv4, 0);
+    addTearDown(() => occupied.close());
+    final ota = service(port: occupied.port, alwaysEnabled: false);
+    ota.enabled = true;
+    await _until(() => ota.info.status == OTAStatus.issue);
+    expect(ota.enabled, isFalse);
+    expect(ota.boundPort, isNull);
+    expect(ota.info.errorText, isNotNull);
+    await occupied.close();
+    await ota.start();
+    expect(ota.enabled, isTrue);
+    expect(ota.boundPort, isNotNull);
+    expect(ota.info.status, OTAStatus.ready);
+    expect(ota.info.errorText, isNull);
+  });
+
   test(
     'unknown Content-Length saves one package before HTTP 200 and install',
     () async {
       final ota = service();
-      final response = await upload(ota);
+      final response = await ota.handler(
+        _request(Stream.value(_multipart(ota.code)), accept: 'text/html'),
+      );
       expect(response.statusCode, 200);
+      expect(response.headers['content-type'], contains('text/html'));
+      final html = await response.readAsString();
+      expect(
+        html,
+        contains('The file was received and passed to the installer.'),
+      );
+      expect(html, isNot(contains('href="/ota_stop"')));
       await _until(() => installer.data.isNotEmpty);
       expect(installer.data.single, utf8.encode('package contents'));
       expect(installer.files.single, path.join(directory.path, 'update.deb'));

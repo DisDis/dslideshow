@@ -1,5 +1,10 @@
 # Unreleased
 
+* Add self-contained Russian/English OTA pages with firmware upload, configuration
+  backup/import and a return-to-slideshow action. Preserve damaged configuration
+  downloads and replace imported settings atomically after validation; apply them
+  on the next restart.
+
 * Build the web settings panel with WebAssembly and skwasm by default, retaining
   JavaScript/CanvasKit fallback. Fix web environment initialization for Wasm.
 

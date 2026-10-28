@@ -230,7 +230,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "14.1.0"
+    version: "14.1.0+6"
   dslideshow_common:
     dependency: "direct main"
     description:

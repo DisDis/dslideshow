@@ -4,7 +4,14 @@ import 'dart:io' as io;
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:dslideshow_backend/src/service/ota/ota_config_transfer.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_download_config_page.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_installer.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_page.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_page_localizations.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_upload_config_page.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_upload_page.dart';
+import 'package:dslideshow_backend/src/service/ota/ota_upload_script.dart';
 import 'package:dslideshow_backend/src/service/ota/release_info.dart';
 import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -18,7 +25,6 @@ import 'package:logging/logging.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf/shelf.dart';
-import 'package:shelf_multipart/shelf_multipart.dart';
 import 'package:path/path.dart' as path;
 
 class OTAService implements RpcService {
@@ -29,6 +35,7 @@ class OTAService implements RpcService {
   final io.Directory _folder;
   final FirmwareInstaller _installer;
   final StreamingUploadReceiver _uploadReceiver;
+  final OtaConfigTransfer _configTransfer;
   final Future<ReleaseInfo?> Function()? _latestRelease;
   final io.HttpClient Function() _downloadClientFactory;
   final int _port;
@@ -41,7 +48,7 @@ class OTAService implements RpcService {
   _OTAOperation? _operation;
   bool get busy => _operation != null;
   OTAInfo get info => _info;
-  Handler get handler => _router.call;
+  Handler get handler => _handleRequest;
   bool _closed = false;
   bool _disableWhenIdle = false;
   Future<void> _serverChanges = Future<void>.value();
@@ -62,7 +69,11 @@ class OTAService implements RpcService {
   bool get enabled => _enabled;
   int? get boundPort => _server?.port;
 
-  OTAInfo _info = OTAInfo(status: OTAStatus.disabled, code: "-", uploadingPercent: 0);
+  OTAInfo _info = OTAInfo(
+    status: OTAStatus.disabled,
+    code: "-",
+    uploadingPercent: 0,
+  );
 
   void set enabled(bool newvalue) {
     unawaited(_setEnabled(newvalue));
@@ -80,6 +91,7 @@ class OTAService implements RpcService {
     io.Directory? firmwareDirectory,
     FirmwareInstaller? installer,
     StreamingUploadReceiver? uploadReceiver,
+    StreamingUploadReceiver? configUploadReceiver,
     Future<ReleaseInfo?> Function()? latestRelease,
     io.HttpClient Function()? downloadClientFactory,
     int port = 8282,
@@ -87,9 +99,19 @@ class OTAService implements RpcService {
     Duration autostopDelay = const Duration(minutes: 5),
     Duration networkTimeout = const Duration(seconds: 60),
   }) : _frontendService = frontendService,
-       _folder = firmwareDirectory ?? io.Directory(path.join(externalStorage.path, 'firmwares')),
+       _folder =
+           firmwareDirectory ??
+           io.Directory(path.join(externalStorage.path, 'firmwares')),
        _installer = installer ?? const ProcessFirmwareInstaller(),
-       _uploadReceiver = uploadReceiver ?? StreamingUploadReceiver(limits: const UploadLimits(maxFiles: 1, maxParts: 2)),
+       _uploadReceiver =
+           uploadReceiver ??
+           StreamingUploadReceiver(
+             limits: const UploadLimits(maxFiles: 1, maxParts: 2),
+           ),
+       _configTransfer = OtaConfigTransfer(
+         filename: config.fullConfigFilename,
+         uploadReceiver: configUploadReceiver,
+       ),
        _latestRelease = latestRelease,
        _downloadClientFactory = downloadClientFactory ?? io.HttpClient.new,
        _port = port,
@@ -132,12 +154,18 @@ class OTAService implements RpcService {
     io.HttpClient? client;
     try {
       _log.info('Checking new version...');
-      final releaseInfo = await _untilClosed((_latestRelease?.call() ?? _fetchLatestDebRelease()).timeout(_networkTimeout));
+      final releaseInfo = await _untilClosed(
+        (_latestRelease?.call() ?? _fetchLatestDebRelease()).timeout(
+          _networkTimeout,
+        ),
+      );
       _checkOpen(operation);
       if (releaseInfo == null) return;
       final currentVersion = Version.parse(ApplicationInfo.frontendVersion);
       if (currentVersion >= releaseInfo.version) {
-        _log.info('The current version "${ApplicationInfo.frontendVersion}" is the latest');
+        _log.info(
+          'The current version "${ApplicationInfo.frontendVersion}" is the latest',
+        );
         return;
       }
       if (!enabled && _automaticallyStartServer) await start();
@@ -162,9 +190,12 @@ class OTAService implements RpcService {
         response,
         filename: filename,
         destination: path.join(_folder.path, filename),
-        contentLength: response.contentLength < 0 ? null : response.contentLength,
+        contentLength: response.contentLength < 0
+            ? null
+            : response.contentLength,
         cancellation: operation.cancellation,
-        onProgress: (received, total) => _uploadProgress(operation, received, total),
+        onProgress: (received, total) =>
+            _uploadProgress(operation, received, total),
       );
       await _acceptFirmware(operation, staged);
     } catch (e, st) {
@@ -177,7 +208,9 @@ class OTAService implements RpcService {
   }
 
   Future<ReleaseInfo?> _fetchLatestDebRelease() async {
-    final url = Uri.parse('https://api.github.com/repos/DisDis/dslideshow/releases/latest');
+    final url = Uri.parse(
+      'https://api.github.com/repos/DisDis/dslideshow/releases/latest',
+    );
     final client = _createHttpClient();
     try {
       final request = await _network(client.getUrl(url));
@@ -207,7 +240,9 @@ class OTAService implements RpcService {
     }
 
     // Очищаем тег от префикса 'v' если он есть и парсим в SemVer
-    final cleanVersion = tagName.startsWith('v') ? tagName.substring(1) : tagName;
+    final cleanVersion = tagName.startsWith('v')
+        ? tagName.substring(1)
+        : tagName;
 
     try {
       final version = Version.parse(cleanVersion);
@@ -255,7 +290,7 @@ class OTAService implements RpcService {
   void updateCode() {
     _code = _generateCode();
     _updateInfo(_info.copyWith(code: code));
-    _log.info('New code: $_code');
+    _log.info('OTA access code updated');
   }
 
   io.HttpServer? _server;
@@ -289,12 +324,16 @@ class OTAService implements RpcService {
         final server = _server;
         _server = null;
         await server?.close(force: true);
-        if (!_closed && !busy) _updateInfo(_info.copyWith(status: OTAStatus.disabled));
+        if (!_closed && !busy)
+          _updateInfo(_info.copyWith(status: OTAStatus.disabled));
       }
     });
     // Retain the original error for the caller without poisoning the next
     // lifecycle request or leaving a failed queue future unobserved.
-    _serverChanges = change.then<void>((_) {}, onError: (Object _, StackTrace __) {});
+    _serverChanges = change.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
     return change;
   }
 
@@ -306,7 +345,14 @@ class OTAService implements RpcService {
     }
     _server = server;
     server.autoCompress = true;
-    if (!busy) _updateInfo(_info.copyWith(status: OTAStatus.ready));
+    if (!busy)
+      _updateInfo(
+        _info.copyWith(
+          status: OTAStatus.ready,
+          errorText: null,
+          exitCode: null,
+        ),
+      );
     _autostop?.cancel();
     _autostop = Timer(_autostopDelay, () => unawaited(_setEnabled(false)));
     if (config.ota.autoUpdateEnabled && _periodicCheck == null) {
@@ -333,8 +379,14 @@ class OTAService implements RpcService {
       listener();
     }
     _closeListeners.clear();
-    _completeScreen(_activeScreen, const UploadFailure(503, 'OTA service is closed'));
-    _completeScreen(_pendingScreen, const UploadFailure(503, 'OTA service is closed'));
+    _completeScreen(
+      _activeScreen,
+      const UploadFailure(503, 'OTA service is closed'),
+    );
+    _completeScreen(
+      _pendingScreen,
+      const UploadFailure(503, 'OTA service is closed'),
+    );
     _pendingScreen = null;
     _pendingInfo = null;
     _pendingOutput.clear();
@@ -368,12 +420,14 @@ class OTAService implements RpcService {
     }
   }
 
-  Future<T> _network<T>(Future<T> future) => _untilClosed(future.timeout(_networkTimeout));
+  Future<T> _network<T>(Future<T> future) =>
+      _untilClosed(future.timeout(_networkTimeout));
 
   Future<T> _untilClosed<T>(Future<T> future) {
     final result = Completer<T>();
     void closed() {
-      if (!result.isCompleted) result.completeError(const UploadFailure(503, 'OTA service is closed'));
+      if (!result.isCompleted)
+        result.completeError(const UploadFailure(503, 'OTA service is closed'));
     }
 
     if (_closed) {
@@ -411,22 +465,34 @@ class OTAService implements RpcService {
     _checkOpen(operation);
     operation.uploading = true;
     operation.progressWatch.start();
-    _updateInfo(_info.copyWith(uploadingPercent: 0, exitCode: null, errorText: null, status: OTAStatus.uploading));
+    _updateInfo(
+      _info.copyWith(
+        uploadingPercent: 0,
+        exitCode: null,
+        errorText: null,
+        status: OTAStatus.uploading,
+      ),
+    );
   }
 
   void _uploadProgress(_OTAOperation operation, int received, int? total) {
-    if (_closed || !identical(_operation, operation) || !operation.uploading) return;
+    if (_closed || !identical(_operation, operation) || !operation.uploading)
+      return;
     final elapsed = operation.progressWatch.elapsedMicroseconds;
     if (elapsed - operation.lastProgressMicros < 250000) return;
-    final percent = total != null && total > 0 ? (received / total * 100).clamp(0.0, 99.0).toDouble() : 0.0;
+    final percent = total != null && total > 0
+        ? (received / total * 100).clamp(0.0, 99.0).toDouble()
+        : 0.0;
     if (percent == _info.uploadingPercent) return;
     operation.lastProgressMicros = elapsed;
     _updateInfo(_info.copyWith(uploadingPercent: percent));
   }
 
   void _finishInput(_OTAOperation operation) {
-    if (!operation.inputFinished.isCompleted) operation.inputFinished.complete();
-    if (!operation.accepted || operation.releaseAfterInput) _releaseOperation(operation);
+    if (!operation.inputFinished.isCompleted)
+      operation.inputFinished.complete();
+    if (!operation.accepted || operation.releaseAfterInput)
+      _releaseOperation(operation);
   }
 
   void _releaseOperation(_OTAOperation operation) {
@@ -441,7 +507,13 @@ class OTAService implements RpcService {
 
   void _recordFailure(Object error, StackTrace stackTrace) {
     _log.warning('OTA operation failed', error, stackTrace);
-    _updateInfo(_info.copyWith(status: OTAStatus.issue, errorText: '$error', exitCode: null));
+    _updateInfo(
+      _info.copyWith(
+        status: OTAStatus.issue,
+        errorText: '$error',
+        exitCode: null,
+      ),
+    );
   }
 
   void _output(String output) {
@@ -456,12 +528,16 @@ class OTAService implements RpcService {
       final bytes = utf8.encode(command.output);
       final remaining = _maxPendingOutputBytes - _pendingOutput.length;
       if (remaining > 0) {
-        _pendingOutput.add(bytes.length <= remaining ? bytes : bytes.sublist(0, remaining));
+        _pendingOutput.add(
+          bytes.length <= remaining ? bytes : bytes.sublist(0, remaining),
+        );
       }
       if (bytes.length > remaining) {
         final operation = _operation;
         if (!(operation?.outputTruncated ?? _outputTruncatedWithoutOperation)) {
-          _log.warning('OTA frontend output queue full; truncating pending output');
+          _log.warning(
+            'OTA frontend output queue full; truncating pending output',
+          );
           if (operation != null) {
             operation.outputTruncated = true;
           } else {
@@ -476,13 +552,21 @@ class OTAService implements RpcService {
   _QueuedScreen _queueScreen(bool ready) {
     final pending = _pendingScreen;
     if (pending?.command.ready == ready) return pending!;
-    _completeScreen(pending, const UploadFailure(409, 'OTA screen request superseded'));
+    _completeScreen(
+      pending,
+      const UploadFailure(409, 'OTA screen request superseded'),
+    );
     _pendingScreen = null;
     final active = _activeScreen;
     if (active?.command.ready == ready) return active!;
-    final screen = _QueuedScreen(OTAReadyCommand(id: RpcCommand.generateId(), ready: ready));
+    final screen = _QueuedScreen(
+      OTAReadyCommand(id: RpcCommand.generateId(), ready: ready),
+    );
     if (_closed) {
-      _completeScreen(screen, const UploadFailure(503, 'OTA service is closed'));
+      _completeScreen(
+        screen,
+        const UploadFailure(503, 'OTA service is closed'),
+      );
     } else {
       _pendingScreen = screen;
       _drainNotifications();
@@ -493,18 +577,26 @@ class OTAService implements RpcService {
   Future<void> _requestScreen(bool ready) {
     final screen = _queueScreen(ready);
     if (screen.completed) {
-      return screen.error == null ? Future<void>.value() : Future<void>.error(screen.error!);
+      return screen.error == null
+          ? Future<void>.value()
+          : Future<void>.error(screen.error!);
     }
     final waiter = _ScreenWaiter();
     screen.waiters.add(waiter);
     waiter.timeout = Timer(_networkTimeout, () {
       screen.waiters.remove(waiter);
-      waiter.completion.completeError(TimeoutException('OTA frontend did not respond', _networkTimeout));
+      waiter.completion.completeError(
+        TimeoutException('OTA frontend did not respond', _networkTimeout),
+      );
     });
     return waiter.completion.future;
   }
 
-  void _completeScreen(_QueuedScreen? screen, [Object? error, StackTrace? stack]) {
+  void _completeScreen(
+    _QueuedScreen? screen, [
+    Object? error,
+    StackTrace? stack,
+  ]) {
     if (screen == null || screen.completed) return;
     screen.completed = true;
     screen.error = error;
@@ -533,7 +625,10 @@ class OTAService implements RpcService {
       command = _pendingInfo!;
       _pendingInfo = null;
     } else if (_pendingOutput.isNotEmpty) {
-      command = OTAOutputCommand(id: RpcCommand.generateId(), output: utf8.decode(_pendingOutput.takeBytes(), allowMalformed: true));
+      command = OTAOutputCommand(
+        id: RpcCommand.generateId(),
+        output: utf8.decode(_pendingOutput.takeBytes(), allowMalformed: true),
+      );
     } else {
       return;
     }
@@ -549,7 +644,8 @@ class OTAService implements RpcService {
           },
         )
         .whenComplete(() {
-          if (screen != null && identical(_activeScreen, screen)) _activeScreen = null;
+          if (screen != null && identical(_activeScreen, screen))
+            _activeScreen = null;
           _notificationInFlight = false;
           _drainNotifications();
         });
@@ -563,7 +659,10 @@ class OTAService implements RpcService {
       case OTAGetInfoCommand.TYPE:
         return _executeOTAGetInfoCommand(command as OTAGetInfoCommand);
       default:
-        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
+        return _generateErrorResult(
+          new Exception("Unknown command: ${command.type}"),
+          command,
+        );
     }
   }
 
@@ -571,10 +670,16 @@ class OTAService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return new EchoCommandResult(id: command.id, resultText: "${command.text} Service ${new DateTime.now()}");
+    return new EchoCommandResult(
+      id: command.id,
+      resultText: "${command.text} Service ${new DateTime.now()}",
+    );
   }
 
-  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
+  Future<RpcErrorResult> _generateErrorResult(
+    Object e,
+    RpcCommand command,
+  ) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -588,9 +693,128 @@ class OTAService implements RpcService {
     _notify(OTAGetInfoCommand(id: RpcCommand.generateId(), info: _info));
   }
 
+  Future<Response> _handleRequest(Request request) async {
+    if (_closed)
+      return _failureResponse(
+        request,
+        const UploadFailure(503, 'OTA service is closed'),
+      );
+    try {
+      return await _router.call(request);
+    } catch (error, stack) {
+      _log.warning('OTA HTTP request failed', error, stack);
+      return _failureResponse(request, uploadFailureFor(error));
+    }
+  }
+
+  static const _responseHeaders = {
+    'cache-control': 'no-store',
+    'x-content-type-options': 'nosniff',
+  };
+  static const _htmlHeaders = {
+    ..._responseHeaders,
+    'content-type': 'text/html; charset=utf-8',
+    'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+  };
+  static final _uploadHtmlHeaders = {
+    ..._htmlHeaders,
+    'content-security-policy':
+        "${_htmlHeaders['content-security-policy']}; script-src '$otaUploadScriptHash'",
+  };
+
+  OtaPageLanguage _language(Request request) =>
+      otaPageLanguage(request.headers['accept-language']);
+
+  OtaPageLocalizations _strings(Request request) =>
+      OtaPageLocalizations(_language(request));
+
+  bool _wantsHtml(Request request) {
+    for (final value in (request.headers['accept'] ?? '').split(',')) {
+      try {
+        final type = io.HeaderValue.parse(value);
+        if (type.value.toLowerCase() == 'text/html' &&
+            (double.tryParse(type.parameters['q'] ?? '1') ?? 0) > 0)
+          return true;
+      } on FormatException {
+        // An invalid Accept value must not prevent recovery through plain HTTP.
+      }
+    }
+    return false;
+  }
+
+  Response _resultResponse(
+    Request request, {
+    int statusCode = 200,
+    required String text,
+    required String title,
+    required String message,
+    bool showCancel = true,
+  }) {
+    if (!_wantsHtml(request)) {
+      return Response(
+        statusCode,
+        body: text,
+        headers: {
+          ..._responseHeaders,
+          'content-type': 'text/plain; charset=utf-8',
+        },
+      );
+    }
+    return Response(
+      statusCode,
+      body: renderOtaResultPage(
+        frontendVersion: ApplicationInfo.frontendVersion,
+        backendVersion: ApplicationInfo.backendVersion,
+        language: _language(request),
+        title: title,
+        message: message,
+        error: statusCode >= 400,
+        showCancel: showCancel,
+      ),
+      headers: _htmlHeaders,
+    );
+  }
+
+  Response _failureResponse(
+    Request request,
+    UploadFailure failure, {
+    _OtaTransferKind kind = _OtaTransferKind.firmware,
+  }) {
+    final strings = _strings(request);
+    final message = switch (failure.statusCode) {
+      400 =>
+        kind == _OtaTransferKind.configImport
+            ? strings.invalidConfig
+            : strings.invalidRequest,
+      403 => strings.invalidCode,
+      404 => strings.configUnavailable,
+      408 => strings.transferTimedOut,
+      409 => strings.operationBusy,
+      413 => strings.transferTooLarge,
+      415 => strings.unsupportedFirmware,
+      503 => strings.serviceUnavailable,
+      507 => strings.insufficientStorage,
+      500 when kind == _OtaTransferKind.configExport =>
+        strings.configUnavailable,
+      _ => strings.transferFailed,
+    };
+    return _resultResponse(
+      request,
+      statusCode: failure.statusCode,
+      text: failure.message,
+      title: strings.errorTitle,
+      message: message,
+    );
+  }
+
+  void _keepWebSession() => _autostop?.cancel();
+
   Future<Response> _postOTAUploadPackage(Request request) async {
-    if (_closed) return Response(503, body: 'OTA service is closed');
-    if (busy) return Response(409, body: 'An OTA operation is already active');
+    if (busy)
+      return _failureResponse(
+        request,
+        const UploadFailure(409, 'An OTA operation is already active'),
+      );
     final operation = _beginOperation();
     StagedUploadBatch? batch;
     var authorized = false;
@@ -606,8 +830,10 @@ class OTAService implements RpcService {
           authorized = true;
         },
         beforeFile: (filename) {
-          if (!authorized) throw UploadFailure(403, 'Code must precede the file');
-          if (operation.uploading) throw UploadFailure(400, 'Expected one firmware file');
+          if (!authorized)
+            throw UploadFailure(403, 'Code must precede the file');
+          if (operation.uploading)
+            throw UploadFailure(400, 'Expected one firmware file');
           if (path.extension(filename) != '.deb') {
             throw UploadFailure(415, 'Support only deb package');
           }
@@ -617,68 +843,71 @@ class OTAService implements RpcService {
           await _folder.create(recursive: true);
           return path.join(_folder.path, filename);
         },
-        onProgress: (received, total) => _uploadProgress(operation, received, total),
+        onProgress: (received, total) =>
+            _uploadProgress(operation, received, total),
       );
       if (!authorized || batch.files.length != 1) {
         throw UploadFailure(400, 'Expected a code and one firmware file');
       }
       await _acceptFirmware(operation, batch.files.single);
-      return Response.ok('Firmware uploaded; installation accepted');
+      final strings = _strings(request);
+      return _resultResponse(
+        request,
+        text: 'Firmware uploaded; installation accepted',
+        title: strings.firmwareAcceptedTitle,
+        message: strings.firmwareAcceptedMessage,
+        showCancel: false,
+      );
     } catch (e, st) {
       if (!_closed && operation.uploading) _recordFailure(e, st);
       final failure = uploadFailureFor(e);
-      return Response(failure.statusCode, body: failure.message);
+      return _failureResponse(request, failure);
     } finally {
       await batch?.cleanup();
       _finishInput(operation);
     }
   }
 
-  static const _uploadForm =
-      """
-<html>
-<head>
-<title>OTA</title>
-</head>
-<body>
-<form method="post" enctype="multipart/form-data" action="ota_upload">
- <div>
-    <p>v${ApplicationInfo.frontendVersion}</p> 
-    <p><b>OTA ready</b></p>
-   <label for="code">Code</label><Br>
-   <input id="code" name="code" ><Br>
-   <label for="file">Choose file to upload</label><Br>
-   <input type="file" id="file" name="file" accept=".deb">
- </div>
- <div>
-   <button>Submit</button>
- </div>
-</form>
-</body>
-</html>
-""";
-
   Response _getOTAStop(Request request) {
     _queueScreen(false);
-    return Response.ok('Return to normal mode');
+    final strings = _strings(request);
+    return _resultResponse(
+      request,
+      text: 'Return to normal mode',
+      title: strings.slideshowTitle,
+      message: strings.slideshowMessage,
+      showCancel: false,
+    );
   }
 
   Response _getOTAStart(Request request) {
-    if (_autostop != null && _autostop!.isActive) {
-      _autostop!.cancel();
-    }
-
+    _keepWebSession();
     _queueScreen(true);
-    if (request.url.queryParameters.isNotEmpty && request.url.queryParameters['format'] == 'json') {
+    if (request.url.queryParameters.isNotEmpty &&
+        request.url.queryParameters['format'] == 'json') {
       return Response.ok(
         '{"version":{"frontend":"${ApplicationInfo.frontendVersion}","backend":"${ApplicationInfo.backendVersion}"},"status":"${_info.status.name}"}',
-        headers: {'content-type': 'text/json; charset=utf-8'},
+        headers: {
+          ..._responseHeaders,
+          'content-type': 'text/json; charset=utf-8',
+        },
       );
     }
-    return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
+    return Response.ok(
+      renderOtaUploadPage(
+        frontendVersion: ApplicationInfo.frontendVersion,
+        backendVersion: ApplicationInfo.backendVersion,
+        language: _language(request),
+        busy: busy,
+      ),
+      headers: _uploadHtmlHeaders,
+    );
   }
 
-  Future<void> _acceptFirmware(_OTAOperation operation, StagedUploadFile staged) async {
+  Future<void> _acceptFirmware(
+    _OTAOperation operation,
+    StagedUploadFile staged,
+  ) async {
     _checkOpen(operation);
     if (await staged.temporary.length() == 0) {
       throw UploadFailure(400, 'Firmware file is empty');
@@ -691,10 +920,15 @@ class OTAService implements RpcService {
     unawaited(_installFirmware(operation, package));
   }
 
-  Future<void> _installFirmware(_OTAOperation operation, io.File package) async {
+  Future<void> _installFirmware(
+    _OTAOperation operation,
+    io.File package,
+  ) async {
     var awaitingRestart = false;
     try {
-      _updateInfo(_info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling));
+      _updateInfo(
+        _info.copyWith(uploadingPercent: 100, status: OTAStatus.instaling),
+      );
       final exitCode = await _installer.install(
         package,
         onOutput: (output) {
@@ -707,7 +941,9 @@ class OTAService implements RpcService {
         _info.copyWith(
           uploadingPercent: 100,
           exitCode: exitCode,
-          errorText: exitCode == 0 ? null : 'Installer exited with code $exitCode',
+          errorText: exitCode == 0
+              ? null
+              : 'Installer exited with code $exitCode',
           status: exitCode == 0 ? OTAStatus.finished : OTAStatus.issue,
         ),
       );
@@ -739,113 +975,124 @@ class OTAService implements RpcService {
   }
 
   Response _getOTAGetConfig(Request request) {
-    return Response.ok(_downloadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
+    _keepWebSession();
+    return Response.ok(
+      renderOtaDownloadConfigPage(
+        frontendVersion: ApplicationInfo.frontendVersion,
+        backendVersion: ApplicationInfo.backendVersion,
+        language: _language(request),
+        busy: busy,
+      ),
+      headers: _htmlHeaders,
+    );
   }
 
-  static const _downloadConfigForm =
-      """
-<html>
-<head>
-<title>OTA get config.json</title>
-</head>
-<body>
-<form method="post" >
- <div>
-    <p>v${ApplicationInfo.frontendVersion}</p>
-    <p><b>OTA get config.json </b></p>
-   <label for="code">Code</label><Br>
-   <input id="code" name="code" ><Br>
- </div>
- <div>
-   <button>Submit</button>
- </div>
-</form>
-</body>
-</html>
-""";
+  Future<String> _readConfigDownloadCode(Request request) async {
+    const maxBytes = 8 * 1024;
+    if ((request.contentLength ?? 0) > maxBytes) {
+      throw const UploadFailure(413, 'Form exceeds size limit');
+    }
+    final body = BytesBuilder(copy: false);
+    final input = StreamIterator(request.read());
+    final watch = Stopwatch()..start();
+    try {
+      while (true) {
+        final remaining = _networkTimeout - watch.elapsed;
+        if (remaining <= Duration.zero)
+          throw const UploadFailure(408, 'Request timed out');
+        if (!await _untilClosed(input.moveNext().timeout(remaining))) break;
+        if (body.length + input.current.length > maxBytes) {
+          throw const UploadFailure(413, 'Form exceeds size limit');
+        }
+        body.add(input.current);
+      }
+      final values = Uri(query: utf8.decode(body.takeBytes()))
+          .queryParametersAll;
+      if (values.length != 1 || values['code']?.length != 1) {
+        throw const UploadFailure(400, 'Expected one code field');
+      }
+      return values['code']!.single;
+    } on FormatException {
+      throw const UploadFailure(400, 'Invalid form data');
+    } finally {
+      // Closing HTTP must not wait for an unresponsive request body's onCancel.
+      unawaited(input.cancel().catchError((Object _) {}));
+    }
+  }
 
   Future<Response> _postOTAGetConfig(Request request) async {
-    var content = await request.readAsString(); //.transform(utf8.decoder).join();
-    var queryParams = Uri(query: content).queryParameters;
-    if (queryParams['code'] != _code) {
-      return Response.forbidden('Incorrect code');
+    try {
+      if (await _readConfigDownloadCode(request) != _code) {
+        throw const UploadFailure(403, 'Incorrect code');
+      }
+      final bytes = await _untilClosed(_configTransfer.download());
+      return Response.ok(
+        bytes,
+        headers: {
+          ..._responseHeaders,
+          'content-type': 'application/json',
+          'content-disposition': 'attachment; filename="config.json"',
+        },
+      );
+    } catch (error) {
+      return _failureResponse(
+        request,
+        uploadFailureFor(error),
+        kind: _OtaTransferKind.configExport,
+      );
     }
-    return Response.ok(io.File(config.fullConfigFilename).readAsStringSync(), headers: {'Content-Type': 'text/plain; charset=utf-8'});
   }
 
-  static const _uploadConfigForm =
-      """
-<html>
-<head>
-<title>OTA upload config.json</title>
-</head>
-<body>
-<form method="post" enctype="multipart/form-data" >
- <div>
-   <p>v${ApplicationInfo.frontendVersion}</p>
-   <p><b>OTA upload config.json</b></p>
-   <label for="code">Code</label><Br>
-   <input id="code" name="code" ><Br>
-   <label for="file">Choose file to upload config</label><Br>
-   <input type="file" id="file" name="file" multiple>
- </div>
- <div>
-   <button>Submit</button>
- </div>
-</form>
-</body>
-</html>
-""";
-
   Response _getOTAUploadConfig(Request request) {
-    return Response.ok(_uploadConfigForm, headers: {'content-type': 'text/html; charset=utf-8'});
+    _keepWebSession();
+    return Response.ok(
+      renderOtaUploadConfigPage(
+        frontendVersion: ApplicationInfo.frontendVersion,
+        backendVersion: ApplicationInfo.backendVersion,
+        language: _language(request),
+        busy: busy,
+      ),
+      headers: _htmlHeaders,
+    );
   }
 
   Future<Response> _postOTAUploadConfig(Request request) async {
-    String code = '';
-    String configData = '';
-    var multipart = request.multipart();
-    if (multipart == null /*!request.isMultipart*/ ) {
-      return Response.ok('Not a multipart request');
-    }
-    var multipartForm = request.formData();
-    if (multipartForm == null /*!request.isMultipartForm*/ ) {
-      return Response.forbidden('Need multipart request');
-    }
-    _log.info('Parsed form multipart request');
-    var fullSize = request.contentLength!;
-    //200Mb
-    if (fullSize > 20 * 1024 * 1024) {
-      return Response.ok('Too big size');
-    }
-
-    await for (final formData in multipartForm.formData /*request.multipartFormData*/ ) {
-      _log.info('${formData.name}');
-      if (formData.name == 'code') {
-        code = await formData.part.readString();
-        _log.info('code="$code"');
-      } else if (formData.name == 'file') {
-        _log.info('Filename "${formData.filename!}}"');
-        configData = await formData.part.readString();
-      }
-    }
-    _log.info('file size: ${configData.length}');
-    if (code != _code) {
-      return Response.forbidden('Code error');
-    }
+    if (busy)
+      return _failureResponse(
+        request,
+        const UploadFailure(409, 'An OTA operation is already active'),
+      );
+    final operation = _beginOperation();
     try {
-      AppConfig.fromJson((json.decode(configData)) as Map<String, dynamic>);
-      io.File(config.fullConfigFilename)
-        ..openWrite()
-        ..writeAsStringSync(configData);
-    } catch (e, st) {
-      _log.warning("Parse & save config to '${config.fullConfigFilename}'", e, st);
-      return Response.forbidden('Error: $e');
+      await _configTransfer.upload(
+        request,
+        code: _code,
+        cancellation: operation.cancellation,
+      );
+      _checkOpen(operation);
+      final strings = _strings(request);
+      return _resultResponse(
+        request,
+        text: 'Config updated',
+        title: strings.configSavedTitle,
+        message: strings.configSavedMessage,
+      );
+    } catch (error, stack) {
+      final failure = uploadFailureFor(error);
+      if (failure.statusCode >= 500 && !_closed)
+        _log.warning('Could not import OTA configuration', error, stack);
+      return _failureResponse(
+        request,
+        failure,
+        kind: _OtaTransferKind.configImport,
+      );
+    } finally {
+      _finishInput(operation);
     }
-    _log.info('Config updated');
-    return Response.ok('Config updated');
   }
 }
+
+enum _OtaTransferKind { firmware, configImport, configExport }
 
 class _OTAOperation {
   final UploadCancellationToken cancellation = UploadCancellationToken();

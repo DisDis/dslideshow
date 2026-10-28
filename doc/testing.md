@@ -11,7 +11,8 @@
 | --- | --- |
 | `common/test/encode_decode_test.dart` | Настоящий JSON payload модели ErrorResult, включая отклонение неверного типа поля. |
 | `backend/test/serializers_test.dart` | Рабочий RPC-реестр, теги, envelope, декодирование и неизвестные типы. |
-| `backend/test/ota_test.dart`, `ota_upload_test.dart` | Выбор DEB из ответа релиза, повреждённые ответы, отказ от скачивания установленной/старой версии, загрузка и установка. |
+| `backend/test/ota_test.dart`, `ota_upload_test.dart` | Выбор DEB из ответа релиза, повреждённые ответы, отказ от скачивания установленной/старой версии, загрузка и установка; HTTP-страницы OTA, произвольный текстовый код, возврат к слайдшоу и устойчивость запуска. |
+| `backend/test/ota_config_transfer_test.dart` | Выдача исходных байтов `config.json`, включая повреждённый JSON; авторизация, проверка `AppConfig`, пределы, атомарная замена и очистка при ошибках импорта. |
 | `dslideshow_flutter/test/effect_settings_test.dart` | Передача настроек и пиксели начала, промежуточного и конечного кадра для вариантов направления, формы, цвета и стиля. |
 | `dslideshow_flutter/test/effect_parameter_rendering_test.dart` | Наблюдаемое влияние активных параметров на изображение и чистые endpoints. |
 | Остальные пиксельные тесты эффектов | Полноразмерные кадры, границы, blur и sampling; плотные сетки Mosaic 100/150/200 сохраняются. |
@@ -55,6 +56,14 @@ DOM-событие `beforeunload` и настоящий BrowserClient/CORS. Ус
 подтверждает компиляцию, но не запуск в браузере. Исторические результаты
 браузерных прогонов сохраняются в отчётах; их чтение не требует нового прогона.
 
+Страницы OTA используют встроенные HTML/CSS и обычные формы, работающие без
+JavaScript. Необязательный скрипт страницы прошивки меняет подпись кнопки при
+отправке и блокирует повторное нажатие. Локальные backend-тесты в VM проверяют
+маршруты, ответы, контракт HTML/CSP скрипта и работу сервисов, но не выполнение
+скрипта, отправку HTML-форм, отображение CSS и адаптивность в настоящем браузере.
+Аппаратная установка DEB и сохранность конфигурации при отключении питания
+также не входят в локальное покрытие; [контракт OTA и конфигурации](uploads.md).
+
 ## Запуск
 
 Из корня репозитория:
@@ -70,7 +79,7 @@ DOM-событие `beforeunload` и настоящий BrowserClient/CORS. Ус
 
 ```bash
 (cd common && dart test test/encode_decode_test.dart)
-(cd backend && dart test --concurrency=1 test/serializers_test.dart test/ota_test.dart test/ota_upload_test.dart)
+(cd backend && dart test --concurrency=1 test/serializers_test.dart test/ota_test.dart test/ota_upload_test.dart test/ota_config_transfer_test.dart)
 (cd dslideshow_flutter && flutter test --no-pub test/effect_settings_test.dart test/video_session_test.dart test/zoom_blur_effect_test.dart)
 (cd config_app && flutter test --no-pub test/premiere_transitions_preview_test.dart test/config_bloc_test.dart test/config_screen_test.dart test/single_video_player_test.dart test/video_grid_item_test.dart test/effects_editor_test.dart test/argb_color_field_test.dart test/device_page_test.dart test/rpc_telemetry_widget_test.dart test/slideshow_preview_test.dart)
 ```
