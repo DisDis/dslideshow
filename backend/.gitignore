@@ -70,6 +70,8 @@
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /lib/src/service/googlephoto/client_test_access.dart
 /images/
+/images.trash/
+/images.gallery/
 /storage.json
 /firmwares
 /firmwares/

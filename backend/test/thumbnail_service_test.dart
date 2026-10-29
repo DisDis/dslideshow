@@ -2,7 +2,6 @@
 // ignore_for_file: avoid_slow_async_io
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
@@ -10,58 +9,7 @@ import 'package:image/image.dart' as image;
 import 'package:test/test.dart';
 
 import 'helpers/capture_logs.dart';
-
-class ControlledWorker implements ThumbnailWorker {
-  final List<Completer<ThumbnailWorkerResult>> requests = [];
-  final List<ThumbnailCancellationToken> cancellations = [];
-  Completer<void> _changed = Completer();
-  int active = 0;
-  int peak = 0;
-
-  Future<void> waitForCalls(int count) async {
-    while (requests.length < count) {
-      await _changed.future.timeout(const Duration(seconds: 5));
-    }
-  }
-
-  @override
-  Future<ThumbnailWorkerResult> run(
-    ThumbnailWorkRequest request, {
-    required Duration timeout,
-    required ThumbnailCancellationToken cancellation,
-  }) async {
-    final completer = Completer<ThumbnailWorkerResult>();
-    requests.add(completer);
-    cancellations.add(cancellation);
-    active++;
-    if (active > peak) peak = active;
-    final changed = _changed;
-    _changed = Completer();
-    changed.complete();
-    final remove = cancellation.listen(() {
-      if (!completer.isCompleted) {
-        completer.completeError(
-          const ThumbnailFailure(ThumbnailFailureKind.cancelled),
-        );
-      }
-    });
-    try {
-      return await completer.future;
-    } finally {
-      remove();
-      active--;
-    }
-  }
-
-  void complete(int index, [List<int> bytes = const [1, 2, 3, 4]]) {
-    requests[index].complete(
-      ThumbnailWorkerResult(
-        bytes: Uint8List.fromList(bytes),
-        digest: md5.convert(bytes).toString(),
-      ),
-    );
-  }
-}
+import 'support/controlled_thumbnail_worker.dart';
 
 Matcher failure(ThumbnailFailureKind kind) => throwsA(
   isA<ThumbnailFailure>().having((value) => value.kind, 'kind', kind),
@@ -109,6 +57,28 @@ void main() {
     services.clear();
     await root.delete(recursive: true);
   });
+
+  test(
+    'thumbnail cleanup preserves sibling trash inside gallery state',
+    () async {
+      cache = Directory('${root.path}/images.gallery/thumbnails');
+      await cache.create(recursive: true);
+      final temporary = await File('${cache.path}/.thumb-${'a' * 32}.part')
+          .writeAsString('interrupted thumbnail');
+      final retained = File(
+        '${root.path}/images.gallery/trash/album/photo.png',
+      );
+      await retained.parent.create(recursive: true);
+      final bytes = image.encodePng(image.Image(width: 4, height: 3));
+      await retained.writeAsBytes(bytes);
+      final service = create();
+      await service.initialize();
+      expect(await temporary.exists(), isFalse);
+      expect(await retained.readAsBytes(), bytes);
+      await service.close();
+      expect(await retained.readAsBytes(), bytes);
+    },
+  );
 
   test(
     'default disk cache retains 2048 derivatives and evicts overflow',

@@ -5,6 +5,7 @@ import 'package:config_app/features/realtime/domain/services/realtime_service.da
 import 'gallery_encoded_cache.dart';
 import 'gallery_image_widget.dart';
 import 'gallery_repository.dart';
+import 'gallery_management_repository.dart';
 import 'media_image_loader.dart';
 
 /// One image transport/cache scope is shared by gallery and fullscreen routes.
@@ -14,7 +15,14 @@ final class GallerySession {
     required this.repository,
     required this.loader,
     GalleryDecodePool? decodePool,
-  }) : decodePool = decodePool ?? GalleryDecodePool();
+    GalleryManagementRepository? management,
+  }) : decodePool = decodePool ?? GalleryDecodePool(),
+       management =
+           management ??
+           GalleryManagementRepository(
+             baseUri: repository.baseUri,
+             code: repository.code,
+           );
 
   static final _sessions = Expando<GallerySession>();
 
@@ -53,6 +61,7 @@ final class GallerySession {
   final GalleryRepository repository;
   final MediaImageLoader loader;
   final GalleryDecodePool decodePool;
+  final GalleryManagementRepository management;
   StreamSubscription<dynamic>? _disconnect;
   bool _closed = false;
   Future<void>? _closing;
@@ -61,6 +70,7 @@ final class GallerySession {
   Future<void> _close() async {
     _closed = true;
     repository.close();
+    management.close();
     decodePool.close();
     final disconnect = _disconnect;
     if (disconnect != null) await disconnect.cancel();

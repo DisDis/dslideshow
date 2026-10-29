@@ -15,7 +15,7 @@
 | JSON настроек эффектов, пресеты, параметры и редактор | [Настройки эффектов](effect-settings.md) |
 | Сессии слайдов, владение ресурсами и входы эффектов | [Renderer слайдшоу](slideshow-renderer.md) |
 | Часы, камеры и расписания | [Специальные экраны](special-screens.md) |
-| Медиатека, HTTP API, миниатюры и бюджеты | [Галерея](gallery.md) |
+| Медиатека, корзина, дубликаты, HTTP API и миниатюры | [Галерея](gallery.md) |
 | Потоковые загрузки, серверные страницы OTA и импорт конфигурации | [Загрузки и OTA](uploads.md) |
 | Состояния OTA на дисплее и происхождение снимков | [Экран обновления](ota-update-stages.md) |
 | Сон, присутствие, GPIO и питание дисплея | [Сон и присутствие](screen-presence.md) |
@@ -38,6 +38,10 @@ README пакетов содержат быстрый запуск и отлич
 * [Общая очередь](plans/roadmap.md): веб-доступ/OTA, медиатека,
   воспроизводимость сборки и границы пакетов.
 * [Панель настройки](plans/config-app-improvements.md).
+* [Обнаружение фоторамок в локальной сети](plans/lan-frame-discovery.md):
+  автопоиск на login нативного config_app, ручной повтор и web-порт из mDNS/DNS-SD.
+* [Экран подключения к настройкам на рамке](plans/config-page-refresh.md):
+  перевод ConfigPage на Bloc/StatelessWidget и обновление UX; ожидает согласования.
 * [Эффекты и оставшаяся приёмка](plans/effects-work.md).
 * [Реальные материалы, состояния рамки и ресурсы](plans/real-materials-frame-states-plan.md).
 * [Google Photos](plans/google-photos-plan.md).

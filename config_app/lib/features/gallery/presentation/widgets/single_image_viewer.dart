@@ -61,7 +61,9 @@ class _SingleImageViewerState extends State<SingleImageViewer> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item ?? GalleryItem(uri: widget.uri, title: '');
-    final routeActive = ModalRoute.isCurrentOf(context) ?? true;
+    // Non-opaque dialogs leave this image visible. Overlay disables tickers
+    // only when a covering opaque route makes the retained page offstage.
+    final routeActive = TickerMode.valuesOf(context).enabled;
     return InteractiveViewer(
       minScale: 1,
       maxScale: 5,

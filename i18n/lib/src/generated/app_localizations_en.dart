@@ -2492,4 +2492,395 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get frame_language_hint =>
       'Save and restart the frame application to apply this language. The panel language is selected separately in Appearance.';
+
+  @override
+  String get gallery_library => 'Media library';
+
+  @override
+  String get gallery_duplicates => 'Duplicates';
+
+  @override
+  String get gallery_trash => 'Trash';
+
+  @override
+  String get gallery_move_to_trash => 'Move to trash';
+
+  @override
+  String get gallery_restore => 'Restore';
+
+  @override
+  String get gallery_purge => 'Delete permanently';
+
+  @override
+  String get gallery_rotate_left => 'Rotate left 90°';
+
+  @override
+  String get gallery_rotate_right => 'Rotate right 90°';
+
+  @override
+  String get gallery_action_failed =>
+      'Could not complete the operation. Retry the same action.';
+
+  @override
+  String get gallery_file_unavailable => 'File unavailable';
+
+  @override
+  String get gallery_undo => 'Undo';
+
+  @override
+  String get gallery_trashed =>
+      'Moved to trash. Disk space has not been freed.';
+
+  @override
+  String get gallery_restored => 'Files restored';
+
+  @override
+  String get gallery_purged => 'Files permanently deleted';
+
+  @override
+  String get gallery_purge_title => 'Delete permanently?';
+
+  @override
+  String get gallery_trash_hint =>
+      'Files can be restored. Space is freed only after permanent deletion. Automatic cleanup is off.';
+
+  @override
+  String get gallery_file_size => 'File size';
+
+  @override
+  String get gallery_resolution => 'Resolution';
+
+  @override
+  String get gallery_date_taken => 'Date taken';
+
+  @override
+  String get gallery_file_modified => 'File modified';
+
+  @override
+  String get gallery_format => 'Format';
+
+  @override
+  String get gallery_camera => 'Camera';
+
+  @override
+  String get gallery_lens => 'Lens';
+
+  @override
+  String get gallery_iso => 'ISO';
+
+  @override
+  String get gallery_exposure => 'Exposure';
+
+  @override
+  String get gallery_aperture => 'Aperture';
+
+  @override
+  String get gallery_focal_length => 'Focal length';
+
+  @override
+  String get gallery_orientation => 'Orientation';
+
+  @override
+  String get gallery_location => 'Location';
+
+  @override
+  String get gallery_duration => 'Duration, seconds';
+
+  @override
+  String get gallery_codec => 'Codec';
+
+  @override
+  String get gallery_color_profile => 'Colour profile';
+
+  @override
+  String get gallery_bit_depth => 'Bit depth';
+
+  @override
+  String get gallery_alpha => 'Alpha channel';
+
+  @override
+  String get gallery_no_metadata => 'No additional metadata';
+
+  @override
+  String get gallery_metadata_failed => 'Could not load file details';
+
+  @override
+  String get gallery_duplicate_select_hint =>
+      'Select files to move to trash. Keep at least one file in the group.';
+
+  @override
+  String get gallery_duplicate_review_done =>
+      'All current groups have been reviewed.';
+
+  @override
+  String get gallery_duplicate_review_again => 'Review again';
+
+  @override
+  String gallery_duplicate_members(int first, int last, int total) {
+    return 'Files $first–$last of $total';
+  }
+
+  @override
+  String get gallery_search_new => 'New search';
+
+  @override
+  String get gallery_search_start => 'Start search';
+
+  @override
+  String get gallery_search_stop => 'Stop';
+
+  @override
+  String get gallery_exact_copies => 'Exact copies';
+
+  @override
+  String get gallery_similar_images => 'Similar photos';
+
+  @override
+  String get gallery_search_scope =>
+      'Search the local photo library. Trash is excluded. Nothing is deleted automatically.';
+
+  @override
+  String get gallery_search_running => 'Searching…';
+
+  @override
+  String get gallery_search_stopping => 'Stopping…';
+
+  @override
+  String get gallery_search_none => 'No matches found';
+
+  @override
+  String get gallery_search_failed =>
+      'Search failed. Previous results have not been replaced.';
+
+  @override
+  String get gallery_search_cancelled => 'Search stopped';
+
+  @override
+  String get gallery_search_interrupted =>
+      'Search interrupted. Start a new search.';
+
+  @override
+  String get gallery_skip_group => 'Skip group';
+
+  @override
+  String get gallery_keep_one =>
+      'Keep at least one current file in each group.';
+
+  @override
+  String get gallery_stale_result =>
+      'A file has changed or disappeared. Search again before applying this decision.';
+
+  @override
+  String get gallery_similar_hint =>
+      'Similarity does not guarantee equal quality. Compare the whole image and its details.';
+
+  @override
+  String get gallery_exact_hint =>
+      'The file contents match. Names and folders may differ.';
+
+  @override
+  String get gallery_result_review_title => 'Move these files to trash?';
+
+  @override
+  String get gallery_operation_details => 'Operation details';
+
+  @override
+  String get gallery_not_supported =>
+      'This operation is not supported for this file.';
+
+  @override
+  String get gallery_error_forbidden => 'Access denied';
+
+  @override
+  String get gallery_error_busy => 'The service is busy';
+
+  @override
+  String get gallery_error_conflict =>
+      'The file path or state conflicts with this action.';
+
+  @override
+  String get gallery_error_revision => 'The file has changed';
+
+  @override
+  String get gallery_error_missing => 'File not found';
+
+  @override
+  String get gallery_error_unavailable => 'The service is unavailable';
+
+  @override
+  String get gallery_failed_files => 'Some files could not be processed.';
+
+  @override
+  String get gallery_search_cause_tool_unavailable =>
+      'Czkawka CLI is not available to the backend. Install it or add it to the backend process\'s PATH.';
+
+  @override
+  String get gallery_search_cause_unsupported_version =>
+      'This Czkawka CLI version is not supported. Use version 8.x or 12.x.';
+
+  @override
+  String get gallery_search_cause_version_probe_failed =>
+      'Could not determine the Czkawka CLI version. Check that the executable can run.';
+
+  @override
+  String get gallery_search_cause_process_failed =>
+      'Czkawka CLI reported an error. Check the exit code and the backend log for this job.';
+
+  @override
+  String get gallery_search_cause_timeout =>
+      'The search exceeded its time limit. Try one search mode at a time.';
+
+  @override
+  String get gallery_search_cause_output_limit =>
+      'A candidate or result limit was exceeded. Check the library size and backend limits.';
+
+  @override
+  String get gallery_search_cause_invalid_result =>
+      'Czkawka CLI returned an unreadable or unexpected report.';
+
+  @override
+  String get gallery_search_cause_storage_unavailable =>
+      'The backend could not read or save search data. Check permissions and free disk space.';
+
+  @override
+  String get gallery_search_cause_unexpected =>
+      'The backend could not finish the search. Check the job identifier in its log.';
+
+  @override
+  String get gallery_search_transport_failed =>
+      'Could not get the search status from the backend. Check the connection and retry.';
+
+  @override
+  String get gallery_search_stage => 'Stage';
+
+  @override
+  String get gallery_search_stage_unknown => 'Unknown';
+
+  @override
+  String get gallery_search_stage_snapshot => 'Preparing candidates';
+
+  @override
+  String get gallery_search_stage_version_probe => 'Checking tool version';
+
+  @override
+  String get gallery_search_stage_scanning => 'Running Czkawka CLI';
+
+  @override
+  String get gallery_search_stage_validation => 'Checking the report';
+
+  @override
+  String get gallery_search_stage_persistence => 'Saving results';
+
+  @override
+  String get gallery_search_tool_version => 'Czkawka CLI version';
+
+  @override
+  String get gallery_search_exit_code => 'Exit code';
+
+  @override
+  String get gallery_search_mode => 'Search mode';
+
+  @override
+  String get gallery_search_candidates => 'Candidates prepared';
+
+  @override
+  String get gallery_search_matched => 'Matching files';
+
+  @override
+  String get gallery_search_rejected => 'Report entries rejected';
+
+  @override
+  String get gallery_search_snapshot_skipped =>
+      'Files skipped while preparing candidates';
+
+  @override
+  String get gallery_search_job_id => 'Job';
+
+  @override
+  String get gallery_search_error_code => 'Error code';
+
+  @override
+  String get gallery_details_loading => 'Loading details…';
+
+  @override
+  String get gallery_retry_details => 'Retry details';
+
+  @override
+  String get gallery_retry_image => 'Reload image';
+
+  @override
+  String get gallery_select_all => 'Select all';
+
+  @override
+  String get gallery_clear_trash => 'Empty trash';
+
+  @override
+  String gallery_mutation_progress(int processed, int total) {
+    return 'Processed $processed of $total';
+  }
+
+  @override
+  String get gallery_mutation_unknown =>
+      'The operation result could not be confirmed. Refresh the list and check the remaining files.';
+
+  @override
+  String get gallery_undo_changed => 'Some files are no longer in Trash.';
+
+  @override
+  String get gallery_metadata_timeout =>
+      'The server took too long to load the details. Try again.';
+
+  @override
+  String get gallery_metadata_read_failed => 'Could not read the file details.';
+
+  @override
+  String get gallery_trash_title => 'Move to trash?';
+
+  @override
+  String gallery_trash_confirm_body(int count) {
+    return 'Files: $count. They can be restored from Trash.';
+  }
+
+  @override
+  String get gallery_confirmation_changed =>
+      'The selection or files changed. Review the selection and try again.';
+
+  @override
+  String gallery_failed_count(int count) {
+    return 'Failed files: $count';
+  }
+
+  @override
+  String gallery_first_files(int count) {
+    return 'Showing the first $count files.';
+  }
+
+  @override
+  String gallery_elapsed(String time) {
+    return 'Elapsed: $time';
+  }
+
+  @override
+  String gallery_purge_body(int count, int bytes) {
+    return '$count files, $bytes bytes. They cannot be restored through the photo frame.';
+  }
+
+  @override
+  String gallery_group_position(int current, int total) {
+    return 'Group $current of $total';
+  }
+
+  @override
+  String gallery_skipped(int count) {
+    return 'Skipped files: $count';
+  }
+
+  @override
+  String get gallery_trash_file_changed => 'Trash file changed';
+
+  @override
+  String get gallery_yes => 'Yes';
+
+  @override
+  String get gallery_no => 'No';
 }

@@ -12,7 +12,6 @@ Map<String, dynamic> catalog({
   String revision = 'r1',
   String renderRevision = '',
 }) => GalleryCatalog(
-  serverId: 'server',
   catalogRevision: 'c1',
   capabilities: [
     GalleryCapability.thumbnails,
@@ -47,12 +46,53 @@ GalleryRepository repository(http.Client client) => GalleryRepository(
 );
 
 void main() {
+  test(
+    '50001 media entries fit the normal catalog contract without truncation',
+    () async {
+      final payload = catalog();
+      payload['entries'] = List.generate(
+        50001,
+        (index) => GalleryEntry(
+          mediaId: 'media-$index',
+          path: '2026/10/album/photo-$index.jpg',
+          name: 'photo-$index.jpg',
+          kind: GalleryEntryKind.image,
+          sourceRevision: 'revision-$index',
+          thumbnailSupported: true,
+        ).toJson(),
+      );
+      final body = jsonEncode(payload);
+      var requests = 0;
+      final repo = repository(
+        MockClient((_) async {
+          requests++;
+          return http.Response(body, 200);
+        }),
+      );
+      addTearDown(repo.close);
+      expect(utf8.encode(body).length, lessThan(repo.maxCatalogBytes));
+      final result = await repo.load();
+      expect(result.items, hasLength(50001));
+      expect(result.items.first.mediaId, 'media-0');
+      expect(result.items.last.mediaId, 'media-50000');
+      expect(result.items.last.revision, 'revision-50000');
+      expect(result.items.last.uri.pathSegments.last, 'photo-50000.jpg');
+      expect(result.items.last.thumbnailsEnabled, isTrue);
+      expect(
+        requests,
+        1,
+        reason: 'Loading the catalog must not fetch media bodies',
+      );
+    },
+  );
+
   test('typed catalog preserves original, safely encodes path and picks DPR bucket', () async {
     final repo = repository(
       MockClient((_) async => http.Response(jsonEncode(catalog()), 200)),
     );
     final result = await repo.load();
     final item = result.items.single;
+    expect(item.scope, repo.authScope);
     expect(item.uri.pathSegments, [
       'cache',
       'secret',

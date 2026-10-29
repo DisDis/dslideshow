@@ -13,29 +13,26 @@ Logger _log = new Logger('main');
 final injector = GetIt.instance;
 
 void main(List<String> args) async {
-  initLog("main");
+  initLog("web-local");
   _log.info("Run");
   try {
     getInjectorModule();
     final injector = GetIt.instance;
     injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
-      return new WebService(
-        _config,
-        _config.webServer,
-        new FakeRemoteService(name: 'backend'),
-      );
+      return new WebService(_config, _config.webServer, new FakeRemoteService(name: 'backend'));
     });
 
     var config = injector.get<AppConfig>();
-    Logger.root.level = config.log.levelMain;
+    Logger.root.level = config.log.levelWeb;
+    _log.info('Web logging configured level=${Logger.root.level.name}');
 
     var service = injector.get<WebService>();
     new Timer(const Duration(seconds: 1), () {
       service.enabled = true;
     });
-  } catch (e, s) {
-    _log.severe('Fatal error: $e, $s', e, s);
+  } catch (error) {
+    _log.severe('Web startup failed type=${error.runtimeType}');
     exit(1);
   }
   ProcessSignal.sigint.watch().listen((ProcessSignal signal) {

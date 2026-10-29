@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/src/service/gallery/gallery_publication.dart';
 import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
 import 'package:dslideshow_backend/src/web_server/web_service.dart';
 import 'package:dslideshow_backend/src/web_server/media_file_responder.dart';
@@ -68,6 +67,43 @@ void main() {
       body: body,
     ),
   );
+  test(
+    'web request logs are concise and keep safe failure diagnostics without timing',
+    () => captureLogs((records) async {
+      final response = await request('v2/catalog');
+      expect(response.statusCode, 200);
+      await response.read().drain<void>();
+      final rejected = await request(
+        'v2/thumbnail/missing/revision/invalid/256',
+      );
+      expect(rejected.statusCode, 400);
+      await rejected.read().drain<void>();
+      final messages = records
+          .where((record) => record.loggerName == 'WebService')
+          .map((record) => record.message)
+          .toList();
+      expect(messages, contains('Gallery catalog response status=200'));
+      expect(
+        messages
+            .where((line) => line.startsWith('Gallery thumbnail rejected'))
+            .single,
+        contains('reason=invalidRequest'),
+      );
+      expect(
+        messages.any(
+          (line) =>
+              line.contains('phase=') ||
+              line.contains('elapsedMs=') ||
+              line.contains('request=web-') ||
+              line.contains(root.path) ||
+              line.contains('/cache/'),
+        ),
+        isFalse,
+      );
+      expect(messages, hasLength(2));
+    }),
+  );
+
   test('thumbnail bytes, HEAD, cache validator, stale revision and original remain distinct', () async {
     final picture = image.Image(width: 600, height: 400)
       ..clear(image.ColorRgb8(20, 100, 200));
@@ -150,8 +186,14 @@ void main() {
         );
         expect(diagnostic.message, contains('status=503'));
         expect(diagnostic.message, contains('reason=unavailable'));
-        expect(diagnostic.message, contains(entry.mediaId));
-        expect(diagnostic.error, isA<ThumbnailFailure>());
+        expect(
+          diagnostic.message,
+          contains(
+            'media=id-${sha256.convert(utf8.encode(entry.mediaId)).toString().substring(0, 12)}',
+          ),
+        );
+        expect(diagnostic.message, contains('type=ThumbnailFailure'));
+        expect(diagnostic.error, isNull);
         expect(
           records.any(
             (record) => record.message.contains('/cache/${service.code}/'),
@@ -281,60 +323,40 @@ void main() {
       await options.read().drain<void>();
     },
   );
-  test(
-    'revisioned original returns a typed temporary publication failure',
-    () async {
-      await File('${media.path}/photo.jpg').writeAsString('original');
-      Future<GalleryCatalog> catalog() async {
-        final response = await request('v2/catalog');
-        expect(response.statusCode, 200);
-        return GalleryCatalog.fromJson(
-          jsonDecode(await response.readAsString()) as Map<String, dynamic>,
-        );
-      }
+  test('original stays readable until staged replacement and rejects the old revision afterwards', () async {
+    await File('${media.path}/photo.jpg').writeAsString('original');
+    Future<GalleryCatalog> catalog() async {
+      final response = await request('v2/catalog');
+      expect(response.statusCode, 200);
+      return GalleryCatalog.fromJson(
+        jsonDecode(await response.readAsString()) as Map<String, dynamic>,
+      );
+    }
 
-      final initial = (await catalog()).entries.single;
-      final publication = await GalleryPublication.begin(
-        Directory('${root.path}/gallery'),
-        'photo.jpg',
-      );
-      try {
-        final unavailable = await request(
-          'get/photo.jpg?rev=${initial.sourceRevision}',
-        );
-        expect(unavailable.statusCode, 503);
-        expect(unavailable.headers['access-control-allow-origin'], '*');
-        expect(unavailable.headers['cache-control'], 'no-store');
-        expect(unavailable.headers['retry-after'], '1');
-        expect(
-          GalleryErrorResponse.fromJson(
-            jsonDecode(await unavailable.readAsString())
-                as Map<String, dynamic>,
-          ).code,
-          GalleryErrorCode.unavailable,
-        );
-      } finally {
-        await publication.finish();
-      }
-      final stale = await request(
-        'get/photo.jpg?rev=${initial.sourceRevision}',
-      );
-      expect(stale.statusCode, 409);
-      expect(stale.headers['access-control-allow-origin'], '*');
-      expect(
-        GalleryErrorResponse.fromJson(
-          jsonDecode(await stale.readAsString()) as Map<String, dynamic>,
-        ).code,
-        GalleryErrorCode.revisionMismatch,
-      );
-      final current = (await catalog()).entries.single;
-      final recovered = await request(
-        'get/photo.jpg?rev=${current.sourceRevision}',
-      );
-      expect(recovered.statusCode, 200);
-      expect(await recovered.readAsString(), 'original');
-    },
-  );
+    final initial = (await catalog()).entries.single;
+    final staged = await File('${media.path}/.upload-${'a' * 32}.part')
+        .writeAsString('replacement');
+    final ready = await request('get/photo.jpg?rev=${initial.sourceRevision}');
+    expect(ready.statusCode, 200);
+    expect(await ready.readAsString(), 'original');
+    expect((await catalog()).entries.single.mediaId, initial.mediaId);
+    await staged.rename('${media.path}/photo.jpg');
+    final stale = await request('get/photo.jpg?rev=${initial.sourceRevision}');
+    expect(stale.statusCode, 409);
+    expect(stale.headers['access-control-allow-origin'], '*');
+    expect(
+      GalleryErrorResponse.fromJson(
+        jsonDecode(await stale.readAsString()) as Map<String, dynamic>,
+      ).code,
+      GalleryErrorCode.revisionMismatch,
+    );
+    final current = (await catalog()).entries.single;
+    final recovered = await request(
+      'get/photo.jpg?rev=${current.sourceRevision}',
+    );
+    expect(recovered.statusCode, 200);
+    expect(await recovered.readAsString(), 'replacement');
+  });
   test('media cap lasts until body completion/cancel, including unconsumed responses', () async {
     final file = await File('${media.path}/large.bin')
         .writeAsBytes(List.filled(200000, 7));

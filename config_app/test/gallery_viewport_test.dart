@@ -12,7 +12,7 @@ import 'gallery_image_loader_test.dart' show ControlledClient;
 
 void main() {
   testWidgets(
-    'sliver viewport bounds demand through fling/reverse/resize/fullscreen/dispose',
+    '50001-item sliver bounds demand through end/start/resize/fullscreen/dispose',
     (tester) async {
       final client = ControlledClient();
       final loader = MediaImageLoader(
@@ -29,7 +29,7 @@ void main() {
       );
       final scroll = ScrollController();
       final items = List.generate(
-        1000,
+        50001,
         (index) => GalleryItem(
           uri: Uri.parse('http://localhost/original-$index.jpg'),
           title: '$index',
@@ -71,7 +71,7 @@ void main() {
       await tester.pump();
       expect(loader.activeCount, 2);
       expect(loader.pendingCount, lessThan(30));
-      scroll.jumpTo(20000);
+      scroll.jumpTo(scroll.position.maxScrollExtent);
       await tester.pump();
       await tester.pump();
       expect(
@@ -80,6 +80,13 @@ void main() {
       );
       expect(loader.activeCount, lessThanOrEqualTo(2));
       expect(loader.pendingCount, lessThan(30));
+      expect(
+        tester
+            .widgetList<ImageGridItem>(find.byType(ImageGridItem))
+            .any((widget) => widget.item.mediaId == '50000'),
+        isTrue,
+        reason: 'The end of a large library must be reachable without eagerly building it',
+      );
       scroll.jumpTo(0);
       await tester.pump();
       await tester.pump();

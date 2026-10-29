@@ -4837,6 +4837,696 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save and restart the frame application to apply this language. The panel language is selected separately in Appearance.'**
   String get frame_language_hint;
+
+  /// No description provided for @gallery_library.
+  ///
+  /// In en, this message translates to:
+  /// **'Media library'**
+  String get gallery_library;
+
+  /// No description provided for @gallery_duplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicates'**
+  String get gallery_duplicates;
+
+  /// No description provided for @gallery_trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get gallery_trash;
+
+  /// No description provided for @gallery_move_to_trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to trash'**
+  String get gallery_move_to_trash;
+
+  /// No description provided for @gallery_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get gallery_restore;
+
+  /// No description provided for @gallery_purge.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get gallery_purge;
+
+  /// No description provided for @gallery_rotate_left.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate left 90°'**
+  String get gallery_rotate_left;
+
+  /// No description provided for @gallery_rotate_right.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate right 90°'**
+  String get gallery_rotate_right;
+
+  /// No description provided for @gallery_action_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete the operation. Retry the same action.'**
+  String get gallery_action_failed;
+
+  /// No description provided for @gallery_file_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'File unavailable'**
+  String get gallery_file_unavailable;
+
+  /// No description provided for @gallery_undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get gallery_undo;
+
+  /// No description provided for @gallery_trashed.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to trash. Disk space has not been freed.'**
+  String get gallery_trashed;
+
+  /// No description provided for @gallery_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Files restored'**
+  String get gallery_restored;
+
+  /// No description provided for @gallery_purged.
+  ///
+  /// In en, this message translates to:
+  /// **'Files permanently deleted'**
+  String get gallery_purged;
+
+  /// No description provided for @gallery_purge_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently?'**
+  String get gallery_purge_title;
+
+  /// No description provided for @gallery_trash_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Files can be restored. Space is freed only after permanent deletion. Automatic cleanup is off.'**
+  String get gallery_trash_hint;
+
+  /// No description provided for @gallery_file_size.
+  ///
+  /// In en, this message translates to:
+  /// **'File size'**
+  String get gallery_file_size;
+
+  /// No description provided for @gallery_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution'**
+  String get gallery_resolution;
+
+  /// No description provided for @gallery_date_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Date taken'**
+  String get gallery_date_taken;
+
+  /// No description provided for @gallery_file_modified.
+  ///
+  /// In en, this message translates to:
+  /// **'File modified'**
+  String get gallery_file_modified;
+
+  /// No description provided for @gallery_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get gallery_format;
+
+  /// No description provided for @gallery_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get gallery_camera;
+
+  /// No description provided for @gallery_lens.
+  ///
+  /// In en, this message translates to:
+  /// **'Lens'**
+  String get gallery_lens;
+
+  /// No description provided for @gallery_iso.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO'**
+  String get gallery_iso;
+
+  /// No description provided for @gallery_exposure.
+  ///
+  /// In en, this message translates to:
+  /// **'Exposure'**
+  String get gallery_exposure;
+
+  /// No description provided for @gallery_aperture.
+  ///
+  /// In en, this message translates to:
+  /// **'Aperture'**
+  String get gallery_aperture;
+
+  /// No description provided for @gallery_focal_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Focal length'**
+  String get gallery_focal_length;
+
+  /// No description provided for @gallery_orientation.
+  ///
+  /// In en, this message translates to:
+  /// **'Orientation'**
+  String get gallery_orientation;
+
+  /// No description provided for @gallery_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get gallery_location;
+
+  /// No description provided for @gallery_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration, seconds'**
+  String get gallery_duration;
+
+  /// No description provided for @gallery_codec.
+  ///
+  /// In en, this message translates to:
+  /// **'Codec'**
+  String get gallery_codec;
+
+  /// No description provided for @gallery_color_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour profile'**
+  String get gallery_color_profile;
+
+  /// No description provided for @gallery_bit_depth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bit depth'**
+  String get gallery_bit_depth;
+
+  /// No description provided for @gallery_alpha.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpha channel'**
+  String get gallery_alpha;
+
+  /// No description provided for @gallery_no_metadata.
+  ///
+  /// In en, this message translates to:
+  /// **'No additional metadata'**
+  String get gallery_no_metadata;
+
+  /// No description provided for @gallery_metadata_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load file details'**
+  String get gallery_metadata_failed;
+
+  /// No description provided for @gallery_duplicate_select_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select files to move to trash. Keep at least one file in the group.'**
+  String get gallery_duplicate_select_hint;
+
+  /// No description provided for @gallery_duplicate_review_done.
+  ///
+  /// In en, this message translates to:
+  /// **'All current groups have been reviewed.'**
+  String get gallery_duplicate_review_done;
+
+  /// No description provided for @gallery_duplicate_review_again.
+  ///
+  /// In en, this message translates to:
+  /// **'Review again'**
+  String get gallery_duplicate_review_again;
+
+  /// No description provided for @gallery_duplicate_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Files {first}–{last} of {total}'**
+  String gallery_duplicate_members(int first, int last, int total);
+
+  /// No description provided for @gallery_search_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New search'**
+  String get gallery_search_new;
+
+  /// No description provided for @gallery_search_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start search'**
+  String get gallery_search_start;
+
+  /// No description provided for @gallery_search_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get gallery_search_stop;
+
+  /// No description provided for @gallery_exact_copies.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact copies'**
+  String get gallery_exact_copies;
+
+  /// No description provided for @gallery_similar_images.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar photos'**
+  String get gallery_similar_images;
+
+  /// No description provided for @gallery_search_scope.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the local photo library. Trash is excluded. Nothing is deleted automatically.'**
+  String get gallery_search_scope;
+
+  /// No description provided for @gallery_search_running.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get gallery_search_running;
+
+  /// No description provided for @gallery_search_stopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopping…'**
+  String get gallery_search_stopping;
+
+  /// No description provided for @gallery_search_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found'**
+  String get gallery_search_none;
+
+  /// No description provided for @gallery_search_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed. Previous results have not been replaced.'**
+  String get gallery_search_failed;
+
+  /// No description provided for @gallery_search_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Search stopped'**
+  String get gallery_search_cancelled;
+
+  /// No description provided for @gallery_search_interrupted.
+  ///
+  /// In en, this message translates to:
+  /// **'Search interrupted. Start a new search.'**
+  String get gallery_search_interrupted;
+
+  /// No description provided for @gallery_skip_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip group'**
+  String get gallery_skip_group;
+
+  /// No description provided for @gallery_keep_one.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep at least one current file in each group.'**
+  String get gallery_keep_one;
+
+  /// No description provided for @gallery_stale_result.
+  ///
+  /// In en, this message translates to:
+  /// **'A file has changed or disappeared. Search again before applying this decision.'**
+  String get gallery_stale_result;
+
+  /// No description provided for @gallery_similar_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Similarity does not guarantee equal quality. Compare the whole image and its details.'**
+  String get gallery_similar_hint;
+
+  /// No description provided for @gallery_exact_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The file contents match. Names and folders may differ.'**
+  String get gallery_exact_hint;
+
+  /// No description provided for @gallery_result_review_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Move these files to trash?'**
+  String get gallery_result_review_title;
+
+  /// No description provided for @gallery_operation_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation details'**
+  String get gallery_operation_details;
+
+  /// No description provided for @gallery_not_supported.
+  ///
+  /// In en, this message translates to:
+  /// **'This operation is not supported for this file.'**
+  String get gallery_not_supported;
+
+  /// No description provided for @gallery_error_forbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get gallery_error_forbidden;
+
+  /// No description provided for @gallery_error_busy.
+  ///
+  /// In en, this message translates to:
+  /// **'The service is busy'**
+  String get gallery_error_busy;
+
+  /// No description provided for @gallery_error_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'The file path or state conflicts with this action.'**
+  String get gallery_error_conflict;
+
+  /// No description provided for @gallery_error_revision.
+  ///
+  /// In en, this message translates to:
+  /// **'The file has changed'**
+  String get gallery_error_revision;
+
+  /// No description provided for @gallery_error_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'File not found'**
+  String get gallery_error_missing;
+
+  /// No description provided for @gallery_error_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The service is unavailable'**
+  String get gallery_error_unavailable;
+
+  /// No description provided for @gallery_failed_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Some files could not be processed.'**
+  String get gallery_failed_files;
+
+  /// No description provided for @gallery_search_cause_tool_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Czkawka CLI is not available to the backend. Install it or add it to the backend process\'s PATH.'**
+  String get gallery_search_cause_tool_unavailable;
+
+  /// No description provided for @gallery_search_cause_unsupported_version.
+  ///
+  /// In en, this message translates to:
+  /// **'This Czkawka CLI version is not supported. Use version 8.x or 12.x.'**
+  String get gallery_search_cause_unsupported_version;
+
+  /// No description provided for @gallery_search_cause_version_probe_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not determine the Czkawka CLI version. Check that the executable can run.'**
+  String get gallery_search_cause_version_probe_failed;
+
+  /// No description provided for @gallery_search_cause_process_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Czkawka CLI reported an error. Check the exit code and the backend log for this job.'**
+  String get gallery_search_cause_process_failed;
+
+  /// No description provided for @gallery_search_cause_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The search exceeded its time limit. Try one search mode at a time.'**
+  String get gallery_search_cause_timeout;
+
+  /// No description provided for @gallery_search_cause_output_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'A candidate or result limit was exceeded. Check the library size and backend limits.'**
+  String get gallery_search_cause_output_limit;
+
+  /// No description provided for @gallery_search_cause_invalid_result.
+  ///
+  /// In en, this message translates to:
+  /// **'Czkawka CLI returned an unreadable or unexpected report.'**
+  String get gallery_search_cause_invalid_result;
+
+  /// No description provided for @gallery_search_cause_storage_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The backend could not read or save search data. Check permissions and free disk space.'**
+  String get gallery_search_cause_storage_unavailable;
+
+  /// No description provided for @gallery_search_cause_unexpected.
+  ///
+  /// In en, this message translates to:
+  /// **'The backend could not finish the search. Check the job identifier in its log.'**
+  String get gallery_search_cause_unexpected;
+
+  /// No description provided for @gallery_search_transport_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not get the search status from the backend. Check the connection and retry.'**
+  String get gallery_search_transport_failed;
+
+  /// No description provided for @gallery_search_stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Stage'**
+  String get gallery_search_stage;
+
+  /// No description provided for @gallery_search_stage_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get gallery_search_stage_unknown;
+
+  /// No description provided for @gallery_search_stage_snapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing candidates'**
+  String get gallery_search_stage_snapshot;
+
+  /// No description provided for @gallery_search_stage_version_probe.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking tool version'**
+  String get gallery_search_stage_version_probe;
+
+  /// No description provided for @gallery_search_stage_scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running Czkawka CLI'**
+  String get gallery_search_stage_scanning;
+
+  /// No description provided for @gallery_search_stage_validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the report'**
+  String get gallery_search_stage_validation;
+
+  /// No description provided for @gallery_search_stage_persistence.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving results'**
+  String get gallery_search_stage_persistence;
+
+  /// No description provided for @gallery_search_tool_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Czkawka CLI version'**
+  String get gallery_search_tool_version;
+
+  /// No description provided for @gallery_search_exit_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit code'**
+  String get gallery_search_exit_code;
+
+  /// No description provided for @gallery_search_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Search mode'**
+  String get gallery_search_mode;
+
+  /// No description provided for @gallery_search_candidates.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates prepared'**
+  String get gallery_search_candidates;
+
+  /// No description provided for @gallery_search_matched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching files'**
+  String get gallery_search_matched;
+
+  /// No description provided for @gallery_search_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Report entries rejected'**
+  String get gallery_search_rejected;
+
+  /// No description provided for @gallery_search_snapshot_skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Files skipped while preparing candidates'**
+  String get gallery_search_snapshot_skipped;
+
+  /// No description provided for @gallery_search_job_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get gallery_search_job_id;
+
+  /// No description provided for @gallery_search_error_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Error code'**
+  String get gallery_search_error_code;
+
+  /// No description provided for @gallery_details_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading details…'**
+  String get gallery_details_loading;
+
+  /// No description provided for @gallery_retry_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry details'**
+  String get gallery_retry_details;
+
+  /// No description provided for @gallery_retry_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload image'**
+  String get gallery_retry_image;
+
+  /// No description provided for @gallery_select_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get gallery_select_all;
+
+  /// No description provided for @gallery_clear_trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty trash'**
+  String get gallery_clear_trash;
+
+  /// No description provided for @gallery_mutation_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Processed {processed} of {total}'**
+  String gallery_mutation_progress(int processed, int total);
+
+  /// No description provided for @gallery_mutation_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'The operation result could not be confirmed. Refresh the list and check the remaining files.'**
+  String get gallery_mutation_unknown;
+
+  /// No description provided for @gallery_undo_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Some files are no longer in Trash.'**
+  String get gallery_undo_changed;
+
+  /// No description provided for @gallery_metadata_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The server took too long to load the details. Try again.'**
+  String get gallery_metadata_timeout;
+
+  /// No description provided for @gallery_metadata_read_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the file details.'**
+  String get gallery_metadata_read_failed;
+
+  /// No description provided for @gallery_trash_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to trash?'**
+  String get gallery_trash_title;
+
+  /// No description provided for @gallery_trash_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Files: {count}. They can be restored from Trash.'**
+  String gallery_trash_confirm_body(int count);
+
+  /// No description provided for @gallery_confirmation_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'The selection or files changed. Review the selection and try again.'**
+  String get gallery_confirmation_changed;
+
+  /// No description provided for @gallery_failed_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed files: {count}'**
+  String gallery_failed_count(int count);
+
+  /// No description provided for @gallery_first_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the first {count} files.'**
+  String gallery_first_files(int count);
+
+  /// No description provided for @gallery_elapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Elapsed: {time}'**
+  String gallery_elapsed(String time);
+
+  /// No description provided for @gallery_purge_body.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} files, {bytes} bytes. They cannot be restored through the photo frame.'**
+  String gallery_purge_body(int count, int bytes);
+
+  /// No description provided for @gallery_group_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Group {current} of {total}'**
+  String gallery_group_position(int current, int total);
+
+  /// No description provided for @gallery_skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped files: {count}'**
+  String gallery_skipped(int count);
+
+  /// No description provided for @gallery_trash_file_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash file changed'**
+  String get gallery_trash_file_changed;
+
+  /// No description provided for @gallery_yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get gallery_yes;
+
+  /// No description provided for @gallery_no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get gallery_no;
 }
 
 class _AppLocalizationsDelegate

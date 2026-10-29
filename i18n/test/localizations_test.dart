@@ -53,6 +53,8 @@ void main() {
       final english = await AppLocalizations.delegate.load(const Locale('en'));
       final russian = await AppLocalizations.delegate.load(const Locale('ru'));
 
+      expect(english.gallery_duplicate_members(1, 10, 12), 'Files 1–10 of 12');
+      expect(russian.gallery_duplicate_members(1, 10, 12), 'Файлы 1–10 из 12');
       expect(english.config_save_button, 'Save');
       expect(russian.config_save_button, 'Сохранить');
       expect(english.config_app_title, 'DSlideshow Config');

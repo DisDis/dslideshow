@@ -1,5 +1,74 @@
 # Unreleased
 
+* Build the gallery index in memory with path-derived IDs and stat-derived
+  revisions. Keep only a 32-byte catalog.epoch for forced invalidation, preserve
+  unchanged cache keys across restarts, and remove catalog.json and serverId.
+
+* Rotate through a validated temporary file and atomic replacement without a
+  persistent request journal. Reject stale revisions and refresh the viewer
+  after an unknown result before a new user action.
+
+* Mark the in-memory gallery catalog dirty after uploads, rotations, trash and
+  restore in the web isolate. Remove GalleryPublication and publication.version;
+  retain watcher/periodic stat scans for external changes. Google Photos is not
+  part of the notification path. Remove compatibility for unreleased trash layouts.
+
+* Review duplicates as a list of up to ten files per page, keeping selections
+  between pages and confirming every move to trash. Validate groups on opening,
+  omit unavailable members and skip groups with fewer than two current files.
+  Keep user decisions in memory; remove backend JSON byte caps for Czkawka results.
+  Collapse repeated member sets across search modes, preferring exact matches
+  while preserving broader similar groups.
+
+* Replace verbose web request traces with concise response/error messages without
+  phase or duration measurements.
+
+* Simplify trash and restore moves to asynchronous File.rename with a target
+  existence check, removing the Linux FFI wrapper. Accept the race with external
+  writers between the check and rename; keep service mutations serialized.
+
+* Store trash inside images.gallery/trash as a plain directory tree matching
+  the original relative paths,
+  without a manifest or persistent operation history. Add Select all and Empty
+  trash with a confirmation, bounded batches and progress; refresh filesystem
+  contents after an unknown response before the next action.
+
+* Confirm moving files to trash from the grid, viewer and duplicate results, binding approval to
+  the selected file versions. Distinguish image retries from metadata retries
+  in duplicate comparisons and show details-loading errors explicitly.
+
+* Read photo metadata in Dart with exif and rotate PNG images with image,
+  normalizing PNG EXIF orientation and dimensions. Keep jpegtran output unchanged,
+  compare parsed JPEG EXIF before/after and warn on differences without exposing
+  tag values. Report actual dimensions and remove the ExifTool runtime dependency.
+
+* Fix trash operations with configured media-directory symlinks in the local
+  backend harness. Keep decoded photos visible while selecting files or opening
+  dialogs, align gallery/viewer styling with the app, and limit file previews
+  in operation dialogs to ten names plus the total count.
+
+* Keep gallery selection controls visible at zero selection and add a close
+  button and timeout to Undo notifications. Match Czkawka reports against
+  canonical paths and show concrete search errors and candidate/result counts.
+  Use the Web log level in the local backend harness and trace HTTP phases.
+
+* Add gallery file management: move selected media to a separate trash, restore
+  files without overwriting name conflicts, and confirm permanent deletion.
+  Show detailed EXIF metadata inside the media viewer and rotate JPEG images
+  losslessly with jpegtran or PNG images with Dart image.
+
+* Find exact and visually similar photos through Czkawka CLI, with background
+  search, cancellation, image comparison and manual selection of copies for
+  trash. Reject stale selections and preserve a remaining copy in each group.
+
+* Move gallery workflows into Bloc with stateless screens and indexed catalog
+  snapshots for libraries of 50,000+ media files. Keep image demand bounded by
+  the viewport and resolve individual trash previews without listing the trash.
+
+* Add correlated, bounded gallery diagnostics for file operations, rotation,
+  duplicate search and cancellation. Make safe, useful logs an acceptance
+  requirement for future behavior changes.
+
 # 15.2.0+1 — 2026-10-29
 
 * Keep Louver media clipped to each rotating slat near edge-on angles, preventing

@@ -2510,4 +2510,395 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get frame_language_hint =>
       'Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление».';
+
+  @override
+  String get gallery_library => 'Медиатека';
+
+  @override
+  String get gallery_duplicates => 'Дубликаты';
+
+  @override
+  String get gallery_trash => 'Корзина';
+
+  @override
+  String get gallery_move_to_trash => 'В корзину';
+
+  @override
+  String get gallery_restore => 'Восстановить';
+
+  @override
+  String get gallery_purge => 'Удалить навсегда';
+
+  @override
+  String get gallery_rotate_left => 'Повернуть влево на 90°';
+
+  @override
+  String get gallery_rotate_right => 'Повернуть вправо на 90°';
+
+  @override
+  String get gallery_action_failed =>
+      'Не удалось завершить операцию. Повторите действие.';
+
+  @override
+  String get gallery_file_unavailable => 'Файл недоступен';
+
+  @override
+  String get gallery_undo => 'Отменить';
+
+  @override
+  String get gallery_trashed =>
+      'Перемещено в корзину. Место на диске ещё не освобождено.';
+
+  @override
+  String get gallery_restored => 'Файлы восстановлены';
+
+  @override
+  String get gallery_purged => 'Файлы удалены навсегда';
+
+  @override
+  String get gallery_purge_title => 'Удалить навсегда?';
+
+  @override
+  String get gallery_trash_hint =>
+      'Файлы можно восстановить. Место освобождается после окончательного удаления. Автоочистка выключена.';
+
+  @override
+  String get gallery_file_size => 'Размер файла';
+
+  @override
+  String get gallery_resolution => 'Разрешение';
+
+  @override
+  String get gallery_date_taken => 'Дата съёмки';
+
+  @override
+  String get gallery_file_modified => 'Изменён';
+
+  @override
+  String get gallery_format => 'Формат';
+
+  @override
+  String get gallery_camera => 'Камера';
+
+  @override
+  String get gallery_lens => 'Объектив';
+
+  @override
+  String get gallery_iso => 'ISO';
+
+  @override
+  String get gallery_exposure => 'Выдержка';
+
+  @override
+  String get gallery_aperture => 'Диафрагма';
+
+  @override
+  String get gallery_focal_length => 'Фокусное расстояние';
+
+  @override
+  String get gallery_orientation => 'Ориентация';
+
+  @override
+  String get gallery_location => 'Местоположение';
+
+  @override
+  String get gallery_duration => 'Длительность, секунды';
+
+  @override
+  String get gallery_codec => 'Кодек';
+
+  @override
+  String get gallery_color_profile => 'Цветовой профиль';
+
+  @override
+  String get gallery_bit_depth => 'Глубина цвета';
+
+  @override
+  String get gallery_alpha => 'Альфа-канал';
+
+  @override
+  String get gallery_no_metadata => 'Дополнительные метаданные отсутствуют';
+
+  @override
+  String get gallery_metadata_failed => 'Не удалось загрузить сведения';
+
+  @override
+  String get gallery_duplicate_select_hint =>
+      'Выберите файлы для переноса в корзину. Оставьте хотя бы один файл в группе.';
+
+  @override
+  String get gallery_duplicate_review_done =>
+      'Все актуальные группы просмотрены.';
+
+  @override
+  String get gallery_duplicate_review_again => 'Просмотреть снова';
+
+  @override
+  String gallery_duplicate_members(int first, int last, int total) {
+    return 'Файлы $first–$last из $total';
+  }
+
+  @override
+  String get gallery_search_new => 'Новый поиск';
+
+  @override
+  String get gallery_search_start => 'Начать поиск';
+
+  @override
+  String get gallery_search_stop => 'Остановить';
+
+  @override
+  String get gallery_exact_copies => 'Точные копии';
+
+  @override
+  String get gallery_similar_images => 'Похожие фотографии';
+
+  @override
+  String get gallery_search_scope =>
+      'Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.';
+
+  @override
+  String get gallery_search_running => 'Выполняется поиск…';
+
+  @override
+  String get gallery_search_stopping => 'Останавливаем…';
+
+  @override
+  String get gallery_search_none => 'Совпадения не найдены';
+
+  @override
+  String get gallery_search_failed =>
+      'Ошибка поиска. Предыдущие результаты не заменены.';
+
+  @override
+  String get gallery_search_cancelled => 'Поиск остановлен';
+
+  @override
+  String get gallery_search_interrupted =>
+      'Поиск прерван. Запустите новый поиск.';
+
+  @override
+  String get gallery_skip_group => 'Пропустить группу';
+
+  @override
+  String get gallery_keep_one =>
+      'Оставьте хотя бы один актуальный файл в каждой группе.';
+
+  @override
+  String get gallery_stale_result =>
+      'Файл изменён или исчез. Перед применением решения повторите поиск.';
+
+  @override
+  String get gallery_similar_hint =>
+      'Сходство не означает одинаковое качество. Сравните целый кадр и детали.';
+
+  @override
+  String get gallery_exact_hint =>
+      'Содержимое файлов совпадает. Имена и папки могут различаться.';
+
+  @override
+  String get gallery_result_review_title => 'Переместить эти файлы в корзину?';
+
+  @override
+  String get gallery_operation_details => 'Результаты операции';
+
+  @override
+  String get gallery_not_supported =>
+      'Операция не поддерживается для этого файла.';
+
+  @override
+  String get gallery_error_forbidden => 'Нет доступа';
+
+  @override
+  String get gallery_error_busy => 'Сервис занят';
+
+  @override
+  String get gallery_error_conflict => 'Конфликт пути или состояния файла.';
+
+  @override
+  String get gallery_error_revision => 'Файл изменён';
+
+  @override
+  String get gallery_error_missing => 'Файл не найден';
+
+  @override
+  String get gallery_error_unavailable => 'Сервис недоступен';
+
+  @override
+  String get gallery_failed_files => 'Часть файлов не удалось обработать.';
+
+  @override
+  String get gallery_search_cause_tool_unavailable =>
+      'Czkawka CLI недоступна backend. Установите утилиту или добавьте её в PATH процесса backend.';
+
+  @override
+  String get gallery_search_cause_unsupported_version =>
+      'Эта версия Czkawka CLI не поддерживается. Используйте ветку 8.x или 12.x.';
+
+  @override
+  String get gallery_search_cause_version_probe_failed =>
+      'Не удалось определить версию Czkawka CLI. Проверьте, что утилита запускается.';
+
+  @override
+  String get gallery_search_cause_process_failed =>
+      'Czkawka CLI сообщила об ошибке. Проверьте код завершения и журнал этого задания на backend.';
+
+  @override
+  String get gallery_search_cause_timeout =>
+      'Поиск превысил ограничение времени. Попробуйте запускать режимы по одному.';
+
+  @override
+  String get gallery_search_cause_output_limit =>
+      'Превышен лимит кандидатов или результата. Проверьте размер коллекции и ограничения backend.';
+
+  @override
+  String get gallery_search_cause_invalid_result =>
+      'Czkawka CLI вернула нечитаемый отчёт или неожиданный формат.';
+
+  @override
+  String get gallery_search_cause_storage_unavailable =>
+      'Backend не смог прочитать или сохранить данные поиска. Проверьте права и свободное место на диске.';
+
+  @override
+  String get gallery_search_cause_unexpected =>
+      'Backend не смог завершить поиск. Проверьте идентификатор задания в его журнале.';
+
+  @override
+  String get gallery_search_transport_failed =>
+      'Не удалось получить состояние поиска от backend. Проверьте соединение и повторите запрос.';
+
+  @override
+  String get gallery_search_stage => 'Этап';
+
+  @override
+  String get gallery_search_stage_unknown => 'Неизвестно';
+
+  @override
+  String get gallery_search_stage_snapshot => 'Подготовка кандидатов';
+
+  @override
+  String get gallery_search_stage_version_probe => 'Проверка версии утилиты';
+
+  @override
+  String get gallery_search_stage_scanning => 'Запуск Czkawka CLI';
+
+  @override
+  String get gallery_search_stage_validation => 'Проверка отчёта';
+
+  @override
+  String get gallery_search_stage_persistence => 'Сохранение результата';
+
+  @override
+  String get gallery_search_tool_version => 'Версия Czkawka CLI';
+
+  @override
+  String get gallery_search_exit_code => 'Код завершения';
+
+  @override
+  String get gallery_search_mode => 'Режим поиска';
+
+  @override
+  String get gallery_search_candidates => 'Подготовлено кандидатов';
+
+  @override
+  String get gallery_search_matched => 'Совпавших файлов';
+
+  @override
+  String get gallery_search_rejected => 'Отклонено записей отчёта';
+
+  @override
+  String get gallery_search_snapshot_skipped =>
+      'Пропущено при подготовке кандидатов';
+
+  @override
+  String get gallery_search_job_id => 'Задание';
+
+  @override
+  String get gallery_search_error_code => 'Код ошибки';
+
+  @override
+  String get gallery_details_loading => 'Загрузка сведений…';
+
+  @override
+  String get gallery_retry_details => 'Повторить загрузку сведений';
+
+  @override
+  String get gallery_retry_image => 'Повторить загрузку изображения';
+
+  @override
+  String get gallery_select_all => 'Выделить всё';
+
+  @override
+  String get gallery_clear_trash => 'Очистить корзину';
+
+  @override
+  String gallery_mutation_progress(int processed, int total) {
+    return 'Обработано $processed из $total';
+  }
+
+  @override
+  String get gallery_mutation_unknown =>
+      'Результат операции неизвестен. Обновите список и проверьте оставшиеся файлы.';
+
+  @override
+  String get gallery_undo_changed => 'Некоторых файлов уже нет в корзине.';
+
+  @override
+  String get gallery_metadata_timeout =>
+      'Сервер не успел загрузить сведения. Повторите запрос.';
+
+  @override
+  String get gallery_metadata_read_failed =>
+      'Не удалось прочитать сведения о файле.';
+
+  @override
+  String get gallery_trash_title => 'Переместить в корзину?';
+
+  @override
+  String gallery_trash_confirm_body(int count) {
+    return 'Файлов: $count. Их можно восстановить из корзины.';
+  }
+
+  @override
+  String get gallery_confirmation_changed =>
+      'Выбор или файлы изменились. Проверьте выбор и повторите действие.';
+
+  @override
+  String gallery_failed_count(int count) {
+    return 'Файлов с ошибкой: $count';
+  }
+
+  @override
+  String gallery_first_files(int count) {
+    return 'Показаны первые $count файлов.';
+  }
+
+  @override
+  String gallery_elapsed(String time) {
+    return 'Прошло времени: $time';
+  }
+
+  @override
+  String gallery_purge_body(int count, int bytes) {
+    return 'Файлов: $count, байт: $bytes. Восстановить их через фоторамку не получится.';
+  }
+
+  @override
+  String gallery_group_position(int current, int total) {
+    return 'Группа $current из $total';
+  }
+
+  @override
+  String gallery_skipped(int count) {
+    return 'Пропущено файлов: $count';
+  }
+
+  @override
+  String get gallery_trash_file_changed => 'Изменён в корзине';
+
+  @override
+  String get gallery_yes => 'Да';
+
+  @override
+  String get gallery_no => 'Нет';
 }

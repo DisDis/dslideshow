@@ -1,5 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'gallery_catalog.freezed.dart';
 part 'gallery_catalog.g.dart';
 
 enum GalleryEntryKind {
@@ -11,7 +12,17 @@ enum GalleryEntryKind {
   unknown,
 }
 
-enum GalleryCapability { thumbnails, revisionedOriginals, refresh, unknown }
+enum GalleryCapability {
+  thumbnails,
+  revisionedOriginals,
+  refresh,
+  metadata,
+  mutations,
+  rotation,
+  trash,
+  duplicates,
+  unknown,
+}
 
 enum GalleryThumbnailSize {
   @JsonValue(256)
@@ -37,6 +48,11 @@ enum GalleryErrorCode {
   unsupported,
   busy,
   unavailable,
+  cancelled,
+  timeout,
+  outputLimitExceeded,
+  processingFailed,
+  conflict,
   unknown,
 }
 
@@ -87,30 +103,26 @@ class GalleryEntry {
   Map<String, dynamic> toJson() => _$GalleryEntryToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
-class GalleryCatalog {
-  static const supportedSchemaVersion = 2;
-  @JsonKey(defaultValue: supportedSchemaVersion)
-  final int schemaVersion;
-  final String serverId;
-  final String catalogRevision;
-  @JsonKey(unknownEnumValue: GalleryCapability.unknown)
-  final List<GalleryCapability> capabilities;
-  final GalleryThumbnailPolicy? thumbnailPolicy;
-  final List<GalleryEntry> entries;
+@freezed
+abstract class GalleryCatalog with _$GalleryCatalog {
+  const GalleryCatalog._();
 
-  const GalleryCatalog({
-    this.schemaVersion = supportedSchemaVersion,
-    required this.serverId,
-    required this.catalogRevision,
-    required this.capabilities,
-    required this.thumbnailPolicy,
-    required this.entries,
-  });
+  static const supportedSchemaVersion = 2;
+
+  // Freezed forwards this factory annotation to its generated class.
+  // ignore: invalid_annotation_target
+  @JsonSerializable(explicitToJson: true)
+  const factory GalleryCatalog({
+    @Default(GalleryCatalog.supportedSchemaVersion) int schemaVersion,
+    required String catalogRevision,
+    @JsonKey(unknownEnumValue: GalleryCapability.unknown)
+    required List<GalleryCapability> capabilities,
+    required GalleryThumbnailPolicy? thumbnailPolicy,
+    required List<GalleryEntry> entries,
+  }) = _GalleryCatalog;
 
   factory GalleryCatalog.fromJson(Map<String, dynamic> json) =>
       _$GalleryCatalogFromJson(json);
-  Map<String, dynamic> toJson() => _$GalleryCatalogToJson(this);
 }
 
 @JsonSerializable()

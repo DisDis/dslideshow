@@ -236,34 +236,36 @@ void main() {
     },
   );
 
-  testWidgets(
-    'gallery selection has a localized title and no unimplemented actions',
-    (tester) async {
-      final bloc = GalleryBloc(
-        initialState: LoadedGalleryState(
-          items: [
-            GalleryItem(
-              uri: Uri.parse('http://frame.local/album'),
-              title: 'album',
-            ),
-          ],
-        ),
-        client: _Client(),
-      );
-      addTearDown(bloc.close);
-      await tester.pumpWidget(
-        _app(BlocProvider.value(value: bloc, child: const GalleryWidget())),
-      );
-      await tester.pumpAndSettle();
-      await tester.longPress(find.byType(FolderGridItem));
-      await tester.pumpAndSettle();
+  testWidgets('gallery directories cannot be selected for file operations', (
+    tester,
+  ) async {
+    final bloc = GalleryBloc(
+      initialState: LoadedGalleryState(
+        items: [
+          GalleryItem(
+            uri: Uri.parse('http://frame.local/album'),
+            title: 'album',
+          ),
+        ],
+      ),
+      client: _Client(),
+    );
+    addTearDown(bloc.close);
+    await tester.pumpWidget(
+      _app(BlocProvider.value(value: bloc, child: const GalleryWidget())),
+    );
+    await tester.pumpAndSettle();
+    await tester.longPress(find.byType(FolderGridItem));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Выбран 1 файл'), findsOneWidget);
-      expect(find.byIcon(Icons.share), findsNothing);
-      expect(find.byIcon(Icons.delete), findsNothing);
-      await tester.tap(find.byTooltip('Снять выделение'));
-      await tester.pumpAndSettle();
-      expect(find.text('Галерея (1)'), findsOneWidget);
-    },
-  );
+    expect(find.text('Выбран 1 файл'), findsNothing);
+    expect(find.byTooltip('Снять выделение'), findsOneWidget);
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.close))
+          .onPressed,
+      isNull,
+    );
+    expect(find.text('Галерея'), findsWidgets);
+  });
 }

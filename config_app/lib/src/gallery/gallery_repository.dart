@@ -38,12 +38,14 @@ class GalleryRepository {
   final int maxCatalogBytes;
   GalleryProtocol _protocol = GalleryProtocol.undecided;
   bool _supportsRefresh = false;
+  Set<GalleryCapability> _capabilities = const {};
   Completer<void>? _activeAbort;
   int _generation = 0;
   int _legacyEpoch = 0;
   bool _closed = false;
 
   GalleryProtocol get protocol => _protocol;
+  Set<GalleryCapability> get capabilities => _capabilities;
   String get authScope => '${baseUri.origin}|$code';
 
   Uri _uri(List<String> segments, [Map<String, String>? query]) =>
@@ -97,8 +99,8 @@ class GalleryRepository {
           if (catalog.schemaVersion != GalleryCatalog.supportedSchemaVersion) {
             throw const FormatException('Unsupported gallery schema');
           }
-          if (catalog.serverId.isEmpty || catalog.catalogRevision.isEmpty) {
-            throw const FormatException('Invalid gallery scope');
+          if (catalog.catalogRevision.isEmpty) {
+            throw const FormatException('Invalid gallery revision');
           }
           if (catalog.capabilities.contains(GalleryCapability.thumbnails) &&
               (catalog.thumbnailPolicy == null ||
@@ -122,10 +124,11 @@ class GalleryRepository {
             }
           }
           _protocol = GalleryProtocol.versioned;
+          _capabilities = Set.unmodifiable(catalog.capabilities);
           _supportsRefresh = catalog.capabilities.contains(
             GalleryCapability.refresh,
           );
-          final scope = '$authScope|${catalog.serverId}';
+          final scope = authScope;
           final items = catalog.entries
               .map((entry) {
                 final revision =

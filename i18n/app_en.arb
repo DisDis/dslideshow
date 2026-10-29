@@ -1287,5 +1287,172 @@
   "otaStepRestart": "3. Restart",
   "frame_language_section": "Frame interface",
   "frame_language_label": "Frame language",
-  "frame_language_hint": "Save and restart the frame application to apply this language. The panel language is selected separately in Appearance."
+  "frame_language_hint": "Save and restart the frame application to apply this language. The panel language is selected separately in Appearance.",
+  "gallery_library": "Media library",
+  "gallery_duplicates": "Duplicates",
+  "gallery_trash": "Trash",
+  "gallery_move_to_trash": "Move to trash",
+  "gallery_restore": "Restore",
+  "gallery_purge": "Delete permanently",
+  "gallery_rotate_left": "Rotate left 90°",
+  "gallery_rotate_right": "Rotate right 90°",
+  "gallery_action_failed": "Could not complete the operation. Retry the same action.",
+  "gallery_file_unavailable": "File unavailable",
+  "gallery_undo": "Undo",
+  "gallery_trashed": "Moved to trash. Disk space has not been freed.",
+  "gallery_restored": "Files restored",
+  "gallery_purged": "Files permanently deleted",
+  "gallery_purge_title": "Delete permanently?",
+  "gallery_trash_hint": "Files can be restored. Space is freed only after permanent deletion. Automatic cleanup is off.",
+  "gallery_file_size": "File size",
+  "gallery_resolution": "Resolution",
+  "gallery_date_taken": "Date taken",
+  "gallery_file_modified": "File modified",
+  "gallery_format": "Format",
+  "gallery_camera": "Camera",
+  "gallery_lens": "Lens",
+  "gallery_iso": "ISO",
+  "gallery_exposure": "Exposure",
+  "gallery_aperture": "Aperture",
+  "gallery_focal_length": "Focal length",
+  "gallery_orientation": "Orientation",
+  "gallery_location": "Location",
+  "gallery_duration": "Duration, seconds",
+  "gallery_codec": "Codec",
+  "gallery_color_profile": "Colour profile",
+  "gallery_bit_depth": "Bit depth",
+  "gallery_alpha": "Alpha channel",
+  "gallery_no_metadata": "No additional metadata",
+  "gallery_metadata_failed": "Could not load file details",
+  "gallery_duplicate_select_hint": "Select files to move to trash. Keep at least one file in the group.",
+  "gallery_duplicate_review_done": "All current groups have been reviewed.",
+  "gallery_duplicate_review_again": "Review again",
+  "gallery_duplicate_members": "Files {first}–{last} of {total}",
+  "@gallery_duplicate_members": {"placeholders": {"first": {"type": "int"}, "last": {"type": "int"}, "total": {"type": "int"}}},
+  "gallery_search_new": "New search",
+  "gallery_search_start": "Start search",
+  "gallery_search_stop": "Stop",
+  "gallery_exact_copies": "Exact copies",
+  "gallery_similar_images": "Similar photos",
+  "gallery_search_scope": "Search the local photo library. Trash is excluded. Nothing is deleted automatically.",
+  "gallery_search_running": "Searching…",
+  "gallery_search_stopping": "Stopping…",
+  "gallery_search_none": "No matches found",
+  "gallery_search_failed": "Search failed. Previous results have not been replaced.",
+  "gallery_search_cancelled": "Search stopped",
+  "gallery_search_interrupted": "Search interrupted. Start a new search.",
+  "gallery_skip_group": "Skip group",
+  "gallery_keep_one": "Keep at least one current file in each group.",
+  "gallery_stale_result": "A file has changed or disappeared. Search again before applying this decision.",
+  "gallery_similar_hint": "Similarity does not guarantee equal quality. Compare the whole image and its details.",
+  "gallery_exact_hint": "The file contents match. Names and folders may differ.",
+  "gallery_result_review_title": "Move these files to trash?",
+  "gallery_operation_details": "Operation details",
+  "gallery_not_supported": "This operation is not supported for this file.",
+  "gallery_error_forbidden": "Access denied",
+  "gallery_error_busy": "The service is busy",
+  "gallery_error_conflict": "The file path or state conflicts with this action.",
+  "gallery_error_revision": "The file has changed",
+  "gallery_error_missing": "File not found",
+  "gallery_error_unavailable": "The service is unavailable",
+  "gallery_failed_files": "Some files could not be processed.",
+  "gallery_search_cause_tool_unavailable": "Czkawka CLI is not available to the backend. Install it or add it to the backend process's PATH.",
+  "gallery_search_cause_unsupported_version": "This Czkawka CLI version is not supported. Use version 8.x or 12.x.",
+  "gallery_search_cause_version_probe_failed": "Could not determine the Czkawka CLI version. Check that the executable can run.",
+  "gallery_search_cause_process_failed": "Czkawka CLI reported an error. Check the exit code and the backend log for this job.",
+  "gallery_search_cause_timeout": "The search exceeded its time limit. Try one search mode at a time.",
+  "gallery_search_cause_output_limit": "A candidate or result limit was exceeded. Check the library size and backend limits.",
+  "gallery_search_cause_invalid_result": "Czkawka CLI returned an unreadable or unexpected report.",
+  "gallery_search_cause_storage_unavailable": "The backend could not read or save search data. Check permissions and free disk space.",
+  "gallery_search_cause_unexpected": "The backend could not finish the search. Check the job identifier in its log.",
+  "gallery_search_transport_failed": "Could not get the search status from the backend. Check the connection and retry.",
+  "gallery_search_stage": "Stage",
+  "gallery_search_stage_unknown": "Unknown",
+  "gallery_search_stage_snapshot": "Preparing candidates",
+  "gallery_search_stage_version_probe": "Checking tool version",
+  "gallery_search_stage_scanning": "Running Czkawka CLI",
+  "gallery_search_stage_validation": "Checking the report",
+  "gallery_search_stage_persistence": "Saving results",
+  "gallery_search_tool_version": "Czkawka CLI version",
+  "gallery_search_exit_code": "Exit code",
+  "gallery_search_mode": "Search mode",
+  "gallery_search_candidates": "Candidates prepared",
+  "gallery_search_matched": "Matching files",
+  "gallery_search_rejected": "Report entries rejected",
+  "gallery_search_snapshot_skipped": "Files skipped while preparing candidates",
+  "gallery_search_job_id": "Job",
+  "gallery_search_error_code": "Error code",
+  "gallery_details_loading": "Loading details…",
+  "gallery_retry_details": "Retry details",
+  "gallery_retry_image": "Reload image",
+  "gallery_select_all": "Select all",
+  "gallery_clear_trash": "Empty trash",
+  "gallery_mutation_progress": "Processed {processed} of {total}",
+  "@gallery_mutation_progress": {
+    "placeholders": {
+      "processed": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "gallery_mutation_unknown": "The operation result could not be confirmed. Refresh the list and check the remaining files.",
+  "gallery_undo_changed": "Some files are no longer in Trash.",
+  "gallery_metadata_timeout": "The server took too long to load the details. Try again.",
+  "gallery_metadata_read_failed": "Could not read the file details.",
+  "gallery_trash_title": "Move to trash?",
+  "gallery_trash_confirm_body": "Files: {count}. They can be restored from Trash.",
+  "gallery_confirmation_changed": "The selection or files changed. Review the selection and try again.",
+  "@gallery_trash_confirm_body": {"placeholders": {"count": {"type": "int"}}},
+  "gallery_failed_count": "Failed files: {count}",
+  "@gallery_failed_count": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "gallery_first_files": "Showing the first {count} files.",
+  "@gallery_first_files": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "gallery_elapsed": "Elapsed: {time}",
+  "@gallery_elapsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "gallery_purge_body": "{count} files, {bytes} bytes. They cannot be restored through the photo frame.",
+  "@gallery_purge_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_group_position": "Group {current} of {total}",
+  "@gallery_group_position": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_skipped": "Skipped files: {count}",
+  "@gallery_skipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_trash_file_changed": "Trash file changed",
+  "gallery_yes": "Yes",
+  "gallery_no": "No"
 }

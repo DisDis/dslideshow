@@ -706,7 +706,9 @@ void main() {
     () async {
       final token = UploadCancellationToken();
       var cancelled = false;
+      final listening = Completer<void>();
       final source = StreamController<List<int>>(
+        onListen: listening.complete,
         onCancel: () {
           cancelled = true;
         },
@@ -719,9 +721,7 @@ void main() {
         cancellation: token,
       );
       final expectation = expectLater(receiving, throwsA(_status(408)));
-      while (!(await leftovers()).any((file) => file.path.endsWith('.part'))) {
-        await Future<void>.delayed(Duration.zero);
-      }
+      await listening.future.timeout(const Duration(seconds: 1));
       token.cancel();
       await expectation.timeout(const Duration(seconds: 1));
       expect(cancelled, isTrue);

@@ -166,7 +166,12 @@ class DebBuildTest(unittest.TestCase):
             self.assertEqual((extracted / "opt/dslideshow/version").read_text(), "1.0.0+1\n")
             control = (extracted / "DEBIAN/control").read_text().splitlines()
             dependencies = next(line.removeprefix('Depends:') for line in control if line.startswith('Depends:'))
-            self.assertIn('ffmpeg', [item.strip() for item in dependencies.split(',')])
+            dependency_items = [item.strip() for item in dependencies.split(',')]
+            self.assertIn('ffmpeg', dependency_items)
+            self.assertIn('libjpeg-progs | libjpeg-turbo-progs', dependency_items)
+            self.assertNotIn('libimage-exiftool-perl', dependency_items)
+            recommendations = next(line.removeprefix('Recommends:') for line in control if line.startswith('Recommends:'))
+            self.assertIn('czkawka-cli (>= 8.0)', [item.strip() for item in recommendations.split(',')])
 
 
 class DebParallelFailureTest(unittest.TestCase):

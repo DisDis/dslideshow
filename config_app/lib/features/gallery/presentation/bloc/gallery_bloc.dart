@@ -5,6 +5,7 @@ import 'package:config_app/features/realtime/domain/services/realtime_service.da
 import 'package:config_app/src/web_client/web_client.dart';
 import 'package:config_app/src/gallery/gallery_repository.dart';
 import 'package:config_app/src/gallery/gallery_session.dart';
+import 'package:config_app/src/gallery/media_image_loader.dart';
 import 'package:config_app/features/gallery/domain/gallery_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
@@ -51,9 +52,13 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
       return;
     }
     final generation = ++_generation;
+    final clock = Stopwatch()..start();
     final previous = state is LoadedGalleryState
         ? state as LoadedGalleryState
         : null;
+    _log.info(
+      'event=catalogLoadStarted generation=$generation scan=${event.scan} previousItems=${previous?.items.length ?? 0}',
+    );
     if (previous != null) {
       emit(LoadedGalleryState(items: previous.items, refreshing: true));
     } else {
@@ -61,11 +66,28 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     }
     try {
       final result = await repository.load(refresh: event.scan);
-      if (_closing || emit.isDone || generation != _generation) return;
-      _log.info('Loaded ${result.items.length} gallery entries');
+      if (_closing || emit.isDone || generation != _generation) {
+        _log.fine(
+          () =>
+              'event=catalogLoadDiscarded generation=$generation closing=$_closing elapsedMs=${clock.elapsedMilliseconds}',
+        );
+        return;
+      }
+      _log.info(
+        'event=catalogLoadCompleted generation=$generation items=${result.items.length} elapsedMs=${clock.elapsedMilliseconds}',
+      );
       emit(LoadedGalleryState(items: result.items));
-    } catch (_) {
-      if (_closing || emit.isDone || generation != _generation) return;
+    } catch (error) {
+      if (_closing || emit.isDone || generation != _generation) {
+        _log.fine(
+          () =>
+              'event=catalogLoadCancelled generation=$generation closing=$_closing elapsedMs=${clock.elapsedMilliseconds}',
+        );
+        return;
+      }
+      _log.warning(
+        'event=catalogLoadFailed generation=$generation status=${error is GalleryImageHttpException ? error.statusCode : 'none'} type=${error.runtimeType} retainedItems=${previous?.items.length ?? 0} elapsedMs=${clock.elapsedMilliseconds}',
+      );
       if (previous != null) {
         emit(LoadedGalleryState(items: previous.items, refreshFailed: true));
       } else {
@@ -88,6 +110,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
 
   void resolveRevisionMismatch() {
     if (_revisionRecovery != null || _closing) return;
+    _log.fine(() => 'event=catalogRevisionRecoveryStarted');
     _revisionRecovery = refresh(scan: false)
         .whenComplete(() => _revisionRecovery = null);
   }
@@ -97,6 +120,9 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     final previous = _closeFuture;
     if (previous != null) return previous;
     _closing = true;
+    _log.fine(
+      () => 'event=closed pendingRefreshes=${_refreshCompletions.length}',
+    );
     ++_generation;
     repository.cancel();
     for (final completion in _refreshCompletions.toList()) {

@@ -15,6 +15,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:test/test.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'helpers/capture_logs.dart';
 import 'support/web_socket_channel.dart';
 
 class _Remote implements RemoteService {
@@ -55,8 +56,75 @@ class _Fixture {
 
 void main() {
   test(
+    'websocket diagnostics describe authentication and commands without payloads or credentials',
+    () => captureLogs((records) async {
+      fakeAsync((clock) {
+        final rejected = _Fixture();
+        rejected.channel.receive(
+          const WSAuthCommand(
+            userName: 'private-user',
+            code: 'private-secret',
+            id: 1,
+          ),
+        );
+        clock.elapse(const Duration(seconds: 1));
+        expect(rejected.channel.sink.closeCalls, 1);
+        rejected.close(clock);
+        final accepted = _Fixture();
+        accepted.authenticate(clock);
+        accepted.channel.receive(
+          const WSEchoCommand(id: 2, msg: 'private-echo-payload'),
+        );
+        clock.flushMicrotasks();
+        expect(
+          accepted.channel.sent.last,
+          const WSEchoResult(id: 2, msg: 'private-echo-payload'),
+        );
+        accepted.channel.incoming.add('private-malformed-json');
+        clock.flushMicrotasks();
+        accepted.close(clock);
+      });
+      final sessions = records.where(
+        (record) => record.loggerName.startsWith('WebSocketUser'),
+      );
+      expect(
+        sessions.any(
+          (record) => record.message == 'WebSocket authorization rejected',
+        ),
+        isTrue,
+      );
+      expect(
+        sessions.any(
+          (record) => record.message == 'WebSocket authorization succeeded',
+        ),
+        isTrue,
+      );
+      expect(
+        sessions.any(
+          (record) =>
+              record.message.startsWith('WebSocket message rejected') &&
+              record.message.contains('FormatException'),
+        ),
+        isTrue,
+      );
+      final text = sessions
+          .map((record) => '${record.message} ${record.error ?? ''}')
+          .join('\n');
+      for (final secret in [
+        'private-user',
+        'private-secret',
+        'private-echo-payload',
+        'private-malformed-json',
+        '"code"',
+      ]) {
+        expect(text, isNot(contains(secret)));
+      }
+    }),
+  );
+
+  test(
     'WebService authenticates and disconnects its sessions over HTTP',
-    () async {
+    () => captureLogs((records) async {
       final root = await Directory.systemTemp.createTemp('web-socket-route-');
       addTearDown(() => root.delete(recursive: true));
       await Directory('${root.path}/web').create();
@@ -125,7 +193,16 @@ void main() {
       await service.close();
       serviceClosed = true;
       expect(await messages.moveNext(), isFalse);
-    },
+      expect(
+        records.any(
+          (record) =>
+              record.loggerName == 'WebService' &&
+              record.message.startsWith('WebSocket upgrade accepted') &&
+              record.message.contains('elapsedMs='),
+        ),
+        isTrue,
+      );
+    }),
   );
 
   test('authentication preserves delay and hello-before-ack ordering', () {

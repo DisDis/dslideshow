@@ -1287,5 +1287,172 @@
   "otaStepRestart": "3. Перезапуск",
   "frame_language_section": "Интерфейс фоторамки",
   "frame_language_label": "Язык фоторамки",
-  "frame_language_hint": "Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление»."
+  "frame_language_hint": "Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление».",
+  "gallery_library": "Медиатека",
+  "gallery_duplicates": "Дубликаты",
+  "gallery_trash": "Корзина",
+  "gallery_move_to_trash": "В корзину",
+  "gallery_restore": "Восстановить",
+  "gallery_purge": "Удалить навсегда",
+  "gallery_rotate_left": "Повернуть влево на 90°",
+  "gallery_rotate_right": "Повернуть вправо на 90°",
+  "gallery_action_failed": "Не удалось завершить операцию. Повторите действие.",
+  "gallery_file_unavailable": "Файл недоступен",
+  "gallery_undo": "Отменить",
+  "gallery_trashed": "Перемещено в корзину. Место на диске ещё не освобождено.",
+  "gallery_restored": "Файлы восстановлены",
+  "gallery_purged": "Файлы удалены навсегда",
+  "gallery_purge_title": "Удалить навсегда?",
+  "gallery_trash_hint": "Файлы можно восстановить. Место освобождается после окончательного удаления. Автоочистка выключена.",
+  "gallery_file_size": "Размер файла",
+  "gallery_resolution": "Разрешение",
+  "gallery_date_taken": "Дата съёмки",
+  "gallery_file_modified": "Изменён",
+  "gallery_format": "Формат",
+  "gallery_camera": "Камера",
+  "gallery_lens": "Объектив",
+  "gallery_iso": "ISO",
+  "gallery_exposure": "Выдержка",
+  "gallery_aperture": "Диафрагма",
+  "gallery_focal_length": "Фокусное расстояние",
+  "gallery_orientation": "Ориентация",
+  "gallery_location": "Местоположение",
+  "gallery_duration": "Длительность, секунды",
+  "gallery_codec": "Кодек",
+  "gallery_color_profile": "Цветовой профиль",
+  "gallery_bit_depth": "Глубина цвета",
+  "gallery_alpha": "Альфа-канал",
+  "gallery_no_metadata": "Дополнительные метаданные отсутствуют",
+  "gallery_metadata_failed": "Не удалось загрузить сведения",
+  "gallery_duplicate_select_hint": "Выберите файлы для переноса в корзину. Оставьте хотя бы один файл в группе.",
+  "gallery_duplicate_review_done": "Все актуальные группы просмотрены.",
+  "gallery_duplicate_review_again": "Просмотреть снова",
+  "gallery_duplicate_members": "Файлы {first}–{last} из {total}",
+  "@gallery_duplicate_members": {"placeholders": {"first": {"type": "int"}, "last": {"type": "int"}, "total": {"type": "int"}}},
+  "gallery_search_new": "Новый поиск",
+  "gallery_search_start": "Начать поиск",
+  "gallery_search_stop": "Остановить",
+  "gallery_exact_copies": "Точные копии",
+  "gallery_similar_images": "Похожие фотографии",
+  "gallery_search_scope": "Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.",
+  "gallery_search_running": "Выполняется поиск…",
+  "gallery_search_stopping": "Останавливаем…",
+  "gallery_search_none": "Совпадения не найдены",
+  "gallery_search_failed": "Ошибка поиска. Предыдущие результаты не заменены.",
+  "gallery_search_cancelled": "Поиск остановлен",
+  "gallery_search_interrupted": "Поиск прерван. Запустите новый поиск.",
+  "gallery_skip_group": "Пропустить группу",
+  "gallery_keep_one": "Оставьте хотя бы один актуальный файл в каждой группе.",
+  "gallery_stale_result": "Файл изменён или исчез. Перед применением решения повторите поиск.",
+  "gallery_similar_hint": "Сходство не означает одинаковое качество. Сравните целый кадр и детали.",
+  "gallery_exact_hint": "Содержимое файлов совпадает. Имена и папки могут различаться.",
+  "gallery_result_review_title": "Переместить эти файлы в корзину?",
+  "gallery_operation_details": "Результаты операции",
+  "gallery_not_supported": "Операция не поддерживается для этого файла.",
+  "gallery_error_forbidden": "Нет доступа",
+  "gallery_error_busy": "Сервис занят",
+  "gallery_error_conflict": "Конфликт пути или состояния файла.",
+  "gallery_error_revision": "Файл изменён",
+  "gallery_error_missing": "Файл не найден",
+  "gallery_error_unavailable": "Сервис недоступен",
+  "gallery_failed_files": "Часть файлов не удалось обработать.",
+  "gallery_search_cause_tool_unavailable": "Czkawka CLI недоступна backend. Установите утилиту или добавьте её в PATH процесса backend.",
+  "gallery_search_cause_unsupported_version": "Эта версия Czkawka CLI не поддерживается. Используйте ветку 8.x или 12.x.",
+  "gallery_search_cause_version_probe_failed": "Не удалось определить версию Czkawka CLI. Проверьте, что утилита запускается.",
+  "gallery_search_cause_process_failed": "Czkawka CLI сообщила об ошибке. Проверьте код завершения и журнал этого задания на backend.",
+  "gallery_search_cause_timeout": "Поиск превысил ограничение времени. Попробуйте запускать режимы по одному.",
+  "gallery_search_cause_output_limit": "Превышен лимит кандидатов или результата. Проверьте размер коллекции и ограничения backend.",
+  "gallery_search_cause_invalid_result": "Czkawka CLI вернула нечитаемый отчёт или неожиданный формат.",
+  "gallery_search_cause_storage_unavailable": "Backend не смог прочитать или сохранить данные поиска. Проверьте права и свободное место на диске.",
+  "gallery_search_cause_unexpected": "Backend не смог завершить поиск. Проверьте идентификатор задания в его журнале.",
+  "gallery_search_transport_failed": "Не удалось получить состояние поиска от backend. Проверьте соединение и повторите запрос.",
+  "gallery_search_stage": "Этап",
+  "gallery_search_stage_unknown": "Неизвестно",
+  "gallery_search_stage_snapshot": "Подготовка кандидатов",
+  "gallery_search_stage_version_probe": "Проверка версии утилиты",
+  "gallery_search_stage_scanning": "Запуск Czkawka CLI",
+  "gallery_search_stage_validation": "Проверка отчёта",
+  "gallery_search_stage_persistence": "Сохранение результата",
+  "gallery_search_tool_version": "Версия Czkawka CLI",
+  "gallery_search_exit_code": "Код завершения",
+  "gallery_search_mode": "Режим поиска",
+  "gallery_search_candidates": "Подготовлено кандидатов",
+  "gallery_search_matched": "Совпавших файлов",
+  "gallery_search_rejected": "Отклонено записей отчёта",
+  "gallery_search_snapshot_skipped": "Пропущено при подготовке кандидатов",
+  "gallery_search_job_id": "Задание",
+  "gallery_search_error_code": "Код ошибки",
+  "gallery_details_loading": "Загрузка сведений…",
+  "gallery_retry_details": "Повторить загрузку сведений",
+  "gallery_retry_image": "Повторить загрузку изображения",
+  "gallery_select_all": "Выделить всё",
+  "gallery_clear_trash": "Очистить корзину",
+  "gallery_mutation_progress": "Обработано {processed} из {total}",
+  "@gallery_mutation_progress": {
+    "placeholders": {
+      "processed": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "gallery_mutation_unknown": "Результат операции неизвестен. Обновите список и проверьте оставшиеся файлы.",
+  "gallery_undo_changed": "Некоторых файлов уже нет в корзине.",
+  "gallery_metadata_timeout": "Сервер не успел загрузить сведения. Повторите запрос.",
+  "gallery_metadata_read_failed": "Не удалось прочитать сведения о файле.",
+  "gallery_trash_title": "Переместить в корзину?",
+  "gallery_trash_confirm_body": "Файлов: {count}. Их можно восстановить из корзины.",
+  "gallery_confirmation_changed": "Выбор или файлы изменились. Проверьте выбор и повторите действие.",
+  "@gallery_trash_confirm_body": {"placeholders": {"count": {"type": "int"}}},
+  "gallery_failed_count": "Файлов с ошибкой: {count}",
+  "@gallery_failed_count": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "gallery_first_files": "Показаны первые {count} файлов.",
+  "@gallery_first_files": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "gallery_elapsed": "Прошло времени: {time}",
+  "gallery_purge_body": "Файлов: {count}, байт: {bytes}. Восстановить их через фоторамку не получится.",
+  "gallery_group_position": "Группа {current} из {total}",
+  "gallery_skipped": "Пропущено файлов: {count}",
+  "gallery_trash_file_changed": "Изменён в корзине",
+  "@gallery_elapsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@gallery_purge_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "@gallery_group_position": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@gallery_skipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_yes": "Да",
+  "gallery_no": "Нет"
 }

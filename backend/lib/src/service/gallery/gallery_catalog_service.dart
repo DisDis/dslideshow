@@ -3,15 +3,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 
+import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
-import 'catalog_state.dart';
-import 'gallery_publication.dart';
+import 'gallery_files.dart';
 import 'thumbnail_policy.dart';
 
 class GalleryCatalogFailure implements Exception {
@@ -26,25 +25,37 @@ class GallerySource {
   const GallerySource(this.entry, this.absolutePath, this.fingerprint);
 }
 
-/// Owns metadata in the web isolate; all writes/scans are serialized.
+class _CatalogDigest implements Sink<Digest> {
+  late Digest value;
+
+  @override
+  void add(Digest data) => value = data;
+
+  @override
+  void close() {}
+}
+
+/// Owns the in-memory index in the web isolate; scans are serialized.
 class GalleryCatalogService {
   static final _log = Logger('GalleryCatalogService');
+  static final _epochPattern = RegExp(r'^[a-f0-9]{32}$');
   final Directory originals;
   final Directory stateDirectory;
   final Duration scanMaxAge;
   final int maxPendingOperations;
   final GalleryThumbnailPolicy thumbnailPolicy;
+  final List<GalleryCapability> additionalCapabilities;
   int _pendingOperations = 0;
-  GalleryCatalogState? _state;
+  String? _epoch;
+  final Set<String> _completedOperations = {};
   GalleryCatalog? _catalog;
-  Map<String, GalleryEntry> _entriesById = {};
+  Map<String, GallerySource> _entriesById = {};
   DateTime? _lastScan;
   Future<void> _operations = Future.value();
   StreamSubscription<FileSystemEvent>? _watch;
   bool _dirty = true;
   bool _closed = false;
   int _events = 0;
-  String _publicationVersion = '';
 
   GalleryCatalogService({
     required this.originals,
@@ -52,10 +63,18 @@ class GalleryCatalogService {
     this.scanMaxAge = const Duration(seconds: 30),
     this.maxPendingOperations = 64,
     GalleryThumbnailPolicy? thumbnailPolicy,
+    this.additionalCapabilities = const [],
   }) : thumbnailPolicy =
            thumbnailPolicy ?? const ThumbnailPolicy().catalogPolicy {
     if (maxPendingOperations < 1)
       throw ArgumentError.value(maxPendingOperations);
+  }
+
+  void markDirty() {
+    if (_closed) return;
+    _dirty = true;
+    _events++;
+    _log.fine('Gallery catalog marked dirty');
   }
 
   Future<T> _enqueue<T>(Future<T> Function() work) {
@@ -85,10 +104,8 @@ class GalleryCatalogService {
 
   Future<GalleryCatalog> catalog() => _enqueue(() async {
     await _initialize();
-    final publicationVersion = await GalleryPublication.version(stateDirectory);
     if (_catalog == null ||
         _dirty ||
-        publicationVersion != _publicationVersion ||
         DateTime.now().difference(_lastScan!) >= scanMaxAge) {
       await _scan();
     }
@@ -101,59 +118,51 @@ class GalleryCatalogService {
         if (request.operationId.isEmpty || request.operationId.length > 100) {
           throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
         }
-        if (_state!.completedOperations.contains(request.operationId)) {
+        if (_completedOperations.contains(request.operationId)) {
           if (_catalog == null) await _scan();
           return _catalog!;
         }
         await _scan(
           forceInvalidate: request.mode == GalleryRefreshMode.forceInvalidate,
-          operationId: request.operationId,
         );
+        _completedOperations.add(request.operationId);
+        if (_completedOperations.length > 64) {
+          _completedOperations.remove(_completedOperations.first);
+        }
         return _catalog!;
       });
 
-  Future<GallerySource> resolve(String mediaId, {String? revision}) => _enqueue(
-    () async {
-      await _initialize();
-      if (_catalog == null) await _scan();
-      GalleryEntry? entry = _entriesById[mediaId];
-      if (entry == null || entry.kind == GalleryEntryKind.directory) {
-        throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
-      }
-      final fingerprint = await _fingerprint(entry.path);
-      if (fingerprint == null) {
-        _dirty = true;
-        throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
-      }
-      final record = _state!.records[entry.path]!;
-      if (fingerprint != record.fingerprint) {
-        await _scan();
-        final current = _state!.records[entry.path];
-        if (current == null)
+  Future<GallerySource> resolve(String mediaId, {String? revision}) =>
+      _enqueue(() async {
+        await _initialize();
+        if (_catalog == null) await _scan();
+        var source = _entriesById[mediaId];
+        if (source == null || source.entry.kind == GalleryEntryKind.directory) {
           throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
-        if (revision != null)
+        }
+        final fingerprint = await _fingerprint(source.entry.path);
+        if (fingerprint == null) {
+          markDirty();
+          throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
+        }
+        if (fingerprint != source.fingerprint) {
+          await _scan();
+          source = _entriesById[mediaId];
+          if (source == null)
+            throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
+        }
+        if (revision != null && revision != source.entry.sourceRevision) {
           throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
-        entry = _entriesById[current.id]!;
-      }
-      if (revision != null && revision != entry.sourceRevision) {
-        throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
-      }
-      return GallerySource(
-        entry,
-        path.join(originals.absolute.path, entry.path),
-        _state!.records[entry.path]!.fingerprint,
-      );
-    },
-  );
+        }
+        return source;
+      });
 
   Future<GallerySource> resolvePath(
     String relativePath, {
     required String revision,
   }) async {
     await catalog();
-    final record = _state!.records[relativePath];
-    if (record != null) return resolve(record.id, revision: revision);
-    throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
+    return resolve(_mediaId(relativePath), revision: revision);
   }
 
   Future<bool> isCurrent(GallerySource source) async {
@@ -172,38 +181,13 @@ class GalleryCatalogService {
   }
 
   Future<void> _initialize() async {
-    if (_state != null) return;
-    try {
-      _state = GalleryCatalogState.fromJson(
-        jsonDecode(
-          await File(path.join(stateDirectory.path, 'catalog.json'))
-              .readAsString(),
-        ) as Map<String, dynamic>,
-      );
-    } on Object catch (error, stack) {
-      _log.log(
-        error is FileSystemException && error.osError?.errorCode == 2
-            ? Level.FINE
-            : Level.WARNING,
-        () =>
-            'Starting new gallery catalog stateDirectory=${jsonEncode(stateDirectory.path)}',
-        error,
-        stack,
-      );
-      // Missing/corrupt metadata gets a new namespace; no old cache keys survive.
-      _state = GalleryCatalogState(
-        serverId: galleryToken(),
-        epoch: galleryToken(),
-        revision: galleryToken(),
-        records: {},
-      );
-    }
+    if (_epoch != null) return;
+    _epoch = await _loadEpoch();
     if (await originals.exists()) {
       try {
         _watch = originals.watch().listen(
           (_) {
-            _dirty = true;
-            _events++;
+            markDirty();
           },
           onError: (Object error, StackTrace stack) {
             _log.warning(
@@ -212,8 +196,7 @@ class GalleryCatalogService {
               error,
               stack,
             );
-            _dirty = true;
-            _events++;
+            markDirty();
           },
         );
       } on FileSystemException catch (error, stack) {
@@ -228,24 +211,62 @@ class GalleryCatalogService {
     }
   }
 
+  Future<String> _loadEpoch() async {
+    final file = File(path.join(stateDirectory.path, 'catalog.epoch'));
+    try {
+      final input = await file.open();
+      try {
+        final value = utf8.decode(await input.read(33));
+        if (value.length != 32 || !_epochPattern.hasMatch(value)) {
+          throw const FormatException('Invalid gallery epoch');
+        }
+        return value;
+      } finally {
+        await input.close();
+      }
+    } on FileSystemException catch (error) {
+      if (error.osError?.errorCode != 2) {
+        _log.warning(
+          'Gallery invalidation state read failed '
+          'type=${error.runtimeType} osCode=${error.osError?.errorCode}',
+        );
+        rethrow;
+      }
+    } on FormatException {
+      _log.warning('Gallery invalidation state invalid; creating a new epoch');
+    }
+    final epoch = galleryToken();
+    await _persistEpoch(epoch);
+    return epoch;
+  }
+
   Future<String?> _fingerprint(String relativePath) async {
     final file = File(path.join(originals.absolute.path, relativePath));
     final stat = await file.stat();
     if (stat.type == FileSystemEntityType.notFound) return null;
-    final marker = GalleryPublication.markerFor(stateDirectory, relativePath);
-    GalleryPublicationRecord? publication;
-    try {
-      publication = await GalleryPublication.current(marker);
-    } on GalleryPublicationBusy {
-      throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
-    }
-    return '${stat.type}:${stat.size}:${stat.modified.microsecondsSinceEpoch}:${stat.changed.microsecondsSinceEpoch}:${publication?.token ?? ''}';
+    return '${stat.type}:${stat.size}:${stat.modified.microsecondsSinceEpoch}:${stat.changed.microsecondsSinceEpoch}';
   }
 
-  Future<void> _scan({
-    bool forceInvalidate = false,
-    String? operationId,
-  }) async {
+  static String _mediaId(String relativePath) =>
+      sha256.convert(utf8.encode(relativePath)).toString();
+
+  static String _sourceRevision(String epoch, String fingerprint) =>
+      sha256.convert(utf8.encode('$epoch:$fingerprint')).toString();
+
+  static String _snapshotRevision(String epoch, List<GallerySource> sources) {
+    final result = _CatalogDigest();
+    final input = sha256.startChunkedConversion(result);
+    input.add(utf8.encode(epoch));
+    for (final source in sources) {
+      input.add(
+        utf8.encode(jsonEncode([source.entry.path, source.fingerprint])),
+      );
+    }
+    input.close();
+    return result.value.toString();
+  }
+
+  Future<void> _scan({bool forceInvalidate = false}) async {
     final clock = Stopwatch()..start();
     _log.fine(
       () =>
@@ -253,10 +274,8 @@ class GalleryCatalogService {
           'forceInvalidate=$forceInvalidate',
     );
     final eventAtStart = _events;
-    final publicationAtStart = await GalleryPublication.version(stateDirectory);
-    var sawPublication = false;
-    final previous = _state!;
-    final records = <String, GallerySourceRecord>{};
+    final epoch = forceInvalidate ? galleryToken() : _epoch!;
+    final sources = <GallerySource>[];
     if (await originals.exists()) {
       await for (final entity in originals.list(recursive: true)) {
         if (_closed)
@@ -266,119 +285,86 @@ class GalleryCatalogService {
           entity.path,
           from: originals.absolute.path,
         );
-        String? fingerprint;
-        try {
-          fingerprint = await _fingerprint(relative);
-        } on GalleryCatalogFailure {
-          sawPublication = true;
-          // Preserve logical identity while an existing path is being published.
-          // resolve/cache validation still rejects the active dirty source.
-          final previousRecord = previous.records[relative];
-          if (previousRecord != null) records[relative] = previousRecord;
-          continue;
-        }
+        final fingerprint = await _fingerprint(relative);
         if (fingerprint == null) continue;
-        final directory = entity is Directory;
-        final old = previous.records[relative];
-        records[relative] = GallerySourceRecord(
-          id: old?.id ?? galleryToken(),
-          generation: old != null && old.fingerprint == fingerprint
-              ? old.generation
-              : galleryToken(),
-          fingerprint: fingerprint,
-          directory: directory,
+        final extension = path.extension(relative).toLowerCase();
+        final kind = entity is Directory
+            ? GalleryEntryKind.directory
+            : extension == '.gif'
+            ? GalleryEntryKind.animatedImage
+            : FileSettings.isImage(extension)
+            ? GalleryEntryKind.image
+            : FileSettings.isVideo(extension)
+            ? GalleryEntryKind.video
+            : GalleryEntryKind.unsupported;
+        final entry = GalleryEntry(
+          mediaId: _mediaId(relative),
+          path: relative,
+          name: path.basename(relative),
+          kind: kind,
+          sourceRevision: kind == GalleryEntryKind.directory
+              ? null
+              : _sourceRevision(epoch, fingerprint),
+          thumbnailSupported:
+              kind == GalleryEntryKind.image ||
+              kind == GalleryEntryKind.animatedImage ||
+              kind == GalleryEntryKind.video,
         );
+        sources.add(GallerySource(entry, entity.absolute.path, fingerprint));
       }
     }
-    final changed =
-        forceInvalidate ||
-        records.length != previous.records.length ||
-        records.entries.any(
-          (item) =>
-              previous.records[item.key]?.fingerprint != item.value.fingerprint,
-        );
-    final completed = [
-      ...previous.completedOperations,
-      if (operationId != null) operationId,
-    ];
-    final next = GalleryCatalogState(
-      serverId: previous.serverId,
-      epoch: forceInvalidate ? galleryToken() : previous.epoch,
-      revision: changed ? galleryToken() : previous.revision,
-      records: records,
-      completedOperations: completed.length > 64
-          ? completed.sublist(completed.length - 64)
-          : completed,
-    );
-    await _persist(next);
+    sources.sort((a, b) => a.entry.path.compareTo(b.entry.path));
     if (_closed)
       throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
-    _state = next;
-    final paths = records.keys.toList()..sort();
+    if (forceInvalidate) {
+      await _persistEpoch(epoch);
+      _epoch = epoch;
+    }
+    if (_closed)
+      throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
+    final revision = _snapshotRevision(epoch, sources);
+    final changed = _catalog?.catalogRevision != revision;
     _catalog = GalleryCatalog(
-      serverId: next.serverId,
-      catalogRevision: next.revision,
-      capabilities: const [
+      catalogRevision: revision,
+      capabilities: [
         GalleryCapability.thumbnails,
         GalleryCapability.revisionedOriginals,
         GalleryCapability.refresh,
+        ...additionalCapabilities,
       ],
       thumbnailPolicy: thumbnailPolicy,
-      entries: List.unmodifiable(
-        paths.map((relative) {
-          final record = records[relative]!;
-          final extension = path.extension(relative).toLowerCase();
-          final kind = record.directory
-              ? GalleryEntryKind.directory
-              : extension == '.gif'
-              ? GalleryEntryKind.animatedImage
-              : FileSettings.isImage(extension)
-              ? GalleryEntryKind.image
-              : FileSettings.isVideo(extension)
-              ? GalleryEntryKind.video
-              : GalleryEntryKind.unsupported;
-          return GalleryEntry(
-            mediaId: record.id,
-            path: relative,
-            name: path.basename(relative),
-            kind: kind,
-            sourceRevision: record.directory
-                ? null
-                : '${next.epoch}-${record.generation}',
-            thumbnailSupported:
-                kind == GalleryEntryKind.image ||
-                kind == GalleryEntryKind.animatedImage ||
-                kind == GalleryEntryKind.video,
-          );
-        }),
-      ),
+      entries: [for (final source in sources) source.entry],
     );
     _lastScan = DateTime.now();
-    _entriesById = {
-      for (final entry in _catalog!.entries) entry.mediaId: entry,
-    };
-    _publicationVersion = await GalleryPublication.version(stateDirectory);
-    _dirty =
-        _events != eventAtStart ||
-        sawPublication ||
-        _publicationVersion != publicationAtStart;
+    _entriesById = {for (final source in sources) source.entry.mediaId: source};
+    _dirty = _events != eventAtStart;
     _log.fine(
       () =>
-          'Gallery scan completed entries=${records.length} '
-          'revision=${next.revision} changed=$changed '
+          'Gallery scan completed entries=${sources.length} '
+          'revision=$revision changed=$changed '
           'elapsedMs=${clock.elapsedMilliseconds} dirty=$_dirty',
     );
   }
 
-  Future<void> _persist(GalleryCatalogState state) async {
-    await stateDirectory.create(recursive: true);
+  Future<void> _persistEpoch(String epoch) async {
+    final clock = Stopwatch()..start();
     final temporary = File(
       path.join(stateDirectory.path, 'catalog-${galleryToken()}.tmp'),
     );
     try {
-      final encoded = await Isolate.run(() => jsonEncode(state.toJson()));
-      await temporary.writeAsString(encoded, flush: true);
-      await temporary.rename(path.join(stateDirectory.path, 'catalog.json'));
+      await stateDirectory.create(recursive: true);
+      await temporary.writeAsString(epoch, flush: true);
+      await temporary.rename(path.join(stateDirectory.path, 'catalog.epoch'));
+      _log.fine(
+        'Gallery invalidation state persisted elapsedMs=${clock.elapsedMilliseconds}',
+      );
+    } on Object catch (error) {
+      _log.warning(
+        'Gallery invalidation state write failed type=${error.runtimeType} '
+        'osCode=${error is FileSystemException ? error.osError?.errorCode : null} '
+        'elapsedMs=${clock.elapsedMilliseconds}',
+      );
+      rethrow;
     } finally {
       if (await temporary.exists()) await temporary.delete();
     }

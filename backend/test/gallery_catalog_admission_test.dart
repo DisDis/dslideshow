@@ -6,23 +6,15 @@ import 'package:dslideshow_backend/src/service/gallery/gallery_media_publisher.d
 import 'package:dslideshow_common/gallery.dart';
 import 'package:test/test.dart';
 
-class _BlockedDirectory implements Directory {
-  final Directory delegate;
+import 'support/no_watch_directory.dart';
+
+class _BlockedDirectory extends NoWatchDirectory {
   final Completer<void> scanStarted = Completer();
   final Completer<void> scanGate = Completer();
+  Future<void> Function()? afterTraversal;
   int traversals = 0;
-  _BlockedDirectory(this.delegate);
-  @override
-  String get path => delegate.path;
-  @override
-  Directory get absolute => delegate.absolute;
-  @override
-  Future<bool> exists() async => true;
-  @override
-  Stream<FileSystemEvent> watch({
-    int events = FileSystemEvent.all,
-    bool recursive = false,
-  }) => const Stream.empty();
+  _BlockedDirectory(super.directory);
+
   @override
   Stream<FileSystemEntity> list({
     bool recursive = false,
@@ -32,10 +24,8 @@ class _BlockedDirectory implements Directory {
     if (!scanStarted.isCompleted) scanStarted.complete();
     await scanGate.future;
     yield* delegate.list(recursive: recursive, followLinks: followLinks);
+    await afterTraversal?.call();
   }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 Matcher errorCode(GalleryErrorCode code) => throwsA(
@@ -95,28 +85,79 @@ void main() {
     },
   );
 
-  test('completed nested publications invalidate a cached snapshot without watcher events', () async {
-    await Directory('${originals.path}/album').create();
-    await File('${originals.path}/album/existing.jpg').writeAsBytes([1, 2, 3]);
+  test(
+    'markDirty discovers completed nested changes without watcher events',
+    () async {
+      await Directory('${originals.path}/album').create();
+      await File('${originals.path}/album/existing.jpg')
+          .writeAsBytes([1, 2, 3]);
+      originals.scanGate.complete();
+      final before = await catalog.catalog();
+      final old = before.entries.firstWhere(
+        (entry) => entry.path == 'album/existing.jpg',
+      );
+      final publisher = GalleryMediaPublisher(originals: originals.delegate);
+      await publisher.publish(Stream.value([4, 5, 6]), 'album/existing.jpg');
+      await publisher.publish(Stream.value([7, 8, 9]), 'album/new.jpg');
+      catalog.markDirty();
+      final after = await catalog.catalog();
+      final replaced = after.entries.firstWhere(
+        (entry) => entry.path == old.path,
+      );
+      expect(after.catalogRevision, isNot(before.catalogRevision));
+      expect(replaced.mediaId, old.mediaId);
+      expect(replaced.sourceRevision, isNot(old.sourceRevision));
+      expect(
+        after.entries.map((entry) => entry.path),
+        contains('album/new.jpg'),
+      );
+      expect(
+        after.entries
+            .firstWhere((entry) => entry.path == 'one.jpg')
+            .sourceRevision,
+        before.entries
+            .firstWhere((entry) => entry.path == 'one.jpg')
+            .sourceRevision,
+        reason: 'A dirty hint must not invalidate unchanged thumbnails',
+      );
+    },
+  );
+
+  test('markDirty during a scan is retained for the next snapshot', () async {
     originals.scanGate.complete();
-    final before = await catalog.catalog();
-    final old = before.entries.firstWhere(
-      (entry) => entry.path == 'album/existing.jpg',
-    );
-    final publisher = GalleryMediaPublisher(
-      originals: originals.delegate,
-      stateDirectory: Directory('${root.path}/metadata'),
-    );
-    await publisher.publish(Stream.value([4, 5, 6]), 'album/existing.jpg');
-    await publisher.publish(Stream.value([7, 8, 9]), 'album/new.jpg');
+    originals.afterTraversal = () async {
+      originals.afterTraversal = null;
+      await File('${originals.path}/late.jpg')
+          .writeAsString('complete new media');
+      catalog.markDirty();
+    };
+    final during = await catalog.catalog();
+    expect(during.entries.map((entry) => entry.path), ['one.jpg']);
     final after = await catalog.catalog();
-    final replaced = after.entries.firstWhere(
-      (entry) => entry.path == old.path,
+    expect(after.entries.map((entry) => entry.path), ['late.jpg', 'one.jpg']);
+    expect(after.catalogRevision, isNot(during.catalogRevision));
+  });
+
+  test('periodic stat scans discover external changes without markDirty or watcher', () async {
+    await catalog.close();
+    catalog = GalleryCatalogService(
+      originals: originals,
+      stateDirectory: Directory('${root.path}/metadata'),
+      scanMaxAge: Duration.zero,
     );
-    expect(after.catalogRevision, isNot(before.catalogRevision));
-    expect(replaced.mediaId, old.mediaId);
-    expect(replaced.sourceRevision, isNot(old.sourceRevision));
-    expect(after.entries.map((entry) => entry.path), contains('album/new.jpg'));
+    originals.scanGate.complete();
+    final before = (await catalog.catalog()).entries.single;
+    final staged = await File('${root.path}/complete.tmp')
+        .writeAsString('external replacement without a notification');
+    await staged.rename('${originals.path}/one.jpg');
+    final after = (await catalog.catalog()).entries.single;
+    expect(after.mediaId, before.mediaId);
+    expect(after.sourceRevision, isNot(before.sourceRevision));
+    expect(
+      await File((await catalog.resolve(after.mediaId)).absolutePath)
+          .readAsString(),
+      'external replacement without a notification',
+    );
   });
 
   test(

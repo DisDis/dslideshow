@@ -16,11 +16,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   initLog("web");
   _log.info("Run. Spawned isolate started.");
   try {
-    final _remoteBackendService = new RemoteServiceImpl(
-      serializers: serializers,
-      telemetry: RpcTelemetry(RpcNode.web),
-      peer: RpcNode.backend,
-    );
+    final _remoteBackendService = new RemoteServiceImpl(serializers: serializers, telemetry: RpcTelemetry(RpcNode.web), peer: RpcNode.backend);
     _remoteBackendService.connect(HandshakeMessage.fromMap(handshakeMessage));
 
     // Use this static instance
@@ -32,18 +28,15 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<WebServer>(() {
       final _config = injector.get<AppConfig>();
-      return new WebServer(
-        _config.webServer,
-        _remoteBackendService,
-        injector.get<WebService>(),
-      );
+      return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
     });
     final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;
+    _log.info('Web logging configured level=${Logger.root.level.name}');
     _webServer = injector.get<WebServer>();
     await _remoteBackendService.service.processing(_webServer, serializers);
-  } catch (e, s) {
-    _log.severe('Fatal error: $e, $s', e, s);
+  } catch (error) {
+    _log.severe('Web startup failed type=${error.runtimeType}');
     _log.info("Spawned isolate finished with error.");
     // exit(1);
     Isolate.exit();

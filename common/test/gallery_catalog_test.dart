@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 void main() {
   test('catalog roundtrip preserves source identity and thumbnail policy', () {
     const catalog = GalleryCatalog(
-      serverId: 'server',
       catalogRevision: 'snapshot',
       capabilities: [GalleryCapability.thumbnails],
       thumbnailPolicy: GalleryThumbnailPolicy(
@@ -29,6 +28,8 @@ void main() {
       jsonDecode(jsonEncode(catalog.toJson())) as Map<String, dynamic>,
     );
     expect(restored.toJson(), catalog.toJson());
+    expect(restored.toJson(), isNot(contains('serverId')));
+    expect(() => restored.entries.clear(), throwsUnsupportedError);
     expect(restored.thumbnailPolicy!.sizes.single.pixels, 256);
     expect(restored.thumbnailPolicy!.revision, 'render-settings');
     expect(restored.thumbnailPolicy!.identity, '1-render-settings');

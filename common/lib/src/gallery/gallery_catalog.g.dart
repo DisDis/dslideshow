@@ -71,49 +71,6 @@ const _$GalleryEntryKindEnumMap = {
   GalleryEntryKind.unknown: 'unknown',
 };
 
-GalleryCatalog _$GalleryCatalogFromJson(Map<String, dynamic> json) =>
-    GalleryCatalog(
-      schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 2,
-      serverId: json['serverId'] as String,
-      catalogRevision: json['catalogRevision'] as String,
-      capabilities: (json['capabilities'] as List<dynamic>)
-          .map(
-            (e) => $enumDecode(
-              _$GalleryCapabilityEnumMap,
-              e,
-              unknownValue: GalleryCapability.unknown,
-            ),
-          )
-          .toList(),
-      thumbnailPolicy: json['thumbnailPolicy'] == null
-          ? null
-          : GalleryThumbnailPolicy.fromJson(
-              json['thumbnailPolicy'] as Map<String, dynamic>,
-            ),
-      entries: (json['entries'] as List<dynamic>)
-          .map((e) => GalleryEntry.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$GalleryCatalogToJson(GalleryCatalog instance) =>
-    <String, dynamic>{
-      'schemaVersion': instance.schemaVersion,
-      'serverId': instance.serverId,
-      'catalogRevision': instance.catalogRevision,
-      'capabilities': instance.capabilities
-          .map((e) => _$GalleryCapabilityEnumMap[e]!)
-          .toList(),
-      'thumbnailPolicy': instance.thumbnailPolicy?.toJson(),
-      'entries': instance.entries.map((e) => e.toJson()).toList(),
-    };
-
-const _$GalleryCapabilityEnumMap = {
-  GalleryCapability.thumbnails: 'thumbnails',
-  GalleryCapability.revisionedOriginals: 'revisionedOriginals',
-  GalleryCapability.refresh: 'refresh',
-  GalleryCapability.unknown: 'unknown',
-};
-
 GalleryRefreshRequest _$GalleryRefreshRequestFromJson(
   Map<String, dynamic> json,
 ) => GalleryRefreshRequest(
@@ -155,5 +112,58 @@ const _$GalleryErrorCodeEnumMap = {
   GalleryErrorCode.unsupported: 'unsupported',
   GalleryErrorCode.busy: 'busy',
   GalleryErrorCode.unavailable: 'unavailable',
+  GalleryErrorCode.cancelled: 'cancelled',
+  GalleryErrorCode.timeout: 'timeout',
+  GalleryErrorCode.outputLimitExceeded: 'outputLimitExceeded',
+  GalleryErrorCode.processingFailed: 'processingFailed',
+  GalleryErrorCode.conflict: 'conflict',
   GalleryErrorCode.unknown: 'unknown',
+};
+
+_GalleryCatalog _$GalleryCatalogFromJson(Map<String, dynamic> json) =>
+    _GalleryCatalog(
+      schemaVersion:
+          (json['schemaVersion'] as num?)?.toInt() ??
+          GalleryCatalog.supportedSchemaVersion,
+      catalogRevision: json['catalogRevision'] as String,
+      capabilities: (json['capabilities'] as List<dynamic>)
+          .map(
+            (e) => $enumDecode(
+              _$GalleryCapabilityEnumMap,
+              e,
+              unknownValue: GalleryCapability.unknown,
+            ),
+          )
+          .toList(),
+      thumbnailPolicy: json['thumbnailPolicy'] == null
+          ? null
+          : GalleryThumbnailPolicy.fromJson(
+              json['thumbnailPolicy'] as Map<String, dynamic>,
+            ),
+      entries: (json['entries'] as List<dynamic>)
+          .map((e) => GalleryEntry.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$GalleryCatalogToJson(_GalleryCatalog instance) =>
+    <String, dynamic>{
+      'schemaVersion': instance.schemaVersion,
+      'catalogRevision': instance.catalogRevision,
+      'capabilities': instance.capabilities
+          .map((e) => _$GalleryCapabilityEnumMap[e]!)
+          .toList(),
+      'thumbnailPolicy': instance.thumbnailPolicy?.toJson(),
+      'entries': instance.entries.map((e) => e.toJson()).toList(),
+    };
+
+const _$GalleryCapabilityEnumMap = {
+  GalleryCapability.thumbnails: 'thumbnails',
+  GalleryCapability.revisionedOriginals: 'revisionedOriginals',
+  GalleryCapability.refresh: 'refresh',
+  GalleryCapability.metadata: 'metadata',
+  GalleryCapability.mutations: 'mutations',
+  GalleryCapability.rotation: 'rotation',
+  GalleryCapability.trash: 'trash',
+  GalleryCapability.duplicates: 'duplicates',
+  GalleryCapability.unknown: 'unknown',
 };
