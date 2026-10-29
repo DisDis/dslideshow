@@ -90,6 +90,9 @@ printenv PKG_CONFIG_PATH PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR
 создаёт `IMPORTED_TARGET GLOBAL` и проверяет существование include-каталогов.
 Если сломана сама установка пакетов, сборка останавливается с понятным
 сообщением о модуле и пути.
+В `config_app` тот же поиск выполняется для mpv/epoxy до подключения плагинов;
+для всех проверяемых зависимостей панели также сбрасываются закэшированные
+абсолютные пути библиотек `pkgcfg_lib_*`.
 
 Модуль подключается в `linux/CMakeLists.txt` **до** Flutter-подкаталога:
 
@@ -107,6 +110,39 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 
 Не исправляйте пути вручную в `build/linux`, `linux/flutter/ephemeral` или
 Flutter SDK: это производные файлы, и следующая сборка их создаст заново.
+
+## `PkgConfig::mpv` ссылается на исчезнувший временный каталог
+
+Видео в Linux-панели требует системных development-пакетов mpv/epoxy.
+После сборки с временным SDK CMake мог сохранить include- и library-пути
+в `/tmp`; после удаления SDK обычный запуск из VS Code падал при конфигурации
+плагина `media_kit_video`.
+
+Из `config_app` проверьте действующие пакеты и сохранённые пути:
+
+```sh
+pkg-config --modversion mpv epoxy
+pkg-config --cflags-only-I --libs mpv epoxy
+rg --no-ignore -n -g CMakeCache.txt '^(mpv|epoxy)_(INCLUDE_DIRS|LIBRARY_DIRS):|^pkgcfg_lib_(mpv|epoxy)_' build/linux
+```
+
+При каждой CMake-конфигурации панели результаты mpv/epoxy обновляются,
+включая поиск абсолютных путей библиотек. Это работает при F5 из VS Code,
+`flutter run -d linux` и `flutter build linux`, без предварительного запуска
+`build_linux.sh`. Для отсутствующего пакета выводится ошибка
+`Missing Linux development dependency: mpv` или `epoxy` с командой установки.
+Очистка кэша сама по себе не восстанавливает отсутствующую библиотеку.
+
+Для Debian/Ubuntu установите постоянные системные пакеты:
+
+```sh
+sudo apt-get install --no-install-recommends --no-remove libmpv-dev libepoxy-dev
+```
+
+Если resolver предлагает заменить уже установленный JACK2 на JACK1, добавьте
+`libjack-jackd2-dev` в эту команду, сохранив `--no-remove`. После установки
+повторите проверку `pkg-config` и полностью перезапустите отладку Stop → Start.
+Системный `libmpv2` нужен и при запуске готового bundle.
 
 ## Native assets: отсутствует `ld.lld` или `ld`
 
@@ -189,6 +225,8 @@ DS_LINUX_PROJECT_ROOT="$PWD/config_app" python3 -m unittest discover -s dslidesh
 - понятная ошибка при отсутствии пакета;
 - диагностика реально отсутствующего include-каталога;
 - обновление пути после удаления старого каталога без очистки CMake-кэша;
+- для `config_app` — отсутствие mpv/epoxy, исчезновение пакета после успешной
+  конфигурации и обновление одновременно include- и library-путей видео;
 - сохранение обычного пользовательского окружения;
 - отсутствие изменений при пустом маркере Snap;
 - восстановление системных путей Snap VS Code, повторный безопасный вызов

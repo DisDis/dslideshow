@@ -594,6 +594,7 @@
   "effect_water_refraction": "Преломление воды",
   "ui_system_default": "Как в системе",
   "app_title": "Фоторамка",
+  "config_app_title": "DSlideshow Config",
   "appearance_title": "Оформление",
   "language_label": "Язык",
   "theme_mode_label": "Тема",

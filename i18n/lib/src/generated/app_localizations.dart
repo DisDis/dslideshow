@@ -1454,6 +1454,12 @@ abstract class AppLocalizations {
   /// **'Photo frame'**
   String get app_title;
 
+  /// No description provided for @config_app_title.
+  ///
+  /// In en, this message translates to:
+  /// **'DSlideshow Config'**
+  String get config_app_title;
+
   /// No description provided for @appearance_title.
   ///
   /// In en, this message translates to:

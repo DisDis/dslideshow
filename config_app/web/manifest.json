@@ -1,11 +1,11 @@
 {
-    "name": "config_app",
-    "short_name": "config_app",
+    "name": "DSlideshow Config",
+    "short_name": "DSlideshow Config",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Configure and manage your DSlideshow photo frame.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

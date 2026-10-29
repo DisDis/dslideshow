@@ -723,6 +723,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_title => 'Фоторамка';
 
   @override
+  String get config_app_title => 'DSlideshow Config';
+
+  @override
   String get appearance_title => 'Оформление';
 
   @override

@@ -14,6 +14,7 @@ import 'package:config_app/features/user/domain/entities/user.dart';
 import 'package:config_app/features/user/domain/repository/user_repository.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -67,12 +68,29 @@ void main() {
   testWidgets(
     'already unauthenticated startup opens login without another status event',
     (tester) async {
+      final platformTitles = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'SystemChrome.setApplicationSwitcherDescription') {
+            platformTitles.add((call.arguments as Map)['label'] as String);
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
       // DI creates AuthenticationBloc before runApp. Reproduce a transport
       // status that has already been consumed before any screen is mounted.
       await publish(tester, AuthenticationStatus.unauthenticated);
       expect(authentication.state, const AuthenticationState.unauthenticated());
       await tester.pumpWidget(const App());
       await tester.pumpAndSettle();
+      expect(platformTitles, contains('DSlideshow Config'));
       expect(find.byType(LoginPage), findsOneWidget);
       expect(find.byType(SplashPage), findsNothing);
       expect(

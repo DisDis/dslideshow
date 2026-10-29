@@ -55,6 +55,8 @@ void main() {
 
       expect(english.config_save_button, 'Save');
       expect(russian.config_save_button, 'Сохранить');
+      expect(english.config_app_title, 'DSlideshow Config');
+      expect(russian.config_app_title, 'DSlideshow Config');
       expect(english.otaReceiving, 'Receiving firmware');
       expect(russian.otaReceiving, 'Получение прошивки');
       expect(russian.otaInstalled, 'Прошивка установлена');

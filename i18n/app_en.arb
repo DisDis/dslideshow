@@ -594,6 +594,7 @@
   "effect_water_refraction": "Water Refraction",
   "ui_system_default": "System default",
   "app_title": "Photo frame",
+  "config_app_title": "DSlideshow Config",
   "appearance_title": "Appearance",
   "language_label": "Language",
   "theme_mode_label": "Theme",

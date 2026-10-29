@@ -84,6 +84,8 @@ class _AppViewState extends State<_AppView> {
     child: ListenableBuilder(
       listenable: _preferences,
       builder: (context, _) => MaterialApp.router(
+        onGenerateTitle: (context) =>
+            AppLocalizations.of(context).config_app_title,
         supportedLocales: L10n.all,
         locale: _preferences.appLocale.locale,
         localizationsDelegates: const [

@@ -722,6 +722,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_title => 'Photo frame';
 
   @override
+  String get config_app_title => 'DSlideshow Config';
+
+  @override
   String get appearance_title => 'Appearance';
 
   @override
