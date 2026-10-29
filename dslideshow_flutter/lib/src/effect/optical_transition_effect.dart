@@ -45,20 +45,29 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
     ],
   );
 
-  Widget _slat(Widget child, int index, double width, double height) =>
-      ClipRect(
-        child: OverflowBox(
-          alignment: Alignment.topLeft,
-          minWidth: width,
-          maxWidth: width,
-          minHeight: height,
-          maxHeight: height,
-          child: Transform.translate(
-            offset: Offset(-width * index / slatCount, 0),
-            child: child,
-          ),
-        ),
-      );
+  Widget _slat(
+    Widget child,
+    int index,
+    double width,
+    double height, {
+    required bool rotating,
+  }) => ClipRect(
+    // Isolate the full-size live media before the narrow slat is projected.
+    // Near edge-on, composited descendants can otherwise escape the clip.
+    // Flat endpoints keep hard edges so fractional slats meet without seams.
+    clipBehavior: rotating ? Clip.antiAliasWithSaveLayer : Clip.hardEdge,
+    child: OverflowBox(
+      alignment: Alignment.topLeft,
+      minWidth: width,
+      maxWidth: width,
+      minHeight: height,
+      maxHeight: height,
+      child: Transform.translate(
+        offset: Offset(-width * index / slatCount, 0),
+        child: child,
+      ),
+    ),
+  );
 
   @override
   Widget createTransformWidget(
@@ -182,14 +191,26 @@ class OpticalTransitionEffect extends MediaSliderItemEffect {
                             children: [
                               Opacity(
                                 opacity: phase < .5 ? 1 : 0,
-                                child: _slat(from, i, screenW, screenH),
+                                child: _slat(
+                                  from,
+                                  i,
+                                  screenW,
+                                  screenH,
+                                  rotating: phase > 0 && phase < 1,
+                                ),
                               ),
                               Transform(
                                 alignment: Alignment.center,
                                 transform: Matrix4.rotationY(math.pi),
                                 child: Opacity(
                                   opacity: phase >= .5 ? 1 : 0,
-                                  child: _slat(to, i, screenW, screenH),
+                                  child: _slat(
+                                    to,
+                                    i,
+                                    screenW,
+                                    screenH,
+                                    rotating: phase > 0 && phase < 1,
+                                  ),
                                 ),
                               ),
                             ],

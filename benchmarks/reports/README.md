@@ -15,6 +15,7 @@
 
 | Материалы | Что сохраняют и как читать результат |
 | --- | --- |
+| [Louver: локальная обрезка, 29.10](louver-clipping-2026-10-29/report.md) | VM-регрессия и Linux release Impeller: утечка полного изображения между поворотными планками, кадры до/после и frozen probe source. Проверка локальная; Web, RaPi5 и производительность не измерялись. |
 | [OTA UX, 29.10](ota-ux-2026-10-29/report.md) | Итоговая release/source A/B, timing, PNG и provenance. Исходные отказы instrumentation и пустого ready-экрана сохранены. Стенд проверяет настоящую страницу с искусственным потоком; установка пакета и перезагрузка не выполнялись. |
 | [SlideSession, 28.10](slide-session-2026-10-28/report.md) | A/B настоящего renderer, lifecycle, память и визуальные endpoints. Сохраняются исходные отказы калибровки и обратный повтор памяти; ускорение и отсутствие утечек не заявляются. |
 | [GPU Radial / VHS](gpu-effects-2026-10-28/report.md) | Принятые `gpu-radial-uv-2026-10-28/`, `gpu-vhs-cache-2026-10-28/`, общий quality audit `gpu-visual-2026-10-28/`, итоговая интеграция `gpu-production-2026-10-28/` и сводки `gpu-effects-2026-10-28/`. Сохранены source/release, исходные A/B и provenance. **Strict max2 для VHS не пройден**; ручное принятие не меняет failed-статус. |

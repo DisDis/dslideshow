@@ -1842,6 +1842,14 @@
       "files": 67,
       "unpacked_bytes": 59263753,
       "verified": true
+    },
+    {
+      "path": "louver-clipping-2026-10-29/evidence.tar.gz",
+      "sha256": "b0ca3824b983c9990883a693b3b7de186e6f9d4f77650788dc63f79248ba8ad2",
+      "bytes": 30207904,
+      "files": 176,
+      "unpacked_bytes": 54404184,
+      "verified": true
     }
   ],
   "deduplicated_archives": 2,

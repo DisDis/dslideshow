@@ -21,6 +21,7 @@
 | `backend/test/config_test.dart`, `config_app/test/config_screen_test.dart`, `dslideshow_flutter/test/frame_language_test.dart` | JSON-язык рамки и defaults, Save/Reload и независимость языка панели, локаль MainApp и реальный русскоязычный экран OTA. |
 | `dslideshow_flutter/test/effect_settings_test.dart` | Передача настроек и пиксели начала, промежуточного и конечного кадра для вариантов направления, формы, цвета и стиля. |
 | `dslideshow_flutter/test/effect_parameter_rendering_test.dart` | Наблюдаемое влияние активных параметров на изображение и чистые endpoints. |
+| `dslideshow_flutter/test/premiere_transitions_test.dart` | Промежуточные пиксели, живые слои, обратный ход и освобождение ресурсов переходов; у Louver — чёрные зазоры в точные моменты поворота каждой планки ребром и рядом с ними на обеих осях, а также бесшовные дробные границы конечных кадров. |
 | Остальные пиксельные тесты эффектов | Полноразмерные кадры, границы, blur и sampling; плотные сетки Mosaic 100/150/200 сохраняются. |
 | `dslideshow_flutter/test/video_session_test.dart` | Общие контроллеры, обновление геометрии живых видеопредставлений и освобождение сессий владельцем. |
 | `config_app/test/premiere_transitions_preview_test.dart` | Подключение всех 30 исторических вариантов к предпросмотру, завершение переходов, быстрая смена и disposal на `en`. |

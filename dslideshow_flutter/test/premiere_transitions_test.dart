@@ -670,6 +670,67 @@ void main() {
     }
   });
 
+  testWidgets('louver edge-on slats expose only the opaque black backing', (
+    tester,
+  ) async {
+    const from = RepaintBoundary(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [Colors.yellow, Colors.red]),
+        ),
+      ),
+    );
+    const to = RepaintBoundary(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [Colors.cyan, Colors.blue]),
+        ),
+      ),
+    );
+    const size = Size(160, 100);
+    const stagger = .25;
+    for (final axis in EffectAxis.values) {
+      for (final count in [1, 8]) {
+        final effect = Effect(
+          EffectType.louver,
+          options: LouverEffectOptions(axis: axis, slatCount: count),
+        );
+        for (var slat = 0; slat < count; slat++) {
+          // At half of its own turn a slat has no visible face. Sampling on
+          // either side of its centre also avoids depending on edge AA.
+          final start = count == 1 ? 0.0 : stagger * slat / (count - 1);
+          final edgeOn = start + (1 - stagger) / 2;
+          for (final offset in [-.000001, 0.0, .000001]) {
+            final frame = await _frame(
+              tester,
+              effect,
+              edgeOn + offset,
+              from: from,
+              to: to,
+              size: size,
+            );
+            for (final distance in [-2, 2]) {
+              final x = axis == EffectAxis.vertical
+                  ? (size.width * (slat + .5) / count).floor() + distance
+                  : size.width ~/ 2;
+              final y = axis == EffectAxis.horizontal
+                  ? (size.height * (slat + .5) / count).floor() + distance
+                  : size.height ~/ 2;
+              expect(_pixel(frame, x, y), [
+                0,
+                0,
+                0,
+                255,
+              ], reason: '$axis count=$count slat=$slat offset=$offset');
+            }
+          }
+        }
+      }
+    }
+    await tester.pumpWidget(const SizedBox());
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('mirror temporarily reflects the right half onto the left', (
     tester,
   ) async {
