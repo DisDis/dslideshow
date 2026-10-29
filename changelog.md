@@ -1,5 +1,7 @@
 # Unreleased
 
+# 15.2.0+1 — 2026-10-29
+
 * Keep Louver media clipped to each rotating slat near edge-on angles, preventing
   full-image flashes behind the slats while preserving seamless flat endpoints.
 

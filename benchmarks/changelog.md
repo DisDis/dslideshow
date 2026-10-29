@@ -12,8 +12,8 @@
 * Preserve local Louver clipping evidence: a failing VM regression, Linux
   release Impeller frames before/after and frozen diagnostic source. Retire the
   temporary probe after archiving; keep the regression in the production suite.
-  Web, RaPi5 and rendering performance were not checked. See the
-  [report](reports/louver-clipping-2026-10-29/report.md).
+  Web, RaPi5 and rendering performance were not checked. The report and captures
+  remain local in the ignored `reports/louver-clipping-2026-10-29/` directory.
 
 * Retire completed Blur/Mosaic/Composition diagnostic implementations, their
   one-off tests and 28 historical configurations. Keep the 684-case standard
