@@ -31,6 +31,8 @@ export 'src/service/gallery/gallery_config.dart';
 
 part 'config.g.dart';
 
+enum FrameLanguage { system, en, ru }
+
 @JsonSerializable()
 class AppConfig {
   static const String CONFIG_FILE = "config.json";
@@ -56,6 +58,9 @@ class AppConfig {
   @JsonKey(fromJson: _parseWifi)
   WiFiConfig wifi;
 
+  @JsonKey(defaultValue: FrameLanguage.en, unknownEnumValue: FrameLanguage.en)
+  FrameLanguage language;
+
   AppConfig({
     required this.hardware,
     required this.log,
@@ -67,6 +72,7 @@ class AppConfig {
     required this.storages,
     required this.wifi,
     required this.ota,
+    this.language = FrameLanguage.en,
   });
 
   @JsonKey(includeToJson: false, includeFromJson: false)

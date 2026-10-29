@@ -12,11 +12,19 @@ import 'package:logging/logging.dart';
 
 class OtaBloc extends Bloc<OtaEvent, OtaState> {
   static final _log = Logger('OtaBloc');
-  String otaStartUrl = 'http://127.0.0.1:8282/ota_start';
+  String? _otaStartUrl;
+  bool _isPreparingAddress = false;
+  bool _exitRequested = false;
+  bool _isClosing = false;
+  int _initializationVersion = 0;
+  int _infoVersion = 0;
   final FrontendService frontendService;
   final TerminalBackend backend;
   final RouteBloc routeBloc;
-  late StreamSubscription<ButtonEvent> _onButtonSubscription;
+  late final StreamSubscription<ButtonEvent> _onButtonSubscription;
+  StreamSubscription<OTAInfo>? _onOTAInfoSubscription;
+  StreamSubscription<String>? _onOTAOutputSubscription;
+  StreamSubscription<bool>? _onOTAReadySubscription;
 
   OtaBloc({
     required this.frontendService,
@@ -35,90 +43,144 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
        ) {
     on<OtaInitializationEvent>(_initialization);
     on<OtaExitEvent>((event, emit) {
+      if (_isClosing) return;
+      _exitRequested = true;
       emit(OtaState.exit(info: state.info));
     });
-    on<OtaTerminalUpdateEvent>((event, emit) {
-      emit(state);
-    });
     on<OtaUpdateInfoEvent>((event, emit) {
-      if (event.info.status != state.info.status) {
-        switch (event.info.status) {
-          case OTAStatus.uploading:
-          case OTAStatus.instaling:
-            emit(OtaState.progress(info: event.info));
-            break;
-          case OTAStatus.preReboot:
-          case OTAStatus.finished:
-            emit(OtaState.success(info: event.info));
-            break;
-          case OTAStatus.issue:
-            emit(OtaState.failure(info: event.info));
-            break;
-          case OTAStatus.disabled:
-          case OTAStatus.ready:
-            emit(OtaState.ready(info: event.info, otaStartUrl: otaStartUrl));
-        }
-      } else {
-        emit(state.copyWith(info: event.info));
-      }
+      if (_exitRequested || _isClosing) return;
+      _infoVersion++;
+      emit(_stateForInfo(event.info));
     });
     on<OtaAddTextToTerminalEvent>((event, emit) {
+      if (_isClosing) return;
       backend.onWrite(event.message);
-      emit(state);
     });
 
     _onButtonSubscription = frontendService.onButtonEvent.listen(_pushButton);
   }
 
-  Future<void> _initialization(OtaEvent event, Emitter<OtaState> emit) async {
-    _onOTAInfoSubscription?.cancel();
-    _onOTAInfoSubscription = frontendService.onOTAInfo.listen((info) {
+  Future<void> _initialization(
+    OtaInitializationEvent event,
+    Emitter<OtaState> emit,
+  ) async {
+    if (_exitRequested || _isClosing) return;
+    final version = ++_initializationVersion;
+    _isPreparingAddress = true;
+    _otaStartUrl = null;
+    _onOTAInfoSubscription ??= frontendService.onOTAInfo.listen((info) {
+      if (_isClosing || _exitRequested) return;
+      // Invalidate the snapshot before this queued event is handled.
+      _infoVersion++;
       add(OtaEvent.updateInfo(info));
     });
-    _onOTAOutputSubscription?.cancel();
-    _onOTAOutputSubscription = frontendService.onOTAOutput.listen((event) {
-      backend.onWrite(event);
-      add(const OtaEvent.terminalUpdate());
+    _onOTAOutputSubscription ??= frontendService.onOTAOutput.listen((output) {
+      if (_isClosing) return;
+      backend.onWrite(output);
     });
-    _onOTAReadySubscription?.cancel();
-    _onOTAReadySubscription = frontendService.onOTAReady.listen((value) {
-      if (!value) {
+    _onOTAReadySubscription ??= frontendService.onOTAReady.listen((ready) {
+      if (!ready && !_isClosing) {
+        _exitRequested = true;
         add(const OtaEvent.exit());
       }
     });
-    final info = await frontendService.getOTAInfo();
-    final fTmp = Future<void>.delayed(const Duration(microseconds: 1000));
+    if (state case final OtaReadyState ready) {
+      emit(ready.copyWith(otaStartUrl: null, isPreparingAddress: true));
+    }
+    await Future.wait([
+      _loadInfo(version, _infoVersion, emit),
+      _loadAddress(version, emit),
+    ]);
+  }
+
+  Future<void> _loadInfo(
+    int version,
+    int infoVersion,
+    Emitter<OtaState> emit,
+  ) async {
+    try {
+      final info = await frontendService.getOTAInfo();
+      if (_canInitialize(version, emit) && infoVersion == _infoVersion) {
+        emit(_stateForInfo(info));
+      }
+    } catch (error, stackTrace) {
+      _log.warning('Error getting OTA info', error, stackTrace);
+      if (_canInitialize(version, emit) && infoVersion == _infoVersion) {
+        emit(
+          OtaState.failure(
+            info: state.info.copyWith(
+              status: OTAStatus.issue,
+              errorText: null,
+              exitCode: null,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _loadAddress(int version, Emitter<OtaState> emit) async {
+    String? address;
     try {
       final systemInfo = await frontendService.getSystemInfo();
       final interface = systemInfo.networkInfo.getCurrentInterface();
-      otaStartUrl = "http://${interface.ip4}:8282/ota_start";
-    } catch (_) {
-      _log.info("Error getting network info");
+      address = 'http://${interface.ip4}:8282/ota_start';
+    } catch (error, stackTrace) {
+      _log.info('Error getting network info', error, stackTrace);
     }
-    await fTmp;
-    emit(OtaState.ready(info: info, otaStartUrl: otaStartUrl));
+    if (!_canInitialize(version, emit)) return;
+    _isPreparingAddress = false;
+    _otaStartUrl = address;
+    if (state case final OtaReadyState ready) {
+      emit(ready.copyWith(otaStartUrl: address, isPreparingAddress: false));
+    }
   }
 
+  bool _canInitialize(int version, Emitter<OtaState> emit) =>
+      !_isClosing &&
+      !isClosed &&
+      !_exitRequested &&
+      !emit.isDone &&
+      version == _initializationVersion;
+
+  OtaState _stateForInfo(OTAInfo info) => switch (info.status) {
+    OTAStatus.uploading || OTAStatus.instaling => OtaState.progress(info: info),
+    OTAStatus.preReboot || OTAStatus.finished => OtaState.success(info: info),
+    OTAStatus.issue => OtaState.failure(info: info),
+    OTAStatus.disabled || OTAStatus.ready => OtaState.ready(
+      info: info,
+      otaStartUrl: _otaStartUrl,
+      isPreparingAddress: _isPreparingAddress,
+    ),
+  };
+
   void _pushButton(ButtonEvent event) {
-    if (event.event == ButtonEventType.released &&
+    if (!_isClosing &&
+        event.event == ButtonEventType.released &&
         event.button == ButtonType.button0 &&
-        (state is OtaReadyState || state is OtaFailureState || state is OtaSuccessState)) {
+        (state is OtaReadyState ||
+            state is OtaFailureState ||
+            state is OtaSuccessState)) {
       routeBloc.add(ChangePageEvent(RoutePage.slideshow));
     }
   }
 
-  StreamSubscription? _onOTAInfoSubscription;
-  StreamSubscription? _onOTAOutputSubscription;
-  StreamSubscription? _onOTAReadySubscription;
-
   @override
-  Future<void> close() {
-    _onOTAReadySubscription?.cancel();
-    _onOTAInfoSubscription?.cancel();
-    _onOTAInfoSubscription = null;
-    _onOTAOutputSubscription?.cancel();
-    _onOTAOutputSubscription = null;
-    _onButtonSubscription.cancel();
-    return super.close();
+  Future<void> close() async {
+    _isClosing = true;
+    _initializationVersion++;
+    try {
+      await Future.wait([
+        if (_onOTAReadySubscription case final subscription?)
+          subscription.cancel(),
+        if (_onOTAInfoSubscription case final subscription?)
+          subscription.cancel(),
+        if (_onOTAOutputSubscription case final subscription?)
+          subscription.cancel(),
+        _onButtonSubscription.cancel(),
+      ]);
+    } finally {
+      await super.close();
+    }
   }
 }

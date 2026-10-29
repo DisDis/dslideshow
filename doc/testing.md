@@ -15,6 +15,10 @@
 | `backend/test/ota_config_transfer_test.dart` | Выдача исходных байтов `config.json`, включая повреждённый JSON; авторизация, проверка `AppConfig`, пределы, атомарная замена и очистка при ошибках импорта. |
 | `backend/test/streaming_upload_test.dart` | Потоковый приём multipart, ограничения и cleanup; ограниченное отбрасывание тела после отказа, включая предел байтов, таймауты и отмену. |
 | `dslideshow_flutter/test/terminal_backend_test.dart` | Ячейки настоящего буфера OTA-терминала: начало строки после `LF`, разделённый по сообщениям `CRLF`, обновление прогресса через `CR` и ANSI-последовательности во фрагментах. |
+| `dslideshow_flutter/test/ota_bloc_test.dart` | Стадии OTA, ранний код и поздний адрес, ошибки сети/RPC, конкуренция инициализации с live-событиями и выходом, отмена подписок и поздние ответы после закрытия. |
+| `dslideshow_flutter/test/ota_view_test.dart`, `ota_terminal_panel_test.dart` | Крупные QR/код/версия, журнал на всю ширину со шрифтом 32, проценты только загрузки, сохранение лога, настоящий TerminalView: burst, пауза в истории, возврат вниз, resize и disposal. |
+| `dslideshow_flutter/test/ota_ready_paint_test.dart` | Пиксели настоящего MainApp→OTAPage на 2560×1600 в embedded-режиме: QR, код и красная версия видны внутри экрана; обнаруживает clipping стартового Stack. |
+| `backend/test/config_test.dart`, `config_app/test/config_screen_test.dart`, `dslideshow_flutter/test/frame_language_test.dart` | JSON-язык рамки и defaults, Save/Reload и независимость языка панели, локаль MainApp и реальный русскоязычный экран OTA. |
 | `dslideshow_flutter/test/effect_settings_test.dart` | Передача настроек и пиксели начала, промежуточного и конечного кадра для вариантов направления, формы, цвета и стиля. |
 | `dslideshow_flutter/test/effect_parameter_rendering_test.dart` | Наблюдаемое влияние активных параметров на изображение и чистые endpoints. |
 | Остальные пиксельные тесты эффектов | Полноразмерные кадры, границы, blur и sampling; плотные сетки Mosaic 100/150/200 сохраняются. |
@@ -93,9 +97,12 @@ JavaScript. Необязательный скрипт страницы прош�
 
 ```bash
 (cd dslideshow_flutter && flutter test --no-pub test/terminal_backend_test.dart)
+(cd dslideshow_flutter && DSLIDESHOW_EMBEDDED=true flutter test --no-pub \
+  test/ota_bloc_test.dart test/ota_view_test.dart test/ota_terminal_panel_test.dart \
+  test/ota_ready_paint_test.dart)
 ```
 
-Этот тест не выполняет установку через `apt` на устройстве; [границы проверки](../dslideshow_flutter/README.md#терминал-ota).
+Эти тесты не выполняют установку через `apt` на устройстве; [границы проверки](../dslideshow_flutter/README.md#терминал-ota).
 
 Проверки backend требуют локальных сокетов; сценарии установки подменяют
 installer и не устанавливают пакет в систему. Анализаторы запускаются отдельно:

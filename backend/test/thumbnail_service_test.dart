@@ -727,13 +727,15 @@ void main() {
       );
       await real.close();
       expect(await cache.list().toList(), isEmpty);
-      final descriptors = Directory('/proc/self/fd').listSync().where((entry) {
-        try {
-          return Link(entry.path).targetSync() == file.path;
-        } on FileSystemException {
-          return false;
-        }
-      });
+      final descriptors = Directory('/proc/self/fd')
+          .listSync(followLinks: false)
+          .where((entry) {
+            try {
+              return Link(entry.path).targetSync() == file.path;
+            } on FileSystemException {
+              return false;
+            }
+          });
       expect(descriptors, isEmpty);
     },
   );

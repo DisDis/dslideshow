@@ -36,24 +36,13 @@ abstract class ThemeColors {
   static const otaSuccessTextColor = Colors.greenAccent;
   static const otaSuccessSubtextColor = Color(0xB3FFFFFF); // Colors.white70
   static const otaTerminalHeaderBgColor = Color(0xFF1E1E1E);
-  static const otaTerminalHeaderTextColor = Color(0xFF666666); // Colors.white38
-  static const otaTerminalHeaderIconColor = Color(0xFF666666); // Colors.white38
+  static const otaTerminalHeaderTextColor = Color(0xFFCCCCCC);
+  static const otaTerminalHeaderIconColor = Color(0xFFCCCCCC);
   static const otaTerminalBgColor = Colors.black;
-  static const otaTerminalBorderColor = Color(
-    0x80FF0000,
-  ); // 0.5 alpha red for red dot
-  static const otaTerminalBorderAmberColor = Color(
-    0x80FFFF00,
-  ); // 0.5 alpha amber for amber dot
-  static const otaTerminalBorderGreenColor = Color(
-    0x8000FF00,
-  ); // 0.5 alpha green for green dot
   static const otaDevButtonColor = Color(0xFF666666); // Colors.white38
-  static const otaVersionCurrentColor = Color(0xE6FF0000); // 0.9 alpha red
+  static const otaVersionCurrentColor = Colors.redAccent;
   static const otaReadyHeaderTextColor = Color(0xFFE6E6E6); // 0.9 alpha white
-  static const otaReadySubheaderTextColor = Color(
-    0xFF808080,
-  ); // 0.5 alpha white
+  static const otaReadySubheaderTextColor = Color(0xFFB3B3B3);
   static const otaReadyNormalTextColor = Color(0xFFCCCCCC); // 0.8 alpha white
   static const otaReadyInputBorderColor = Color(0x4DFFFFFF); // Colors.white10
   static const otaReadyAccessCodeBgColor = Color(0x40000000); // Colors.black26
@@ -64,7 +53,8 @@ abstract class ThemeColors {
   // Buttons hint
   static const buttonsHintColor = Colors.cyanAccent;
   static const buttonsHintPressedColor = Colors.yellowAccent;
-  static const buttonsHintBackgroundColor = ThemeColors.menuBgColor; // Cyan Accent
+  static const buttonsHintBackgroundColor =
+      ThemeColors.menuBgColor; // Cyan Accent
 
   // Menu Page Colors
   static const menuBorderColor = Color(0xFF00E5FF); // Cyan Accent

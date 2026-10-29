@@ -177,11 +177,11 @@ return exit(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( OTAInfo info)?  initial,TResult Function( OTAInfo info,  String otaStartUrl)?  ready,TResult Function( OTAInfo info)?  progress,TResult Function( OTAInfo info)?  success,TResult Function( OTAInfo info)?  failure,TResult Function( OTAInfo info)?  exit,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( OTAInfo info)?  initial,TResult Function( OTAInfo info,  String? otaStartUrl,  bool isPreparingAddress)?  ready,TResult Function( OTAInfo info)?  progress,TResult Function( OTAInfo info)?  success,TResult Function( OTAInfo info)?  failure,TResult Function( OTAInfo info)?  exit,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OtaInitialState() when initial != null:
 return initial(_that.info);case OtaReadyState() when ready != null:
-return ready(_that.info,_that.otaStartUrl);case OtaProgressState() when progress != null:
+return ready(_that.info,_that.otaStartUrl,_that.isPreparingAddress);case OtaProgressState() when progress != null:
 return progress(_that.info);case OtaSuccessState() when success != null:
 return success(_that.info);case OtaFailureState() when failure != null:
 return failure(_that.info);case OtaExitState() when exit != null:
@@ -203,11 +203,11 @@ return exit(_that.info);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( OTAInfo info)  initial,required TResult Function( OTAInfo info,  String otaStartUrl)  ready,required TResult Function( OTAInfo info)  progress,required TResult Function( OTAInfo info)  success,required TResult Function( OTAInfo info)  failure,required TResult Function( OTAInfo info)  exit,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( OTAInfo info)  initial,required TResult Function( OTAInfo info,  String? otaStartUrl,  bool isPreparingAddress)  ready,required TResult Function( OTAInfo info)  progress,required TResult Function( OTAInfo info)  success,required TResult Function( OTAInfo info)  failure,required TResult Function( OTAInfo info)  exit,}) {final _that = this;
 switch (_that) {
 case OtaInitialState():
 return initial(_that.info);case OtaReadyState():
-return ready(_that.info,_that.otaStartUrl);case OtaProgressState():
+return ready(_that.info,_that.otaStartUrl,_that.isPreparingAddress);case OtaProgressState():
 return progress(_that.info);case OtaSuccessState():
 return success(_that.info);case OtaFailureState():
 return failure(_that.info);case OtaExitState():
@@ -225,11 +225,11 @@ return exit(_that.info);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( OTAInfo info)?  initial,TResult? Function( OTAInfo info,  String otaStartUrl)?  ready,TResult? Function( OTAInfo info)?  progress,TResult? Function( OTAInfo info)?  success,TResult? Function( OTAInfo info)?  failure,TResult? Function( OTAInfo info)?  exit,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( OTAInfo info)?  initial,TResult? Function( OTAInfo info,  String? otaStartUrl,  bool isPreparingAddress)?  ready,TResult? Function( OTAInfo info)?  progress,TResult? Function( OTAInfo info)?  success,TResult? Function( OTAInfo info)?  failure,TResult? Function( OTAInfo info)?  exit,}) {final _that = this;
 switch (_that) {
 case OtaInitialState() when initial != null:
 return initial(_that.info);case OtaReadyState() when ready != null:
-return ready(_that.info,_that.otaStartUrl);case OtaProgressState() when progress != null:
+return ready(_that.info,_that.otaStartUrl,_that.isPreparingAddress);case OtaProgressState() when progress != null:
 return progress(_that.info);case OtaSuccessState() when success != null:
 return success(_that.info);case OtaFailureState() when failure != null:
 return failure(_that.info);case OtaExitState() when exit != null:
@@ -322,11 +322,12 @@ $OTAInfoCopyWith<$Res> get info {
 
 
 class OtaReadyState implements OtaState {
-  const OtaReadyState({required this.info, required this.otaStartUrl});
+  const OtaReadyState({required this.info, required this.otaStartUrl, this.isPreparingAddress = false});
   
 
 @override final  OTAInfo info;
- final  String otaStartUrl;
+ final  String? otaStartUrl;
+@JsonKey() final  bool isPreparingAddress;
 
 /// Create a copy of OtaState
 /// with the given fields replaced by the non-null parameter values.
@@ -338,18 +339,18 @@ $OtaReadyStateCopyWith<OtaReadyState> get copyWith => _$OtaReadyStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyState&&(identical(other.info, info) || other.info == info)&&(identical(other.otaStartUrl, otaStartUrl) || other.otaStartUrl == otaStartUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyState&&(identical(other.info, info) || other.info == info)&&(identical(other.otaStartUrl, otaStartUrl) || other.otaStartUrl == otaStartUrl)&&(identical(other.isPreparingAddress, isPreparingAddress) || other.isPreparingAddress == isPreparingAddress));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,info,otaStartUrl);
+    return Object.hash(runtimeType,info,otaStartUrl,isPreparingAddress);
 }
 
 @override
 String toString() {
-    return 'OtaState.ready(info: $info, otaStartUrl: $otaStartUrl)';
+    return 'OtaState.ready(info: $info, otaStartUrl: $otaStartUrl, isPreparingAddress: $isPreparingAddress)';
 }
 
 
@@ -360,7 +361,7 @@ abstract mixin class $OtaReadyStateCopyWith<$Res> implements $OtaStateCopyWith<$
   factory $OtaReadyStateCopyWith(OtaReadyState value, $Res Function(OtaReadyState) _then) = _$OtaReadyStateCopyWithImpl;
 @override @useResult
 $Res call({
- OTAInfo info, String otaStartUrl
+ OTAInfo info, String? otaStartUrl, bool isPreparingAddress
 });
 
 
@@ -377,11 +378,12 @@ class _$OtaReadyStateCopyWithImpl<$Res>
 
 /// Create a copy of OtaState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? info = null,Object? otaStartUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? info = null,Object? otaStartUrl = freezed,Object? isPreparingAddress = null,}) {
   return _then(OtaReadyState(
 info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
-as OTAInfo,otaStartUrl: null == otaStartUrl ? _self.otaStartUrl : otaStartUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as OTAInfo,otaStartUrl: freezed == otaStartUrl ? _self.otaStartUrl : otaStartUrl // ignore: cast_nullable_to_non_nullable
+as String?,isPreparingAddress: null == isPreparingAddress ? _self.isPreparingAddress : isPreparingAddress // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

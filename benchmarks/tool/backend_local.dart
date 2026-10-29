@@ -48,7 +48,9 @@ Future<Map<String, Object?>> processSnapshot() async {
     'hwm_bytes': kib(_hwmPattern),
     'cpu_ms': (int.parse(fields[11]) + int.parse(fields[12])) * 1000 / ticks,
     'threads': int.tryParse(_threadsPattern.firstMatch(status)?[1] ?? ''),
-    'open_fds': await Directory('/proc/self/fd').list().length,
+    'open_fds': await Directory('/proc/self/fd')
+        .list(followLinks: false)
+        .length,
   };
 }
 

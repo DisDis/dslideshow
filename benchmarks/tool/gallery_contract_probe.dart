@@ -218,7 +218,7 @@ Future<Map<String, Object?>> _probeDisconnect(
       completedCancellation = false;
     }
     final openLargeDescriptors = Directory('/proc/self/fd')
-        .listSync()
+        .listSync(followLinks: false)
         .where((fd) {
           try {
             return Link(fd.path).targetSync() == large.path;

@@ -9,6 +9,15 @@
 
 ## Unreleased
 
+* Enumerate `/proc/self/fd` without following descriptor links in local probes,
+  avoiding directory-listing races when a descriptor closes during sampling.
+
+* Add an isolated production OTA page harness with simulated RPC streams,
+  ready/upload/install/error/success states, log bursts, history/resume controls,
+  resource telemetry, bounded FrameTiming and separate visual capture runs.
+  The OpenGL launcher uses the service-restoring supervisor and never invokes
+  an installer or reboot.
+
 * Remove the automated Chrome BrowserClient/CORS probe. Preserve archived browser
   results and report generation from those results; writing and running browser
   tests require user consent.

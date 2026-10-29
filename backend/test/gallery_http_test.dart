@@ -465,13 +465,15 @@ void main() {
       0,
       reason: 'late response after close must finish without reading the file',
     );
-    final open = Directory('/proc/self/fd').listSync().where((entry) {
-      try {
-        return Link(entry.path).targetSync() == file.path;
-      } on FileSystemException {
-        return false;
-      }
-    });
+    final open = Directory('/proc/self/fd')
+        .listSync(followLinks: false)
+        .where((entry) {
+          try {
+            return Link(entry.path).targetSync() == file.path;
+          } on FileSystemException {
+            return false;
+          }
+        });
     expect(open, isEmpty);
   });
 }

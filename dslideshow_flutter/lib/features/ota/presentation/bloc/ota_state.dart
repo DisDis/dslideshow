@@ -6,7 +6,11 @@ part 'ota_state.freezed.dart';
 @freezed
 sealed class OtaState with _$OtaState {
   const factory OtaState.initial({required OTAInfo info}) = OtaInitialState;
-  const factory OtaState.ready({required OTAInfo info, required String otaStartUrl}) = OtaReadyState;
+  const factory OtaState.ready({
+    required OTAInfo info,
+    required String? otaStartUrl,
+    @Default(false) bool isPreparingAddress,
+  }) = OtaReadyState;
   const factory OtaState.progress({required OTAInfo info}) = OtaProgressState;
   const factory OtaState.success({required OTAInfo info}) = OtaSuccessState;
   const factory OtaState.failure({required OTAInfo info}) = OtaFailureState;

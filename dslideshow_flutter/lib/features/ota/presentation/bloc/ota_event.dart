@@ -7,8 +7,7 @@ part 'ota_event.freezed.dart';
 class OtaEvent with _$OtaEvent {
   const factory OtaEvent.initialization() = OtaInitializationEvent;
   const factory OtaEvent.updateInfo(OTAInfo info) = OtaUpdateInfoEvent;
-  const factory OtaEvent.ready() = OtaReadyEvent;
   const factory OtaEvent.exit() = OtaExitEvent;
-  const factory OtaEvent.terminalUpdate() = OtaTerminalUpdateEvent;
-  const factory OtaEvent.addTextToTerminal(String message) = OtaAddTextToTerminalEvent;
+  const factory OtaEvent.addTextToTerminal(String message) =
+      OtaAddTextToTerminalEvent;
 }

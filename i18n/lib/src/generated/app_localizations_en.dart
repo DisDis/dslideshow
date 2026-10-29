@@ -2377,4 +2377,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get effects_advanced => 'Advanced';
+
+  @override
+  String get otaTitle => 'Update firmware';
+
+  @override
+  String get otaCurrentVersion => 'Current version';
+
+  @override
+  String get otaAccessCode => 'Access code';
+
+  @override
+  String get otaSameNetwork =>
+      'Connect your phone or computer to the same network as the frame.';
+
+  @override
+  String get otaScanInstruction => 'Scan the QR code to open the update page.';
+
+  @override
+  String get otaManualConnection => 'Or open this address';
+
+  @override
+  String get otaAddressUnavailable =>
+      'No network address is available. Connect the frame to a network to open the update page.';
+
+  @override
+  String get otaPreparing => 'Preparing the update page…';
+
+  @override
+  String get otaUploading => 'Uploading firmware';
+
+  @override
+  String get otaInstalling => 'Installing firmware';
+
+  @override
+  String get otaDoNotPowerOff => 'Keep the frame connected to power.';
+
+  @override
+  String get otaInstallationHint =>
+      'Installation may take a few minutes. Follow the system log below.';
+
+  @override
+  String get otaFailed => 'Update failed';
+
+  @override
+  String get otaUnknownError => 'An unknown error occurred.';
+
+  @override
+  String get otaLogDetails => 'See the system log for details.';
+
+  @override
+  String get otaComplete => 'Firmware updated';
+
+  @override
+  String get otaWaitingRestart => 'Waiting for the application to restart…';
+
+  @override
+  String get otaRestarting => 'Restarting the application…';
+
+  @override
+  String get otaLeaving => 'Closing the update screen…';
+
+  @override
+  String get otaSystemLog => 'System log';
+
+  @override
+  String get otaFollowingOutput => 'Following new output';
+
+  @override
+  String get otaHistoryPaused => 'Viewing history · auto-scroll paused';
+
+  @override
+  String get otaLatestLine => 'Go to latest line';
+
+  @override
+  String get otaDevConfig => 'Developer settings';
+
+  @override
+  String get otaStageUpload => 'Upload';
+
+  @override
+  String get otaStageInstall => 'Install';
+
+  @override
+  String get otaStageComplete => 'Complete';
+
+  @override
+  String get frame_language_section => 'Frame interface';
+
+  @override
+  String get frame_language_label => 'Frame language';
+
+  @override
+  String get frame_language_hint =>
+      'Save and restart the frame application to apply this language. The panel language is selected separately in Appearance.';
 }

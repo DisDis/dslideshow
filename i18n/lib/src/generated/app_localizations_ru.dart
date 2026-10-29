@@ -2393,4 +2393,100 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get effects_advanced => 'Дополнительно';
+
+  @override
+  String get otaTitle => 'Обновление прошивки';
+
+  @override
+  String get otaCurrentVersion => 'Текущая версия';
+
+  @override
+  String get otaAccessCode => 'Код доступа';
+
+  @override
+  String get otaSameNetwork =>
+      'Подключите телефон или компьютер к той же сети, что и рамка.';
+
+  @override
+  String get otaScanInstruction =>
+      'Отсканируйте QR-код, чтобы открыть страницу обновления.';
+
+  @override
+  String get otaManualConnection => 'Или откройте этот адрес';
+
+  @override
+  String get otaAddressUnavailable =>
+      'Сетевой адрес недоступен. Подключите рамку к сети, чтобы открыть страницу обновления.';
+
+  @override
+  String get otaPreparing => 'Подготовка страницы обновления…';
+
+  @override
+  String get otaUploading => 'Загрузка прошивки';
+
+  @override
+  String get otaInstalling => 'Установка прошивки';
+
+  @override
+  String get otaDoNotPowerOff => 'Не отключайте питание рамки.';
+
+  @override
+  String get otaInstallationHint =>
+      'Установка может занять несколько минут. Ход работы показан в журнале ниже.';
+
+  @override
+  String get otaFailed => 'Не удалось обновить прошивку';
+
+  @override
+  String get otaUnknownError => 'Произошла неизвестная ошибка.';
+
+  @override
+  String get otaLogDetails => 'Подробности — в системном журнале.';
+
+  @override
+  String get otaComplete => 'Прошивка обновлена';
+
+  @override
+  String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
+
+  @override
+  String get otaRestarting => 'Перезапускаем приложение…';
+
+  @override
+  String get otaLeaving => 'Закрытие экрана обновления…';
+
+  @override
+  String get otaSystemLog => 'Системный журнал';
+
+  @override
+  String get otaFollowingOutput => 'Показ новых строк';
+
+  @override
+  String get otaHistoryPaused =>
+      'Просмотр истории · автопрокрутка приостановлена';
+
+  @override
+  String get otaLatestLine => 'К последней строке';
+
+  @override
+  String get otaDevConfig => 'Настройки разработчика';
+
+  @override
+  String get otaStageUpload => 'Загрузка';
+
+  @override
+  String get otaStageInstall => 'Установка';
+
+  @override
+  String get otaStageComplete => 'Готово';
+
+  @override
+  String get frame_language_section => 'Интерфейс фоторамки';
+
+  @override
+  String get frame_language_label => 'Язык фоторамки';
+
+  @override
+  String get frame_language_hint =>
+      'Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление».';
 }

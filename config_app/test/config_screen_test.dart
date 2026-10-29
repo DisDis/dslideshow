@@ -1,4 +1,6 @@
 import 'package:config_app/features/config/presentation/pages/config_screen.dart';
+import 'package:config_app/features/theme/presentation/app_preferences.dart';
+import 'package:config_app/features/theme/presentation/l10n/app_locale.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_i18n/i18n.dart';
@@ -22,7 +24,7 @@ void main() {
     screen = GlobalKey<ConfigScreenState>();
   });
 
-  Future<void> mount(WidgetTester tester) async {
+  Future<void> mount(WidgetTester tester, {AppPreferences? preferences}) async {
     tester.view.physicalSize = const Size(1400, 2200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -30,12 +32,22 @@ void main() {
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
     });
+    Widget app() => MaterialApp(
+      locale: preferences?.appLocale.locale ?? const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: ConfigScreen(key: screen, repository: repository),
+    );
     await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: ConfigScreen(key: screen, repository: repository),
-      ),
+      preferences == null
+          ? app()
+          : AppPreferencesScope(
+              preferences: preferences,
+              child: ListenableBuilder(
+                listenable: preferences,
+                builder: (context, child) => app(),
+              ),
+            ),
     );
     await tester.pump();
     expect(repository.loads, hasLength(1));
@@ -60,6 +72,62 @@ void main() {
       )
       .controller
       .text;
+
+  testWidgets(
+    'frame language uses Save, dirty protection and Reload independently of panel language',
+    (tester) async {
+      final preferences = AppPreferences(appLocale: AppLocale.en);
+      addTearDown(preferences.dispose);
+      await mount(tester, preferences: preferences);
+      repository.loads.single.complete(_config(150));
+      await tester.pumpAndSettle();
+      final selector = find.byType(DropdownButtonFormField<FrameLanguage>);
+      FrameLanguage? selected() =>
+          tester.state<FormFieldState<FrameLanguage>>(selector).value;
+      Future<void> choose(String label) async {
+        await tester.ensureVisible(selector);
+        await tester.tap(selector);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(label).last);
+        await tester.pumpAndSettle();
+      }
+
+      expect(selected(), FrameLanguage.en);
+      expect(tester.widget<FilledButton>(_save).onPressed, isNull);
+      await choose('Russian');
+      expect(selected(), FrameLanguage.ru);
+      expect(preferences.appLocale, AppLocale.en);
+      expect(find.text('Frame language'), findsOneWidget);
+      expect(find.text('Unsaved changes'), findsOneWidget);
+      await tester.tap(_save);
+      await tester.pump();
+      expect(repository.saved.single.toJson()['language'], 'ru');
+      repository.saves.single.complete(const WSResultOk(id: 1));
+      await tester.pumpAndSettle();
+      expect(tester.widget<FilledButton>(_save).onPressed, isNull);
+      expect(await screen.currentState!.confirmExit(), isTrue);
+
+      preferences.setLocale(AppLocale.ru);
+      await tester.pumpAndSettle();
+      expect(find.text('Язык фоторамки'), findsOneWidget);
+      expect(selected(), FrameLanguage.ru);
+      await choose('Английский');
+      expect(selected(), FrameLanguage.en);
+      expect(preferences.appLocale, AppLocale.ru);
+      expect(tester.widget<FilledButton>(_save).onPressed, isNotNull);
+      await tester.tap(_reload);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      final russian = lookupAppLocalizations(const Locale('ru'));
+      await tester.tap(find.text(russian.config_discard_changes));
+      await tester.pump();
+      repository.loads.last.complete(_config(150));
+      await tester.pumpAndSettle();
+      expect(selected(), FrameLanguage.en);
+      expect(preferences.appLocale, AppLocale.ru);
+      expect(tester.widget<FilledButton>(_save).onPressed, isNull);
+    },
+  );
 
   testWidgets('effects summary counts canonical families after migration', (
     tester,

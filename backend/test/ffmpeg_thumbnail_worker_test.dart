@@ -446,13 +446,17 @@ void main() {
       fails(ThumbnailFailureKind.timeout),
     );
     expect(await child.exitCode, -ProcessSignal.sigkill.signalNumber);
-    final openSource = Directory('/proc/self/fd').listSync().where((entry) {
-      try {
-        return Link(entry.path).targetSync() == source.path;
-      } on FileSystemException {
-        return false;
-      }
-    });
+    // A descriptor can close during enumeration. Inspect links themselves;
+    // disappearing entries are handled by the per-entry readlink below.
+    final openSource = Directory('/proc/self/fd')
+        .listSync(followLinks: false)
+        .where((entry) {
+          try {
+            return Link(entry.path).targetSync() == source.path;
+          } on FileSystemException {
+            return false;
+          }
+        });
     expect(openSource, isEmpty);
   });
 

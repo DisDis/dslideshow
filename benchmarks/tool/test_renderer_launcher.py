@@ -11,10 +11,9 @@ import time
 import unittest
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / 'run_renderer.sh'
-
-
 class RendererLauncherTest(unittest.TestCase):
+    script = Path(__file__).resolve().parents[1] / 'run_renderer.sh'
+
     def launch(self, code):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
@@ -34,7 +33,7 @@ class RendererLauncherTest(unittest.TestCase):
         runtime.chmod(0o755)
         output = root / 'results'
         result = subprocess.run(
-            ['bash', str(SCRIPT)], text=True, capture_output=True,
+            ['bash', str(self.script)], text=True, capture_output=True,
             env={**os.environ, 'FLUTTER_PI': str(runtime),
                  'BENCHMARK_BUNDLE': str(bundle), 'BENCHMARK_OUTPUT': str(output),
                  'XDG_RUNTIME_DIR': str(root), 'BENCHMARK_TIMEOUT_SECONDS': '10'},
@@ -68,7 +67,7 @@ class RendererLauncherTest(unittest.TestCase):
         root, output, runtime, calls, _ = self.launch(0)
         original = (output / 'launcher-status.json').read_bytes()
         result = subprocess.run(
-            ['bash', str(SCRIPT)], text=True, capture_output=True,
+            ['bash', str(self.script)], text=True, capture_output=True,
             env={**os.environ, 'FLUTTER_PI': str(runtime),
                  'BENCHMARK_BUNDLE': str(root / 'bundle'),
                  'BENCHMARK_OUTPUT': str(output), 'XDG_RUNTIME_DIR': str(root)},
@@ -106,7 +105,7 @@ class RendererLauncherTest(unittest.TestCase):
             runtime.chmod(0o755)
             output = root / 'results'
             process = subprocess.Popen(
-                ['bash', str(SCRIPT)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                ['bash', str(self.script)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, env={**os.environ, 'FLUTTER_PI': str(runtime),
                     'BENCHMARK_BUNDLE': str(bundle), 'BENCHMARK_OUTPUT': str(output),
                     'XDG_RUNTIME_DIR': str(root), 'BENCHMARK_TIMEOUT_SECONDS': '20'},
@@ -138,6 +137,11 @@ class RendererLauncherTest(unittest.TestCase):
                 if process.poll() is None:
                     process.terminate()
                     process.communicate(timeout=5)
+
+
+class OtaLauncherTest(RendererLauncherTest):
+    """The OTA entry point preserves the same GPU teardown/failure boundary."""
+    script = Path(__file__).resolve().parents[1] / 'run_ota.sh'
 
 
 if __name__ == '__main__':

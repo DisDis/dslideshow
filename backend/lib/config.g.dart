@@ -19,6 +19,13 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
   storages: AppConfig._parseStorages(json['storages']),
   wifi: AppConfig._parseWifi(json['wifi']),
   ota: AppConfig._parseOTA(json['ota']),
+  language:
+      $enumDecodeNullable(
+        _$FrameLanguageEnumMap,
+        json['language'],
+        unknownValue: FrameLanguage.en,
+      ) ??
+      FrameLanguage.en,
 );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -32,6 +39,13 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'storages': instance.storages.toJson(),
   'ota': instance.ota.toJson(),
   'wifi': instance.wifi.toJson(),
+  'language': _$FrameLanguageEnumMap[instance.language]!,
+};
+
+const _$FrameLanguageEnumMap = {
+  FrameLanguage.system: 'system',
+  FrameLanguage.en: 'en',
+  FrameLanguage.ru: 'ru',
 };
 
 LogConfig _$LogConfigFromJson(Map<String, dynamic> json) => LogConfig(

@@ -56,15 +56,13 @@ extension OtaEventPatterns on OtaEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OtaInitializationEvent value)?  initialization,TResult Function( OtaUpdateInfoEvent value)?  updateInfo,TResult Function( OtaReadyEvent value)?  ready,TResult Function( OtaExitEvent value)?  exit,TResult Function( OtaTerminalUpdateEvent value)?  terminalUpdate,TResult Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OtaInitializationEvent value)?  initialization,TResult Function( OtaUpdateInfoEvent value)?  updateInfo,TResult Function( OtaExitEvent value)?  exit,TResult Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OtaInitializationEvent() when initialization != null:
 return initialization(_that);case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that);case OtaReadyEvent() when ready != null:
-return ready(_that);case OtaExitEvent() when exit != null:
-return exit(_that);case OtaTerminalUpdateEvent() when terminalUpdate != null:
-return terminalUpdate(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+return updateInfo(_that);case OtaExitEvent() when exit != null:
+return exit(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
 return addTextToTerminal(_that);case _:
   return orElse();
 
@@ -83,15 +81,13 @@ return addTextToTerminal(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OtaInitializationEvent value)  initialization,required TResult Function( OtaUpdateInfoEvent value)  updateInfo,required TResult Function( OtaReadyEvent value)  ready,required TResult Function( OtaExitEvent value)  exit,required TResult Function( OtaTerminalUpdateEvent value)  terminalUpdate,required TResult Function( OtaAddTextToTerminalEvent value)  addTextToTerminal,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OtaInitializationEvent value)  initialization,required TResult Function( OtaUpdateInfoEvent value)  updateInfo,required TResult Function( OtaExitEvent value)  exit,required TResult Function( OtaAddTextToTerminalEvent value)  addTextToTerminal,}){
 final _that = this;
 switch (_that) {
 case OtaInitializationEvent():
 return initialization(_that);case OtaUpdateInfoEvent():
-return updateInfo(_that);case OtaReadyEvent():
-return ready(_that);case OtaExitEvent():
-return exit(_that);case OtaTerminalUpdateEvent():
-return terminalUpdate(_that);case OtaAddTextToTerminalEvent():
+return updateInfo(_that);case OtaExitEvent():
+return exit(_that);case OtaAddTextToTerminalEvent():
 return addTextToTerminal(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -109,15 +105,13 @@ return addTextToTerminal(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OtaInitializationEvent value)?  initialization,TResult? Function( OtaUpdateInfoEvent value)?  updateInfo,TResult? Function( OtaReadyEvent value)?  ready,TResult? Function( OtaExitEvent value)?  exit,TResult? Function( OtaTerminalUpdateEvent value)?  terminalUpdate,TResult? Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OtaInitializationEvent value)?  initialization,TResult? Function( OtaUpdateInfoEvent value)?  updateInfo,TResult? Function( OtaExitEvent value)?  exit,TResult? Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,}){
 final _that = this;
 switch (_that) {
 case OtaInitializationEvent() when initialization != null:
 return initialization(_that);case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that);case OtaReadyEvent() when ready != null:
-return ready(_that);case OtaExitEvent() when exit != null:
-return exit(_that);case OtaTerminalUpdateEvent() when terminalUpdate != null:
-return terminalUpdate(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+return updateInfo(_that);case OtaExitEvent() when exit != null:
+return exit(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
 return addTextToTerminal(_that);case _:
   return null;
 
@@ -135,14 +129,12 @@ return addTextToTerminal(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialization,TResult Function( OTAInfo info)?  updateInfo,TResult Function()?  ready,TResult Function()?  exit,TResult Function()?  terminalUpdate,TResult Function( String message)?  addTextToTerminal,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialization,TResult Function( OTAInfo info)?  updateInfo,TResult Function()?  exit,TResult Function( String message)?  addTextToTerminal,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OtaInitializationEvent() when initialization != null:
 return initialization();case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that.info);case OtaReadyEvent() when ready != null:
-return ready();case OtaExitEvent() when exit != null:
-return exit();case OtaTerminalUpdateEvent() when terminalUpdate != null:
-return terminalUpdate();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+return updateInfo(_that.info);case OtaExitEvent() when exit != null:
+return exit();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
 return addTextToTerminal(_that.message);case _:
   return orElse();
 
@@ -161,14 +153,12 @@ return addTextToTerminal(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialization,required TResult Function( OTAInfo info)  updateInfo,required TResult Function()  ready,required TResult Function()  exit,required TResult Function()  terminalUpdate,required TResult Function( String message)  addTextToTerminal,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialization,required TResult Function( OTAInfo info)  updateInfo,required TResult Function()  exit,required TResult Function( String message)  addTextToTerminal,}) {final _that = this;
 switch (_that) {
 case OtaInitializationEvent():
 return initialization();case OtaUpdateInfoEvent():
-return updateInfo(_that.info);case OtaReadyEvent():
-return ready();case OtaExitEvent():
-return exit();case OtaTerminalUpdateEvent():
-return terminalUpdate();case OtaAddTextToTerminalEvent():
+return updateInfo(_that.info);case OtaExitEvent():
+return exit();case OtaAddTextToTerminalEvent():
 return addTextToTerminal(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -186,14 +176,12 @@ return addTextToTerminal(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialization,TResult? Function( OTAInfo info)?  updateInfo,TResult? Function()?  ready,TResult? Function()?  exit,TResult? Function()?  terminalUpdate,TResult? Function( String message)?  addTextToTerminal,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialization,TResult? Function( OTAInfo info)?  updateInfo,TResult? Function()?  exit,TResult? Function( String message)?  addTextToTerminal,}) {final _that = this;
 switch (_that) {
 case OtaInitializationEvent() when initialization != null:
 return initialization();case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that.info);case OtaReadyEvent() when ready != null:
-return ready();case OtaExitEvent() when exit != null:
-return exit();case OtaTerminalUpdateEvent() when terminalUpdate != null:
-return terminalUpdate();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+return updateInfo(_that.info);case OtaExitEvent() when exit != null:
+return exit();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
 return addTextToTerminal(_that.message);case _:
   return null;
 
@@ -314,38 +302,6 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaReadyEvent implements OtaEvent {
-  const OtaReadyEvent();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaReadyEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-    return 'OtaEvent.ready()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
 class OtaExitEvent implements OtaEvent {
   const OtaExitEvent();
   
@@ -367,38 +323,6 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
     return 'OtaEvent.exit()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class OtaTerminalUpdateEvent implements OtaEvent {
-  const OtaTerminalUpdateEvent();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaTerminalUpdateEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-    return 'OtaEvent.terminalUpdate()';
 }
 
 

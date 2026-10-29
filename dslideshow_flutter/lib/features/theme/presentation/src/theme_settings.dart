@@ -1,4 +1,4 @@
-abstract class ThemeSettings{
+abstract class ThemeSettings {
   static const double scaleFactor = 2.0;
 
   static const double headerIconSize = 26.0 * scaleFactor;
@@ -20,7 +20,7 @@ abstract class ThemeSettings{
   static const configManualIconSize = 20 * scaleFactor;
 
   // OTA Page Sizes
-  static const double otaTerminalFontSize = 12 * scaleFactor;
+  static const double otaTerminalFontSize = 16 * scaleFactor;
   static const double otaMainStageIconSize = 90 * scaleFactor;
   static const double otaProgressTitleSize = 32 * scaleFactor;
   static const double otaProgressSubtitleSize = 16 * scaleFactor;
@@ -32,7 +32,6 @@ abstract class ThemeSettings{
   static const double otaRebootTextSize = 18 * scaleFactor;
   static const double otaTerminalHeaderSize = 10 * scaleFactor;
   static const double otaTerminalHeaderIconSize = 16 * scaleFactor;
-  static const double otaTerminalDotSize = 8 * scaleFactor;
   static const double otaReadyTitleSize = 24 * scaleFactor;
   static const double otaReadyVersionSize = 20 * scaleFactor;
   static const double otaReadyNormalTextSize = 12 * scaleFactor;

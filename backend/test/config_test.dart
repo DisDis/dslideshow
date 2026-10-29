@@ -5,6 +5,34 @@ import 'package:test/test.dart';
 
 void main() {
   group('AppConfig', () {
+    test('missing, null and unsupported frame languages use English', () {
+      expect(AppConfig.fromJson({}).language, FrameLanguage.en);
+      for (final value in [null, 'de', '', 42, <String, Object?>{}]) {
+        expect(
+          AppConfig.fromJson({'language': value}).language,
+          FrameLanguage.en,
+          reason: 'language=$value',
+        );
+      }
+    });
+
+    test('frame language round trips and storage omits only the default', () {
+      for (final (language, jsonValue) in const [
+        (FrameLanguage.system, 'system'),
+        (FrameLanguage.en, 'en'),
+        (FrameLanguage.ru, 'ru'),
+      ]) {
+        final config = AppConfig.fromJson({'language': jsonValue});
+        expect(config.language, language);
+        expect(config.toJson()['language'], jsonValue);
+        expect(AppConfig.fromJson(config.toJson()).language, language);
+        expect(
+          config.toStorageJson()['language'],
+          language == FrameLanguage.en ? isNull : jsonValue,
+        );
+      }
+    });
+
     test('parse test config', () {
       final testData = {
         "slideshow": {

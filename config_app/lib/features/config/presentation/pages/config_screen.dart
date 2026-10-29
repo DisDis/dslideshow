@@ -462,6 +462,35 @@ class ConfigScreenState extends State<ConfigScreen> {
             ),
           ],
         ),
+        SettingsSection(
+          title: context.localizations.frame_language_section,
+          icon: Icons.language,
+          children: [
+            SettingsDropdown<FrameLanguage>(
+              key: const ValueKey('config-frame-language'),
+              label: context.localizations.frame_language_label,
+              value: _editingConfig!.language,
+              items: FrameLanguage.values,
+              itemLabelBuilder: (language) => switch (language) {
+                FrameLanguage.system => context.localizations.ui_system_default,
+                FrameLanguage.en => context.localizations.english,
+                FrameLanguage.ru => context.localizations.russian,
+              },
+              onChanged: (language) {
+                if (language != null) {
+                  setState(() => _editingConfig!.language = language);
+                }
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Text(
+                context.localizations.frame_language_hint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
         // Внутри ListView в ConfigView
         SettingsSection(
           title: context.localizations.storage_title,

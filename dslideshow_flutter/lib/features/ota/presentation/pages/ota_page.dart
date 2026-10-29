@@ -1,28 +1,33 @@
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart';
-import 'package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_terminal_session.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/widgets/ota_view.dart';
-import 'package:dslideshow_flutter/features/theme/presentation/src/theme_colors.dart';
+import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:xterm/xterm.dart';
-
-@immutable
-// ignore: must_be_immutable
 class OTAPage extends StatelessWidget {
-  final Terminal terminal = Terminal(maxLines: 3000);
-  late TerminalBackend backend = TerminalBackend(terminal);
-  OTAPage({super.key});
+  const OTAPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => OtaBloc(frontendService: injector(), backend: backend, routeBloc: injector())..add(const OtaEvent.initialization()),
-        child: Scaffold(
+    return RepositoryProvider(
+      create: (_) => OtaTerminalSession(),
+      dispose: (session) => session.dispose(),
+      child: BlocProvider(
+        create: (context) => OtaBloc(
+          frontendService: injector(),
+          backend: context.read<OtaTerminalSession>().backend,
+          routeBloc: injector(),
+        )..add(const OtaEvent.initialization()),
+        child: Builder(
+          builder: (context) => Scaffold(
             backgroundColor: ThemeColors.configBackgroundColor,
-            body: OTAView(
-              terminal: terminal,
-            )));
+            body: OTAView(session: context.read<OtaTerminalSession>()),
+          ),
+        ),
+      ),
+    );
   }
 }

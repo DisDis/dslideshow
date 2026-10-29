@@ -4621,6 +4621,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Advanced'**
   String get effects_advanced;
+
+  /// No description provided for @otaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update firmware'**
+  String get otaTitle;
+
+  /// No description provided for @otaCurrentVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Current version'**
+  String get otaCurrentVersion;
+
+  /// No description provided for @otaAccessCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Access code'**
+  String get otaAccessCode;
+
+  /// No description provided for @otaSameNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your phone or computer to the same network as the frame.'**
+  String get otaSameNetwork;
+
+  /// No description provided for @otaScanInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code to open the update page.'**
+  String get otaScanInstruction;
+
+  /// No description provided for @otaManualConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Or open this address'**
+  String get otaManualConnection;
+
+  /// No description provided for @otaAddressUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No network address is available. Connect the frame to a network to open the update page.'**
+  String get otaAddressUnavailable;
+
+  /// No description provided for @otaPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the update page…'**
+  String get otaPreparing;
+
+  /// No description provided for @otaUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading firmware'**
+  String get otaUploading;
+
+  /// No description provided for @otaInstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing firmware'**
+  String get otaInstalling;
+
+  /// No description provided for @otaDoNotPowerOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the frame connected to power.'**
+  String get otaDoNotPowerOff;
+
+  /// No description provided for @otaInstallationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Installation may take a few minutes. Follow the system log below.'**
+  String get otaInstallationHint;
+
+  /// No description provided for @otaFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Update failed'**
+  String get otaFailed;
+
+  /// No description provided for @otaUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred.'**
+  String get otaUnknownError;
+
+  /// No description provided for @otaLogDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'See the system log for details.'**
+  String get otaLogDetails;
+
+  /// No description provided for @otaComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware updated'**
+  String get otaComplete;
+
+  /// No description provided for @otaWaitingRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the application to restart…'**
+  String get otaWaitingRestart;
+
+  /// No description provided for @otaRestarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting the application…'**
+  String get otaRestarting;
+
+  /// No description provided for @otaLeaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing the update screen…'**
+  String get otaLeaving;
+
+  /// No description provided for @otaSystemLog.
+  ///
+  /// In en, this message translates to:
+  /// **'System log'**
+  String get otaSystemLog;
+
+  /// No description provided for @otaFollowingOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Following new output'**
+  String get otaFollowingOutput;
+
+  /// No description provided for @otaHistoryPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewing history · auto-scroll paused'**
+  String get otaHistoryPaused;
+
+  /// No description provided for @otaLatestLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to latest line'**
+  String get otaLatestLine;
+
+  /// No description provided for @otaDevConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer settings'**
+  String get otaDevConfig;
+
+  /// No description provided for @otaStageUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get otaStageUpload;
+
+  /// No description provided for @otaStageInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get otaStageInstall;
+
+  /// No description provided for @otaStageComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get otaStageComplete;
+
+  /// No description provided for @frame_language_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame interface'**
+  String get frame_language_section;
+
+  /// No description provided for @frame_language_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame language'**
+  String get frame_language_label;
+
+  /// No description provided for @frame_language_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and restart the frame application to apply this language. The panel language is selected separately in Appearance.'**
+  String get frame_language_hint;
 }
 
 class _AppLocalizationsDelegate

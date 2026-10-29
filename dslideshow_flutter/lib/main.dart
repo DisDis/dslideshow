@@ -31,6 +31,7 @@ import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 import 'src/injector.dart';
+import 'src/frame_language.dart';
 
 void main() async {
   if (kDebugMode) {
@@ -86,12 +87,19 @@ void main() async {
     Logger.root.level = config.log.levelMain;
 
     final rpcTelemetry = RpcTelemetry(RpcNode.frontend);
-    otaService = RemoteServiceImpl(serializers: serializers,
-      telemetry: rpcTelemetry, peer: RpcNode.ota, collectPeerTelemetry: true);
+    otaService = RemoteServiceImpl(
+      serializers: serializers,
+      telemetry: rpcTelemetry,
+      peer: RpcNode.ota,
+      collectPeerTelemetry: true,
+    );
     await otaService.spawn(ota.serviceMain, debugName: "ota");
 
-    backendService = RemoteServiceImpl(serializers: serializers,
-      telemetry: rpcTelemetry, peer: RpcNode.backend);
+    backendService = RemoteServiceImpl(
+      serializers: serializers,
+      telemetry: rpcTelemetry,
+      peer: RpcNode.backend,
+    );
     await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
 
     final FrontendService frontendService = injector();
@@ -180,6 +188,7 @@ class MainApp extends StatelessWidget {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      locale: injector<AppConfig>().language.locale,
       home: BlocBuilder<RouteBloc, RouteState>(
         builder: (_, state) {
           switch (state.current) {

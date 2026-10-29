@@ -1,5 +1,15 @@
 # Unreleased
 
+* Keep the OTA connection QR, bold access code and red current version large;
+  show installation output across the frame with a 32 px terminal font, pause
+  auto-scroll while reading history and provide a return-to-latest action.
+  Show percentages only for file transfer and preserve the active update stage
+  when opening OTA or receiving delayed initialization responses.
+
+* Add a saved frame interface language (`system`, `en`, `ru`) to JSON settings
+  and the settings panel, defaulting to English. Apply it after restarting the frame application;
+  keep the panel's own session language independent.
+
 * Return an OTA error page for an incorrect firmware code after discarding the
   rejected upload, avoiding a connection reset during normal file transfer.
 
