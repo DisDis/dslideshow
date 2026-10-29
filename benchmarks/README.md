@@ -2,6 +2,11 @@
 
 История стенда и его инструментов — в [собственном changelog](changelog.md).
 Изменения приложений описываются в [корневом changelog](../changelog.md).
+Сохранённые результаты и состав архивов — в [индексе отчётов](reports/README.md).
+[Правила сопровождения](../doc/benchmarks-maintenance.md) задают обновление
+документации, хранение доказательств, удаление устаревшего и ежемесячный аудит.
+[Очистка стенда 29.10.2026](../doc/benchmarks-cleanup-2026-10-29.md) описывает
+удалённые материалы, освобождённое место и границы локальной проверки.
 
 [Стенд экрана OTA](ota-harness.md) монтирует production-страницу с локальным
 потоком установщика: QR/код, полноширинный журнал, просмотр истории, возврат
@@ -12,11 +17,11 @@
 в `lib/src/effect_variants.dart`. ID включает параметры; отчёт — `effect_config`.
 `effect_configs` — карта типов со списком вариантов настроек под каждым
 ключом; в значениях нет поля `type`. Значение `options.durationMs=0`
-наследует `transition_ms`. Диагностические MosaicProbe используют суффиксы
-`binary`/`fade`. Аппаратные прогоны этой работы исключены пользователем.
+наследует `transition_ms`. Неизвестные поля и имена сценариев отклоняются.
 
-Модель `BenchmarkConfig` использует Freezed и json_serializable; после изменения
-полей запустите в `benchmarks/` команду `dart run build_runner build`.
+Модели `BenchmarkConfig` и `BenchmarkCase` используют Freezed и json_serializable;
+после изменения полей запустите в `benchmarks/` команду `dart run build_runner build`.
+Отчётная проекция сценария генерируется с прежними ID и JSON-ключами.
 
 Отдельное Flutter-приложение с path-зависимостью от `../dslideshow_flutter`.
 В основном приложении нет точки входа, телеметрии или переключателей для бенчмарков.
@@ -82,11 +87,11 @@ Viewport создаёт два неизменяемых `EffectSlideInput` пр�
 `supportsInputs` проверяется до запуска анимации. Callback `onEffectPrepared`
 получает те же входы и может заимствовать их ресурсы только до `release()`.
 `PhotoMotionProbe` сам применяет камеру к `view`, поэтому его входная камера
-остаётся единичной. Bitmap-пробы BlurProbe по-прежнему владеют отдельными клонами
-из смонтированного `RenderImage`; обычный `photo.bitmap` не заменяет этот клон.
+остаётся единичной. Проба запускается явно через `config/photo-motion.json`
+на обычных/48-Мп фото. Отказ для неподдерживаемых медиа проверяется отдельно в VM.
 
-Локальные shader-regression targets явно передают подготовленные фото; live
-reference, blur/mosaic/composition-пробы и галерея сохраняют прежние пути.
+Локальные shader-regression targets явно передают подготовленные фото;
+галерея и общие visual audits сохраняют живые входы, где эффект их поддерживает.
 В галерее и общем pixel audit фото добавляются только при отказе
 `supportsInputs` от live-входов. Frozen shader fixtures, плотность Mosaic,
 размеры, фазы и допуски сравнения сохраняются. Для миграции этого API аппаратный
@@ -99,16 +104,14 @@ reference, blur/mosaic/composition-пробы и галерея сохраняю
 подложки и `RepaintBoundary` на каждом входе. Общая граница захвата стенда
 сохраняется; качество, размер подготовки и освобождение
 изображений не меняются. По умолчанию поле выключено для воспроизводимости
-прежних отчётов. GIF/видео, Ken Burns, компонентные blur/mosaic/composition-пробы
-и случаи с намеренным stall сохраняют прежние входные слои даже при opt-in.
+прежних отчётов. GIF/видео, Ken Burns и случаи с намеренным stall сохраняют
+прежние входные слои даже при opt-in.
 Включайте одинаковое значение в baseline и candidate; результаты с разными
 входными слоями требуют нового baseline и не являются A/B оптимизации эффекта.
 
 Обычные входы не имеют `GlobalKey`: эффекты Glass, Radial Blur и Phosphor
-монтируют несколько представлений одного медиа. Глобальный ключ оставлен
-только у исходящего слайда bitmap-проб BlurProbe, где он нужен для доступа
-к одному `RenderImage`. Прежний общий ключ переносил исходящий виджет между
-ветками даже в release и искажал многослойную нагрузку; для таких эффектов
+монтируют несколько представлений одного медиа. Прежний общий ключ переносил
+исходящий виджет между ветками даже в release и искажал многослойную нагрузку; для таких эффектов
 нужны новые baseline/candidate с исправленным стендом. Общие подготовленные
 bitmap и видеосессии по-прежнему принадлежат одному владельцу на медиа.
 
@@ -126,82 +129,22 @@ readback проверяют реально закешированные OpenGL-�
 с interposer недействительны. Перенос Stretch/CrossZoom/Radial и последующих
 фото-шейдеров Glass/Film в production описан ниже.
 
-### Основные Stretch / CrossZoom / Radial Blur
+### Принятые оптимизации и независимые эталоны
 
-Измеренные реализации перенесены в обычные production-фабрики по решению
-пользователя. Их старые benchmark-классы, shader, одноразовый entrypoint и конфиг
-удалены; исходники и обе release-сборки доступны в
-`reports/effect-performance-2026-10-28/corrected-harness/experimental-{baseline,candidate}-frozen/`.
-Результаты и условия — в [отчёте](../doc/effect-performance-2026-10.md#перенос-трёх-измеренных-реализаций).
-Повторные замеры этих трёх реализаций пользователь исключил.
+Stretch/CrossZoom/Radial, фото-шейдеры Glass/Film Dissolve и общий kernel Glass
+перенесены в production. Условия A/B, визуальные различия и release/source архивы
+описаны в [исследовании эффектов](../doc/effect-performance-2026-10.md).
+Закрытые экспериментальные классы и одноразовые entrypoints удалены.
 
-Обычный `BenchmarkViewport` передаёт два подготовленных фото через
-`EffectSlideInput` в production `RadialBlurEffect`. GIF/видео используют его
-живую композицию.
-Тесты перенесённых эффектов и ресурсов находятся в `dslideshow_flutter/test/`;
-viewport отдельно проверяет заимствование статичных фото и отсутствие capture
-для GIF.
+`config/photo-shader-focus.json` проверяет Baseline/Fade/Glass/Film на фото.
+`shaders/glass_reconstruction_reference.frag` сохраняет shader до общего kernel;
+`test/glass_reconstruction_test.dart` сравнивает production Glass с независимым
+эталоном на контрастных/прозрачных фото, разных панелях, размерах и камерах
+(max delta≤2), проверяет переиспользование и освобождение shader.
 
-### Основные фото-шейдеры Glass / Film Dissolve
-
-Измеренные `PhotoGlassEffect` и `PhotoFilmDissolveEffect` перенесены в обычную
-production-фабрику. Стенд, слайдшоу и preview передают заимствованные
-подготовленные фото и камеру через `EffectSlideInput`. Исходящая PhotoMotion-камера
-сохраняется как неизменяемые scale/dx/dy; render object владеет своим
-FragmentShader. Снимки, декодеры и клоны фото не создаются. Endpoints и GIF/видео
-сохраняют живые входы.
-
-Glass объединяет pane transforms, blend и glint в один проход. Mitchell
-reconstruction B=C=1/3 сохраняет все 16 вкладов через 9 bilinear lookup;
-плотность панелей, refraction strength и разрешение не уменьшаются. У дробных
-стыков возможна другая однопиксельная coverage. Film объединяет
-sRGB→linear→blend→sRGB без промежуточных RGBA8 surface: тёмные каналы отличаются
-из-за отсутствия округления после каждого фильтра. Результаты A/B и визуальные
-границы — в [отчёте](../doc/effect-performance-2026-10.md#продолжение-фото-шейдеры-glass-и-film-dissolve).
-Строгие исторические статусы pixel audit не изменены.
-
-Прежние benchmark-копии, shader assets и entrypoint удалены. Для воспроизведения
-пары используйте release/source архивы
-`reports/effect-performance-2026-10-28/corrected-harness/continued-investigation/photo-shaders-{baseline,candidate}-frozen/`.
-`config/photo-shader-focus.json` сохраняет четыре штатных photo→photo сценария:
-Baseline, обычный Fade, Glass и Film, один прогрев и три измерения.
-
-### Общие вычисления Mitchell в Glass
-
-Измеренный общий kernel также перенесён в основной Glass. Он повторно использует
-weights и координаты только при точном совпадении рассчитанных UV и размеров
-фото; для разных камер/размеров остаются независимые вычисления. Все 16 вкладов,
-18 texture fetch и порядок сложения сохранены. Отдельный A/B Glass с двумя
-контролями дал 16,44 → 17,54 sampled FPS; выигрыш с PhotoMotion не измерялся.
-Условия и границы проверки — в [отчёте](../doc/effect-performance-2026-10.md#повторное-использование-вычислений-mitchell-в-glass).
-
-Временные класс, entrypoint и конфиг удалены. Для воспроизведения используйте
-`reports/effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-{baseline,candidate}-frozen/`;
-исходники вместе с тестами дополнительно сохранены рядом в
-`common-kernel-experiment-and-tests.tar.gz`. Stretch/CrossZoom/Radial повторно
-не измерялись. Все FPS-прогоны шли через supervisor, только OpenGL,
-без `LD_PRELOAD` и EGL readback.
-
-`shaders/glass_reconstruction_reference.frag` — только fixture строгой регрессии,
-сохранённый shader до общего kernel. `test/glass_reconstruction_test.dart`
-сравнивает с ним обычный production Glass на контрастных/прозрачных фото,
-обеих осях, разных панелях, размерах и камерах (max delta≤2), проверяет
-переиспользование и освобождение shader. Отдельного reference-эффекта в каталоге
-или переключателя в preview нет.
-
-`tool/build_info.py` включает `benchmarks/shaders/` в `source_sha256` наряду с
-Dart-кодом и конфигурацией. Изменение shader или asset-пути меняет fingerprint;
-генерируемые build-info/build outputs исключены. Callback подготовки вызывается
-после `prepare()` до монтирования и получает `EffectSlideInput`, заимствующие
-имеющиеся bitmap до release; для GIF/видео поле `photo` равно null.
-
-Локальные проверки из `benchmarks/`:
-
-```sh
-flutter test --no-pub test/photo_shader_focus_config_test.dart test/glass_reconstruction_test.dart test/viewport_test.dart
-flutter analyze --no-pub
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p test_build_info.py -v
-```
+`tool/build_info.py` включает shader assets, Dart-код и конфигурацию в fingerprint;
+генерируемые build outputs исключены. Сохранённые архивы подтверждают только
+свои frozen сборки, а не текущий исходный код.
 
 ## Radial / VHS после обновления flutter-pi и частот
 
@@ -224,47 +167,28 @@ release/source архивов. Более медленные варианты Ka
 flutter test --no-pub test/cached_vhs_test.dart test/radial_shared_uv_test.dart
 ```
 
-## Диагностика Accordion / LiquidMorph
+## Завершённые исследования
 
-Наборы `composition-confirm.json`, `composition-visual.json`,
-`composition-media.json`, `composition-video.json` сравнивают штатные эффекты
-с замороженными `CompositionProbe-accordionReference` / `liquidReference`.
-`CompositionProbe-accordionGrouped` сохраняет отклонённый эксперимент с общими
-трансформациями; production Accordion оставлен исходным после обратного A/B.
-Пробы включаются только явно через `effects`. В `composition-diagnostics.json`
-компонентные `accordionNoShadow`, `liquidNoScale`, `liquidNoClip` намеренно меняют
-картинку и нужны только для локализации затрат. `liquidBounded` / `liquidRectTail`
-проходят отдельный пиксельный контроль; их наличие в стенде не означает приёмку
-оптимизации. Все наборы выполняются в OpenGL; видео→видео сюда не входит.
-Методика и выводы — в [разборе RaPi5](../doc/accordion-liquid-optimization-2026-10.md).
-`composition-acceptance.json` задаёт пять повторов на обычных/48 Мп фото;
-`composition-final.json` и `composition-final-visual.json` проверяют окончательный
-код после исключения неподтверждённого изменения Accordion.
+BlurProbe, MosaicProbe и CompositionProbe вместе с историческими конфигами
+удалены после завершения исследований. Их исходники доступны в истории Git,
+сохранённые измерения и ограничения — через [индекс отчётов](reports/README.md).
+Для новых проверок используйте production-эффекты и актуальные конфиги ниже.
+Регрессии эффектов находятся в `dslideshow_flutter/test/`; стенд сохраняет
+проверки входов/ресурсов и full-frame visual audit всех сеток 100/150/200.
 
-## Диагностика Mosaic / MosaicFade
+| Конфиг | Назначение |
+| --- | --- |
+| `smoke.json`, `standard.json` | Общая матрица фото/GIF/видео, ошибки и ресурсы |
+| `visual.json` | 21 контрольная фаза штатных эффектов |
+| `effect-options-visual.json`, `effect-options-performance.json` | Полный текущий каталог и варианты настроек |
+| `photo-motion.json` | Ken Burns и подготовка обычных/48-Мп фото |
+| `photo-shader-focus.json` | Baseline/Fade/Glass/Film |
+| `gpu-radial-focus.json`, `gpu-vhs-cache-focus.json` | Короткие production-сценарии Radial/VHS |
+| `native-pipeline-photo.json` | Фото для отдельной native-диагностики |
+| `soak.json` | Отложенный длительный набор; не запускается автоматически |
 
-[Исследование Canvas-маски на RaPi5](../doc/mosaic-optimization-2026-10.md)
-описывает `mosaic-diagnostics.json`, `mosaic-confirm.json`, `mosaic-visual.json`,
-`mosaic-media.json`, `mosaic-video.json` и `mosaic-video-confirm.json`. Пробы `MosaicProbe-points-*` и
-`MosaicProbe-vertices-*` включаются только явно; обычные smoke/standard их
-не запускают. Сетки 100/150/200 сохраняются. В visual audit проверяются
-**все выбранные сетки**, с SHA-256 полного кадра 2560×1600 в каждой позиции.
-Обычные captures 0/50/100% сохраняют только первую сетку.
-
-## Диагностика BlurFade
-
-Точечные сценарии `blur-diagnostics.json`, `blur-confirm.json`,
-`blur-confirm-photos.json`, `blur-visual.json` и `blur-video.json` описаны
-в [исследовании BlurFade на RaPi5](../doc/blur-fade-optimization-2026-10.md).
-Диагностические `BlurProbe-*` включаются только явно через `effects`;
-обычные матрицы их не запускают. `fadeOnly` / `blurOnly` намеренно меняют
-картинку, bitmap-пробы доступны только для статического исходящего слайда.
-Это инструменты исследования, а не дополнительные пользовательские эффекты.
-
-Визуальный аудит дополнительно сохраняет `full_frames` в `audit/*.json`:
-размеры и SHA-256 raw RGBA полного кадра до уменьшения до PNG-превью.
-Сравнивайте эти хеши между эталоном и кандидатом; успешная эвристическая
-проверка движения сама по себе не подтверждает точное совпадение пикселей.
+Все конфиги находятся в `config/`. Плотность, разрешение и качество штатных
+эффектов при очистке не изменяются.
 
 ## Локальные проверки backend без Flutter и устройства
 
@@ -281,18 +205,11 @@ flutter test --no-pub test/cached_vhs_test.dart test/radial_shared_uv_test.dart
 сравнивает публичный `/info` через сеть и loopback. Команды, результаты и границы
 проверок — в [исследовании timeout камер](../doc/camera-rpc-investigation-2026-10.md).
 
-Отдельные диагностические пробы галереи `tool/gallery_list_probe.dart` и
-`tool/gallery_contract_probe.dart` описаны в
-[исследовании галереи](../doc/gallery-performance.md) и
-[локальном отчёте](reports/gallery-local-2026-10-26/report.md).
-Они проверяют текущий HTTP-контракт, блокировку списка и локальную отмену
-потока; не запускают устройство и не заменяют A/B интерфейса на RaPi5.
-
 ### Миниатюры и управляемый HTTP галереи
 
-[Один FFmpeg и JPEG](reports/thumbnail-jpeg-local-2026-10-27/report.md) сравнивает
-новый конвейер с предыдущим probe/RGBA/encode. [Первый переход на FFmpeg](reports/thumbnail-ffmpeg-local-2026-10-27/report.md)
-сохраняет baseline/candidate, сырые HTTP-результаты, медиахеши и команды повтора.
+[Один FFmpeg и JPEG](reports/thumbnail-jpeg-local-2026-10-27/report.md) сохраняет
+актуальное сравнение с предыдущим probe/RGBA/encode, сырые HTTP-результаты,
+медиахеши и ограничения проверки.
 `gallery_http.py --bucket 256|512|1024` берёт policy из каталога;
 `--cold-concurrency 4` задаёт параллельный холодный проход. Инструмент измеряет
 дерево процессов: sampled sum RSS/FD/threads и CPU с reaped children.
@@ -302,7 +219,7 @@ flutter test --no-pub test/cached_vhs_test.dart test/radial_shared_uv_test.dart
 `tool/ffmpeg_thumbnail_compat.dart` запускает настоящий production worker, создаёт
 alpha/EXIF/GIF/tiny fixtures, проверяет JPEG, MD5 и неизменность источников.
 Необязательный аргумент — каталог с photo_a/photo_b/photo_large/video_a.
-Как и browser probe, файл исключён из Flutter-анализатора benchmarks: он
+Файл исключён из Flutter-анализатора benchmarks: он
 компилируется с package config backend, где доступен dev-пакет image:
 
 ```sh
@@ -315,9 +232,6 @@ dart compile exe --packages=backend/.dart_tool/package_config.json \
 Используется `ffmpeg` из PATH: один и тот же AOT probe можно запустить в отдельном
 Debian 12 для 5.1 и на host для 8. Проверка не устанавливает пакеты и не запускает
 hardware service. Ошибки не превращаются в нулевые измерения или skipped.
-
-`gallery_thumbnail_probe.dart source size output-file` проверяет текущий worker;
-прежние Dart decoder-пробы сохранены в исторических frozen-отчётах.
 
 Production-поведение, API и лимиты описаны в [руководстве галереи](../doc/gallery.md).
 `gallery_http.py` компилирует frozen backend/common с одним и тем же
@@ -352,10 +266,8 @@ python3 -m unittest discover -s benchmarks/tool -p test_gallery_http.py
 Прежняя автоматическая Chrome-проба BrowserClient/CORS удалена 29.10.2026.
 Её локальные исходные данные и выводы сохранены в
 [итоговом HTTP/Chrome-отчёте](reports/gallery-implementation-2026-10-26/report.md).
-`gallery_http_report.py --browser` читает уже сохранённые результаты браузера
-из архива и не запускает новый браузерный прогон.
-Отдельный [прототип scaled JPEG decode](reports/gallery-thumbnail-local-2026-10-26/report.md)
-описывает `gallery_thumbnail_probe.dart`, время, RSS и неизменность оригиналов.
+Его итоговые Markdown/JSON и одноразовый генератор сохранены с отчётом;
+генератор работает только с архивными результатами и не является общим runner.
 Для повторного показа в Linux отдельно сохранён
 [before/after native warm cache](reports/gallery-native-cache-warm-2026-10-26/report.md):
 `tool/gallery_native_cache_probe.py` запускает одинаковые 63 попадания через
@@ -381,26 +293,16 @@ python3 benchmarks/tool/gallery_native_cache_probe.py \
 каталоге. [Сравнение cold native cache](reports/gallery-native-cache-cold-2026-10-26/report.md)
 отделено от [cold/warm LAN](reports/gallery-live-2026-10-26/lan-cold.json):
 запись клиента не измеряет создание производной на сервере.
-Отдельный [Linux release A/B](reports/gallery-native-cache-cold-2026-10-26/linux-release-report.md)
-использует `tool/gallery_native_cache_release.py` и Dart-template из `tool/`:
-runner генерирует entry point внутри ignored report и собирает frozen snapshots,
-сохраняя bundles и manifests. Нужны исходные baseline/production snapshots из
-этого эксперимента и уже установленные Linux build dependencies/Xvfb. Это
-вспомогательные сборки: после них production bundle следует восстановить обычной
-`flutter build linux --release --no-pub --target lib/main.dart` из `config_app`.
-Wi-Fi, Flutter FrameTiming, визуальная проверка устройства и аппаратный A/B
-не выполняются этими командами; для них требуется отдельное окно по
-[руководству RaPi5](../doc/raspberry-pi-benchmarks.md).
+[Завершённый Linux release A/B](reports/gallery-native-cache-cold-2026-10-26/linux-release-report.md)
+сохраняет frozen исходники и release-архивы. Его генераторы, привязанные к одному
+эксперименту, удалены из `tool/`. Для новых сравнений используйте универсальный
+`gallery_native_cache_probe.py`; границы его VM-проверки перечислены выше.
 
 `tool/backend_local.dart` и `tool/backend_local.py` образуют отдельный pure Dart
 стенд для `DiskStorage`, транспорта RPC и `SystemInfoService`. Он не запускает
 Flutter, hardware service, GPIO, MQTT, фоторамку или команды настройки сети.
 Используются существующие зависимости `backend/.dart_tool/package_config.json`;
 стенд ничего не устанавливает и не меняет SDK, версии или lock-файлы.
-
-Счётчик FD и проверка освобождения файлов в `gallery_contract_probe.dart`
-обходят `/proc/self/fd` без следования по ссылкам: закрытие дескриптора во время
-обхода не должно вызывать ложный отказ диагностического инструмента.
 
 Перед production-правками сохраните baseline. Runner копирует `backend/lib`,
 `common/lib`, pubspec/lock и собственный harness, превращает package roots
@@ -746,28 +648,6 @@ readback даёт `unverified_capture`, а не ложный успех. Отк�
 глубину углов 3D-преобразований. Результат — `build/effects/visual-audit.json`.
 24-часовой прогон сейчас отложен; визуальный набор его не запускает.
 
-### Точечный A/B ZoomOver и BlurFade
-
-Вызовы launcher ниже передавайте supervisor из аппаратного руководства:
-
-```bash
-./run.sh --config config/zoom-blur.json --renderers opengl --timeout 2400
-./run.sh --config config/zoom-blur-confirm.json --renderers opengl --timeout 2400
-./run.sh --config config/zoom-blur-visual.json --renderers opengl --timeout 1800
-./run.sh --config config/zoom-blur-video.json --renderers opengl --timeout 2400
-```
-
-Первый набор: Baseline/Fade/ZoomOver/BlurFade × фото, фото 48 Мп и оба направления
-GIF — 16 сценариев, один прогрев и три измерения. Второй снимает 21 контрольный
-кадр ZoomOver/BlurFade и Baseline. Третий проверяет Baseline/ZoomOver/BlurFade
-на фото→видео и видео→фото с одним декодером — шесть сценариев. Известный native
-сбой video→video остаётся отдельным дефектом, этот набор его не проверяет.
-Для A/B используйте одинаковые конфиги/оригиналы, исходную и новую release-сборки;
-переходить на Vulkan для этого сравнения не нужно.
-`zoom-blur-confirm.json` оставляет восемь случаев на обычных/48 Мп фото для
-повторной пары в обратном порядке. Результаты и принятая оптимизация описаны
-в [аппаратном разборе ZoomOver/BlurFade](../doc/zoom-blur-optimization-2026-10.md).
-
 Агрегация использует сырые `runs.jsonl`, включая повторы после последнего checkpoint.
 `error_counts` отдельно показывает runtime/cleanup/capture/telemetry ошибки;
 `failed_runs` не подменяет эти счётчики. `successful` требует отсутствия всех ошибок.
@@ -777,10 +657,15 @@ GIF — 16 сценариев, один прогрев и три измерен�
 ```bash
 flutter analyze --no-pub
 flutter test --no-pub
-python3 -m unittest discover -s tool -p 'test_*.py'
-bash -n run.sh build_aot_pi5.sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p 'test_*.py'
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool/native_pipeline -p 'test_*.py'
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool/egl_capture -p 'test_*.py'
+bash -n run.sh run_renderer.sh run_ota.sh build_aot_pi5.sh build_renderer_pi5.sh build_ota_pi5.sh
 flutter test --no-pub tool/render_effect_gallery_test.dart
 ```
+
+Эти команды запускают VM/native локальные тесты. Устройство и браузер не
+используются; реальный GPU/scanout и DOM/interop ими не проверяются.
 
 Галереи появятся в `build/effects/gallery-*.png`; количество файлов зависит
 от размера реестра эффектов, по 12 переходов на страницу.

@@ -16,8 +16,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'config.dart';
-import 'blur_probes.dart';
-import 'mosaic_probes.dart';
 import 'driver.dart';
 import 'media.dart';
 import 'metrics.dart';
@@ -72,7 +70,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
   EffectSlideInput _from = const EffectSlideInput(view: SizedBox.expand()),
       _to = const EffectSlideInput(view: SizedBox.expand());
   final List<ImageWidget> _images = [];
-  final List<ui.Image> _probeBitmaps = [];
   final List<VideoSession> _videos = [];
   final Map<VideoSession, String> _videoNames = {};
   final GlobalKey _captureKey = GlobalKey();
@@ -152,19 +149,13 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final size = MediaQuery.sizeOf(context);
     final ratio = View.of(context).devicePixelRatio;
     final slideshow = SlideShowConfig.fromJson({});
-    // Repeated transition views must mount independently. Only the bitmap
-    // diagnostic needs to locate one outgoing RenderImage by a global key.
-    final sourceKey = test.blurProbe?.needsBitmap == true ? GlobalKey() : null;
     // Ordinary photo transitions receive the same sized media view as the
-    // slideshow. Retain the historical layer tree for component diagnostics.
+    // slideshow. Other paths retain their historical layer tree.
     final productionPhotoInputs =
         widget.config.productionPhotoInputs &&
         test.media.staticPhotos &&
         !test.photoMotion &&
-        !test.injectStall &&
-        test.blurProbe == null &&
-        test.mosaicProbe == null &&
-        test.compositionProbe == null;
+        !test.injectStall;
     Future<EffectSlideInput> load(String name) async {
       final watch = Stopwatch()..start();
       final rssBefore = ProcessInfo.currentRss;
@@ -229,12 +220,7 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
       return EffectSlideInput(
         photo: photo,
         view: KeyedSubtree(
-          key: name == test.media.from ? sourceKey : null,
-          child:
-              productionPhotoInputs ||
-                  test.blurProbe == BlurFadeProbe.noBoundary
-              ? slide
-              : RepaintBoundary(child: slide),
+          child: productionPhotoInputs ? slide : RepaintBoundary(child: slide),
         ),
       );
     }
@@ -243,20 +229,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final to = await load(test.media.to);
     _effect = test.photoMotion
         ? PhotoMotionProbe()
-        : test.compositionProbe != null
-        ? test.compositionProbe!.createEffect()
-        : test.mosaicProbe != null
-        ? MosaicProbeEffect(
-            test.mosaicProbe!,
-            grid: test.grid,
-            binary:
-                test.effect ==
-                (const Effect(
-                  EffectType.mosaic,
-                  options: MosaicEffectOptions(fadeFraction: 0),
-                )),
-            seed: widget.config.seed,
-          )
         : widget.effectFactory?.call(test, widget.config.seed) ??
               test.effect?.createEffect(
                 seed: widget.config.seed,
@@ -284,26 +256,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _controller.value = 0;
     _scene = true;
     await _paint();
-    if (test.blurProbe case final probe?) {
-      ui.Image? bitmap;
-      if (probe.needsBitmap) {
-        void visit(Element element) {
-          final render = element.renderObject;
-          if (render is RenderImage && bitmap == null) {
-            bitmap = render.image?.clone();
-          }
-          if (bitmap == null) element.visitChildElements(visit);
-        }
-
-        visit(sourceKey!.currentContext! as Element);
-        if (bitmap == null) {
-          throw StateError('Prepared photo bitmap unavailable');
-        }
-        _probeBitmaps.add(bitmap!);
-      }
-      _effect = BlurProbeEffect(probe, bitmap: bitmap);
-      await _paint();
-    }
     // Functional pause/resume intent uses the same shared sessions as production.
     for (final video in _videos) {
       await video.setPlaying(false);
@@ -751,10 +703,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     final images = [..._images];
     _images.clear();
     if (mounted) await _paint();
-    for (final bitmap in _probeBitmaps) {
-      bitmap.dispose();
-    }
-    _probeBitmaps.clear();
     for (final image in images) {
       image.dispose();
     }
@@ -790,9 +738,6 @@ class _BenchmarkViewportState extends State<BenchmarkViewport>
     _generation++;
     SchedulerBinding.instance.removeTimingsCallback(_timings);
     _controller.dispose();
-    for (final bitmap in _probeBitmaps) {
-      bitmap.dispose();
-    }
     for (final image in _images) {
       image.dispose();
     }

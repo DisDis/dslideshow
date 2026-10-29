@@ -93,8 +93,10 @@ controller до нажатия и JPEG-постер на платформе бе
 AOT binary/build metadata, frozen harness/runner в `baseline/`, `candidate/`
 (ранний) и `candidate-final/` (финальный). `execution/final-{256,512,1024}/`
 содержит run.json, summary и raw.json каждого свежего процесса.
-`comparison.json` сводит таблицу; `fixtures/` содержит четвёртую копию исходника,
-`samples/` — JPEG-пробы и их JSON с MD5 результата/SHA-256 источника.
+`comparison.json` сводит таблицу; `samples/` сохраняет JPEG-пробы и их JSON
+с MD5 результата/SHA-256 источника. При очистке удалена только воспроизводимая
+четвёртая byte-copy `fixtures/photo_large_copy.jpg`: оригинал остаётся в
+`benchmarks/assets/media/photo_large.jpg`. Команда ниже создаёт временную копию.
 Логи анализаторов, тестов и Web-сборки сохранены в `validation/`. Этот report.md
 хранится в Git; большие локальные артефакты остаются ignored.
 
@@ -106,6 +108,9 @@ AOT binary/build metadata, frozen harness/runner в `baseline/`, `candidate/`
 Из корня с сохранёнными snapshot, новый `--run-name` на каждый запуск:
 
 ```sh
+thumbnail_fixture_dir=$(mktemp -d)
+trap 'rm -rf -- "$thumbnail_fixture_dir"' EXIT
+cp benchmarks/assets/media/photo_large.jpg "$thumbnail_fixture_dir/photo_large_copy.jpg"
 # Для baseline заменить --variant; для других размеров — --bucket.
 python3 benchmarks/tool/gallery_http.py --reuse-binary --variant candidate-final \
   --output benchmarks/reports/thumbnail-jpeg-local-2026-10-27 \
@@ -114,12 +119,16 @@ python3 benchmarks/tool/gallery_http.py --reuse-binary --variant candidate-final
   --media benchmarks/assets/media/photo_a.jpg \
   --media benchmarks/assets/media/photo_b.jpg \
   --media benchmarks/assets/media/photo_large.jpg \
-  --media benchmarks/reports/thumbnail-jpeg-local-2026-10-27/fixtures/photo_large_copy.jpg
+  --media "$thumbnail_fixture_dir/photo_large_copy.jpg"
 
+# Отдельная проверка текущего production-кодека и FFmpeg:
 dart compile exe --packages=backend/.dart_tool/package_config.json \
-  benchmarks/tool/gallery_thumbnail_probe.dart -o /tmp/gallery-thumbnail-probe
-/tmp/gallery-thumbnail-probe benchmarks/assets/media/video_a.mp4 256 /tmp/video-poster.jpg
+  benchmarks/tool/ffmpeg_thumbnail_compat.dart -o /tmp/thumbnail-compat
+/tmp/thumbnail-compat benchmarks/assets/media
 ```
+
+Прежний одноразовый `gallery_thumbnail_probe.dart` удалён; compatibility target
+выше проверяет действующий worker и не заменяет историческое A/B.
 
 Из чистого checkout сначала нужен baseline до изменения кода и новый experiment
 dir (`--freeze-current`), как описано в [README стенда](../../README.md).

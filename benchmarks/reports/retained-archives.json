@@ -1,0 +1,1852 @@
+{
+  "checked_utc_date": "2026-10-29",
+  "method": "SHA256, full tar member reads, gzip CRC/trailer reads; exact unpacked duplicate SHA256 matching",
+  "archives": [
+    {
+      "path": "accordion-liquid-2026-10-25/baseline-photo-repeat.tar.gz",
+      "sha256": "b36fb0abb1cacaf99cad84455f603d8f8239f94ca2f8d12bc809294314d6ce86",
+      "bytes": 14598057,
+      "files": 26,
+      "unpacked_bytes": 28570157,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/baseline-photo.tar.gz",
+      "sha256": "413e5ae1bf01d462895892f9876c242faaa944f5cb6cea75945447f8b8b66217",
+      "bytes": 14617675,
+      "files": 26,
+      "unpacked_bytes": 28778492,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/candidate-confirm-repeat.tar.gz",
+      "sha256": "fb01e23ae44a91a40674c4ae85f5d2d9b9ab5d99720b2d49578a666b8c0cfcc6",
+      "bytes": 14598662,
+      "files": 26,
+      "unpacked_bytes": 28569917,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/candidate-confirm.tar.gz",
+      "sha256": "14993e07c2f50afa83cca06ca59e5ff5c4effe65744573eefbcca31435b20939",
+      "bytes": 14616230,
+      "files": 26,
+      "unpacked_bytes": 28778096,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/candidate-media.tar.gz",
+      "sha256": "843a67bb6403e88b87cf76c9c6cc07a729e357f9e0d8128a2d6fffc375eb2df8",
+      "bytes": 14619767,
+      "files": 26,
+      "unpacked_bytes": 28762826,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/candidate-video.tar.gz",
+      "sha256": "a7af3b776497c780f7a9b91e35314dc15a941f748200531d5e0c58a868ea0726",
+      "bytes": 15349074,
+      "files": 29,
+      "unpacked_bytes": 29564927,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/candidate-visual.tar.gz",
+      "sha256": "44ba5c051c7995a52357a752f6c49f873097fcda1e7ca791d4a63760457744ae",
+      "bytes": 21935444,
+      "files": 123,
+      "unpacked_bytes": 35104195,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/diagnostics-visual.tar.gz",
+      "sha256": "e8d13fa1ab57f6358bf5d4b918e2aae72100bdbc9b5c930a57e4ab1c5a5eaf32",
+      "bytes": 23754274,
+      "files": 147,
+      "unpacked_bytes": 36966734,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/diagnostics.tar.gz",
+      "sha256": "390dafacb24eef5876926372e61281799be499d9318932b8a6356411782704fc",
+      "bytes": 14605972,
+      "files": 26,
+      "unpacked_bytes": 28670371,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/final-visual.tar.gz",
+      "sha256": "7997fe084517e2fbf404ddc83e32fcaae0ff3732a749d2d0d00011d920c14aac",
+      "bytes": 21935264,
+      "files": 123,
+      "unpacked_bytes": 35101427,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/final.tar.gz",
+      "sha256": "fb2d2ccde693b132a6fdc0219c84aff0ac05128e82022ce95cffe2104f5f7eef",
+      "bytes": 14558740,
+      "files": 26,
+      "unpacked_bytes": 28139158,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/rect-diagnostics-visual.tar.gz",
+      "sha256": "6e8a509365794adb02a7437f181a6a05e0883210fd8520729f9941b82003bd6f",
+      "bytes": 25572674,
+      "files": 171,
+      "unpacked_bytes": 38831180,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/rect-diagnostics.tar.gz",
+      "sha256": "a9237bc056ac9e3354874295177ba52477a3ae6591cafe2ee076797246c170b8",
+      "bytes": 14616625,
+      "files": 26,
+      "unpacked_bytes": 28807357,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/release-archives/benchmarks-pi5-release-NJzazJE1.tar.gz",
+      "sha256": "ec32c17a8104d51dfd840838ec1eb4bbf3dae547481ced3ffc2e9eeb404b5be5",
+      "bytes": 27018029,
+      "files": 82,
+      "unpacked_bytes": 59336140,
+      "verified": true
+    },
+    {
+      "path": "accordion-liquid-2026-10-25/release-archives/benchmarks-pi5-release-xfRXtbPb.tar.gz",
+      "sha256": "2705f7ec612002ab4999ae593549fbe459d13c0a79a5882c90d07500046e888b",
+      "bytes": 27024124,
+      "files": 87,
+      "unpacked_bytes": 59339861,
+      "verified": true
+    },
+    {
+      "path": "backend-local-2026-10-26/baseline/source.tar.gz",
+      "sha256": "973d6809448bd29525c41fbf25dd34367893ab56828887a96f8901e59d07fa60",
+      "bytes": 147947,
+      "files": 149,
+      "unpacked_bytes": 931461,
+      "verified": true
+    },
+    {
+      "path": "backend-local-2026-10-26/candidate-approved/source.tar.gz",
+      "sha256": "23a54033fb8494ff960de6e7b615f9891c871496bb182a9acdbbcc984f521199",
+      "bytes": 155509,
+      "files": 150,
+      "unpacked_bytes": 956241,
+      "verified": true
+    },
+    {
+      "path": "backend-local-2026-10-26/candidate-final/source.tar.gz",
+      "sha256": "b45ad1d43bcd1397d2b59e012d8cc374adac834833fc3208fb490412ef01b32c",
+      "bytes": 155338,
+      "files": 150,
+      "unpacked_bytes": 955532,
+      "verified": true
+    },
+    {
+      "path": "backend-local-2026-10-26/candidate/source.tar.gz",
+      "sha256": "81ef41aa54c78c0b0caacbee6eb45698d0a33dead9744a04918b12c6e8685310",
+      "bytes": 154011,
+      "files": 150,
+      "unpacked_bytes": 950574,
+      "verified": true
+    },
+    {
+      "path": "backend-local-2026-10-26/source-review-supplement.tar.gz",
+      "sha256": "e726cbad9d755e8e3f89d868d08dd797beea947fe5788d3490c8e7017f042b18",
+      "bytes": 10136,
+      "files": 4,
+      "unpacked_bytes": 26431,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/baseline-photos.tar.gz",
+      "sha256": "24a3f941ddb1a188177a914b89093c245cb2cc4ec2b0ae4b0cd8c71e34853cbd",
+      "bytes": 14545251,
+      "files": 26,
+      "unpacked_bytes": 27981327,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/confirm.tar.gz",
+      "sha256": "22232435582a88d19d988536ae9f275ee670a950157da92125b43c1d2246c741",
+      "bytes": 14648351,
+      "files": 26,
+      "unpacked_bytes": 29027235,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/diagnostics.tar.gz",
+      "sha256": "433e88b3b4599b4bc173816e454443eccf0f3b5cb37c5afcc05d423eec8456e4",
+      "bytes": 14726947,
+      "files": 26,
+      "unpacked_bytes": 29884996,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/photos.tar.gz",
+      "sha256": "81cf1df290900510ab80202b1e577284d012c4d4930be0f8a71b98e121ee10c1",
+      "bytes": 14546677,
+      "files": 26,
+      "unpacked_bytes": 27992030,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/release-archives/benchmarks-pi5-release-T3rZgKII.tar.gz",
+      "sha256": "22ad67615253f998761d624d6919e9fd202eefe29f32b577405d026b8a00f2b9",
+      "bytes": 27005737,
+      "files": 68,
+      "unpacked_bytes": 59268298,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/release-archives/benchmarks-pi5-release-jyNKg9kf.tar.gz",
+      "sha256": "d4ef60b86359825f025ab657ad0c248d1cbfbe798618fe602e12497b98dd4057",
+      "bytes": 27005867,
+      "files": 72,
+      "unpacked_bytes": 59270057,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/video.tar.gz",
+      "sha256": "511fd04e8f7b25603c92984f5f17c4eb9dfda8594d6f1efb14115cd89d9d9790",
+      "bytes": 15283545,
+      "files": 29,
+      "unpacked_bytes": 28823501,
+      "verified": true
+    },
+    {
+      "path": "blur-fade-2026-10-25/visual.tar.gz",
+      "sha256": "27d615cee14ef02fb3516a39bdb2d90d0aeefe887e66e3d49b1efa5d6aa469c7",
+      "bytes": 27068366,
+      "files": 147,
+      "unpacked_bytes": 40289446,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/baseline/20261028T070713Z-smoke-8O3vNh8Y.tar.gz",
+      "sha256": "f35c8844e0c5b8f62c2db22581c609e002142e1a3d14d6d279d90837603a2f56",
+      "bytes": 14797185,
+      "files": 26,
+      "unpacked_bytes": 30666259,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/baseline/sources.tar.gz",
+      "sha256": "5c1fe0d84540b774c5074e290f56bfd62383efc9e22c07abab4493b5fa3715e8",
+      "bytes": 465529,
+      "files": 391,
+      "unpacked_bytes": 2532637,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/baseline/20261028T085021Z-smoke-wj9MyZHz.tar.gz",
+      "sha256": "4f18932441232594c7d798c611f0b25509f8b63724f3e2e2c602506ad6c22427",
+      "bytes": 14824569,
+      "files": 26,
+      "unpacked_bytes": 30793428,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/baseline/release-package.tar.gz",
+      "sha256": "5d850c7209feb12fe7afbfe2361d241f112539a20ae1054793764dbd2cee9c30",
+      "bytes": 27227586,
+      "files": 99,
+      "unpacked_bytes": 60020085,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/baseline/sources.tar.gz",
+      "sha256": "7764b9ecbc25d822127e439a5d845e0d37b513f91129634be03b235731b86185",
+      "bytes": 164605,
+      "files": 147,
+      "unpacked_bytes": 777868,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/candidate-kaleido/release-package.tar.gz",
+      "sha256": "8cd5dc9ab192f301f85f1999ea0799a080cb4a5746ed186a407a2585b538f576",
+      "bytes": 27252278,
+      "files": 98,
+      "unpacked_bytes": 60094385,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/candidate-kaleido/sources.tar.gz",
+      "sha256": "d06900920f059b2fe152aeb91e2715f8adb69b142f7e14f6ae3c2e27fb7dabfb",
+      "bytes": 168783,
+      "files": 148,
+      "unpacked_bytes": 789904,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/candidate/release-package.tar.gz",
+      "sha256": "ae09dca65bab526bc0d5501a84ad43424d9a17eff3dbedd7fce40bd099ee4aa7",
+      "bytes": 27252110,
+      "files": 98,
+      "unpacked_bytes": 60094111,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/candidate/sources.tar.gz",
+      "sha256": "541f22e836ceebf73904955ce8a352a894452256e8006f526f5e3b3c5a996384",
+      "bytes": 165864,
+      "files": 147,
+      "unpacked_bytes": 779209,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-baseline-frozen/release-package.tar.gz",
+      "sha256": "10af2b153ee8e8efb0d7ae14cfc461f7d82d6c4eb7c0c3d9757c963774c72019",
+      "bytes": 27236397,
+      "files": 101,
+      "unpacked_bytes": 60291652,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-baseline-frozen/sources.tar.gz",
+      "sha256": "641d1bc9fd1e8c4c873bbde6810d7001daa81908e7997c34bcac33c501cf2b3c",
+      "bytes": 29992255,
+      "files": 1356,
+      "unpacked_bytes": 163930199,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-candidate-frozen/release-package.tar.gz",
+      "sha256": "dc6ffb80af5e77378092956ae39430abc6e81f4d362f6fbe77b9983ba33798d2",
+      "bytes": 27243528,
+      "files": 101,
+      "unpacked_bytes": 60291696,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-candidate-frozen/sources.tar.gz",
+      "sha256": "d53c21cd1fad1c9b94ae515719b8a3ad1576c2cc51200324befaff82e265c7e7",
+      "bytes": 29992255,
+      "files": 1356,
+      "unpacked_bytes": 163930199,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/common-kernel-experiment-and-tests.tar.gz",
+      "sha256": "16fcc40099447d579c1de7c0dc362420651fd8b83de5225fbf8aecd5adddab90",
+      "bytes": 8435,
+      "files": 7,
+      "unpacked_bytes": 38784,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/photo-shaders-baseline-frozen/release-package.tar.gz",
+      "sha256": "e7dbaef6cd939cc054dc5d11f5959db007334154650a454b3d0434467071858c",
+      "bytes": 27216250,
+      "files": 99,
+      "unpacked_bytes": 60188776,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/photo-shaders-baseline-frozen/sources.tar.gz",
+      "sha256": "221c9c018708dce4776d7e6423cad062f5fea57616ec6114536826193bd9bae5",
+      "bytes": 29988092,
+      "files": 1353,
+      "unpacked_bytes": 163913184,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/photo-shaders-candidate-frozen/release-package.tar.gz",
+      "sha256": "2376cc7c7fbfc94f01eddf3204e767b89dc2728baa75bc380b4af151017ab4f3",
+      "bytes": 27223072,
+      "files": 99,
+      "unpacked_bytes": 60188820,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/continued-investigation/photo-shaders-candidate-frozen/sources.tar.gz",
+      "sha256": "5e5512fa702b147439ce79045fb5655667c803b7cf6a4e0b54148816414f3b0e",
+      "bytes": 29988092,
+      "files": 1353,
+      "unpacked_bytes": 163913184,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/egl-pixels-painted-bootstrap/release-package.tar.gz",
+      "sha256": "f01f7083bf1b7688cb466e195e1d86b33a4fbd35c82a969d762151b7c5461256",
+      "bytes": 27066031,
+      "files": 99,
+      "unpacked_bytes": 59690652,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/egl-pixels-painted-bootstrap/sources.tar.gz",
+      "sha256": "50f87e5ba7ed442fb0a077b3d1663294b37a59b1097726b8fdee0eb5a331660e",
+      "bytes": 405942,
+      "files": 343,
+      "unpacked_bytes": 2331738,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/egl-pixels-raster-fenced/sources.tar.gz",
+      "sha256": "7aad4e633fc0625c0fe20aff9032413417c78126cff0bfce930b0bae35d527c2",
+      "bytes": 165897,
+      "files": 56,
+      "unpacked_bytes": 593988,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/egl-pixels/sources.tar.gz",
+      "sha256": "461b17c23e84de2b0e9b7f2ea592c943ee246295ebf0c4a01b40ecf07c190679",
+      "bytes": 187654,
+      "files": 158,
+      "unpacked_bytes": 850286,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/experimental-baseline-frozen/release-package.tar.gz",
+      "sha256": "f5240836e3ea8ff331fc50e8a8d6a8caa683466240081f2ed61060dc7a2453f7",
+      "bytes": 27203098,
+      "files": 100,
+      "unpacked_bytes": 60152851,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/experimental-baseline-frozen/sources.tar.gz",
+      "sha256": "c43cf253aa5f9383bb1e9b4a89770ed4276af4cf048a5d6ba968621e249e7077",
+      "bytes": 30002706,
+      "files": 1365,
+      "unpacked_bytes": 163987952,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/experimental-candidate-frozen/release-package.tar.gz",
+      "sha256": "e579b3e9c9fb2b3ceb21369a228316e4f50559e7da951582eb5224cc5c7f8326",
+      "bytes": 27213322,
+      "files": 100,
+      "unpacked_bytes": 60152927,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/experimental-candidate-frozen/sources.tar.gz",
+      "sha256": "19681147c4e59080715d49c1cb5731449892d92404b016c617bab3f63e9c3eed",
+      "bytes": 30002706,
+      "files": 1365,
+      "unpacked_bytes": 163987952,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T090224Z-smoke-AurIli2e.tar.gz",
+      "sha256": "fa546c28986cf142e175dc9747228004bd244e5f3085d31a1c42484d470f412f",
+      "bytes": 14798332,
+      "files": 26,
+      "unpacked_bytes": 30687361,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T090957Z-smoke-qGlK5m0Y.tar.gz",
+      "sha256": "d9c2ea1ee827e30d357540f061e0ec2a7c2a3b735f05dec2fe45bb241f9d06ca",
+      "bytes": 15085366,
+      "files": 26,
+      "unpacked_bytes": 33532909,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T093557Z-smoke-KnXLzbNX.tar.gz",
+      "sha256": "1a94a24d2d1001e9e702de73a1f1d219c66eac9049ab2e796ffa97a2e1bcdbc9",
+      "bytes": 15011111,
+      "files": 26,
+      "unpacked_bytes": 32943952,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T095027Z-smoke-tyW5wGJ5.tar.gz",
+      "sha256": "ab5c8a59b7bc07a188ebc6e34790ba639db2f6d886072d6fe0a91872fc8014d7",
+      "bytes": 14796762,
+      "files": 26,
+      "unpacked_bytes": 30679999,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T100047Z-smoke-vJxwehYp.tar.gz",
+      "sha256": "5e00bba7d44c9ca63978c25f67d5dc43262989358add90f4ed2f33d0a151ec30",
+      "bytes": 14519180,
+      "files": 21,
+      "unpacked_bytes": 27890798,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T101636Z-smoke-MwneyHgC.tar.gz",
+      "sha256": "b23a6b3050c34b759eaf8bcb9ef6fb95b0f5e205cbc6e0bf428c4306101f16fc",
+      "bytes": 150585855,
+      "files": 90,
+      "unpacked_bytes": 167666142,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T105328Z-smoke-5D7MOZVR.tar.gz",
+      "sha256": "8611ce85af10826e2c07ceecc8a79e55eb37a96a86d9415a7c7b616737265a95",
+      "bytes": 14581920,
+      "files": 26,
+      "unpacked_bytes": 28315640,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T105757Z-smoke-4eltoOWf.tar.gz",
+      "sha256": "472dcee1c749301d7674b8e78ed17fe539ff45a77eeb392b0e44b25fa6110bce",
+      "bytes": 14566338,
+      "files": 26,
+      "unpacked_bytes": 28194976,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T115003Z-smoke-RXJ6idpu.tar.gz",
+      "sha256": "bdf4d47f9f18e660dffb6890b01ec3b02138312c3b5f7a7a6daed412a47ed336",
+      "bytes": 14556329,
+      "files": 26,
+      "unpacked_bytes": 28073202,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T115146Z-smoke-bkD8V4Se.tar.gz",
+      "sha256": "4dc2ad99101fd0f6a0e8fa16114d8ea50f49bd9cfbb985edf6da5c1b2ec014a2",
+      "bytes": 14553403,
+      "files": 26,
+      "unpacked_bytes": 28047773,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T123007Z-smoke-L3FRJDqe.tar.gz",
+      "sha256": "0f8d775842c77926fcc51fc5054395dea194f0bdfecfabc842eb31669024c9d4",
+      "bytes": 14539884,
+      "files": 26,
+      "unpacked_bytes": 27920441,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/corrected-harness/raw/20261028T123108Z-smoke-I27xWNIP.tar.gz",
+      "sha256": "208fb111e5cca91f05ec6467335cb9f7794e25cae635dd83dde6c61543a62be2",
+      "bytes": 14540823,
+      "files": 26,
+      "unpacked_bytes": 27923394,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/diagnostic-inputs/20261028T071657Z-smoke-QeoCPam6.tar.gz",
+      "sha256": "698d0b4b33d408ec94e8935bf1fac3d350393c3ddd1fa8e462b8bbe2b8904652",
+      "bytes": 14709913,
+      "files": 26,
+      "unpacked_bytes": 29426495,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/invalid-harness/20261028T075635Z-smoke-yxpfvYDh.tar.gz",
+      "sha256": "8c08233f233818e06201700c4c37cc8fe34df83ad976263c589de28d5e7e849c",
+      "bytes": 5086,
+      "files": 16,
+      "unpacked_bytes": 12862,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/invalid-harness/20261028T081524Z-smoke-1DFmsAvf.tar.gz",
+      "sha256": "c25d7932e90474a339e3723d759d3365b823849a81c439e4bf99337bb181945a",
+      "bytes": 15075400,
+      "files": 26,
+      "unpacked_bytes": 33452463,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/invalid-harness/20261028T084017Z-smoke-P8R8xQ5k.tar.gz",
+      "sha256": "9d069f725c8fc2a875d5474a7b9bd037b3f6082356b6e3868942a98752b8a8dd",
+      "bytes": 14523683,
+      "files": 26,
+      "unpacked_bytes": 27742208,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/production-inputs/baseline/20261028T073645Z-smoke-zXLZ4a42.tar.gz",
+      "sha256": "693f3c1843c7827330789dcf3d013355fe93c210dfa90eacefeb8dfb2e1af137",
+      "bytes": 14821118,
+      "files": 26,
+      "unpacked_bytes": 30780333,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/production-inputs/candidate-2/20261028T080148Z-smoke-ri0efeSR.tar.gz",
+      "sha256": "37f2a8d0819e768a43fa1273b1021b497df539b036abe38386078acbb25349c5",
+      "bytes": 14617151,
+      "files": 26,
+      "unpacked_bytes": 28636259,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/production-inputs/candidate-3/production-sources.tar.gz",
+      "sha256": "5bdc480ad3413345b9b1b2d377620cf2c4e75c53220163d9f10f5b7f47bcb8a5",
+      "bytes": 108088,
+      "files": 120,
+      "unpacked_bytes": 557240,
+      "verified": true
+    },
+    {
+      "path": "effect-performance-2026-10-28/production-inputs/gpu-pixels-catalog/20261028T084200Z-smoke-FhCwgO9e.tar.gz",
+      "sha256": "55d29f530558c631760e22907650bfd0f96da2dfc1dbf702739cfe0f0f7c6882",
+      "bytes": 39510748,
+      "files": 32,
+      "unpacked_bytes": 53793788,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-native-pipeline-2026-10-28/native-pipeline-tools-final.tar.gz",
+      "sha256": "430b3488b2b494f119b593673434733e88551dba1ec6511fbf8099e0ffce6974",
+      "bytes": 47777,
+      "files": 23,
+      "unpacked_bytes": 178392,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-native-pipeline-2026-10-28/raw/native-pipeline-20261028-evidence.tar.gz",
+      "sha256": "99658bf2bd678a422d649cdb996987fbe8e1a9d9ca806ccc8410d4cc3597c1c3",
+      "bytes": 30157525,
+      "files": 90,
+      "unpacked_bytes": 80136439,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-pageflip-2026-10-27/pageflip-ab-20261027-final.tar.gz",
+      "sha256": "44024305f965747106cf737093d617cd6a89de53675efcbc35475860c65d161b",
+      "bytes": 913237052,
+      "files": 619,
+      "unpacked_bytes": 1012823902,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/benchmarks-pi5-release-IRM9iNPE.tar.gz",
+      "sha256": "49338f1259fb38ef22bac24c79208359144633b3e3cd92382755b6eb6c5c0b96",
+      "bytes": 26985156,
+      "files": 67,
+      "unpacked_bytes": 59261791,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/baseline-runtime.tar.gz",
+      "sha256": "6de5afb4feaecf3fc97ca14d1ae4f24e33d3d4b0e74ff5db192b069b929a1fb4",
+      "bytes": 605689,
+      "files": 3,
+      "unpacked_bytes": 1523689,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/baseline-source.tar.gz",
+      "sha256": "258f27b51e4d52628a5e05c372d0fd0c14ccef859701ba81226a347d1c2fc9a5",
+      "bytes": 639057,
+      "files": 287,
+      "unpacked_bytes": 2915632,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/bundle.tar.gz",
+      "sha256": "0c905135d0b1b47a20d65640766905ce070c181374dc8e2af1dfede4b914ba56",
+      "bytes": 26997393,
+      "files": 87,
+      "unpacked_bytes": 59469277,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/candidate-runtime.tar.gz",
+      "sha256": "c1fd02f7b2540d548230d7fb32ade7e0b9f95356293e7900c4815134c80e0a1b",
+      "bytes": 610126,
+      "files": 3,
+      "unpacked_bytes": 1532094,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/eos-fixed-runtime.tar.gz",
+      "sha256": "1a8e26884d88a05c5672131f9fa2963da4fe0f590d5f7509852ac1d6ba93bd59",
+      "bytes": 606717,
+      "files": 3,
+      "unpacked_bytes": 1464471,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/eos-fixed-source.tar.gz",
+      "sha256": "896dc790dc158a92f0ab8d623d6cd10c094601002e7b1b423b261782d7a16101",
+      "bytes": 645130,
+      "files": 291,
+      "unpacked_bytes": 2933531,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/eos-native-validation.tar.gz",
+      "sha256": "565037cefbc241e524e8a946ab52d8a95e8fcef64ef03f1d4a6cbf5628755172",
+      "bytes": 1120,
+      "files": 4,
+      "unpacked_bytes": 4814,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/final-runtime.tar.gz",
+      "sha256": "64a7d73e1948d1859343549dd01576ba29232672ed81b35a29c9d840597f8774",
+      "bytes": 611165,
+      "files": 4,
+      "unpacked_bytes": 1548017,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/final-source.tar",
+      "sha256": "0fcadd338768faba390d79ef9479eefa8933da6c333081ca5272acddf947c858",
+      "bytes": 3184640,
+      "files": 291,
+      "unpacked_bytes": 2930678,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/intermediate-source.tar.gz",
+      "sha256": "551ed3df3b56b1c58835c5c4101d70fa7e100d15f28461b5cf9e0932ca738748",
+      "bytes": 640787,
+      "files": 289,
+      "unpacked_bytes": 2919953,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/native-validation.tar.gz",
+      "sha256": "a1357c36088a88bd5b8894f43254c69fa20e3e4df43eada229e3bb98a7fe88b2",
+      "bytes": 11272,
+      "files": 13,
+      "unpacked_bytes": 184638,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/baseline-matrix/20261025T122544Z-smoke-FKUa0RgZ.tar.gz",
+      "sha256": "a57044029a4aee4c793276a910a028dd06fc37ad0f5156f3bc4ae23fde66a09e",
+      "bytes": 15325068,
+      "files": 29,
+      "unpacked_bytes": 29236524,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/baseline-repro/20261025T122508Z-smoke-GlgbvLin.tar.gz",
+      "sha256": "5e76bc2050132015bdb4a391da34b4ab4f75e6b29c9cbbb57ff1b8aa8b56ba43",
+      "bytes": 15971943,
+      "files": 28,
+      "unpacked_bytes": 29206911,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/candidate-all-effects/20261025T123354Z-smoke-CmNWhfAP.tar.gz",
+      "sha256": "8a3c49badbaf4d61c4b1687fa103c17467e432f8d99a9b0a52bdeef89a681a6a",
+      "bytes": 16000584,
+      "files": 31,
+      "unpacked_bytes": 29431452,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/candidate-loop/20261025T123301Z-smoke-kvRRkq7M.tar.gz",
+      "sha256": "41d53732bfc8a9b3dcb484b949c6f9fd93c46caeadae72eed841f2244621a5a8",
+      "bytes": 16012110,
+      "files": 31,
+      "unpacked_bytes": 29523835,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/candidate-matrix/20261025T122818Z-smoke-EwKZy57H.tar.gz",
+      "sha256": "a26342571a11924eb89d900594b51395a78af237fdff2d653424b46ed085eba6",
+      "bytes": 15317473,
+      "files": 29,
+      "unpacked_bytes": 29221157,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/candidate-video-video/20261025T123046Z-smoke-Wfnwh5yn.tar.gz",
+      "sha256": "20e84cce83e1ff31553df2a85213ae525876ebab49611b2098db2c60ac4b13f6",
+      "bytes": 16044539,
+      "files": 31,
+      "unpacked_bytes": 29791441,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/eos-diagnostic/20261025T125649Z-smoke-OPmJKCsB.tar.gz",
+      "sha256": "b25dafbed224873b1cb65a913a95e96a856368429120dcc072838f80c8526321",
+      "bytes": 14491272,
+      "files": 24,
+      "unpacked_bytes": 27484724,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/eos-fixed/20261025T130703Z-smoke-60nvvNp3.tar.gz",
+      "sha256": "b1d8d4583b7c5401b5d2adeda02643f683dfc956a5f9a4be381ff1a8ca08654a",
+      "bytes": 16036790,
+      "files": 31,
+      "unpacked_bytes": 29770232,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/eos-trace/20261025T130051Z-smoke-EQzrk2ga.tar.gz",
+      "sha256": "60c251b8cb06009178cef7db0c5b1bddf754ce74e53dfd7b4f49f2b8688e883a",
+      "bytes": 15983798,
+      "files": 31,
+      "unpacked_bytes": 29279670,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/final-all-effects/20261025T124446Z-smoke-OTRCEdQH.tar.gz",
+      "sha256": "9eb6b4e3faaac63082760314352771d9b9ad1d0d76f6779751bebeff52edeabb",
+      "bytes": 16118768,
+      "files": 31,
+      "unpacked_bytes": 30636620,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/final-loop/20261025T124354Z-smoke-cGZmAtUX.tar.gz",
+      "sha256": "04111584ce063e816e485044bd10a2f8e7b5999150d8cc82cc431d44827bcd00",
+      "bytes": 16009392,
+      "files": 31,
+      "unpacked_bytes": 29521534,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/final-matrix/20261025T123911Z-smoke-T45uhsRG.tar.gz",
+      "sha256": "ebb423fe04d7953dee19b5662ffe4a371a93f92a441b86c77f033d0bfc7f5182",
+      "bytes": 15322249,
+      "files": 29,
+      "unpacked_bytes": 29224029,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/final-video-video/20261025T124139Z-smoke-pjTeo82m.tar.gz",
+      "sha256": "e7b0ed0a7d018aa99525f0766808056f590214742651de139f0737d6504665d6",
+      "bytes": 16042850,
+      "files": 31,
+      "unpacked_bytes": 29789494,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/results/review-confirm/20261025T130819Z-smoke-I5UMjxQG.tar.gz",
+      "sha256": "5f845e651a6b5174e8bcb0bd4c9982f3bface65acbc70b167b24c97e18865050",
+      "bytes": 15986023,
+      "files": 31,
+      "unpacked_bytes": 29278596,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/verified-runtime.tar.gz",
+      "sha256": "6e937663be14da20e88b8557e9caa5bc689519d1d6a26503d0ff67628f5f8678",
+      "bytes": 607172,
+      "files": 3,
+      "unpacked_bytes": 1464343,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/device/verified-source.tar.gz",
+      "sha256": "457f37dbda2e765c6de307cd9d332ce1196db2e86da79de9826e3f7ac2882f12",
+      "bytes": 644627,
+      "files": 291,
+      "unpacked_bytes": 2931889,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/legacy-failure-evidence.tar.gz",
+      "sha256": "337810d65c0f12646784d520b28fbbcacc5fecb570fa0fd028fb4ea6ffa59cd7",
+      "bytes": 3330875,
+      "files": 1050,
+      "unpacked_bytes": 52265550,
+      "verified": true
+    },
+    {
+      "path": "flutter-pi-video-2026-10-25/pre-eos-final-source.tar",
+      "sha256": "0fcadd338768faba390d79ef9479eefa8933da6c333081ca5272acddf947c858",
+      "bytes": 3184640,
+      "duplicate_of": "flutter-pi-video-2026-10-25/device/final-source.tar"
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/archive-support/gallery-http-report-tools.tar.gz",
+      "sha256": "02bb1bb294f2fedd2afd01c6487e464c67fd50b7709aa91d2ad26ada2085f7e5",
+      "bytes": 15303,
+      "files": 4,
+      "unpacked_bytes": 46896,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/baseline/source.tar",
+      "sha256": "38389e785b588b78745b81e5adf059ce239b6a73f6538bfd6836ba2a12f7ac51",
+      "bytes": 2887680,
+      "files": 406,
+      "unpacked_bytes": 2505358,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/candidate-accepted/source.tar.gz",
+      "sha256": "d3c173ba05befb8e1d519c4d769746cf3eede3cb72d73045f8ad5be1384216fa",
+      "bytes": 166050,
+      "files": 160,
+      "unpacked_bytes": 1003850,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/candidate-final/source.tar.gz",
+      "sha256": "70652b510db744abb876979e3feaab74d50ea2282fdbf372a083dcfdf4551eff",
+      "bytes": 165935,
+      "files": 160,
+      "unpacked_bytes": 1003616,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/candidate-reviewed/source.tar.gz",
+      "sha256": "a6c37b4b6d34994f5a18c74422a1411079cc1b308490cc638945e4d06e3a3325",
+      "bytes": 165934,
+      "files": 160,
+      "unpacked_bytes": 1003648,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/candidate-smoke/source.tar.gz",
+      "sha256": "ff54dd7253feae4b4478bbe723b173d7fce1e7fbfa6b6aa0701354b63adff766",
+      "bytes": 165114,
+      "files": 160,
+      "unpacked_bytes": 999100,
+      "verified": true
+    },
+    {
+      "path": "gallery-implementation-2026-10-26/candidate/source.tar.gz",
+      "sha256": "b3cf80c7f7046d9e209dcf69408ca526404aa06409fa7166b615531fff0642c4",
+      "bytes": 165932,
+      "files": 160,
+      "unpacked_bytes": 1003525,
+      "verified": true
+    },
+    {
+      "path": "gallery-native-cache-cold-2026-10-26/linux-release-baseline.tar.gz",
+      "sha256": "4a804768c1a58b26e75ce03bb156e3fc09fc72b3ccbbf6f78fae237b50777957",
+      "bytes": 11917299,
+      "files": 87,
+      "unpacked_bytes": 29582623,
+      "verified": true
+    },
+    {
+      "path": "gallery-native-cache-cold-2026-10-26/linux-release-production.tar.gz",
+      "sha256": "c425fb091ee67fec13d6ed8aede340d1dc14a4ab1e6c1045d52c7aaba760a3a5",
+      "bytes": 11916835,
+      "files": 87,
+      "unpacked_bytes": 29582310,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/gpu-creative-baseline-frozen/sources.tar.gz",
+      "sha256": "e5f6dc468ae7ef6cd6ba2982282f74d66bdbd0c87a76c5acc017e9fa09fe0076",
+      "bytes": 30037644,
+      "files": 1378,
+      "unpacked_bytes": 164107345,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/gpu-creative-candidate-frozen/sources.tar.gz",
+      "sha256": "03070cda225f5d138a9a888cc3324d7b9abe6460ad92097a0989f7587969e486",
+      "bytes": 30037644,
+      "files": 1378,
+      "unpacked_bytes": 164107345,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/raw/1-baseline/20261028T141355Z-smoke-dg3eZNUv.tar.gz",
+      "sha256": "5fd9230c05a715c199d7303e87c8a48d65f609a0348643b8f17a8b4121fc2d6c",
+      "bytes": 14557435,
+      "files": 26,
+      "unpacked_bytes": 28075794,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/raw/2-candidate/20261028T141553Z-smoke-DCkJyCDQ.tar.gz",
+      "sha256": "a3a8ffa2664673cd4e4c2c01a608de06c2a1aeab5138b623597908d343424bdb",
+      "bytes": 14561344,
+      "files": 26,
+      "unpacked_bytes": 28110390,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/raw/3-candidate/20261028T141825Z-smoke-Ab4UuGVT.tar.gz",
+      "sha256": "2c1fc3f890bb6ab6a7c29e8bf4104e11abf8558c278eaca17d3525b09f52bd36",
+      "bytes": 14560005,
+      "files": 26,
+      "unpacked_bytes": 28109682,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-2026-10-28/raw/4-baseline/20261028T142056Z-smoke-GT229EGA.tar.gz",
+      "sha256": "efc867c5272e28cad562ef171e858650533cb12595474ec5a336723505c73766",
+      "bytes": 14557778,
+      "files": 26,
+      "unpacked_bytes": 28075919,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/gpu-creative-baseline-frozen/sources.tar.gz",
+      "sha256": "d129484beccbb9a81c1e276f975066d7929a66128653ec6f4c2b0bb838e51a3a",
+      "bytes": 30041012,
+      "files": 1382,
+      "unpacked_bytes": 164121969,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/gpu-creative-candidate-frozen/sources.tar.gz",
+      "sha256": "0832bb119ef720e2a757745bea5c09cd843708d22462355b51fafd49709d7463",
+      "bytes": 30041012,
+      "files": 1382,
+      "unpacked_bytes": 164121969,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/raw/1-baseline/20261028T143841Z-smoke-7kUIYrSq.tar.gz",
+      "sha256": "dfb22af5529775e8fdee69c432689bbbf9e53655db91e726c8f5cae7a3cf96aa",
+      "bytes": 14557919,
+      "files": 26,
+      "unpacked_bytes": 28076645,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/raw/2-candidate/20261028T144038Z-smoke-aRpvtX5w.tar.gz",
+      "sha256": "781f31d51eccb646b2c9201c420a8469f1e8524d2db9aae95379dc9acd996985",
+      "bytes": 14560551,
+      "files": 26,
+      "unpacked_bytes": 28114573,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/raw/3-candidate/20261028T144313Z-smoke-Bpq1pO6B.tar.gz",
+      "sha256": "10d8324b57e5e695ff9a41aa4f6f8770598cd9265b7cd7950fbd7070728035d4",
+      "bytes": 14560690,
+      "files": 26,
+      "unpacked_bytes": 28112990,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/raw/4-baseline/20261028T144547Z-smoke-0eUZlkX6.tar.gz",
+      "sha256": "b99ead17b337ffcef8a8120e431250c88ac3bacb7ff2fb7e279556c9b2148fa9",
+      "bytes": 14557795,
+      "files": 26,
+      "unpacked_bytes": 28076446,
+      "verified": true
+    },
+    {
+      "path": "gpu-creative-mitchell-2026-10-28/rejected-painter-experiment-and-tests.tar.gz",
+      "sha256": "b7acfd6172ea0dd282692b1221ced6dbdce2f92d60bb83a4897829d7a10c4fe5",
+      "bytes": 17088,
+      "files": 8,
+      "unpacked_bytes": 74557,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/gpu-kaleidoscope-canvas-baseline-frozen/sources.tar.gz",
+      "sha256": "b2b31ffdbe3806de6147c1f6931058aa070fa0a99c9a8cec7a1f4d86cdd1bc8a",
+      "bytes": 30040125,
+      "files": 1384,
+      "unpacked_bytes": 164114220,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/gpu-kaleidoscope-canvas-candidate-frozen/sources.tar.gz",
+      "sha256": "64020e6b6999048177ec65a290ddba9023958818de09362a1ab74cf5b26b370d",
+      "bytes": 30040125,
+      "files": 1384,
+      "unpacked_bytes": 164114220,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/raw/1-baseline/20261028T151715Z-smoke-jTyckYbT.tar.gz",
+      "sha256": "e2ec7daa4e049a3e8b8ea7102dfc2c01f7e4d1c2117340850890cfabc72d7d6a",
+      "bytes": 14543596,
+      "files": 26,
+      "unpacked_bytes": 27942522,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/raw/2-candidate/20261028T151840Z-smoke-c6XUd9IZ.tar.gz",
+      "sha256": "eb858e1867b53e60a4ae59023e5ed39597a0914440a3bf02aa44901ccf58b32e",
+      "bytes": 14544886,
+      "files": 26,
+      "unpacked_bytes": 27952334,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/raw/3-candidate/20261028T152014Z-smoke-bhRJDULO.tar.gz",
+      "sha256": "e87a300d5418e7afb404334412e697051df0330a0a138049eb6f490f7aecb8da",
+      "bytes": 14544138,
+      "files": 26,
+      "unpacked_bytes": 27952059,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/raw/4-baseline/20261028T152148Z-smoke-qXyqwDFk.tar.gz",
+      "sha256": "b0b1ffd3b13c57702a695b651428b99f22950688e32c0c4a8ccdd9b356a2ea32",
+      "bytes": 14543474,
+      "files": 26,
+      "unpacked_bytes": 27942503,
+      "verified": true
+    },
+    {
+      "path": "gpu-kaleidoscope-canvas-2026-10-28/rejected-canvas-experiment-and-tests.tar.gz",
+      "sha256": "78ae570a993db8164363819d3ccd7964072e6421eb71e1c831dbdc3f760a7681",
+      "bytes": 4057,
+      "files": 5,
+      "unpacked_bytes": 11771,
+      "verified": true
+    },
+    {
+      "path": "gpu-production-2026-10-28/device-run/reports/20261028T160735Z-smoke-b2gnz9tE.tar.gz",
+      "sha256": "f5e10224fcaa4a34d8685a2aa65e4b5d93d9a03721c7e421cebb99ddf8f27ab2",
+      "bytes": 14544838,
+      "files": 26,
+      "unpacked_bytes": 27946733,
+      "verified": true
+    },
+    {
+      "path": "gpu-production-2026-10-28/final-frozen/release-package.tar.gz",
+      "sha256": "e5de9ac6ae629d867fd933a0a1f1ab6778a7344a14937807f03c6b96f22f823d",
+      "bytes": 27243716,
+      "files": 105,
+      "unpacked_bytes": 60322238,
+      "verified": true
+    },
+    {
+      "path": "gpu-production-2026-10-28/final-frozen/sources.tar.gz",
+      "sha256": "38f999605ae28b109ec811b4b1c00fe38eed35ed4af70b860a4e6485bf1fe0d1",
+      "bytes": 30038780,
+      "files": 1379,
+      "unpacked_bytes": 164112211,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/gpu-radial-baseline-frozen/sources.tar.gz",
+      "sha256": "68b781018d61a84ed5e2761749bac3b29243488dcf2ba0d2e6feb1ec3f212ba2",
+      "bytes": 30040821,
+      "files": 1382,
+      "unpacked_bytes": 164118926,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/gpu-radial-candidate-frozen/sources.tar.gz",
+      "sha256": "82ca0034adfdaaf008cbfb68776f29be1a6db263a55dc0df072cc5c973704c9f",
+      "bytes": 30040821,
+      "files": 1382,
+      "unpacked_bytes": 164118926,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/raw/1-baseline/20261028T142828Z-smoke-jdu5HwU5.tar.gz",
+      "sha256": "81104e4e62161aedb515b2be2e42a3fa31a9e5fb94ec5ea957d91d6e1fb7ace5",
+      "bytes": 14535483,
+      "files": 26,
+      "unpacked_bytes": 27867663,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/raw/2-candidate/20261028T142951Z-smoke-lBE75Bu2.tar.gz",
+      "sha256": "913fc4198c4e330ce2bd2209f7c89adf9f6f9bc088e6255760250dd54ea7018a",
+      "bytes": 14534969,
+      "files": 26,
+      "unpacked_bytes": 27864466,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/raw/3-candidate/20261028T143109Z-smoke-eOLWmLyP.tar.gz",
+      "sha256": "a341d5064ab687bbf8de35e34de03f34a93d120943c175479e34c36d9ecfd72f",
+      "bytes": 14535158,
+      "files": 26,
+      "unpacked_bytes": 27865008,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-2026-10-28/raw/4-baseline/20261028T143228Z-smoke-LVMtD2RT.tar.gz",
+      "sha256": "1fa75186d27db588ae351698326b29e39c7f5c5850eda34bcaa5864b8a95c85f",
+      "bytes": 14534324,
+      "files": 26,
+      "unpacked_bytes": 27864780,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/gpu-radial-baseline-frozen/release-package.tar.gz",
+      "sha256": "0e10ab60cbff2c47381756623704818a8fdded0b4e289233dbd4fd232986efe5",
+      "bytes": 27259725,
+      "files": 107,
+      "unpacked_bytes": 60426213,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/gpu-radial-baseline-frozen/sources.tar.gz",
+      "sha256": "d0d4be1d2ee75dbd12b4a92b44e6f70d4858ab20e29e5ed280e0a46f3802417f",
+      "bytes": 30043146,
+      "files": 1387,
+      "unpacked_bytes": 164129704,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/gpu-radial-candidate-frozen/release-package.tar.gz",
+      "sha256": "2b2f5d17facbd2ea1c2245f01f46c14285bfaa054112fcba734259f3e588357f",
+      "bytes": 27261688,
+      "files": 107,
+      "unpacked_bytes": 60426257,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/gpu-radial-candidate-frozen/sources.tar.gz",
+      "sha256": "52e65b0c3ed9ab6fb1ddb3bbd652e716e0e17986d25d21446e42394345ecd44d",
+      "bytes": 30043146,
+      "files": 1387,
+      "unpacked_bytes": 164129704,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/raw/1-baseline/20261028T150423Z-smoke-dajC0oZo.tar.gz",
+      "sha256": "d626aa80cc765f23aa7db65537f6d31c6ab90e75d95869fc26b22fbfa5160b55",
+      "bytes": 14535152,
+      "files": 26,
+      "unpacked_bytes": 27867611,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/raw/2-candidate/20261028T150544Z-smoke-qlYoohiN.tar.gz",
+      "sha256": "cd58acb1b6faca3d3f11173f9b92754826adbdf5213a244dc4d6b7f4f9e52d92",
+      "bytes": 14533747,
+      "files": 26,
+      "unpacked_bytes": 27848484,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/raw/3-candidate/20261028T150645Z-smoke-TNKWHBPY.tar.gz",
+      "sha256": "407b3dd7fed510613339fa8de430acd0c1c6ce4121c9834ab03492caae8940d0",
+      "bytes": 14533404,
+      "files": 26,
+      "unpacked_bytes": 27848329,
+      "verified": true
+    },
+    {
+      "path": "gpu-radial-uv-2026-10-28/raw/4-baseline/20261028T150746Z-smoke-xtfHXATR.tar.gz",
+      "sha256": "8851e29ecb9c9166fce18bbfc29a037123443fa9eac211379b955fd414c7dad7",
+      "bytes": 14535946,
+      "files": 26,
+      "unpacked_bytes": 27868008,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/gpu-vhs-cache-baseline-frozen/release-package.tar.gz",
+      "sha256": "a709e43347f54e36fba1ea8bee1c9f77655a84d11a9c991e670dbd106ccc7d9d",
+      "bytes": 27259713,
+      "files": 107,
+      "unpacked_bytes": 60426213,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/gpu-vhs-cache-baseline-frozen/sources.tar.gz",
+      "sha256": "1f9282b4a4ef0c864d04d129a761d57775d94188730254966358f498a6785ece",
+      "bytes": 30043158,
+      "files": 1387,
+      "unpacked_bytes": 164129704,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/gpu-vhs-cache-candidate-frozen/release-package.tar.gz",
+      "sha256": "82eab3c0107de784b58c5faf9eaf79a7ba18d11f512d6644a053d2a154a56fc2",
+      "bytes": 27263819,
+      "files": 107,
+      "unpacked_bytes": 60426257,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/gpu-vhs-cache-candidate-frozen/sources.tar.gz",
+      "sha256": "2ad78aadbbbb2a8d69d33b40bf78067b1fc6fa8a7c451a7027df492d5fbfc973",
+      "bytes": 30043158,
+      "files": 1387,
+      "unpacked_bytes": 164129704,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/raw/1-baseline/20261028T150907Z-smoke-ohGH71tn.tar.gz",
+      "sha256": "fc06af3cf3bf45298349a9113eb143ec22ba7f66ae0ccf41aadfd45ed0063991",
+      "bytes": 14541436,
+      "files": 26,
+      "unpacked_bytes": 27919676,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/raw/2-candidate/20261028T151009Z-smoke-2w871rfi.tar.gz",
+      "sha256": "11d0f59d7b63044dc96ed8f1881bebc0cbb6a8224b5e381e635ed83971e4926b",
+      "bytes": 14540250,
+      "files": 26,
+      "unpacked_bytes": 27913636,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/raw/3-candidate/20261028T151106Z-smoke-AaNLfjjF.tar.gz",
+      "sha256": "fe513c3ea50b9a9cc3ca13aaa270ab4c448386d77579baf1f235dd2601c36f40",
+      "bytes": 14540245,
+      "files": 26,
+      "unpacked_bytes": 27913826,
+      "verified": true
+    },
+    {
+      "path": "gpu-vhs-cache-2026-10-28/raw/4-baseline/20261028T151202Z-smoke-8qnRe657.tar.gz",
+      "sha256": "827a0bf9281bdfc8c82fa1f52c63ab90d162bcd2a7b4a607c79778ebee4de951",
+      "bytes": 14541037,
+      "files": 26,
+      "unpacked_bytes": 27920159,
+      "verified": true
+    },
+    {
+      "path": "gpu-visual-2026-10-28/20261028T153449Z-smoke-hdUdF30u.tar.gz",
+      "sha256": "a5d9b6098337f459d8aad7afbdfe5b44210850b39fe7178685451c149714e709",
+      "bytes": 83946986,
+      "files": 36,
+      "unpacked_bytes": 89020589,
+      "verified": true
+    },
+    {
+      "path": "gpu-visual-2026-10-28/frozen/release-package.tar.gz",
+      "sha256": "ce8d6beae8d5581d843ab24d7262682da0a917aab8d806cfae3950fbd63e6f58",
+      "bytes": 26924426,
+      "files": 106,
+      "unpacked_bytes": 59533906,
+      "verified": true
+    },
+    {
+      "path": "gpu-visual-2026-10-28/frozen/sources.tar.gz",
+      "sha256": "7d5ffabebef7e091142e76b71f954551d59db879fdb78c488015758c08c5f31a",
+      "bytes": 30044547,
+      "files": 1386,
+      "unpacked_bytes": 164127590,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-confirm.tar.gz",
+      "sha256": "d54c150825da7ac8d466aa70bdf378ca01b433efba6da94fc1439b8004693103",
+      "bytes": 14642747,
+      "files": 26,
+      "unpacked_bytes": 29077573,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-diagnostics.tar.gz",
+      "sha256": "9085adce576c762c9bc5051805881ea7abe31bfc62c7af5c63b9a9e754eb3945",
+      "bytes": 14783764,
+      "files": 26,
+      "unpacked_bytes": 30678445,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-media.tar.gz",
+      "sha256": "281bcb84b3e6c3ab1fbc46c217ba72191887903e6dfceaa3e0291c0f0fd753dc",
+      "bytes": 14678738,
+      "files": 26,
+      "unpacked_bytes": 29366643,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-video-repeat.tar.gz",
+      "sha256": "63619bc599425c813a27c6188a8b6e9e38e15f202e442b1ba95cd6cc53ac14ae",
+      "bytes": 15354452,
+      "files": 29,
+      "unpacked_bytes": 29548857,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-video.tar.gz",
+      "sha256": "c69c4cab401574dd5f5623aa076f5a02e268c95af2ab7910eb4f7449f0ec4b31",
+      "bytes": 15330917,
+      "files": 29,
+      "unpacked_bytes": 29308786,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/baseline-visual.tar.gz",
+      "sha256": "9eda04aa83e8ac43bd445ef8102b89dc45f7f4849cf7d773f566a529bf3214db",
+      "bytes": 29973490,
+      "files": 171,
+      "unpacked_bytes": 43214814,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/candidate-confirm.tar.gz",
+      "sha256": "61f3dc1a92ac156a7da5ef55f6338e7001809a9811bb87e31ce0752d8e510ad8",
+      "bytes": 14642089,
+      "files": 26,
+      "unpacked_bytes": 29076840,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/candidate-media.tar.gz",
+      "sha256": "af4c49836e01b5c58c6a9e68877a992072af6137ec64b8a6c5a254ec135ceb1c",
+      "bytes": 14677191,
+      "files": 26,
+      "unpacked_bytes": 29364477,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/candidate-video-repeat.tar.gz",
+      "sha256": "546aaa2e9294dcc20fab971e19065c188afa19d4c470a12d75cf1fe79011e016",
+      "bytes": 15349471,
+      "files": 29,
+      "unpacked_bytes": 29526787,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/candidate-video.tar.gz",
+      "sha256": "38007c0d44de0e92e179a7407554dee6f2b0f20b400c93492c0a609802403627",
+      "bytes": 15322370,
+      "files": 29,
+      "unpacked_bytes": 29285568,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/candidate-visual.tar.gz",
+      "sha256": "48620bfba9c2ed706dd7d7450346cbcaff9af0b0ba4e04cf40fb02c60a93ec43",
+      "bytes": 29974137,
+      "files": 171,
+      "unpacked_bytes": 43219112,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/release-archives/benchmarks-pi5-release-G6r2ogQL.tar.gz",
+      "sha256": "430ae47bb246538b36858633a95fce876a0719c57a1c0d13927950029ecf91c9",
+      "bytes": 27014832,
+      "files": 77,
+      "unpacked_bytes": 59333619,
+      "verified": true
+    },
+    {
+      "path": "mosaic-2026-10-25/release-archives/benchmarks-pi5-release-H9FZrUCe.tar.gz",
+      "sha256": "ffaa52d92a032b57b6b90b263d6cdf834b4bbc322badfd0e8fffee2002ad20a2",
+      "bytes": 27018987,
+      "files": 77,
+      "unpacked_bytes": 59334237,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline-frozen/release.tar.gz",
+      "sha256": "063ee4a0499d1945322cebe81ed5aef9424e319a7cdfc28052e11b94cf06a6cc",
+      "bytes": 28181635,
+      "files": 63,
+      "unpacked_bytes": 62660593,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline-frozen/source.tar.gz",
+      "sha256": "531046c22d204c18f547935f9d77ce590821af5e0a00e5eb947d115d1baddc32",
+      "bytes": 55450523,
+      "files": 747,
+      "unpacked_bytes": 100911466,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline-initial-instrumentation-failure-frozen/source.tar.gz",
+      "sha256": "0b9b752b857a50405c4fb87609ca16770787a3a871988bd84aed665056f1ebc6",
+      "bytes": 55451221,
+      "files": 746,
+      "unpacked_bytes": 100908511,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline-initial-instrumentation-failure/20261028T232624Z-ota.tar.gz",
+      "sha256": "13cd1bde14b41bff994af8711b9b2f9de4f8a6b4bf1fb08c4c32b1220729c950",
+      "bytes": 8273,
+      "files": 7,
+      "unpacked_bytes": 61560,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline/20261028T232624Z-ota.tar.gz",
+      "sha256": "13cd1bde14b41bff994af8711b9b2f9de4f8a6b4bf1fb08c4c32b1220729c950",
+      "bytes": 8273,
+      "duplicate_of": "ota-ux-2026-10-29/baseline-initial-instrumentation-failure/20261028T232624Z-ota.tar.gz"
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline/20261028T232742Z-ota.tar.gz",
+      "sha256": "712d93f8e3e6f17d198710184a3327d21392bb2b3e646e0a1e72c972cd3243d3",
+      "bytes": 8588,
+      "files": 7,
+      "unpacked_bytes": 64826,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline/20261028T232758Z-ota.tar.gz",
+      "sha256": "d39d3271bcb0f4ed43e86345016c724594e8246b12dfc7aeb07a3e126157bfe4",
+      "bytes": 2694002,
+      "files": 17,
+      "unpacked_bytes": 3283735,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline/20261028T233412Z-ota.tar.gz",
+      "sha256": "35fbce49d07ca2c2455d2c0b24ab6053c79e33bb21df0970c605e9f3d1670a1c",
+      "bytes": 8351,
+      "files": 7,
+      "unpacked_bytes": 64904,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/baseline/20261028T233429Z-ota.tar.gz",
+      "sha256": "ae5eac8c08e9092cf391ca8ff55accd73f661e996eb16e1cfdf952b714e78c24",
+      "bytes": 2692723,
+      "files": 17,
+      "unpacked_bytes": 3283736,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate-frozen/release.tar.gz",
+      "sha256": "bca016b047c1bcf56a5ee7eadfc8759d24159fb625e175c1aa1b3cbf59065619",
+      "bytes": 28204286,
+      "files": 63,
+      "unpacked_bytes": 62664446,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate-frozen/source.tar.gz",
+      "sha256": "ac6e2f2156781e7584d4b1a70330527dff6b90b7b09a1dcf2edf2d10d2d716ad",
+      "bytes": 55462307,
+      "files": 755,
+      "unpacked_bytes": 100965578,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate-ready-layout-failure-frozen/source.tar.gz",
+      "sha256": "9f8c1ca2b7e893c6cdc5b79185d29e45dccf349a656a20996d24f6e5f1be1f83",
+      "bytes": 55462746,
+      "files": 754,
+      "unpacked_bytes": 100958821,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate/20261028T233855Z-ota.tar.gz",
+      "sha256": "70ca66dba4162433907feef51b01880d8e12843523544f83dff3ebaab7ad4a03",
+      "bytes": 9027,
+      "files": 7,
+      "unpacked_bytes": 66660,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate/20261028T233907Z-ota.tar.gz",
+      "sha256": "32377012cee5a7be61ca17f7e287baa4ee1ad09a62e2f6c61f993b928fc8a800",
+      "bytes": 4000743,
+      "files": 17,
+      "unpacked_bytes": 4708337,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate/20261028T234543Z-ota.tar.gz",
+      "sha256": "2e67936c563a54b93acef07cb62aa4b2c0465d5aa6f752bec26ce4b75500cea2",
+      "bytes": 9017,
+      "files": 7,
+      "unpacked_bytes": 66721,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/candidate/20261028T234612Z-ota.tar.gz",
+      "sha256": "0007745c50fa83df9023939cf7ffed7b0426fd3d0d08d6d872aa61494a340a9d",
+      "bytes": 4083306,
+      "files": 17,
+      "unpacked_bytes": 4794163,
+      "verified": true
+    },
+    {
+      "path": "ota-ux-2026-10-29/prior-harness-baseline-frozen/source.tar.gz",
+      "sha256": "93a3fda2290d83973320b531bdfda1c9d3755e15269bf039aceed7e7163007cd",
+      "bytes": 55451157,
+      "files": 746,
+      "unpacked_bytes": 100908624,
+      "verified": true
+    },
+    {
+      "path": "rpc-telemetry-2026-10-26/baseline-arm64.gz",
+      "sha256": "50da78e5f02024fb5af0fe2cca8dca3217b85e8c563ab22c2e5e686ba668f539",
+      "bytes": 2728951,
+      "verified": true,
+      "format": "gzip-compressed executable"
+    },
+    {
+      "path": "rpc-telemetry-2026-10-26/baseline.tar.gz",
+      "sha256": "6ffb27f37a35f66ba502b66581dee2173ae5e9375e8a35f864fa3944b90e31d9",
+      "bytes": 5569320,
+      "files": 28,
+      "unpacked_bytes": 13665372,
+      "verified": true
+    },
+    {
+      "path": "rpc-telemetry-2026-10-26/candidate-arm64.gz",
+      "sha256": "e71549458c4158af66542a098fc0c99e0bbfe12d65f375d883cfe3d8de4c2d79",
+      "bytes": 2737685,
+      "verified": true,
+      "format": "gzip-compressed executable"
+    },
+    {
+      "path": "rpc-telemetry-2026-10-26/candidate.tar.gz",
+      "sha256": "f62bc311520a494872e75417b83f9f78ab4204d4a1ff88406fd2b7daf11939de",
+      "bytes": 5594330,
+      "files": 31,
+      "unpacked_bytes": 13703404,
+      "verified": true
+    },
+    {
+      "path": "rpc-telemetry-live-2026-10-26/queues.jsonl.gz",
+      "sha256": "57b8e09c9f3b61936415d3f863e087cb3a089b86af76aacaefff568f7abc4b3c",
+      "bytes": 99012,
+      "verified": true,
+      "format": "gzip-compressed executable"
+    },
+    {
+      "path": "slide-session-2026-10-28/baseline-release.tar.gz",
+      "sha256": "8b427fba33195a6303d5de2c99026a8abd299b691eebd35289c0ff9545beac86",
+      "bytes": 28070885,
+      "files": 63,
+      "unpacked_bytes": 62201098,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/baseline-source.tar.gz",
+      "sha256": "f3baa498c706b36b4da65ba3fa6633804f8f16758c4896cd4b070f68ac46e774",
+      "bytes": 17529990,
+      "files": 1032,
+      "unpacked_bytes": 37160405,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/candidate-release.tar.gz",
+      "sha256": "9f1189745934f2bd99d91f524bc5d3078b0bc32764c19dd5e8e93a7dd7df686e",
+      "bytes": 28071845,
+      "files": 63,
+      "unpacked_bytes": 62201819,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/candidate-source.tar.gz",
+      "sha256": "997202dbbd31076896f19a99b92f3a8bb106c6fd34ec853b5f24c9df4dd3e2f8",
+      "bytes": 17531512,
+      "files": 1035,
+      "unpacked_bytes": 37164017,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/baseline-before-notice-source.tar.gz",
+      "sha256": "74e226de3931d2f2b5f83be7f998c85b62daff753a279e047163680d0664ddbf",
+      "bytes": 17529826,
+      "files": 1032,
+      "unpacked_bytes": 37159416,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/baseline-harness-runs/20261028T172651Z-renderer.tar.gz",
+      "sha256": "8c84e9a5038809f348a6b8ada499ac103854cfeb8865d6f5aeb8ae7507e12a3e",
+      "bytes": 1025,
+      "files": 6,
+      "unpacked_bytes": 2296,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/baseline-harness-runs/20261028T172818Z-renderer.tar.gz",
+      "sha256": "93d9314eee29c06533bc0683411f644d0e0c81c598948622928710d50e2e94fc",
+      "bytes": 8579,
+      "files": 7,
+      "unpacked_bytes": 67614,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/baseline-harness-runs/20261028T173446Z-renderer.tar.gz",
+      "sha256": "d2f7a07bd14d2a7ab5a164ac89eceea76d34585bcba193a30e17ae1636e1f404",
+      "bytes": 206671,
+      "files": 7,
+      "unpacked_bytes": 1660898,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/baseline-source.tar.gz",
+      "sha256": "b7f75d9b8aaeb5de6824e19f3ae78aa0547edfd32a9745a6bfb7ea88b25ca683",
+      "bytes": 17573719,
+      "files": 1032,
+      "unpacked_bytes": 37155877,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/excluded-attempts/candidate-before-notice-source.tar.gz",
+      "sha256": "fac4bfecdc05c8a8daea67e66fefdeed3daceb0e68b81daeecdf4642ff5bfa7c",
+      "bytes": 17531258,
+      "files": 1035,
+      "unpacked_bytes": 37162990,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/memory-repeat/20261028T180157Z-renderer.tar.gz",
+      "sha256": "bc3177bc4b2616821d87282c6bf8283fdcac1ee02354a59e90dbd2683719a8a4",
+      "bytes": 34012,
+      "files": 7,
+      "unpacked_bytes": 254655,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/memory-repeat/20261028T180400Z-renderer.tar.gz",
+      "sha256": "509dd46910cbf670b04c94fd3111fbcf0e1f424362a5f89c8c5cd56d2198670a",
+      "bytes": 33863,
+      "files": 7,
+      "unpacked_bytes": 253441,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/performance/20261028T174449Z-renderer.tar.gz",
+      "sha256": "58cebf38aba67fff6e6b3d14f9ef97de4b3163deeb8d21d02dde8313dd957fdd",
+      "bytes": 108464,
+      "files": 7,
+      "unpacked_bytes": 833459,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/performance/20261028T174749Z-renderer.tar.gz",
+      "sha256": "a418ebe683ac45387d96930f2649c3de4ec5a7f5f461aa354e62165cba0e5e27",
+      "bytes": 108622,
+      "files": 7,
+      "unpacked_bytes": 834983,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/visual/20261028T175256Z-renderer.tar.gz",
+      "sha256": "1ef2b49451cdb90494442acc2512c911d2a8350fcdec3b6eeb379a6f2218fcbf",
+      "bytes": 32385415,
+      "files": 30,
+      "unpacked_bytes": 33045025,
+      "verified": true
+    },
+    {
+      "path": "slide-session-2026-10-28/visual/20261028T175815Z-renderer.tar.gz",
+      "sha256": "0777a8185ab914403c7b1a94e03f6f46e7bddf6ce2bf9ec75c91aeaa1e117bdf",
+      "bytes": 32392450,
+      "files": 30,
+      "unpacked_bytes": 33053580,
+      "verified": true
+    },
+    {
+      "path": "thumbnail-jpeg-local-2026-10-27/baseline/source.tar.gz",
+      "sha256": "859042c523c3ef8114fbc317159993703d614cd90bc81ca0a7c6d629a2a5dd37",
+      "bytes": 173724,
+      "files": 168,
+      "unpacked_bytes": 1037005,
+      "verified": true
+    },
+    {
+      "path": "thumbnail-jpeg-local-2026-10-27/candidate-final/source.tar.gz",
+      "sha256": "25e1f0f077f70e14e59e794ca4140e5d5652fc63032eb1ff3b440b2693ae6e4b",
+      "bytes": 175189,
+      "files": 171,
+      "unpacked_bytes": 1043365,
+      "verified": true
+    },
+    {
+      "path": "thumbnail-jpeg-local-2026-10-27/candidate/source.tar.gz",
+      "sha256": "9926935ecb2eb959258f05cf14816801b9ecc254c617b6b36dd0d590fd289743",
+      "bytes": 175188,
+      "files": 171,
+      "unpacked_bytes": 1043262,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/baseline-confirm.tar.gz",
+      "sha256": "b48be90a7bada3622003d60d6322abed7c6916a7038edd5c8a6b9004d6dad2dc",
+      "bytes": 14595079,
+      "files": 26,
+      "unpacked_bytes": 28488692,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/baseline-perf.tar.gz",
+      "sha256": "96e4264968bd338fd19c88f2c772489c18c9d211bf290e46e2c58e92ac620105",
+      "bytes": 29398621,
+      "files": 49,
+      "unpacked_bytes": 59068117,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/baseline-video.tar.gz",
+      "sha256": "c7c97252e61fbee88003566e72ffcf94e277f8fc0fa8839a2a031ae09efb6211",
+      "bytes": 15305311,
+      "files": 29,
+      "unpacked_bytes": 29032691,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/baseline-visual.tar.gz",
+      "sha256": "1c56ba1b1a5a6618ca568433f1442bc206500a3335a9d1520c71608ee82f666d",
+      "bytes": 42451872,
+      "files": 194,
+      "unpacked_bytes": 68632431,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/clip-perf.tar.gz",
+      "sha256": "29c33f0442f1d71032494f05f023d76df066507b60c89ad11993595e1bef1822",
+      "bytes": 14687571,
+      "files": 26,
+      "unpacked_bytes": 29454631,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/clip-video.tar.gz",
+      "sha256": "404052f11c280bf7f6f1a95db4ed1cf425252ead520c20db56c05d164faa0ddc",
+      "bytes": 15299889,
+      "files": 29,
+      "unpacked_bytes": 29019660,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/clip-visual.tar.gz",
+      "sha256": "4939996a7fe7ecd2b10b9edb0286211f6ea8bd795927b24a51acf612abe74507",
+      "bytes": 21226043,
+      "files": 99,
+      "unpacked_bytes": 34314775,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/default-opengl.tar.gz",
+      "sha256": "0b8552bd2e0d4a4de9c643ba98d2a3ad2f41bcd1d31e73c009e48d31caddd462",
+      "bytes": 14499864,
+      "files": 26,
+      "unpacked_bytes": 27528658,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/final-confirm.tar.gz",
+      "sha256": "849a2bd6e2da26b1eda6e4894d9278ee443c7c801f762c28307834bf344272c4",
+      "bytes": 14591524,
+      "files": 26,
+      "unpacked_bytes": 28470851,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/final-video.tar.gz",
+      "sha256": "742ecaa2a80d48a3fa5457ebbe924f554e507dc2d97c933d84925f28845ba46f",
+      "bytes": 15302732,
+      "files": 29,
+      "unpacked_bytes": 29023720,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/final-visual.tar.gz",
+      "sha256": "8673d55104c857d4e5e13eaf4ed6f3f8fceb9c916ed744c9c053f80a8cf0d4ed",
+      "bytes": 21226417,
+      "files": 99,
+      "unpacked_bytes": 34315838,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/release-archives/benchmarks-pi5-release-fQnVKE3Z.tar.gz",
+      "sha256": "f0c714050ab360f41bf1d2682a5c8b515050bf66e6a57056163445299c4129d0",
+      "bytes": 26985172,
+      "files": 65,
+      "unpacked_bytes": 59260723,
+      "verified": true
+    },
+    {
+      "path": "zoom-blur-2026-10-25/release-archives/benchmarks-pi5-release-zoom-blur-20261025.tar.gz",
+      "sha256": "1f39a93016518936f30b4414c9cfd249becc3b941d474241cea408867db5a58d",
+      "bytes": 26985671,
+      "files": 67,
+      "unpacked_bytes": 59263753,
+      "verified": true
+    }
+  ],
+  "deduplicated_archives": 2,
+  "removed_unpacked_copies": 3248,
+  "kept_readable_metadata": [
+    "flutter-pi-pageflip-2026-10-27/comparison.json"
+  ]
+}

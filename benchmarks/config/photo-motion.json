@@ -4,12 +4,6 @@
   "repeats": 3,
   "transition_ms": 1000,
   "capture_frames": false,
-  "media_cases": [
-    "photo-photo",
-    "large-photo"
-  ],
-  "effects": [
-    "Baseline",
-    "Fade"
-  ]
+  "media_cases": ["photo-photo", "large-photo"],
+  "effects": ["Baseline", "Fade", "PhotoMotion-KenBurns"]
 }

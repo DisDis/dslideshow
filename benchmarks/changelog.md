@@ -9,6 +9,17 @@
 
 ## Unreleased
 
+* Retire completed Blur/Mosaic/Composition diagnostic implementations, their
+  one-off tests and 28 historical configurations. Keep the 684-case standard
+  matrix, independent shader/resource regressions, dense-grid capture coverage
+  and a focused production Ken Burns configuration.
+* Remove six one-off gallery tools; retain universal A/B runners and archive the
+  historical report generator with its input evidence. Prune superseded reports,
+  reproduced fixtures and verified unpacked copies while retaining accepted
+  source/release pairs, raw measurements and unique native/visual failures.
+  See the [report index](reports/README.md) and
+  [cleanup record](../doc/benchmarks-cleanup-2026-10-29.md).
+
 * Enumerate `/proc/self/fd` without following descriptor links in local probes,
   avoiding directory-listing races when a descriptor closes during sampling.
 

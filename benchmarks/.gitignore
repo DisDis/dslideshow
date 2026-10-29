@@ -4,12 +4,11 @@ build/
 reports/
 __pycache__/
 
-# Keep the FFmpeg comparison readable in a checkout; local archives stay ignored.
+# Keep the maintained index and selected conclusions; binary evidence stays local.
 !reports/
 reports/*
-!reports/thumbnail-ffmpeg-local-2026-10-27/
-reports/thumbnail-ffmpeg-local-2026-10-27/*
-!reports/thumbnail-ffmpeg-local-2026-10-27/report.md
+!reports/README.md
+!reports/retained-archives.json
 
 !reports/thumbnail-jpeg-local-2026-10-27/
 reports/thumbnail-jpeg-local-2026-10-27/*

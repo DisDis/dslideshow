@@ -302,7 +302,8 @@ Stderr читается с прежним пределом 64 KiB, в журна
 ## Проверки и измерения
 
 [Один FFmpeg, JPEG и thumbnail: локальный AOT baseline/candidate](../benchmarks/reports/thumbnail-jpeg-local-2026-10-27/report.md).
-Предыдущий этап — [замена isolate-декодера](../benchmarks/reports/thumbnail-ffmpeg-local-2026-10-27/report.md).
+Предыдущий FFmpeg/RGBA этап заменён текущим JPEG-конвейером; его отдельный
+промежуточный отчёт удалён при очистке 29.10.2026.
 Первоначальные проверки были локальными. После отдельного разрешения пользователя
 проверены падение FFmpeg 5.1.9 и исправленный CLI-конвейер на RaPi:
 [отчёт диагностики](../benchmarks/reports/gallery-ffmpeg51-diagnostics-2026-10-27/report.md).
@@ -341,7 +342,8 @@ Release-сборки Web и Linux прошли. Анализаторы backend/c
 также сохранён. Итоговый полный прогон backend выполнен с `--concurrency=1`.
 
 Сохранены [A/B HTTP и реальный Chrome](../benchmarks/reports/gallery-implementation-2026-10-26/report.md)
-и [локальный scaled-decode прототип](../benchmarks/reports/gallery-thumbnail-local-2026-10-26/report.md).
+с frozen исходниками и сырыми данными. Старый scaled-decode прототип удалён
+как вытесненный FFmpeg/JPEG-конвейером.
 HTTP-стенд сравнивает одинаковые оригиналы и frozen AOT-сборки. `/info` в нём —
 proxy отзывчивости web-isolate, а не измерение WebSocket/RPC. Chrome проверяет
 BrowserClient, abort и CORS; он не измеряет прокрутку Flutter UI.

@@ -50,62 +50,146 @@ void main() {
     },
   );
 
-  test('bundled configurations retain their grouped effect variants', () {
-    var checked = 0;
+  test('bundled configurations round trip and select unique matrices', () {
     for (final file in Directory('config').listSync().whereType<File>()) {
       if (!file.path.endsWith('.json')) continue;
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-      if (!json.containsKey('effect_configs') ||
-          file.uri.pathSegments.last.startsWith('effect-options-')) {
-        continue;
-      }
       final config = BenchmarkConfig.fromJson(json);
-      expect(buildPlan(config), isNotEmpty, reason: file.path);
-      expect(BenchmarkConfig.fromJson(config.toJson()), config);
-      // Keep the historical Mosaic pair checks while accepting other typed
-      // matrices, including explicit benchmark-only experiments.
-      if (!config.effectConfigs!.containsKey(EffectType.mosaic)) continue;
-      expect(config.effectConfigs!.keys, [
-        EffectType.mosaic,
-      ], reason: file.path);
+      final plan = buildPlan(config);
+      expect(plan, isNotEmpty, reason: file.path);
       expect(
-        config.effectConfigs![EffectType.mosaic],
-        hasLength(2),
+        plan.map((item) => item.id).toSet().length,
+        plan.length,
         reason: file.path,
       );
-      checked++;
+      expect(BenchmarkConfig.fromJson(config.toJson()), config);
     }
-    expect(checked, 6);
   });
 
-  test('all historical variants have presets and expanded device configs retain unique cases', () {
-    for (final effect in benchmarkEffects) {
-      final canonical = effect.canonical;
-      expect(
-        effectPresets.any(
-          (preset) =>
-              preset.type == canonical.type &&
-              preset.options == canonical.options.withDuration(0),
-        ),
-        isTrue,
-        reason: effect.name,
+  test(
+    'historical variants retain presets and expanded configs cover the catalog',
+    () {
+      for (final effect in benchmarkEffects) {
+        final canonical = effect.canonical;
+        expect(
+          effectPresets.any(
+            (preset) =>
+                preset.type == canonical.type &&
+                preset.options == canonical.options.withDuration(0),
+          ),
+          isTrue,
+          reason: effect.name,
+        );
+      }
+      for (final file in [
+        'effect-options-visual.json',
+        'effect-options-performance.json',
+      ]) {
+        final config = BenchmarkConfig.fromJson(
+          jsonDecode(File('config/$file').readAsStringSync())
+              as Map<String, dynamic>,
+        );
+        expect(config.effectConfigs!.keys.toSet(), catalogEffectTypes.toSet());
+        expect(config.vulkanVideo, isFalse);
+      }
+    },
+  );
+
+  test('visual audit captures every dense grid; ordinary previews retain first grid', () {
+    final config = BenchmarkConfig(grids: [100, 150, 200]);
+    final audit = BenchmarkConfig(grids: [100, 150, 200], visualAudit: true);
+    for (final grid in [100, 150, 200]) {
+      final test = BenchmarkCase(
+        (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
+        mediaPairs.first,
+        grid: grid,
       );
+      expect(test.supportsCapture(config), grid == 100);
+      expect(test.supportsCapture(audit), true);
     }
-    for (final file in [
-      'effect-options-visual.json',
-      'effect-options-performance.json',
-    ]) {
-      final config = BenchmarkConfig.fromJson(
-        jsonDecode(File('config/$file').readAsStringSync())
-            as Map<String, dynamic>,
-      );
-      expect(config.effectConfigs!.keys.toSet(), catalogEffectTypes.toSet());
-      final plan = buildPlan(config);
-      expect(plan.map((item) => item.id).toSet().length, plan.length);
-      expect(plan, isNotEmpty);
-      expect(config.vulkanVideo, isFalse);
-    }
+    expect(
+      BenchmarkCase(
+        (const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        )),
+        mediaPairs[1],
+      ).supportsCapture(audit),
+      false,
+    );
+    expect(
+      BenchmarkCase(
+        (const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        )),
+        mediaPairs.first,
+        injectStall: true,
+      ).supportsCapture(audit),
+      false,
+    );
   });
+
+  test(
+    'case reports retain independent baseline, Mosaic and motion payloads',
+    () {
+      final baseline = BenchmarkCase(null, mediaPairs.first);
+      expect(baseline.toJson(), {
+        'id': 'Baseline--photo-photo',
+        'effect': 'Baseline',
+        'media': 'photo-photo',
+        'from': 'photo_a.jpg',
+        'to': 'photo_b.jpg',
+        'grid': null,
+        'backend': null,
+        'injected_stall_ms': 0,
+      });
+      final mosaic = BenchmarkCase(
+        const Effect(
+          EffectType.mosaic,
+          options: MosaicEffectOptions(fadeFraction: 0),
+        ),
+        mediaPairs.first,
+        grid: 200,
+        backend: MosaicBackend.shader,
+        injectStall: true,
+      );
+      expect(mosaic.toJson(), {
+        'id': 'Mosaic--photo-photo--200--shader--gridSize_200-fadeFraction_0.0--stall80ms',
+        'effect': 'Mosaic',
+        'effect_config': {
+          'mosaic': {
+            'enabled': true,
+            'options': {'gridSize': 200, 'fadeFraction': 0.0},
+          },
+        },
+        'media': 'photo-photo',
+        'from': 'photo_a.jpg',
+        'to': 'photo_b.jpg',
+        'grid': 200,
+        'backend': 'shader',
+        'injected_stall_ms': 80,
+      });
+      expect(baseline.copyWith(photoMotion: true).toJson(), {
+        'id': 'PhotoMotion-KenBurns--photo-photo',
+        'effect': 'PhotoMotion-KenBurns',
+        'media': 'photo-photo',
+        'from': 'photo_a.jpg',
+        'photo_motion': 'kenBurns',
+        'to': 'photo_b.jpg',
+        'grid': null,
+        'backend': null,
+        'injected_stall_ms': 0,
+      });
+      final changed = baseline.copyWith(
+        media: mediaPairs.last,
+        injectStall: true,
+      );
+      expect(changed.id, 'Baseline--large-photo--stall80ms');
+      expect(baseline.id, 'Baseline--photo-photo');
+      expect({baseline, baseline.copyWith()}, hasLength(1));
+    },
+  );
 
   test(
     'explicit typed variants retain independent IDs and effective duration',
@@ -326,10 +410,18 @@ void main() {
         throwsFormatException,
       );
       expect(() => BenchmarkConfig(grids: [99]), throwsArgumentError);
-      expect(
-        () => buildPlan(BenchmarkConfig(effects: ['Typo'])),
-        throwsArgumentError,
-      );
+      for (final name in [
+        'Typo',
+        'BlurProbe-reference',
+        'MosaicProbe-points-binary',
+        'CompositionProbe-accordionReference',
+      ]) {
+        expect(
+          () => buildPlan(BenchmarkConfig(effects: [name])),
+          throwsArgumentError,
+          reason: name,
+        );
+      }
       expect(
         () => buildPlan(BenchmarkConfig(mediaCases: ['Typo'])),
         throwsArgumentError,

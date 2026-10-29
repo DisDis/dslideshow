@@ -1,12 +1,13 @@
 import 'effect_variants.dart';
 
 import 'package:dslideshow_flutter/effect.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'config.dart';
-import 'blur_probes.dart';
-import 'mosaic_probes.dart';
-import 'composition_probes.dart';
 import 'photo_motion_probe.dart';
+
+part 'plan.freezed.dart';
+part 'plan.g.dart';
 
 class MediaPair {
   final String name;
@@ -33,16 +34,15 @@ const mediaPairs = [
   MediaPair('large-photo', 'photo_large.jpg', 'photo_b.jpg'),
 ];
 
-class BenchmarkCase {
+@freezed
+@JsonSerializable(createFactory: false, ignoreUnannotated: true)
+class BenchmarkCase with _$BenchmarkCase {
   final Effect? effect;
   final bool photoMotion;
   final MediaPair media;
   final int grid;
   final MosaicBackend backend;
   final bool injectStall;
-  final BlurFadeProbe? blurProbe;
-  final MosaicProbe? mosaicProbe;
-  final CompositionProbe? compositionProbe;
   const BenchmarkCase(
     this.effect,
     this.media, {
@@ -50,9 +50,6 @@ class BenchmarkCase {
     this.grid = 100,
     this.backend = MosaicBackend.canvas,
     this.injectStall = false,
-    this.blurProbe,
-    this.mosaicProbe,
-    this.compositionProbe,
   });
 
   int durationMs(BenchmarkConfig config) =>
@@ -75,18 +72,42 @@ class BenchmarkCase {
       ? 'This effect requires two static photos'
       : null;
 
-  String get name => photoMotion
-      ? photoMotionProbeName
-      : mosaicProbe?.effectName(effect!) ??
-            compositionProbe?.effectName ??
-            blurProbe?.effectName ??
-            effect?.name ??
-            'Baseline';
+  @JsonKey(includeToJson: true)
   String get id =>
       '${name.replaceAll(' ', '_')}--${media.name}'
       '${effect?.isMosaic == true ? '--$grid--${backend.name}' : ''}'
       '${effect == null || effectSettingsId(effectiveEffect!).isEmpty ? '' : '--${effectSettingsId(effectiveEffect!)}'}'
       '${injectStall ? '--stall80ms' : ''}';
+
+  @JsonKey(name: 'effect', includeToJson: true)
+  String get name =>
+      photoMotion ? photoMotionProbeName : effect?.name ?? 'Baseline';
+
+  @JsonKey(name: 'effect_config', includeToJson: true, includeIfNull: false)
+  Map<String, Object?>? get _effectConfig => effect == null
+      ? null
+      : {effectiveEffect!.type.name: effectiveEffect!.toConfig().toJson()};
+
+  @JsonKey(name: 'media', includeToJson: true)
+  String get _mediaName => media.name;
+
+  @JsonKey(name: 'from', includeToJson: true)
+  String get _from => media.from;
+
+  @JsonKey(name: 'photo_motion', includeToJson: true, includeIfNull: false)
+  String? get _photoMotion => photoMotion ? 'kenBurns' : null;
+
+  @JsonKey(name: 'to', includeToJson: true)
+  String get _to => media.to;
+
+  @JsonKey(name: 'grid', includeToJson: true)
+  int? get _grid => effect?.isMosaic == true ? grid : null;
+
+  @JsonKey(name: 'backend', includeToJson: true)
+  String? get _backend => effect?.isMosaic == true ? backend.name : null;
+
+  @JsonKey(name: 'injected_stall_ms', includeToJson: true)
+  int get _injectedStallMs => injectStall ? 80 : 0;
 
   bool supportsCapture(BenchmarkConfig config) =>
       !media.hasVideo &&
@@ -95,24 +116,7 @@ class BenchmarkCase {
       (effect?.isMosaic != true ||
           config.visualAudit ||
           grid == config.grids.first);
-  Map<String, Object?> toJson() => {
-    'id': id,
-    'effect': name,
-    if (effect != null)
-      'effect_config': {
-        effectiveEffect!.type.name: effectiveEffect!.toConfig().toJson(),
-      },
-    'media': media.name,
-    'from': media.from,
-    if (photoMotion) 'photo_motion': 'kenBurns',
-    'to': media.to,
-    'grid': effect?.isMosaic == true ? grid : null,
-    'backend': effect?.isMosaic == true ? backend.name : null,
-    'injected_stall_ms': injectStall ? 80 : 0,
-    if (blurProbe != null) 'blur_probe': blurProbe!.name,
-    if (mosaicProbe != null) 'mosaic_probe': mosaicProbe!.name,
-    if (compositionProbe != null) 'composition_probe': compositionProbe!.name,
-  };
+  Map<String, Object?> toJson() => _$BenchmarkCaseToJson(this);
 }
 
 List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
@@ -120,19 +124,6 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
       [...Effect.values, ...benchmarkEffects].map((e) => e.name).toSet()
         ..add('Baseline')
         ..add(photoMotionProbeName);
-  names.addAll(BlurFadeProbe.values.map((probe) => probe.effectName));
-  names.addAll(CompositionProbe.values.map((probe) => probe.effectName));
-  for (final probe in MosaicProbe.values) {
-    for (final effect in [
-      (const Effect(
-        EffectType.mosaic,
-        options: MosaicEffectOptions(fadeFraction: 0),
-      )),
-      (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
-    ]) {
-      names.add(probe.effectName(effect));
-    }
-  }
   for (final name in config.effects ?? <String>[]) {
     if (!names.contains(name)) throw ArgumentError('Unknown effect: $name');
   }
@@ -167,37 +158,6 @@ List<BenchmarkCase> buildPlan(BenchmarkConfig config) {
   for (final pair in pairs) {
     if (config.effects?.contains(photoMotionProbeName) == true) {
       result.add(BenchmarkCase(null, pair, photoMotion: true));
-    }
-    for (final probe in CompositionProbe.values) {
-      if (config.effects?.contains(probe.effectName) == true) {
-        result.add(BenchmarkCase(probe.effect, pair, compositionProbe: probe));
-      }
-    }
-    for (final probe in MosaicProbe.values) {
-      for (final effect in [
-        (const Effect(
-          EffectType.mosaic,
-          options: MosaicEffectOptions(fadeFraction: 0),
-        )),
-        (const Effect(EffectType.mosaic, options: MosaicEffectOptions())),
-      ]) {
-        if (config.effects?.contains(probe.effectName(effect)) != true) {
-          continue;
-        }
-        for (final grid in config.grids.toSet()) {
-          result.add(
-            BenchmarkCase(effect, pair, grid: grid, mosaicProbe: probe),
-          );
-        }
-      }
-    }
-    for (final probe in BlurFadeProbe.values) {
-      if (config.effects?.contains(probe.effectName) == true &&
-          probe.supports(pair.from, pair.to)) {
-        result.add(
-          BenchmarkCase(Effect.blurFadeEffect, pair, blurProbe: probe),
-        );
-      }
     }
     for (final effect in effects) {
       if (config.suite == 'smoke' &&

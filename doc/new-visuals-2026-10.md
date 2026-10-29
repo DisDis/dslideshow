@@ -111,17 +111,11 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
  flutter test tool/render_effect_gallery_test.dart
 ```
 
-Стенд содержит отдельные наборы:
-
-* `config/new-visuals-controls.json`: Baseline/Fade для внешнего сравнения сборок.
-* `config/new-visuals-photo.json`: новые переходы и камера, обычные/48-Мп фото,
-  один прогрев и три измерения, номинал 1000 ms.
-* `config/new-visuals-visual.json`: 21 контрольный кадр на эффект; SHA-256 полного
-  RGBA 2560×1600 и PNG-превью. Для камеры требуется развитие движения и точное
-  начало на A, а не конец на B: это движение одного фото.
-* `config/new-visuals-media.json`: GIF↔фото и видео↔фото. Water Refraction и
-  Ken Burns получают `unsupported` **до** загрузки неподдерживаемого медиа.
-  Видео→видео здесь не запускается: это отдельная native-проверка.
+Исторические наборы new-visuals удалены при очистке 29.10.2026. Штатные
+переходы проверяются общими `config/smoke.json`, `standard.json` и `visual.json`.
+Для камеры оставлен `config/photo-motion.json`: Baseline/Fade/Ken Burns на
+обычных и 48-Мп фото, один прогрев и три измерения. Поддержка и отказ от
+неподходящих GIF/видео проверяются отдельно в `test/photo_motion_audit_test.dart`.
 
 `PhotoMotion-KenBurns` — только явная проба стенда; использует production
 `PhotoMotionFrame`, запас prepared pixels и общий bounded clock. Это не имя
@@ -132,7 +126,7 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 
 ```sh
 ./run-managed.sh UNIQUE_JOB --bundle /ABS/VARIANT/bundle \
-  --config /ABS/VARIANT/config/new-visuals-photo.json \
+  --config /ABS/VARIANT/config/photo-motion.json \
   --flutter-pi /ABS/PINNED/flutter-pi --renderers opengl --timeout 3600
 ```
 
@@ -143,4 +137,6 @@ Ken Burns — отдельная настройка **Photo motion**, а не п
 ожидание renderer/вывода, это не чистое время GPU; FPS относится к Flutter
 submissions, а не измерению физического scanout.
 
-[Аппаратные результаты и контрольные кадры](../benchmarks/reports/new-visuals-2026-10-25/report.html).
+Первичный отчёт new-visuals от 25.10.2026 удалён как заменённый последующими
+исследованиями. [Индекс сохранённых результатов](../benchmarks/reports/README.md)
+описывает актуальные архивы; исторический запуск не является приёмкой текущего кода.

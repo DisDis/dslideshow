@@ -1,9 +1,0 @@
-{
-  "suite": "smoke",
-  "effects": ["Baseline", "Fade", "ZoomOver", "BlurFade"],
-  "media_cases": ["photo-photo", "large-photo"],
-  "warmups": 1,
-  "repeats": 3,
-  "transition_ms": 1000,
-  "capture_frames": false
-}

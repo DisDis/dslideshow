@@ -1,11 +1,8 @@
 import 'dart:io';
 
-import 'package:benchmarks/src/blur_probes.dart';
-import 'package:benchmarks/src/composition_probes.dart';
 import 'package:benchmarks/src/config.dart';
 import 'package:benchmarks/src/driver.dart';
 import 'package:benchmarks/src/media.dart';
-import 'package:benchmarks/src/mosaic_probes.dart';
 import 'package:benchmarks/src/plan.dart';
 import 'package:benchmarks/src/viewport.dart';
 import 'package:dslideshow_flutter/effect.dart';
@@ -262,7 +259,7 @@ void main() {
   );
 
   testWidgets(
-    'entrypoint factory substitutes ordinary effects and preserves diagnostic paths',
+    'entrypoint factory substitutes ordinary effects and preserves PhotoMotion',
     (tester) async {
       tester.view.physicalSize = const Size(160, 100);
       tester.view.devicePixelRatio = 1;
@@ -312,18 +309,14 @@ void main() {
       expect(substituted.last, glass.id);
       expect(find.byType(ImageWidget), findsOneWidget);
       await _withFrames(tester, driver.release());
-      final callsBeforeDiagnostic = substituted.length;
+      final callsBeforeMotion = substituted.length;
       await _withFrames(
         tester,
         driver.prepare(
-          BenchmarkCase(
-            Effect.accordionEffect,
-            mediaPairs.first,
-            compositionProbe: CompositionProbe.accordionReference,
-          ),
+          BenchmarkCase(null, mediaPairs.first, photoMotion: true),
         ),
       );
-      expect(substituted, hasLength(callsBeforeDiagnostic));
+      expect(substituted, hasLength(callsBeforeMotion));
       await _withFrames(tester, driver.release());
       await tester.pumpWidget(const SizedBox());
       expect(tester.takeException(), isNull);
@@ -377,38 +370,6 @@ void main() {
               false,
             ),
             (BenchmarkCase(null, mediaPairs.first, photoMotion: true), false),
-            (
-              BenchmarkCase(
-                Effect.blurFadeEffect,
-                mediaPairs.first,
-                blurProbe: BlurFadeProbe.reference,
-              ),
-              false,
-            ),
-            (
-              BenchmarkCase(
-                Effect.blurFadeEffect,
-                mediaPairs.first,
-                blurProbe: BlurFadeProbe.directImage,
-              ),
-              false,
-            ),
-            (
-              BenchmarkCase(
-                Effect.mosaicEffect,
-                mediaPairs.first,
-                mosaicProbe: MosaicProbe.points,
-              ),
-              false,
-            ),
-            (
-              BenchmarkCase(
-                Effect.accordionEffect,
-                mediaPairs.first,
-                compositionProbe: CompositionProbe.accordionReference,
-              ),
-              false,
-            ),
             (BenchmarkCase(Effect.zoomOverEffect, mediaPairs[5]), false),
           ],
         ];
@@ -454,12 +415,7 @@ void main() {
             final sourceKeys = ancestors.whereType<KeyedSubtree>().where(
               (widget) => widget.key is GlobalKey,
             );
-            final bitmapDiagnosticSource =
-                test.blurProbe?.needsBitmap == true &&
-                (element.widget as ImageWidget).item.uri!.path.endsWith(
-                  'photo_a.jpg',
-                );
-            expect(sourceKeys, hasLength(bitmapDiagnosticSource ? 1 : 0));
+            expect(sourceKeys, isEmpty);
             if (ordinaryPhotos) {
               final input = ancestors.first as SizedBox;
               expect(input.width, 160);

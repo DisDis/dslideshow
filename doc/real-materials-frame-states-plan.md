@@ -194,6 +194,6 @@ OpenGL runtime (установленный или уже проверенный 
 Материалы: [стенд](../benchmarks/README.md),
 [аппаратное руководство](raspberry-pi-benchmarks.md),
 [новые эффекты](new-visuals-2026-10.md),
-[текущие измерения](../benchmarks/reports/new-visuals-2026-10-25/report.html),
+[сохранённые измерения и ограничения](../benchmarks/reports/README.md),
 [исправления OpenGL video](../benchmarks/reports/flutter-pi-video-2026-10-25/README.md),
 [релиз](release-10.1.0.md).
