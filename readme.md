@@ -41,6 +41,7 @@ More [info](https://github.com/DisDis/article-dslideshow)
 * [Специальные экраны: часы, камеры и редактор настроек](doc/special-screens.md)
 * [Анализ проекта и предложения по улучшению](doc/project-review-2026-10.md)
 * [Потоковая загрузка медиа и OTA: контракт и локальные проверки](doc/uploads.md)
+* [Этапы обновления прошивки на рамке со скриншотами](doc/ota-update-stages.md)
 * [Производительность backend: индекс, случайный проход и SystemInfo](doc/backend-performance.md)
 * [Системные датчики: температура и RPM вентилятора Raspberry Pi 5](doc/sensors.md)
 

@@ -1,0 +1,1022 @@
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
+index b2e10d2..9280ea5 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
+@@ -10,17 +10,33 @@ class OtaTerminalSession {
+ 
+   OtaTerminalSession._(this.terminal) : backend = TerminalBackend(terminal) {
+     scrollController.addListener(scheduleScrollStateUpdate);
++    terminal.addListener(_updateHasOutput);
+   }
+ 
+   final Terminal terminal;
+   final TerminalBackend backend;
+   final ScrollController scrollController = ScrollController();
+   final _following = ValueNotifier(true);
++  final _hasOutput = ValueNotifier(false);
+   bool _updateScheduled = false;
+   bool _disposed = false;
+ 
+   bool get isFollowing => _following.value;
+   ValueListenable<bool> get following => _following;
++  ValueListenable<bool> get hasOutput => _hasOutput;
++
++  void _updateHasOutput() {
++    if (_disposed || _hasOutput.value) return;
++    // Only inspect the buffer until the first visible output. Later writes do
++    // not notify the placeholder or rebuild the terminal's surrounding panel.
++    final lines = terminal.buffer.lines;
++    for (var index = 0; index < lines.length; index++) {
++      if (lines[index].getText().trim().isNotEmpty) {
++        _hasOutput.value = true;
++        return;
++      }
++    }
++  }
+ 
+   /// Read dimensions after xterm has applied its stick-to-bottom policy.
+   void scheduleScrollStateUpdate() {
+@@ -45,7 +61,9 @@ class OtaTerminalSession {
+   void dispose() {
+     _disposed = true;
+     scrollController.removeListener(scheduleScrollStateUpdate);
++    terminal.removeListener(_updateHasOutput);
+     scrollController.dispose();
+     _following.dispose();
++    _hasOutput.dispose();
+   }
+ }
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
+index d65f704..093ddcc 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
+@@ -169,7 +169,7 @@ class _OtaReadyInfoPanel extends StatelessWidget {
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           Text(
+-            l10n.otaTitle,
++            l10n.otaReadyTitle,
+             style: const TextStyle(
+               color: ThemeColors.otaReadyHeaderTextColor,
+               fontSize: ThemeSettings.otaReadyTitleSize,
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
+index 1792dcc..26b4bdd 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
+@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
+ import 'package:xterm/xterm.dart';
+ 
+ class OtaTerminalPanel extends StatelessWidget {
+-  const OtaTerminalPanel({super.key, required this.session});
++  const OtaTerminalPanel({super.key, required this.session, this.emptyMessage});
+ 
+   final OtaTerminalSession session;
++  final String? emptyMessage;
+ 
+   @override
+   Widget build(BuildContext context) {
+@@ -95,24 +96,50 @@ class OtaTerminalPanel extends StatelessWidget {
+               borderRadius: const BorderRadius.vertical(
+                 bottom: Radius.circular(16),
+               ),
+-              child: NotificationListener<ScrollMetricsNotification>(
+-                onNotification: (_) {
+-                  session.scheduleScrollStateUpdate();
+-                  return false;
+-                },
+-                child: TerminalView(
+-                  session.terminal,
+-                  scrollController: session.scrollController,
+-                  readOnly: true,
+-                  autofocus: false,
+-                  padding: const EdgeInsets.all(16),
+-                  textStyle: const TerminalStyle(
+-                    fontSize: ThemeSettings.otaTerminalFontSize,
+-                    fontFamily: 'Cascadia Mono',
+-                    fontFamilyFallback: ['Courier New', 'monospace'],
++              child: Stack(
++                fit: StackFit.expand,
++                children: [
++                  NotificationListener<ScrollMetricsNotification>(
++                    onNotification: (_) {
++                      session.scheduleScrollStateUpdate();
++                      return false;
++                    },
++                    child: TerminalView(
++                      session.terminal,
++                      scrollController: session.scrollController,
++                      readOnly: true,
++                      autofocus: false,
++                      padding: const EdgeInsets.all(16),
++                      textStyle: const TerminalStyle(
++                        fontSize: ThemeSettings.otaTerminalFontSize,
++                        fontFamily: 'Cascadia Mono',
++                        fontFamilyFallback: ['Courier New', 'monospace'],
++                      ),
++                      theme: ThemeColors.terminaTheme,
++                    ),
+                   ),
+-                  theme: ThemeColors.terminaTheme,
+-                ),
++                  if (emptyMessage != null)
++                    ValueListenableBuilder<bool>(
++                      valueListenable: session.hasOutput,
++                      child: IgnorePointer(
++                        child: Padding(
++                          padding: const EdgeInsets.all(32),
++                          child: Align(
++                            alignment: Alignment.topLeft,
++                            child: Text(
++                              emptyMessage!,
++                              style: const TextStyle(
++                                color: ThemeColors.otaProgressSubtextColor,
++                                fontSize: ThemeSettings.otaProgressSubtitleSize,
++                              ),
++                            ),
++                          ),
++                        ),
++                      ),
++                      builder: (context, hasOutput, child) =>
++                          hasOutput ? const SizedBox.shrink() : child!,
++                    ),
++                ],
+               ),
+             ),
+           ),
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
+index d3b5535..6cc7b18 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
+@@ -1,3 +1,5 @@
++import 'dart:math' as math;
++
+ import 'package:dslideshow_backend/command.dart';
+ import 'package:dslideshow_common/version.dart';
+ import 'package:dslideshow_flutter/environment.dart' as environment;
+@@ -36,21 +38,45 @@ class OTAView extends StatelessWidget {
+                   : Padding(
+                       padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
+                       child: LayoutBuilder(
+-                        builder: (context, constraints) => Column(
+-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+-                          children: [
+-                            ConstrainedBox(
+-                              constraints: BoxConstraints(
+-                                maxHeight: constraints.maxHeight * .45,
++                        builder: (context, constraints) {
++                          final statusHeight = math.min(
++                            ThemeSettings.otaStatusPanelHeight,
++                            constraints.maxHeight * .45,
++                          );
++                          final emptyMessage = switch (state) {
++                            OtaProgressState(:final info)
++                                when info.status == OTAStatus.uploading =>
++                              AppLocalizations.of(context)
++                                  .otaTransferLogPending,
++                            OtaProgressState() => AppLocalizations.of(
++                              context,
++                            ).otaInstallLogPending,
++                            _ => null,
++                          };
++                          return Column(
++                            crossAxisAlignment: CrossAxisAlignment.stretch,
++                            children: [
++                              SizedBox(
++                                height: statusHeight,
++                                child: SingleChildScrollView(
++                                  child: ConstrainedBox(
++                                    constraints: BoxConstraints(
++                                      minHeight: statusHeight,
++                                    ),
++                                    child: _StatusPanel(state: state),
++                                  ),
++                                ),
+                               ),
+-                              child: SingleChildScrollView(
+-                                child: _StatusPanel(state: state),
++                              const SizedBox(height: 24),
++                              Expanded(
++                                child: OtaTerminalPanel(
++                                  session: session,
++                                  emptyMessage: emptyMessage,
++                                ),
+                               ),
+-                            ),
+-                            const SizedBox(height: 24),
+-                            Expanded(child: OtaTerminalPanel(session: session)),
+-                          ],
+-                        ),
++                            ],
++                          );
++                        },
+                       ),
+                     ),
+             ),
+@@ -121,10 +147,83 @@ class _PreparingPanel extends StatelessWidget {
+ class _StatusPanel extends StatelessWidget {
+   const _StatusPanel({required this.state});
+   final OtaState state;
++  static const _percentStyle = TextStyle(
++    color: ThemeColors.otaProgressPercentColor,
++    fontSize: ThemeSettings.otaProgressPercentSize,
++    fontWeight: FontWeight.w900,
++  );
++
++  double _percentWidth(BuildContext context) {
++    // Reserve the widest value at the actual font and accessibility scale.
++    // A fixed width can wrap the percent sign when the transfer reaches 100%.
++    final painter = TextPainter(
++      text: TextSpan(
++        text: '100%',
++        style: DefaultTextStyle.of(context).style.merge(_percentStyle),
++      ),
++      textDirection: Directionality.of(context),
++      textScaler: MediaQuery.textScalerOf(context),
++      locale: Localizations.localeOf(context),
++      maxLines: 1,
++    );
++    try {
++      painter.layout();
++      return painter.width.ceilToDouble();
++    } finally {
++      painter.dispose();
++    }
++  }
+ 
+   @override
+   Widget build(BuildContext context) {
+     final l10n = AppLocalizations.of(context);
++    final uploading =
++        state is OtaProgressState && state.info.status == OTAStatus.uploading;
++    final working = state is OtaProgressState;
++    final restarting =
++        state is OtaSuccessState && state.info.status == OTAStatus.preReboot;
++    final percent = state.info.uploadingPercent.isFinite
++        ? state.info.uploadingPercent.clamp(0, 100)
++        : 0;
++    final heading = switch (state) {
++      OtaProgressState() => _StatusHeading(
++        title: uploading ? l10n.otaReceiving : l10n.otaInstalling,
++        message: l10n.otaDoNotPowerOff,
++        detail: uploading ? l10n.otaTransferHint : l10n.otaInstallationHint,
++        icon: uploading ? Icons.download_rounded : Icons.settings_outlined,
++        color: ThemeColors.otaAccentColor,
++      ),
++      OtaFailureState(:final info) => _StatusHeading(
++        title: l10n.otaFailed,
++        message: info.errorText?.isNotEmpty == true
++            ? info.errorText!
++            : l10n.otaUnknownError,
++        detail: '${l10n.otaLogDetails} ${l10n.otaReturnToSlideshow}',
++        icon: Icons.error_outline,
++        color: ThemeColors.otaErrorTextColor,
++      ),
++      OtaSuccessState() => _StatusHeading(
++        title: restarting ? l10n.otaRestartTitle : l10n.otaInstalled,
++        message: restarting ? l10n.otaDoNotPowerOff : l10n.otaWaitingRestart,
++        icon: restarting ? Icons.restart_alt : Icons.check_circle_outline,
++        color: restarting
++            ? ThemeColors.otaAccentColor
++            : ThemeColors.otaSuccessTextColor,
++      ),
++      OtaExitState() => _StatusHeading(
++        title: l10n.otaLeaving,
++        message: '',
++        icon: Icons.exit_to_app,
++      ),
++      OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
++    };
++    final progress = Text(
++      '${percent.toStringAsFixed(0)}%',
++      style: _percentStyle,
++      maxLines: 1,
++      softWrap: false,
++      textAlign: TextAlign.right,
++    );
+     return Container(
+       padding: const EdgeInsets.all(32),
+       decoration: BoxDecoration(
+@@ -132,100 +231,60 @@ class _StatusPanel extends StatelessWidget {
+         borderRadius: BorderRadius.circular(20),
+         border: Border.all(color: ThemeColors.otaReadyInputBorderColor),
+       ),
+-      child: switch (state) {
+-        OtaProgressState(:final info) => _buildProgress(context, info),
+-        OtaFailureState(:final info) => _StatusHeading(
+-          title: l10n.otaFailed,
+-          message: info.errorText?.isNotEmpty == true
+-              ? info.errorText!
+-              : l10n.otaUnknownError,
+-          detail: l10n.otaLogDetails,
+-          icon: Icons.error_outline,
+-          color: ThemeColors.otaErrorTextColor,
+-        ),
+-        OtaSuccessState(:final info) => _StatusHeading(
+-          title: l10n.otaComplete,
+-          message: info.status == OTAStatus.preReboot
+-              ? l10n.otaRestarting
+-              : l10n.otaWaitingRestart,
+-          detail: l10n.otaStageComplete,
+-          icon: Icons.check_circle_outline,
+-          color: ThemeColors.otaSuccessTextColor,
+-        ),
+-        OtaExitState() => _StatusHeading(
+-          title: l10n.otaLeaving,
+-          message: '',
+-          icon: Icons.exit_to_app,
+-        ),
+-        OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
+-      },
+-    );
+-  }
+-
+-  Widget _buildProgress(BuildContext context, OTAInfo info) {
+-    final l10n = AppLocalizations.of(context);
+-    final uploading = info.status == OTAStatus.uploading;
+-    final percent = info.uploadingPercent.isFinite
+-        ? info.uploadingPercent.clamp(0, 100)
+-        : 0;
+-    return Column(
+-      mainAxisSize: MainAxisSize.min,
+-      crossAxisAlignment: CrossAxisAlignment.stretch,
+-      children: [
+-        LayoutBuilder(
+-          builder: (context, constraints) {
+-            final heading = _StatusHeading(
+-              title: uploading ? l10n.otaUploading : l10n.otaInstalling,
+-              message: l10n.otaDoNotPowerOff,
+-              detail: uploading
+-                  ? l10n.otaStageUpload
+-                  : l10n.otaInstallationHint,
+-              icon: uploading
+-                  ? Icons.cloud_upload_outlined
+-                  : Icons.system_update_alt,
+-            );
+-            if (!uploading) return heading;
+-            final progress = Text(
+-              '${percent.toStringAsFixed(0)}%',
+-              style: const TextStyle(
+-                color: ThemeColors.otaProgressPercentColor,
+-                fontSize: ThemeSettings.otaProgressPercentSize,
+-                fontWeight: FontWeight.w900,
+-              ),
+-            );
+-            if (constraints.maxWidth < 1000) {
+-              return Column(
+-                crossAxisAlignment: CrossAxisAlignment.start,
+-                children: [heading, progress],
++      child: Column(
++        mainAxisSize: MainAxisSize.min,
++        crossAxisAlignment: CrossAxisAlignment.stretch,
++        children: [
++          LayoutBuilder(
++            builder: (context, constraints) {
++              if (constraints.maxWidth < 1600) {
++                return Column(
++                  crossAxisAlignment: CrossAxisAlignment.start,
++                  children: [
++                    heading,
++                    if (uploading)
++                      Align(alignment: Alignment.centerRight, child: progress),
++                  ],
++                );
++              }
++              return Row(
++                children: [
++                  Expanded(child: heading),
++                  const SizedBox(width: 32),
++                  SizedBox(
++                    width: _percentWidth(context),
++                    child: uploading ? progress : null,
++                  ),
++                ],
+               );
+-            }
+-            return Row(
+-              children: [
+-                Expanded(child: heading),
+-                const SizedBox(width: 32),
+-                progress,
+-              ],
+-            );
+-          },
+-        ),
+-        const SizedBox(height: 24),
+-        ClipRRect(
+-          borderRadius: BorderRadius.circular(10),
+-          child: LinearProgressIndicator(
+-            value: uploading ? percent / 100 : null,
+-            minHeight: ThemeSettings.otaProgressBarHeight,
+-            backgroundColor: ThemeColors.otaProgressBgColor,
+-            color: ThemeColors.otaProgressIconColor,
++            },
+           ),
+-        ),
+-        if (!environment.isLinuxEmbedded) ...[
+-          const SizedBox(height: 12),
+-          const Align(
+-            alignment: Alignment.centerRight,
+-            child: TestConfigButton(),
++          const SizedBox(height: 24),
++          _StageSequence(state: state),
++          const SizedBox(height: 16),
++          SizedBox(
++            height: ThemeSettings.otaProgressBarHeight,
++            child: working
++                ? ClipRRect(
++                    borderRadius: BorderRadius.circular(10),
++                    child: LinearProgressIndicator(
++                      value: uploading ? percent / 100 : null,
++                      minHeight: ThemeSettings.otaProgressBarHeight,
++                      backgroundColor: ThemeColors.otaProgressBgColor,
++                      color: ThemeColors.otaProgressIconColor,
++                    ),
++                  )
++                : null,
+           ),
++          if (working && !environment.isLinuxEmbedded) ...[
++            const SizedBox(height: 12),
++            const Align(
++              alignment: Alignment.centerRight,
++              child: TestConfigButton(),
++            ),
++          ],
+         ],
+-      ],
++      ),
+     );
+   }
+ }
+@@ -236,7 +295,7 @@ class _StatusHeading extends StatelessWidget {
+     required this.message,
+     required this.icon,
+     this.detail,
+-    this.color = ThemeColors.otaProgressTextColor,
++    this.color = ThemeColors.otaAccentColor,
+   });
+ 
+   final String title;
+@@ -247,47 +306,132 @@ class _StatusHeading extends StatelessWidget {
+ 
+   @override
+   Widget build(BuildContext context) {
+-    return Row(
+-      crossAxisAlignment: CrossAxisAlignment.start,
+-      children: [
+-        Icon(icon, size: 64, color: color),
+-        const SizedBox(width: 24),
+-        Expanded(
+-          child: Column(
+-            mainAxisSize: MainAxisSize.min,
+-            crossAxisAlignment: CrossAxisAlignment.start,
+-            children: [
+-              Text(
+-                title,
+-                style: TextStyle(
+-                  color: color,
+-                  fontSize: ThemeSettings.otaProgressTitleSize,
+-                  fontWeight: FontWeight.bold,
+-                ),
++    return ConstrainedBox(
++      constraints: const BoxConstraints(minHeight: 200),
++      child: Row(
++        crossAxisAlignment: CrossAxisAlignment.center,
++        children: [
++          SizedBox.square(
++            dimension: ThemeSettings.otaStageIconAreaSize,
++            child: Center(
++              child: Icon(
++                icon,
++                size: ThemeSettings.otaStageIconSize,
++                color: color,
+               ),
+-              if (message.isNotEmpty) ...[
+-                const SizedBox(height: 8),
++            ),
++          ),
++          const SizedBox(width: 24),
++          Expanded(
++            child: Column(
++              mainAxisSize: MainAxisSize.min,
++              crossAxisAlignment: CrossAxisAlignment.start,
++              children: [
+                 Text(
+-                  message,
+-                  style: const TextStyle(
+-                    color: ThemeColors.otaProgressTextColor,
+-                    fontSize: ThemeSettings.otaProgressSubtitleSize,
++                  title,
++                  style: TextStyle(
++                    color: color,
++                    fontSize: ThemeSettings.otaProgressTitleSize,
++                    fontWeight: FontWeight.bold,
+                   ),
+                 ),
+-              ],
+-              if (detail != null) ...[
+-                const SizedBox(height: 8),
+-                Text(
+-                  detail!,
+-                  style: const TextStyle(
+-                    color: ThemeColors.otaProgressSubtextColor,
+-                    fontSize: ThemeSettings.otaProgressSubtitleSize,
++                if (message.isNotEmpty) ...[
++                  const SizedBox(height: 8),
++                  Text(
++                    message,
++                    style: const TextStyle(
++                      color: ThemeColors.otaProgressTextColor,
++                      fontSize: ThemeSettings.otaProgressSubtitleSize,
++                    ),
+                   ),
+-                ),
++                ],
++                if (detail != null) ...[
++                  const SizedBox(height: 8),
++                  Text(
++                    detail!,
++                    style: const TextStyle(
++                      color: ThemeColors.otaProgressSubtextColor,
++                      fontSize: ThemeSettings.otaProgressSubtitleSize,
++                    ),
++                  ),
++                ],
+               ],
+-            ],
++            ),
++          ),
++        ],
++      ),
++    );
++  }
++}
++
++enum _OtaStep { receiving, installing, restarting }
++
++class _StageSequence extends StatelessWidget {
++  const _StageSequence({required this.state});
++  final OtaState state;
++
++  @override
++  Widget build(BuildContext context) {
++    final l10n = AppLocalizations.of(context);
++    final current = switch (state) {
++      OtaProgressState(:final info) =>
++        info.status == OTAStatus.uploading
++            ? _OtaStep.receiving
++            : _OtaStep.installing,
++      OtaSuccessState() => _OtaStep.restarting,
++      _ => null,
++    };
++    return Wrap(
++      spacing: 16,
++      runSpacing: 12,
++      crossAxisAlignment: WrapCrossAlignment.center,
++      children: [
++        for (final step in _OtaStep.values)
++          Semantics(
++            selected: step == current,
++            child: Container(
++              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
++              decoration: BoxDecoration(
++                borderRadius: BorderRadius.circular(12),
++                border: Border.all(
++                  color: step == current
++                      ? ThemeColors.otaAccentColor
++                      : ThemeColors.otaReadyInputBorderColor,
++                ),
++              ),
++              child: Row(
++                mainAxisSize: MainAxisSize.min,
++                children: [
++                  if (current != null && step.index < current.index) ...[
++                    const Icon(
++                      Icons.check,
++                      size: 24,
++                      color: ThemeColors.otaSuccessTextColor,
++                    ),
++                    const SizedBox(width: 8),
++                  ],
++                  Text(
++                    switch (step) {
++                      _OtaStep.receiving => l10n.otaStepReceive,
++                      _OtaStep.installing => l10n.otaStepInstall,
++                      _OtaStep.restarting => l10n.otaStepRestart,
++                    },
++                    style: TextStyle(
++                      color: step == current
++                          ? ThemeColors.otaAccentColor
++                          : current != null && step.index < current.index
++                          ? ThemeColors.otaSuccessTextColor
++                          : ThemeColors.otaProgressSubtextColor,
++                      fontSize: ThemeSettings.otaReadyNormalTextSize,
++                      fontWeight: step == current
++                          ? FontWeight.bold
++                          : FontWeight.normal,
++                    ),
++                  ),
++                ],
++              ),
++            ),
+           ),
+-        ),
+       ],
+     );
+   }
+diff --git a/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart b/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
+index 377ba9e..223c1d7 100644
+--- a/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
++++ b/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
+@@ -22,6 +22,9 @@ abstract class ThemeSettings {
+   // OTA Page Sizes
+   static const double otaTerminalFontSize = 16 * scaleFactor;
+   static const double otaMainStageIconSize = 90 * scaleFactor;
++  static const double otaStageIconSize = 48 * scaleFactor;
++  static const double otaStageIconAreaSize = 64 * scaleFactor;
++  static const double otaStatusPanelHeight = 192 * scaleFactor;
+   static const double otaProgressTitleSize = 32 * scaleFactor;
+   static const double otaProgressSubtitleSize = 16 * scaleFactor;
+   static const double otaProgressPercentSize = 64 * scaleFactor;
+diff --git a/i18n/app_en.arb b/i18n/app_en.arb
+index bc59d6d..1ca64e1 100644
+--- a/i18n/app_en.arb
++++ b/i18n/app_en.arb
+@@ -1253,6 +1253,7 @@
+   "effects_wave_origin": "Wave origin",
+   "effects_advanced": "Advanced",
+   "otaTitle": "Update firmware",
++  "otaReadyTitle": "Ready to update",
+   "otaCurrentVersion": "Current version",
+   "otaAccessCode": "Access code",
+   "otaSameNetwork": "Connect your phone or computer to the same network as the frame.",
+@@ -1260,25 +1261,29 @@
+   "otaManualConnection": "Or open this address",
+   "otaAddressUnavailable": "No network address is available. Connect the frame to a network to open the update page.",
+   "otaPreparing": "Preparing the update page…",
+-  "otaUploading": "Uploading firmware",
++  "otaReceiving": "Receiving firmware",
++  "otaTransferHint": "The file is being received. Installation starts next.",
+   "otaInstalling": "Installing firmware",
+   "otaDoNotPowerOff": "Keep the frame connected to power.",
+   "otaInstallationHint": "Installation may take a few minutes. Follow the system log below.",
+   "otaFailed": "Update failed",
+   "otaUnknownError": "An unknown error occurred.",
+   "otaLogDetails": "See the system log for details.",
+-  "otaComplete": "Firmware updated",
++  "otaReturnToSlideshow": "Press the frame’s Back button to return to the slideshow.",
++  "otaInstalled": "Firmware installed",
++  "otaRestartTitle": "Restarting the application",
+   "otaWaitingRestart": "Waiting for the application to restart…",
+-  "otaRestarting": "Restarting the application…",
+   "otaLeaving": "Closing the update screen…",
+   "otaSystemLog": "System log",
++  "otaTransferLogPending": "Receiving the firmware file. The installation log will appear after the transfer.",
++  "otaInstallLogPending": "Waiting for installation output…",
+   "otaFollowingOutput": "Following new output",
+   "otaHistoryPaused": "Viewing history · auto-scroll paused",
+   "otaLatestLine": "Go to latest line",
+   "otaDevConfig": "Developer settings",
+-  "otaStageUpload": "Upload",
+-  "otaStageInstall": "Install",
+-  "otaStageComplete": "Complete",
++  "otaStepReceive": "1. Receive",
++  "otaStepInstall": "2. Install",
++  "otaStepRestart": "3. Restart",
+   "frame_language_section": "Frame interface",
+   "frame_language_label": "Frame language",
+   "frame_language_hint": "Save and restart the frame application to apply this language. The panel language is selected separately in Appearance."
+diff --git a/i18n/app_ru.arb b/i18n/app_ru.arb
+index c8c0fb5..58deada 100644
+--- a/i18n/app_ru.arb
++++ b/i18n/app_ru.arb
+@@ -1253,6 +1253,7 @@
+   "effects_wave_origin": "Начало волны",
+   "effects_advanced": "Дополнительно",
+   "otaTitle": "Обновление прошивки",
++  "otaReadyTitle": "Готово к обновлению",
+   "otaCurrentVersion": "Текущая версия",
+   "otaAccessCode": "Код доступа",
+   "otaSameNetwork": "Подключите телефон или компьютер к той же сети, что и рамка.",
+@@ -1260,25 +1261,29 @@
+   "otaManualConnection": "Или откройте этот адрес",
+   "otaAddressUnavailable": "Сетевой адрес недоступен. Подключите рамку к сети, чтобы открыть страницу обновления.",
+   "otaPreparing": "Подготовка страницы обновления…",
+-  "otaUploading": "Загрузка прошивки",
++  "otaReceiving": "Получение прошивки",
++  "otaTransferHint": "Получаем файл на рамку. Затем начнётся установка.",
+   "otaInstalling": "Установка прошивки",
+   "otaDoNotPowerOff": "Не отключайте питание рамки.",
+   "otaInstallationHint": "Установка может занять несколько минут. Ход работы показан в журнале ниже.",
+   "otaFailed": "Не удалось обновить прошивку",
+   "otaUnknownError": "Произошла неизвестная ошибка.",
+   "otaLogDetails": "Подробности — в системном журнале.",
+-  "otaComplete": "Прошивка обновлена",
++  "otaReturnToSlideshow": "Для возврата к слайдшоу нажмите кнопку возврата на рамке.",
++  "otaInstalled": "Прошивка установлена",
++  "otaRestartTitle": "Перезапуск приложения",
+   "otaWaitingRestart": "Ожидаем перезапуск приложения…",
+-  "otaRestarting": "Перезапускаем приложение…",
+   "otaLeaving": "Закрытие экрана обновления…",
+   "otaSystemLog": "Системный журнал",
++  "otaTransferLogPending": "Файл передаётся на рамку. Журнал установки появится после получения файла.",
++  "otaInstallLogPending": "Ожидаем вывод установщика…",
+   "otaFollowingOutput": "Показ новых строк",
+   "otaHistoryPaused": "Просмотр истории · автопрокрутка приостановлена",
+   "otaLatestLine": "К последней строке",
+   "otaDevConfig": "Настройки разработчика",
+-  "otaStageUpload": "Загрузка",
+-  "otaStageInstall": "Установка",
+-  "otaStageComplete": "Готово",
++  "otaStepReceive": "1. Получение",
++  "otaStepInstall": "2. Установка",
++  "otaStepRestart": "3. Перезапуск",
+   "frame_language_section": "Интерфейс фоторамки",
+   "frame_language_label": "Язык фоторамки",
+   "frame_language_hint": "Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление»."
+diff --git a/i18n/lib/src/generated/app_localizations.dart b/i18n/lib/src/generated/app_localizations.dart
+index 9b6a3f8..84e9f79 100644
+--- a/i18n/lib/src/generated/app_localizations.dart
++++ b/i18n/lib/src/generated/app_localizations.dart
+@@ -4628,6 +4628,12 @@ abstract class AppLocalizations {
+   /// **'Update firmware'**
+   String get otaTitle;
+ 
++  /// No description provided for @otaReadyTitle.
++  ///
++  /// In en, this message translates to:
++  /// **'Ready to update'**
++  String get otaReadyTitle;
++
+   /// No description provided for @otaCurrentVersion.
+   ///
+   /// In en, this message translates to:
+@@ -4670,11 +4676,17 @@ abstract class AppLocalizations {
+   /// **'Preparing the update page…'**
+   String get otaPreparing;
+ 
+-  /// No description provided for @otaUploading.
++  /// No description provided for @otaReceiving.
++  ///
++  /// In en, this message translates to:
++  /// **'Receiving firmware'**
++  String get otaReceiving;
++
++  /// No description provided for @otaTransferHint.
+   ///
+   /// In en, this message translates to:
+-  /// **'Uploading firmware'**
+-  String get otaUploading;
++  /// **'The file is being received. Installation starts next.'**
++  String get otaTransferHint;
+ 
+   /// No description provided for @otaInstalling.
+   ///
+@@ -4712,23 +4724,29 @@ abstract class AppLocalizations {
+   /// **'See the system log for details.'**
+   String get otaLogDetails;
+ 
+-  /// No description provided for @otaComplete.
++  /// No description provided for @otaReturnToSlideshow.
+   ///
+   /// In en, this message translates to:
+-  /// **'Firmware updated'**
+-  String get otaComplete;
++  /// **'Press the frame’s Back button to return to the slideshow.'**
++  String get otaReturnToSlideshow;
+ 
+-  /// No description provided for @otaWaitingRestart.
++  /// No description provided for @otaInstalled.
+   ///
+   /// In en, this message translates to:
+-  /// **'Waiting for the application to restart…'**
+-  String get otaWaitingRestart;
++  /// **'Firmware installed'**
++  String get otaInstalled;
++
++  /// No description provided for @otaRestartTitle.
++  ///
++  /// In en, this message translates to:
++  /// **'Restarting the application'**
++  String get otaRestartTitle;
+ 
+-  /// No description provided for @otaRestarting.
++  /// No description provided for @otaWaitingRestart.
+   ///
+   /// In en, this message translates to:
+-  /// **'Restarting the application…'**
+-  String get otaRestarting;
++  /// **'Waiting for the application to restart…'**
++  String get otaWaitingRestart;
+ 
+   /// No description provided for @otaLeaving.
+   ///
+@@ -4742,6 +4760,18 @@ abstract class AppLocalizations {
+   /// **'System log'**
+   String get otaSystemLog;
+ 
++  /// No description provided for @otaTransferLogPending.
++  ///
++  /// In en, this message translates to:
++  /// **'Receiving the firmware file. The installation log will appear after the transfer.'**
++  String get otaTransferLogPending;
++
++  /// No description provided for @otaInstallLogPending.
++  ///
++  /// In en, this message translates to:
++  /// **'Waiting for installation output…'**
++  String get otaInstallLogPending;
++
+   /// No description provided for @otaFollowingOutput.
+   ///
+   /// In en, this message translates to:
+@@ -4766,23 +4796,23 @@ abstract class AppLocalizations {
+   /// **'Developer settings'**
+   String get otaDevConfig;
+ 
+-  /// No description provided for @otaStageUpload.
++  /// No description provided for @otaStepReceive.
+   ///
+   /// In en, this message translates to:
+-  /// **'Upload'**
+-  String get otaStageUpload;
++  /// **'1. Receive'**
++  String get otaStepReceive;
+ 
+-  /// No description provided for @otaStageInstall.
++  /// No description provided for @otaStepInstall.
+   ///
+   /// In en, this message translates to:
+-  /// **'Install'**
+-  String get otaStageInstall;
++  /// **'2. Install'**
++  String get otaStepInstall;
+ 
+-  /// No description provided for @otaStageComplete.
++  /// No description provided for @otaStepRestart.
+   ///
+   /// In en, this message translates to:
+-  /// **'Complete'**
+-  String get otaStageComplete;
++  /// **'3. Restart'**
++  String get otaStepRestart;
+ 
+   /// No description provided for @frame_language_section.
+   ///
+diff --git a/i18n/lib/src/generated/app_localizations_en.dart b/i18n/lib/src/generated/app_localizations_en.dart
+index 05ba6fe..a1fb674 100644
+--- a/i18n/lib/src/generated/app_localizations_en.dart
++++ b/i18n/lib/src/generated/app_localizations_en.dart
+@@ -2381,6 +2381,9 @@ class AppLocalizationsEn extends AppLocalizations {
+   @override
+   String get otaTitle => 'Update firmware';
+ 
++  @override
++  String get otaReadyTitle => 'Ready to update';
++
+   @override
+   String get otaCurrentVersion => 'Current version';
+ 
+@@ -2405,7 +2408,11 @@ class AppLocalizationsEn extends AppLocalizations {
+   String get otaPreparing => 'Preparing the update page…';
+ 
+   @override
+-  String get otaUploading => 'Uploading firmware';
++  String get otaReceiving => 'Receiving firmware';
++
++  @override
++  String get otaTransferHint =>
++      'The file is being received. Installation starts next.';
+ 
+   @override
+   String get otaInstalling => 'Installing firmware';
+@@ -2427,13 +2434,17 @@ class AppLocalizationsEn extends AppLocalizations {
+   String get otaLogDetails => 'See the system log for details.';
+ 
+   @override
+-  String get otaComplete => 'Firmware updated';
++  String get otaReturnToSlideshow =>
++      'Press the frame’s Back button to return to the slideshow.';
+ 
+   @override
+-  String get otaWaitingRestart => 'Waiting for the application to restart…';
++  String get otaInstalled => 'Firmware installed';
++
++  @override
++  String get otaRestartTitle => 'Restarting the application';
+ 
+   @override
+-  String get otaRestarting => 'Restarting the application…';
++  String get otaWaitingRestart => 'Waiting for the application to restart…';
+ 
+   @override
+   String get otaLeaving => 'Closing the update screen…';
+@@ -2441,6 +2452,13 @@ class AppLocalizationsEn extends AppLocalizations {
+   @override
+   String get otaSystemLog => 'System log';
+ 
++  @override
++  String get otaTransferLogPending =>
++      'Receiving the firmware file. The installation log will appear after the transfer.';
++
++  @override
++  String get otaInstallLogPending => 'Waiting for installation output…';
++
+   @override
+   String get otaFollowingOutput => 'Following new output';
+ 
+@@ -2454,13 +2472,13 @@ class AppLocalizationsEn extends AppLocalizations {
+   String get otaDevConfig => 'Developer settings';
+ 
+   @override
+-  String get otaStageUpload => 'Upload';
++  String get otaStepReceive => '1. Receive';
+ 
+   @override
+-  String get otaStageInstall => 'Install';
++  String get otaStepInstall => '2. Install';
+ 
+   @override
+-  String get otaStageComplete => 'Complete';
++  String get otaStepRestart => '3. Restart';
+ 
+   @override
+   String get frame_language_section => 'Frame interface';
+diff --git a/i18n/lib/src/generated/app_localizations_ru.dart b/i18n/lib/src/generated/app_localizations_ru.dart
+index 5ac2328..4aa85dd 100644
+--- a/i18n/lib/src/generated/app_localizations_ru.dart
++++ b/i18n/lib/src/generated/app_localizations_ru.dart
+@@ -2397,6 +2397,9 @@ class AppLocalizationsRu extends AppLocalizations {
+   @override
+   String get otaTitle => 'Обновление прошивки';
+ 
++  @override
++  String get otaReadyTitle => 'Готово к обновлению';
++
+   @override
+   String get otaCurrentVersion => 'Текущая версия';
+ 
+@@ -2422,7 +2425,11 @@ class AppLocalizationsRu extends AppLocalizations {
+   String get otaPreparing => 'Подготовка страницы обновления…';
+ 
+   @override
+-  String get otaUploading => 'Загрузка прошивки';
++  String get otaReceiving => 'Получение прошивки';
++
++  @override
++  String get otaTransferHint =>
++      'Получаем файл на рамку. Затем начнётся установка.';
+ 
+   @override
+   String get otaInstalling => 'Установка прошивки';
+@@ -2444,13 +2451,17 @@ class AppLocalizationsRu extends AppLocalizations {
+   String get otaLogDetails => 'Подробности — в системном журнале.';
+ 
+   @override
+-  String get otaComplete => 'Прошивка обновлена';
++  String get otaReturnToSlideshow =>
++      'Для возврата к слайдшоу нажмите кнопку возврата на рамке.';
+ 
+   @override
+-  String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
++  String get otaInstalled => 'Прошивка установлена';
++
++  @override
++  String get otaRestartTitle => 'Перезапуск приложения';
+ 
+   @override
+-  String get otaRestarting => 'Перезапускаем приложение…';
++  String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
+ 
+   @override
+   String get otaLeaving => 'Закрытие экрана обновления…';
+@@ -2458,6 +2469,13 @@ class AppLocalizationsRu extends AppLocalizations {
+   @override
+   String get otaSystemLog => 'Системный журнал';
+ 
++  @override
++  String get otaTransferLogPending =>
++      'Файл передаётся на рамку. Журнал установки появится после получения файла.';
++
++  @override
++  String get otaInstallLogPending => 'Ожидаем вывод установщика…';
++
+   @override
+   String get otaFollowingOutput => 'Показ новых строк';
+ 
+@@ -2472,13 +2490,13 @@ class AppLocalizationsRu extends AppLocalizations {
+   String get otaDevConfig => 'Настройки разработчика';
+ 
+   @override
+-  String get otaStageUpload => 'Загрузка';
++  String get otaStepReceive => '1. Получение';
+ 
+   @override
+-  String get otaStageInstall => 'Установка';
++  String get otaStepInstall => '2. Установка';
+ 
+   @override
+-  String get otaStageComplete => 'Готово';
++  String get otaStepRestart => '3. Перезапуск';
+ 
+   @override
+   String get frame_language_section => 'Интерфейс фоторамки';

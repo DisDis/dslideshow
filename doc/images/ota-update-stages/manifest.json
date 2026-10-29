@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-29",
+  "product_source_commit": "5581757d0b72c92e6490a071002fe38626ba4a73",
+  "flutter": "3.47.7",
+  "dart": "3.13.5",
+  "capture": "flutter test; real MainApp -> OTAPage after UX changes; fake backend events and installer output",
+  "locale": "en",
+  "physical_size": [
+    2560,
+    1600
+  ],
+  "device_pixel_ratio": 1,
+  "fonts": {
+    "ui": "Flutter SDK Roboto",
+    "icons": "Flutter SDK MaterialIcons",
+    "terminal": "Courier New registered under Cascadia Mono/Courier New/monospace for test rendering"
+  },
+  "limits": [
+    "Local checks only at user request",
+    "No browser",
+    "No Raspberry Pi application or GPU run",
+    "No package installation or actual restart",
+    "Still captures do not validate animation smoothness or hardware font fallback"
+  ],
+  "source_sha256": {
+    "dslideshow_flutter/lib/main.dart": "9481f9a801327c6b520c535709b81b511875ca2df45b8b5fd3cef0661d6c1744",
+    "dslideshow_flutter/lib/features/ota/presentation/pages/ota_page.dart": "83a089a92afc03ad5b372cd09171e0e35dc0081eb2fee0ff81fecccfd4469656",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart": "244a7f1237b36c5cd1a32aeaa7bf5f0fdeafd8201ae5aaa591985c1b6e789516",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart": "f633de4f7faffa2d79239e5f177225d7e7ff46e0934c152bd010a24ac4312f3f",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart": "b5ea03f47097a1746278f7ef9867fb00b134513fdf8824ae35bad492826f880f",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart": "1bb9728eade656707629cd8ab7fe89786b08d5d7e5d3c5129bc7a6216f39aaa4",
+    "dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart": "38ec4f357aaaf3547d5a38d986a94a24940e924d2e1b1efb4a2daaa1bfb2606e",
+    "i18n/app_en.arb": "b94130e1811b84a817e49ac2c15889e04eb0d1f2b497f8e64c3714d2bafaa6fb",
+    "i18n/app_ru.arb": "9f4f03dc0fc4ada5847402fbf59a5259848aecc27545c6ba93ac410542975513",
+    "i18n/lib/src/generated/app_localizations.dart": "1acde2808393a57912760ab18fd5eaf310e14d2a4a6e4442a9a8a30de6eea2d8",
+    "i18n/lib/src/generated/app_localizations_en.dart": "da4c897be467d1e71ac9bc8eeebbad71786936019143307a38e52b9cb1f2fd45",
+    "i18n/lib/src/generated/app_localizations_ru.dart": "c165bd5dbbff1b3471b39616752e71981ca3e120ed560d3b95937b0e3a3c9142",
+    "dslideshow_flutter/tool/capture_ota_screenshots.dart": "f1fc4ae69f6ba9fe0baf655f962a88515bfe24b68bb2c12dde3f93f83d9a8fc0",
+    "dslideshow_flutter/test/support/frame_app_harness.dart": "32dd7673780bfda3af3e930646b696c3148443951e89dda407c919754d52d0d2"
+  },
+  "screenshots": [
+    {
+      "file": "01-preparing.png",
+      "stage": "Подготовка",
+      "sha256": "82737bfaeecf6b20411859c46c10c20afd5be9214057cd8d7ea93d22a5e3e9ed"
+    },
+    {
+      "file": "02-preparing-address.png",
+      "stage": "Ожидание сетевого адреса",
+      "sha256": "2f2818850d777313e7d4773b8a75ad9e6f66ca091c22a9197dd01fc1c74bf47a"
+    },
+    {
+      "file": "03-ready.png",
+      "stage": "Готовность: QR и код",
+      "sha256": "216d08788aeb654c1f4d93999d4b7d338c743a510dc4a5e56b7b607812364436"
+    },
+    {
+      "file": "04-no-network.png",
+      "stage": "Адрес недоступен",
+      "sha256": "9f30e2386f04ecfd7e98fca97c16494353556dfb44b066f903ecc1a0971bfd0b"
+    },
+    {
+      "file": "05-upload-0.png",
+      "stage": "Передача: 0%",
+      "sha256": "1202efd5d3674ec5e0457a3761dc9d1d184ab1db2d2e48210499b64b5c1cf83a"
+    },
+    {
+      "file": "06-upload-67.png",
+      "stage": "Передача: 67%",
+      "sha256": "3a409ce03b1ef6f38e4e18ea7e8c9d4835f103ae9dd6899802bf22afa3acd68e"
+    },
+    {
+      "file": "07-upload-100.png",
+      "stage": "Передача: 100%",
+      "sha256": "8655957a4b84afcbc984ca0bc045b599c61482266943edc824a7f8d3c32edfaf"
+    },
+    {
+      "file": "08-installing.png",
+      "stage": "Установка",
+      "sha256": "521580fd0209fd4d3eb5c80661e048552c3dae1e34217c63a23688e9902c4ff5"
+    },
+    {
+      "file": "09-finished.png",
+      "stage": "Завершение",
+      "sha256": "f16d5afe38c3ab5da1b33a5341e86ee6bf048a6fbb6ddf61e4a91951d16720b0"
+    },
+    {
+      "file": "10-restarting.png",
+      "stage": "Перезапуск",
+      "sha256": "ec2ecbc1cb88eb371238e1d52be7ed869cc11bb578c7d9e7b2003d50fd9c4d2b"
+    },
+    {
+      "file": "11-failed.png",
+      "stage": "Ошибка установки",
+      "sha256": "69c3f675076583a78b140de7b0127ede7ff9b81b50ec8f74947b0ec79173fc5d"
+    },
+    {
+      "file": "12-unknown-error.png",
+      "stage": "Неизвестная ошибка",
+      "sha256": "f070e39f81076e9e4b3c2e68473c52b82b2e242700673cebca2c4dac71149d11"
+    },
+    {
+      "file": "13-exit.png",
+      "stage": "Выход из OTA",
+      "sha256": "4d9afd05ea3013600d3137eecef2386c01bb1a5edc8ad83f21b0cda5e5aeed87"
+    }
+  ],
+  "source_state": "working tree patch against product_source_commit; see source.patch"
+}
