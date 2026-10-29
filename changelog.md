@@ -1,5 +1,7 @@
 # Unreleased
 
+# 15.0.0+1 — 2026-10-29
+
 * Keep the OTA connection QR, bold access code and red current version large;
   show installation output across the frame with a 32 px terminal font, pause
   auto-scroll while reading history and provide a return-to-latest action.
