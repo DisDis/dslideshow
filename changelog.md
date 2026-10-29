@@ -1,5 +1,7 @@
 # Unreleased
 
+# 15.1.0+1 — 2026-10-29
+
 * Clarify the frame's OTA stages with larger receiving, installation and restart
   icons, a three-step sequence and an explanation while the installation log
   is empty. Keep the status card and log position stable, including at 100%
