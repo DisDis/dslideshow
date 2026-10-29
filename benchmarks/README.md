@@ -5,7 +5,7 @@
 Сохранённые результаты и состав архивов — в [индексе отчётов](reports/README.md).
 [Правила сопровождения](../doc/benchmarks-maintenance.md) задают обновление
 документации, хранение доказательств, удаление устаревшего и ежемесячный аудит.
-[Очистка стенда 29.10.2026](../doc/benchmarks-cleanup-2026-10-29.md) описывает
+[Очистка стенда 29.10.2026](reports/maintenance-2026-10-29/report.md) описывает
 удалённые материалы, освобождённое место и границы локальной проверки.
 
 [Стенд экрана OTA](ota-harness.md) монтирует production-страницу с локальным
@@ -52,12 +52,13 @@ Bloc, фото, плееры и специальные экраны. Обычн�
 [Раздельная диагностика native pipeline](tool/native_pipeline/README.md)
 сопоставляет время EGL/GBM/KMS, GPU-задания V3D и DRM completion на одном frozen
 release bundle. Инструментированные данные предназначены для поиска узкого места;
-результаты и ограничения — в [разборе flutter-pi](../doc/flutter-pi-native-pipeline-2026-10.md).
+результаты и ограничения — в [разборе flutter-pi](reports/flutter-pi-native-pipeline-2026-10-28/report.md).
 
 ## Пресеты и расширенные настройки
 
-[Таблица соответствия](../doc/effect-presets-review.md) описывает 82 пресета
-и результат принятого визуального сравнения. Пользователь подтвердил замену
+[Таблица соответствия](../doc/effect-settings.md#соответствие-пресетов) описывает 82 пресета;
+результат принятого визуального сравнения сохранён в [отчёте](reports/effect-presets-2026-10-28/report.md).
+Пользователь подтвердил замену
 прежних эффектов 28.10.2026; временные эталонные рендеры, их шейдеры,
 тест сравнения и локальный HTML/PNG-отчёт удалены после проверки.
 
@@ -68,7 +69,7 @@ release bundle. Инструментированные данные предна
 прогон не требуется по решению пользователя.
 
 Для отдельного исследования производительности после обновления каталога
-используйте [двухэтапный фото-прогон](../doc/effect-performance-2026-10.md).
+используйте [двухэтапный фото-прогон](reports/effect-performance-2026-10-28/report.md).
 `flutter test --no-pub tool/prepare_effect_screening_test.dart` создаёт
 `build/effect-screening/screening.json` и `catalog.json` непосредственно из
 production-каталога: все 37 defaults и 82 пресета, одинаковые настройки
@@ -133,7 +134,7 @@ readback проверяют реально закешированные OpenGL-�
 
 Stretch/CrossZoom/Radial, фото-шейдеры Glass/Film Dissolve и общий kernel Glass
 перенесены в production. Условия A/B, визуальные различия и release/source архивы
-описаны в [исследовании эффектов](../doc/effect-performance-2026-10.md).
+описаны в [исследовании эффектов](reports/effect-performance-2026-10-28/report.md).
 Закрытые экспериментальные классы и одноразовые entrypoints удалены.
 
 `config/photo-shader-focus.json` проверяет Baseline/Fade/Glass/Film на фото.
@@ -148,7 +149,7 @@ Stretch/CrossZoom/Radial, фото-шейдеры Glass/Film Dissolve и общ�
 
 ## Radial / VHS после обновления flutter-pi и частот
 
-[Продолжение GPU-оптимизации](../doc/gpu-effect-performance-2026-10.md) содержит
+[Продолжение GPU-оптимизации](reports/gpu-effects-2026-10-28/report.md) содержит
 отдельные ABBA на runtime `30669…ea4b`, CPU max 2600 / GPU max 900 МГц.
 Принятые реализации перенесены в production: общий UV Radial и кешируемый tint VHS.
 Наборы `config/gpu-radial-focus.json` и `config/gpu-vhs-cache-focus.json` теперь
@@ -202,8 +203,9 @@ BlurProbe, MosaicProbe и CompositionProbe вместе с историческ�
 проверяют настоящий HTTP при отказах камер и удержание межизолятных RPC-слотов.
 `tool/camera_device_probe.dart` и `tool/camera_socket_probe.py` сопоставляют
 читающие RPC со снимками TCP/FD работающей рамки. `tool/camera_http_probe.py`
-сравнивает публичный `/info` через сеть и loopback. Команды, результаты и границы
-проверок — в [исследовании timeout камер](../doc/camera-rpc-investigation-2026-10.md).
+сравнивает публичный `/info` через сеть и loopback. Действующие команды —
+в [диагностике страницы устройства](../doc/config-app-device.md#диагностика-задержек-управления),
+результаты и границы наблюдений — в [исследовании timeout камер](reports/camera-rpc-2026-10-26/report.md).
 
 ### Миниатюры и управляемый HTTP галереи
 
@@ -676,5 +678,5 @@ flutter test --no-pub tool/render_effect_gallery_test.dart
 [/proc Linux](https://docs.kernel.org/filesystems/proc.html),
 [flutter-pi: build/run/--vulkan](https://github.com/ardera/flutter-pi).
 
-[Новые эффекты и Ken Burns](../doc/new-visuals-2026-10.md): настройка, совместимость,
+[Новые эффекты и Ken Burns](../doc/effects.md): настройка, совместимость,
 предпросмотр, тесты и измерения на RaPi5.

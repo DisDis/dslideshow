@@ -1,17 +1,13 @@
 # Настройки эффектов перехода
 
-Формат `slideshow.effects`, введённый 27.10.2026, хранит один тип эффекта
-с собственными параметрами. В каталоге 37 типов и 82 встроенных пресета. Направления, оси, цвета и стили
-одного алгоритма выбираются в его настройках. `items` — карта
-`Map<EffectType, EffectConfig>`: тип хранится только в ключе,
-а значение содержит `enabled` и типизированные `options`.
-[Согласованный план и таблица объединений](effect-settings-plan.md).
+Сверено с кодом 29.10.2026. Формат `slideshow.effects` хранит одну запись
+семейства с собственными параметрами. В каталоге 37 типов и 82 встроенных
+пресета. Направления, оси, цвета и стили выбираются в настройках.
+`items` — карта `Map<EffectType, EffectConfig>`: тип находится только в ключе,
+значение содержит `enabled` и типизированные `options`.
 
-[План расширения и объединения эффектов](effect-options-expansion-plan.md)
-содержит анализ рендеров, параметры, defaults, диапазоны и порядок реализации.
-Реализованы пять основных объединений, Slice/Panel Wipe и персональные
-параметры всего каталога. Визуальное сравнение принято пользователем;
-аппаратный прогон в текущей задаче не требуется. Локальные проверки описаны ниже.
+[Визуальное поведение и совместимость](effects.md),
+[сессии и контракт входов renderer](slideshow-renderer.md).
 
 ## Формат
 
@@ -116,7 +112,9 @@ JSON-сериализация генерируется json_serializable. Кол
 
 ## Пресеты и объединение каталога
 
-Одна запись семейства хранит один выбранный режим. Пресеты — неизменяемые
+Одна запись семейства хранит один выбранный режим. Несколько одновременно
+выбранных профилей семейства, веса и порядок проигрывания в этом формате
+не задаются; порядок JSON-ключей на очередь не влияет. Пресеты — неизменяемые
 готовые наборы визуальных параметров из `effectPresets` / `EffectPresetId`
 в `common/lib/effects.dart`; идентификатор пресета не записывается в конфиг.
 После применения сохраняются обычные `options`. Ручные изменения дают
@@ -138,6 +136,13 @@ JSON-сериализация генерируется json_serializable. Кол
 Blinds и Louver остаются отдельными. Ripple Reveal и Water Refraction остаются
 отдельными; у обоих есть пять точек начала волны.
 
+Ключи и режимы в модели, форме и фабрике представлены enum. JSON-имена
+стабильны и не выводятся из имени класса, `runtimeType` или перевода подписи.
+Объединение записей не требует одного Dart-класса на семейство: режимы
+сохраняют свои кривые, матричный порядок, clip и композицию. Общая внешняя
+кривая поверх всех алгоритмов не вводится. У Depth, например, смена порядка
+масштабирования и переноса изменила бы траекторию прежнего режима.
+
 Старые ключи объединяемых типов читаются как aliases и преобразуются в
 семейство с прежними параметрами. Персональное время и выключенные настройки
 сохраняются. Если в старом файле несколько записей одного семейства, приоритет:
@@ -151,14 +156,21 @@ JSON-полей. Само чтение файл не переписывает, �
 
 `EffectType` сохраняет старые aliases для чтения и инструментов; пользовательский
 каталог определяется `catalogEffectTypes` и `Effect.values`, в каждом 37 типов.
-[Таблица визуального соответствия и команды воспроизведения](effect-presets-review.md).
+[Полная таблица соответствия](#соответствие-пресетов) приведена ниже;
+результат принятого сравнения сохранён в
+[историческом отчёте](../benchmarks/reports/effect-presets-2026-10-28/report.md).
 
 ## Параметры эффектов
 
 Все типы имеют `durationMs=0`. Ниже — defaults и границы редактора. Доли
 показываются в процентах, масштабы задаются множителями; sigma/clipAmount/
 waveIntensity используют логические пиксели. Отсутствующее/`null` новое поле
-получает default. `featherFraction=null` означает мягкость по стилю: `.12`
+получает default. Абсолютные `maxSigma`, `clipAmount` и `waveIntensity`
+не переводятся в доли экрана; относительные параметры сохраняют свою
+нормировку. Прозрачность цвета умножается на огибающую и силу оформления,
+а итоговая alpha ограничивается 0…1. Границы редактора не являются
+обещанием аппаратной производительности всех сочетаний.
+`featherFraction=null` означает мягкость по стилю: `.12`
 для Soft/Light Sweep и `.02` для Neon. Режимы и варианты перечислены в форме;
 неприменимые поля скрываются и сохраняют свои значения.
 
@@ -276,31 +288,12 @@ Save до исправления. Запрос с невалидными нас�
 
 ## Проверки
 
-Из соответствующего пакета, без изменения зависимостей:
-
-```sh
-# common/
-dart run build_runner build
-dart analyze
-dart test
-# backend/
-dart run build_runner build
-dart analyze
-dart test
-# i18n/
-flutter gen-l10n
-# dslideshow_flutter/ и config_app/
-flutter analyze --no-pub
-flutter test --no-pub
-# config_app/
-./build_web.sh --no-pub
-# benchmarks/
-dart run build_runner build
-flutter analyze --no-pub
-flutter test --no-pub
-python3 -m unittest discover -s tool -p 'test_*.py'
-bash -n run.sh build_aot_pi5.sh
-```
+Команды анализатора, VM unit/widget-тестов и генераторов приведены в
+[общем руководстве тестирования](testing.md) и README соответствующих пакетов.
+Генерацию Freezed/JSON запускают через `dart run build_runner build` из пакета
+с изменёнными исходными моделями; локализации — через `flutter gen-l10n` из
+`i18n/`. Генерация и web-сборка не нужны при изменении только документации.
+Браузерные проверки требуют отдельного согласия пользователя.
 
 Проверки включают JSON/хранение карты, удаление defaults, сохранение
 выключенных персональных параметров, Fade для отсутствующего/пустого набора,
@@ -308,7 +301,8 @@ bash -n run.sh build_aot_pi5.sh
 пустой набор, параметры фабрики,
 влияние каждого активного поля на пиксели, пять начал волны, границы 3D, renderer,
 видео/паузы/cleanup на рамке и в галерее, локальные asset-фото и очистку
-предпросмотра, переключение Общая/Своя и адаптивный редактор RU/EN.
+предпросмотра, переключение Общая/Своя и адаптивный редактор на `en`.
+Переводы и выбор языка проверяются отдельными сценариями RU/EN.
 Матрица standard сохраняет 684 сценария: прежние варианты представлены
 типизированными settings только внутри `benchmarks/`. В `effect_configs`
 варианты сгруппированы по ключам типов, например
@@ -320,9 +314,98 @@ bash -n run.sh build_aot_pi5.sh
 (default 100 может быть опущен), а поле `grid` всегда содержит её явно.
 Повторяющиеся ID сценариев отклоняются до запуска.
 
-82 пресета были сравнены с прежними рендерами, затем визуально подтверждены
-пользователем 28.10.2026. Временные эталоны, тест сравнения и локальный отчёт
-удалены после согласования. [Таблица проверки пресетов](effect-presets-review.md)
-сохраняет соответствие и результаты. По решению пользователя аппаратный прогон
-в этой задаче не требуется; команды OpenGL оставлены для возможной будущей
-диагностики. Локальные проверки не подтверждают производительность на RaPi5.
+При объединении каталога 28.10.2026 пользователь принял визуальное
+соответствие 82 пресетов. Условия, результаты и границы локальной приёмки
+сохранены в [отчёте](../benchmarks/reports/effect-presets-2026-10-28/report.md).
+Последующие аппаратные исследования имеют собственные сборки и условия;
+они перечислены в [индексе отчётов](../benchmarks/reports/README.md).
+
+## Соответствие пресетов
+
+Таблица связывает прежние варианты с текущими пресетами. Имя пресета
+не добавляет отдельную запись семейства в конфиг; сохраняются его `options`.
+
+| Прежний тип | Пресет в config_app | Семейство |
+| --- | --- | --- |
+| `burnAlpha` | Выгорание (`burnAlpha`) | `burnAlpha` |
+| `foldMotion` | Складывание (`foldMotion`) | `foldMotion` |
+| `glow` | Свечение (`glow`) | `glow` |
+| `kaleidoscope` | Калейдоскоп (`kaleidoscope`) | `kaleidoscope` |
+| `tvPower` | Выключение телевизора (`tvPower`) | `tvPower` |
+| `springMotion` | Пружина (`springMotion`) | `springMotion` |
+| `shapeDissolve` | Растворение фигурами (`shapeDissolve`) | `shapeDissolve` |
+| `vhsDamage` | Видеокассета (`vhsDamage`) | `vhsDamage` |
+| `radialBlur` | Радиальное размытие (`radialBlur`) | `radialBlur` |
+| `phosphor` | Послесвечение (`phosphor`) | `phosphor` |
+| `filmDissolve` | Кинематографическое растворение (`filmDissolve`) | `fade` |
+| `frame` | Рамка (`frame`) | `revealMask` |
+| `louver` | Поворотные жалюзи (`louver`) | `louver` |
+| `mirror` | Зеркало (`mirror`) | `mirror` |
+| `clockWipe` | Часовое раскрытие (`clockWipe`) | `revealMask` |
+| `split` | Раздвижение половин (`split`) | `split` |
+| `panelWipe` | Раскрытие панелями (`panelWipe`) | `slice` |
+| `stretch` | Растяжение (`stretch`) | `stretch` |
+| `starWipe` | Раскрытие звездой (`starWipe`) | `revealMask` |
+| `lightLeak` | Световая засветка (`lightLeak`) | `lightLeak` |
+| `filmRoll` | Прокрутка плёнки (`filmRoll`) | `slide` |
+| `crossZoom` | Встречный зум (`crossZoom`) | `zoomOver` |
+| `whip` | Резкая панорама (`whip`) | `slide` |
+| `glass` | Стекло (`glass`) | `glass` |
+| `softWipe` | Мягкое раскрытие (`softWipe`) | `revealMask` |
+| `slice` | Сдвиг полос (`slice`) | `slice` |
+| `lumaFade` | Растворение по яркости (`lumaFade`) | `lumaFade` |
+| `pagePeel` | Загиб страницы (`pagePeel`) | `pagePeel` |
+| `noiseDissolve` | Растворение в шуме (`noiseDissolve`) | `noiseDissolve` |
+| `rippleReveal` | Раскрытие волнами (`rippleReveal`) | `rippleReveal` |
+| `waterRefraction` | Преломление воды (`waterRefraction`) | `waterRefraction` |
+| `cube` | Куб (`cube`) | `cube` |
+| `accordion` | Гармошка (`accordion`) | `accordion` |
+| `backgroundToForeground` | Из фона на передний план (`backgroundToForeground`) | `depth` |
+| `foregroundToBackground` | С переднего плана в фон (`foregroundToBackground`) | `depth` |
+| `depth` | Глубина (`depth`) | `depth` |
+| `parallax` | Параллакс (`parallax`) | `parallax` |
+| `stack` | Стопка (`stack`) | `slide` |
+| `tablet` | Планшет (`tablet`) | `tablet` |
+| `zoomOut` | Уменьшение (`zoomOut`) | `zoomOut` |
+| `fade` | Растворение (`fade`) | `fade` |
+| `mosaic` | Мозаика (`mosaic`) | `mosaic` |
+| `liquidMorph` | Жидкое преобразование (`liquidMorph`) | `liquidMorph` |
+| `blinds` | Жалюзи (`blinds`) | `blinds` |
+| `blurFade` | Растворение с размытием (`blurFade`) | `fade` |
+| `zoomOver` | Увеличение поверх (`zoomOver`) | `zoomOver` |
+| `slide` | Сдвиг (`slide`) | `slide` |
+| `revealMask` | Раскрытие маской (`revealMask`) | `revealMask` |
+| `fadeThroughColor` | Через цвет (`fadeThroughColor`) | `fade` |
+| `flip` | Переворот (`flip`) | `flip` |
+| `rotate` | Поворот (`rotate`) | `rotate` |
+| `softWipe` | Световой проход (`softWipeLightSweep`) | `revealMask` |
+| `softWipe` | Неоновое раскрытие (`softWipeNeon`) | `revealMask` |
+| `fadeThroughColor` | Через белый (`fadeThroughWhite`) | `fade` |
+| `flip` | Вертикальный переворот (`flipVertical`) | `flip` |
+| `rotate` | Вращение от нижнего края (`rotateBottom`) | `rotate` |
+| `mosaic` | Мозаика без затухания (`mosaicBinary`) | `mosaic` |
+| `mosaic` | Мозаика из верхнего левого угла (`mosaicTopLeft`) | `mosaic` |
+| `mosaic` | Мозаика из верхнего правого угла (`mosaicTopRight`) | `mosaic` |
+| `mosaic` | Мозаика из нижнего левого угла (`mosaicBottomLeft`) | `mosaic` |
+| `mosaic` | Мозаика из нижнего правого угла (`mosaicBottomRight`) | `mosaic` |
+| `slide` | Вытеснение вправо (`slidePushRight`) | `slide` |
+| `slide` | Вытеснение вверх (`slidePushUp`) | `slide` |
+| `slide` | Вытеснение вниз (`slidePushDown`) | `slide` |
+| `slide` | Наложение влево (`slideCoverLeft`) | `slide` |
+| `slide` | Наложение вправо (`slideCoverRight`) | `slide` |
+| `slide` | Наложение вверх (`slideCoverUp`) | `slide` |
+| `slide` | Наложение вниз (`slideCoverDown`) | `slide` |
+| `slide` | Открытие сдвигом влево (`slideRevealLeft`) | `slide` |
+| `slide` | Открытие сдвигом вправо (`slideRevealRight`) | `slide` |
+| `slide` | Открытие сдвигом вверх (`slideRevealUp`) | `slide` |
+| `slide` | Открытие сдвигом вниз (`slideRevealDown`) | `slide` |
+| `revealMask` | Раскрытие вправо (`wipeRight`) | `revealMask` |
+| `revealMask` | Раскрытие вверх (`wipeUp`) | `revealMask` |
+| `revealMask` | Раскрытие вниз (`wipeDown`) | `revealMask` |
+| `revealMask` | Горизонтальная штора (`curtainHorizontal`) | `revealMask` |
+| `revealMask` | Вертикальная штора (`curtainVertical`) | `revealMask` |
+| `revealMask` | Диагональ из верхнего правого угла (`diagonalTopRight`) | `revealMask` |
+| `revealMask` | Диагональ из нижнего левого угла (`diagonalBottomLeft`) | `revealMask` |
+| `revealMask` | Диагональ из нижнего правого угла (`diagonalBottomRight`) | `revealMask` |
+| `revealMask` | Диагональ из верхнего левого угла (`diagonalTopLeft`) | `revealMask` |
+| `revealMask` | Круг из центра (`irisCenter`) | `revealMask` |

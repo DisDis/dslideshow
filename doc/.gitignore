@@ -1,1 +1,5 @@
 *.stl
+
+# The repository ignores scratch plans/ directories; maintained plans belong in Git.
+!plans/
+!plans/*.md

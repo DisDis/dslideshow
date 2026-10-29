@@ -2,7 +2,7 @@
 
 Этот стенд разделяет CPU-время вызовов EGL/GBM/KMS, интервалы GPU-заданий V3D
 и DRM completion. Методика и результаты — в
-[разборе flutter-pi](../../../doc/flutter-pi-native-pipeline-2026-10.md).
+[разборе flutter-pi](../../reports/flutter-pi-native-pipeline-2026-10-28/report.md).
 Он не меняет рабочий runtime, engine, ОС, драйверы или параметры качества.
 
 `FrameTiming.raster` включает синхронный embedder present. Встроенные `TRACER_*`

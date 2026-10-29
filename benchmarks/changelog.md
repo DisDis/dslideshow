@@ -18,7 +18,7 @@
   reproduced fixtures and verified unpacked copies while retaining accepted
   source/release pairs, raw measurements and unique native/visual failures.
   See the [report index](reports/README.md) and
-  [cleanup record](../doc/benchmarks-cleanup-2026-10-29.md).
+  [cleanup record](reports/maintenance-2026-10-29/report.md).
 
 * Enumerate `/proc/self/fd` without following descriptor links in local probes,
   avoiding directory-listing races when a descriptor closes during sampling.
@@ -85,7 +85,7 @@
   and shaders; preserve source/release archives, results and the preset mapping.
 
 Method, archived sources and results:
-[effect performance investigation](../doc/effect-performance-2026-10.md).
+[effect performance investigation](reports/effect-performance-2026-10-28/report.md).
 The retained [EGL helper](tool/egl_capture/README.md) documents the capture protocol.
 
 ## Из выпуска приложения 13.1.0+1 — 2026-10-27

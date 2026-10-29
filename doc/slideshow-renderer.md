@@ -1,5 +1,8 @@
 # Сессии содержимого слайд-шоу
 
+Сверено с кодом 29.10.2026. [Визуальное поведение](effects.md) и
+[настройки](effect-settings.md) описаны отдельно от владения ресурсами.
+
 `SlideShowPage` связывает `SlideshowBloc` с рендерингом. Bloc выбирает следующий
 слайд, эффект и фазу; renderer управляет подготовкой, анимацией перехода и
 затемнением. Ресурсами каждого слайда владеет отдельная `SlideSession` из
@@ -134,7 +137,7 @@ flutter test --no-pub test/effect_slide_input_test.dart test/slide_session_test.
 `flutter test --no-pub test/asset_photo_slide_session_test.dart test/slideshow_preview_test.dart`. Тесты и ограничения
 панели описаны в её [README](../config_app/README.md).
 
-Отдельный [стенд реального renderer](../benchmarks/README.md) запускает
+Отдельный [стенд реального renderer](../benchmarks/renderer-harness.md) запускает
 `SlideShowPage` через `benchmarks/lib/renderer_main.dart`. Для предыдущего рефакторинга
 владения сессиями уже сохранён ограниченный
 [аппаратный A/B](../benchmarks/reports/slide-session-2026-10-28/report.md),
