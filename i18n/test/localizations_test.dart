@@ -55,6 +55,13 @@ void main() {
 
       expect(english.config_save_button, 'Save');
       expect(russian.config_save_button, 'Сохранить');
+      expect(english.otaReceiving, 'Receiving firmware');
+      expect(russian.otaReceiving, 'Получение прошивки');
+      expect(russian.otaInstalled, 'Прошивка установлена');
+      expect(russian.otaRestartTitle, 'Перезапуск приложения');
+      expect(russian.otaStepReceive, '1. Получение');
+      expect(russian.otaStepInstall, '2. Установка');
+      expect(russian.otaStepRestart, '3. Перезапуск');
       expect(russian.not_found_with_id('photo-123'), 'Не найдено: «photo-123»');
       expect(
         russian.transition_display_times(250, 5000),

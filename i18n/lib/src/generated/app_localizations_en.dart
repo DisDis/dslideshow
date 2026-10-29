@@ -2382,6 +2382,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaTitle => 'Update firmware';
 
   @override
+  String get otaReadyTitle => 'Ready to update';
+
+  @override
   String get otaCurrentVersion => 'Current version';
 
   @override
@@ -2405,7 +2408,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaPreparing => 'Preparing the update page…';
 
   @override
-  String get otaUploading => 'Uploading firmware';
+  String get otaReceiving => 'Receiving firmware';
+
+  @override
+  String get otaTransferHint =>
+      'The file is being received. Installation starts next.';
 
   @override
   String get otaInstalling => 'Installing firmware';
@@ -2427,19 +2434,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaLogDetails => 'See the system log for details.';
 
   @override
-  String get otaComplete => 'Firmware updated';
+  String get otaReturnToSlideshow =>
+      'Press the frame’s Back button to return to the slideshow.';
+
+  @override
+  String get otaInstalled => 'Firmware installed';
+
+  @override
+  String get otaRestartTitle => 'Restarting the application';
 
   @override
   String get otaWaitingRestart => 'Waiting for the application to restart…';
-
-  @override
-  String get otaRestarting => 'Restarting the application…';
 
   @override
   String get otaLeaving => 'Closing the update screen…';
 
   @override
   String get otaSystemLog => 'System log';
+
+  @override
+  String get otaTransferLogPending =>
+      'Receiving the firmware file. The installation log will appear after the transfer.';
+
+  @override
+  String get otaInstallLogPending => 'Waiting for installation output…';
 
   @override
   String get otaFollowingOutput => 'Following new output';
@@ -2454,13 +2472,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaDevConfig => 'Developer settings';
 
   @override
-  String get otaStageUpload => 'Upload';
+  String get otaStepReceive => '1. Receive';
 
   @override
-  String get otaStageInstall => 'Install';
+  String get otaStepInstall => '2. Install';
 
   @override
-  String get otaStageComplete => 'Complete';
+  String get otaStepRestart => '3. Restart';
 
   @override
   String get frame_language_section => 'Frame interface';

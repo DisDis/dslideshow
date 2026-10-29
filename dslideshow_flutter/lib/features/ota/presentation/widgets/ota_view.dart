@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
@@ -36,21 +38,45 @@ class OTAView extends StatelessWidget {
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
                       child: LayoutBuilder(
-                        builder: (context, constraints) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: constraints.maxHeight * .45,
+                        builder: (context, constraints) {
+                          final statusHeight = math.min(
+                            ThemeSettings.otaStatusPanelHeight,
+                            constraints.maxHeight * .45,
+                          );
+                          final emptyMessage = switch (state) {
+                            OtaProgressState(:final info)
+                                when info.status == OTAStatus.uploading =>
+                              AppLocalizations.of(context)
+                                  .otaTransferLogPending,
+                            OtaProgressState() => AppLocalizations.of(
+                              context,
+                            ).otaInstallLogPending,
+                            _ => null,
+                          };
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              SizedBox(
+                                height: statusHeight,
+                                child: SingleChildScrollView(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minHeight: statusHeight,
+                                    ),
+                                    child: _StatusPanel(state: state),
+                                  ),
+                                ),
                               ),
-                              child: SingleChildScrollView(
-                                child: _StatusPanel(state: state),
+                              const SizedBox(height: 24),
+                              Expanded(
+                                child: OtaTerminalPanel(
+                                  session: session,
+                                  emptyMessage: emptyMessage,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 24),
-                            Expanded(child: OtaTerminalPanel(session: session)),
-                          ],
-                        ),
+                            ],
+                          );
+                        },
                       ),
                     ),
             ),
@@ -121,10 +147,83 @@ class _PreparingPanel extends StatelessWidget {
 class _StatusPanel extends StatelessWidget {
   const _StatusPanel({required this.state});
   final OtaState state;
+  static const _percentStyle = TextStyle(
+    color: ThemeColors.otaProgressPercentColor,
+    fontSize: ThemeSettings.otaProgressPercentSize,
+    fontWeight: FontWeight.w900,
+  );
+
+  double _percentWidth(BuildContext context) {
+    // Reserve the widest value at the actual font and accessibility scale.
+    // A fixed width can wrap the percent sign when the transfer reaches 100%.
+    final painter = TextPainter(
+      text: TextSpan(
+        text: '100%',
+        style: DefaultTextStyle.of(context).style.merge(_percentStyle),
+      ),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      locale: Localizations.localeOf(context),
+      maxLines: 1,
+    );
+    try {
+      painter.layout();
+      return painter.width.ceilToDouble();
+    } finally {
+      painter.dispose();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final uploading =
+        state is OtaProgressState && state.info.status == OTAStatus.uploading;
+    final working = state is OtaProgressState;
+    final restarting =
+        state is OtaSuccessState && state.info.status == OTAStatus.preReboot;
+    final percent = state.info.uploadingPercent.isFinite
+        ? state.info.uploadingPercent.clamp(0, 100)
+        : 0;
+    final heading = switch (state) {
+      OtaProgressState() => _StatusHeading(
+        title: uploading ? l10n.otaReceiving : l10n.otaInstalling,
+        message: l10n.otaDoNotPowerOff,
+        detail: uploading ? l10n.otaTransferHint : l10n.otaInstallationHint,
+        icon: uploading ? Icons.download_rounded : Icons.settings_outlined,
+        color: ThemeColors.otaAccentColor,
+      ),
+      OtaFailureState(:final info) => _StatusHeading(
+        title: l10n.otaFailed,
+        message: info.errorText?.isNotEmpty == true
+            ? info.errorText!
+            : l10n.otaUnknownError,
+        detail: '${l10n.otaLogDetails} ${l10n.otaReturnToSlideshow}',
+        icon: Icons.error_outline,
+        color: ThemeColors.otaErrorTextColor,
+      ),
+      OtaSuccessState() => _StatusHeading(
+        title: restarting ? l10n.otaRestartTitle : l10n.otaInstalled,
+        message: restarting ? l10n.otaDoNotPowerOff : l10n.otaWaitingRestart,
+        icon: restarting ? Icons.restart_alt : Icons.check_circle_outline,
+        color: restarting
+            ? ThemeColors.otaAccentColor
+            : ThemeColors.otaSuccessTextColor,
+      ),
+      OtaExitState() => _StatusHeading(
+        title: l10n.otaLeaving,
+        message: '',
+        icon: Icons.exit_to_app,
+      ),
+      OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
+    };
+    final progress = Text(
+      '${percent.toStringAsFixed(0)}%',
+      style: _percentStyle,
+      maxLines: 1,
+      softWrap: false,
+      textAlign: TextAlign.right,
+    );
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
@@ -132,100 +231,60 @@ class _StatusPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: ThemeColors.otaReadyInputBorderColor),
       ),
-      child: switch (state) {
-        OtaProgressState(:final info) => _buildProgress(context, info),
-        OtaFailureState(:final info) => _StatusHeading(
-          title: l10n.otaFailed,
-          message: info.errorText?.isNotEmpty == true
-              ? info.errorText!
-              : l10n.otaUnknownError,
-          detail: l10n.otaLogDetails,
-          icon: Icons.error_outline,
-          color: ThemeColors.otaErrorTextColor,
-        ),
-        OtaSuccessState(:final info) => _StatusHeading(
-          title: l10n.otaComplete,
-          message: info.status == OTAStatus.preReboot
-              ? l10n.otaRestarting
-              : l10n.otaWaitingRestart,
-          detail: l10n.otaStageComplete,
-          icon: Icons.check_circle_outline,
-          color: ThemeColors.otaSuccessTextColor,
-        ),
-        OtaExitState() => _StatusHeading(
-          title: l10n.otaLeaving,
-          message: '',
-          icon: Icons.exit_to_app,
-        ),
-        OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
-      },
-    );
-  }
-
-  Widget _buildProgress(BuildContext context, OTAInfo info) {
-    final l10n = AppLocalizations.of(context);
-    final uploading = info.status == OTAStatus.uploading;
-    final percent = info.uploadingPercent.isFinite
-        ? info.uploadingPercent.clamp(0, 100)
-        : 0;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final heading = _StatusHeading(
-              title: uploading ? l10n.otaUploading : l10n.otaInstalling,
-              message: l10n.otaDoNotPowerOff,
-              detail: uploading
-                  ? l10n.otaStageUpload
-                  : l10n.otaInstallationHint,
-              icon: uploading
-                  ? Icons.cloud_upload_outlined
-                  : Icons.system_update_alt,
-            );
-            if (!uploading) return heading;
-            final progress = Text(
-              '${percent.toStringAsFixed(0)}%',
-              style: const TextStyle(
-                color: ThemeColors.otaProgressPercentColor,
-                fontSize: ThemeSettings.otaProgressPercentSize,
-                fontWeight: FontWeight.w900,
-              ),
-            );
-            if (constraints.maxWidth < 1000) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [heading, progress],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 1600) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    heading,
+                    if (uploading)
+                      Align(alignment: Alignment.centerRight, child: progress),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(child: heading),
+                  const SizedBox(width: 32),
+                  SizedBox(
+                    width: _percentWidth(context),
+                    child: uploading ? progress : null,
+                  ),
+                ],
               );
-            }
-            return Row(
-              children: [
-                Expanded(child: heading),
-                const SizedBox(width: 32),
-                progress,
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: 24),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: LinearProgressIndicator(
-            value: uploading ? percent / 100 : null,
-            minHeight: ThemeSettings.otaProgressBarHeight,
-            backgroundColor: ThemeColors.otaProgressBgColor,
-            color: ThemeColors.otaProgressIconColor,
+            },
           ),
-        ),
-        if (!environment.isLinuxEmbedded) ...[
-          const SizedBox(height: 12),
-          const Align(
-            alignment: Alignment.centerRight,
-            child: TestConfigButton(),
+          const SizedBox(height: 24),
+          _StageSequence(state: state),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: ThemeSettings.otaProgressBarHeight,
+            child: working
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: uploading ? percent / 100 : null,
+                      minHeight: ThemeSettings.otaProgressBarHeight,
+                      backgroundColor: ThemeColors.otaProgressBgColor,
+                      color: ThemeColors.otaProgressIconColor,
+                    ),
+                  )
+                : null,
           ),
+          if (working && !environment.isLinuxEmbedded) ...[
+            const SizedBox(height: 12),
+            const Align(
+              alignment: Alignment.centerRight,
+              child: TestConfigButton(),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -236,7 +295,7 @@ class _StatusHeading extends StatelessWidget {
     required this.message,
     required this.icon,
     this.detail,
-    this.color = ThemeColors.otaProgressTextColor,
+    this.color = ThemeColors.otaAccentColor,
   });
 
   final String title;
@@ -247,47 +306,132 @@ class _StatusHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 200),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox.square(
+            dimension: ThemeSettings.otaStageIconAreaSize,
+            child: Center(
+              child: Icon(
+                icon,
+                size: ThemeSettings.otaStageIconSize,
+                color: color,
+              ),
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: ThemeSettings.otaProgressTitleSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (message.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    message,
+                    style: const TextStyle(
+                      color: ThemeColors.otaProgressTextColor,
+                      fontSize: ThemeSettings.otaProgressSubtitleSize,
+                    ),
+                  ),
+                ],
+                if (detail != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    detail!,
+                    style: const TextStyle(
+                      color: ThemeColors.otaProgressSubtextColor,
+                      fontSize: ThemeSettings.otaProgressSubtitleSize,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+enum _OtaStep { receiving, installing, restarting }
+
+class _StageSequence extends StatelessWidget {
+  const _StageSequence({required this.state});
+  final OtaState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final current = switch (state) {
+      OtaProgressState(:final info) =>
+        info.status == OTAStatus.uploading
+            ? _OtaStep.receiving
+            : _OtaStep.installing,
+      OtaSuccessState() => _OtaStep.restarting,
+      _ => null,
+    };
+    return Wrap(
+      spacing: 16,
+      runSpacing: 12,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Icon(icon, size: 64, color: color),
-        const SizedBox(width: 24),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: color,
-                  fontSize: ThemeSettings.otaProgressTitleSize,
-                  fontWeight: FontWeight.bold,
+        for (final step in _OtaStep.values)
+          Semantics(
+            selected: step == current,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: step == current
+                      ? ThemeColors.otaAccentColor
+                      : ThemeColors.otaReadyInputBorderColor,
                 ),
               ),
-              if (message.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  message,
-                  style: const TextStyle(
-                    color: ThemeColors.otaProgressTextColor,
-                    fontSize: ThemeSettings.otaProgressSubtitleSize,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (current != null && step.index < current.index) ...[
+                    const Icon(
+                      Icons.check,
+                      size: 24,
+                      color: ThemeColors.otaSuccessTextColor,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    switch (step) {
+                      _OtaStep.receiving => l10n.otaStepReceive,
+                      _OtaStep.installing => l10n.otaStepInstall,
+                      _OtaStep.restarting => l10n.otaStepRestart,
+                    },
+                    style: TextStyle(
+                      color: step == current
+                          ? ThemeColors.otaAccentColor
+                          : current != null && step.index < current.index
+                          ? ThemeColors.otaSuccessTextColor
+                          : ThemeColors.otaProgressSubtextColor,
+                      fontSize: ThemeSettings.otaReadyNormalTextSize,
+                      fontWeight: step == current
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
                   ),
-                ),
-              ],
-              if (detail != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  detail!,
-                  style: const TextStyle(
-                    color: ThemeColors.otaProgressSubtextColor,
-                    fontSize: ThemeSettings.otaProgressSubtitleSize,
-                  ),
-                ),
-              ],
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
       ],
     );
   }

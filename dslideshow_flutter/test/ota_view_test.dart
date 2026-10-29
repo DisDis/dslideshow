@@ -3,6 +3,7 @@ import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/widgets/ota_ready_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:xterm/xterm.dart';
@@ -95,8 +96,33 @@ void main() {
       );
       await harness.completeNetwork(tester);
 
-      expect(find.text('Uploading firmware'), findsOneWidget);
+      expect(find.text('Receiving firmware'), findsOneWidget);
+      expect(tester.widget<Icon>(find.byIcon(Icons.download_rounded)).size, 96);
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.download_rounded)).color,
+        const Color(0xFF64B5F6),
+      );
+      void expectCurrentStep(String label) {
+        final selected = find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.selected == true,
+        );
+        expect(
+          find.descendant(of: selected, matching: find.text(label)),
+          findsOneWidget,
+        );
+      }
+
+      expectCurrentStep('1. Receive');
+      expect(
+        find.text(
+          'Receiving the firmware file. The installation log will appear after the transfer.',
+        ),
+        findsOneWidget,
+      );
+      final originalLogRect = tester.getRect(find.byType(TerminalView));
       expect(find.text('67%'), findsOneWidget);
+      final headingRect = tester.getRect(find.text('Receiving firmware'));
+      final progressRect = tester.getRect(find.byType(LinearProgressIndicator));
       expect(
         tester
             .widget<LinearProgressIndicator>(
@@ -118,11 +144,18 @@ void main() {
       );
       harness.frontend.outputEvents.add('Retained installer output\n');
       await tester.pump();
+      expect(
+        find.text(
+          'Receiving the firmware file. The installation log will appear after the transfer.',
+        ),
+        findsNothing,
+      );
       final originalTerminal = tester
           .widget<TerminalView>(find.byType(TerminalView))
           .terminal;
 
       void expectRetainedLog() {
+        expect(tester.getRect(find.byType(TerminalView)), originalLogRect);
         final visibleTerminal = tester
             .widget<TerminalView>(find.byType(TerminalView))
             .terminal;
@@ -137,9 +170,59 @@ void main() {
 
       await harness.update(
         tester,
+        _info.copyWith(status: OTAStatus.uploading, uploadingPercent: 100),
+      );
+      expect(find.text('100%'), findsOneWidget);
+      final percentParagraph = tester.renderObject<RenderParagraph>(
+        find.text('100%'),
+      );
+      final percentBoxes = percentParagraph.getBoxesForSelection(
+        const TextSelection(baseOffset: 0, extentOffset: 4),
+      );
+      expect(
+        percentBoxes,
+        hasLength(1),
+        reason: '100% must remain on one line, including the percent sign',
+      );
+      expect(
+        percentBoxes.single.toRect().width,
+        lessThanOrEqualTo(percentParagraph.size.width),
+      );
+      expect(percentParagraph.didExceedMaxLines, isFalse);
+      expect(tester.getRect(find.text('Receiving firmware')), headingRect);
+      expect(
+        tester.getRect(find.byType(LinearProgressIndicator)),
+        progressRect,
+      );
+      expectCurrentStep('1. Receive');
+      expect(find.text('Firmware installed'), findsNothing);
+      expectRetainedLog();
+
+      tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pump();
+      final scaledPercent = tester.renderObject<RenderParagraph>(
+        find.text('100%'),
+      );
+      final scaledBoxes = scaledPercent.getBoxesForSelection(
+        const TextSelection(baseOffset: 0, extentOffset: 4),
+      );
+      expect(scaledBoxes, hasLength(1));
+      expect(
+        scaledBoxes.single.toRect().width,
+        lessThanOrEqualTo(scaledPercent.size.width),
+      );
+      tester.platformDispatcher.clearTextScaleFactorTestValue();
+      await tester.pump();
+      expectRetainedLog();
+
+      await harness.update(
+        tester,
         _info.copyWith(status: OTAStatus.instaling, uploadingPercent: 100),
       );
       expect(find.text('Installing firmware'), findsOneWidget);
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      expectCurrentStep('2. Install');
       expect(find.text('100%'), findsNothing);
       expect(
         tester
@@ -161,19 +244,38 @@ void main() {
       );
       expect(find.text('Update failed'), findsOneWidget);
       expect(find.text('Installer exited with code 1'), findsOneWidget);
-      expect(find.text('See the system log for details.'), findsOneWidget);
+      expect(
+        find.textContaining('See the system log for details.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Back button'), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.selected == true,
+        ),
+        findsNothing,
+      );
       expectRetainedLog();
 
       await harness.update(tester, _info.copyWith(status: OTAStatus.finished));
-      expect(find.text('Firmware updated'), findsOneWidget);
+      expect(find.text('Firmware installed'), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+      expectCurrentStep('3. Restart');
       expect(
         find.text('Waiting for the application to restart…'),
         findsOneWidget,
       );
-      expect(find.text('Restarting the application…'), findsNothing);
+      expect(find.text('Restarting the application'), findsNothing);
       expectRetainedLog();
       await harness.update(tester, _info.copyWith(status: OTAStatus.preReboot));
-      expect(find.text('Restarting the application…'), findsOneWidget);
+      expect(find.text('Restarting the application'), findsOneWidget);
+      expect(find.text('Keep the frame connected to power.'), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle_outline), findsNothing);
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.restart_alt)).color,
+        const Color(0xFF64B5F6),
+      );
+      expectCurrentStep('3. Restart');
       expect(
         find.text('Waiting for the application to restart…'),
         findsNothing,
@@ -202,12 +304,33 @@ void main() {
     await harness.completeNetwork(tester);
 
     expect(find.text('Installing firmware'), findsOneWidget);
+    expect(find.text('Waiting for installation output…'), findsOneWidget);
     expect(find.text('100%'), findsNothing);
     expect(
       tester.getSize(find.byType(TerminalView)).width,
       greaterThanOrEqualTo(1280 * .95),
     );
     expect(tester.getSize(find.byType(TerminalView)).height, greaterThan(100));
+    final logRect = tester.getRect(find.byType(TerminalView));
+    await harness.update(
+      tester,
+      _info.copyWith(status: OTAStatus.uploading, uploadingPercent: 100),
+    );
+    await tester.ensureVisible(find.text('100%'));
+    expect(tester.getRect(find.byType(TerminalView)), logRect);
+    expect(find.text('Waiting for installation output…'), findsNothing);
+    await harness.update(
+      tester,
+      _info.copyWith(
+        status: OTAStatus.issue,
+        errorText: List.filled(
+          8,
+          'A long installer error explaining the failure.',
+        ).join(' '),
+      ),
+    );
+    await tester.ensureVisible(find.textContaining('Back button'));
+    expect(tester.getRect(find.byType(TerminalView)), logRect);
     expect(tester.takeException(), isNull);
   });
 

@@ -17,17 +17,20 @@ Future<void> mountFrameOtaApp(
   WidgetTester tester, {
   AppConfig? config,
   GlobalKey? boundaryKey,
+  OtaTestFrontend? otaFrontend,
 }) async {
   final appConfig = config ?? AppConfig.fromJson({});
-  final frontend = OtaTestFrontend()
-    ..infoResult.complete(
-      const OTAInfo(
-        status: OTAStatus.ready,
-        uploadingPercent: 0,
-        code: '83472',
-      ),
-    )
-    ..systemResult.complete(otaSystemInfo());
+  final frontend =
+      otaFrontend ??
+      (OtaTestFrontend()
+        ..infoResult.complete(
+          const OTAInfo(
+            status: OTAStatus.ready,
+            uploadingPercent: 0,
+            code: '83472',
+          ),
+        )
+        ..systemResult.complete(otaSystemInfo()));
   final routes = RouteBloc();
   final status = SlideshowStatusBloc(
     frontendService: frontend,

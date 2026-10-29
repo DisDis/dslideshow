@@ -28,7 +28,7 @@ void main() {
       config: AppConfig.fromJson({'language': 'ru'}),
     );
     expect(find.text('83472'), findsOneWidget);
-    expect(find.text('Обновление прошивки'), findsOneWidget);
+    expect(find.text('Готово к обновлению'), findsOneWidget);
     expect(find.text('Текущая версия'), findsOneWidget);
     expect(find.text('Код доступа'), findsOneWidget);
     expect(find.text('Update firmware'), findsNothing);

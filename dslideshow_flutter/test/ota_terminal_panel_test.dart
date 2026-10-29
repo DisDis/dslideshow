@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xterm/xterm.dart';
 
-Widget _app(OtaTerminalSession session) => MaterialApp(
+Widget _app(OtaTerminalSession session, {String? emptyMessage}) => MaterialApp(
   locale: const Locale('en'),
   supportedLocales: AppLocalizations.supportedLocales,
   localizationsDelegates: AppLocalizations.localizationsDelegates,
-  home: Scaffold(body: OtaTerminalPanel(session: session)),
+  home: Scaffold(
+    body: OtaTerminalPanel(session: session, emptyMessage: emptyMessage),
+  ),
 );
 
 void _write(OtaTerminalSession session, int start, int count) {
@@ -24,6 +26,38 @@ void _write(OtaTerminalSession session, int start, int count) {
 }
 
 void main() {
+  testWidgets(
+    'empty log hint yields to visible output and keeps the terminal',
+    (tester) async {
+      final session = OtaTerminalSession();
+      addTearDown(session.dispose);
+      await tester.pumpWidget(
+        _app(session, emptyMessage: 'Waiting for output'),
+      );
+      final terminal = tester
+          .widget<TerminalView>(find.byType(TerminalView))
+          .terminal;
+      expect(find.text('Waiting for output'), findsOneWidget);
+      session.backend.onWrite('');
+      session.backend.onWrite('\x1b[31m');
+      await tester.pump();
+      expect(find.text('Waiting for output'), findsOneWidget);
+      session.backend.onWrite('Unpacking package\n');
+      await tester.pump();
+      expect(find.text('Waiting for output'), findsNothing);
+      expect(
+        tester.widget<TerminalView>(find.byType(TerminalView)).terminal,
+        same(terminal),
+      );
+      expect(terminal.buffer.lines[0].getText(), 'Unpacking package');
+      // A stage change must not put a hint over the retained installation log.
+      await tester.pumpWidget(_app(session, emptyMessage: 'Another stage'));
+      expect(find.text('Another stage'), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'log follows bursts, pauses for history, and resumes at latest line',
     (tester) async {
@@ -140,6 +174,8 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     session.scheduleScrollStateUpdate();
     session.dispose();
+    // A late terminal notification must not reach disposed hint notifiers.
+    session.terminal.write('Late output');
     await tester.pump();
     expect(tester.takeException(), isNull);
   });

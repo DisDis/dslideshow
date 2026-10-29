@@ -1,5 +1,11 @@
 # Unreleased
 
+* Clarify the frame's OTA stages with larger receiving, installation and restart
+  icons, a three-step sequence and an explanation while the installation log
+  is empty. Keep the status card and log position stable, including at 100%
+  transfer, distinguish installation success from restart and show how to return
+  to the slideshow after an error. Update the English and Russian labels.
+
 # 15.0.0+1 — 2026-10-29
 
 * Keep the OTA connection QR, bold access code and red current version large;

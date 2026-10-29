@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:xterm/xterm.dart';
 
 class OtaTerminalPanel extends StatelessWidget {
-  const OtaTerminalPanel({super.key, required this.session});
+  const OtaTerminalPanel({super.key, required this.session, this.emptyMessage});
 
   final OtaTerminalSession session;
+  final String? emptyMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -95,24 +96,50 @@ class OtaTerminalPanel extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(16),
               ),
-              child: NotificationListener<ScrollMetricsNotification>(
-                onNotification: (_) {
-                  session.scheduleScrollStateUpdate();
-                  return false;
-                },
-                child: TerminalView(
-                  session.terminal,
-                  scrollController: session.scrollController,
-                  readOnly: true,
-                  autofocus: false,
-                  padding: const EdgeInsets.all(16),
-                  textStyle: const TerminalStyle(
-                    fontSize: ThemeSettings.otaTerminalFontSize,
-                    fontFamily: 'Cascadia Mono',
-                    fontFamilyFallback: ['Courier New', 'monospace'],
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  NotificationListener<ScrollMetricsNotification>(
+                    onNotification: (_) {
+                      session.scheduleScrollStateUpdate();
+                      return false;
+                    },
+                    child: TerminalView(
+                      session.terminal,
+                      scrollController: session.scrollController,
+                      readOnly: true,
+                      autofocus: false,
+                      padding: const EdgeInsets.all(16),
+                      textStyle: const TerminalStyle(
+                        fontSize: ThemeSettings.otaTerminalFontSize,
+                        fontFamily: 'Cascadia Mono',
+                        fontFamilyFallback: ['Courier New', 'monospace'],
+                      ),
+                      theme: ThemeColors.terminaTheme,
+                    ),
                   ),
-                  theme: ThemeColors.terminaTheme,
-                ),
+                  if (emptyMessage != null)
+                    ValueListenableBuilder<bool>(
+                      valueListenable: session.hasOutput,
+                      child: IgnorePointer(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              emptyMessage!,
+                              style: const TextStyle(
+                                color: ThemeColors.otaProgressSubtextColor,
+                                fontSize: ThemeSettings.otaProgressSubtitleSize,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      builder: (context, hasOutput, child) =>
+                          hasOutput ? const SizedBox.shrink() : child!,
+                    ),
+                ],
               ),
             ),
           ),

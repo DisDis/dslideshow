@@ -169,7 +169,7 @@ class _OtaReadyInfoPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.otaTitle,
+            l10n.otaReadyTitle,
             style: const TextStyle(
               color: ThemeColors.otaReadyHeaderTextColor,
               fontSize: ThemeSettings.otaReadyTitleSize,

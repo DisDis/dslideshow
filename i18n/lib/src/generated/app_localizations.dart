@@ -4628,6 +4628,12 @@ abstract class AppLocalizations {
   /// **'Update firmware'**
   String get otaTitle;
 
+  /// No description provided for @otaReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to update'**
+  String get otaReadyTitle;
+
   /// No description provided for @otaCurrentVersion.
   ///
   /// In en, this message translates to:
@@ -4670,11 +4676,17 @@ abstract class AppLocalizations {
   /// **'Preparing the update page…'**
   String get otaPreparing;
 
-  /// No description provided for @otaUploading.
+  /// No description provided for @otaReceiving.
   ///
   /// In en, this message translates to:
-  /// **'Uploading firmware'**
-  String get otaUploading;
+  /// **'Receiving firmware'**
+  String get otaReceiving;
+
+  /// No description provided for @otaTransferHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is being received. Installation starts next.'**
+  String get otaTransferHint;
 
   /// No description provided for @otaInstalling.
   ///
@@ -4712,23 +4724,29 @@ abstract class AppLocalizations {
   /// **'See the system log for details.'**
   String get otaLogDetails;
 
-  /// No description provided for @otaComplete.
+  /// No description provided for @otaReturnToSlideshow.
   ///
   /// In en, this message translates to:
-  /// **'Firmware updated'**
-  String get otaComplete;
+  /// **'Press the frame’s Back button to return to the slideshow.'**
+  String get otaReturnToSlideshow;
+
+  /// No description provided for @otaInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware installed'**
+  String get otaInstalled;
+
+  /// No description provided for @otaRestartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting the application'**
+  String get otaRestartTitle;
 
   /// No description provided for @otaWaitingRestart.
   ///
   /// In en, this message translates to:
   /// **'Waiting for the application to restart…'**
   String get otaWaitingRestart;
-
-  /// No description provided for @otaRestarting.
-  ///
-  /// In en, this message translates to:
-  /// **'Restarting the application…'**
-  String get otaRestarting;
 
   /// No description provided for @otaLeaving.
   ///
@@ -4741,6 +4759,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System log'**
   String get otaSystemLog;
+
+  /// No description provided for @otaTransferLogPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving the firmware file. The installation log will appear after the transfer.'**
+  String get otaTransferLogPending;
+
+  /// No description provided for @otaInstallLogPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for installation output…'**
+  String get otaInstallLogPending;
 
   /// No description provided for @otaFollowingOutput.
   ///
@@ -4766,23 +4796,23 @@ abstract class AppLocalizations {
   /// **'Developer settings'**
   String get otaDevConfig;
 
-  /// No description provided for @otaStageUpload.
+  /// No description provided for @otaStepReceive.
   ///
   /// In en, this message translates to:
-  /// **'Upload'**
-  String get otaStageUpload;
+  /// **'1. Receive'**
+  String get otaStepReceive;
 
-  /// No description provided for @otaStageInstall.
+  /// No description provided for @otaStepInstall.
   ///
   /// In en, this message translates to:
-  /// **'Install'**
-  String get otaStageInstall;
+  /// **'2. Install'**
+  String get otaStepInstall;
 
-  /// No description provided for @otaStageComplete.
+  /// No description provided for @otaStepRestart.
   ///
   /// In en, this message translates to:
-  /// **'Complete'**
-  String get otaStageComplete;
+  /// **'3. Restart'**
+  String get otaStepRestart;
 
   /// No description provided for @frame_language_section.
   ///

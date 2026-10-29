@@ -2398,6 +2398,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaTitle => 'Обновление прошивки';
 
   @override
+  String get otaReadyTitle => 'Готово к обновлению';
+
+  @override
   String get otaCurrentVersion => 'Текущая версия';
 
   @override
@@ -2422,7 +2425,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaPreparing => 'Подготовка страницы обновления…';
 
   @override
-  String get otaUploading => 'Загрузка прошивки';
+  String get otaReceiving => 'Получение прошивки';
+
+  @override
+  String get otaTransferHint =>
+      'Получаем файл на рамку. Затем начнётся установка.';
 
   @override
   String get otaInstalling => 'Установка прошивки';
@@ -2444,19 +2451,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaLogDetails => 'Подробности — в системном журнале.';
 
   @override
-  String get otaComplete => 'Прошивка обновлена';
+  String get otaReturnToSlideshow =>
+      'Для возврата к слайдшоу нажмите кнопку возврата на рамке.';
+
+  @override
+  String get otaInstalled => 'Прошивка установлена';
+
+  @override
+  String get otaRestartTitle => 'Перезапуск приложения';
 
   @override
   String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
-
-  @override
-  String get otaRestarting => 'Перезапускаем приложение…';
 
   @override
   String get otaLeaving => 'Закрытие экрана обновления…';
 
   @override
   String get otaSystemLog => 'Системный журнал';
+
+  @override
+  String get otaTransferLogPending =>
+      'Файл передаётся на рамку. Журнал установки появится после получения файла.';
+
+  @override
+  String get otaInstallLogPending => 'Ожидаем вывод установщика…';
 
   @override
   String get otaFollowingOutput => 'Показ новых строк';
@@ -2472,13 +2490,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaDevConfig => 'Настройки разработчика';
 
   @override
-  String get otaStageUpload => 'Загрузка';
+  String get otaStepReceive => '1. Получение';
 
   @override
-  String get otaStageInstall => 'Установка';
+  String get otaStepInstall => '2. Установка';
 
   @override
-  String get otaStageComplete => 'Готово';
+  String get otaStepRestart => '3. Перезапуск';
 
   @override
   String get frame_language_section => 'Интерфейс фоторамки';
