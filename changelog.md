@@ -1,113 +1,64 @@
 # Unreleased
 
-* Separate files into numbered blocks in trash/delete confirmations. Show full
-  filenames without paths or truncation; keep duplicate sizes, the ten-file
-  preview limit and the expected space freed by permanent deletion.
+# 16.0.0+1 — 2026-10-30
 
-* Refresh duplicate review with a compact header and file cards, previous/next
-  group navigation, a persistent selection count/volume bar and a three-mode
-  search dialog. Keep draft changes local until search starts; restore current
-  selections after a cancelled or failed replacement search. Preserve Czkawka
-  settings, group ordering and manual trash confirmation.
+* Add gallery file management: move selected media to `images.gallery/trash`,
+  reject detected name conflicts on restore, undo completed moves and confirm
+  permanent deletion. Support Select all and Empty trash with bounded batches,
+  progress and recovery after partial or unknown results. Keep trash as a plain
+  directory tree without automatic cleanup or a persistent operation journal.
 
-* Keep the OTA screen locked after successful installation until the automatic
-  restart, with no navigation hints or Back action during that wait.
+* Show detailed photo metadata and actual dimensions in the viewer. Rotate JPEG
+  images losslessly with jpegtran and PNG images with Dart image, preserving
+  validated geometry and ICC data and normalizing PNG EXIF orientation. Reject
+  stale file revisions and refresh after an unknown result before another action.
+  Read EXIF in Dart and remove the ExifTool runtime dependency.
 
-* Show context-aware navigation icons beside the frame’s physical buttons on
-  settings and OTA screens, matching the available actions. Use Wi-Fi indicators
-  and instructions when the frame has no local network address.
+* Find exact and visually similar photos through Czkawka CLI with background
+  search, cancellation and three search modes. Use Lanczos3 for similar-image
+  hashing, merge repeated exact/similar member sets and retain broader similar
+  groups. Validate files before review and reject deletion of the last remaining
+  copy in a group.
 
-* Always recommend one duplicate to keep: prefer the highest resolution and
-  choose the first file on ties. Show the candidate in green and other equal
-  resolutions in yellow; move resolution explanations into tooltips.
-  Outline the recommended card in green and show a prominent star badge above
-  its image, preserving image state and manual selections when the candidate changes.
+* Review duplicates in compact file cards, ten files per page, with previous/next
+  group navigation and a persistent selection count and volume bar. Preserve
+  manual selections between pages and restore them after a cancelled or failed
+  replacement search; keep search-dialog drafts local until confirmation.
+  Recommend the highest-resolution file, choosing the first on ties, with a green
+  outline and star badge; mark other equal resolutions in yellow and explain
+  recommendations in tooltips without selecting files for deletion.
 
-* Use Lanczos3 for Czkawka similar-image hashing to find resized copies more
-  reliably. Keep exact groups separate from broader similar groups. After the
-  first ten names, trash/delete confirmations show the number of remaining
-  files; permanent deletion also shows the expected space freed for the whole selection.
+* Show gallery paths as folder breadcrumbs in the viewer and expandable relative
+  paths in duplicate cards. Keep decoded photos visible during selection and
+  dialogs, distinguish image retries from metadata retries, report concrete search
+  errors and show candidate/result counts. Display sizes consistently in MB with
+  exact bytes in tooltips; allow closing Undo notifications manually.
+
+* Confirm trash and delete operations against the selected file revisions. Show
+  up to ten full filenames without paths or truncation in numbered blocks, then
+  the remaining count. Keep duplicate file sizes and show the expected space
+  freed by permanent deletion for the whole selection.
+
+* Keep the gallery catalog in memory with path-derived IDs, stat-derived revisions
+  and stable cache keys across restarts. Remove catalog.json, serverId and the
+  persistent publication marker; retain watcher/periodic scans for external
+  changes. Support configured media-directory symlinks and refresh gallery state
+  after uploads, rotations, trash and restore. Keep media and metadata requests
+  bounded by the visible viewport for large collections.
 
 * Refresh the frame's settings-access screen with a large QR and access code,
   localized instructions, responsive layout, network recovery and actionable
-  errors/timeouts. Make repeated entry and exit release access safely, and
-  acknowledge web-server startup only after the listener opens. Log access codes
-  on generation, permanent-code setup and server startup for frame debugging.
+  errors/timeouts. Release access safely on repeated entry/exit and acknowledge
+  web-server startup after the listener opens. Preserve access-code diagnostics
+  for frame debugging and use concise web response/error logs.
 
-* Show gallery paths as folder breadcrumbs in the viewer and emphasize the
-  nearest folder in duplicate cards, with an expandable relative path. Compare
-  resolutions across the whole group, explain resolution-based recommendations,
-  and mark smaller files separately from image quality without selecting files.
-  Display sizes consistently in megabytes, with exact bytes in tooltips.
+* Show context-aware icons beside the frame's physical buttons on settings and
+  OTA screens, matching available actions. Use Wi-Fi indicators and instructions
+  when no local network address is available. Keep the OTA screen locked after
+  successful installation until automatic restart, without a Back action.
 
-* Build the gallery index in memory with path-derived IDs and stat-derived
-  revisions. Keep only a 32-byte catalog.epoch for forced invalidation, preserve
-  unchanged cache keys across restarts, and remove catalog.json and serverId.
-
-* Rotate through a validated temporary file and atomic replacement without a
-  persistent request journal. Reject stale revisions and refresh the viewer
-  after an unknown result before a new user action.
-
-* Mark the in-memory gallery catalog dirty after uploads, rotations, trash and
-  restore in the web isolate. Remove GalleryPublication and publication.version;
-  retain watcher/periodic stat scans for external changes. Google Photos is not
-  part of the notification path. Remove compatibility for unreleased trash layouts.
-
-* Review duplicates as a list of up to ten files per page, keeping selections
-  between pages and confirming every move to trash. Validate groups on opening,
-  omit unavailable members and skip groups with fewer than two current files.
-  Keep user decisions in memory; remove backend JSON byte caps for Czkawka results.
-  Collapse repeated member sets across search modes, preferring exact matches
-  while preserving broader similar groups.
-
-* Replace verbose web request traces with concise response/error messages without
-  phase or duration measurements.
-
-* Simplify trash and restore moves to asynchronous File.rename with a target
-  existence check, removing the Linux FFI wrapper. Accept the race with external
-  writers between the check and rename; keep service mutations serialized.
-
-* Store trash inside images.gallery/trash as a plain directory tree matching
-  the original relative paths,
-  without a manifest or persistent operation history. Add Select all and Empty
-  trash with a confirmation, bounded batches and progress; refresh filesystem
-  contents after an unknown response before the next action.
-
-* Confirm moving files to trash from the grid, viewer and duplicate results, binding approval to
-  the selected file versions. Distinguish image retries from metadata retries
-  in duplicate comparisons and show details-loading errors explicitly.
-
-* Read photo metadata in Dart with exif and rotate PNG images with image,
-  normalizing PNG EXIF orientation and dimensions. Keep jpegtran output unchanged,
-  compare parsed JPEG EXIF before/after and warn on differences without exposing
-  tag values. Report actual dimensions and remove the ExifTool runtime dependency.
-
-* Fix trash operations with configured media-directory symlinks in the local
-  backend harness. Keep decoded photos visible while selecting files or opening
-  dialogs, align gallery/viewer styling with the app, and limit file previews
-  in operation dialogs to ten names plus the total count.
-
-* Keep gallery selection controls visible at zero selection and add a close
-  button and timeout to Undo notifications. Match Czkawka reports against
-  canonical paths and show concrete search errors and candidate/result counts.
-  Use the Web log level in the local backend harness and trace HTTP phases.
-
-* Add gallery file management: move selected media to a separate trash, restore
-  files without overwriting name conflicts, and confirm permanent deletion.
-  Show detailed EXIF metadata inside the media viewer and rotate JPEG images
-  losslessly with jpegtran or PNG images with Dart image.
-
-* Find exact and visually similar photos through Czkawka CLI, with background
-  search, cancellation, image comparison and manual selection of copies for
-  trash. Reject stale selections and preserve a remaining copy in each group.
-
-* Move gallery workflows into Bloc with stateless screens and indexed catalog
-  snapshots for libraries of 50,000+ media files. Keep image demand bounded by
-  the viewport and resolve individual trash previews without listing the trash.
-
-* Add correlated, bounded gallery diagnostics for file operations, rotation,
-  duplicate search and cancellation. Make safe, useful logs an acceptance
-  requirement for future behavior changes.
+* Use DSlideshow Config as the settings panel's window, browser-tab and installed
+  web-application title in both English and Russian.
 
 # 15.2.0+1 — 2026-10-29
 
