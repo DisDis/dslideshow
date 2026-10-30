@@ -1,5 +1,9 @@
 # Unreleased
 
+* Separate files into numbered blocks in trash/delete confirmations. Show full
+  filenames without paths or truncation; keep duplicate sizes, the ten-file
+  preview limit and the expected space freed by permanent deletion.
+
 * Refresh duplicate review with a compact header and file cards, previous/next
   group navigation, a persistent selection count/volume bar and a three-mode
   search dialog. Keep draft changes local until search starts; restore current

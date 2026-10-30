@@ -1,5 +1,19 @@
 # Локальные инструменты
 
+## Coverage Dart/Flutter
+
+`test_coverage.py` собирает локальный VM-coverage `backend`, `config_app` и
+`dslideshow_flutter`, сохраняет исходный LCOV, машиночитаемые сводки, карту
+непокрытых строк и данные для анализа пересечения тестов. Исходники не копируются.
+
+```bash
+python3 tools/test_coverage.py collect --analyze
+python3 -m unittest discover -s tools -p 'test_test_coverage.py' -v
+```
+
+Настройка окружения, выборочные наборы, повторные прогоны, артефакты и ограничения
+описаны в [едином руководстве тестирования](../doc/testing.md#coverage-и-анализ-пересечения-тестов).
+
 ## Проверка Google Photos Ambient API
 
 `ambient_api_probe.py` — самостоятельный REST-клиент для локальной проверки

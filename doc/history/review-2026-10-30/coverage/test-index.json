@@ -1,0 +1,2614 @@
+[
+  {
+    "path": "backend/test/config_test.dart",
+    "lines": 141,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/hardware/hardware.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/device_event_bindings_test.dart",
+    "lines": 82,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/src/service/hardware/src/device_event_bindings.dart",
+      "package:dslideshow_backend/src/service/hardware/src/gpio_service.dart",
+      "package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart",
+      "package:dslideshow_backend/src/service/hardware/src/screen_service.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart",
+      "hardware_screen_test.dart",
+      "screen_service_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/disk_storage_test.dart",
+    "lines": 726,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "dart:math",
+      "package:dslideshow_backend/app_storage.dart",
+      "package:dslideshow_backend/src/service/storage/disk/disk_storage.dart",
+      "package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart",
+      "package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart",
+      "package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/effects_config_test.dart",
+    "lines": 192,
+    "imports": [
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/web_server/saved_config_repository.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/ffmpeg_thumbnail_worker_test.dart",
+    "lines": 538,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/src/service/gallery/thumbnail_service.dart",
+      "package:image/image.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {
+      "real_delay": 8
+    }
+  },
+  {
+    "path": "backend/test/frame_commands_test.dart",
+    "lines": 109,
+    "imports": [
+      "dart:convert",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/frame_state_reader_test.dart",
+    "lines": 218,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/src/service/hardware/src/application_state_service.dart",
+      "package:dslideshow_backend/src/service/hardware/src/frame_state_reader.dart",
+      "package:dslideshow_backend/src/service/hardware/src/screen_service.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_common/version.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart",
+      "frame_state_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/frame_state_test.dart",
+    "lines": 486,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/hardware/hardware.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_common/version.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart",
+      "hardware_screen_test.dart",
+      "screen_service_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 3
+    }
+  },
+  {
+    "path": "backend/test/gallery_catalog_admission_test.dart",
+    "lines": 189,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_media_publisher.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:test/test.dart",
+      "support/no_watch_directory.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_catalog_test.dart",
+    "lines": 353,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_media_publisher.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:logging/logging.dart",
+      "package:path/path.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_config_test.dart",
+    "lines": 120,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/gallery/thumbnail_service.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_duplicate_cli_test.dart",
+    "lines": 264,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_duplicate_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:image/image.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_duplicate_service_test.dart",
+    "lines": 899,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_duplicate_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:logging/logging.dart",
+      "package:path/path.dart",
+      "package:test/test.dart",
+      "support/gallery_tool_stub.dart",
+      "support/gallery_tool_runner.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_file_operations_test.dart",
+    "lines": 1185,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_file_operations.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_media_publisher.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:logging/logging.dart",
+      "package:path/path.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart",
+      "support/no_watch_directory.dart"
+    ],
+    "review_hints": {
+      "skip": 2
+    }
+  },
+  {
+    "path": "backend/test/gallery_googlephoto_publication_test.dart",
+    "lines": 215,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_backend/app_storage.dart",
+      "package:dslideshow_backend/src/service/googlephoto/googlephoto.dart",
+      "package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart",
+      "package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart",
+      "package:googleapis_auth/auth_io.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/gallery_http_test.dart",
+    "lines": 501,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:typed_data",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/gallery/thumbnail_service.dart",
+      "package:dslideshow_backend/src/web_server/web_service.dart",
+      "package:dslideshow_backend/src/web_server/media_file_responder.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:image/image.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/gallery_management_http_test.dart",
+    "lines": 775,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/fake/fake_remote_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart",
+      "package:dslideshow_backend/src/web_server/web_service.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:image/image.dart",
+      "package:logging/logging.dart",
+      "package:path/path.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart",
+      "support/gallery_tool_stub.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_media_tools_test.dart",
+    "lines": 846,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:typed_data",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_file_operations.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_media_tools.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:image/image.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart",
+      "support/gallery_tool_runner.dart",
+      "support/gallery_metadata_reader.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_metadata_reader_test.dart",
+    "lines": 365,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:typed_data",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_metadata_reader.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:image/image.dart",
+      "package:image/src/util/rational.dart",
+      "package:test/test.dart",
+      "support/gallery_tool_runner.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_png_rotation_test.dart",
+    "lines": 539,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:typed_data",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_png_rotation.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:image/image.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/gallery_tool_runner_test.dart",
+    "lines": 219,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {
+      "real_delay": 1
+    }
+  },
+  {
+    "path": "backend/test/hardware_screen_test.dart",
+    "lines": 409,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/hardware/hardware.dart",
+      "package:dslideshow_backend/src/service/hardware/src/gpio_service.dart",
+      "package:dslideshow_backend/src/service/mqtt/mqtt_service.dart",
+      "package:dslideshow_backend/src/service/storage/storage.dart",
+      "package:dslideshow_backend/src/service/system_info/system_info_service.dart",
+      "package:dslideshow_backend/src/service/wifi/wifi_service.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart",
+      "screen_service_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 6
+    }
+  },
+  {
+    "path": "backend/test/ifconfig_parsing_test.dart",
+    "lines": 126,
+    "imports": [
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/src/service/system_info/system_info_service.dart",
+      "package:test/test.dart",
+      "package:your_project/network_utils.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/json_parsing_test.dart",
+    "lines": 22,
+    "imports": [
+      "dart:convert",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/json_strip_test.dart",
+    "lines": 132,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/media_file_responder_test.dart",
+    "lines": 354,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "dart:math",
+      "dart:typed_data",
+      "package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart",
+      "package:dslideshow_backend/src/web_server/media_file_responder.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/media_upload_test.dart",
+    "lines": 586,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/upload/streaming_upload.dart",
+      "package:dslideshow_backend/src/web_server/web_service.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:http/http.dart",
+      "package:logging/logging.dart",
+      "package:shelf/shelf.dart",
+      "package:shelf/shelf_io.dart",
+      "package:test/test.dart",
+      "support/no_watch_directory.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/ota_config_transfer_test.dart",
+    "lines": 324,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/src/service/ota/ota_config_transfer.dart",
+      "package:dslideshow_backend/src/service/upload/streaming_upload.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/ota_test.dart",
+    "lines": 61,
+    "imports": [
+      "package:dslideshow_backend/src/service/ota/ota_service.dart",
+      "package:pub_semver/pub_semver.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/ota_upload_test.dart",
+    "lines": 1302,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/service/ota/ota_installer.dart",
+      "package:dslideshow_backend/src/service/ota/ota_page.dart",
+      "package:dslideshow_backend/src/service/ota/ota_page_localizations.dart",
+      "package:dslideshow_backend/src/service/ota/ota_service.dart",
+      "package:dslideshow_backend/src/service/ota/release_info.dart",
+      "package:dslideshow_backend/src/service/upload/streaming_upload.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_common/version.dart",
+      "package:path/path.dart",
+      "package:pub_semver/pub_semver.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 4
+    }
+  },
+  {
+    "path": "backend/test/photo_motion_config_test.dart",
+    "lines": 45,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/presence_filter_test.dart",
+    "lines": 105,
+    "imports": [
+      "package:dslideshow_backend/src/service/hardware/src/presence_filter.dart",
+      "package:dslideshow_backend/src/service/hardware/src/gpio_service_impl.dart",
+      "package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/rpc_telemetry_protocol_test.dart",
+    "lines": 58,
+    "imports": [
+      "dart:convert",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/saved_config_repository_test.dart",
+    "lines": 188,
+    "imports": [
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/web_server/saved_config_repository.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/screen_power_test.dart",
+    "lines": 121,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dpms/dpms.dart",
+      "package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart",
+      "package:dslideshow_backend/src/service/hardware/src/screen_power.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/screen_service_test.dart",
+    "lines": 719,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart",
+      "package:dslideshow_backend/src/service/hardware/src/screen_power.dart",
+      "package:dslideshow_backend/src/service/hardware/src/screen_service.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/serializers_test.dart",
+    "lines": 257,
+    "imports": [
+      "dart:convert",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/special_screen_config_test.dart",
+    "lines": 530,
+    "imports": [
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/streaming_upload_test.dart",
+    "lines": 968,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/src/service/upload/streaming_upload.dart",
+      "package:fake_async/fake_async.dart",
+      "package:http/http.dart",
+      "package:path/path.dart",
+      "package:shelf/shelf.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 6
+    }
+  },
+  {
+    "path": "backend/test/system_command_runner_test.dart",
+    "lines": 144,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_backend/src/service/system_info/system_command_runner.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 1,
+      "skip": 1
+    }
+  },
+  {
+    "path": "backend/test/system_info_rpc_test.dart",
+    "lines": 126,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:isolate",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/system_info_service_test.dart",
+    "lines": 463,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart",
+      "package:dslideshow_backend/src/service/system_info/system_command_runner.dart",
+      "package:dslideshow_backend/src/service/system_info/system_info_service.dart",
+      "package:logging/logging.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {
+      "skip": 1
+    }
+  },
+  {
+    "path": "backend/test/thumbnail_service_test.dart",
+    "lines": 712,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_backend/src/service/gallery/thumbnail_service.dart",
+      "package:image/image.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart",
+      "support/controlled_thumbnail_worker.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "backend/test/web_server_control_test.dart",
+    "lines": 158,
+    "imports": [
+      "dart:io",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/web_server/web_server.dart",
+      "package:dslideshow_backend/src/web_server/web_service.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:test/test.dart",
+      "helpers/capture_logs.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/web_socket_config_test.dart",
+    "lines": 84,
+    "imports": [
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/src/web_server/web_socket_user.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:fake_async/fake_async.dart",
+      "package:test/test.dart",
+      "support/web_socket_channel.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/web_socket_user_test.dart",
+    "lines": 340,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_backend/src/web_server/web_server_routes.dart",
+      "package:dslideshow_backend/src/web_server/web_service.dart",
+      "package:dslideshow_backend/src/web_server/web_socket_user.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:fake_async/fake_async.dart",
+      "package:shelf/shelf_io.dart",
+      "package:test/test.dart",
+      "package:web_socket_channel/web_socket_channel.dart",
+      "helpers/capture_logs.dart",
+      "support/web_socket_channel.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "backend/test/wifi_service_test.dart",
+    "lines": 135,
+    "imports": [
+      "package:dslideshow_backend/src/command/wifi_commands.dart",
+      "package:dslideshow_backend/src/service/wifi/wifi_config.dart",
+      "package:dslideshow_backend/src/service/wifi/wifi_service.dart",
+      "package:test/test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/app_preferences_test.dart",
+    "lines": 315,
+    "imports": [
+      "dart:async",
+      "package:config_app/app.dart",
+      "package:config_app/config/routes/app_router.dart",
+      "package:config_app/features/auth/presentation/bloc/authentication_bloc.dart",
+      "package:config_app/features/config/data/repository/photoframe_repository.dart",
+      "package:config_app/features/config/presentation/pages/config_screen.dart",
+      "package:config_app/features/config/presentation/pages/welcome_editor_page.dart",
+      "package:config_app/features/permission/domain/entities/permission.dart",
+      "package:config_app/features/permission/domain/services/permission_service.dart",
+      "package:config_app/features/theme/presentation/app_preferences.dart",
+      "package:config_app/features/theme/presentation/extensions/build_context_ext.dart",
+      "package:config_app/features/theme/presentation/l10n/app_locale.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/features/upload/domain/upload_task.dart",
+      "package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart",
+      "package:config_app/features/user/domain/entities/avatarUrl.dart",
+      "package:config_app/features/user/domain/entities/user.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:get_it/get_it.dart",
+      "package:go_router/go_router.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 8
+    }
+  },
+  {
+    "path": "config_app/test/app_startup_test.dart",
+    "lines": 229,
+    "imports": [
+      "dart:async",
+      "package:config_app/app.dart",
+      "package:config_app/features/app/presentation/pages/home_page.dart",
+      "package:config_app/features/app/presentation/pages/splash_page.dart",
+      "package:config_app/features/auth/domain/repository/authentication_repository.dart",
+      "package:config_app/features/auth/presentation/bloc/authentication_bloc.dart",
+      "package:config_app/features/login/presentation/pages/login_page.dart",
+      "package:config_app/features/permission/domain/entities/permission.dart",
+      "package:config_app/features/permission/domain/services/permission_service.dart",
+      "package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart",
+      "package:config_app/features/user/domain/entities/avatarUrl.dart",
+      "package:config_app/features/user/domain/entities/user.dart",
+      "package:config_app/features/user/domain/repository/user_repository.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter/services.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:get_it/get_it.dart",
+      "package:go_router/go_router.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 9
+    }
+  },
+  {
+    "path": "config_app/test/argb_color_field_test.dart",
+    "lines": 179,
+    "imports": [
+      "package:config_app/features/config/presentation/wigdgets/argb_color_field.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_colorpicker/flutter_colorpicker.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 9
+    }
+  },
+  {
+    "path": "config_app/test/asset_photo_slide_session_test.dart",
+    "lines": 282,
+    "imports": [
+      "dart:async",
+      "dart:ui",
+      "package:config_app/features/config/presentation/sessions/asset_photo_slide_session.dart",
+      "package:config_app/features/config/presentation/sessions/preview_photo.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/slide_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart",
+      "package:flutter/material.dart",
+      "package:flutter/services.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_preview_asset_bundle.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/authentication_bloc_test.dart",
+    "lines": 248,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/auth/domain/repository/authentication_repository.dart",
+      "package:config_app/features/auth/presentation/bloc/authentication_bloc.dart",
+      "package:config_app/features/permission/domain/entities/permission.dart",
+      "package:config_app/features/permission/domain/services/permission_service.dart",
+      "package:config_app/features/user/domain/entities/avatarUrl.dart",
+      "package:config_app/features/user/domain/entities/user.dart",
+      "package:config_app/features/user/domain/repository/user_repository.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/authentication_repository_test.dart",
+    "lines": 321,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/auth/data/repository/authentication_repository.dart",
+      "package:config_app/features/auth/domain/repository/authentication_repository.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {
+      "real_delay": 1
+    }
+  },
+  {
+    "path": "config_app/test/client_service_test.dart",
+    "lines": 703,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/realtime/data/services/client_service.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart",
+      "package:web_socket_channel/status.dart",
+      "package:web_socket_channel/web_socket_channel.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/config_bloc_test.dart",
+    "lines": 268,
+    "imports": [
+      "package:config_app/features/config/presentation/bloc/config_bloc.dart",
+      "package:config_app/features/config/presentation/bloc/config_bloc_models.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_photoframe_repository.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/config_draft_test.dart",
+    "lines": 171,
+    "imports": [
+      "dart:convert",
+      "package:config_app/features/config/domain/effect_settings_validation.dart",
+      "package:config_app/features/config/domain/config_draft.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/config_navigation_test.dart",
+    "lines": 413,
+    "imports": [
+      "package:config_app/features/auth/presentation/bloc/authentication_bloc.dart",
+      "package:config_app/features/config/config/router.dart",
+      "package:config_app/features/config/data/repository/photoframe_repository.dart",
+      "package:config_app/features/config/presentation/pages/config_screen.dart",
+      "package:config_app/features/permission/domain/entities/permission.dart",
+      "package:config_app/features/permission/domain/services/permission_service.dart",
+      "package:config_app/features/user/domain/entities/avatarUrl.dart",
+      "package:config_app/features/user/domain/entities/user.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:get_it/get_it.dart",
+      "package:go_router/go_router.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 40
+    }
+  },
+  {
+    "path": "config_app/test/config_screen_test.dart",
+    "lines": 472,
+    "imports": [
+      "package:config_app/features/config/presentation/pages/config_screen.dart",
+      "package:config_app/features/theme/presentation/app_preferences.dart",
+      "package:config_app/features/theme/presentation/l10n/app_locale.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter/services.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_photoframe_repository.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 44
+    }
+  },
+  {
+    "path": "config_app/test/device_monitor_test.dart",
+    "lines": 742,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/device/data/device_repository.dart",
+      "package:config_app/features/device/presentation/device_monitor.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/device_page_test.dart",
+    "lines": 426,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/device/data/device_repository.dart",
+      "package:config_app/features/device/config/router.dart",
+      "package:config_app/features/app/presentation/pages/home_page.dart",
+      "package:config_app/features/device/presentation/device_monitor.dart",
+      "package:config_app/features/device/presentation/pages/device_page.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/features/permission/domain/entities/permission.dart",
+      "package:config_app/features/permission/domain/services/permission_service.dart",
+      "package:config_app/features/uikit/presentation/widgets/navigation_bar/configapp_navigation_bar.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:get_it/get_it.dart",
+      "package:go_router/go_router.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 14
+    }
+  },
+  {
+    "path": "config_app/test/effect_settings_validation_test.dart",
+    "lines": 212,
+    "imports": [
+      "package:config_app/features/config/domain/effect_settings_validation.dart",
+      "package:dslideshow_common/effects.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/effects_editor_test.dart",
+    "lines": 561,
+    "imports": [
+      "package:config_app/features/config/domain/effect_settings_validation.dart",
+      "package:config_app/features/config/presentation/pages/effects_editor_page.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_colorpicker/flutter_colorpicker.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 6
+    }
+  },
+  {
+    "path": "config_app/test/gallery_bloc_test.dart",
+    "lines": 115,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/domain/gallery_item.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 5
+    }
+  },
+  {
+    "path": "config_app/test/gallery_comparison_metadata_ui_test.dart",
+    "lines": 773,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:typed_data",
+      "dart:ui",
+      "package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart",
+      "package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_comparison_details.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_file_path.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_recommendation_badge.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {
+      "widget_count": 9
+    }
+  },
+  {
+    "path": "config_app/test/gallery_dialog_test.dart",
+    "lines": 326,
+    "imports": [
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart",
+      "package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_confirmation_file.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_actions.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_duplicate_diagnostics_test.dart",
+    "lines": 240,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "support/gallery_management_harness.dart",
+      "support/gallery_duplicates_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_duplicates_bloc_test.dart",
+    "lines": 589,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart",
+      "package:config_app/features/gallery/domain/gallery_item.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_comparison_metadata_bloc.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_duplicates_compact_ui_test.dart",
+    "lines": 439,
+    "imports": [
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_duplicate_search_dialog.dart",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "package:logging/logging.dart",
+      "support/gallery_duplicates_harness.dart",
+      "support/gallery_management_harness.dart",
+      "gallery_image_loader_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_encoded_cache_test.dart",
+    "lines": 670,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:isolate",
+      "package:config_app/src/gallery/gallery_encoded_cache_io.dart",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:config_app/src/gallery/gallery_payload_provider.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {
+      "real_delay": 7,
+      "skip": 3
+    }
+  },
+  {
+    "path": "config_app/test/gallery_file_path_test.dart",
+    "lines": 176,
+    "imports": [
+      "package:config_app/features/gallery/presentation/bloc/gallery_file_path_bloc.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_file_path.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_file_size_test.dart",
+    "lines": 82,
+    "imports": [
+      "package:config_app/features/gallery/presentation/widgets/gallery_file_size.dart",
+      "package:config_app/features/gallery/presentation/widgets/metadata_panel.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {
+      "widget_count": 1
+    }
+  },
+  {
+    "path": "config_app/test/gallery_fullscreen_revision_test.dart",
+    "lines": 122,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_group_comparison_bloc_test.dart",
+    "lines": 232,
+    "imports": [
+      "package:config_app/features/gallery/presentation/bloc/gallery_group_comparison_bloc.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_http_transport_test.dart",
+    "lines": 189,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "dart:typed_data",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/io_client.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "config_app/test/gallery_image_loader_test.dart",
+    "lines": 636,
+    "imports": [
+      "dart:async",
+      "dart:typed_data",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart"
+    ],
+    "review_hints": {
+      "real_delay": 1
+    }
+  },
+  {
+    "path": "config_app/test/gallery_image_widget_test.dart",
+    "lines": 172,
+    "imports": [
+      "dart:convert",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "gallery_image_loader_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 3
+    }
+  },
+  {
+    "path": "config_app/test/gallery_management_bloc_test.dart",
+    "lines": 610,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/domain/gallery_item.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_management_bloc.dart",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:crypto/crypto.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "package:logging/logging.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart",
+      "support/gallery_confirmation.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_management_repository_test.dart",
+    "lines": 403,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "package:logging/logging.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_management_ui_test.dart",
+    "lines": 927,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/gallery/presentation/widgets/image_grid_item.dart",
+      "package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart",
+      "package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart",
+      "support/gallery_confirmation.dart"
+    ],
+    "review_hints": {
+      "widget_count": 4
+    }
+  },
+  {
+    "path": "config_app/test/gallery_mutation_confirmation_test.dart",
+    "lines": 523,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_management_bloc.dart",
+      "package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_confirmation_file.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_notifications_test.dart",
+    "lines": 205,
+    "imports": [
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/widgets/gallery_actions.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_repository_test.dart",
+    "lines": 306,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {
+      "real_delay": 4
+    }
+  },
+  {
+    "path": "config_app/test/gallery_selection_visual_test.dart",
+    "lines": 326,
+    "imports": [
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_management_bloc.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/src/gallery/gallery_image_widget.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart",
+      "support/gallery_confirmation.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_trash_bulk_test.dart",
+    "lines": 615,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_management_bloc.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_mutation_confirmation.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_undo_bloc_test.dart",
+    "lines": 172,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/presentation/bloc/gallery_undo_bloc.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_video_visibility_test.dart",
+    "lines": 135,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/presentation/widgets/video_grid_item.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player/video_player.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_viewer_bloc_test.dart",
+    "lines": 504,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/gallery/domain/gallery_item.dart",
+      "package:config_app/features/gallery/presentation/bloc/gallery_viewer_bloc.dart",
+      "package:config_app/src/gallery/gallery_management_repository.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart",
+      "support/gallery_confirmation.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_viewer_design_test.dart",
+    "lines": 395,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:typed_data",
+      "dart:ui",
+      "package:config_app/features/gallery/domain/gallery_item.dart",
+      "package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "gallery_image_loader_test.dart",
+      "support/gallery_management_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/gallery_viewport_test.dart",
+    "lines": 119,
+    "imports": [
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/gallery/presentation/widgets/image_grid_item.dart",
+      "package:config_app/src/gallery/gallery_repository.dart",
+      "package:config_app/src/gallery/gallery_session.dart",
+      "package:config_app/src/gallery/media_image_loader.dart",
+      "package:dslideshow_common/gallery.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "gallery_image_loader_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/linux_video_player_test.dart",
+    "lines": 343,
+    "imports": [
+      "dart:async",
+      "package:config_app/src/linux_video_player.dart",
+      "package:config_app/src/linux_video_session.dart",
+      "package:flutter/services.dart",
+      "package:flutter/widgets.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player/video_player.dart",
+      "package:video_player_platform_interface/video_player_platform_interface.dart"
+    ],
+    "review_hints": {
+      "real_delay": 3
+    }
+  },
+  {
+    "path": "config_app/test/login_bloc_test.dart",
+    "lines": 97,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/auth/domain/repository/authentication_repository.dart",
+      "package:config_app/features/login/presentation/bloc/login_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:formz/formz.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/media_device_ui_test.dart",
+    "lines": 271,
+    "imports": [
+      "package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart",
+      "package:config_app/features/gallery/presentation/widgets/folder_grid_item.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/ota/presentation/bloc/ota_bloc.dart",
+      "package:config_app/features/ota/presentation/bloc/ota_state.dart",
+      "package:config_app/features/ota/presentation/pages/ota_main_page.dart",
+      "package:config_app/features/power/presentation/bloc/power_bloc.dart",
+      "package:config_app/features/power/presentation/bloc/power_state.dart",
+      "package:config_app/features/power/presentation/widgets/power_tab.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart",
+      "package:config_app/features/upload/presentation/pages/upload_screen.dart",
+      "package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart",
+      "package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart",
+      "package:config_app/features/wifi_config/presentation/widgets/wifi_tab.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:file_picker/file_picker.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 12
+    }
+  },
+  {
+    "path": "config_app/test/power_bloc_test.dart",
+    "lines": 215,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:config_app/features/config/data/repository/photoframe_repository.dart",
+      "package:config_app/features/power/presentation/bloc/power_bloc.dart",
+      "package:config_app/features/power/presentation/bloc/power_event.dart",
+      "package:config_app/features/power/presentation/bloc/power_state.dart",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/premiere_transitions_preview_test.dart",
+    "lines": 125,
+    "imports": [
+      "package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_preview_asset_bundle.dart",
+      "support/slideshow_preview_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/rpc_rates_test.dart",
+    "lines": 67,
+    "imports": [
+      "package:config_app/features/device/presentation/rpc_rates.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/rpc_telemetry_widget_test.dart",
+    "lines": 120,
+    "imports": [
+      "package:config_app/features/device/presentation/rpc_rates.dart",
+      "package:config_app/features/device/presentation/widgets/rpc_telemetry_section.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 3,
+      "widget_count": 1
+    }
+  },
+  {
+    "path": "config_app/test/settings_widgets_ui_test.dart",
+    "lines": 189,
+    "imports": [
+      "package:config_app/features/config/presentation/pages/mqtt_editor_page.dart",
+      "package:config_app/features/config/presentation/wigdgets/settings_section.dart",
+      "package:config_app/features/theme/presentation/theme.dart",
+      "package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 9
+    }
+  },
+  {
+    "path": "config_app/test/single_item_viewer_page_test.dart",
+    "lines": 154,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart",
+      "package:config_app/features/gallery/presentation/widgets/gallery_widget.dart",
+      "package:config_app/features/gallery/presentation/widgets/metadata_panel.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player_platform_interface/video_player_platform_interface.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 6
+    }
+  },
+  {
+    "path": "config_app/test/single_video_player_test.dart",
+    "lines": 416,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/presentation/widgets/single_video_player.dart",
+      "package:config_app/features/gallery/presentation/widgets/video_unavailable.dart",
+      "package:config_app/src/video_playback_support.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/foundation.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player/video_player.dart",
+      "support/controlled_video_controller.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 25,
+      "skip": 2
+    }
+  },
+  {
+    "path": "config_app/test/slideshow_preview_test.dart",
+    "lines": 645,
+    "imports": [
+      "dart:async",
+      "dart:ui",
+      "package:config_app/features/config/presentation/sessions/preview_photo.dart",
+      "package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart",
+      "package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_preview_asset_bundle.dart",
+      "support/slideshow_preview_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/special_screen_options_test.dart",
+    "lines": 280,
+    "imports": [
+      "package:config_app/features/config/presentation/pages/special_screen_editor_page.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_colorpicker/flutter_colorpicker.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 17
+    }
+  },
+  {
+    "path": "config_app/test/special_screens_test.dart",
+    "lines": 355,
+    "imports": [
+      "package:config_app/features/config/presentation/pages/special_screens_page.dart",
+      "package:config_app/features/config/presentation/pages/special_screen_editor_page.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 20
+    }
+  },
+  {
+    "path": "config_app/test/upload_picker_test.dart",
+    "lines": 70,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "dart:typed_data",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:config_app/features/upload/domain/upload_task.dart",
+      "package:config_app/features/upload/presentation/bloc/upload_queue_bloc.dart",
+      "package:file_picker/file_picker.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/video_backend_test.dart",
+    "lines": 87,
+    "imports": [
+      "package:config_app/src/video_backend.dart",
+      "package:config_app/src/video_playback_support.dart",
+      "package:flutter/foundation.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/video_grid_item_test.dart",
+    "lines": 279,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/gallery/presentation/widgets/video_grid_item.dart",
+      "package:config_app/features/gallery/presentation/widgets/video_unavailable.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player/video_player.dart",
+      "support/controlled_video_controller.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 15
+    }
+  },
+  {
+    "path": "config_app/test/visual_editor_preview_test.dart",
+    "lines": 512,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/config/presentation/pages/welcome_editor_page.dart",
+      "package:config_app/features/config/presentation/pages/slideshow_editor_page.dart",
+      "package:config_app/features/config/presentation/pages/special_screen_editor_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:config_app/features/config/presentation/wigdgets/preview_editor_layout.dart",
+      "package:config_app/features/config/presentation/wigdgets/slideshow_preview.dart",
+      "package:config_app/features/config/presentation/sessions/preview_photo.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart",
+      "package:config_app/features/config/presentation/wigdgets/special_screen_preview.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart",
+      "package:dslideshow_flutter/features/welcome/presrntation/widgets/animated_logo.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/controlled_preview_asset_bundle.dart",
+      "support/slideshow_preview_harness.dart"
+    ],
+    "review_hints": {
+      "pump_and_settle": 6
+    }
+  },
+  {
+    "path": "config_app/test/web_client_test.dart",
+    "lines": 23,
+    "imports": [
+      "package:config_app/src/web_client/web_client.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "config_app/test/wifi_tab_bloc_test.dart",
+    "lines": 174,
+    "imports": [
+      "dart:async",
+      "package:config_app/features/realtime/domain/services/realtime_service.dart",
+      "package:config_app/features/wifi_config/presentation/bloc/wifi_tab_bloc.dart",
+      "package:config_app/features/wifi_config/presentation/bloc/wifi_tab_event.dart",
+      "package:config_app/features/wifi_config/presentation/bloc/wifi_tab_state.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/serializers.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/buttons_hint_test.dart",
+    "lines": 245,
+    "imports": [
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart",
+      "support/config_harness.dart",
+      "support/ota_frontend.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/camera_snapshot_client_test.dart",
+    "lines": 231,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/src/service/camera_snapshot_client.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/camera_unavailable_test.dart",
+    "lines": 228,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/cameras_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/cameras_screen_widget.dart",
+      "package:dslideshow_flutter/src/service/camera_snapshot_client.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {
+      "real_delay": 2,
+      "pump_and_settle": 4,
+      "widget_count": 3
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/clock_screen_widget_test.dart",
+    "lines": 237,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/clock_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/composition_effect_test.dart",
+    "lines": 159,
+    "imports": [
+      "package:dslideshow_flutter/src/effect/accordion_effect.dart",
+      "package:dslideshow_flutter/src/effect/liquid_morph_effect.dart",
+      "package:dslideshow_flutter/src/effect/media_slider_item_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/composition_reference.dart",
+      "zoom_blur_effect_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/config_access_session_test.dart",
+    "lines": 139,
+    "imports": [
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_flutter/features/config/data/config_access_repository.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/config_frontend.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/config_bloc_test.dart",
+    "lines": 270,
+    "imports": [
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_flutter/features/config/data/config_access_repository.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_bloc.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_event.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_state.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart",
+      "support/config_frontend.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/config_ready_paint_test.dart",
+    "lines": 72,
+    "imports": [
+      "dart:ui",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:qr_flutter/qr_flutter.dart",
+      "support/config_harness.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/config_timeout_test.dart",
+    "lines": 96,
+    "imports": [
+      "support/config_harness.dart",
+      "package:dslideshow_flutter/src/route_bloc.dart",
+      "package:dslideshow_flutter/features/config/data/config_access_repository.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_bloc.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_event.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_state.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/config_frontend.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/config_view_test.dart",
+    "lines": 139,
+    "imports": [
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart",
+      "package:dslideshow_flutter/features/config/presentation/bloc/config_state.dart",
+      "package:dslideshow_flutter/features/shared/presentation/widgets/access_layout.dart",
+      "package:dslideshow_flutter/src/route_bloc.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:qr_flutter/qr_flutter.dart",
+      "support/config_harness.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/creative_transitions_test.dart",
+    "lines": 312,
+    "imports": [
+      "dart:math",
+      "dart:typed_data",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "zoom_blur_effect_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_parameter_rendering_test.dart",
+    "lines": 154,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "effect_parameter_fixtures.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_perspective_bounds_test.dart",
+    "lines": 124,
+    "imports": [
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_regression_test.dart",
+    "lines": 468,
+    "imports": [
+      "dart:ui",
+      "dart:typed_data",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart",
+      "package:dslideshow_flutter/src/effect/background_to_foreground_effect.dart",
+      "package:dslideshow_flutter/src/effect/cube_effect.dart",
+      "package:dslideshow_flutter/src/effect/depth_effect.dart",
+      "package:dslideshow_flutter/src/effect/effect.dart",
+      "package:dslideshow_flutter/src/effect/fade_effect.dart",
+      "package:dslideshow_flutter/src/effect/media_slider_item_effect.dart",
+      "package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart",
+      "package:dslideshow_flutter/src/effect/mosaic_mask.dart",
+      "package:dslideshow_flutter/src/effect/mosaic_transition_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_rotation_coverage_test.dart",
+    "lines": 93,
+    "imports": [
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_settings_test.dart",
+    "lines": 175,
+    "imports": [
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/src/effect/mosaic_fade_effect.dart",
+      "package:dslideshow_flutter/src/effect/soft_wipe_effect.dart",
+      "package:dslideshow_flutter/src/effect/flip_horizontal_effect.dart",
+      "package:dslideshow_flutter/src/effect/flip_vertical_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/foundation.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/pixel_capture.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/effect_slide_input_test.dart",
+    "lines": 308,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/src/effect/effect_geometry.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/pixel_capture.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/frame_frontend_controller_test.dart",
+    "lines": 418,
+    "imports": [
+      "dart:async",
+      "dart:ui",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_common/rpc.dart",
+      "package:dslideshow_common/version.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:dslideshow_flutter/src/route_bloc.dart",
+      "package:dslideshow_flutter/src/service/frame_frontend_controller.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 16
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/frame_language_test.dart",
+    "lines": 37,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/src/frame_language.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/frame_app_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/image_preparation_test.dart",
+    "lines": 332,
+    "imports": [
+      "dart:io",
+      "dart:ui",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {
+      "real_delay": 3
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/mosaic_optimization_test.dart",
+    "lines": 267,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/src/effect/mosaic_mask.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/atlas_reference_mask.dart",
+      "zoom_blur_effect_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/new_visual_effects_test.dart",
+    "lines": 269,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/ota_bloc_test.dart",
+    "lines": 309,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart",
+      "package:dslideshow_flutter/features/ota/presentation/bloc/ota_event.dart",
+      "package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart",
+      "package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart",
+      "package:dslideshow_flutter/src/route_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:xterm/xterm.dart",
+      "support/ota_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/ota_ready_paint_test.dart",
+    "lines": 121,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_common/version.dart",
+      "package:dslideshow_flutter/features/ota/presentation/widgets/ota_ready_widget.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:qr_flutter/qr_flutter.dart",
+      "support/frame_app_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/ota_terminal_panel_test.dart",
+    "lines": 182,
+    "imports": [
+      "package:dslideshow_flutter/features/ota/presentation/bloc/ota_terminal_session.dart",
+      "package:dslideshow_flutter/features/ota/presentation/widgets/ota_terminal_panel.dart",
+      "package:dslideshow_i18n/i18n.dart",
+      "package:flutter/gestures.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:xterm/xterm.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/ota_view_test.dart",
+    "lines": 420,
+    "imports": [
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:dslideshow_flutter/src/route_bloc.dart",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_common/version.dart",
+      "package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart",
+      "package:dslideshow_flutter/features/ota/presentation/widgets/ota_ready_widget.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:qr_flutter/qr_flutter.dart",
+      "package:xterm/xterm.dart",
+      "support/ota_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/photo_motion_renderer_test.dart",
+    "lines": 251,
+    "imports": [
+      "dart:io",
+      "dart:ui",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart",
+      "package:dslideshow_flutter/src/injector.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {
+      "real_delay": 1
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/photo_shader_effects_test.dart",
+    "lines": 607,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/premiere_transitions_test.dart",
+    "lines": 1019,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/src/effect/geometric_transition_effect.dart",
+      "package:dslideshow_flutter/src/effect/glass_effect.dart",
+      "package:dslideshow_flutter/src/effect/optical_transition_effect.dart",
+      "package:dslideshow_flutter/src/effect/soft_wipe_effect.dart",
+      "package:dslideshow_flutter/src/effect/slice_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart",
+      "zoom_blur_effect_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/radial_blur_effect_test.dart",
+    "lines": 381,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/retained_filter_cache_test.dart",
+    "lines": 160,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/src/effect/creative_transition_effect.dart",
+      "package:dslideshow_flutter/src/effect/optical_transition_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/scaling_sampling_test.dart",
+    "lines": 314,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter/rendering.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/screen_transition_test.dart",
+    "lines": 330,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/command.dart",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart",
+      "package:dslideshow_flutter/src/injector.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {
+      "real_delay": 8
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/slide_session_test.dart",
+    "lines": 66,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/slide_content_sessions.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/slide_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart",
+      "package:flutter/widgets.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/fake_video_controller.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/slideshow_renderer_lifecycle_test.dart",
+    "lines": 334,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "dart:io",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/slide_session_factory.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/image_widget.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/photo_motion.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:logging/logging.dart",
+      "support/fake_video_controller.dart",
+      "support/slideshow_frontend.dart",
+      "support/slideshow_renderer_harness.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/special_screen_lifecycle_test.dart",
+    "lines": 321,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/special_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/cameras_screen_session.dart",
+      "package:dslideshow_flutter/src/service/camera_snapshot_client.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/special_screen_renderers.dart",
+      "package:dslideshow_flutter/src/injector.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/special_screen_scheduler_test.dart",
+    "lines": 126,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/special_screen_scheduler.dart",
+      "package:flutter_test/flutter_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/special_screen_widget_test.dart",
+    "lines": 220,
+    "imports": [
+      "dart:async",
+      "dart:convert",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/cameras_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/sessions/clock_screen_session.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/cameras_screen_widget.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart",
+      "package:dslideshow_flutter/src/service/camera_snapshot_client.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:http/http.dart",
+      "package:http/testing.dart"
+    ],
+    "review_hints": {
+      "real_delay": 4
+    }
+  },
+  {
+    "path": "dslideshow_flutter/test/special_slideshow_test.dart",
+    "lines": 304,
+    "imports": [
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:flutter/material.dart",
+      "package:flutter_bloc/flutter_bloc.dart",
+      "package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/pages/slideshow_page.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/clock_screen_widget.dart",
+      "package:dslideshow_flutter/src/injector.dart",
+      "package:dslideshow_flutter/src/service/frontend.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/terminal_backend_test.dart",
+    "lines": 76,
+    "imports": [
+      "package:dslideshow_flutter/features/ota/presentation/bloc/terminal_backend.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:xterm/xterm.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/transition_media_selection_test.dart",
+    "lines": 327,
+    "imports": [
+      "dart:async",
+      "package:dslideshow_backend/config.dart",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_event.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_slide.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/slideshow_frontend.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/video_session_test.dart",
+    "lines": 237,
+    "imports": [
+      "dart:async",
+      "dart:io",
+      "package:dslideshow_backend/storage.dart",
+      "package:dslideshow_flutter/effect.dart",
+      "package:dslideshow_flutter/features/slideshow/presentation/widgets/video_widget.dart",
+      "package:dslideshow_flutter/src/effect/blinds_effect.dart",
+      "package:dslideshow_flutter/src/effect/cube_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "package:video_player/video_player.dart",
+      "support/fake_video_controller.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/wave_origin_test.dart",
+    "lines": 115,
+    "imports": [
+      "dart:typed_data",
+      "dart:ui",
+      "package:dslideshow_flutter/effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "zoom_blur_effect_test.dart"
+    ],
+    "review_hints": {}
+  },
+  {
+    "path": "dslideshow_flutter/test/zoom_blur_effect_test.dart",
+    "lines": 256,
+    "imports": [
+      "dart:ui",
+      "package:dslideshow_flutter/src/effect/blure_fade_effect.dart",
+      "package:dslideshow_flutter/src/effect/media_slider_item_effect.dart",
+      "package:dslideshow_flutter/src/effect/zoom_over_effect.dart",
+      "package:flutter/material.dart",
+      "package:flutter_test/flutter_test.dart",
+      "support/pixel_capture.dart",
+      "support/pixel_capture.dart"
+    ],
+    "review_hints": {}
+  }
+]

@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart';
 import 'package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart';
 import 'package:config_app/src/gallery/gallery_image_widget.dart';
+import 'package:config_app/features/gallery/presentation/widgets/gallery_confirmation_file.dart';
+import 'package:config_app/features/gallery/presentation/widgets/gallery_actions.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +18,81 @@ import 'gallery_image_loader_test.dart' show ControlledClient;
 import 'support/gallery_management_harness.dart';
 
 void main() {
+  testWidgets(
+    'delete confirmation wraps full filenames in distinct blocks on EN 320px with enlarged text',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      const names = [
+        '52738815683237679255273881568323767925 (Copy 2).jpg',
+        '52738815683237679255273881568323767925_dub.jpg',
+      ];
+      bool? confirmed;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.linear(1.5)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                key: const ValueKey('open-confirmation'),
+                onPressed: () async {
+                  confirmed = await confirmGalleryPurge(
+                    context,
+                    2,
+                    280000,
+                    names: names,
+                  );
+                },
+                child: const Text('Delete permanently'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byKey(const ValueKey('open-confirmation')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      final dialog = find.byType(AlertDialog);
+      for (final name in names) {
+        final text = find.descendant(of: dialog, matching: find.text(name));
+        expect(text, findsOneWidget);
+        expect(
+          tester.renderObject<RenderParagraph>(text).didExceedMaxLines,
+          isFalse,
+        );
+        expect(
+          tester.getRect(text).left,
+          greaterThanOrEqualTo(tester.getRect(dialog).left),
+        );
+        expect(
+          tester.getRect(text).right,
+          lessThanOrEqualTo(tester.getRect(dialog).right),
+        );
+      }
+      await tester.tap(
+        find.descendant(
+          of: dialog,
+          matching: find.widgetWithText(TextButton, 'Cancel'),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(confirmed, isFalse);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
   testWidgets(
     'duplicate review summarizes selection and requires confirmation and retains the visible list behind the dialog',
     (tester) async {
@@ -161,6 +239,47 @@ void main() {
       expect(
         find.descendant(of: dialog, matching: find.text('12.jpg')),
         findsNothing,
+      );
+      expect(
+        find.descendant(of: dialog, matching: find.text('album/2.jpg')),
+        findsNothing,
+      );
+      final firstFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == '2.jpg',
+        ),
+      );
+      final secondFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == '3.jpg',
+        ),
+      );
+      expect(
+        find.descendant(of: firstFile, matching: find.text('1')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: secondFile, matching: find.text('2')),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .getRect(
+              find.descendant(of: firstFile, matching: find.byType(Container)),
+            )
+            .bottom,
+        lessThan(
+          tester
+              .getRect(
+                find.descendant(
+                  of: secondFile,
+                  matching: find.byType(Container),
+                ),
+              )
+              .top,
+        ),
       );
       expect(session.loader.activeCount, activeCount);
       expect(images.requests, hasLength(requestCount));

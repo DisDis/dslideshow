@@ -5,6 +5,7 @@ import 'package:config_app/features/gallery/presentation/bloc/gallery_bloc.dart'
 import 'package:config_app/features/gallery/presentation/bloc/gallery_management_bloc.dart';
 import 'package:config_app/features/gallery/presentation/pages/single_item_viewer_page.dart';
 import 'package:config_app/features/gallery/presentation/widgets/gallery_widget.dart';
+import 'package:config_app/features/gallery/presentation/widgets/gallery_confirmation_file.dart';
 import 'package:config_app/features/theme/presentation/theme.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:dslideshow_i18n/i18n.dart';
@@ -134,6 +135,39 @@ void main() {
         findsOneWidget,
       );
       final dialog = find.byType(AlertDialog);
+      final firstFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == 'photo-0.jpg',
+        ),
+      );
+      final secondFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == 'photo-1.jpg',
+        ),
+      );
+      expect(
+        find.descendant(of: firstFile, matching: find.text('1')),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .getRect(
+              find.descendant(of: firstFile, matching: find.byType(Container)),
+            )
+            .bottom,
+        lessThan(
+          tester
+              .getRect(
+                find.descendant(
+                  of: secondFile,
+                  matching: find.byType(Container),
+                ),
+              )
+              .top,
+        ),
+      );
       for (var index = 0; index < 10; index++) {
         expect(
           find.descendant(of: dialog, matching: find.text('photo-$index.jpg')),
@@ -246,6 +280,46 @@ void main() {
       expect(find.text('Additional files to delete: 2.'), findsOneWidget);
       expect(find.byTooltip('Exact size: 30000000 bytes'), findsOneWidget);
       final dialog = find.byType(AlertDialog);
+      expect(
+        find.descendant(
+          of: dialog,
+          matching: find.text('album/original-0.jpg'),
+        ),
+        findsNothing,
+      );
+      final firstFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == 'original-0.jpg',
+        ),
+      );
+      final secondFile = find.descendant(
+        of: dialog,
+        matching: find.byWidgetPredicate(
+          (w) => w is GalleryConfirmationFile && w.name == 'original-1.jpg',
+        ),
+      );
+      expect(
+        find.descendant(of: firstFile, matching: find.text('1')),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .getRect(
+              find.descendant(of: firstFile, matching: find.byType(Container)),
+            )
+            .bottom,
+        lessThan(
+          tester
+              .getRect(
+                find.descendant(
+                  of: secondFile,
+                  matching: find.byType(Container),
+                ),
+              )
+              .top,
+        ),
+      );
       for (var index = 0; index < 10; index++) {
         expect(
           find.descendant(

@@ -8,6 +8,7 @@ import '../../../../src/gallery/gallery_management_repository.dart';
 import '../bloc/gallery_undo_bloc.dart';
 import '../bloc/gallery_mutation_confirmation.dart';
 import 'gallery_file_size.dart';
+import 'gallery_confirmation_file.dart';
 
 const galleryDialogFileLimit = galleryConfirmationNameLimit;
 
@@ -109,13 +110,10 @@ Future<bool> _confirmGalleryFiles(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   body,
-                  for (final name in shown)
-                    ListTile(
-                      title: Text(
-                        name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                  for (var index = 0; index < shown.length; index++)
+                    GalleryConfirmationFile(
+                      number: index + 1,
+                      name: shown[index],
                     ),
                   if (shown.length < count)
                     Padding(

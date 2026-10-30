@@ -14,6 +14,7 @@ import '../bloc/gallery_duplicates_bloc.dart';
 import '../bloc/gallery_group_comparison_bloc.dart';
 import '../widgets/gallery_actions.dart';
 import '../widgets/gallery_comparison_details.dart';
+import '../widgets/gallery_confirmation_file.dart';
 import '../widgets/gallery_duplicate_search_dialog.dart';
 import '../widgets/gallery_file_path.dart';
 import '../widgets/gallery_file_size.dart';
@@ -82,20 +83,17 @@ class _DuplicatesView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.gallery_selected(effect.members.length)),
-                    ...effect.members
-                        .take(galleryDialogFileLimit)
-                        .map(
-                          (item) => ListTile(
-                            title: Text(item.name),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(item.path),
-                                GalleryFileSize(bytes: item.sizeBytes),
-                              ],
-                            ),
-                          ),
-                        ),
+                    for (
+                      var index = 0;
+                      index < effect.members.length &&
+                          index < galleryDialogFileLimit;
+                      index++
+                    )
+                      GalleryConfirmationFile(
+                        number: index + 1,
+                        name: effect.members[index].name,
+                        sizeBytes: effect.members[index].sizeBytes,
+                      ),
                     if (effect.members.length > galleryDialogFileLimit)
                       Text(
                         l.gallery_more_files_trash(
