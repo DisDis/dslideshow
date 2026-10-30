@@ -15,8 +15,7 @@ part 'slideshow_status_bloc.freezed.dart';
 part 'slideshow_status_event.dart';
 part 'slideshow_status_state.dart';
 
-class SlideshowStatusBloc
-    extends Bloc<SlideshowStatusEvent, SlideshowStatusState> {
+class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusState> {
   static final _log = Logger('SlideshowStatusBloc');
   final FrontendService frontendService;
   final SlideShowConfig config;
@@ -24,14 +23,12 @@ class SlideshowStatusBloc
   int _screenLockGeneration = 0;
   SlideshowScreenLockEvent? _screenAction;
   final _waits = CancellableWaits();
-  final _actionCompletions =
-      Map<SlideshowStatusEvent, Completer<void>>.identity();
+  final _actionCompletions = Map<SlideshowStatusEvent, Completer<void>>.identity();
 
   final _scPause = StreamController<bool>.broadcast();
   Stream<bool> get onPause => _scPause.stream;
 
-  SlideshowStatusBloc({required this.frontendService, required this.config})
-    : super(const SlideshowStatusState()) {
+  SlideshowStatusBloc({required this.frontendService, required this.config}) : super(const SlideshowStatusState()) {
     on<SlideshowChangeStorageStatusEvent>((event, emit) {
       emit(state.copyWith(storageStatus: event.value));
     });
@@ -66,36 +63,27 @@ class SlideshowStatusBloc
       if (_waits.isClosed) return;
       final previous = _screenAction;
       if (previous != null) {
-        _completeAction(
-          previous,
-          error: StateError('Screen control was superseded'),
-        );
+        _completeAction(previous, error: StateError('Screen control was superseded'));
       }
       _screenAction = event;
       final generation = ++_screenLockGeneration;
       emit(state.copyWith(isScreenLock: event.value));
       try {
-        final lockResult = await _waits.wait(
-          frontendService.changeScreenLock(event.value),
-        );
+        final lockResult = await _waits.wait(frontendService.changeScreenLock(event.value));
         if (emit.isDone || generation != _screenLockGeneration) return;
         _checkScreenResponse(lockResult);
-        final screenResult = await _waits.wait(
-          frontendService.screenTurn(!event.value),
-        );
+        final screenResult = await _waits.wait(frontendService.screenTurn(!event.value));
         if (emit.isDone || generation != _screenLockGeneration) return;
         _checkScreenResponse(screenResult);
         // Both backend RPCs accepted the intent. Native fade/power continues
         // independently and its actual phase is reported by the backend.
         _completeAction(event);
       } catch (error, stack) {
-        _log.warning('Unable to apply screen control', error, stack);
+        _log.warning('Unable to apply screen control type=${error.runtimeType}');
         _completeAction(event, error: error, stack: stack);
       }
     });
-    _onActionSubscription = frontendService.onAction.listen(
-      (actionP) => executeAction(actionP.action, actionP.param),
-    );
+    _onActionSubscription = frontendService.onAction.listen((actionP) => executeAction(actionP.action, actionP.param));
   }
 
   void executeAction(SlideshowAction action, [bool? value]) {
@@ -133,11 +121,7 @@ class SlideshowStatusBloc
       SlideshowAction.pause => SlideshowPauseEvent(value),
       SlideshowAction.showMenu => SlideshowMenuEvent(value),
       SlideshowAction.toggleScreen => SlideshowScreenLockEvent(value),
-      _ => throw ArgumentError.value(
-        action,
-        'action',
-        'Unsupported remote action',
-      ),
+      _ => throw ArgumentError.value(action, 'action', 'Unsupported remote action'),
     };
     final completion = Completer<void>();
     _actionCompletions[event] = completion;
@@ -154,11 +138,7 @@ class SlideshowStatusBloc
     }
   }
 
-  void _completeAction(
-    SlideshowStatusEvent event, {
-    Object? error,
-    StackTrace? stack,
-  }) {
+  void _completeAction(SlideshowStatusEvent event, {Object? error, StackTrace? stack}) {
     if (identical(_screenAction, event)) _screenAction = null;
     final completion = _actionCompletions.remove(event);
     if (completion == null) return;
@@ -173,10 +153,7 @@ class SlideshowStatusBloc
     // Publishing follows every state path, including direct menu-close events.
     unawaited(
       Future<void>.sync(() async {
-        await frontendService.updateFrontendState(
-          isPaused: isPaused,
-          isMenu: isMenu,
-        );
+        await frontendService.updateFrontendState(isPaused: isPaused, isMenu: isMenu);
       }).catchError((Object error, StackTrace stack) {
         _log.warning('Unable to publish frontend state', error, stack);
       }),

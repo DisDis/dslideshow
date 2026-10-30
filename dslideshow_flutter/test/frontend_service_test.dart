@@ -6,7 +6,6 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
-import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
 
@@ -103,7 +102,7 @@ void main() {
     expect(h.backend.requests, hasLength(pending.length));
     expect(events, isEmpty);
     await expectLater(h.frontend.storageNext(), throwsStateError);
-    final response = await h.frontend.executeCommand(
+    final response = await h.rpc.executeCommand(
       const ButtonChangeStateCommand(
         id: 42,
         button: ButtonType.button1,
@@ -112,6 +111,18 @@ void main() {
       ),
     );
     expect(response, isA<ErrorResult>().having((result) => result.id, 'request ID', 42));
+    for (final command in [
+      const GetFrameFrontendStateCommand(id: 43),
+      const SetFrameControlCommand(id: 44, control: FrameControl.menu, enabled: true),
+    ]) {
+      final result = await h.rpc.executeCommand(command);
+      expect(
+        result,
+        isA<ErrorResult>()
+            .having((result) => result.id, 'request ID', command.id)
+            .having((result) => result.error, 'shutdown reason', contains('Frontend service is closed')),
+      );
+    }
   });
 
   frontendTest('incoming RPC delivers button, screen, action and OTA events through the real facade', (
@@ -155,7 +166,7 @@ void main() {
       const OTAOutputCommand(id: 25, output: 'installer line'),
     ];
     for (final command in commands) {
-      final response = await h.frontend.executeCommand(command);
+      final response = await h.rpc.executeCommand(command);
       expect(response, isA<EmptyResult>().having((result) => result.id, 'ID', command.id));
     }
     await tester.pump();
@@ -166,7 +177,7 @@ void main() {
     expect(ready, [true]);
     expect(info, [ota]);
     expect(output, ['installer line']);
-    final malformed = await h.frontend.executeCommand(const OTAGetInfoCommand(id: 26));
+    final malformed = await h.rpc.executeCommand(const OTAGetInfoCommand(id: 26));
     expect(malformed, isA<ErrorResult>().having((result) => result.id, 'ID', 26));
   });
 
@@ -177,24 +188,59 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     h.route.add(ChangePageEvent(RoutePage.slideshow));
     await tester.pump();
-    final pending = h.frontend.executeCommand(
+    final pending = h.rpc.executeCommand(
       const SetFrameControlCommand(id: 30, control: FrameControl.menu, enabled: true),
     );
     await tester.pump();
     final response = await pending;
     expect(response, isA<EmptyResult>());
-    final state =
-        await h.frontend.executeCommand(const GetFrameFrontendStateCommand(id: 31)) as GetFrameFrontendStateResult;
+    final state = await h.rpc.executeCommand(const GetFrameFrontendStateCommand(id: 31)) as GetFrameFrontendStateResult;
     expect(state.state.isMenu, isTrue);
     expect(state.state.page, FramePage.slideshow);
     expect(state.state.display!.physicalWidth, 2560);
     expect(state.state.display!.logicalWidth, 1280);
     tester.view.physicalSize = const Size(1600, 2560);
     final resized =
-        await h.frontend.executeCommand(const GetFrameFrontendStateCommand(id: 32)) as GetFrameFrontendStateResult;
+        await h.rpc.executeCommand(const GetFrameFrontendStateCommand(id: 32)) as GetFrameFrontendStateResult;
     expect(resized.state.display!.physicalWidth, 1600);
     expect(resized.state.display!.logicalHeight, 1280);
     expect(h.backend.requests.whereType<UpdateFrontendStateCommand>().single.isMenu, isTrue);
+  });
+
+  frontendTest('frame RPC returns the source request ID on a backend rejection and keeps logs safe', (tester, h) async {
+    final records = <LogRecord>[];
+    final level = Logger.root.level;
+    Logger.root.level = Level.ALL;
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(() async {
+      await subscription.cancel();
+      Logger.root.level = level;
+    });
+    final pending = h.rpc.executeCommand(
+      const SetFrameControlCommand(id: 33, control: FrameControl.screen, enabled: false),
+    );
+    await tester.pump();
+    final lock = h.backend.requests.whereType<ScreenLockCommand>().single;
+    const privateFailure = 'https://private-code/private-path';
+    h.backend.respond(lock, ErrorResult(id: lock.id, error: privateFailure));
+    await tester.pump();
+    expect(await pending, isA<ErrorResult>().having((result) => result.id, 'request ID', 33));
+    expect(h.backend.requests.whereType<ScreenTurnCommand>(), isEmpty);
+    final failed = records.singleWhere((record) => record.message.startsWith('command failed '));
+    expect(failed.level, Level.WARNING);
+    expect(failed.message, contains('requestId=33'));
+    expect(records.any((record) => record.message.startsWith('command start requestId=33 ')), isTrue);
+    expect(records.any((record) => record.message.startsWith('command result requestId=33 ')), isTrue);
+    expect(
+      records.any(
+        (record) =>
+            record.loggerName == 'SlideshowStatusBloc' &&
+            record.message.startsWith('Unable to apply screen control type='),
+      ),
+      isTrue,
+    );
+    expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+    expect(records.map((record) => record.message).join('\n'), isNot(contains(privateFailure)));
   });
 
   frontendTest('OTA and SystemInfo read facades route to their respective remotes', (tester, h) async {
@@ -257,22 +303,9 @@ void main() {
   test('refresh interval must be positive before any RPC or timer is started', () {
     final backend = ControlledFrontendRemote();
     final ota = ControlledFrontendRemote();
-    final route = RouteBloc();
-    addTearDown(route.close);
-    final controller = FrameFrontendController(
-      statusBloc: () => throw StateError('Status must not be read while validating the interval'),
-      routeBloc: route,
-      displayInfo: () => null,
-    );
     for (final interval in [Duration.zero, const Duration(seconds: -1)]) {
       expect(
-        () => FrontendService(
-          AppConfig.fromJson({}),
-          backend,
-          ota,
-          frameController: controller,
-          systemInfoInterval: interval,
-        ),
+        () => FrontendService(AppConfig.fromJson({}), backend, ota, systemInfoInterval: interval),
         throwsArgumentError,
       );
     }

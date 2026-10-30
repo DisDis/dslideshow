@@ -43,9 +43,7 @@ void main() {
     ButtonEventType event = ButtonEventType.released,
     int duration = 201,
   }) async {
-    await h.frontend.executeCommand(
-      ButtonChangeStateCommand(id: 100, button: button, event: event, durationMs: duration),
-    );
+    await h.rpc.executeCommand(ButtonChangeStateCommand(id: 100, button: button, event: event, durationMs: duration));
     await tester.pump();
   }
 

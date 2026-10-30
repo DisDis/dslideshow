@@ -61,7 +61,7 @@ class Fixture {
   final route = RouteBloc();
   late final status = SlideshowStatusBloc(frontendService: frontend, config: AppConfig.fromJson({}).slideshow);
   late final controller = FrameFrontendController(
-    statusBloc: () => status,
+    statusBloc: status,
     routeBloc: route,
     displayInfo: () => const FrameDisplayInfo(
       physicalWidth: 2560,

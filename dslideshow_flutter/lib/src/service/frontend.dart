@@ -4,7 +4,6 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
 import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 import 'package:logging/logging.dart';
 
@@ -12,7 +11,6 @@ class FrontendService implements RpcService {
   static final Logger _log = Logger('FrontendService');
   late final RemoteService _backendService;
   late final RemoteService _otaService;
-  final FrameFrontendController _frameController;
   final _waits = CancellableWaits();
   Timer? _systemInfoTimer;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
@@ -24,6 +22,8 @@ class FrontendService implements RpcService {
   final _onOTAReady = StreamController<bool>.broadcast();
   final _onOTAInfo = StreamController<OTAInfo>.broadcast();
   final _onOTAOutput = StreamController<String>.broadcast();
+
+  bool get isClosed => _waits.isClosed;
 
   Stream<bool> get onOTAReady => _onOTAReady.stream;
   Stream<OTAInfo> get onOTAInfo => _onOTAInfo.stream;
@@ -38,7 +38,6 @@ class FrontendService implements RpcService {
     AppConfig config,
     this._backendService,
     this._otaService, {
-    required this._frameController,
     Duration systemInfoInterval = const Duration(minutes: 1),
   }) {
     if (systemInfoInterval <= Duration.zero) {
@@ -120,10 +119,6 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
-      case GetFrameFrontendStateCommand.TYPE:
-        return _executeFrameStateCommand(command as GetFrameFrontendStateCommand);
-      case SetFrameControlCommand.TYPE:
-        return _executeFrameControlCommand(command as SetFrameControlCommand);
       case ExecuteSSActionCommand.TYPE:
         return _executeSSActionCommand(command as ExecuteSSActionCommand);
       case ButtonChangeStateCommand.TYPE:
@@ -141,23 +136,6 @@ class FrontendService implements RpcService {
 
       default:
         return Future.value(_generateErrorResult(Exception("Unknown command: ${command.type}"), command));
-    }
-  }
-
-  Future<RpcResult> _executeFrameStateCommand(GetFrameFrontendStateCommand command) async {
-    try {
-      return GetFrameFrontendStateResult(id: command.id, state: _frameController.readState());
-    } catch (error) {
-      return _generateErrorResult(error, command);
-    }
-  }
-
-  Future<RpcResult> _executeFrameControlCommand(SetFrameControlCommand command) async {
-    try {
-      await _frameController.setControl(command.control, command.enabled);
-      return EmptyResult.respond(command);
-    } catch (error) {
-      return _generateErrorResult(error, command);
     }
   }
 

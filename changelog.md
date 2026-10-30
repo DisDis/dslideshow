@@ -1,8 +1,8 @@
 # Unreleased
 
-* Assemble frontend dependencies through injector and pass them through constructors;
-  publish SystemInfo separately from the controller that updates slideshow status
-  and handles frame controls.
+* Assemble frontend dependencies through injector and pass ready objects through
+  constructors. Separate incoming frame RPC handling from the backend facade to
+  remove the StatusBloc dependency cycle and its provider.
 * Simplify global-service teardown: the owner calls dispose/close once without
   caching its Future. Use regular inter-isolate RPC for SystemInfo polling.
 * Keep the current slide on backend source errors and stop automatic loading;

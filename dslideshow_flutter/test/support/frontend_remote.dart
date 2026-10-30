@@ -7,6 +7,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/s
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
+import 'package:dslideshow_flutter/src/service/frontend_rpc_service.dart';
 
 class ControlledFrontendRemote implements RemoteService {
   final requests = <RpcCommand>[];
@@ -36,22 +37,18 @@ class FrontendHarness {
   final route = RouteBloc();
   late final FrontendService frontend;
   late final SlideshowStatusBloc status;
+  late final FrontendRpcService rpc;
   Future<void>? _closeFuture;
 
   FrontendHarness({Duration refreshInterval = const Duration(minutes: 1)}) {
+    frontend = FrontendService(AppConfig.fromJson({}), backend, ota, systemInfoInterval: refreshInterval);
+    status = SlideshowStatusBloc(frontendService: frontend, config: SlideShowConfig.fromJson({}));
     final controller = FrameFrontendController(
-      statusBloc: () => status,
+      statusBloc: status,
       routeBloc: route,
       displayInfo: FrameFrontendController.readDisplayInfo,
     );
-    frontend = FrontendService(
-      AppConfig.fromJson({}),
-      backend,
-      ota,
-      frameController: controller,
-      systemInfoInterval: refreshInterval,
-    );
-    status = SlideshowStatusBloc(frontendService: frontend, config: SlideShowConfig.fromJson({}));
+    rpc = FrontendRpcService(frontendService: frontend, frameController: controller);
     frontend.onSystemInfoUpdate.listen(controller.updateSystemInfo);
   }
 

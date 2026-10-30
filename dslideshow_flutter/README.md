@@ -122,7 +122,7 @@ DSLIDESHOW_EMBEDDED=true flutter test --no-pub test/ota_bloc_test.dart \
 
 Зависимости frontend собираются через сервис-локатор `injector` (GetIt)
 в `lib/main.dart`. `RouteBloc`, `SlideshowStatusBloc`, `FrameFrontendController`,
-`FrameDisplayInfoReader` и `FrontendService` регистрируются как singleton
+`FrameDisplayInfoReader`, `FrontendService` и `FrontendRpcService` регистрируются как singleton
 до обработки входящих RPC. Геометрия дисплея читается зарегистрированной
 функцией при каждом запросе, поэтому resize отражается в ответе.
 
@@ -141,16 +141,22 @@ FrontendService публикует `onSystemInfoUpdate` без зависимо�
 В `main.dart` этот поток подключён к `FrameFrontendController`, который
 обновляет `hasInternet` в `SlideshowStatusBloc`. Зависимости классов передаются
 через конструкторы; `injector` используется в точке сборки приложения.
-FrontendService получает готовый контроллер, контроллер — маршрут, функцию
-чтения дисплея и отложенный provider StatusBloc. Provider разрывает цикл
-инициализации StatusBloc → FrontendService → FrameFrontendController → StatusBloc.
+FrontendService не зависит от контроллера состояния рамки. Сначала создаётся
+FrontendService, затем StatusBloc с этим сервисом, затем FrameFrontendController
+с готовыми StatusBloc, маршрутом и функцией чтения дисплея. Последним создаётся
+FrontendRpcService: он обрабатывает RPC чтения состояния и управления через
+контроллер, а команды кнопок, действий и OTA передаёт FrontendService.
+Оба межизолятных входа подключены к этому RPC-обработчику. Цикла и отложенного
+provider StatusBloc нет; после завершения FrontendService обработчик отклоняет команды.
 Unit-тесты создают рабочие объекты через те же конструкторы с fake внешнего RPC.
 
 `MainMenuBloc` ждёт подтверждения power/restart и закрывает меню после успеха.
 Отказ оставляет меню доступным, повторное выполнение до окончания текущего
 игнорируется. Закрытие отменяет локальное ожидание и ждёт отмены подписки
 кнопок. Логи `FrontendService` используют `requestId` для RPC и название действия
-для refresh; `MainMenuBloc` записывает действие и итог.
+для refresh; `FrontendRpcService` пишет начало/итог команд состояния рамки на FINE
+и безопасный тип ошибки на WARNING с исходным `requestId`.
+`MainMenuBloc` записывает действие и итог.
 Ошибки/отмена не раскрывают текст исключения или содержимое RPC.
 
 ```sh

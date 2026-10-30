@@ -9,7 +9,7 @@ typedef FrameDisplayInfoReader = FrameDisplayInfo? Function();
 
 /// Reads the running frame, rather than the browser that opened its settings.
 class FrameFrontendController {
-  final SlideshowStatusBloc Function() statusBloc;
+  final SlideshowStatusBloc statusBloc;
   final RouteBloc routeBloc;
   final FrameDisplayInfoReader displayInfo;
   final Duration commandTimeout;
@@ -22,14 +22,14 @@ class FrameFrontendController {
   });
 
   void updateSystemInfo(SystemInfo info) {
-    final status = statusBloc();
+    final status = statusBloc;
     if (!status.isClosed && status.state.hasInternet != info.networkInfo.hasInternet) {
       status.add(SlideshowInternetEvent(info.networkInfo.hasInternet));
     }
   }
 
   FrameFrontendState readState() {
-    final status = statusBloc();
+    final status = statusBloc;
     final route = routeBloc;
     if (status.isClosed || route.isClosed) {
       throw StateError('Frontend is shutting down');
@@ -49,7 +49,7 @@ class FrameFrontendController {
   }
 
   Future<void> setControl(FrameControl control, bool enabled) async {
-    final status = statusBloc();
+    final status = statusBloc;
     final route = routeBloc;
     if (status.isClosed || route.isClosed) {
       throw StateError('Frontend is shutting down');

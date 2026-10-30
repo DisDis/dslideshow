@@ -31,6 +31,7 @@ import 'package:dslideshow_flutter/features/welcome/presrntation/pages/welcome_p
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
+import 'package:dslideshow_flutter/src/service/frontend_rpc_service.dart';
 
 import 'src/injector.dart';
 import 'src/frame_language.dart';
@@ -98,21 +99,22 @@ void main() async {
     await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
 
     injector.registerSingleton<FrameDisplayInfoReader>(FrameFrontendController.readDisplayInfo);
-    late final SlideshowStatusBloc statusBloc;
+    final frontendService = FrontendService(config, backendService, otaService);
+    final statusBloc = SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
     final frameController = FrameFrontendController(
-      statusBloc: () => statusBloc,
+      statusBloc: statusBloc,
       routeBloc: injector<RouteBloc>(),
       displayInfo: injector<FrameDisplayInfoReader>(),
     );
-    final frontendService = FrontendService(config, backendService, otaService, frameController: frameController);
-    statusBloc = SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
     injector.registerSingleton<SlideshowStatusBloc>(statusBloc, dispose: (bloc) => bloc.close());
     injector.registerSingleton<FrameFrontendController>(frameController);
     injector.registerSingleton<FrontendService>(frontendService, dispose: (service) => service.dispose());
+    final frontendRpcService = FrontendRpcService(frontendService: frontendService, frameController: frameController);
+    injector.registerSingleton<FrontendRpcService>(frontendRpcService);
     frontendService.onSystemInfoUpdate.listen(frameController.updateSystemInfo);
 
-    backendService.service.processing(frontendService, serializers);
-    otaService.service.processing(frontendService, serializers);
+    backendService.service.processing(frontendRpcService, serializers);
+    otaService.service.processing(frontendRpcService, serializers);
 
     injector.registerFactory<SlideshowBloc>(() {
       return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
