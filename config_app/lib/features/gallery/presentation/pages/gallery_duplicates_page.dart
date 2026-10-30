@@ -11,8 +11,13 @@ import '../../../../src/gallery/gallery_image_widget.dart';
 import '../../../../src/gallery/gallery_log.dart';
 import '../../../../src/gallery/media_image_loader.dart';
 import '../bloc/gallery_duplicates_bloc.dart';
+import '../bloc/gallery_group_comparison_bloc.dart';
 import '../widgets/gallery_actions.dart';
 import '../widgets/gallery_comparison_details.dart';
+import '../widgets/gallery_duplicate_search_dialog.dart';
+import '../widgets/gallery_file_path.dart';
+import '../widgets/gallery_file_size.dart';
+import '../widgets/gallery_recommendation_badge.dart';
 
 export '../bloc/gallery_duplicates_bloc.dart' show GalleryDuplicateDecision;
 
@@ -42,7 +47,12 @@ class GalleryDuplicatesPage extends StatelessWidget {
       catalogUpdates: catalogUpdates,
       onRefresh: onRefresh,
     ),
-    child: _DuplicatesView(session: session, onRefresh: onRefresh),
+    child: Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1100),
+        child: _DuplicatesView(session: session, onRefresh: onRefresh),
+      ),
+    ),
   );
 }
 
@@ -72,16 +82,26 @@ class _DuplicatesView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.gallery_selected(effect.members.length)),
-                    if (effect.members.length > galleryDialogFileLimit)
-                      Text(l.gallery_first_files(galleryDialogFileLimit)),
                     ...effect.members
                         .take(galleryDialogFileLimit)
                         .map(
                           (item) => ListTile(
                             title: Text(item.name),
-                            subtitle: Text('${item.path}\n${item.sizeBytes}'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.path),
+                                GalleryFileSize(bytes: item.sizeBytes),
+                              ],
+                            ),
                           ),
                         ),
+                    if (effect.members.length > galleryDialogFileLimit)
+                      Text(
+                        l.gallery_more_files_trash(
+                          effect.members.length - galleryDialogFileLimit,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -135,6 +155,17 @@ class _DuplicatesView extends StatelessWidget {
     }
   }
 
+  Future<void> _newSearch(BuildContext context) async {
+    final bloc = context.read<GalleryDuplicatesBloc>();
+    final choice = await showGalleryDuplicateSearchDialog(
+      context,
+      initialModes: bloc.state.modes,
+    );
+    if (choice != null && !bloc.isClosed) {
+      bloc.add(GalleryDuplicatesEvent.start(modes: choice.modes));
+    }
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -144,34 +175,194 @@ class _DuplicatesView extends StatelessWidget {
       if (state.effect != null) unawaited(_effect(context, state.effect!));
     },
     builder: (context, state) {
-      final bloc = context.read<GalleryDuplicatesBloc>();
-      final l = context.localizations;
-      final job = state.job;
-      final diagnosticCard = _diagnostics(state);
       if (state.loading) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (state.running) {
-        final seconds = state.elapsedSeconds;
-        return Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      final bloc = context.read<GalleryDuplicatesBloc>();
+      final l = context.localizations;
+      final job = state.job;
+      final group = state.group;
+      final diagnosticCard = _diagnostics(state);
+      final hasGroups = job?.groups.isNotEmpty ?? false;
+      Widget content(GalleryGroupComparisonState? comparison) => Column(
+        children: [
+          _DuplicatesHeader(state: state, onSearch: () => _newSearch(context)),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
-                Text(
-                  job!.status == GalleryDuplicateStatus.stopping
-                      ? l.gallery_search_stopping
-                      : l.gallery_search_running,
-                ),
-                Text(
-                  l.gallery_elapsed(
-                    '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}',
+                if (state.running) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 36),
+                    child: Column(
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 20),
+                        Text(
+                          job!.status == GalleryDuplicateStatus.stopping
+                              ? l.gallery_search_stopping
+                              : l.gallery_search_running,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l.gallery_elapsed(
+                            '${state.elapsedSeconds ~/ 60}:${(state.elapsedSeconds % 60).toString().padLeft(2, '0')}',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(_searchModesText(context, job.modes.toSet())),
+                        const SizedBox(height: 16),
+                        Text(
+                          l.gallery_search_background_hint,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        OutlinedButton(
+                          onPressed:
+                              state.busy ||
+                                  job.status == GalleryDuplicateStatus.stopping
+                              ? null
+                              : () => bloc.add(
+                                  const GalleryDuplicatesEvent.stop(),
+                                ),
+                          child: Text(l.gallery_search_stop),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                ?diagnosticCard,
+                  ?diagnosticCard,
+                ] else ...[
+                  if (diagnosticCard != null &&
+                      (state.failed ||
+                          job?.status == GalleryDuplicateStatus.failed ||
+                          !hasGroups))
+                    diagnosticCard,
+                  if (hasGroups) ...[
+                    _DuplicateGroupBar(state: state),
+                    if (group != null && comparison != null) ...[
+                      ExpansionTile(
+                        key: const PageStorageKey('gallery-candidate-help'),
+                        tilePadding: EdgeInsets.zero,
+                        title: Text(
+                          l.gallery_candidate_help,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        childrenPadding: const EdgeInsets.only(bottom: 16),
+                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                        shape: const Border(),
+                        collapsedShape: const Border(),
+                        children: [
+                          Text(
+                            group.mode == GalleryDuplicateMode.exact
+                                ? l.gallery_exact_hint
+                                : l.gallery_similar_hint,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            comparison.exact
+                                ? l.gallery_equivalent_copies
+                                : l.gallery_resolution_recommendation_hint,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(l.gallery_duplicate_select_hint),
+                          if (!comparison.complete && !comparison.exact)
+                            Text(l.gallery_comparison_partial),
+                        ],
+                      ),
+                      if (group.items.length > 10)
+                        _DuplicateMemberPages(state: state),
+                      for (final member in state.visibleMembers)
+                        Padding(
+                          key: ValueKey((
+                            group.groupId,
+                            member.mediaId,
+                            member.sourceRevision,
+                          )),
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _CandidateCard(
+                            session: session,
+                            state: state,
+                            group: group,
+                            member: member,
+                            comparison: comparison,
+                          ),
+                        ),
+                    ] else if (!state.groupLoading && !state.failed) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text(l.gallery_duplicate_review_done),
+                      ),
+                      TextButton(
+                        onPressed: state.busy
+                            ? null
+                            : () =>
+                                  bloc.add(const GalleryDuplicatesEvent.skip()),
+                        child: Text(l.gallery_duplicate_review_again),
+                      ),
+                    ],
+                  ] else if (job?.status != GalleryDuplicateStatus.failed &&
+                      !state.failed) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: Column(
+                        children: [
+                          Icon(
+                            job?.status == GalleryDuplicateStatus.completed
+                                ? Icons.done_all
+                                : Icons.photo_library_outlined,
+                            size: 40,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            job?.status == GalleryDuplicateStatus.completed
+                                ? l.gallery_search_none
+                                : l.gallery_search_ready,
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            l.gallery_search_scope,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          FilledButton.icon(
+                            onPressed: state.busy
+                                ? null
+                                : () => _newSearch(context),
+                            icon: const Icon(Icons.search),
+                            label: Text(l.gallery_search_start),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  if (hasGroups)
+                    ExpansionTile(
+                      key: const PageStorageKey('gallery-search-details'),
+                      tilePadding: EdgeInsets.zero,
+                      title: Text(
+                        l.gallery_search_details,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                      shape: const Border(),
+                      collapsedShape: const Border(),
+                      children: [
+                        if (job!.modes.isNotEmpty)
+                          Text(_searchModesText(context, job.modes.toSet())),
+                        if (job.skipped > 0)
+                          Text(l.gallery_skipped(job.skipped)),
+                        if (!state.failed &&
+                            job.status != GalleryDuplicateStatus.failed)
+                          ?diagnosticCard,
+                      ],
+                    ),
+                ],
+                if (state.busy || state.groupLoading)
+                  const LinearProgressIndicator(),
                 if (state.failed)
                   TextButton(
                     onPressed: state.busy || state.polling
@@ -179,215 +370,21 @@ class _DuplicatesView extends StatelessWidget {
                         : () => bloc.add(const GalleryDuplicatesEvent.load()),
                     child: Text(l.retry_button),
                   ),
-                TextButton(
-                  onPressed:
-                      state.busy ||
-                          job.status == GalleryDuplicateStatus.stopping
-                      ? null
-                      : () => bloc.add(const GalleryDuplicatesEvent.stop()),
-                  child: Text(l.gallery_search_stop),
-                ),
               ],
             ),
           ),
-        );
-      }
-      if (state.setup ||
-          job == null ||
-          job.status == GalleryDuplicateStatus.idle) {
-        return ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            ?diagnosticCard,
-            Text(l.gallery_search_scope),
-            for (final mode in GalleryDuplicateMode.values)
-              CheckboxListTile(
-                title: Text(
-                  mode == GalleryDuplicateMode.exact
-                      ? l.gallery_exact_copies
-                      : l.gallery_similar_images,
-                ),
-                value: state.modes.contains(mode),
-                onChanged: state.busy
-                    ? null
-                    : (value) => bloc.add(
-                        GalleryDuplicatesEvent.mode(mode, value == true),
-                      ),
-              ),
-            FilledButton(
-              onPressed: state.busy || state.modes.isEmpty
-                  ? null
-                  : () => bloc.add(const GalleryDuplicatesEvent.start()),
-              child: Text(l.gallery_search_start),
-            ),
-            if (state.busy) const LinearProgressIndicator(),
-            if (job != null && job.groups.isNotEmpty)
-              TextButton(
-                onPressed: () =>
-                    bloc.add(const GalleryDuplicatesEvent.setup(false)),
-                child: Text(l.gallery_duplicates),
-              ),
-            if (state.failed)
-              TextButton(
-                onPressed: state.busy || state.polling
-                    ? null
-                    : () => bloc.add(const GalleryDuplicatesEvent.load()),
-                child: Text(l.retry_button),
-              ),
-          ],
-        );
-      }
-      final group = state.group;
-      return ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          ?diagnosticCard,
-          if (job.status == GalleryDuplicateStatus.cancelled)
-            Text(l.gallery_search_cancelled),
-          if (job.status == GalleryDuplicateStatus.interrupted)
-            Text(l.gallery_search_interrupted),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: state.busy
-                  ? null
-                  : () => bloc.add(const GalleryDuplicatesEvent.setup(true)),
-              child: Text(l.gallery_search_new),
-            ),
-          ),
-          if (job.skipped > 0 &&
-              (job.diagnostics == null || job.groups.isNotEmpty))
-            Text(l.gallery_skipped(job.skipped)),
-          if (job.groups.isEmpty &&
-              job.status == GalleryDuplicateStatus.completed)
-            Text(l.gallery_search_none),
-          if (state.groupLoading) const LinearProgressIndicator(),
-          if (job.groups.isNotEmpty)
-            Wrap(
-              spacing: 12,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                if (group != null)
-                  TextButton(
-                    onPressed: state.busy || state.groupLoading
-                        ? null
-                        : () => bloc.add(const GalleryDuplicatesEvent.skip()),
-                    child: Text(l.gallery_skip_group),
-                  ),
-                Text(
-                  l.gallery_selected(
-                    state.decisions.values
-                        .where(
-                          (decision) =>
-                              decision == GalleryDuplicateDecision.trash,
-                        )
-                        .length,
-                  ),
-                ),
-                FilledButton.icon(
-                  onPressed:
-                      state.busy ||
-                          state.groupLoading ||
-                          !state.decisions.values.contains(
-                            GalleryDuplicateDecision.trash,
-                          )
-                      ? null
-                      : () => bloc.add(const GalleryDuplicatesEvent.review()),
-                  icon: const Icon(Icons.delete_outline),
-                  label: Text(l.gallery_move_to_trash),
-                ),
-              ],
-            ),
-          if (group != null) ...[
-            Text(
-              l.gallery_group_position(state.groupIndex + 1, job.groups.length),
-            ),
-            Text(
-              group.mode == GalleryDuplicateMode.exact
-                  ? l.gallery_exact_copies
-                  : l.gallery_similar_images,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              group.mode == GalleryDuplicateMode.exact
-                  ? l.gallery_exact_hint
-                  : l.gallery_similar_hint,
-            ),
-            Text(l.gallery_duplicate_select_hint),
-            if (group.items.length > 10)
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  IconButton(
-                    tooltip: MaterialLocalizations.of(context)
-                        .previousPageTooltip,
-                    onPressed:
-                        state.busy ||
-                            state.groupLoading ||
-                            state.memberOffset == 0
-                        ? null
-                        : () => bloc.add(
-                            GalleryDuplicatesEvent.members(
-                              state.memberOffset - 10,
-                            ),
-                          ),
-                    icon: const Icon(Icons.chevron_left),
-                  ),
-                  Text(
-                    l.gallery_duplicate_members(
-                      state.memberOffset + 1,
-                      state.memberOffset + state.visibleMembers.length,
-                      group.items.length,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: MaterialLocalizations.of(context).nextPageTooltip,
-                    onPressed:
-                        state.busy ||
-                            state.groupLoading ||
-                            state.memberOffset + 10 >= group.items.length
-                        ? null
-                        : () => bloc.add(
-                            GalleryDuplicatesEvent.members(
-                              state.memberOffset + 10,
-                            ),
-                          ),
-                    icon: const Icon(Icons.chevron_right),
-                  ),
-                ],
-              ),
-            for (final member in state.visibleMembers)
-              _CandidateCard(
-                key: ValueKey((
-                  group.groupId,
-                  member.mediaId,
-                  member.sourceRevision,
-                )),
-                session: session,
-                state: state,
-                group: group,
-                member: member,
-              ),
-          ] else if (!state.groupLoading &&
-              !state.failed &&
-              job.groups.isNotEmpty) ...[
-            Text(l.gallery_duplicate_review_done),
-            TextButton(
-              onPressed: state.busy
-                  ? null
-                  : () => bloc.add(const GalleryDuplicatesEvent.skip()),
-              child: Text(l.gallery_duplicate_review_again),
-            ),
-          ],
-          if (state.busy) const LinearProgressIndicator(),
-          if (state.failed)
-            TextButton(
-              onPressed: state.busy || state.polling
-                  ? null
-                  : () => bloc.add(const GalleryDuplicatesEvent.load()),
-              child: Text(l.retry_button),
-            ),
+          if (!state.running && hasGroups) _DuplicateSelectionBar(state: state),
         ],
+      );
+      if (group == null || state.running) return content(null);
+      return BlocProvider(
+        key: ObjectKey(group),
+        create: (_) => GalleryGroupComparisonBloc(group: group),
+        child:
+            BlocBuilder<
+              GalleryGroupComparisonBloc,
+              GalleryGroupComparisonState
+            >(builder: (_, comparison) => content(comparison)),
       );
     },
   );
@@ -420,6 +417,283 @@ class _DuplicatesView extends StatelessWidget {
       );
     }
     return null;
+  }
+}
+
+String _searchModesText(BuildContext context, Set<GalleryDuplicateMode> modes) {
+  final l = context.localizations;
+  return switch (GalleryDuplicateSearchChoice.fromModes(modes)) {
+    GalleryDuplicateSearchChoice.exact => l.gallery_exact_copies,
+    GalleryDuplicateSearchChoice.similar => l.gallery_similar_images,
+    GalleryDuplicateSearchChoice.both => l.gallery_search_both,
+  };
+}
+
+class _DuplicatesHeader extends StatelessWidget {
+  const _DuplicatesHeader({required this.state, required this.onSearch});
+  final GalleryDuplicatesState state;
+  final VoidCallback onSearch;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.localizations;
+    final job = state.job;
+    final status = state.running
+        ? l.gallery_search_running
+        : job?.status == GalleryDuplicateStatus.completed
+        ? l.gallery_search_completed
+        : job?.status == GalleryDuplicateStatus.cancelled
+        ? l.gallery_search_cancelled
+        : job?.status == GalleryDuplicateStatus.interrupted
+        ? l.gallery_search_interrupted
+        : job?.status == GalleryDuplicateStatus.failed
+        ? l.gallery_search_not_completed
+        : state.failed
+        ? l.gallery_search_not_completed
+        : l.gallery_search_ready;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final title = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l.gallery_duplicates,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                [
+                  if (job?.groups.isNotEmpty ?? false)
+                    l.gallery_search_groups(job!.groups.length),
+                  status,
+                ].join(' · '),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          );
+          final button = OutlinedButton.icon(
+            onPressed: state.busy || state.running || state.groupLoading
+                ? null
+                : onSearch,
+            icon: const Icon(Icons.search),
+            label: Text(l.gallery_search_new),
+          );
+          if (constraints.maxWidth < 560) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [title, const SizedBox(height: 12), button],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: title),
+              const SizedBox(width: 16),
+              button,
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DuplicateGroupBar extends StatelessWidget {
+  const _DuplicateGroupBar({required this.state});
+  final GalleryDuplicatesState state;
+  @override
+  Widget build(BuildContext context) {
+    final l = context.localizations;
+    final bloc = context.read<GalleryDuplicatesBloc>();
+    final group = state.group;
+    final enabled = !state.busy && !state.groupLoading;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(height: 1),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 16,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (group != null) ...[
+              Text(
+                l.gallery_group_position(
+                  state.groupIndex + 1,
+                  state.job!.groups.length,
+                ),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Chip(
+                label: Text(
+                  group.mode == GalleryDuplicateMode.exact
+                      ? l.gallery_exact_copies
+                      : l.gallery_similar_images,
+                ),
+                side: BorderSide.none,
+              ),
+              Text(
+                l.gallery_group_files(group.items.length),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: l.gallery_previous_group,
+                  onPressed: !enabled || state.groupIndex == 0
+                      ? null
+                      : () => bloc.add(
+                          GalleryDuplicatesEvent.group(state.groupIndex - 1),
+                        ),
+                  icon: const Icon(Icons.chevron_left),
+                ),
+                Flexible(
+                  child: TextButton.icon(
+                    onPressed: !enabled || group == null
+                        ? null
+                        : () => bloc.add(const GalleryDuplicatesEvent.skip()),
+                    iconAlignment: IconAlignment.end,
+                    icon: const Icon(Icons.chevron_right),
+                    label: Text(l.gallery_next_group),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _DuplicateMemberPages extends StatelessWidget {
+  const _DuplicateMemberPages({required this.state});
+  final GalleryDuplicatesState state;
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<GalleryDuplicatesBloc>();
+    final enabled = !state.busy && !state.groupLoading;
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        IconButton(
+          tooltip: MaterialLocalizations.of(context).previousPageTooltip,
+          onPressed: !enabled || state.memberOffset == 0
+              ? null
+              : () => bloc.add(
+                  GalleryDuplicatesEvent.members(state.memberOffset - 10),
+                ),
+          icon: const Icon(Icons.chevron_left),
+        ),
+        Text(
+          context.localizations.gallery_duplicate_members(
+            state.memberOffset + 1,
+            state.memberOffset + state.visibleMembers.length,
+            state.group!.items.length,
+          ),
+        ),
+        IconButton(
+          tooltip: MaterialLocalizations.of(context).nextPageTooltip,
+          onPressed:
+              !enabled || state.memberOffset + 10 >= state.group!.items.length
+              ? null
+              : () => bloc.add(
+                  GalleryDuplicatesEvent.members(state.memberOffset + 10),
+                ),
+          icon: const Icon(Icons.chevron_right),
+        ),
+      ],
+    );
+  }
+}
+
+class _DuplicateSelectionBar extends StatelessWidget {
+  const _DuplicateSelectionBar({required this.state});
+  final GalleryDuplicatesState state;
+  @override
+  Widget build(BuildContext context) {
+    final l = context.localizations;
+    final bloc = context.read<GalleryDuplicatesBloc>();
+    final enabled =
+        !state.busy && !state.groupLoading && state.selectedCount > 0;
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          key: const ValueKey('gallery-duplicate-selection'),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final children = <Widget>[
+                Semantics(
+                  liveRegion: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l.gallery_selected(state.selectedCount)),
+                      Tooltip(
+                        message: l.gallery_size_bytes(state.selectedBytes),
+                        child: Text(
+                          l.gallery_selection_volume(
+                            GalleryFileSize.formatMegabytes(
+                              context,
+                              state.selectedBytes,
+                            ),
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: enabled
+                      ? () => bloc.add(
+                          const GalleryDuplicatesEvent.clearSelection(),
+                        )
+                      : null,
+                  child: Text(l.gallery_clear_selection),
+                ),
+                FilledButton.icon(
+                  onPressed: enabled
+                      ? () => bloc.add(const GalleryDuplicatesEvent.review())
+                      : null,
+                  icon: const Icon(Icons.delete_outline),
+                  label: Wrap(
+                    spacing: 4,
+                    children: [
+                      Text(l.gallery_move_to_trash),
+                      if (state.selectedCount > 0)
+                        Text('(${state.selectedCount})'),
+                    ],
+                  ),
+                ),
+              ];
+              if (constraints.maxWidth >= 640) {
+                return Row(
+                  children: [
+                    Expanded(child: children.first),
+                    ...children.skip(1),
+                  ],
+                );
+              }
+              return Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: children,
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -609,22 +883,28 @@ class _DuplicateDiagnosticsCard extends StatelessWidget {
 
 class _CandidateCard extends StatelessWidget {
   const _CandidateCard({
-    super.key,
     required this.session,
     required this.state,
     required this.group,
     required this.member,
+    required this.comparison,
   });
   final GallerySession session;
   final GalleryDuplicatesState state;
   final GalleryDuplicateGroup group;
   final GalleryDuplicateMember member;
+  final GalleryGroupComparisonState comparison;
 
   @override
   Widget build(BuildContext context) {
     final l = context.localizations;
     final bloc = context.read<GalleryDuplicatesBloc>();
     final item = state.item(member);
+    final recommended =
+        !state.groupLoading && comparison.recommended(member.mediaId);
+    final theme = Theme.of(context);
+    final recommendationColor = galleryRecommendationColor(context);
+    final cardShape = theme.cardTheme.shape;
     final selected =
         state.decisions[member.mediaId] == GalleryDuplicateDecision.trash;
     final enabled = item != null && !state.busy && !state.groupLoading;
@@ -640,71 +920,244 @@ class _CandidateCard extends StatelessWidget {
     final details = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.leading,
-          value: selected,
-          onChanged: enabled ? choose : null,
-          title: Text(member.name),
-          subtitle: Text(member.path),
-        ),
         GalleryComparisonDetails(
           key: ValueKey((member.mediaId, member.sourceRevision)),
           member: member,
           item: item,
           repository: session.management,
+          comparison: state.groupLoading ? null : comparison,
+          onMetadata: (metadata) {
+            final comparisonBloc = context.read<GalleryGroupComparisonBloc>();
+            if (!comparisonBloc.isClosed) comparisonBloc.add(metadata);
+          },
           onRevisionMismatch: () =>
               bloc.add(GalleryDuplicatesEvent.invalidate(member)),
+        ),
+        const SizedBox(height: 8),
+        GalleryFilePath(
+          relativePath: member.path,
+          name: member.name,
+          style: GalleryFilePathStyle.nearestFolder,
+          showName: false,
         ),
       ],
     );
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final image = SizedBox(
-              height: 220,
-              width: constraints.maxWidth >= 600 ? 320 : constraints.maxWidth,
-              child: item == null
-                  ? Center(child: Text(l.gallery_stale_result))
-                  : InteractiveViewer(
-                      minScale: 1,
-                      maxScale: 5,
-                      child: GalleryImage(
-                        loader: session.loader,
-                        decodePool: session.decodePool,
-                        request: item.imageRequest(),
-                        active: TickerMode.valuesOf(context).enabled,
-                        priority: GalleryImagePriority.fullscreen,
-                        fit: BoxFit.contain,
-                        onRevisionMismatch: () =>
-                            bloc.add(GalleryDuplicatesEvent.invalidate(member)),
-                        errorBuilder: (context, retry) => Center(
-                          child: TextButton(
-                            onPressed: retry,
-                            child: Text(l.gallery_retry_image),
-                          ),
-                        ),
-                      ),
-                    ),
-            );
-            return constraints.maxWidth >= 600
-                ? Row(
+      shape: recommended
+          ? (cardShape is OutlinedBorder
+                    ? cardShape
+                    : RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ))
+                .copyWith(
+                  side: BorderSide(width: 3, color: recommendationColor),
+                )
+          : null,
+      color: recommended
+          ? Color.alphaBlend(
+              recommendationColor.withValues(alpha: .05),
+              theme.cardTheme.color ?? theme.colorScheme.surfaceContainerLow,
+            )
+          : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (recommended)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: GalleryRecommendationBadge(reason: comparison.reason),
+              ),
+            ),
+          Padding(
+            key: const ValueKey('duplicate-card-content'),
+            padding: const EdgeInsets.all(12),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final wide = constraints.maxWidth >= 600;
+                final image = SizedBox(
+                  width: wide ? 180 : constraints.maxWidth,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      image,
-                      const SizedBox(width: 16),
-                      Expanded(child: details),
+                      SizedBox(
+                        height: wide ? 120 : 180,
+                        width: double.infinity,
+                        child: item == null
+                            ? Center(child: Text(l.gallery_stale_result))
+                            : InteractiveViewer(
+                                minScale: 1,
+                                maxScale: 5,
+                                child: GalleryImage(
+                                  loader: session.loader,
+                                  decodePool: session.decodePool,
+                                  request: item.imageRequest(),
+                                  active: TickerMode.valuesOf(context).enabled,
+                                  priority: GalleryImagePriority.fullscreen,
+                                  fit: BoxFit.contain,
+                                  onRevisionMismatch: () {
+                                    if (!bloc.isClosed) {
+                                      bloc.add(
+                                        GalleryDuplicatesEvent.invalidate(
+                                          member,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  errorBuilder: (context, retry) => Center(
+                                    child: TextButton(
+                                      onPressed: retry,
+                                      child: Text(l.gallery_retry_image),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
+                      TextButton.icon(
+                        onPressed: item == null
+                            ? null
+                            : () => showDialog<void>(
+                                context: context,
+                                builder: (_) => _DuplicatePhotoDialog(
+                                  session: session,
+                                  item: item,
+                                  onRevisionMismatch: () {
+                                    if (!bloc.isClosed) {
+                                      bloc.add(
+                                        GalleryDuplicatesEvent.invalidate(
+                                          member,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                        icon: const Icon(Icons.open_in_full, size: 16),
+                        label: Text(l.gallery_open_photo),
+                      ),
                     ],
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [image, details],
-                  );
-          },
-        ),
+                  ),
+                );
+                final body = wide
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          image,
+                          const SizedBox(width: 16),
+                          Expanded(child: details),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [image, details],
+                      );
+                final name = Tooltip(
+                  message: member.name,
+                  child: Text(
+                    member.name,
+                    style: theme.textTheme.titleMedium,
+                    softWrap: true,
+                  ),
+                );
+                final checkbox = SizedBox(
+                  width: wide ? 200 : constraints.maxWidth,
+                  child: CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(l.gallery_move_to_trash),
+                    value: selected,
+                    onChanged: enabled ? choose : null,
+                  ),
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (wide)
+                      Row(
+                        children: [
+                          Expanded(child: name),
+                          const SizedBox(width: 12),
+                          checkbox,
+                        ],
+                      )
+                    else ...[
+                      name,
+                      checkbox,
+                    ],
+                    const SizedBox(height: 8),
+                    body,
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _DuplicatePhotoDialog extends StatelessWidget {
+  const _DuplicatePhotoDialog({
+    required this.session,
+    required this.item,
+    required this.onRevisionMismatch,
+  });
+  final GallerySession session;
+  final GalleryItem item;
+  final VoidCallback onRevisionMismatch;
+  @override
+  Widget build(BuildContext context) => Dialog(
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 960, maxHeight: 800),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                IconButton(
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Flexible(
+              child: InteractiveViewer(
+                minScale: 1,
+                maxScale: 5,
+                child: GalleryImage(
+                  loader: session.loader,
+                  decodePool: session.decodePool,
+                  request: item.imageRequest(),
+                  active: TickerMode.valuesOf(context).enabled,
+                  priority: GalleryImagePriority.fullscreen,
+                  fit: BoxFit.contain,
+                  onRevisionMismatch: onRevisionMismatch,
+                  errorBuilder: (context, retry) => Center(
+                    child: TextButton(
+                      onPressed: retry,
+                      child: Text(context.localizations.gallery_retry_image),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

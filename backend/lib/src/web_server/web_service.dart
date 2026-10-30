@@ -103,27 +103,37 @@ class WebService {
   bool _enabled = false;
   bool get enabled => _enabled;
 
-  void set enabled(bool newvalue) {
-    if (_closed) return;
-    if (_config.alwaysEnabled) {
-      newvalue = true;
-    }
-    if (newvalue == _enabled) {
-      return;
-    }
-    _enabled = newvalue;
-    _log.info('Web server enabled=$_enabled');
-    _serverTransition = _serverTransition
-        .then((_) async {
-          if (_closed || !_enabled) {
-            await _stopWebServer();
-          } else {
-            await _startWebServer();
-          }
-        })
-        .catchError((Object error) {
-          _log.severe('Web server transition failed type=${error.runtimeType}');
-        });
+  int _controlId = 0;
+
+  Future<void> setEnabled(bool requested) {
+    if (_closed) return Future.error(StateError('Web service is closed'));
+    final target = requested || _config.alwaysEnabled;
+    final operation = ++_controlId;
+    final result = _serverTransition.then((_) async {
+      final watch = Stopwatch()..start();
+      _log.info('Web control id=$operation target=$target started');
+      try {
+        if (_closed) throw StateError('Web service is closed');
+        _enabled = target;
+        if (target) {
+          await _startWebServer();
+        } else {
+          await _stopWebServer();
+        }
+        if (_closed) throw StateError('Web service is closed');
+        _log.info(
+          'Web control id=$operation completed elapsedMs=${watch.elapsedMilliseconds}',
+        );
+      } catch (error) {
+        _log.warning(
+          'Web control id=$operation failed type=${error.runtimeType} elapsedMs=${watch.elapsedMilliseconds}',
+        );
+        rethrow;
+      }
+    });
+    // A failed command must reach its caller without poisoning later commands.
+    _serverTransition = result.then<void>((_) {}, onError: (Object _) {});
+    return result;
   }
 
   String _generateCode() {
@@ -141,7 +151,7 @@ class WebService {
 
   void updateCode() {
     _code = _generateCode();
-    _log.info('New code: $_code');
+    _log.info('Access code updated code=$_code');
   }
 
   WebService(
@@ -266,12 +276,14 @@ class WebService {
     );
     _router.mount('/', virtualDir.router);
 
-    if (startServer) enabled = _config.alwaysEnabled;
+    if (startServer) {
+      unawaited(setEnabled(_config.alwaysEnabled).catchError((Object _) {}));
+    }
     if (_config.alwaysEnabled) {
       _log.info('Web server alwaysEnabled=true');
     }
     if (_config.permanentCode.isNotEmpty) {
-      _log.info('Web access permanentCode = "$_code"');
+      _log.info('Permanent access code configured code=$_code');
     }
   }
 
@@ -469,7 +481,7 @@ class WebService {
     server.autoCompress = false;
 
     _log.info(
-      'Serving at http://${server.address.host}:${server.port} authCode:$_code '
+      'HTTP server listening port=${server.port} accessCode=$_code '
       'logLevel=${Logger.root.level.name}',
     );
   }

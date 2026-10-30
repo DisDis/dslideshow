@@ -2454,10 +2454,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaLogDetails => 'Подробности — в системном журнале.';
 
   @override
-  String get otaReturnToSlideshow =>
-      'Для возврата к слайдшоу нажмите кнопку возврата на рамке.';
-
-  @override
   String get otaInstalled => 'Прошивка установлена';
 
   @override
@@ -2640,6 +2636,93 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get gallery_search_new => 'Новый поиск';
+
+  @override
+  String get gallery_search_dialog_title => 'Новый поиск дубликатов';
+
+  @override
+  String get gallery_search_choose_mode => 'Что искать';
+
+  @override
+  String get gallery_search_both => 'Точные и похожие';
+
+  @override
+  String get gallery_search_exact_description =>
+      'Полностью одинаковое содержимое файлов';
+
+  @override
+  String get gallery_search_similar_description =>
+      'Похожие фото, включая копии другого разрешения';
+
+  @override
+  String get gallery_search_both_description =>
+      'Оба типа совпадений в одном поиске';
+
+  @override
+  String get gallery_search_preserve_results =>
+      'При отмене или ошибке предыдущие результаты и ваш выбор сохранятся.';
+
+  @override
+  String get gallery_search_background_hint =>
+      'Можно выйти из раздела — поиск продолжится.';
+
+  @override
+  String get gallery_search_completed => 'Поиск завершён';
+
+  @override
+  String get gallery_search_not_completed => 'Поиск не завершён';
+
+  @override
+  String get gallery_search_ready => 'Найдите копии в своей медиатеке';
+
+  @override
+  String get gallery_search_details => 'О последнем поиске';
+
+  @override
+  String gallery_search_groups(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count группы',
+      many: '$count групп',
+      few: '$count группы',
+      one: '$count группа',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gallery_group_files(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count файла',
+      many: '$count файлов',
+      few: '$count файла',
+      one: '$count файл',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gallery_previous_group => 'Предыдущая группа';
+
+  @override
+  String get gallery_next_group => 'Следующая группа';
+
+  @override
+  String get gallery_candidate_help => 'Как выбирается кандидат?';
+
+  @override
+  String get gallery_clear_selection => 'Снять выбор';
+
+  @override
+  String gallery_selection_volume(String size) {
+    return 'Объём: $size';
+  }
+
+  @override
+  String get gallery_open_photo => 'Открыть фото';
 
   @override
   String get gallery_search_start => 'Начать поиск';
@@ -2879,8 +2962,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String gallery_purge_body(int count, int bytes) {
-    return 'Файлов: $count, байт: $bytes. Восстановить их через фоторамку не получится.';
+  String gallery_purge_body(int count, String size) {
+    return 'Файлов для удаления: $count. Освободится примерно: $size. Восстановить их через фоторамку не получится.';
   }
 
   @override
@@ -2901,4 +2984,169 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get gallery_no => 'Нет';
+
+  @override
+  String gallery_more_files_trash(int count) {
+    return 'Ещё файлов для перемещения в корзину: $count.';
+  }
+
+  @override
+  String gallery_more_files_purge(int count) {
+    return 'Ещё файлов для удаления: $count.';
+  }
+
+  @override
+  String gallery_size_megabytes(String value) {
+    return '$value МБ';
+  }
+
+  @override
+  String gallery_size_bytes(int bytes) {
+    return 'Точный размер: $bytes байт';
+  }
+
+  @override
+  String get gallery_file_location => 'Расположение';
+
+  @override
+  String get gallery_library_root => 'Корень медиатеки';
+
+  @override
+  String get gallery_show_full_path => 'Полный путь';
+
+  @override
+  String get gallery_hide_full_path => 'Скрыть полный путь';
+
+  @override
+  String get gallery_resolution_unknown => 'Разрешение неизвестно';
+
+  @override
+  String get gallery_recommend_first_copy =>
+      'Точные копии равноценны; предложен первый файл в списке.';
+
+  @override
+  String get gallery_recommend_first_tied =>
+      'Причина: первый среди файлов с максимальным разрешением';
+
+  @override
+  String get gallery_recommend_known_resolution =>
+      'Предварительно: максимальное из известных разрешений';
+
+  @override
+  String get gallery_recommend_first_unknown =>
+      'Разрешение неизвестно; предложен первый файл в списке.';
+
+  @override
+  String get gallery_resolution_minimum => 'Минимальное разрешение';
+
+  @override
+  String get gallery_resolution_intermediate => 'Ниже максимального';
+
+  @override
+  String get gallery_resolution_same => 'Одинаковое разрешение';
+
+  @override
+  String get gallery_file_smallest =>
+      'Занимает меньше места; это не оценка качества';
+
+  @override
+  String get gallery_recommend_keep => 'Рекомендуется сохранить';
+
+  @override
+  String get gallery_recommend_resolution =>
+      'Причина: максимальное разрешение в группе';
+
+  @override
+  String get gallery_resolution_recommendation_hint =>
+      'Рекомендуется максимальное разрешение; при равенстве — первый файл. Качество по пикселям не оценивается. Выбор в корзину остаётся ручным.';
+
+  @override
+  String get gallery_comparison_partial =>
+      'Часть разрешений неизвестна; рекомендация предварительная и может измениться.';
+
+  @override
+  String get gallery_equivalent_copies =>
+      'Точные копии равноценны; рекомендован первый файл в списке.';
+
+  @override
+  String get configPageTitle => 'Настройка фоторамки';
+
+  @override
+  String get configPageIntro =>
+      'Откройте панель настройки на телефоне или компьютере.';
+
+  @override
+  String get configPageStarting => 'Запускаем доступ к настройкам…';
+
+  @override
+  String get configPageAddressPreparing => 'Определяем адрес в локальной сети…';
+
+  @override
+  String get configPageNoAddress =>
+      'Подключите рамку к локальной сети и проверьте подключение.';
+
+  @override
+  String get configPageCode => 'Код доступа';
+
+  @override
+  String get configPageNetworkStep =>
+      '1. Подключите телефон или компьютер к той же сети Wi-Fi, что и рамка. Интернет не требуется.';
+
+  @override
+  String get configPageScanStep =>
+      '2. Сканируйте QR-код или откройте адрес ниже.';
+
+  @override
+  String get configPageCodeStep => '3. Введите код доступа в панели настройки.';
+
+  @override
+  String get configPageManual => 'Подключение вручную';
+
+  @override
+  String get configPageCheck => 'Проверить подключение';
+
+  @override
+  String get configPageRetry => 'Повторить';
+
+  @override
+  String get configPageReturn => 'Вернуться к слайдшоу';
+
+  @override
+  String get configPageReturnAnyway => 'Вернуться без подтверждения';
+
+  @override
+  String get configPageChecking => 'Проверяем сеть…';
+
+  @override
+  String get configPageCacheHint =>
+      'Обновление сетевых данных может занять до минуты.';
+
+  @override
+  String get configPageServerError =>
+      'Не удалось запустить доступ к настройкам.';
+
+  @override
+  String get configPageNetworkError => 'Не удалось получить сведения о сети.';
+
+  @override
+  String get configPageTimeout => 'Превышено время ожидания операции.';
+
+  @override
+  String get configPageUnknownError =>
+      'Не удалось подготовить доступ к настройкам. Повторите попытку.';
+
+  @override
+  String get configPagePending =>
+      'Ожидаем завершения предыдущей операции. Можно вернуться к слайдшоу.';
+
+  @override
+  String get configPageClosing => 'Завершаем доступ к настройкам…';
+
+  @override
+  String get configPageClosingAlways =>
+      'Закрываем экран. Доступ к настройкам остаётся включённым по конфигурации.';
+
+  @override
+  String get configPageCloseError =>
+      'Не удалось подтвердить завершение доступа к настройкам. Повторите попытку или вернитесь без подтверждения.';
 }

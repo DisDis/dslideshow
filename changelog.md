@@ -1,5 +1,41 @@
 # Unreleased
 
+* Refresh duplicate review with a compact header and file cards, previous/next
+  group navigation, a persistent selection count/volume bar and a three-mode
+  search dialog. Keep draft changes local until search starts; restore current
+  selections after a cancelled or failed replacement search. Preserve Czkawka
+  settings, group ordering and manual trash confirmation.
+
+* Keep the OTA screen locked after successful installation until the automatic
+  restart, with no navigation hints or Back action during that wait.
+
+* Show context-aware navigation icons beside the frame’s physical buttons on
+  settings and OTA screens, matching the available actions. Use Wi-Fi indicators
+  and instructions when the frame has no local network address.
+
+* Always recommend one duplicate to keep: prefer the highest resolution and
+  choose the first file on ties. Show the candidate in green and other equal
+  resolutions in yellow; move resolution explanations into tooltips.
+  Outline the recommended card in green and show a prominent star badge above
+  its image, preserving image state and manual selections when the candidate changes.
+
+* Use Lanczos3 for Czkawka similar-image hashing to find resized copies more
+  reliably. Keep exact groups separate from broader similar groups. After the
+  first ten names, trash/delete confirmations show the number of remaining
+  files; permanent deletion also shows the expected space freed for the whole selection.
+
+* Refresh the frame's settings-access screen with a large QR and access code,
+  localized instructions, responsive layout, network recovery and actionable
+  errors/timeouts. Make repeated entry and exit release access safely, and
+  acknowledge web-server startup only after the listener opens. Log access codes
+  on generation, permanent-code setup and server startup for frame debugging.
+
+* Show gallery paths as folder breadcrumbs in the viewer and emphasize the
+  nearest folder in duplicate cards, with an expandable relative path. Compare
+  resolutions across the whole group, explain resolution-based recommendations,
+  and mark smaller files separately from image quality without selecting files.
+  Display sizes consistently in megabytes, with exact bytes in tooltips.
+
 * Build the gallery index in memory with path-derived IDs and stat-derived
   revisions. Keep only a 32-byte catalog.epoch for forced invalidation, preserve
   unchanged cache keys across restarts, and remove catalog.json and serverId.

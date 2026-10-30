@@ -5,6 +5,11 @@ part 'ota_state.freezed.dart';
 
 @freezed
 sealed class OtaState with _$OtaState {
+  const OtaState._();
+  bool get canReturnToSlideshow => switch (this) {
+    OtaReadyState() || OtaFailureState() => true,
+    _ => false,
+  };
   const factory OtaState.initial({required OTAInfo info}) = OtaInitialState;
   const factory OtaState.ready({
     required OTAInfo info,

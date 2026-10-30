@@ -2437,10 +2437,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaLogDetails => 'See the system log for details.';
 
   @override
-  String get otaReturnToSlideshow =>
-      'Press the frame’s Back button to return to the slideshow.';
-
-  @override
   String get otaInstalled => 'Firmware installed';
 
   @override
@@ -2622,6 +2618,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_search_new => 'New search';
+
+  @override
+  String get gallery_search_dialog_title => 'New duplicate search';
+
+  @override
+  String get gallery_search_choose_mode => 'What to search for';
+
+  @override
+  String get gallery_search_both => 'Exact and similar';
+
+  @override
+  String get gallery_search_exact_description =>
+      'Files with identical contents';
+
+  @override
+  String get gallery_search_similar_description =>
+      'Similar photos, including resized copies';
+
+  @override
+  String get gallery_search_both_description =>
+      'Both types of matches in one search';
+
+  @override
+  String get gallery_search_preserve_results =>
+      'Cancelling or a failed search keeps the previous results and your selections.';
+
+  @override
+  String get gallery_search_background_hint =>
+      'You can leave this section. The search will continue.';
+
+  @override
+  String get gallery_search_completed => 'Search completed';
+
+  @override
+  String get gallery_search_not_completed => 'Search not completed';
+
+  @override
+  String get gallery_search_ready => 'Find copies in your photo library';
+
+  @override
+  String get gallery_search_details => 'About the last search';
+
+  @override
+  String gallery_search_groups(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count groups',
+      one: '$count group',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String gallery_group_files(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '$count file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gallery_previous_group => 'Previous group';
+
+  @override
+  String get gallery_next_group => 'Next group';
+
+  @override
+  String get gallery_candidate_help => 'How is the candidate chosen?';
+
+  @override
+  String get gallery_clear_selection => 'Clear selection';
+
+  @override
+  String gallery_selection_volume(String size) {
+    return 'Volume: $size';
+  }
+
+  @override
+  String get gallery_open_photo => 'Open photo';
 
   @override
   String get gallery_search_start => 'Start search';
@@ -2861,8 +2940,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String gallery_purge_body(int count, int bytes) {
-    return '$count files, $bytes bytes. They cannot be restored through the photo frame.';
+  String gallery_purge_body(int count, String size) {
+    return 'Files to delete: $count. Expected space freed: $size. They cannot be restored through the photo frame.';
   }
 
   @override
@@ -2883,4 +2962,168 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_no => 'No';
+
+  @override
+  String gallery_more_files_trash(int count) {
+    return 'Additional files to move to Trash: $count.';
+  }
+
+  @override
+  String gallery_more_files_purge(int count) {
+    return 'Additional files to delete: $count.';
+  }
+
+  @override
+  String gallery_size_megabytes(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String gallery_size_bytes(int bytes) {
+    return 'Exact size: $bytes bytes';
+  }
+
+  @override
+  String get gallery_file_location => 'Location';
+
+  @override
+  String get gallery_library_root => 'Media library root';
+
+  @override
+  String get gallery_show_full_path => 'Full path';
+
+  @override
+  String get gallery_hide_full_path => 'Hide full path';
+
+  @override
+  String get gallery_resolution_unknown => 'Resolution unavailable';
+
+  @override
+  String get gallery_recommend_first_copy =>
+      'Exact copies are equivalent; the first file is suggested.';
+
+  @override
+  String get gallery_recommend_first_tied =>
+      'Reason: first among files with the highest resolution';
+
+  @override
+  String get gallery_recommend_known_resolution =>
+      'Provisional: highest known resolution';
+
+  @override
+  String get gallery_recommend_first_unknown =>
+      'Resolution unavailable; the first file is suggested.';
+
+  @override
+  String get gallery_resolution_minimum => 'Minimum resolution';
+
+  @override
+  String get gallery_resolution_intermediate => 'Below maximum';
+
+  @override
+  String get gallery_resolution_same => 'Same resolution';
+
+  @override
+  String get gallery_file_smallest => 'Takes less space; not a quality rating';
+
+  @override
+  String get gallery_recommend_keep => 'Recommended to keep';
+
+  @override
+  String get gallery_recommend_resolution =>
+      'Reason: highest resolution in the group';
+
+  @override
+  String get gallery_resolution_recommendation_hint =>
+      'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.';
+
+  @override
+  String get gallery_comparison_partial =>
+      'Some resolutions are unknown; the recommendation is provisional and may change.';
+
+  @override
+  String get gallery_equivalent_copies =>
+      'Exact copies are equivalent; the first file is recommended.';
+
+  @override
+  String get configPageTitle => 'Set up your photo frame';
+
+  @override
+  String get configPageIntro =>
+      'Open the settings panel on your phone or computer.';
+
+  @override
+  String get configPageStarting => 'Starting settings access…';
+
+  @override
+  String get configPageAddressPreparing => 'Finding the local network address…';
+
+  @override
+  String get configPageNoAddress =>
+      'Connect the frame to a local network, then check the connection.';
+
+  @override
+  String get configPageCode => 'Access code';
+
+  @override
+  String get configPageNetworkStep =>
+      '1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.';
+
+  @override
+  String get configPageScanStep =>
+      '2. Scan the QR code or open the address below.';
+
+  @override
+  String get configPageCodeStep =>
+      '3. Enter the access code in the settings panel.';
+
+  @override
+  String get configPageManual => 'Manual connection';
+
+  @override
+  String get configPageCheck => 'Check connection';
+
+  @override
+  String get configPageRetry => 'Try again';
+
+  @override
+  String get configPageReturn => 'Return to slideshow';
+
+  @override
+  String get configPageReturnAnyway => 'Return without confirmation';
+
+  @override
+  String get configPageChecking => 'Checking the network…';
+
+  @override
+  String get configPageCacheHint =>
+      'Network information may take up to a minute to update.';
+
+  @override
+  String get configPageServerError => 'Unable to start settings access.';
+
+  @override
+  String get configPageNetworkError => 'Unable to read network information.';
+
+  @override
+  String get configPageTimeout => 'The operation took too long.';
+
+  @override
+  String get configPageUnknownError =>
+      'Unable to prepare settings access. Try again.';
+
+  @override
+  String get configPagePending =>
+      'Waiting for the previous operation to finish. You can return to the slideshow.';
+
+  @override
+  String get configPageClosing => 'Closing settings access…';
+
+  @override
+  String get configPageClosingAlways =>
+      'Closing this screen. Settings access stays enabled by configuration.';
+
+  @override
+  String get configPageCloseError =>
+      'Could not confirm that settings access has ended. Retry, or return without confirmation.';
 }

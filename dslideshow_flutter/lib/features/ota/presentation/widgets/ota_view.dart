@@ -1,3 +1,7 @@
+import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart';
+
 import 'dart:math' as math;
 
 import 'package:dslideshow_backend/command.dart';
@@ -82,6 +86,16 @@ class OTAView extends StatelessWidget {
             ),
           ],
         ),
+        if (state.canReturnToSlideshow)
+          PageButtonsHint(
+            frontend: context.read<OtaBloc>().frontendService,
+            buttons: injector<AppConfig>().slideshow.buttons,
+            bindings: const {
+              ButtonType.button0: ButtonHintBinding(
+                action: ButtonHintAction.back,
+              ),
+            },
+          ),
         if (!environment.isLinuxEmbedded)
           BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
             builder: (context, state) => DebugWidget(injector(), injector()),
@@ -198,7 +212,7 @@ class _StatusPanel extends StatelessWidget {
         message: info.errorText?.isNotEmpty == true
             ? info.errorText!
             : l10n.otaUnknownError,
-        detail: '${l10n.otaLogDetails} ${l10n.otaReturnToSlideshow}',
+        detail: l10n.otaLogDetails,
         icon: Icons.error_outline,
         color: ThemeColors.otaErrorTextColor,
       ),

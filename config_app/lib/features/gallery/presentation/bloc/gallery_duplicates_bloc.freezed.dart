@@ -845,6 +845,8 @@ mixin _$GalleryDuplicatesState {
   GalleryDuplicatesCatalogSnapshot get catalogSnapshot;
   Set<GalleryDuplicateMode> get modes;
   Map<String, GalleryDuplicateDecision> get decisions;
+  int get selectedCount;
+  int get selectedBytes;
   Set<GalleryMediaRef> get invalidated;
   GalleryDuplicateJob? get job;
   GalleryDuplicateStartRequest? get pendingStart;
@@ -853,7 +855,6 @@ mixin _$GalleryDuplicatesState {
   bool get busy;
   bool get failed;
   GalleryErrorCode? get requestError;
-  bool get setup;
   bool get polling;
   int get elapsedSeconds;
   int get groupIndex;
@@ -884,6 +885,10 @@ mixin _$GalleryDuplicatesState {
               other.decisions,
               _this.decisions,
             ) &&
+            (identical(other.selectedCount, _this.selectedCount) ||
+                other.selectedCount == _this.selectedCount) &&
+            (identical(other.selectedBytes, _this.selectedBytes) ||
+                other.selectedBytes == _this.selectedBytes) &&
             const DeepCollectionEquality().equals(
               other.invalidated,
               _this.invalidated,
@@ -900,8 +905,6 @@ mixin _$GalleryDuplicatesState {
                 other.failed == _this.failed) &&
             (identical(other.requestError, _this.requestError) ||
                 other.requestError == _this.requestError) &&
-            (identical(other.setup, _this.setup) ||
-                other.setup == _this.setup) &&
             (identical(other.polling, _this.polling) ||
                 other.polling == _this.polling) &&
             (identical(other.elapsedSeconds, _this.elapsedSeconds) ||
@@ -919,11 +922,13 @@ mixin _$GalleryDuplicatesState {
   @override
   int get hashCode {
     final _this = this as GalleryDuplicatesState;
-    return Object.hash(
+    return Object.hashAll([
       runtimeType,
       _this.catalogSnapshot,
       const DeepCollectionEquality().hash(_this.modes),
       const DeepCollectionEquality().hash(_this.decisions),
+      _this.selectedCount,
+      _this.selectedBytes,
       const DeepCollectionEquality().hash(_this.invalidated),
       _this.job,
       _this.pendingStart,
@@ -932,20 +937,19 @@ mixin _$GalleryDuplicatesState {
       _this.busy,
       _this.failed,
       _this.requestError,
-      _this.setup,
       _this.polling,
       _this.elapsedSeconds,
       _this.groupIndex,
       _this.memberOffset,
       _this.visibleGroup,
       _this.groupLoading,
-    );
+    ]);
   }
 
   @override
   String toString() {
     final _this = this as GalleryDuplicatesState;
-    return 'GalleryDuplicatesState(catalogSnapshot: ${_this.catalogSnapshot}, modes: ${_this.modes}, decisions: ${_this.decisions}, invalidated: ${_this.invalidated}, job: ${_this.job}, pendingStart: ${_this.pendingStart}, effect: ${_this.effect}, loading: ${_this.loading}, busy: ${_this.busy}, failed: ${_this.failed}, requestError: ${_this.requestError}, setup: ${_this.setup}, polling: ${_this.polling}, elapsedSeconds: ${_this.elapsedSeconds}, groupIndex: ${_this.groupIndex}, memberOffset: ${_this.memberOffset}, visibleGroup: ${_this.visibleGroup}, groupLoading: ${_this.groupLoading})';
+    return 'GalleryDuplicatesState(catalogSnapshot: ${_this.catalogSnapshot}, modes: ${_this.modes}, decisions: ${_this.decisions}, selectedCount: ${_this.selectedCount}, selectedBytes: ${_this.selectedBytes}, invalidated: ${_this.invalidated}, job: ${_this.job}, pendingStart: ${_this.pendingStart}, effect: ${_this.effect}, loading: ${_this.loading}, busy: ${_this.busy}, failed: ${_this.failed}, requestError: ${_this.requestError}, polling: ${_this.polling}, elapsedSeconds: ${_this.elapsedSeconds}, groupIndex: ${_this.groupIndex}, memberOffset: ${_this.memberOffset}, visibleGroup: ${_this.visibleGroup}, groupLoading: ${_this.groupLoading})';
   }
 }
 
@@ -960,6 +964,8 @@ abstract mixin class $GalleryDuplicatesStateCopyWith<$Res> {
     GalleryDuplicatesCatalogSnapshot catalogSnapshot,
     Set<GalleryDuplicateMode> modes,
     Map<String, GalleryDuplicateDecision> decisions,
+    int selectedCount,
+    int selectedBytes,
     Set<GalleryMediaRef> invalidated,
     GalleryDuplicateJob? job,
     GalleryDuplicateStartRequest? pendingStart,
@@ -968,7 +974,6 @@ abstract mixin class $GalleryDuplicatesStateCopyWith<$Res> {
     bool busy,
     bool failed,
     GalleryErrorCode? requestError,
-    bool setup,
     bool polling,
     int elapsedSeconds,
     int groupIndex,
@@ -1000,6 +1005,8 @@ class _$GalleryDuplicatesStateCopyWithImpl<$Res>
     Object? catalogSnapshot = null,
     Object? modes = null,
     Object? decisions = null,
+    Object? selectedCount = null,
+    Object? selectedBytes = null,
     Object? invalidated = null,
     Object? job = freezed,
     Object? pendingStart = freezed,
@@ -1008,7 +1015,6 @@ class _$GalleryDuplicatesStateCopyWithImpl<$Res>
     Object? busy = null,
     Object? failed = null,
     Object? requestError = freezed,
-    Object? setup = null,
     Object? polling = null,
     Object? elapsedSeconds = null,
     Object? groupIndex = null,
@@ -1030,6 +1036,14 @@ class _$GalleryDuplicatesStateCopyWithImpl<$Res>
             ? _self.decisions
             : decisions // ignore: cast_nullable_to_non_nullable
                   as Map<String, GalleryDuplicateDecision>,
+        selectedCount: null == selectedCount
+            ? _self.selectedCount
+            : selectedCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        selectedBytes: null == selectedBytes
+            ? _self.selectedBytes
+            : selectedBytes // ignore: cast_nullable_to_non_nullable
+                  as int,
         invalidated: null == invalidated
             ? _self.invalidated
             : invalidated // ignore: cast_nullable_to_non_nullable
@@ -1062,10 +1076,6 @@ class _$GalleryDuplicatesStateCopyWithImpl<$Res>
             ? _self.requestError
             : requestError // ignore: cast_nullable_to_non_nullable
                   as GalleryErrorCode?,
-        setup: null == setup
-            ? _self.setup
-            : setup // ignore: cast_nullable_to_non_nullable
-                  as bool,
         polling: null == polling
             ? _self.polling
             : polling // ignore: cast_nullable_to_non_nullable
@@ -1263,6 +1273,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       GalleryDuplicatesCatalogSnapshot catalogSnapshot,
       Set<GalleryDuplicateMode> modes,
       Map<String, GalleryDuplicateDecision> decisions,
+      int selectedCount,
+      int selectedBytes,
       Set<GalleryMediaRef> invalidated,
       GalleryDuplicateJob? job,
       GalleryDuplicateStartRequest? pendingStart,
@@ -1271,7 +1283,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       bool busy,
       bool failed,
       GalleryErrorCode? requestError,
-      bool setup,
       bool polling,
       int elapsedSeconds,
       int groupIndex,
@@ -1289,6 +1300,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.catalogSnapshot,
           _that.modes,
           _that.decisions,
+          _that.selectedCount,
+          _that.selectedBytes,
           _that.invalidated,
           _that.job,
           _that.pendingStart,
@@ -1297,7 +1310,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.busy,
           _that.failed,
           _that.requestError,
-          _that.setup,
           _that.polling,
           _that.elapsedSeconds,
           _that.groupIndex,
@@ -1329,6 +1341,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       GalleryDuplicatesCatalogSnapshot catalogSnapshot,
       Set<GalleryDuplicateMode> modes,
       Map<String, GalleryDuplicateDecision> decisions,
+      int selectedCount,
+      int selectedBytes,
       Set<GalleryMediaRef> invalidated,
       GalleryDuplicateJob? job,
       GalleryDuplicateStartRequest? pendingStart,
@@ -1337,7 +1351,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       bool busy,
       bool failed,
       GalleryErrorCode? requestError,
-      bool setup,
       bool polling,
       int elapsedSeconds,
       int groupIndex,
@@ -1354,6 +1367,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.catalogSnapshot,
           _that.modes,
           _that.decisions,
+          _that.selectedCount,
+          _that.selectedBytes,
           _that.invalidated,
           _that.job,
           _that.pendingStart,
@@ -1362,7 +1377,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.busy,
           _that.failed,
           _that.requestError,
-          _that.setup,
           _that.polling,
           _that.elapsedSeconds,
           _that.groupIndex,
@@ -1393,6 +1407,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       GalleryDuplicatesCatalogSnapshot catalogSnapshot,
       Set<GalleryDuplicateMode> modes,
       Map<String, GalleryDuplicateDecision> decisions,
+      int selectedCount,
+      int selectedBytes,
       Set<GalleryMediaRef> invalidated,
       GalleryDuplicateJob? job,
       GalleryDuplicateStartRequest? pendingStart,
@@ -1401,7 +1417,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
       bool busy,
       bool failed,
       GalleryErrorCode? requestError,
-      bool setup,
       bool polling,
       int elapsedSeconds,
       int groupIndex,
@@ -1418,6 +1433,8 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.catalogSnapshot,
           _that.modes,
           _that.decisions,
+          _that.selectedCount,
+          _that.selectedBytes,
           _that.invalidated,
           _that.job,
           _that.pendingStart,
@@ -1426,7 +1443,6 @@ extension GalleryDuplicatesStatePatterns on GalleryDuplicatesState {
           _that.busy,
           _that.failed,
           _that.requestError,
-          _that.setup,
           _that.polling,
           _that.elapsedSeconds,
           _that.groupIndex,
@@ -1450,6 +1466,8 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
       GalleryDuplicateMode.similar,
     },
     Map<String, GalleryDuplicateDecision> decisions = const {},
+    this.selectedCount = 0,
+    this.selectedBytes = 0,
     Set<GalleryMediaRef> invalidated = const {},
     this.job,
     this.pendingStart,
@@ -1458,7 +1476,6 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
     this.busy = false,
     this.failed = false,
     this.requestError,
-    this.setup = false,
     this.polling = false,
     this.elapsedSeconds = 0,
     this.groupIndex = 0,
@@ -1491,6 +1508,12 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
     return EqualUnmodifiableMapView(_decisions);
   }
 
+  @override
+  @JsonKey()
+  final int selectedCount;
+  @override
+  @JsonKey()
+  final int selectedBytes;
   final Set<GalleryMediaRef> _invalidated;
   @override
   @JsonKey()
@@ -1517,9 +1540,6 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
   final bool failed;
   @override
   final GalleryErrorCode? requestError;
-  @override
-  @JsonKey()
-  final bool setup;
   @override
   @JsonKey()
   final bool polling;
@@ -1561,6 +1581,10 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
               other.decisions,
               _decisions,
             ) &&
+            (identical(other.selectedCount, selectedCount) ||
+                other.selectedCount == selectedCount) &&
+            (identical(other.selectedBytes, selectedBytes) ||
+                other.selectedBytes == selectedBytes) &&
             const DeepCollectionEquality().equals(
               other.invalidated,
               _invalidated,
@@ -1574,7 +1598,6 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
             (identical(other.failed, failed) || other.failed == failed) &&
             (identical(other.requestError, requestError) ||
                 other.requestError == requestError) &&
-            (identical(other.setup, setup) || other.setup == setup) &&
             (identical(other.polling, polling) || other.polling == polling) &&
             (identical(other.elapsedSeconds, elapsedSeconds) ||
                 other.elapsedSeconds == elapsedSeconds) &&
@@ -1590,11 +1613,13 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
 
   @override
   int get hashCode {
-    return Object.hash(
+    return Object.hashAll([
       runtimeType,
       catalogSnapshot,
       const DeepCollectionEquality().hash(_modes),
       const DeepCollectionEquality().hash(_decisions),
+      selectedCount,
+      selectedBytes,
       const DeepCollectionEquality().hash(_invalidated),
       job,
       pendingStart,
@@ -1603,19 +1628,18 @@ class _GalleryDuplicatesState extends GalleryDuplicatesState {
       busy,
       failed,
       requestError,
-      setup,
       polling,
       elapsedSeconds,
       groupIndex,
       memberOffset,
       visibleGroup,
       groupLoading,
-    );
+    ]);
   }
 
   @override
   String toString() {
-    return 'GalleryDuplicatesState(catalogSnapshot: $catalogSnapshot, modes: $modes, decisions: $decisions, invalidated: $invalidated, job: $job, pendingStart: $pendingStart, effect: $effect, loading: $loading, busy: $busy, failed: $failed, requestError: $requestError, setup: $setup, polling: $polling, elapsedSeconds: $elapsedSeconds, groupIndex: $groupIndex, memberOffset: $memberOffset, visibleGroup: $visibleGroup, groupLoading: $groupLoading)';
+    return 'GalleryDuplicatesState(catalogSnapshot: $catalogSnapshot, modes: $modes, decisions: $decisions, selectedCount: $selectedCount, selectedBytes: $selectedBytes, invalidated: $invalidated, job: $job, pendingStart: $pendingStart, effect: $effect, loading: $loading, busy: $busy, failed: $failed, requestError: $requestError, polling: $polling, elapsedSeconds: $elapsedSeconds, groupIndex: $groupIndex, memberOffset: $memberOffset, visibleGroup: $visibleGroup, groupLoading: $groupLoading)';
   }
 }
 
@@ -1632,6 +1656,8 @@ abstract mixin class _$GalleryDuplicatesStateCopyWith<$Res>
     GalleryDuplicatesCatalogSnapshot catalogSnapshot,
     Set<GalleryDuplicateMode> modes,
     Map<String, GalleryDuplicateDecision> decisions,
+    int selectedCount,
+    int selectedBytes,
     Set<GalleryMediaRef> invalidated,
     GalleryDuplicateJob? job,
     GalleryDuplicateStartRequest? pendingStart,
@@ -1640,7 +1666,6 @@ abstract mixin class _$GalleryDuplicatesStateCopyWith<$Res>
     bool busy,
     bool failed,
     GalleryErrorCode? requestError,
-    bool setup,
     bool polling,
     int elapsedSeconds,
     int groupIndex,
@@ -1677,6 +1702,8 @@ class __$GalleryDuplicatesStateCopyWithImpl<$Res>
     Object? catalogSnapshot = null,
     Object? modes = null,
     Object? decisions = null,
+    Object? selectedCount = null,
+    Object? selectedBytes = null,
     Object? invalidated = null,
     Object? job = freezed,
     Object? pendingStart = freezed,
@@ -1685,7 +1712,6 @@ class __$GalleryDuplicatesStateCopyWithImpl<$Res>
     Object? busy = null,
     Object? failed = null,
     Object? requestError = freezed,
-    Object? setup = null,
     Object? polling = null,
     Object? elapsedSeconds = null,
     Object? groupIndex = null,
@@ -1707,6 +1733,14 @@ class __$GalleryDuplicatesStateCopyWithImpl<$Res>
             ? _self._decisions
             : decisions // ignore: cast_nullable_to_non_nullable
                   as Map<String, GalleryDuplicateDecision>,
+        selectedCount: null == selectedCount
+            ? _self.selectedCount
+            : selectedCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        selectedBytes: null == selectedBytes
+            ? _self.selectedBytes
+            : selectedBytes // ignore: cast_nullable_to_non_nullable
+                  as int,
         invalidated: null == invalidated
             ? _self._invalidated
             : invalidated // ignore: cast_nullable_to_non_nullable
@@ -1739,10 +1773,6 @@ class __$GalleryDuplicatesStateCopyWithImpl<$Res>
             ? _self.requestError
             : requestError // ignore: cast_nullable_to_non_nullable
                   as GalleryErrorCode?,
-        setup: null == setup
-            ? _self.setup
-            : setup // ignore: cast_nullable_to_non_nullable
-                  as bool,
         polling: null == polling
             ? _self.polling
             : polling // ignore: cast_nullable_to_non_nullable
@@ -1887,13 +1917,13 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     TResult Function(GalleryDuplicatesLoad value)? load,
     TResult Function(GalleryDuplicatesTick value)? tick,
     TResult Function(GalleryDuplicatesCatalog value)? catalog,
-    TResult Function(GalleryDuplicatesMode value)? mode,
     TResult Function(GalleryDuplicatesStart value)? start,
     TResult Function(GalleryDuplicatesStop value)? stop,
-    TResult Function(GalleryDuplicatesSetup value)? setup,
     TResult Function(GalleryDuplicatesDecide value)? decide,
     TResult Function(GalleryDuplicatesMembers value)? members,
     TResult Function(GalleryDuplicatesSkip value)? skip,
+    TResult Function(GalleryDuplicatesGroup value)? group,
+    TResult Function(GalleryDuplicatesClearSelection value)? clearSelection,
     TResult Function(GalleryDuplicatesInvalidate value)? invalidate,
     TResult Function(GalleryDuplicatesReview value)? review,
     TResult Function(GalleryDuplicatesApply value)? apply,
@@ -1907,20 +1937,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick(_that);
       case GalleryDuplicatesCatalog() when catalog != null:
         return catalog(_that);
-      case GalleryDuplicatesMode() when mode != null:
-        return mode(_that);
       case GalleryDuplicatesStart() when start != null:
         return start(_that);
       case GalleryDuplicatesStop() when stop != null:
         return stop(_that);
-      case GalleryDuplicatesSetup() when setup != null:
-        return setup(_that);
       case GalleryDuplicatesDecide() when decide != null:
         return decide(_that);
       case GalleryDuplicatesMembers() when members != null:
         return members(_that);
       case GalleryDuplicatesSkip() when skip != null:
         return skip(_that);
+      case GalleryDuplicatesGroup() when group != null:
+        return group(_that);
+      case GalleryDuplicatesClearSelection() when clearSelection != null:
+        return clearSelection(_that);
       case GalleryDuplicatesInvalidate() when invalidate != null:
         return invalidate(_that);
       case GalleryDuplicatesReview() when review != null:
@@ -1950,13 +1980,14 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     required TResult Function(GalleryDuplicatesLoad value) load,
     required TResult Function(GalleryDuplicatesTick value) tick,
     required TResult Function(GalleryDuplicatesCatalog value) catalog,
-    required TResult Function(GalleryDuplicatesMode value) mode,
     required TResult Function(GalleryDuplicatesStart value) start,
     required TResult Function(GalleryDuplicatesStop value) stop,
-    required TResult Function(GalleryDuplicatesSetup value) setup,
     required TResult Function(GalleryDuplicatesDecide value) decide,
     required TResult Function(GalleryDuplicatesMembers value) members,
     required TResult Function(GalleryDuplicatesSkip value) skip,
+    required TResult Function(GalleryDuplicatesGroup value) group,
+    required TResult Function(GalleryDuplicatesClearSelection value)
+    clearSelection,
     required TResult Function(GalleryDuplicatesInvalidate value) invalidate,
     required TResult Function(GalleryDuplicatesReview value) review,
     required TResult Function(GalleryDuplicatesApply value) apply,
@@ -1969,20 +2000,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick(_that);
       case GalleryDuplicatesCatalog():
         return catalog(_that);
-      case GalleryDuplicatesMode():
-        return mode(_that);
       case GalleryDuplicatesStart():
         return start(_that);
       case GalleryDuplicatesStop():
         return stop(_that);
-      case GalleryDuplicatesSetup():
-        return setup(_that);
       case GalleryDuplicatesDecide():
         return decide(_that);
       case GalleryDuplicatesMembers():
         return members(_that);
       case GalleryDuplicatesSkip():
         return skip(_that);
+      case GalleryDuplicatesGroup():
+        return group(_that);
+      case GalleryDuplicatesClearSelection():
+        return clearSelection(_that);
       case GalleryDuplicatesInvalidate():
         return invalidate(_that);
       case GalleryDuplicatesReview():
@@ -2009,13 +2040,13 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     TResult? Function(GalleryDuplicatesLoad value)? load,
     TResult? Function(GalleryDuplicatesTick value)? tick,
     TResult? Function(GalleryDuplicatesCatalog value)? catalog,
-    TResult? Function(GalleryDuplicatesMode value)? mode,
     TResult? Function(GalleryDuplicatesStart value)? start,
     TResult? Function(GalleryDuplicatesStop value)? stop,
-    TResult? Function(GalleryDuplicatesSetup value)? setup,
     TResult? Function(GalleryDuplicatesDecide value)? decide,
     TResult? Function(GalleryDuplicatesMembers value)? members,
     TResult? Function(GalleryDuplicatesSkip value)? skip,
+    TResult? Function(GalleryDuplicatesGroup value)? group,
+    TResult? Function(GalleryDuplicatesClearSelection value)? clearSelection,
     TResult? Function(GalleryDuplicatesInvalidate value)? invalidate,
     TResult? Function(GalleryDuplicatesReview value)? review,
     TResult? Function(GalleryDuplicatesApply value)? apply,
@@ -2028,20 +2059,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick(_that);
       case GalleryDuplicatesCatalog() when catalog != null:
         return catalog(_that);
-      case GalleryDuplicatesMode() when mode != null:
-        return mode(_that);
       case GalleryDuplicatesStart() when start != null:
         return start(_that);
       case GalleryDuplicatesStop() when stop != null:
         return stop(_that);
-      case GalleryDuplicatesSetup() when setup != null:
-        return setup(_that);
       case GalleryDuplicatesDecide() when decide != null:
         return decide(_that);
       case GalleryDuplicatesMembers() when members != null:
         return members(_that);
       case GalleryDuplicatesSkip() when skip != null:
         return skip(_that);
+      case GalleryDuplicatesGroup() when group != null:
+        return group(_that);
+      case GalleryDuplicatesClearSelection() when clearSelection != null:
+        return clearSelection(_that);
       case GalleryDuplicatesInvalidate() when invalidate != null:
         return invalidate(_that);
       case GalleryDuplicatesReview() when review != null:
@@ -2070,10 +2101,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     TResult Function()? load,
     TResult Function()? tick,
     TResult Function(List<GalleryItem> items)? catalog,
-    TResult Function(GalleryDuplicateMode mode, bool enabled)? mode,
-    TResult Function()? start,
+    TResult Function(Set<GalleryDuplicateMode>? modes)? start,
     TResult Function()? stop,
-    TResult Function(bool visible)? setup,
     TResult Function(
       String groupId,
       String mediaId,
@@ -2082,6 +2111,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     decide,
     TResult Function(int offset)? members,
     TResult Function()? skip,
+    TResult Function(int index)? group,
+    TResult Function()? clearSelection,
     TResult Function(GalleryDuplicateMember member)? invalidate,
     TResult Function()? review,
     TResult Function(String jobId, List<GalleryDuplicateMember> members)? apply,
@@ -2095,20 +2126,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick();
       case GalleryDuplicatesCatalog() when catalog != null:
         return catalog(_that.items);
-      case GalleryDuplicatesMode() when mode != null:
-        return mode(_that.mode, _that.enabled);
       case GalleryDuplicatesStart() when start != null:
-        return start();
+        return start(_that.modes);
       case GalleryDuplicatesStop() when stop != null:
         return stop();
-      case GalleryDuplicatesSetup() when setup != null:
-        return setup(_that.visible);
       case GalleryDuplicatesDecide() when decide != null:
         return decide(_that.groupId, _that.mediaId, _that.decision);
       case GalleryDuplicatesMembers() when members != null:
         return members(_that.offset);
       case GalleryDuplicatesSkip() when skip != null:
         return skip();
+      case GalleryDuplicatesGroup() when group != null:
+        return group(_that.index);
+      case GalleryDuplicatesClearSelection() when clearSelection != null:
+        return clearSelection();
       case GalleryDuplicatesInvalidate() when invalidate != null:
         return invalidate(_that.member);
       case GalleryDuplicatesReview() when review != null:
@@ -2138,10 +2169,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     required TResult Function() load,
     required TResult Function() tick,
     required TResult Function(List<GalleryItem> items) catalog,
-    required TResult Function(GalleryDuplicateMode mode, bool enabled) mode,
-    required TResult Function() start,
+    required TResult Function(Set<GalleryDuplicateMode>? modes) start,
     required TResult Function() stop,
-    required TResult Function(bool visible) setup,
     required TResult Function(
       String groupId,
       String mediaId,
@@ -2150,6 +2179,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     decide,
     required TResult Function(int offset) members,
     required TResult Function() skip,
+    required TResult Function(int index) group,
+    required TResult Function() clearSelection,
     required TResult Function(GalleryDuplicateMember member) invalidate,
     required TResult Function() review,
     required TResult Function(
@@ -2166,20 +2197,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick();
       case GalleryDuplicatesCatalog():
         return catalog(_that.items);
-      case GalleryDuplicatesMode():
-        return mode(_that.mode, _that.enabled);
       case GalleryDuplicatesStart():
-        return start();
+        return start(_that.modes);
       case GalleryDuplicatesStop():
         return stop();
-      case GalleryDuplicatesSetup():
-        return setup(_that.visible);
       case GalleryDuplicatesDecide():
         return decide(_that.groupId, _that.mediaId, _that.decision);
       case GalleryDuplicatesMembers():
         return members(_that.offset);
       case GalleryDuplicatesSkip():
         return skip();
+      case GalleryDuplicatesGroup():
+        return group(_that.index);
+      case GalleryDuplicatesClearSelection():
+        return clearSelection();
       case GalleryDuplicatesInvalidate():
         return invalidate(_that.member);
       case GalleryDuplicatesReview():
@@ -2206,10 +2237,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     TResult? Function()? load,
     TResult? Function()? tick,
     TResult? Function(List<GalleryItem> items)? catalog,
-    TResult? Function(GalleryDuplicateMode mode, bool enabled)? mode,
-    TResult? Function()? start,
+    TResult? Function(Set<GalleryDuplicateMode>? modes)? start,
     TResult? Function()? stop,
-    TResult? Function(bool visible)? setup,
     TResult? Function(
       String groupId,
       String mediaId,
@@ -2218,6 +2247,8 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
     decide,
     TResult? Function(int offset)? members,
     TResult? Function()? skip,
+    TResult? Function(int index)? group,
+    TResult? Function()? clearSelection,
     TResult? Function(GalleryDuplicateMember member)? invalidate,
     TResult? Function()? review,
     TResult? Function(String jobId, List<GalleryDuplicateMember> members)?
@@ -2231,20 +2262,20 @@ extension GalleryDuplicatesEventPatterns on GalleryDuplicatesEvent {
         return tick();
       case GalleryDuplicatesCatalog() when catalog != null:
         return catalog(_that.items);
-      case GalleryDuplicatesMode() when mode != null:
-        return mode(_that.mode, _that.enabled);
       case GalleryDuplicatesStart() when start != null:
-        return start();
+        return start(_that.modes);
       case GalleryDuplicatesStop() when stop != null:
         return stop();
-      case GalleryDuplicatesSetup() when setup != null:
-        return setup(_that.visible);
       case GalleryDuplicatesDecide() when decide != null:
         return decide(_that.groupId, _that.mediaId, _that.decision);
       case GalleryDuplicatesMembers() when members != null:
         return members(_that.offset);
       case GalleryDuplicatesSkip() when skip != null:
         return skip();
+      case GalleryDuplicatesGroup() when group != null:
+        return group(_that.index);
+      case GalleryDuplicatesClearSelection() when clearSelection != null:
+        return clearSelection();
       case GalleryDuplicatesInvalidate() when invalidate != null:
         return invalidate(_that.member);
       case GalleryDuplicatesReview() when review != null:
@@ -2377,18 +2408,25 @@ class _$GalleryDuplicatesCatalogCopyWithImpl<$Res>
 
 /// @nodoc
 
-class GalleryDuplicatesMode implements GalleryDuplicatesEvent {
-  const GalleryDuplicatesMode(this.mode, this.enabled);
+class GalleryDuplicatesStart implements GalleryDuplicatesEvent {
+  const GalleryDuplicatesStart({Set<GalleryDuplicateMode>? modes})
+    : _modes = modes;
 
-  final GalleryDuplicateMode mode;
-  final bool enabled;
+  final Set<GalleryDuplicateMode>? _modes;
+  Set<GalleryDuplicateMode>? get modes {
+    final value = _modes;
+    if (value == null) return null;
+    if (_modes is EqualUnmodifiableSetView) return _modes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
 
   /// Create a copy of GalleryDuplicatesEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $GalleryDuplicatesModeCopyWith<GalleryDuplicatesMode> get copyWith =>
-      _$GalleryDuplicatesModeCopyWithImpl<GalleryDuplicatesMode>(
+  $GalleryDuplicatesStartCopyWith<GalleryDuplicatesStart> get copyWith =>
+      _$GalleryDuplicatesStartCopyWithImpl<GalleryDuplicatesStart>(
         this,
         _$identity,
       );
@@ -2397,77 +2435,55 @@ class GalleryDuplicatesMode implements GalleryDuplicatesEvent {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is GalleryDuplicatesMode &&
-            (identical(other.mode, mode) || other.mode == mode) &&
-            (identical(other.enabled, enabled) || other.enabled == enabled));
+            other is GalleryDuplicatesStart &&
+            const DeepCollectionEquality().equals(other.modes, _modes));
   }
 
   @override
   int get hashCode {
-    return Object.hash(runtimeType, mode, enabled);
+    return Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_modes),
+    );
   }
 
   @override
   String toString() {
-    return 'GalleryDuplicatesEvent.mode(mode: $mode, enabled: $enabled)';
+    return 'GalleryDuplicatesEvent.start(modes: $modes)';
   }
 }
 
 /// @nodoc
-abstract mixin class $GalleryDuplicatesModeCopyWith<$Res>
+abstract mixin class $GalleryDuplicatesStartCopyWith<$Res>
     implements $GalleryDuplicatesEventCopyWith<$Res> {
-  factory $GalleryDuplicatesModeCopyWith(
-    GalleryDuplicatesMode value,
-    $Res Function(GalleryDuplicatesMode) _then,
-  ) = _$GalleryDuplicatesModeCopyWithImpl;
+  factory $GalleryDuplicatesStartCopyWith(
+    GalleryDuplicatesStart value,
+    $Res Function(GalleryDuplicatesStart) _then,
+  ) = _$GalleryDuplicatesStartCopyWithImpl;
   @useResult
-  $Res call({GalleryDuplicateMode mode, bool enabled});
+  $Res call({Set<GalleryDuplicateMode>? modes});
 }
 
 /// @nodoc
-class _$GalleryDuplicatesModeCopyWithImpl<$Res>
-    implements $GalleryDuplicatesModeCopyWith<$Res> {
-  _$GalleryDuplicatesModeCopyWithImpl(this._self, this._then);
+class _$GalleryDuplicatesStartCopyWithImpl<$Res>
+    implements $GalleryDuplicatesStartCopyWith<$Res> {
+  _$GalleryDuplicatesStartCopyWithImpl(this._self, this._then);
 
-  final GalleryDuplicatesMode _self;
-  final $Res Function(GalleryDuplicatesMode) _then;
+  final GalleryDuplicatesStart _self;
+  final $Res Function(GalleryDuplicatesStart) _then;
 
   /// Create a copy of GalleryDuplicatesEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? mode = null, Object? enabled = null}) {
+  $Res call({Object? modes = freezed}) {
     return _then(
-      GalleryDuplicatesMode(
-        null == mode
-            ? _self.mode
-            : mode // ignore: cast_nullable_to_non_nullable
-                  as GalleryDuplicateMode,
-        null == enabled
-            ? _self.enabled
-            : enabled // ignore: cast_nullable_to_non_nullable
-                  as bool,
+      GalleryDuplicatesStart(
+        modes: freezed == modes
+            ? _self._modes
+            : modes // ignore: cast_nullable_to_non_nullable
+                  as Set<GalleryDuplicateMode>?,
       ),
     );
-  }
-}
-
-/// @nodoc
-
-class GalleryDuplicatesStart implements GalleryDuplicatesEvent {
-  const GalleryDuplicatesStart();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is GalleryDuplicatesStart);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'GalleryDuplicatesEvent.start()';
   }
 }
 
@@ -2488,76 +2504,6 @@ class GalleryDuplicatesStop implements GalleryDuplicatesEvent {
   @override
   String toString() {
     return 'GalleryDuplicatesEvent.stop()';
-  }
-}
-
-/// @nodoc
-
-class GalleryDuplicatesSetup implements GalleryDuplicatesEvent {
-  const GalleryDuplicatesSetup(this.visible);
-
-  final bool visible;
-
-  /// Create a copy of GalleryDuplicatesEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $GalleryDuplicatesSetupCopyWith<GalleryDuplicatesSetup> get copyWith =>
-      _$GalleryDuplicatesSetupCopyWithImpl<GalleryDuplicatesSetup>(
-        this,
-        _$identity,
-      );
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is GalleryDuplicatesSetup &&
-            (identical(other.visible, visible) || other.visible == visible));
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(runtimeType, visible);
-  }
-
-  @override
-  String toString() {
-    return 'GalleryDuplicatesEvent.setup(visible: $visible)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $GalleryDuplicatesSetupCopyWith<$Res>
-    implements $GalleryDuplicatesEventCopyWith<$Res> {
-  factory $GalleryDuplicatesSetupCopyWith(
-    GalleryDuplicatesSetup value,
-    $Res Function(GalleryDuplicatesSetup) _then,
-  ) = _$GalleryDuplicatesSetupCopyWithImpl;
-  @useResult
-  $Res call({bool visible});
-}
-
-/// @nodoc
-class _$GalleryDuplicatesSetupCopyWithImpl<$Res>
-    implements $GalleryDuplicatesSetupCopyWith<$Res> {
-  _$GalleryDuplicatesSetupCopyWithImpl(this._self, this._then);
-
-  final GalleryDuplicatesSetup _self;
-  final $Res Function(GalleryDuplicatesSetup) _then;
-
-  /// Create a copy of GalleryDuplicatesEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? visible = null}) {
-    return _then(
-      GalleryDuplicatesSetup(
-        null == visible
-            ? _self.visible
-            : visible // ignore: cast_nullable_to_non_nullable
-                  as bool,
-      ),
-    );
   }
 }
 
@@ -2739,6 +2685,97 @@ class GalleryDuplicatesSkip implements GalleryDuplicatesEvent {
   @override
   String toString() {
     return 'GalleryDuplicatesEvent.skip()';
+  }
+}
+
+/// @nodoc
+
+class GalleryDuplicatesGroup implements GalleryDuplicatesEvent {
+  const GalleryDuplicatesGroup(this.index);
+
+  final int index;
+
+  /// Create a copy of GalleryDuplicatesEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GalleryDuplicatesGroupCopyWith<GalleryDuplicatesGroup> get copyWith =>
+      _$GalleryDuplicatesGroupCopyWithImpl<GalleryDuplicatesGroup>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GalleryDuplicatesGroup &&
+            (identical(other.index, index) || other.index == index));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, index);
+  }
+
+  @override
+  String toString() {
+    return 'GalleryDuplicatesEvent.group(index: $index)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $GalleryDuplicatesGroupCopyWith<$Res>
+    implements $GalleryDuplicatesEventCopyWith<$Res> {
+  factory $GalleryDuplicatesGroupCopyWith(
+    GalleryDuplicatesGroup value,
+    $Res Function(GalleryDuplicatesGroup) _then,
+  ) = _$GalleryDuplicatesGroupCopyWithImpl;
+  @useResult
+  $Res call({int index});
+}
+
+/// @nodoc
+class _$GalleryDuplicatesGroupCopyWithImpl<$Res>
+    implements $GalleryDuplicatesGroupCopyWith<$Res> {
+  _$GalleryDuplicatesGroupCopyWithImpl(this._self, this._then);
+
+  final GalleryDuplicatesGroup _self;
+  final $Res Function(GalleryDuplicatesGroup) _then;
+
+  /// Create a copy of GalleryDuplicatesEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? index = null}) {
+    return _then(
+      GalleryDuplicatesGroup(
+        null == index
+            ? _self.index
+            : index // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class GalleryDuplicatesClearSelection implements GalleryDuplicatesEvent {
+  const GalleryDuplicatesClearSelection();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GalleryDuplicatesClearSelection);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'GalleryDuplicatesEvent.clearSelection()';
   }
 }
 

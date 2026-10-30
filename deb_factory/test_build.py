@@ -170,8 +170,17 @@ class DebBuildTest(unittest.TestCase):
             self.assertIn('ffmpeg', dependency_items)
             self.assertIn('libjpeg-progs | libjpeg-turbo-progs', dependency_items)
             self.assertNotIn('libimage-exiftool-perl', dependency_items)
-            recommendations = next(line.removeprefix('Recommends:') for line in control if line.startswith('Recommends:'))
-            self.assertIn('czkawka-cli (>= 8.0)', [item.strip() for item in recommendations.split(',')])
+            for dependency in ('curl', 'ca-certificates', 'libc6 (>= 2.34)', 'libgcc-s1'):
+                self.assertIn(dependency, dependency_items)
+            self.assertNotIn('czkawka-cli', '\n'.join(control))
+            for name in ('postinst', 'postrm'):
+                script = extracted / 'DEBIAN' / name
+                self.assertEqual(script.read_bytes(), (FACTORY / 'template_build_arm64/DEBIAN' / name).read_bytes())
+                self.assertTrue(os.access(script, os.X_OK))
+            installer = extracted / 'opt/dslideshow/scripts/install_czkawka.sh'
+            self.assertTrue(os.access(installer, os.X_OK))
+            # Download happens on the frame during configure, not during build.
+            self.assertFalse((extracted / 'opt/dslideshow/bin/czkawka_cli').exists())
 
 
 class DebParallelFailureTest(unittest.TestCase):

@@ -4730,12 +4730,6 @@ abstract class AppLocalizations {
   /// **'See the system log for details.'**
   String get otaLogDetails;
 
-  /// No description provided for @otaReturnToSlideshow.
-  ///
-  /// In en, this message translates to:
-  /// **'Press the frame’s Back button to return to the slideshow.'**
-  String get otaReturnToSlideshow;
-
   /// No description provided for @otaInstalled.
   ///
   /// In en, this message translates to:
@@ -5083,6 +5077,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New search'**
   String get gallery_search_new;
+
+  /// No description provided for @gallery_search_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'New duplicate search'**
+  String get gallery_search_dialog_title;
+
+  /// No description provided for @gallery_search_choose_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'What to search for'**
+  String get gallery_search_choose_mode;
+
+  /// No description provided for @gallery_search_both.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact and similar'**
+  String get gallery_search_both;
+
+  /// No description provided for @gallery_search_exact_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Files with identical contents'**
+  String get gallery_search_exact_description;
+
+  /// No description provided for @gallery_search_similar_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar photos, including resized copies'**
+  String get gallery_search_similar_description;
+
+  /// No description provided for @gallery_search_both_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Both types of matches in one search'**
+  String get gallery_search_both_description;
+
+  /// No description provided for @gallery_search_preserve_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelling or a failed search keeps the previous results and your selections.'**
+  String get gallery_search_preserve_results;
+
+  /// No description provided for @gallery_search_background_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can leave this section. The search will continue.'**
+  String get gallery_search_background_hint;
+
+  /// No description provided for @gallery_search_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search completed'**
+  String get gallery_search_completed;
+
+  /// No description provided for @gallery_search_not_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search not completed'**
+  String get gallery_search_not_completed;
+
+  /// No description provided for @gallery_search_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Find copies in your photo library'**
+  String get gallery_search_ready;
+
+  /// No description provided for @gallery_search_details.
+  ///
+  /// In en, this message translates to:
+  /// **'About the last search'**
+  String get gallery_search_details;
+
+  /// No description provided for @gallery_search_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} group} other{{count} groups}}'**
+  String gallery_search_groups(int count);
+
+  /// No description provided for @gallery_group_files.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} file} other{{count} files}}'**
+  String gallery_group_files(int count);
+
+  /// No description provided for @gallery_previous_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous group'**
+  String get gallery_previous_group;
+
+  /// No description provided for @gallery_next_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Next group'**
+  String get gallery_next_group;
+
+  /// No description provided for @gallery_candidate_help.
+  ///
+  /// In en, this message translates to:
+  /// **'How is the candidate chosen?'**
+  String get gallery_candidate_help;
+
+  /// No description provided for @gallery_clear_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get gallery_clear_selection;
+
+  /// No description provided for @gallery_selection_volume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume: {size}'**
+  String gallery_selection_volume(String size);
+
+  /// No description provided for @gallery_open_photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open photo'**
+  String get gallery_open_photo;
 
   /// No description provided for @gallery_search_start.
   ///
@@ -5495,8 +5609,8 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_purge_body.
   ///
   /// In en, this message translates to:
-  /// **'{count} files, {bytes} bytes. They cannot be restored through the photo frame.'**
-  String gallery_purge_body(int count, int bytes);
+  /// **'Files to delete: {count}. Expected space freed: {size}. They cannot be restored through the photo frame.'**
+  String gallery_purge_body(int count, String size);
 
   /// No description provided for @gallery_group_position.
   ///
@@ -5527,6 +5641,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get gallery_no;
+
+  /// No description provided for @gallery_more_files_trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional files to move to Trash: {count}.'**
+  String gallery_more_files_trash(int count);
+
+  /// No description provided for @gallery_more_files_purge.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional files to delete: {count}.'**
+  String gallery_more_files_purge(int count);
+
+  /// No description provided for @gallery_size_megabytes.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} MB'**
+  String gallery_size_megabytes(String value);
+
+  /// No description provided for @gallery_size_bytes.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact size: {bytes} bytes'**
+  String gallery_size_bytes(int bytes);
+
+  /// No description provided for @gallery_file_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get gallery_file_location;
+
+  /// No description provided for @gallery_library_root.
+  ///
+  /// In en, this message translates to:
+  /// **'Media library root'**
+  String get gallery_library_root;
+
+  /// No description provided for @gallery_show_full_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Full path'**
+  String get gallery_show_full_path;
+
+  /// No description provided for @gallery_hide_full_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide full path'**
+  String get gallery_hide_full_path;
+
+  /// No description provided for @gallery_resolution_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution unavailable'**
+  String get gallery_resolution_unknown;
+
+  /// No description provided for @gallery_recommend_first_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact copies are equivalent; the first file is suggested.'**
+  String get gallery_recommend_first_copy;
+
+  /// No description provided for @gallery_recommend_first_tied.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: first among files with the highest resolution'**
+  String get gallery_recommend_first_tied;
+
+  /// No description provided for @gallery_recommend_known_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Provisional: highest known resolution'**
+  String get gallery_recommend_known_resolution;
+
+  /// No description provided for @gallery_recommend_first_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution unavailable; the first file is suggested.'**
+  String get gallery_recommend_first_unknown;
+
+  /// No description provided for @gallery_resolution_minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum resolution'**
+  String get gallery_resolution_minimum;
+
+  /// No description provided for @gallery_resolution_intermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Below maximum'**
+  String get gallery_resolution_intermediate;
+
+  /// No description provided for @gallery_resolution_same.
+  ///
+  /// In en, this message translates to:
+  /// **'Same resolution'**
+  String get gallery_resolution_same;
+
+  /// No description provided for @gallery_file_smallest.
+  ///
+  /// In en, this message translates to:
+  /// **'Takes less space; not a quality rating'**
+  String get gallery_file_smallest;
+
+  /// No description provided for @gallery_recommend_keep.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended to keep'**
+  String get gallery_recommend_keep;
+
+  /// No description provided for @gallery_recommend_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: highest resolution in the group'**
+  String get gallery_recommend_resolution;
+
+  /// No description provided for @gallery_resolution_recommendation_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.'**
+  String get gallery_resolution_recommendation_hint;
+
+  /// No description provided for @gallery_comparison_partial.
+  ///
+  /// In en, this message translates to:
+  /// **'Some resolutions are unknown; the recommendation is provisional and may change.'**
+  String get gallery_comparison_partial;
+
+  /// No description provided for @gallery_equivalent_copies.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact copies are equivalent; the first file is recommended.'**
+  String get gallery_equivalent_copies;
+
+  /// No description provided for @configPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your photo frame'**
+  String get configPageTitle;
+
+  /// No description provided for @configPageIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the settings panel on your phone or computer.'**
+  String get configPageIntro;
+
+  /// No description provided for @configPageStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting settings access…'**
+  String get configPageStarting;
+
+  /// No description provided for @configPageAddressPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the local network address…'**
+  String get configPageAddressPreparing;
+
+  /// No description provided for @configPageNoAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the frame to a local network, then check the connection.'**
+  String get configPageNoAddress;
+
+  /// No description provided for @configPageCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Access code'**
+  String get configPageCode;
+
+  /// No description provided for @configPageNetworkStep.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.'**
+  String get configPageNetworkStep;
+
+  /// No description provided for @configPageScanStep.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Scan the QR code or open the address below.'**
+  String get configPageScanStep;
+
+  /// No description provided for @configPageCodeStep.
+  ///
+  /// In en, this message translates to:
+  /// **'3. Enter the access code in the settings panel.'**
+  String get configPageCodeStep;
+
+  /// No description provided for @configPageManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual connection'**
+  String get configPageManual;
+
+  /// No description provided for @configPageCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check connection'**
+  String get configPageCheck;
+
+  /// No description provided for @configPageRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get configPageRetry;
+
+  /// No description provided for @configPageReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to slideshow'**
+  String get configPageReturn;
+
+  /// No description provided for @configPageReturnAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Return without confirmation'**
+  String get configPageReturnAnyway;
+
+  /// No description provided for @configPageChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the network…'**
+  String get configPageChecking;
+
+  /// No description provided for @configPageCacheHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Network information may take up to a minute to update.'**
+  String get configPageCacheHint;
+
+  /// No description provided for @configPageServerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start settings access.'**
+  String get configPageServerError;
+
+  /// No description provided for @configPageNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to read network information.'**
+  String get configPageNetworkError;
+
+  /// No description provided for @configPageTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The operation took too long.'**
+  String get configPageTimeout;
+
+  /// No description provided for @configPageUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to prepare settings access. Try again.'**
+  String get configPageUnknownError;
+
+  /// No description provided for @configPagePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the previous operation to finish. You can return to the slideshow.'**
+  String get configPagePending;
+
+  /// No description provided for @configPageClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing settings access…'**
+  String get configPageClosing;
+
+  /// No description provided for @configPageClosingAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing this screen. Settings access stays enabled by configuration.'**
+  String get configPageClosingAlways;
+
+  /// No description provided for @configPageCloseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not confirm that settings access has ended. Retry, or return without confirmation.'**
+  String get configPageCloseError;
 }
 
 class _AppLocalizationsDelegate

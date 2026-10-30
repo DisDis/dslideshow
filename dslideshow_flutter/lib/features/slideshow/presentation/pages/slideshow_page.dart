@@ -75,7 +75,7 @@ class _SlideshowOverlays extends StatelessWidget {
             Positioned(
               left: hintLeft,
               top: hintTop,
-              child: ButtonsHintWidget(buttons: appConfig.slideshow.buttons),
+              child: const ButtonsHintWidget(),
             ),
             StateNotify(isPaused: state.isPaused),
             if (state.isInfo) const SystemInfoWidget(),

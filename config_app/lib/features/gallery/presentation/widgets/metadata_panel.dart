@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../domain/gallery_item.dart';
 import '../../../theme/presentation/extensions/build_context_ext.dart';
+import 'gallery_file_path.dart';
+import 'gallery_file_size.dart';
 
 class MetadataPanel extends StatelessWidget {
   const MetadataPanel({
@@ -27,13 +29,8 @@ class MetadataPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final data = metadata;
     final trash = trashEntry;
+    final sizeBytes = data?.sizeBytes ?? trash?.sizeBytes;
     final fields = <(String, String?)>[
-      (
-        l.gallery_file_size,
-        (data?.sizeBytes ?? trash?.sizeBytes) == null
-            ? null
-            : '${data?.sizeBytes ?? trash?.sizeBytes} B · ${((data?.sizeBytes ?? trash!.sizeBytes) / 1048576).toStringAsFixed(2)} MiB',
-      ),
       (
         l.gallery_resolution,
         data?.width != null && data?.height != null
@@ -91,21 +88,11 @@ class MetadataPanel extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SelectableText(
-                    data?.name ?? trash?.name ?? item.title,
-                    style: theme.textTheme.titleSmall,
+                  GalleryFilePath(
+                    relativePath: data?.path ?? trash?.originalPath,
+                    name: data?.name ?? trash?.name ?? item.title,
+                    style: GalleryFilePathStyle.breadcrumbs,
                   ),
-                  if ((data?.path ?? trash?.originalPath)
-                      case final String path)
-                    if (path != (data?.name ?? trash?.name ?? item.title)) ...[
-                      const SizedBox(height: 4),
-                      SelectableText(
-                        path,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
                   if (loading)
                     const Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -135,29 +122,21 @@ class MetadataPanel extends StatelessWidget {
                         ],
                       ),
                     ),
+                  if (sizeBytes != null)
+                    _MetadataField(
+                      label: l.gallery_file_size,
+                      value: GalleryFileSize(
+                        bytes: sizeBytes,
+                        selectable: true,
+                      ),
+                    ),
                   for (final (label, value) in fields)
                     if (value != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                label,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: SelectableText(
-                                value,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                          ],
+                      _MetadataField(
+                        label: label,
+                        value: SelectableText(
+                          value,
+                          style: theme.textTheme.bodyMedium,
                         ),
                       ),
                   if (data?.latitude != null && data?.longitude != null)
@@ -177,6 +156,35 @@ class MetadataPanel extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetadataField extends StatelessWidget {
+  const _MetadataField({required this.label, required this.value});
+  final String label;
+  final Widget value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(child: value),
         ],
       ),
     );

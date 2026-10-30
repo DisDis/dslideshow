@@ -146,7 +146,7 @@ void main() {
       expect(
         find.descendant(
           of: dialog,
-          matching: find.text('Showing the first 10 files.'),
+          matching: find.text('Additional files to move to Trash: 1.'),
         ),
         findsOneWidget,
       );

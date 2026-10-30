@@ -55,6 +55,10 @@ void main() {
 
       expect(english.gallery_duplicate_members(1, 10, 12), 'Files 1–10 of 12');
       expect(russian.gallery_duplicate_members(1, 10, 12), 'Файлы 1–10 из 12');
+      expect(english.gallery_search_groups(1), '1 group');
+      expect(russian.gallery_search_groups(2), '2 группы');
+      expect(russian.gallery_search_groups(12), '12 групп');
+      expect(russian.gallery_group_files(21), '21 файл');
       expect(english.config_save_button, 'Save');
       expect(russian.config_save_button, 'Сохранить');
       expect(english.config_app_title, 'DSlideshow Config');
@@ -66,6 +70,9 @@ void main() {
       expect(russian.otaStepReceive, '1. Получение');
       expect(russian.otaStepInstall, '2. Установка');
       expect(russian.otaStepRestart, '3. Перезапуск');
+      expect(english.configPageTitle, 'Set up your photo frame');
+      expect(russian.configPageTitle, 'Настройка фоторамки');
+      expect(russian.configPageRetry, 'Повторить');
       expect(russian.not_found_with_id('photo-123'), 'Не найдено: «photo-123»');
       expect(
         russian.transition_display_times(250, 5000),

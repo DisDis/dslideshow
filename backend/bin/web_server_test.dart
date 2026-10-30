@@ -20,7 +20,11 @@ void main(List<String> args) async {
     final injector = GetIt.instance;
     injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
-      return new WebService(_config, _config.webServer, new FakeRemoteService(name: 'backend'));
+      return new WebService(
+        _config,
+        _config.webServer,
+        new FakeRemoteService(name: 'backend'),
+      );
     });
 
     var config = injector.get<AppConfig>();
@@ -29,7 +33,11 @@ void main(List<String> args) async {
 
     var service = injector.get<WebService>();
     new Timer(const Duration(seconds: 1), () {
-      service.enabled = true;
+      unawaited(
+        service.setEnabled(true).catchError((Object error) {
+          _log.warning('Web control failed type=${error.runtimeType}');
+        }),
+      );
     });
   } catch (error) {
     _log.severe('Web startup failed type=${error.runtimeType}');

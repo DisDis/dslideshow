@@ -482,7 +482,7 @@ void main() {
       expect(bloc.state.confirmation!.items, hasLength(3));
       expect(
         find.text(
-          '3 files, 6 bytes. They cannot be restored through the photo frame.',
+          'Files to delete: 3. Expected space freed: < 0.01 MB. They cannot be restored through the photo frame.',
         ),
         findsOneWidget,
       );

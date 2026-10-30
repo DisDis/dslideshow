@@ -14,6 +14,10 @@ logger -s -p "syslog.err" -t "dslideshow.deb" "dslideshow.deb script '$0' error 
 exit $exit_status
 }
 
+# Only configure installs the CLI; dpkg may also call postinst during recovery.
+[ "${1:-}" = configure ] || exit 0
+"${DPKG_ROOT:-}/opt/dslideshow/scripts/install_czkawka.sh" || exit $?
+
 # Give the pi permission to use 3D acceleration.
 sudo usermod -a -G render pi
 

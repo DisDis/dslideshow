@@ -28,6 +28,7 @@ typedef _CandidateSnapshot = ({
 
 /// Owns one headless CLI task independently from page and catalog lifetimes.
 class GalleryDuplicateService {
+  static const _similarImageFilter = 'Lanczos3';
   static final _log = Logger('GalleryDuplicateService');
   static final _operationPattern = RegExp(r'^[a-zA-Z0-9_-]{1,100}$');
   static final _versionPattern = RegExp(
@@ -382,7 +383,8 @@ class GalleryDuplicateService {
         _log.info(
           () =>
               'Search mode started operation=${_operationLabel(jobId)} '
-              '${_diagnosticLog(diagnostics)}',
+              '${_diagnosticLog(diagnostics)}'
+              '${mode == GalleryDuplicateMode.similar ? ' imageFilter=$_similarImageFilter' : ''}',
         );
         final output = File(path.join(temporary.path, '${mode.name}.json'));
         final result = await _runner.run(
@@ -411,6 +413,9 @@ class GalleryDuplicateService {
               'HASH',
               '--hash-type',
               'BLAKE3',
+            ] else ...[
+              '--image-filter',
+              _similarImageFilter,
             ],
           ],
           timeout: processTimeout,

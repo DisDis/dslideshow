@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+
+# An old postrm also runs on upgrade; keep the CLI for the new package.
+case "${1:-}" in
+    remove|purge) ;;
+    *) exit 0 ;;
+esac
+
+trap 'status=$?; logger -s -p syslog.err -t dslideshow.deb -- "component=czkawka-install operation=$$ action=remove result=failed exit=$status" || :; exit "$status"' ERR
+
+LINK="${DPKG_ROOT:-}/usr/local/bin/czkawka_cli"
+TARGET="${DPKG_ROOT:-}/opt/dslideshow/bin/czkawka_cli"
+if [ -L "$LINK" ] && [ "$(readlink -- "$LINK")" = ../../../opt/dslideshow/bin/czkawka_cli ]; then
+    rm -f -- "$LINK"
+fi
+rm -f -- "$TARGET"
+rmdir -- "${TARGET%/*}" 2>/dev/null || :
+logger -s -p syslog.info -t dslideshow.deb -- "component=czkawka-install operation=$$ action=remove result=completed" || :

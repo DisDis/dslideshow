@@ -8,29 +8,40 @@ import 'package:dslideshow_flutter/features/theme/presentation/src/theme_colors.
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'buttons_hint_event.dart';
 part 'buttons_hint_state.dart';
 part 'buttons_hint_bloc.freezed.dart';
 
+enum ButtonsHintMode { slideshow, contextual }
+
 class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
-  final FrontendService frontendService;
-  final SlideshowStatusBloc statusBloc;
-  final AppConfig appConfig;
-
-  late StreamSubscription<ButtonEvent> _onButtonEventSubscription;
-  late StreamSubscription _onStatusSubscription;
-  late SlideshowStatusState _currentStatus;
-  late Timer _hideHintTimer;
-  DateTime _lastButtonActive = DateTime.now();
-
   ButtonsHintBloc({
+    required FrontendService frontendService,
+    required SlideshowStatusBloc statusBloc,
+    required AppConfig appConfig,
+  }) : this._(
+         frontendService: frontendService,
+         statusBloc: statusBloc,
+         appConfig: appConfig,
+         mode: ButtonsHintMode.slideshow,
+       );
+
+  ButtonsHintBloc.contextual({required FrontendService frontendService})
+    : this._(
+        frontendService: frontendService,
+        mode: ButtonsHintMode.contextual,
+      );
+
+  ButtonsHintBloc._({
     required this.frontendService,
-    required this.statusBloc,
-    required this.appConfig,
+    required this.mode,
+    this._statusBloc,
+    this._appConfig,
   }) : super(
-         ButtonsHintDisplayState(
-           isShow: false,
+         ButtonsHintState.display(
+           isShow: mode == ButtonsHintMode.contextual,
            normalColor: ThemeColors.buttonsHintColor,
            pushColor: ThemeColors.buttonsHintPressedColor,
            button0Icon: Icons.arrow_back,
@@ -43,148 +54,171 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
            button3isPush: false,
          ),
        ) {
-    on<ButtonsHintPushButtonEvent>(_onPushButtonEvent);
-    on<ButtonsHintShowEvent>(_onShowEvent);
-    _onButtonEventSubscription = frontendService.onButtonEvent.listen(
-      _onButtonEvent,
-    );
-    on<ButtonsHintUpdateButtonsEvent>(_onUpdateButtons);
-    _hideHintTimer = Timer(Duration(seconds: 5), _hideHint);
-    _startAutoHideHint();
-    _currentStatus = statusBloc.state;
-    _onStatusChanged(_currentStatus, true);
-    _onStatusSubscription = statusBloc.stream.listen(_onStatusChanged);
-  }
-
-  void _startAutoHideHint([bool isForce = false]) {
-    if (isForce || !_hideHintTimer.isActive) {
-      _hideHintTimer = Timer(Duration(seconds: 5), _hideHint);
-    }
-  }
-
-  void _hideHint() {
-    if (!_currentStatus.isMenu) {
-      if ((DateTime.now().difference(_lastButtonActive).inSeconds > 5)) {
-        if (!isClosed){
-        add(ButtonsHintShowEvent(isShow: false));
-        }
-      } else {
-        _startAutoHideHint(true);
+    on<ButtonsHintShowEvent>((event, emit) {
+      if (!_closing) {
+        emit(
+          state.copyWith(
+            isShow: mode == ButtonsHintMode.contextual || event.isShow,
+          ),
+        );
       }
+    });
+    on<ButtonsHintUpdateButtonsEvent>((event, emit) {
+      if (_closing || mode == ButtonsHintMode.contextual) return;
+      final menu = _statusBloc!.state.isMenu;
+      _log.fine('Slideshow hint profile menu=$menu');
+      emit(
+        state.copyWith(
+          isShow: true,
+          button0Icon: menu
+              ? Icons.arrow_back
+              : getIconDataBySlideshowAction(
+                  _appConfig!.slideshow.buttons.button0.action,
+                ),
+          button1Icon: menu
+              ? Icons.arrow_circle_down
+              : getIconDataBySlideshowAction(
+                  _appConfig!.slideshow.buttons.button1.action,
+                ),
+          button2Icon: menu
+              ? Icons.arrow_circle_up
+              : getIconDataBySlideshowAction(
+                  _appConfig!.slideshow.buttons.button2.action,
+                ),
+          button3Icon: menu
+              ? Icons.check_circle_outline_outlined
+              : getIconDataBySlideshowAction(
+                  _appConfig!.slideshow.buttons.button3.action,
+                ),
+        ),
+      );
+      _resetHideTimer();
+    });
+    on<ButtonsHintButtonChanged>(_buttonChanged);
+    on<ButtonsHintClearPress>((event, emit) {
+      if (!_closing) _setPressed(event.button, false, emit);
+    });
+    _buttons = frontendService.onButtonEvent.listen(
+      (event) {
+        if (!_closing) {
+          add(
+            ButtonsHintEvent.buttonChanged(
+              button: event.button,
+              type: event.event,
+            ),
+          );
+        }
+      },
+      onError: (Object error) =>
+          _log.warning('Button hint stream failed type=${error.runtimeType}'),
+    );
+    if (mode == ButtonsHintMode.slideshow) {
+      _status = _statusBloc!.stream.listen((status) {
+        if (!_closing && status.isMenu != _menu) {
+          _menu = status.isMenu;
+          add(const ButtonsHintEvent.updateButtons());
+        }
+      });
+      _menu = _statusBloc.state.isMenu;
+      add(const ButtonsHintEvent.updateButtons());
+    }
+    _log.info('Button hints started mode=${mode.name}');
+  }
+
+  static final _log = Logger('ButtonsHintBloc');
+  final FrontendService frontendService;
+  final ButtonsHintMode mode;
+  final SlideshowStatusBloc? _statusBloc;
+  final AppConfig? _appConfig;
+  late final StreamSubscription<ButtonEvent> _buttons;
+  StreamSubscription<SlideshowStatusState>? _status;
+  Timer? _hideTimer;
+  final _pressTimers = <ButtonType, Timer>{};
+  bool _menu = false;
+  bool _closing = false;
+  final _closed = Completer<void>();
+
+  void _resetHideTimer() {
+    _hideTimer?.cancel();
+    if (mode == ButtonsHintMode.contextual || _menu || _closing) return;
+    _hideTimer = Timer(const Duration(seconds: 5), () {
+      if (!_closing) add(const ButtonsHintEvent.show(isShow: false));
+    });
+  }
+
+  void _buttonChanged(
+    ButtonsHintButtonChanged event,
+    Emitter<ButtonsHintState> emit,
+  ) {
+    if (_closing) return;
+    _pressTimers.remove(event.button)?.cancel();
+    _log.fine(
+      'Button hint button=${event.button.name} type=${event.type.name}',
+    );
+    _setPressed(event.button, true, emit);
+    _resetHideTimer();
+    if (event.type == ButtonEventType.released) {
+      _pressTimers[event.button] = Timer(const Duration(milliseconds: 200), () {
+        if (!_closing) add(ButtonsHintEvent.clearPress(button: event.button));
+      });
     }
   }
 
-  FutureOr<void> _onStatusChanged(
-    SlideshowStatusState state, [
-    bool isForceUpdate = false,
-  ]) {
-    if (isForceUpdate || _currentStatus.isMenu != state.isMenu) {
-      _currentStatus = state;
-      add(ButtonsHintUpdateButtonsEvent());
-    }
-    _currentStatus = state;
+  void _setPressed(
+    ButtonType button,
+    bool pressed,
+    Emitter<ButtonsHintState> emit,
+  ) {
+    emit(switch (button) {
+      ButtonType.button0 => state.copyWith(
+        isShow: true,
+        button0isPush: pressed,
+      ),
+      ButtonType.button1 => state.copyWith(
+        isShow: true,
+        button1isPush: pressed,
+      ),
+      ButtonType.button2 => state.copyWith(
+        isShow: true,
+        button2isPush: pressed,
+      ),
+      ButtonType.button3 => state.copyWith(
+        isShow: true,
+        button3isPush: pressed,
+      ),
+    });
   }
 
-  FutureOr<void> _onPushButtonEvent(
-    ButtonsHintPushButtonEvent event,
-    emit,
-  ) async {
-    switch (event.button) {
-      case ButtonType.button0:
-        emit(state.copyWith(button0isPush: true));
-        await Future.delayed(Duration(milliseconds: 200));
-        emit(state.copyWith(button0isPush: false));
-        break;
-      case ButtonType.button1:
-        emit(state.copyWith(button1isPush: true));
-        await Future.delayed(Duration(milliseconds: 200));
-        emit(state.copyWith(button1isPush: false));
-        break;
-      case ButtonType.button2:
-        emit(state.copyWith(button2isPush: true));
-        await Future.delayed(Duration(milliseconds: 200));
-        emit(state.copyWith(button2isPush: false));
-        break;
-      case ButtonType.button3:
-        emit(state.copyWith(button3isPush: true));
-        await Future.delayed(Duration(milliseconds: 200));
-        emit(state.copyWith(button3isPush: false));
-        break;
-    }
-  }
-
-  void _onButtonEvent(ButtonEvent event) {
-    _lastButtonActive = DateTime.now();
-    if (event.event == ButtonEventType.released) {
-      add(ButtonsHintPushButtonEvent(button: event.button));
-    }
-    if (!_currentStatus.isMenu && !state.isShow){
-      _onStatusChanged(_currentStatus, true);
-    }
-  }
+  IconData getIconDataBySlideshowAction(SlideshowAction action) =>
+      switch (action) {
+        SlideshowAction.none => Icons.cancel,
+        SlideshowAction.pause => Icons.pause,
+        SlideshowAction.showInfo => Icons.info,
+        SlideshowAction.showMenu => Icons.menu,
+        SlideshowAction.toggleScreen => Icons.power_off,
+      };
 
   @override
-  Future<void> close() {
-    _onButtonEventSubscription.cancel();
-    _onStatusSubscription.cancel();
-    return super.close();
-  }
-
-  FutureOr<void> _onShowEvent(
-    ButtonsHintShowEvent event,
-    Emitter<ButtonsHintState> emit,
-  ) {
-    emit(state.copyWith(isShow: event.isShow));
-  }
-
-  FutureOr<void> _onUpdateButtons(
-    ButtonsHintUpdateButtonsEvent event,
-    Emitter<ButtonsHintState> emit,
-  ) {
-    if (_currentStatus.isMenu) {
-      emit(
-        state.copyWith(
-          isShow: true,
-          button0Icon: Icons.arrow_back,
-          button1Icon: Icons.arrow_circle_down,
-          button2Icon: Icons.arrow_circle_up,
-          button3Icon: Icons.check_circle_outline_outlined,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          isShow: true,
-          button0Icon: getIconDataBySlideshowAction(
-            appConfig.slideshow.buttons.button0.action,
-          ),
-          button1Icon: getIconDataBySlideshowAction(
-            appConfig.slideshow.buttons.button1.action,
-          ),
-          button2Icon: getIconDataBySlideshowAction(
-            appConfig.slideshow.buttons.button2.action,
-          ),
-          button3Icon: getIconDataBySlideshowAction(
-            appConfig.slideshow.buttons.button3.action,
-          ),
-        ),
-      );
-      _startAutoHideHint(true);
+  Future<void> close() async {
+    if (_closing) return _closed.future;
+    _closing = true;
+    _hideTimer?.cancel();
+    for (final timer in _pressTimers.values) {
+      timer.cancel();
     }
-  }
-
-  IconData getIconDataBySlideshowAction(SlideshowAction action) {
-    switch (action) {
-      case SlideshowAction.none:
-        return Icons.cancel;
-      case SlideshowAction.pause:
-        return Icons.pause;
-      case SlideshowAction.showInfo:
-        return Icons.info;
-      case SlideshowAction.showMenu:
-        return Icons.menu;
-      case SlideshowAction.toggleScreen:
-        return Icons.power_off;
+    _log.info('Button hints closing mode=${mode.name}; timers cancelled');
+    try {
+      await Future.wait([
+        _buttons.cancel(),
+        if (_status != null) _status!.cancel(),
+      ]);
+    } finally {
+      try {
+        await super.close();
+      } finally {
+        _closed.complete();
+        _log.info('Button hints closed mode=${mode.name}');
+      }
     }
   }
 }

@@ -292,6 +292,12 @@ void main() {
         before.entries.map((e) => e.sourceRevision).toSet(),
       );
       expect(runner.calls.map((args) => args.first), ['dup', 'image']);
+      expect(runner.calls.first, isNot(contains('--image-filter')));
+      final similarArgs = runner.calls.last;
+      expect(
+        similarArgs[similarArgs.indexOf('--image-filter') + 1],
+        'Lanczos3',
+      );
       expect(
         runner.calls.every(
           (args) =>
@@ -319,6 +325,7 @@ void main() {
       expect(messages, contains('Search probe completed'));
       expect(messages, contains('mode=exact'));
       expect(messages, contains('mode=similar'));
+      expect(messages, contains('imageFilter=Lanczos3'));
       expect(messages, contains('Search mode completed'));
       expect(messages, contains('status=completed'));
       expect(messages, contains('candidates=2 matchedFiles=2'));

@@ -221,10 +221,18 @@ void main() {
       );
       await tester.pump();
       await tester.pump();
-      await tester.tap(find.text('Start search'));
+      await tester.tap(find.text('New search'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.widgetWithText(FilledButton, 'Start search'),
+        ),
+      );
       await tester.pump();
       await tester.pump();
-      expect(find.text('Searching…'), findsOneWidget);
+      expect(find.text('Searching…'), findsWidgets);
       expect(find.textContaining('Elapsed:'), findsOneWidget);
       expect(find.byType(LinearProgressIndicator), findsNothing);
       expect(requests.where((r) => r.method == 'POST'), hasLength(1));
@@ -411,7 +419,8 @@ void main() {
       await tester.tap(find.byTooltip('Delete permanently'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
-      expect(find.textContaining('1024 bytes'), findsOneWidget);
+      expect(find.textContaining('< 0.01 MB'), findsOneWidget);
+      expect(find.byTooltip('Exact size: 1024 bytes'), findsOneWidget);
       expect(operations, isEmpty);
       await tester.tap(find.text('Cancel'));
       await tester.pump();
@@ -496,16 +505,22 @@ void main() {
         of: find.text('a.jpg'),
         matching: find.byType(Card),
       );
-      await tester.ensureVisible(
+      await tester.scrollUntilVisible(
         find.descendant(of: b, matching: find.byType(CheckboxListTile)),
+        300,
+        scrollable: find.byType(Scrollable).first,
+        maxScrolls: 10,
       );
       await tester.pump();
       await tester.tap(
         find.descendant(of: b, matching: find.byType(CheckboxListTile)),
       );
       await tester.pump();
-      await tester.ensureVisible(
+      await tester.scrollUntilVisible(
         find.descendant(of: a, matching: find.byType(CheckboxListTile)),
+        -300,
+        scrollable: find.byType(Scrollable).first,
+        maxScrolls: 10,
       );
       await tester.pump();
       await tester.tap(
@@ -519,6 +534,12 @@ void main() {
       current = [managedPhoto('a'), managedPhoto('b', revision: '2')];
       updates.add(current);
       await tester.pump();
+      await tester.scrollUntilVisible(
+        find.text('b.jpg'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+        maxScrolls: 10,
+      );
       expect(find.textContaining('A file has changed'), findsWidgets);
       final reviewButton = find.widgetWithText(FilledButton, 'Move to trash');
       await tester.scrollUntilVisible(
@@ -786,6 +807,10 @@ void main() {
   testWidgets(
     'comparison requests brief metadata for the displayed list and labels date source',
     (tester) async {
+      tester.view.physicalSize = const Size(1200, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
       final catalog = ManagedCatalogRepository([
         managedPhoto('a'),
         managedPhoto('b'),
@@ -880,7 +905,9 @@ void main() {
       );
       await tester.pump();
       await tester.pump();
-      expect(find.text('6000 × 4000 · 1024 B'), findsNWidgets(2));
+      expect(find.text('6000 × 4000'), findsNWidgets(3));
+      expect(find.text('< 0.01 MB'), findsNWidgets(3));
+      expect(find.byTooltip('Exact size: 1024 bytes'), findsNWidgets(3));
       expect(find.text('Date taken: 2026:07:18 09:42:00'), findsOneWidget);
       expect(find.textContaining('File modified:'), findsOneWidget);
       expect(

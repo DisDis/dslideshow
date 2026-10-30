@@ -127,6 +127,8 @@ void main() {
       ),
     );
     await _until(bloc, (state) => state.decisions.containsKey('p1'));
+    expect(bloc.state.selectedCount, 1);
+    expect(bloc.state.selectedBytes, 100);
     bloc.add(const GalleryDuplicatesEvent.members(10));
     await _until(bloc, (state) => state.memberOffset == 10);
     expect(bloc.state.visibleMembers.map((item) => item.mediaId), [
@@ -148,6 +150,92 @@ void main() {
     await _until(bloc, (state) => state.group != null && !state.groupLoading);
     expect(bloc.state.groupIndex, 1);
     expect(bloc.state.memberOffset, 0);
+    bloc.add(const GalleryDuplicatesEvent.clearSelection());
+    await _until(bloc, (state) => state.decisions.isEmpty);
+    expect(bloc.state.selectedCount, 0);
+    expect(bloc.state.selectedBytes, 0);
+  });
+
+  test('stopping a replacement search restores only choices whose source revisions are still current', () async {
+    var job = _job;
+    final snapshots = StreamController<List<GalleryItem>>();
+    final starts = <GalleryDuplicateStartRequest>[];
+    final repository = _repository(
+      MockClient((request) async {
+        if (request.method == 'POST' &&
+            request.url.pathSegments.last == 'stop') {
+          job = job.copyWith(
+            status: GalleryDuplicateStatus.cancelled,
+            groups: [
+              _job.groups.first.copyWith(
+                items: [
+                  for (final member in _members)
+                    member.mediaId == 'b'
+                        ? member.copyWith(sourceRevision: '2')
+                        : member,
+                ],
+              ),
+            ],
+          );
+        } else if (request.method == 'POST') {
+          final start = GalleryDuplicateStartRequest.fromJson(
+            jsonDecode(request.body) as Map<String, dynamic>,
+          );
+          starts.add(start);
+          job = GalleryDuplicateJob(
+            jobId: start.operationId,
+            modes: start.modes,
+            status: GalleryDuplicateStatus.running,
+          );
+        }
+        return duplicateResponse(request, job);
+      }),
+    );
+    final bloc = GalleryDuplicatesBloc(
+      repository: repository,
+      catalog: [managedPhoto('a'), managedPhoto('b'), managedPhoto('c')],
+      catalogUpdates: snapshots.stream,
+      onRefresh: () async {},
+    );
+    addTearDown(() async {
+      await bloc.close();
+      await snapshots.close();
+      repository.close();
+    });
+    await _until(bloc, (s) => s.group != null && !s.groupLoading);
+    for (final id in ['b', 'c']) {
+      bloc.add(
+        GalleryDuplicatesEvent.decide(
+          'group',
+          id,
+          GalleryDuplicateDecision.trash,
+        ),
+      );
+      await _until(
+        bloc,
+        (s) => s.decisions[id] == GalleryDuplicateDecision.trash,
+      );
+    }
+    bloc.add(
+      const GalleryDuplicatesEvent.start(modes: {GalleryDuplicateMode.similar}),
+    );
+    await _until(bloc, (s) => s.running && !s.busy);
+    snapshots.add([
+      managedPhoto('a'),
+      managedPhoto('b', revision: '2'),
+      managedPhoto('c'),
+    ]);
+    await _until(bloc, (s) => s.catalogById['b']?.revision == '2');
+    bloc.add(const GalleryDuplicatesEvent.stop());
+    await _until(
+      bloc,
+      (s) => !s.running && !s.busy && s.group != null && !s.groupLoading,
+    );
+    expect(starts.single.modes, [GalleryDuplicateMode.similar]);
+    expect(bloc.state.modes, {GalleryDuplicateMode.similar});
+    expect(bloc.state.decisions, {'c': GalleryDuplicateDecision.trash});
+    expect(bloc.state.selectedCount, 1);
+    expect(bloc.state.selectedBytes, 100);
   });
 
   test('50001 media snapshot keeps decisions and stale/keeper checks correct at the end of the catalog', () async {

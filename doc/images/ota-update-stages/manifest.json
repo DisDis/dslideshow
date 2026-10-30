@@ -1,9 +1,9 @@
 {
-  "date": "2026-10-29",
-  "product_source_commit": "5581757d0b72c92e6490a071002fe38626ba4a73",
+  "date": "2026-10-30",
+  "product_source_commit": "2a20b64bbaddad00cfd2ec3c9de981b234593fa8",
   "flutter": "3.47.7",
   "dart": "3.13.5",
-  "capture": "flutter test; real MainApp -> OTAPage after UX changes; fake backend events and installer output",
+  "capture": "Local Flutter VM; real MainApp -> OTAPage, controlled external events, contextual physical button hints",
   "locale": "en",
   "physical_size": [
     2560,
@@ -23,41 +23,67 @@
     "Still captures do not validate animation smoothness or hardware font fallback"
   ],
   "source_sha256": {
-    "dslideshow_flutter/lib/main.dart": "9481f9a801327c6b520c535709b81b511875ca2df45b8b5fd3cef0661d6c1744",
-    "dslideshow_flutter/lib/features/ota/presentation/pages/ota_page.dart": "83a089a92afc03ad5b372cd09171e0e35dc0081eb2fee0ff81fecccfd4469656",
-    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart": "244a7f1237b36c5cd1a32aeaa7bf5f0fdeafd8201ae5aaa591985c1b6e789516",
-    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart": "f633de4f7faffa2d79239e5f177225d7e7ff46e0934c152bd010a24ac4312f3f",
-    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart": "b5ea03f47097a1746278f7ef9867fb00b134513fdf8824ae35bad492826f880f",
+    "backend/pubspec.yaml": "c29d249f46779172b36fdb3448230b7e2049601794719b43aa08654e84faa452",
+    "common/lib/version.dart": "665b69443ba976ddba66c1f022ee8572d879a8ca365797415455624df464f756",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.dart": "a32e52d560e5134fee472b75cf15b81b62585696f0998e1c45b5857686d7ee07",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.freezed.dart": "81e16270c3215a60da8c41bb39e28b090218d2ab198198280583d14e6071f91b",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint.dart": "d2d75fb2502bad155a7a81df63644353cfeb6a0c812dba8df7704df4b9512984",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart": "799b203cd598e7196b9c568751027e7ee4ea66e105709dfd85a2b81c57786979",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.freezed.dart": "4512008a57aa6c7d81b1ad6f68269e5bbc2f2d9dce9fb26616e726bce79c1be9",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_event.dart": "6adcc838dfe57bd3d15dbc5540ae5a2c165e77125097a6144f75e5454aa908e8",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_state.dart": "a8fc02b26aa150aff31690c5e80799cde7042c7e9e1dffc0840be4d4b10df63c",
+    "dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart": "f71d2ca7f5f281766c88c5476755d287e37b80d9bdf71ceb64ed52591083826c",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_bloc.dart": "22485c57de482903ed1e11486dcc36f5756a0ed57cd23efc8f46eac7adb6ef4e",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_event.dart": "f9cf2698d9b31e4e6fd113f4116654158f3189c31f652ae35412a9dc9ceb155f",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_event.freezed.dart": "750f7c8feaad8c8ff96e90c97b99ecee164e86f52374db10006f4ac853bc7eb0",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_repository.dart": "5abd257541b8c2e0b0ad3377bd32d96ff902d216104ac2ff12335e484fc6b8e8",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.dart": "764ae89e6dab292b21e41558289b61e514b12ca7d79802d84265c873eae69f09",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.freezed.dart": "4b77b130381653fce0c7f4f19d641a7977152576b5c9f13abc8cc36aae1d4856",
     "dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart": "1bb9728eade656707629cd8ab7fe89786b08d5d7e5d3c5129bc7a6216f39aaa4",
+    "dslideshow_flutter/lib/features/ota/presentation/bloc/terminal_backend.dart": "42ea1c159fe915a16db7c155a774f2896707197610a10ac292e52ebecc52b3b8",
+    "dslideshow_flutter/lib/features/ota/presentation/pages/ota_page.dart": "83a089a92afc03ad5b372cd09171e0e35dc0081eb2fee0ff81fecccfd4469656",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart": "0ce38f099c397f7250572283d5f7fa79a05cee44fe32d65a9104f7471b00fdde",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart": "b5ea03f47097a1746278f7ef9867fb00b134513fdf8824ae35bad492826f880f",
+    "dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart": "905fb0952af57e9a26218d8b6ec635efb5e4b877a30d86b1331251a9b65bf752",
+    "dslideshow_flutter/lib/features/shared/presentation/widgets/access_layout.dart": "ceb6eb905ae46de95f4d0b6d926d963d3e2ed7018d4c589e3312ecfbf908c1a8",
+    "dslideshow_flutter/lib/features/slideshow/presentation/pages/slideshow_page.dart": "6c8b70ce392901a76bae3ff8191bfe606b830a93c38df53aaebc5194f759f661",
+    "dslideshow_flutter/lib/features/test/presentation/test_page.dart": "d9712b07bcbc4cb290943e28108110301d20b6c2678463b3c7da8a78b23ef34a",
     "dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart": "38ec4f357aaaf3547d5a38d986a94a24940e924d2e1b1efb4a2daaa1bfb2606e",
-    "i18n/app_en.arb": "b94130e1811b84a817e49ac2c15889e04eb0d1f2b497f8e64c3714d2bafaa6fb",
-    "i18n/app_ru.arb": "9f4f03dc0fc4ada5847402fbf59a5259848aecc27545c6ba93ac410542975513",
-    "i18n/lib/src/generated/app_localizations.dart": "1acde2808393a57912760ab18fd5eaf310e14d2a4a6e4442a9a8a30de6eea2d8",
-    "i18n/lib/src/generated/app_localizations_en.dart": "da4c897be467d1e71ac9bc8eeebbad71786936019143307a38e52b9cb1f2fd45",
-    "i18n/lib/src/generated/app_localizations_ru.dart": "c165bd5dbbff1b3471b39616752e71981ca3e120ed560d3b95937b0e3a3c9142",
+    "dslideshow_flutter/lib/main.dart": "f8c99b3215e287caf0521bc2cdd3fd9d746bc170b08ea913fd4d156d591b80c8",
+    "dslideshow_flutter/pubspec.yaml": "c6ba57696dfcc48bd05cdda998b9b9f4dffff0acef985e125923d115678f6762",
+    "dslideshow_flutter/test/buttons_hint_test.dart": "f1524b9bab6d270c4bd49f583373eb71026e56d0564c534f5eb82673f16559a2",
+    "dslideshow_flutter/test/ota_bloc_test.dart": "1de7acf371d90eb6695da0e058f3599bf5c4c4c7abe49b36c93968025012f359",
+    "dslideshow_flutter/test/ota_ready_paint_test.dart": "3d72bc76239727a77410cd2019e1dc99e0f9e6cc3192166bbc567c2db81ca362",
+    "dslideshow_flutter/test/ota_terminal_panel_test.dart": "8bce760c85966ac09367bd6c473e739884298b9a25cb3bd8a795178cb4140647",
+    "dslideshow_flutter/test/ota_view_test.dart": "f8c5bea388ce8cea21d9e146a9e8ea72b4f1cfac2aa552c9507855ae39adb6a3",
+    "dslideshow_flutter/test/support/frame_app_harness.dart": "32dd7673780bfda3af3e930646b696c3148443951e89dda407c919754d52d0d2",
     "dslideshow_flutter/tool/capture_ota_screenshots.dart": "f1fc4ae69f6ba9fe0baf655f962a88515bfe24b68bb2c12dde3f93f83d9a8fc0",
-    "dslideshow_flutter/test/support/frame_app_harness.dart": "32dd7673780bfda3af3e930646b696c3148443951e89dda407c919754d52d0d2"
+    "i18n/app_en.arb": "2227ba52fbb7c9ad61b1907ebcd5da230a8cda39625368a9c70166cc00efd5bf",
+    "i18n/app_ru.arb": "b28031482bf0842798bae8c66a897092d9624193b26c8c898a80f231ec7c9733",
+    "i18n/lib/src/generated/app_localizations.dart": "ebd439518d883d9c2dc0468e1282b03bcdf81824331c55105da4a4bc3bc4dd8b",
+    "i18n/lib/src/generated/app_localizations_en.dart": "934ebf8bffeac3de8a24c710a3de006db71f3210c152d5ad46cdd5cae8fc041b",
+    "i18n/lib/src/generated/app_localizations_ru.dart": "90d601829c6c855809aaf3c9cc4a2c73f5d13eedb08870e94600a7d2d2e13a6e"
   },
   "screenshots": [
     {
       "file": "01-preparing.png",
       "stage": "Подготовка",
-      "sha256": "82737bfaeecf6b20411859c46c10c20afd5be9214057cd8d7ea93d22a5e3e9ed"
+      "sha256": "f0b26bf16a153f271b45eed8be001250d8fadbd03161031f808ff1e3a8a0b1d0"
     },
     {
       "file": "02-preparing-address.png",
       "stage": "Ожидание сетевого адреса",
-      "sha256": "2f2818850d777313e7d4773b8a75ad9e6f66ca091c22a9197dd01fc1c74bf47a"
+      "sha256": "31d2fd6de35d9b4b3235765fb6ca2ba93ef2fcad37ac3575bbd649c0681ed8e6"
     },
     {
       "file": "03-ready.png",
       "stage": "Готовность: QR и код",
-      "sha256": "216d08788aeb654c1f4d93999d4b7d338c743a510dc4a5e56b7b607812364436"
+      "sha256": "734759f88421bec73b7c56c1829843f8985afa1f241b09d7327885e09dcf488c"
     },
     {
       "file": "04-no-network.png",
       "stage": "Адрес недоступен",
-      "sha256": "9f30e2386f04ecfd7e98fca97c16494353556dfb44b066f903ecc1a0971bfd0b"
+      "sha256": "deb1419289ec31d653420e5163d6a10c0190ef88092e43c5764b4bff95e39325"
     },
     {
       "file": "05-upload-0.png",
@@ -92,12 +118,12 @@
     {
       "file": "11-failed.png",
       "stage": "Ошибка установки",
-      "sha256": "69c3f675076583a78b140de7b0127ede7ff9b81b50ec8f74947b0ec79173fc5d"
+      "sha256": "d39f728047cd7e92f2267ecc5e7bd325146305a64a98e292685d24b5dbf8232c"
     },
     {
       "file": "12-unknown-error.png",
       "stage": "Неизвестная ошибка",
-      "sha256": "f070e39f81076e9e4b3c2e68473c52b82b2e242700673cebca2c4dac71149d11"
+      "sha256": "3105f48b5a092f4da129b0182bb242320a80d82136e1326105a27ab7bfebc782"
     },
     {
       "file": "13-exit.png",
@@ -105,5 +131,24 @@
       "sha256": "4d9afd05ea3013600d3137eecef2386c01bb1a5edc8ad83f21b0cda5e5aeed87"
     }
   ],
-  "source_state": "working tree patch against product_source_commit; see source.patch"
+  "source_state": "working tree patch against product_source_commit; see source.patch",
+  "artifacts": {
+    "01-preparing.png": "f0b26bf16a153f271b45eed8be001250d8fadbd03161031f808ff1e3a8a0b1d0",
+    "02-preparing-address.png": "31d2fd6de35d9b4b3235765fb6ca2ba93ef2fcad37ac3575bbd649c0681ed8e6",
+    "03-ready.png": "734759f88421bec73b7c56c1829843f8985afa1f241b09d7327885e09dcf488c",
+    "04-no-network.png": "deb1419289ec31d653420e5163d6a10c0190ef88092e43c5764b4bff95e39325",
+    "05-upload-0.png": "1202efd5d3674ec5e0457a3761dc9d1d184ab1db2d2e48210499b64b5c1cf83a",
+    "06-upload-67.png": "3a409ce03b1ef6f38e4e18ea7e8c9d4835f103ae9dd6899802bf22afa3acd68e",
+    "07-upload-100.png": "8655957a4b84afcbc984ca0bc045b599c61482266943edc824a7f8d3c32edfaf",
+    "08-installing.png": "521580fd0209fd4d3eb5c80661e048552c3dae1e34217c63a23688e9902c4ff5",
+    "09-finished.png": "f16d5afe38c3ab5da1b33a5341e86ee6bf048a6fbb6ddf61e4a91951d16720b0",
+    "10-restarting.png": "ec2ecbc1cb88eb371238e1d52be7ed869cc11bb578c7d9e7b2003d50fd9c4d2b",
+    "11-failed.png": "d39f728047cd7e92f2267ecc5e7bd325146305a64a98e292685d24b5dbf8232c",
+    "12-unknown-error.png": "3105f48b5a092f4da129b0182bb242320a80d82136e1326105a27ab7bfebc782",
+    "13-exit.png": "4d9afd05ea3013600d3137eecef2386c01bb1a5edc8ad83f21b0cda5e5aeed87",
+    "overview.jpg": "87724df3f5f9caa191969f540523af4e43306530edc8295aa0769e8af816923c",
+    "source.patch": "083783d4d69b1cbe3382bdd9cb66144bf7801d2d7cf8959919401cbd2b3c3b55"
+  },
+  "physical_button_hints": "Four fixed slots at slideshow.buttons.hintOffsetX/Y; per-page actions, disabled/unused slots preserved",
+  "captured_frontend_version": "15.2.0+2"
 }

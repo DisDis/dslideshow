@@ -2,70 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart';
-import 'package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart';
-import 'package:config_app/features/theme/presentation/theme.dart';
-import 'package:config_app/src/gallery/gallery_session.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/gallery.dart';
-import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-import 'gallery_image_loader_test.dart' show ControlledClient;
 import 'support/gallery_management_harness.dart';
-
-Future<GallerySession> mountSearch(
-  WidgetTester tester,
-  http.Client client, {
-  bool compact = false,
-}) async {
-  if (compact) {
-    tester.view.physicalSize = const Size(320, 720);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-  }
-  final catalog = ManagedCatalogRepository([
-    managedPhoto('a'),
-    managedPhoto('b'),
-  ]);
-  final session = managedSession(catalog, client, ControlledClient());
-  addTearDown(() => tester.runAsync(session.close));
-  await tester.pumpWidget(
-    MaterialApp(
-      theme: createLightTheme(),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: compact
-          ? (context, child) => MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: TextScaler.linear(1.5)),
-              child: child!,
-            )
-          : null,
-      home: Scaffold(
-        body: GalleryDuplicatesPage(
-          session: session,
-          catalog: catalog.items,
-          onRefresh: () async {},
-        ),
-      ),
-    ),
-  );
-  await tester.pump();
-  await tester.pump();
-  return session;
-}
-
-Future<void> closeSearch(WidgetTester tester, GallerySession session) async {
-  await tester.pumpWidget(const SizedBox.shrink());
-  await tester.pump();
-  await tester.runAsync(session.close);
-}
+import 'support/gallery_duplicates_harness.dart';
 
 void main() {
   testWidgets(
@@ -197,33 +143,36 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(find.text('No matches found'), findsNothing);
+      expect(find.text('Matching files: 2'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('About the last search'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+        maxScrolls: 10,
+      );
+      await tester.tap(find.text('About the last search'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
       expect(find.text('Matching files: 2'), findsOneWidget);
       expect(
         find.text('Files skipped while preparing candidates: 1'),
         findsOneWidget,
       );
-      expect(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is CheckboxListTile &&
-              widget.title is Text &&
-              (widget.title! as Text).data == 'a.jpg',
-        ),
-        findsOneWidget,
-      );
-      final second = find.byWidgetPredicate(
-        (widget) =>
-            widget is CheckboxListTile &&
-            widget.title is Text &&
-            (widget.title! as Text).data == 'b.jpg',
-      );
+      final second = find.text('b.jpg');
       await tester.scrollUntilVisible(
         second,
-        150,
+        -150,
         scrollable: find.byType(Scrollable).first,
         maxScrolls: 10,
       );
       expect(second, findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.ancestor(of: second, matching: find.byType(Card)),
+          matching: find.widgetWithText(CheckboxListTile, 'Move to trash'),
+        ),
+        findsOneWidget,
+      );
       await closeSearch(tester, session);
     },
   );

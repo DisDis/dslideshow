@@ -204,5 +204,61 @@ void main() {
       identical.groups.single.items.map((item) => item.mediaId).toSet(),
       hasLength(8),
     );
+
+    // Seven byte-identical originals and one resized frame must all be
+    // available for visual comparison; the exact subset remains separate.
+    await File('${media.path}/identical-7.png').delete();
+    final resized = image.copyResize(
+      photo,
+      width: 96,
+      height: 72,
+      interpolation: image.Interpolation.average,
+    );
+    await File('${media.path}/resized.png')
+        .writeAsBytes(image.encodePng(resized));
+    catalog.markDirty();
+    await service.start(
+      const GalleryDuplicateStartRequest(
+        operationId: 'seven-and-resized',
+        modes: GalleryDuplicateMode.values,
+      ),
+    );
+    final resizedJob = await _finished(service);
+    expect(resizedJob.status, GalleryDuplicateStatus.completed);
+    expect(resizedJob.diagnostics!.matchedFileCount, 8);
+    final resizedGroup = resizedJob.groups.singleWhere(
+      (g) => g.mode == GalleryDuplicateMode.similar,
+    );
+    expect(resizedGroup.items, hasLength(8));
+    expect(
+      resizedGroup.items.singleWhere((m) => m.path == 'resized.png').width,
+      96,
+    );
+    expect(
+      resizedGroup.items.singleWhere((m) => m.path == 'resized.png').height,
+      72,
+    );
+    expect(
+      resizedJob.groups
+          .singleWhere((g) => g.mode == GalleryDuplicateMode.exact)
+          .items,
+      hasLength(7),
+    );
+    for (final original in resizedGroup.items.where(
+      (m) => m.path != 'resized.png',
+    )) {
+      expect(
+        sha256
+            .convert(await File('${media.path}/${original.path}').readAsBytes())
+            .toString(),
+        sha256.convert(originalBytes).toString(),
+      );
+    }
+    expect(
+      (await service.directory.list().toList())
+          .map((file) => file.uri.pathSegments.last)
+          .toSet(),
+      {'job.json'},
+    );
   }, timeout: const Timeout(Duration(seconds: 60)));
 }

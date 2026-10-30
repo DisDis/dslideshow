@@ -71,7 +71,7 @@ class _ConfigPageState extends State<TestPage> {
         child: Column(
           children: <Widget>[
             const CommonHeaderWidget(),
-            ButtonsHintWidget(buttons: _appConfig.slideshow.buttons),
+            const ButtonsHintWidget(),
             QrImageView(
               backgroundColor: Colors.white,
               data: _urlData,

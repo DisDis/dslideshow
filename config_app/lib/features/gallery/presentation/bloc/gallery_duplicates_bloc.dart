@@ -59,6 +59,8 @@ abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
     @Default({GalleryDuplicateMode.exact, GalleryDuplicateMode.similar})
     Set<GalleryDuplicateMode> modes,
     @Default({}) Map<String, GalleryDuplicateDecision> decisions,
+    @Default(0) int selectedCount,
+    @Default(0) int selectedBytes,
     @Default({}) Set<GalleryMediaRef> invalidated,
     GalleryDuplicateJob? job,
     GalleryDuplicateStartRequest? pendingStart,
@@ -67,7 +69,6 @@ abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
     @Default(false) bool busy,
     @Default(false) bool failed,
     GalleryErrorCode? requestError,
-    @Default(false) bool setup,
     @Default(false) bool polling,
     @Default(0) int elapsedSeconds,
     @Default(0) int groupIndex,
@@ -108,14 +109,10 @@ sealed class GalleryDuplicatesEvent with _$GalleryDuplicatesEvent {
   const factory GalleryDuplicatesEvent.tick() = GalleryDuplicatesTick;
   const factory GalleryDuplicatesEvent.catalog(List<GalleryItem> items) =
       GalleryDuplicatesCatalog;
-  const factory GalleryDuplicatesEvent.mode(
-    GalleryDuplicateMode mode,
-    bool enabled,
-  ) = GalleryDuplicatesMode;
-  const factory GalleryDuplicatesEvent.start() = GalleryDuplicatesStart;
+  const factory GalleryDuplicatesEvent.start({
+    Set<GalleryDuplicateMode>? modes,
+  }) = GalleryDuplicatesStart;
   const factory GalleryDuplicatesEvent.stop() = GalleryDuplicatesStop;
-  const factory GalleryDuplicatesEvent.setup(bool visible) =
-      GalleryDuplicatesSetup;
   const factory GalleryDuplicatesEvent.decide(
     String groupId,
     String mediaId,
@@ -124,6 +121,10 @@ sealed class GalleryDuplicatesEvent with _$GalleryDuplicatesEvent {
   const factory GalleryDuplicatesEvent.members(int offset) =
       GalleryDuplicatesMembers;
   const factory GalleryDuplicatesEvent.skip() = GalleryDuplicatesSkip;
+  const factory GalleryDuplicatesEvent.group(int index) =
+      GalleryDuplicatesGroup;
+  const factory GalleryDuplicatesEvent.clearSelection() =
+      GalleryDuplicatesClearSelection;
   const factory GalleryDuplicatesEvent.invalidate(
     GalleryDuplicateMember member,
   ) = GalleryDuplicatesInvalidate;
@@ -151,6 +152,9 @@ class GalleryDuplicatesBloc
   int _generation = 0;
   int _groupGeneration = 0;
   int _ticks = 0;
+  final Map<String, GalleryDuplicateMember> _membersById = {};
+  GalleryDuplicatesState? _previousResult;
+  String? _replacementJobId;
   bool _closing = false;
 
   GalleryDuplicatesBloc({
@@ -197,6 +201,24 @@ class GalleryDuplicatesBloc
 
   GalleryDuplicatesState _accepted(GalleryDuplicateJob job) {
     final changed = state.job?.jobId != job.jobId;
+    final running =
+        job.status == GalleryDuplicateStatus.running ||
+        job.status == GalleryDuplicateStatus.stopping;
+    final terminal = !running && job.status != GalleryDuplicateStatus.idle;
+    if (changed || state.running && terminal) {
+      _membersById.clear();
+      for (final group in job.groups) {
+        for (final member in group.items) {
+          _membersById[member.mediaId] = member;
+        }
+      }
+    }
+    final previous =
+        terminal &&
+            job.jobId == _replacementJobId &&
+            job.status != GalleryDuplicateStatus.completed
+        ? _previousResult
+        : null;
     if (changed || state.job?.status != job.status) {
       final message =
           'event=jobStatusChanged jobId=${GalleryLog.id(job.jobId)} status=${job.status.name} modes=${job.modes.map((mode) => mode.name).join(',')} groups=${job.groups.length} skipped=${job.skipped} code=${job.error?.name ?? 'none'} elapsedMs=${job.startedAt == null ? 0 : (job.finishedAt ?? _now()).difference(job.startedAt!).inMilliseconds}';
@@ -204,13 +226,15 @@ class GalleryDuplicatesBloc
           ? _log.warning(message)
           : _log.info(message);
     }
-    return state.copyWith(
+    var accepted = state.copyWith(
       job: job,
       loading: false,
       failed: false,
       requestError: null,
-      setup: job.status == GalleryDuplicateStatus.idle || state.setup,
       decisions: changed ? {} : state.decisions,
+      selectedCount: changed ? 0 : state.selectedCount,
+      selectedBytes: changed ? 0 : state.selectedBytes,
+      modes: changed && job.modes.isNotEmpty ? job.modes.toSet() : state.modes,
       invalidated: changed ? {} : state.invalidated,
       groupIndex: changed ? 0 : state.groupIndex,
       memberOffset: changed ? 0 : state.memberOffset,
@@ -220,6 +244,31 @@ class GalleryDuplicatesBloc
           ? 0
           : _now().difference(job.startedAt!).inSeconds.clamp(0, 1 << 30),
     );
+    if (previous != null) {
+      final decisions = <String, GalleryDuplicateDecision>{};
+      for (final entry in previous.decisions.entries) {
+        final member = _membersById[entry.key];
+        if (member != null &&
+            previous.catalogById[entry.key]?.revision ==
+                member.sourceRevision &&
+            accepted.current(member)) {
+          decisions[entry.key] = entry.value;
+        }
+      }
+      accepted = _withDecisions(accepted, decisions).copyWith(
+        groupIndex: previous.groupIndex.clamp(0, job.groups.length),
+        invalidated: previous.invalidated,
+      );
+      _log.fine(
+        () =>
+            'event=previousSelectionRestored jobId=${GalleryLog.id(job.jobId)} selected=${accepted.selectedCount}',
+      );
+    }
+    if (terminal && job.jobId == _replacementJobId) {
+      _previousResult = null;
+      _replacementJobId = null;
+    }
+    return accepted;
   }
 
   bool _live(Emitter<GalleryDuplicatesState> emit, int generation) =>
@@ -290,18 +339,16 @@ class GalleryDuplicatesBloc
             if (!updated.current(member)) decisions.remove(member.mediaId);
           }
         }
-        emit(updated.copyWith(decisions: decisions));
+        emit(_withDecisions(updated, decisions));
         if (state.group?.items.any((member) => !state.current(member)) ??
             false) {
           await _openGroup(emit, state.groupIndex);
         }
-      case GalleryDuplicatesMode(:final mode, :final enabled):
-        if (state.busy) return;
-        final modes = Set<GalleryDuplicateMode>.of(state.modes);
-        enabled ? modes.add(mode) : modes.remove(mode);
-        emit(state.copyWith(modes: modes));
-      case GalleryDuplicatesStart():
-        if (state.busy || state.modes.isEmpty) return;
+      case GalleryDuplicatesStart(:final modes):
+        if (state.busy || state.running || (modes ?? state.modes).isEmpty) {
+          return;
+        }
+        if (modes != null) emit(state.copyWith(modes: modes));
         final generation = ++_generation;
         final old = state.pendingStart;
         final request =
@@ -313,6 +360,10 @@ class GalleryDuplicatesBloc
                 operationId: repository.newOperationId(),
                 modes: state.modes.toList(),
               );
+        if (_replacementJobId != request.operationId) {
+          _previousResult = state.job?.groups.isNotEmpty == true ? state : null;
+          _replacementJobId = request.operationId;
+        }
         final clock = Stopwatch()..start();
         _log.info(
           'event=jobStartRequested operationId=${GalleryLog.id(request.operationId)} modes=${request.modes.map((mode) => mode.name).join(',')} retry=${identical(old, request)}',
@@ -330,7 +381,7 @@ class GalleryDuplicatesBloc
             repository.start(request, cancel: _cancel.future),
           );
           if (_live(emit, generation)) {
-            emit(_accepted(job).copyWith(setup: false, pendingStart: null));
+            emit(_accepted(job).copyWith(pendingStart: null));
             if (!state.running && job.groups.isNotEmpty) {
               await _openGroup(emit, state.groupIndex);
             }
@@ -383,8 +434,6 @@ class GalleryDuplicatesBloc
         } finally {
           if (_live(emit, generation)) emit(state.copyWith(busy: false));
         }
-      case GalleryDuplicatesSetup(:final visible):
-        if (!state.busy) emit(state.copyWith(setup: visible));
       case GalleryDuplicatesDecide(
         :final groupId,
         :final mediaId,
@@ -409,9 +458,31 @@ class GalleryDuplicatesBloc
           _notice(emit, GalleryDuplicatesNotice.keepOne);
           return;
         }
+        final wasSelected =
+            state.decisions[mediaId] == GalleryDuplicateDecision.trash;
+        final selected = decision == GalleryDuplicateDecision.trash;
+        final delta = (selected ? 1 : 0) - (wasSelected ? 1 : 0);
         emit(
-          state.copyWith(decisions: {...state.decisions, mediaId: decision}),
+          state.copyWith(
+            decisions: {...state.decisions, mediaId: decision},
+            selectedCount: state.selectedCount + delta,
+            selectedBytes: state.selectedBytes + delta * member.sizeBytes,
+          ),
         );
+      case GalleryDuplicatesClearSelection():
+        if (state.busy || state.groupLoading) return;
+        _log.fine(
+          () =>
+              'event=selectionCleared jobId=${GalleryLog.id(state.job?.jobId ?? '')} selected=${state.selectedCount}',
+        );
+        emit(state.copyWith(decisions: {}, selectedCount: 0, selectedBytes: 0));
+      case GalleryDuplicatesGroup(:final index):
+        if (!state.busy &&
+            !state.groupLoading &&
+            index >= 0 &&
+            index < (state.job?.groups.length ?? 0)) {
+          await _openGroup(emit, index);
+        }
       case GalleryDuplicatesMembers(:final offset):
         final count = state.group?.items.length ?? 0;
         if (!state.busy &&
@@ -436,8 +507,7 @@ class GalleryDuplicatesBloc
           state.decisions,
         )..remove(member.mediaId);
         emit(
-          state.copyWith(
-            decisions: decisions,
+          _withDecisions(state, decisions).copyWith(
             invalidated: {
               ...state.invalidated,
               GalleryMediaRef(
@@ -528,7 +598,7 @@ class GalleryDuplicatesBloc
               decisions.remove(item.mediaId);
             }
           }
-          emit(state.copyWith(decisions: decisions));
+          emit(_withDecisions(state, decisions));
           _notice(emit, GalleryDuplicatesNotice.completed, result: result);
           try {
             await _refreshScope();
@@ -625,14 +695,13 @@ class GalleryDuplicatesBloc
         }
       }
       emit(
-        state.copyWith(
+        _withDecisions(state, decisions).copyWith(
           visibleGroup: page.group,
           groupIndex: page.index,
           memberOffset: 0,
           groupLoading: false,
           failed: false,
           requestError: null,
-          decisions: decisions,
           invalidated: invalidated,
         ),
       );
@@ -688,6 +757,26 @@ class GalleryDuplicatesBloc
       }
     }
     return true;
+  }
+
+  // Reconcile totals only after bulk changes. Individual checkbox actions above
+  // update them by delta, without walking the library or all previous choices.
+  GalleryDuplicatesState _withDecisions(
+    GalleryDuplicatesState base,
+    Map<String, GalleryDuplicateDecision> decisions,
+  ) {
+    var count = 0, bytes = 0;
+    for (final entry in decisions.entries) {
+      if (entry.value == GalleryDuplicateDecision.trash) {
+        count++;
+        bytes += _membersById[entry.key]?.sizeBytes ?? 0;
+      }
+    }
+    return base.copyWith(
+      decisions: decisions,
+      selectedCount: count,
+      selectedBytes: bytes,
+    );
   }
 
   Future<void> _refreshScope() async {

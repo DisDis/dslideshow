@@ -63,7 +63,11 @@ class WebServer implements RpcService {
   Future<RpcResult> _executeWebServerControlCommand(
     WebServerControlCommand command,
   ) async {
-    _webService.enabled = command.enable;
+    try {
+      await _webService.setEnabled(command.enable);
+    } catch (_) {
+      return ErrorResult(id: command.id, error: 'Web server control failed');
+    }
     return WebServerControlCommandResult.respond(
       command,
       _webService.code,

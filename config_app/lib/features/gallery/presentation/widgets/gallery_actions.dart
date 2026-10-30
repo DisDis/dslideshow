@@ -7,6 +7,7 @@ import '../../../theme/presentation/extensions/build_context_ext.dart';
 import '../../../../src/gallery/gallery_management_repository.dart';
 import '../bloc/gallery_undo_bloc.dart';
 import '../bloc/gallery_mutation_confirmation.dart';
+import 'gallery_file_size.dart';
 
 const galleryDialogFileLimit = galleryConfirmationNameLimit;
 
@@ -45,10 +46,19 @@ Future<bool> confirmGalleryPurge(
   return _confirmGalleryFiles(
     context,
     title: l.gallery_purge_title,
-    body: l.gallery_purge_body(count, bytes),
+    body: Tooltip(
+      message: l.gallery_size_bytes(bytes),
+      child: Text(
+        l.gallery_purge_body(
+          count,
+          GalleryFileSize.formatMegabytes(context, bytes),
+        ),
+      ),
+    ),
     confirmLabel: l.gallery_purge,
     count: count,
     names: names,
+    remainingText: l.gallery_more_files_purge,
   );
 }
 
@@ -61,10 +71,11 @@ Future<bool> confirmGalleryMutation(
     GalleryMutation.trash => _confirmGalleryFiles(
       context,
       title: l.gallery_trash_title,
-      body: l.gallery_trash_confirm_body(confirmation.items.length),
+      body: Text(l.gallery_trash_confirm_body(confirmation.items.length)),
       confirmLabel: l.gallery_move_to_trash,
       count: confirmation.items.length,
       names: confirmation.names,
+      remainingText: l.gallery_more_files_trash,
     ),
     GalleryMutation.purge => confirmGalleryPurge(
       context,
@@ -79,10 +90,11 @@ Future<bool> confirmGalleryMutation(
 Future<bool> _confirmGalleryFiles(
   BuildContext context, {
   required String title,
-  required String body,
+  required Widget body,
   required String confirmLabel,
   required int count,
   required List<String> names,
+  required String Function(int) remainingText,
 }) async {
   final shown = names.take(galleryDialogFileLimit).toList(growable: false);
   return await showDialog<bool>(
@@ -96,14 +108,7 @@ Future<bool> _confirmGalleryFiles(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(body),
-                  if (shown.isNotEmpty && shown.length < count)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(
-                        context.localizations.gallery_first_files(shown.length),
-                      ),
-                    ),
+                  body,
                   for (final name in shown)
                     ListTile(
                       title: Text(
@@ -111,6 +116,11 @@ Future<bool> _confirmGalleryFiles(
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+                    ),
+                  if (shown.length < count)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(remainingText(count - shown.length)),
                     ),
                 ],
               ),

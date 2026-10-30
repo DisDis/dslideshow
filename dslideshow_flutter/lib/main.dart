@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
+import 'package:dslideshow_flutter/features/config/data/config_access_repository.dart';
 import 'package:device_preview/presets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,14 @@ void main() async {
     injector.registerLazySingleton<FrontendService>(() {
       return FrontendService(injector(), backendService, otaService);
     });
+
+    injector.registerLazySingleton<ConfigAccessRepository>(
+      () => ConfigAccessRepository(
+        frontend: injector(),
+        port: injector<AppConfig>().webServer.port,
+        alwaysEnabled: injector<AppConfig>().webServer.alwaysEnabled,
+      ),
+    );
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
 
@@ -210,10 +219,7 @@ class MainApp extends StatelessWidget {
                 child: const SlideShowPage(),
               );
             case RoutePage.config:
-              return BlocProvider<ButtonsHintBloc>(
-                create: (context) => injector<ButtonsHintBloc>(),
-                child: const ConfigPage(),
-              );
+              return const ConfigPage();
             case RoutePage.ota:
               return OTAPage();
             case RoutePage.welcome:

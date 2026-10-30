@@ -1,5 +1,8 @@
-import 'dart:math' as math;
-
+import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart';
+import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
@@ -11,7 +14,7 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dslideshow_flutter/features/shared/presentation/widgets/access_layout.dart';
 
 class OtaReadyWidget extends StatelessWidget {
   final OtaReadyState state;
@@ -24,57 +27,22 @@ class OtaReadyWidget extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Positioned.fill(
-          child: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                if (constraints.maxWidth >= 1100 &&
-                    constraints.maxHeight >= 700) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: constraints.maxWidth >= 1600 ? 4 : 2,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 100),
-                          child: Center(child: _OtaQrPanel(state: state)),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(0, 100, 32, 100),
-                          child: _OtaReadyInfoPanel(state: state),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 100, 24, 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (state.otaStartUrl != null)
-                        Center(
-                          child: SizedBox.square(
-                            dimension: math.max(0, constraints.maxWidth - 48),
-                            child: _OtaQrPanel(state: state),
-                          ),
-                        ),
-                      const SizedBox(height: 32),
-                      _OtaReadyInfoPanel(state: state),
-                      if (state.otaStartUrl == null) ...[
-                        const SizedBox(height: 32),
-                        _OtaQrPanel(state: state),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+          child: AccessLayout(
+            panel: _OtaQrPanel(state: state),
+            information: _OtaReadyInfoPanel(state: state),
+            hasAddress: state.otaStartUrl != null,
           ),
         ),
         const CommonHeaderWidget(),
+        PageButtonsHint(
+          frontend: context.read<OtaBloc>().frontendService,
+          buttons: injector<AppConfig>().slideshow.buttons,
+          bindings: const {
+            ButtonType.button0: ButtonHintBinding(
+              action: ButtonHintAction.back,
+            ),
+          },
+        ),
         if (!environment.isLinuxEmbedded)
           BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
             builder: (context, state) {
@@ -125,26 +93,7 @@ class _OtaQrPanel extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: ThemeColors.qrCodeBackground,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: ThemeColors.qrCodeShadow,
-            blurRadius: 15,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: QrImageView(
-        data: address,
-        version: QrVersions.auto,
-        backgroundColor: ThemeColors.qrCodeBackground,
-        semanticsLabel: l10n.otaScanInstruction,
-      ),
-    );
+    return AccessQrCode(address: address, label: l10n.otaScanInstruction);
   }
 }
 

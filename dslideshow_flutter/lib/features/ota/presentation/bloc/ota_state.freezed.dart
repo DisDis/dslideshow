@@ -244,8 +244,8 @@ return exit(_that.info);case _:
 /// @nodoc
 
 
-class OtaInitialState implements OtaState {
-  const OtaInitialState({required this.info});
+class OtaInitialState extends OtaState {
+  const OtaInitialState({required this.info}): super._();
   
 
 @override final  OTAInfo info;
@@ -321,8 +321,8 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaReadyState implements OtaState {
-  const OtaReadyState({required this.info, required this.otaStartUrl, this.isPreparingAddress = false});
+class OtaReadyState extends OtaState {
+  const OtaReadyState({required this.info, required this.otaStartUrl, this.isPreparingAddress = false}): super._();
   
 
 @override final  OTAInfo info;
@@ -402,8 +402,8 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaProgressState implements OtaState {
-  const OtaProgressState({required this.info});
+class OtaProgressState extends OtaState {
+  const OtaProgressState({required this.info}): super._();
   
 
 @override final  OTAInfo info;
@@ -479,8 +479,8 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaSuccessState implements OtaState {
-  const OtaSuccessState({required this.info});
+class OtaSuccessState extends OtaState {
+  const OtaSuccessState({required this.info}): super._();
   
 
 @override final  OTAInfo info;
@@ -556,8 +556,8 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaFailureState implements OtaState {
-  const OtaFailureState({required this.info});
+class OtaFailureState extends OtaState {
+  const OtaFailureState({required this.info}): super._();
   
 
 @override final  OTAInfo info;
@@ -633,8 +633,8 @@ $OTAInfoCopyWith<$Res> get info {
 /// @nodoc
 
 
-class OtaExitState implements OtaState {
-  const OtaExitState({required this.info});
+class OtaExitState extends OtaState {
+  const OtaExitState({required this.info}): super._();
   
 
 @override final  OTAInfo info;

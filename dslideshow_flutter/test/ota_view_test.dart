@@ -1,3 +1,7 @@
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
+import 'package:dslideshow_flutter/src/service/frontend.dart' show ButtonEvent;
+import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
@@ -248,7 +252,8 @@ void main() {
         find.textContaining('See the system log for details.'),
         findsOneWidget,
       );
-      expect(find.textContaining('Back button'), findsOneWidget);
+      expect(find.byType(ButtonsHintWidget), findsOneWidget);
+      expect(find.textContaining('Back button'), findsNothing);
       expect(
         find.byWidgetPredicate(
           (widget) => widget is Semantics && widget.properties.selected == true,
@@ -329,7 +334,7 @@ void main() {
         ).join(' '),
       ),
     );
-    await tester.ensureVisible(find.textContaining('Back button'));
+    await tester.ensureVisible(find.text('Update failed'));
     expect(tester.getRect(find.byType(TerminalView)), logRect);
     expect(tester.takeException(), isNull);
   });
@@ -361,6 +366,55 @@ void main() {
       );
       expect(tester.widget<SelectableText>(addressLabel).style?.fontSize, 36);
       expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'OTA return hint follows the same availability as physical Back',
+    (tester) async {
+      final h = OtaHarness();
+      await h.mount(tester);
+      expect(find.byType(ButtonsHintWidget), findsNothing);
+      await h.initialize(tester);
+      await h.completeInfo(tester, _info);
+      await h.completeNetwork(tester);
+      final hint = find.byType(ButtonsHintWidget);
+      expect(tester.getTopLeft(hint), const Offset(2000, 20));
+      expect(
+        tester
+            .widget<ButtonsHintWidget>(hint)
+            .bindings![ButtonType.button0]!
+            .action,
+        ButtonHintAction.back,
+      );
+      for (final status in [
+        OTAStatus.uploading,
+        OTAStatus.instaling,
+        OTAStatus.finished,
+        OTAStatus.preReboot,
+      ]) {
+        await h.update(tester, _info.copyWith(status: status));
+        expect(hint, findsNothing);
+        h.frontend.buttons.add(
+          ButtonEvent(
+            button: ButtonType.button0,
+            event: ButtonEventType.released,
+            durationMs: 1,
+          ),
+        );
+        await tester.pump();
+        expect(h.routes.state.current, isNot(RoutePage.slideshow));
+      }
+      await h.update(tester, _info.copyWith(status: OTAStatus.issue));
+      expect(hint, findsOneWidget);
+      h.frontend.buttons.add(
+        ButtonEvent(
+          button: ButtonType.button0,
+          event: ButtonEventType.released,
+          durationMs: 1,
+        ),
+      );
+      await tester.pump();
+      expect(h.routes.state.current, RoutePage.slideshow);
     },
   );
 }

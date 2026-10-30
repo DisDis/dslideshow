@@ -1,1022 +1,2934 @@
-diff --git a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
-index b2e10d2..9280ea5 100644
---- a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
-+++ b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_terminal_session.dart
-@@ -10,17 +10,33 @@ class OtaTerminalSession {
- 
-   OtaTerminalSession._(this.terminal) : backend = TerminalBackend(terminal) {
-     scrollController.addListener(scheduleScrollStateUpdate);
-+    terminal.addListener(_updateHasOutput);
-   }
- 
-   final Terminal terminal;
-   final TerminalBackend backend;
-   final ScrollController scrollController = ScrollController();
-   final _following = ValueNotifier(true);
-+  final _hasOutput = ValueNotifier(false);
-   bool _updateScheduled = false;
-   bool _disposed = false;
- 
-   bool get isFollowing => _following.value;
-   ValueListenable<bool> get following => _following;
-+  ValueListenable<bool> get hasOutput => _hasOutput;
-+
-+  void _updateHasOutput() {
-+    if (_disposed || _hasOutput.value) return;
-+    // Only inspect the buffer until the first visible output. Later writes do
-+    // not notify the placeholder or rebuild the terminal's surrounding panel.
-+    final lines = terminal.buffer.lines;
-+    for (var index = 0; index < lines.length; index++) {
-+      if (lines[index].getText().trim().isNotEmpty) {
-+        _hasOutput.value = true;
-+        return;
-+      }
-+    }
-+  }
- 
-   /// Read dimensions after xterm has applied its stick-to-bottom policy.
-   void scheduleScrollStateUpdate() {
-@@ -45,7 +61,9 @@ class OtaTerminalSession {
-   void dispose() {
-     _disposed = true;
-     scrollController.removeListener(scheduleScrollStateUpdate);
-+    terminal.removeListener(_updateHasOutput);
-     scrollController.dispose();
-     _following.dispose();
-+    _hasOutput.dispose();
-   }
+diff --git a/backend/pubspec.yaml b/backend/pubspec.yaml
+index 93a9653f..974cd2ef 100644
+--- a/backend/pubspec.yaml
++++ b/backend/pubspec.yaml
+@@ -1,5 +1,5 @@
+ name: 'dslideshow_backend'
+-version: 15.2.0+1
++version: 15.2.0+2
+ description: A sample command-line application
+ publish_to: none
+ environment:
+diff --git a/common/lib/version.dart b/common/lib/version.dart
+index 96d2fabb..977f022f 100644
+--- a/common/lib/version.dart
++++ b/common/lib/version.dart
+@@ -1,4 +1,4 @@
+ abstract class ApplicationInfo{
+-  static const String frontendVersion = '15.2.0+1';
+-  static const String backendVersion = '15.2.0+1';
++  static const String frontendVersion = '15.2.0+2';
++  static const String backendVersion = '15.2.0+2';
  }
-diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
-index d65f704..093ddcc 100644
---- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
-+++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
-@@ -169,7 +169,7 @@ class _OtaReadyInfoPanel extends StatelessWidget {
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-           Text(
--            l10n.otaTitle,
-+            l10n.otaReadyTitle,
-             style: const TextStyle(
-               color: ThemeColors.otaReadyHeaderTextColor,
-               fontSize: ThemeSettings.otaReadyTitleSize,
-diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
-index 1792dcc..26b4bdd 100644
---- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
-+++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_terminal_panel.dart
-@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
- import 'package:xterm/xterm.dart';
+\ No newline at end of file
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint.dart
+index fec02ba3..7f219141 100644
+--- a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint.dart
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint.dart
+@@ -1,65 +1,90 @@
+-import 'package:dslideshow_backend/config.dart';
++import 'package:dslideshow_backend/command.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
+ import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
++import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
++import 'package:dslideshow_i18n/i18n.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+-import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
  
- class OtaTerminalPanel extends StatelessWidget {
--  const OtaTerminalPanel({super.key, required this.session});
-+  const OtaTerminalPanel({super.key, required this.session, this.emptyMessage});
- 
-   final OtaTerminalSession session;
-+  final String? emptyMessage;
+ class ButtonsHintWidget extends StatelessWidget {
+-  final SlideShowButtons buttons;
+-  
+-  const ButtonsHintWidget({
+-    required this.buttons,
+-    super.key,
+-  });
++  const ButtonsHintWidget({this.bindings, super.key});
++  final Map<ButtonType, ButtonHintBinding>? bindings;
  
    @override
-   Widget build(BuildContext context) {
-@@ -95,24 +96,50 @@ class OtaTerminalPanel extends StatelessWidget {
-               borderRadius: const BorderRadius.vertical(
-                 bottom: Radius.circular(16),
-               ),
--              child: NotificationListener<ScrollMetricsNotification>(
--                onNotification: (_) {
--                  session.scheduleScrollStateUpdate();
--                  return false;
--                },
--                child: TerminalView(
--                  session.terminal,
--                  scrollController: session.scrollController,
--                  readOnly: true,
--                  autofocus: false,
--                  padding: const EdgeInsets.all(16),
--                  textStyle: const TerminalStyle(
--                    fontSize: ThemeSettings.otaTerminalFontSize,
--                    fontFamily: 'Cascadia Mono',
--                    fontFamilyFallback: ['Courier New', 'monospace'],
-+              child: Stack(
-+                fit: StackFit.expand,
-+                children: [
-+                  NotificationListener<ScrollMetricsNotification>(
-+                    onNotification: (_) {
-+                      session.scheduleScrollStateUpdate();
-+                      return false;
-+                    },
-+                    child: TerminalView(
-+                      session.terminal,
-+                      scrollController: session.scrollController,
-+                      readOnly: true,
-+                      autofocus: false,
-+                      padding: const EdgeInsets.all(16),
-+                      textStyle: const TerminalStyle(
-+                        fontSize: ThemeSettings.otaTerminalFontSize,
-+                        fontFamily: 'Cascadia Mono',
-+                        fontFamilyFallback: ['Courier New', 'monospace'],
-+                      ),
-+                      theme: ThemeColors.terminaTheme,
-+                    ),
-                   ),
--                  theme: ThemeColors.terminaTheme,
--                ),
-+                  if (emptyMessage != null)
-+                    ValueListenableBuilder<bool>(
-+                      valueListenable: session.hasOutput,
-+                      child: IgnorePointer(
-+                        child: Padding(
-+                          padding: const EdgeInsets.all(32),
-+                          child: Align(
-+                            alignment: Alignment.topLeft,
-+                            child: Text(
-+                              emptyMessage!,
-+                              style: const TextStyle(
-+                                color: ThemeColors.otaProgressSubtextColor,
-+                                fontSize: ThemeSettings.otaProgressSubtitleSize,
-+                              ),
-+                            ),
-+                          ),
-+                        ),
-+                      ),
-+                      builder: (context, hasOutput, child) =>
-+                          hasOutput ? const SizedBox.shrink() : child!,
-+                    ),
+-  Widget build(BuildContext context) {
+-    return BlocBuilder<ButtonsHintBloc, ButtonsHintState>(
+-      builder: (context, state) {
+-        if (!state.isShow) return const SizedBox.shrink();
++  Widget build(BuildContext context) =>
++      BlocBuilder<ButtonsHintBloc, ButtonsHintState>(
++        builder: (context, state) {
++          if (!state.isShow) return const SizedBox.shrink();
++          return Container(
++            decoration: BoxDecoration(
++              color: ThemeColors.buttonsHintBackgroundColor,
++              border: Border.all(
++                color: ThemeColors.buttonsHintColor.withValues(alpha: .5),
++              ),
++              borderRadius: BorderRadius.circular(4),
++            ),
++            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
++            child: Row(
++              mainAxisSize: MainAxisSize.min,
++              children: [
++                for (final button in ButtonType.values) ...[
++                  if (button != ButtonType.button0)
++                    const SizedBox(width: ThemeSettings.buttonHintDividerSize),
++                  _slot(context, state, button),
 +                ],
-               ),
-             ),
-           ),
-diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
-index d3b5535..6cc7b18 100644
---- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
-+++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
-@@ -1,3 +1,5 @@
-+import 'dart:math' as math;
-+
- import 'package:dslideshow_backend/command.dart';
- import 'package:dslideshow_common/version.dart';
- import 'package:dslideshow_flutter/environment.dart' as environment;
-@@ -36,21 +38,45 @@ class OTAView extends StatelessWidget {
-                   : Padding(
-                       padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
-                       child: LayoutBuilder(
--                        builder: (context, constraints) => Column(
--                          crossAxisAlignment: CrossAxisAlignment.stretch,
--                          children: [
--                            ConstrainedBox(
--                              constraints: BoxConstraints(
--                                maxHeight: constraints.maxHeight * .45,
-+                        builder: (context, constraints) {
-+                          final statusHeight = math.min(
-+                            ThemeSettings.otaStatusPanelHeight,
-+                            constraints.maxHeight * .45,
-+                          );
-+                          final emptyMessage = switch (state) {
-+                            OtaProgressState(:final info)
-+                                when info.status == OTAStatus.uploading =>
-+                              AppLocalizations.of(context)
-+                                  .otaTransferLogPending,
-+                            OtaProgressState() => AppLocalizations.of(
-+                              context,
-+                            ).otaInstallLogPending,
-+                            _ => null,
-+                          };
-+                          return Column(
-+                            crossAxisAlignment: CrossAxisAlignment.stretch,
-+                            children: [
-+                              SizedBox(
-+                                height: statusHeight,
-+                                child: SingleChildScrollView(
-+                                  child: ConstrainedBox(
-+                                    constraints: BoxConstraints(
-+                                      minHeight: statusHeight,
-+                                    ),
-+                                    child: _StatusPanel(state: state),
-+                                  ),
-+                                ),
-                               ),
--                              child: SingleChildScrollView(
--                                child: _StatusPanel(state: state),
-+                              const SizedBox(height: 24),
-+                              Expanded(
-+                                child: OtaTerminalPanel(
-+                                  session: session,
-+                                  emptyMessage: emptyMessage,
-+                                ),
-                               ),
--                            ),
--                            const SizedBox(height: 24),
--                            Expanded(child: OtaTerminalPanel(session: session)),
--                          ],
--                        ),
-+                            ],
-+                          );
-+                        },
-                       ),
-                     ),
-             ),
-@@ -121,10 +147,83 @@ class _PreparingPanel extends StatelessWidget {
- class _StatusPanel extends StatelessWidget {
-   const _StatusPanel({required this.state});
-   final OtaState state;
-+  static const _percentStyle = TextStyle(
-+    color: ThemeColors.otaProgressPercentColor,
-+    fontSize: ThemeSettings.otaProgressPercentSize,
-+    fontWeight: FontWeight.w900,
-+  );
-+
-+  double _percentWidth(BuildContext context) {
-+    // Reserve the widest value at the actual font and accessibility scale.
-+    // A fixed width can wrap the percent sign when the transfer reaches 100%.
-+    final painter = TextPainter(
-+      text: TextSpan(
-+        text: '100%',
-+        style: DefaultTextStyle.of(context).style.merge(_percentStyle),
-+      ),
-+      textDirection: Directionality.of(context),
-+      textScaler: MediaQuery.textScalerOf(context),
-+      locale: Localizations.localeOf(context),
-+      maxLines: 1,
-+    );
-+    try {
-+      painter.layout();
-+      return painter.width.ceilToDouble();
-+    } finally {
-+      painter.dispose();
-+    }
-+  }
++              ],
++            ),
++          );
++        },
++      );
  
-   @override
-   Widget build(BuildContext context) {
-     final l10n = AppLocalizations.of(context);
-+    final uploading =
-+        state is OtaProgressState && state.info.status == OTAStatus.uploading;
-+    final working = state is OtaProgressState;
-+    final restarting =
-+        state is OtaSuccessState && state.info.status == OTAStatus.preReboot;
-+    final percent = state.info.uploadingPercent.isFinite
-+        ? state.info.uploadingPercent.clamp(0, 100)
-+        : 0;
-+    final heading = switch (state) {
-+      OtaProgressState() => _StatusHeading(
-+        title: uploading ? l10n.otaReceiving : l10n.otaInstalling,
-+        message: l10n.otaDoNotPowerOff,
-+        detail: uploading ? l10n.otaTransferHint : l10n.otaInstallationHint,
-+        icon: uploading ? Icons.download_rounded : Icons.settings_outlined,
-+        color: ThemeColors.otaAccentColor,
-+      ),
-+      OtaFailureState(:final info) => _StatusHeading(
-+        title: l10n.otaFailed,
-+        message: info.errorText?.isNotEmpty == true
-+            ? info.errorText!
-+            : l10n.otaUnknownError,
-+        detail: '${l10n.otaLogDetails} ${l10n.otaReturnToSlideshow}',
-+        icon: Icons.error_outline,
-+        color: ThemeColors.otaErrorTextColor,
-+      ),
-+      OtaSuccessState() => _StatusHeading(
-+        title: restarting ? l10n.otaRestartTitle : l10n.otaInstalled,
-+        message: restarting ? l10n.otaDoNotPowerOff : l10n.otaWaitingRestart,
-+        icon: restarting ? Icons.restart_alt : Icons.check_circle_outline,
-+        color: restarting
-+            ? ThemeColors.otaAccentColor
-+            : ThemeColors.otaSuccessTextColor,
-+      ),
-+      OtaExitState() => _StatusHeading(
-+        title: l10n.otaLeaving,
-+        message: '',
-+        icon: Icons.exit_to_app,
-+      ),
-+      OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
-+    };
-+    final progress = Text(
-+      '${percent.toStringAsFixed(0)}%',
-+      style: _percentStyle,
-+      maxLines: 1,
-+      softWrap: false,
-+      textAlign: TextAlign.right,
-+    );
-     return Container(
-       padding: const EdgeInsets.all(32),
-       decoration: BoxDecoration(
-@@ -132,100 +231,60 @@ class _StatusPanel extends StatelessWidget {
-         borderRadius: BorderRadius.circular(20),
-         border: Border.all(color: ThemeColors.otaReadyInputBorderColor),
-       ),
--      child: switch (state) {
--        OtaProgressState(:final info) => _buildProgress(context, info),
--        OtaFailureState(:final info) => _StatusHeading(
--          title: l10n.otaFailed,
--          message: info.errorText?.isNotEmpty == true
--              ? info.errorText!
--              : l10n.otaUnknownError,
--          detail: l10n.otaLogDetails,
--          icon: Icons.error_outline,
--          color: ThemeColors.otaErrorTextColor,
--        ),
--        OtaSuccessState(:final info) => _StatusHeading(
--          title: l10n.otaComplete,
--          message: info.status == OTAStatus.preReboot
--              ? l10n.otaRestarting
--              : l10n.otaWaitingRestart,
--          detail: l10n.otaStageComplete,
--          icon: Icons.check_circle_outline,
--          color: ThemeColors.otaSuccessTextColor,
--        ),
--        OtaExitState() => _StatusHeading(
--          title: l10n.otaLeaving,
--          message: '',
--          icon: Icons.exit_to_app,
--        ),
--        OtaInitialState() || OtaReadyState() => const SizedBox.shrink(),
+-        return Container(
+-          decoration: BoxDecoration(
+-            color: ThemeColors.buttonsHintBackgroundColor,
+-            border: Border.all(color: ThemeColors.buttonsHintColor.withAlpha((255.0 * 0.5).round()), width: 1),
+-            borderRadius: BorderRadius.circular(4),
+-          ),
+-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+-          child: Row(
+-            mainAxisSize: MainAxisSize.min,
+-            children: [
+-              _buildHudButton(state.button0Icon, state.button0isPush),
+-              const SizedBox(width: ThemeSettings.buttonHintDividerSize),
+-              _buildHudButton(state.button1Icon, state.button1isPush),
+-              const SizedBox(width: ThemeSettings.buttonHintDividerSize),
+-              _buildHudButton(state.button2Icon, state.button2isPush),
+-              const SizedBox(width: ThemeSettings.buttonHintDividerSize),
+-              _buildHudButton(state.button3Icon, state.button3isPush),
+-            ],
+-          ),
+-        );
 -      },
 -    );
 -  }
 -
--  Widget _buildProgress(BuildContext context, OTAInfo info) {
--    final l10n = AppLocalizations.of(context);
--    final uploading = info.status == OTAStatus.uploading;
--    final percent = info.uploadingPercent.isFinite
--        ? info.uploadingPercent.clamp(0, 100)
--        : 0;
--    return Column(
--      mainAxisSize: MainAxisSize.min,
--      crossAxisAlignment: CrossAxisAlignment.stretch,
--      children: [
--        LayoutBuilder(
--          builder: (context, constraints) {
--            final heading = _StatusHeading(
--              title: uploading ? l10n.otaUploading : l10n.otaInstalling,
--              message: l10n.otaDoNotPowerOff,
--              detail: uploading
--                  ? l10n.otaStageUpload
--                  : l10n.otaInstallationHint,
--              icon: uploading
--                  ? Icons.cloud_upload_outlined
--                  : Icons.system_update_alt,
--            );
--            if (!uploading) return heading;
--            final progress = Text(
--              '${percent.toStringAsFixed(0)}%',
--              style: const TextStyle(
--                color: ThemeColors.otaProgressPercentColor,
--                fontSize: ThemeSettings.otaProgressPercentSize,
--                fontWeight: FontWeight.w900,
--              ),
--            );
--            if (constraints.maxWidth < 1000) {
--              return Column(
--                crossAxisAlignment: CrossAxisAlignment.start,
--                children: [heading, progress],
-+      child: Column(
-+        mainAxisSize: MainAxisSize.min,
-+        crossAxisAlignment: CrossAxisAlignment.stretch,
-+        children: [
-+          LayoutBuilder(
-+            builder: (context, constraints) {
-+              if (constraints.maxWidth < 1600) {
-+                return Column(
-+                  crossAxisAlignment: CrossAxisAlignment.start,
-+                  children: [
-+                    heading,
-+                    if (uploading)
-+                      Align(alignment: Alignment.centerRight, child: progress),
-+                  ],
-+                );
-+              }
-+              return Row(
-+                children: [
-+                  Expanded(child: heading),
-+                  const SizedBox(width: 32),
-+                  SizedBox(
-+                    width: _percentWidth(context),
-+                    child: uploading ? progress : null,
-+                  ),
-+                ],
-               );
--            }
--            return Row(
--              children: [
--                Expanded(child: heading),
--                const SizedBox(width: 32),
--                progress,
--              ],
--            );
--          },
--        ),
--        const SizedBox(height: 24),
--        ClipRRect(
--          borderRadius: BorderRadius.circular(10),
--          child: LinearProgressIndicator(
--            value: uploading ? percent / 100 : null,
--            minHeight: ThemeSettings.otaProgressBarHeight,
--            backgroundColor: ThemeColors.otaProgressBgColor,
--            color: ThemeColors.otaProgressIconColor,
-+            },
-           ),
--        ),
--        if (!environment.isLinuxEmbedded) ...[
--          const SizedBox(height: 12),
--          const Align(
--            alignment: Alignment.centerRight,
--            child: TestConfigButton(),
-+          const SizedBox(height: 24),
-+          _StageSequence(state: state),
-+          const SizedBox(height: 16),
-+          SizedBox(
-+            height: ThemeSettings.otaProgressBarHeight,
-+            child: working
-+                ? ClipRRect(
-+                    borderRadius: BorderRadius.circular(10),
-+                    child: LinearProgressIndicator(
-+                      value: uploading ? percent / 100 : null,
-+                      minHeight: ThemeSettings.otaProgressBarHeight,
-+                      backgroundColor: ThemeColors.otaProgressBgColor,
-+                      color: ThemeColors.otaProgressIconColor,
-+                    ),
-+                  )
-+                : null,
-           ),
-+          if (working && !environment.isLinuxEmbedded) ...[
-+            const SizedBox(height: 12),
-+            const Align(
-+              alignment: Alignment.centerRight,
-+              child: TestConfigButton(),
-+            ),
-+          ],
-         ],
--      ],
-+      ),
+-  Widget _buildHudButton(IconData icon, bool isPressed) {
+-    final color = isPressed ? ThemeColors.buttonsHintPressedColor : ThemeColors.buttonsHintColor;
+-    
+-    return Container(
++  Widget _slot(
++    BuildContext context,
++    ButtonsHintState state,
++    ButtonType button,
++  ) {
++    final binding = bindings?[button];
++    final icon = bindings == null
++        ? switch (button) {
++            ButtonType.button0 => state.button0Icon,
++            ButtonType.button1 => state.button1Icon,
++            ButtonType.button2 => state.button2Icon,
++            ButtonType.button3 => state.button3Icon,
++          }
++        : binding?.action.icon;
++    final pressed = switch (button) {
++      ButtonType.button0 => state.button0isPush,
++      ButtonType.button1 => state.button1isPush,
++      ButtonType.button2 => state.button2isPush,
++      ButtonType.button3 => state.button3isPush,
++    };
++    final enabled = bindings == null || (binding?.enabled ?? false);
++    final activePress = pressed && enabled;
++    final color = !enabled
++        ? ThemeColors.buttonsHintColor.withValues(alpha: .3)
++        : activePress
++        ? ThemeColors.buttonsHintPressedColor
++        : ThemeColors.buttonsHintColor;
++    final slot = Container(
++      key: ValueKey(button),
+       padding: const EdgeInsets.all(4),
+       decoration: BoxDecoration(
+-        color: isPressed ? color.withAlpha((255.0 * 0.2).round()): Colors.transparent,
++        color: activePress ? color.withValues(alpha: .2) : Colors.transparent,
+         border: Border.all(
+-          color: isPressed ? color : color.withAlpha((255.0 * 0.3).round()),
+-          width: 2
++          color: activePress ? color : color.withValues(alpha: .3),
++          width: 2,
+         ),
+         shape: BoxShape.circle,
+       ),
+-      child: Icon(
+-        icon,
+-        size: ThemeSettings.buttonHintIconSize,
+-        color: color,
+-      ),
++      child: icon == null
++          ? const SizedBox.square(dimension: ThemeSettings.buttonHintIconSize)
++          : Icon(icon, size: ThemeSettings.buttonHintIconSize, color: color),
++    );
++    if (binding == null) return slot;
++    return Semantics(
++      enabled: enabled,
++      label: binding.action.label(AppLocalizations.of(context)),
++      child: slot,
      );
    }
- }
-@@ -236,7 +295,7 @@ class _StatusHeading extends StatelessWidget {
-     required this.message,
-     required this.icon,
-     this.detail,
--    this.color = ThemeColors.otaProgressTextColor,
-+    this.color = ThemeColors.otaAccentColor,
-   });
- 
-   final String title;
-@@ -247,47 +306,132 @@ class _StatusHeading extends StatelessWidget {
- 
-   @override
-   Widget build(BuildContext context) {
--    return Row(
--      crossAxisAlignment: CrossAxisAlignment.start,
--      children: [
--        Icon(icon, size: 64, color: color),
--        const SizedBox(width: 24),
--        Expanded(
--          child: Column(
--            mainAxisSize: MainAxisSize.min,
--            crossAxisAlignment: CrossAxisAlignment.start,
--            children: [
--              Text(
--                title,
--                style: TextStyle(
--                  color: color,
--                  fontSize: ThemeSettings.otaProgressTitleSize,
--                  fontWeight: FontWeight.bold,
--                ),
-+    return ConstrainedBox(
-+      constraints: const BoxConstraints(minHeight: 200),
-+      child: Row(
-+        crossAxisAlignment: CrossAxisAlignment.center,
-+        children: [
-+          SizedBox.square(
-+            dimension: ThemeSettings.otaStageIconAreaSize,
-+            child: Center(
-+              child: Icon(
-+                icon,
-+                size: ThemeSettings.otaStageIconSize,
-+                color: color,
-               ),
--              if (message.isNotEmpty) ...[
--                const SizedBox(height: 8),
-+            ),
-+          ),
-+          const SizedBox(width: 24),
-+          Expanded(
-+            child: Column(
-+              mainAxisSize: MainAxisSize.min,
-+              crossAxisAlignment: CrossAxisAlignment.start,
-+              children: [
-                 Text(
--                  message,
--                  style: const TextStyle(
--                    color: ThemeColors.otaProgressTextColor,
--                    fontSize: ThemeSettings.otaProgressSubtitleSize,
-+                  title,
-+                  style: TextStyle(
-+                    color: color,
-+                    fontSize: ThemeSettings.otaProgressTitleSize,
-+                    fontWeight: FontWeight.bold,
-                   ),
-                 ),
--              ],
--              if (detail != null) ...[
--                const SizedBox(height: 8),
--                Text(
--                  detail!,
--                  style: const TextStyle(
--                    color: ThemeColors.otaProgressSubtextColor,
--                    fontSize: ThemeSettings.otaProgressSubtitleSize,
-+                if (message.isNotEmpty) ...[
-+                  const SizedBox(height: 8),
-+                  Text(
-+                    message,
-+                    style: const TextStyle(
-+                      color: ThemeColors.otaProgressTextColor,
-+                      fontSize: ThemeSettings.otaProgressSubtitleSize,
-+                    ),
-                   ),
--                ),
-+                ],
-+                if (detail != null) ...[
-+                  const SizedBox(height: 8),
-+                  Text(
-+                    detail!,
-+                    style: const TextStyle(
-+                      color: ThemeColors.otaProgressSubtextColor,
-+                      fontSize: ThemeSettings.otaProgressSubtitleSize,
-+                    ),
-+                  ),
-+                ],
-               ],
--            ],
-+            ),
-+          ),
-+        ],
-+      ),
-+    );
-+  }
+-}
+\ No newline at end of file
 +}
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart
+index 50752cc2..b3973235 100644
+--- a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart
+@@ -8,29 +8,40 @@ import 'package:dslideshow_flutter/features/theme/presentation/src/theme_colors.
+ import 'package:dslideshow_flutter/src/service/frontend.dart';
+ import 'package:flutter/material.dart';
+ import 'package:freezed_annotation/freezed_annotation.dart';
++import 'package:logging/logging.dart';
+ 
+ part 'buttons_hint_event.dart';
+ part 'buttons_hint_state.dart';
+ part 'buttons_hint_bloc.freezed.dart';
+ 
++enum ButtonsHintMode { slideshow, contextual }
 +
-+enum _OtaStep { receiving, installing, restarting }
-+
-+class _StageSequence extends StatelessWidget {
-+  const _StageSequence({required this.state});
-+  final OtaState state;
+ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
+-  final FrontendService frontendService;
+-  final SlideshowStatusBloc statusBloc;
+-  final AppConfig appConfig;
++  ButtonsHintBloc({
++    required FrontendService frontendService,
++    required SlideshowStatusBloc statusBloc,
++    required AppConfig appConfig,
++  }) : this._(
++         frontendService: frontendService,
++         statusBloc: statusBloc,
++         appConfig: appConfig,
++         mode: ButtonsHintMode.slideshow,
++       );
+ 
+-  late StreamSubscription<ButtonEvent> _onButtonEventSubscription;
+-  late StreamSubscription _onStatusSubscription;
+-  late SlideshowStatusState _currentStatus;
+-  late Timer _hideHintTimer;
+-  DateTime _lastButtonActive = DateTime.now();
++  ButtonsHintBloc.contextual({required FrontendService frontendService})
++    : this._(
++        frontendService: frontendService,
++        mode: ButtonsHintMode.contextual,
++      );
+ 
+-  ButtonsHintBloc({
++  ButtonsHintBloc._({
+     required this.frontendService,
+-    required this.statusBloc,
+-    required this.appConfig,
++    required this.mode,
++    this._statusBloc,
++    this._appConfig,
+   }) : super(
+-         ButtonsHintDisplayState(
+-           isShow: false,
++         ButtonsHintState.display(
++           isShow: mode == ButtonsHintMode.contextual,
+            normalColor: ThemeColors.buttonsHintColor,
+            pushColor: ThemeColors.buttonsHintPressedColor,
+            button0Icon: Icons.arrow_back,
+@@ -43,148 +54,171 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
+            button3isPush: false,
+          ),
+        ) {
+-    on<ButtonsHintPushButtonEvent>(_onPushButtonEvent);
+-    on<ButtonsHintShowEvent>(_onShowEvent);
+-    _onButtonEventSubscription = frontendService.onButtonEvent.listen(
+-      _onButtonEvent,
++    on<ButtonsHintShowEvent>((event, emit) {
++      if (!_closing) {
++        emit(
++          state.copyWith(
++            isShow: mode == ButtonsHintMode.contextual || event.isShow,
++          ),
++        );
++      }
++    });
++    on<ButtonsHintUpdateButtonsEvent>((event, emit) {
++      if (_closing || mode == ButtonsHintMode.contextual) return;
++      final menu = _statusBloc!.state.isMenu;
++      _log.fine('Slideshow hint profile menu=$menu');
++      emit(
++        state.copyWith(
++          isShow: true,
++          button0Icon: menu
++              ? Icons.arrow_back
++              : getIconDataBySlideshowAction(
++                  _appConfig!.slideshow.buttons.button0.action,
++                ),
++          button1Icon: menu
++              ? Icons.arrow_circle_down
++              : getIconDataBySlideshowAction(
++                  _appConfig!.slideshow.buttons.button1.action,
++                ),
++          button2Icon: menu
++              ? Icons.arrow_circle_up
++              : getIconDataBySlideshowAction(
++                  _appConfig!.slideshow.buttons.button2.action,
++                ),
++          button3Icon: menu
++              ? Icons.check_circle_outline_outlined
++              : getIconDataBySlideshowAction(
++                  _appConfig!.slideshow.buttons.button3.action,
++                ),
++        ),
++      );
++      _resetHideTimer();
++    });
++    on<ButtonsHintButtonChanged>(_buttonChanged);
++    on<ButtonsHintClearPress>((event, emit) {
++      if (!_closing) _setPressed(event.button, false, emit);
++    });
++    _buttons = frontendService.onButtonEvent.listen(
++      (event) {
++        if (!_closing) {
++          add(
++            ButtonsHintEvent.buttonChanged(
++              button: event.button,
++              type: event.event,
++            ),
++          );
++        }
++      },
++      onError: (Object error) =>
++          _log.warning('Button hint stream failed type=${error.runtimeType}'),
+     );
+-    on<ButtonsHintUpdateButtonsEvent>(_onUpdateButtons);
+-    _hideHintTimer = Timer(Duration(seconds: 5), _hideHint);
+-    _startAutoHideHint();
+-    _currentStatus = statusBloc.state;
+-    _onStatusChanged(_currentStatus, true);
+-    _onStatusSubscription = statusBloc.stream.listen(_onStatusChanged);
+-  }
+-
+-  void _startAutoHideHint([bool isForce = false]) {
+-    if (isForce || !_hideHintTimer.isActive) {
+-      _hideHintTimer = Timer(Duration(seconds: 5), _hideHint);
+-    }
+-  }
+-
+-  void _hideHint() {
+-    if (!_currentStatus.isMenu) {
+-      if ((DateTime.now().difference(_lastButtonActive).inSeconds > 5)) {
+-        if (!isClosed){
+-        add(ButtonsHintShowEvent(isShow: false));
++    if (mode == ButtonsHintMode.slideshow) {
++      _status = _statusBloc!.stream.listen((status) {
++        if (!_closing && status.isMenu != _menu) {
++          _menu = status.isMenu;
++          add(const ButtonsHintEvent.updateButtons());
+         }
+-      } else {
+-        _startAutoHideHint(true);
+-      }
++      });
++      _menu = _statusBloc.state.isMenu;
++      add(const ButtonsHintEvent.updateButtons());
+     }
++    _log.info('Button hints started mode=${mode.name}');
+   }
+ 
+-  FutureOr<void> _onStatusChanged(
+-    SlideshowStatusState state, [
+-    bool isForceUpdate = false,
+-  ]) {
+-    if (isForceUpdate || _currentStatus.isMenu != state.isMenu) {
+-      _currentStatus = state;
+-      add(ButtonsHintUpdateButtonsEvent());
+-    }
+-    _currentStatus = state;
+-  }
+-
+-  FutureOr<void> _onPushButtonEvent(
+-    ButtonsHintPushButtonEvent event,
+-    emit,
+-  ) async {
+-    switch (event.button) {
+-      case ButtonType.button0:
+-        emit(state.copyWith(button0isPush: true));
+-        await Future.delayed(Duration(milliseconds: 200));
+-        emit(state.copyWith(button0isPush: false));
+-        break;
+-      case ButtonType.button1:
+-        emit(state.copyWith(button1isPush: true));
+-        await Future.delayed(Duration(milliseconds: 200));
+-        emit(state.copyWith(button1isPush: false));
+-        break;
+-      case ButtonType.button2:
+-        emit(state.copyWith(button2isPush: true));
+-        await Future.delayed(Duration(milliseconds: 200));
+-        emit(state.copyWith(button2isPush: false));
+-        break;
+-      case ButtonType.button3:
+-        emit(state.copyWith(button3isPush: true));
+-        await Future.delayed(Duration(milliseconds: 200));
+-        emit(state.copyWith(button3isPush: false));
+-        break;
+-    }
+-  }
+-
+-  void _onButtonEvent(ButtonEvent event) {
+-    _lastButtonActive = DateTime.now();
+-    if (event.event == ButtonEventType.released) {
+-      add(ButtonsHintPushButtonEvent(button: event.button));
+-    }
+-    if (!_currentStatus.isMenu && !state.isShow){
+-      _onStatusChanged(_currentStatus, true);
+-    }
+-  }
++  static final _log = Logger('ButtonsHintBloc');
++  final FrontendService frontendService;
++  final ButtonsHintMode mode;
++  final SlideshowStatusBloc? _statusBloc;
++  final AppConfig? _appConfig;
++  late final StreamSubscription<ButtonEvent> _buttons;
++  StreamSubscription<SlideshowStatusState>? _status;
++  Timer? _hideTimer;
++  final _pressTimers = <ButtonType, Timer>{};
++  bool _menu = false;
++  bool _closing = false;
++  final _closed = Completer<void>();
+ 
+-  @override
+-  Future<void> close() {
+-    _onButtonEventSubscription.cancel();
+-    _onStatusSubscription.cancel();
+-    return super.close();
++  void _resetHideTimer() {
++    _hideTimer?.cancel();
++    if (mode == ButtonsHintMode.contextual || _menu || _closing) return;
++    _hideTimer = Timer(const Duration(seconds: 5), () {
++      if (!_closing) add(const ButtonsHintEvent.show(isShow: false));
++    });
+   }
+ 
+-  FutureOr<void> _onShowEvent(
+-    ButtonsHintShowEvent event,
++  void _buttonChanged(
++    ButtonsHintButtonChanged event,
+     Emitter<ButtonsHintState> emit,
+   ) {
+-    emit(state.copyWith(isShow: event.isShow));
++    if (_closing) return;
++    _pressTimers.remove(event.button)?.cancel();
++    _log.fine(
++      'Button hint button=${event.button.name} type=${event.type.name}',
++    );
++    _setPressed(event.button, true, emit);
++    _resetHideTimer();
++    if (event.type == ButtonEventType.released) {
++      _pressTimers[event.button] = Timer(const Duration(milliseconds: 200), () {
++        if (!_closing) add(ButtonsHintEvent.clearPress(button: event.button));
++      });
++    }
+   }
+ 
+-  FutureOr<void> _onUpdateButtons(
+-    ButtonsHintUpdateButtonsEvent event,
++  void _setPressed(
++    ButtonType button,
++    bool pressed,
+     Emitter<ButtonsHintState> emit,
+   ) {
+-    if (_currentStatus.isMenu) {
+-      emit(
+-        state.copyWith(
+-          isShow: true,
+-          button0Icon: Icons.arrow_back,
+-          button1Icon: Icons.arrow_circle_down,
+-          button2Icon: Icons.arrow_circle_up,
+-          button3Icon: Icons.check_circle_outline_outlined,
+-        ),
+-      );
+-    } else {
+-      emit(
+-        state.copyWith(
+-          isShow: true,
+-          button0Icon: getIconDataBySlideshowAction(
+-            appConfig.slideshow.buttons.button0.action,
+-          ),
+-          button1Icon: getIconDataBySlideshowAction(
+-            appConfig.slideshow.buttons.button1.action,
+-          ),
+-          button2Icon: getIconDataBySlideshowAction(
+-            appConfig.slideshow.buttons.button2.action,
+-          ),
+-          button3Icon: getIconDataBySlideshowAction(
+-            appConfig.slideshow.buttons.button3.action,
+-          ),
+-        ),
+-      );
+-      _startAutoHideHint(true);
+-    }
++    emit(switch (button) {
++      ButtonType.button0 => state.copyWith(
++        isShow: true,
++        button0isPush: pressed,
++      ),
++      ButtonType.button1 => state.copyWith(
++        isShow: true,
++        button1isPush: pressed,
++      ),
++      ButtonType.button2 => state.copyWith(
++        isShow: true,
++        button2isPush: pressed,
++      ),
++      ButtonType.button3 => state.copyWith(
++        isShow: true,
++        button3isPush: pressed,
++      ),
++    });
+   }
+ 
+-  IconData getIconDataBySlideshowAction(SlideshowAction action) {
+-    switch (action) {
+-      case SlideshowAction.none:
+-        return Icons.cancel;
+-      case SlideshowAction.pause:
+-        return Icons.pause;
+-      case SlideshowAction.showInfo:
+-        return Icons.info;
+-      case SlideshowAction.showMenu:
+-        return Icons.menu;
+-      case SlideshowAction.toggleScreen:
+-        return Icons.power_off;
++  IconData getIconDataBySlideshowAction(SlideshowAction action) =>
++      switch (action) {
++        SlideshowAction.none => Icons.cancel,
++        SlideshowAction.pause => Icons.pause,
++        SlideshowAction.showInfo => Icons.info,
++        SlideshowAction.showMenu => Icons.menu,
++        SlideshowAction.toggleScreen => Icons.power_off,
++      };
 +
 +  @override
-+  Widget build(BuildContext context) {
-+    final l10n = AppLocalizations.of(context);
-+    final current = switch (state) {
-+      OtaProgressState(:final info) =>
-+        info.status == OTAStatus.uploading
-+            ? _OtaStep.receiving
-+            : _OtaStep.installing,
-+      OtaSuccessState() => _OtaStep.restarting,
-+      _ => null,
-+    };
-+    return Wrap(
-+      spacing: 16,
-+      runSpacing: 12,
-+      crossAxisAlignment: WrapCrossAlignment.center,
-+      children: [
-+        for (final step in _OtaStep.values)
-+          Semantics(
-+            selected: step == current,
-+            child: Container(
-+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-+              decoration: BoxDecoration(
-+                borderRadius: BorderRadius.circular(12),
-+                border: Border.all(
-+                  color: step == current
-+                      ? ThemeColors.otaAccentColor
-+                      : ThemeColors.otaReadyInputBorderColor,
-+                ),
-+              ),
-+              child: Row(
-+                mainAxisSize: MainAxisSize.min,
-+                children: [
-+                  if (current != null && step.index < current.index) ...[
-+                    const Icon(
-+                      Icons.check,
-+                      size: 24,
-+                      color: ThemeColors.otaSuccessTextColor,
-+                    ),
-+                    const SizedBox(width: 8),
-+                  ],
-+                  Text(
-+                    switch (step) {
-+                      _OtaStep.receiving => l10n.otaStepReceive,
-+                      _OtaStep.installing => l10n.otaStepInstall,
-+                      _OtaStep.restarting => l10n.otaStepRestart,
-+                    },
-+                    style: TextStyle(
-+                      color: step == current
-+                          ? ThemeColors.otaAccentColor
-+                          : current != null && step.index < current.index
-+                          ? ThemeColors.otaSuccessTextColor
-+                          : ThemeColors.otaProgressSubtextColor,
-+                      fontSize: ThemeSettings.otaReadyNormalTextSize,
-+                      fontWeight: step == current
-+                          ? FontWeight.bold
-+                          : FontWeight.normal,
-+                    ),
-+                  ),
-+                ],
-+              ),
-+            ),
-           ),
--        ),
-       ],
-     );
++  Future<void> close() async {
++    if (_closing) return _closed.future;
++    _closing = true;
++    _hideTimer?.cancel();
++    for (final timer in _pressTimers.values) {
++      timer.cancel();
++    }
++    _log.info('Button hints closing mode=${mode.name}; timers cancelled');
++    try {
++      await Future.wait([
++        _buttons.cancel(),
++        if (_status != null) _status!.cancel(),
++      ]);
++    } finally {
++      try {
++        await super.close();
++      } finally {
++        _closed.complete();
++        _log.info('Button hints closed mode=${mode.name}');
++      }
+     }
    }
-diff --git a/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart b/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
-index 377ba9e..223c1d7 100644
---- a/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
-+++ b/dslideshow_flutter/lib/features/theme/presentation/src/theme_settings.dart
-@@ -22,6 +22,9 @@ abstract class ThemeSettings {
-   // OTA Page Sizes
-   static const double otaTerminalFontSize = 16 * scaleFactor;
-   static const double otaMainStageIconSize = 90 * scaleFactor;
-+  static const double otaStageIconSize = 48 * scaleFactor;
-+  static const double otaStageIconAreaSize = 64 * scaleFactor;
-+  static const double otaStatusPanelHeight = 192 * scaleFactor;
-   static const double otaProgressTitleSize = 32 * scaleFactor;
-   static const double otaProgressSubtitleSize = 16 * scaleFactor;
-   static const double otaProgressPercentSize = 64 * scaleFactor;
+ }
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.freezed.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.freezed.dart
+index 217fdde7..dac90895 100644
+--- a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.freezed.dart
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.freezed.dart
+@@ -56,13 +56,13 @@ extension ButtonsHintEventPatterns on ButtonsHintEvent {
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)?  $default,{TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,required TResult orElse(),}){
++@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintButtonChanged value)?  buttonChanged,TResult Function( ButtonsHintClearPress value)?  clearPress,TResult Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,required TResult orElse(),}){
+ final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent() when $default != null:
+-return $default(_that);case ButtonsHintShowEvent() when show != null:
+-return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
+-return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
++case ButtonsHintShowEvent() when show != null:
++return show(_that);case ButtonsHintButtonChanged() when buttonChanged != null:
++return buttonChanged(_that);case ButtonsHintClearPress() when clearPress != null:
++return clearPress(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+ return updateButtons(_that);case _:
+   return orElse();
+ 
+@@ -81,17 +81,14 @@ return updateButtons(_that);case _:
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)  $default,{required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintPushButtonEvent value)  pushButton,required TResult Function( ButtonsHintUpdateButtonsEvent value)  updateButtons,}){
++@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintButtonChanged value)  buttonChanged,required TResult Function( ButtonsHintClearPress value)  clearPress,required TResult Function( ButtonsHintUpdateButtonsEvent value)  updateButtons,}){
+ final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent():
+-return $default(_that);case ButtonsHintShowEvent():
+-return show(_that);case ButtonsHintPushButtonEvent():
+-return pushButton(_that);case ButtonsHintUpdateButtonsEvent():
+-return updateButtons(_that);case _:
+-  throw StateError('Unexpected subclass');
+-
+-}
++case ButtonsHintShowEvent():
++return show(_that);case ButtonsHintButtonChanged():
++return buttonChanged(_that);case ButtonsHintClearPress():
++return clearPress(_that);case ButtonsHintUpdateButtonsEvent():
++return updateButtons(_that);}
+ }
+ /// A variant of `map` that fallback to returning `null`.
+ ///
+@@ -105,13 +102,13 @@ return updateButtons(_that);case _:
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ButtonsHintEvent value)?  $default,{TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult? Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,}){
++@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintButtonChanged value)?  buttonChanged,TResult? Function( ButtonsHintClearPress value)?  clearPress,TResult? Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,}){
+ final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent() when $default != null:
+-return $default(_that);case ButtonsHintShowEvent() when show != null:
+-return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
+-return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
++case ButtonsHintShowEvent() when show != null:
++return show(_that);case ButtonsHintButtonChanged() when buttonChanged != null:
++return buttonChanged(_that);case ButtonsHintClearPress() when clearPress != null:
++return clearPress(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+ return updateButtons(_that);case _:
+   return null;
+ 
+@@ -129,12 +126,12 @@ return updateButtons(_that);case _:
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( bool isShow)?  show,TResult Function( ButtonType button)?  pushButton,TResult Function()?  updateButtons,required TResult orElse(),}) {final _that = this;
++@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isShow)?  show,TResult Function( ButtonType button,  ButtonEventType type)?  buttonChanged,TResult Function( ButtonType button)?  clearPress,TResult Function()?  updateButtons,required TResult orElse(),}) {final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent() when $default != null:
+-return $default();case ButtonsHintShowEvent() when show != null:
+-return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
+-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
++case ButtonsHintShowEvent() when show != null:
++return show(_that.isShow);case ButtonsHintButtonChanged() when buttonChanged != null:
++return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress() when clearPress != null:
++return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+ return updateButtons();case _:
+   return orElse();
+ 
+@@ -153,16 +150,13 @@ return updateButtons();case _:
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( bool isShow)  show,required TResult Function( ButtonType button)  pushButton,required TResult Function()  updateButtons,}) {final _that = this;
++@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isShow)  show,required TResult Function( ButtonType button,  ButtonEventType type)  buttonChanged,required TResult Function( ButtonType button)  clearPress,required TResult Function()  updateButtons,}) {final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent():
+-return $default();case ButtonsHintShowEvent():
+-return show(_that.isShow);case ButtonsHintPushButtonEvent():
+-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent():
+-return updateButtons();case _:
+-  throw StateError('Unexpected subclass');
+-
+-}
++case ButtonsHintShowEvent():
++return show(_that.isShow);case ButtonsHintButtonChanged():
++return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress():
++return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent():
++return updateButtons();}
+ }
+ /// A variant of `when` that fallback to returning `null`
+ ///
+@@ -176,12 +170,12 @@ return updateButtons();case _:
+ /// }
+ /// ```
+ 
+-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button)?  pushButton,TResult? Function()?  updateButtons,}) {final _that = this;
++@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button,  ButtonEventType type)?  buttonChanged,TResult? Function( ButtonType button)?  clearPress,TResult? Function()?  updateButtons,}) {final _that = this;
+ switch (_that) {
+-case _ButtonsHintEvent() when $default != null:
+-return $default();case ButtonsHintShowEvent() when show != null:
+-return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
+-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
++case ButtonsHintShowEvent() when show != null:
++return show(_that.isShow);case ButtonsHintButtonChanged() when buttonChanged != null:
++return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress() when clearPress != null:
++return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+ return updateButtons();case _:
+   return null;
+ 
+@@ -193,77 +187,114 @@ return updateButtons();case _:
+ /// @nodoc
+ 
+ 
+-class _ButtonsHintEvent implements ButtonsHintEvent {
+-  const _ButtonsHintEvent();
++class ButtonsHintShowEvent implements ButtonsHintEvent {
++  const ButtonsHintShowEvent({required this.isShow});
+   
+ 
++ final  bool isShow;
+ 
+-
++/// Create a copy of ButtonsHintEvent
++/// with the given fields replaced by the non-null parameter values.
++@JsonKey(includeFromJson: false, includeToJson: false)
++@pragma('vm:prefer-inline')
++$ButtonsHintShowEventCopyWith<ButtonsHintShowEvent> get copyWith => _$ButtonsHintShowEventCopyWithImpl<ButtonsHintShowEvent>(this, _$identity);
+ 
+ 
+ 
+ @override
+ bool operator ==(Object other) {
+-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonsHintEvent);
++    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintShowEvent&&(identical(other.isShow, isShow) || other.isShow == isShow));
+ }
+ 
+ 
+ @override
+-int get hashCode => runtimeType.hashCode;
++int get hashCode {
++    return Object.hash(runtimeType,isShow);
++}
+ 
+ @override
+ String toString() {
+-    return 'ButtonsHintEvent()';
++    return 'ButtonsHintEvent.show(isShow: $isShow)';
+ }
+ 
+ 
+ }
+ 
++/// @nodoc
++abstract mixin class $ButtonsHintShowEventCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
++  factory $ButtonsHintShowEventCopyWith(ButtonsHintShowEvent value, $Res Function(ButtonsHintShowEvent) _then) = _$ButtonsHintShowEventCopyWithImpl;
++@useResult
++$Res call({
++ bool isShow
++});
++
++
++
++
++}
++/// @nodoc
++class _$ButtonsHintShowEventCopyWithImpl<$Res>
++    implements $ButtonsHintShowEventCopyWith<$Res> {
++  _$ButtonsHintShowEventCopyWithImpl(this._self, this._then);
++
++  final ButtonsHintShowEvent _self;
++  final $Res Function(ButtonsHintShowEvent) _then;
++
++/// Create a copy of ButtonsHintEvent
++/// with the given fields replaced by the non-null parameter values.
++@pragma('vm:prefer-inline') $Res call({Object? isShow = null,}) {
++  return _then(ButtonsHintShowEvent(
++isShow: null == isShow ? _self.isShow : isShow // ignore: cast_nullable_to_non_nullable
++as bool,
++  ));
++}
+ 
+ 
++}
+ 
+ /// @nodoc
+ 
+ 
+-class ButtonsHintShowEvent implements ButtonsHintEvent {
+-  const ButtonsHintShowEvent({required this.isShow});
++class ButtonsHintButtonChanged implements ButtonsHintEvent {
++  const ButtonsHintButtonChanged({required this.button, required this.type});
+   
+ 
+- final  bool isShow;
++ final  ButtonType button;
++ final  ButtonEventType type;
+ 
+ /// Create a copy of ButtonsHintEvent
+ /// with the given fields replaced by the non-null parameter values.
+ @JsonKey(includeFromJson: false, includeToJson: false)
+ @pragma('vm:prefer-inline')
+-$ButtonsHintShowEventCopyWith<ButtonsHintShowEvent> get copyWith => _$ButtonsHintShowEventCopyWithImpl<ButtonsHintShowEvent>(this, _$identity);
++$ButtonsHintButtonChangedCopyWith<ButtonsHintButtonChanged> get copyWith => _$ButtonsHintButtonChangedCopyWithImpl<ButtonsHintButtonChanged>(this, _$identity);
+ 
+ 
+ 
+ @override
+ bool operator ==(Object other) {
+-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintShowEvent&&(identical(other.isShow, isShow) || other.isShow == isShow));
++    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintButtonChanged&&(identical(other.button, button) || other.button == button)&&(identical(other.type, type) || other.type == type));
+ }
+ 
+ 
+ @override
+ int get hashCode {
+-    return Object.hash(runtimeType,isShow);
++    return Object.hash(runtimeType,button,type);
+ }
+ 
+ @override
+ String toString() {
+-    return 'ButtonsHintEvent.show(isShow: $isShow)';
++    return 'ButtonsHintEvent.buttonChanged(button: $button, type: $type)';
+ }
+ 
+ 
+ }
+ 
+ /// @nodoc
+-abstract mixin class $ButtonsHintShowEventCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
+-  factory $ButtonsHintShowEventCopyWith(ButtonsHintShowEvent value, $Res Function(ButtonsHintShowEvent) _then) = _$ButtonsHintShowEventCopyWithImpl;
++abstract mixin class $ButtonsHintButtonChangedCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
++  factory $ButtonsHintButtonChangedCopyWith(ButtonsHintButtonChanged value, $Res Function(ButtonsHintButtonChanged) _then) = _$ButtonsHintButtonChangedCopyWithImpl;
+ @useResult
+ $Res call({
+- bool isShow
++ ButtonType button, ButtonEventType type
+ });
+ 
+ 
+@@ -271,19 +302,20 @@ $Res call({
+ 
+ }
+ /// @nodoc
+-class _$ButtonsHintShowEventCopyWithImpl<$Res>
+-    implements $ButtonsHintShowEventCopyWith<$Res> {
+-  _$ButtonsHintShowEventCopyWithImpl(this._self, this._then);
++class _$ButtonsHintButtonChangedCopyWithImpl<$Res>
++    implements $ButtonsHintButtonChangedCopyWith<$Res> {
++  _$ButtonsHintButtonChangedCopyWithImpl(this._self, this._then);
+ 
+-  final ButtonsHintShowEvent _self;
+-  final $Res Function(ButtonsHintShowEvent) _then;
++  final ButtonsHintButtonChanged _self;
++  final $Res Function(ButtonsHintButtonChanged) _then;
+ 
+ /// Create a copy of ButtonsHintEvent
+ /// with the given fields replaced by the non-null parameter values.
+-@pragma('vm:prefer-inline') $Res call({Object? isShow = null,}) {
+-  return _then(ButtonsHintShowEvent(
+-isShow: null == isShow ? _self.isShow : isShow // ignore: cast_nullable_to_non_nullable
+-as bool,
++@pragma('vm:prefer-inline') $Res call({Object? button = null,Object? type = null,}) {
++  return _then(ButtonsHintButtonChanged(
++button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
++as ButtonType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
++as ButtonEventType,
+   ));
+ }
+ 
+@@ -293,8 +325,8 @@ as bool,
+ /// @nodoc
+ 
+ 
+-class ButtonsHintPushButtonEvent implements ButtonsHintEvent {
+-  const ButtonsHintPushButtonEvent({required this.button});
++class ButtonsHintClearPress implements ButtonsHintEvent {
++  const ButtonsHintClearPress({required this.button});
+   
+ 
+  final  ButtonType button;
+@@ -303,13 +335,13 @@ class ButtonsHintPushButtonEvent implements ButtonsHintEvent {
+ /// with the given fields replaced by the non-null parameter values.
+ @JsonKey(includeFromJson: false, includeToJson: false)
+ @pragma('vm:prefer-inline')
+-$ButtonsHintPushButtonEventCopyWith<ButtonsHintPushButtonEvent> get copyWith => _$ButtonsHintPushButtonEventCopyWithImpl<ButtonsHintPushButtonEvent>(this, _$identity);
++$ButtonsHintClearPressCopyWith<ButtonsHintClearPress> get copyWith => _$ButtonsHintClearPressCopyWithImpl<ButtonsHintClearPress>(this, _$identity);
+ 
+ 
+ 
+ @override
+ bool operator ==(Object other) {
+-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintPushButtonEvent&&(identical(other.button, button) || other.button == button));
++    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintClearPress&&(identical(other.button, button) || other.button == button));
+ }
+ 
+ 
+@@ -320,15 +352,15 @@ int get hashCode {
+ 
+ @override
+ String toString() {
+-    return 'ButtonsHintEvent.pushButton(button: $button)';
++    return 'ButtonsHintEvent.clearPress(button: $button)';
+ }
+ 
+ 
+ }
+ 
+ /// @nodoc
+-abstract mixin class $ButtonsHintPushButtonEventCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
+-  factory $ButtonsHintPushButtonEventCopyWith(ButtonsHintPushButtonEvent value, $Res Function(ButtonsHintPushButtonEvent) _then) = _$ButtonsHintPushButtonEventCopyWithImpl;
++abstract mixin class $ButtonsHintClearPressCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
++  factory $ButtonsHintClearPressCopyWith(ButtonsHintClearPress value, $Res Function(ButtonsHintClearPress) _then) = _$ButtonsHintClearPressCopyWithImpl;
+ @useResult
+ $Res call({
+  ButtonType button
+@@ -339,17 +371,17 @@ $Res call({
+ 
+ }
+ /// @nodoc
+-class _$ButtonsHintPushButtonEventCopyWithImpl<$Res>
+-    implements $ButtonsHintPushButtonEventCopyWith<$Res> {
+-  _$ButtonsHintPushButtonEventCopyWithImpl(this._self, this._then);
++class _$ButtonsHintClearPressCopyWithImpl<$Res>
++    implements $ButtonsHintClearPressCopyWith<$Res> {
++  _$ButtonsHintClearPressCopyWithImpl(this._self, this._then);
+ 
+-  final ButtonsHintPushButtonEvent _self;
+-  final $Res Function(ButtonsHintPushButtonEvent) _then;
++  final ButtonsHintClearPress _self;
++  final $Res Function(ButtonsHintClearPress) _then;
+ 
+ /// Create a copy of ButtonsHintEvent
+ /// with the given fields replaced by the non-null parameter values.
+ @pragma('vm:prefer-inline') $Res call({Object? button = null,}) {
+-  return _then(ButtonsHintPushButtonEvent(
++  return _then(ButtonsHintClearPress(
+ button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
+ as ButtonType,
+   ));
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_event.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_event.dart
+index 47aa21a9..82819b9f 100644
+--- a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_event.dart
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/buttons_hint_event.dart
+@@ -1,13 +1,15 @@
+ part of 'buttons_hint_bloc.dart';
+ 
+ @freezed
+-class ButtonsHintEvent with _$ButtonsHintEvent {
+-  const factory ButtonsHintEvent() = _ButtonsHintEvent;
+-  const factory ButtonsHintEvent.show({
+-    required bool isShow,
+-  }) = ButtonsHintShowEvent;
+-  const factory ButtonsHintEvent.pushButton({
++sealed class ButtonsHintEvent with _$ButtonsHintEvent {
++  const factory ButtonsHintEvent.show({required bool isShow}) =
++      ButtonsHintShowEvent;
++  const factory ButtonsHintEvent.buttonChanged({
+     required ButtonType button,
+-  }) = ButtonsHintPushButtonEvent;
+-   const factory ButtonsHintEvent.updateButtons() = ButtonsHintUpdateButtonsEvent;
++    required ButtonEventType type,
++  }) = ButtonsHintButtonChanged;
++  const factory ButtonsHintEvent.clearPress({required ButtonType button}) =
++      ButtonsHintClearPress;
++  const factory ButtonsHintEvent.updateButtons() =
++      ButtonsHintUpdateButtonsEvent;
+ }
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_bloc.dart b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_bloc.dart
+index c06c7f19..86b5b157 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_bloc.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_bloc.dart
+@@ -155,14 +155,17 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
+   };
+ 
+   void _pushButton(ButtonEvent event) {
+-    if (!_isClosing &&
+-        event.event == ButtonEventType.released &&
+-        event.button == ButtonType.button0 &&
+-        (state is OtaReadyState ||
+-            state is OtaFailureState ||
+-            state is OtaSuccessState)) {
+-      routeBloc.add(ChangePageEvent(RoutePage.slideshow));
++    if (_isClosing ||
++        event.event != ButtonEventType.released ||
++        event.button != ButtonType.button0) {
++      return;
+     }
++    if (!state.canReturnToSlideshow) {
++      _log.fine('Back ignored while OTA status=${state.info.status.name}');
++      return;
++    }
++    _log.info('Returning from OTA status=${state.info.status.name}');
++    routeBloc.add(ChangePageEvent(RoutePage.slideshow));
+   }
+ 
+   @override
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.dart b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.dart
+index 2e167755..c83e9422 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.dart
+@@ -5,6 +5,11 @@ part 'ota_state.freezed.dart';
+ 
+ @freezed
+ sealed class OtaState with _$OtaState {
++  const OtaState._();
++  bool get canReturnToSlideshow => switch (this) {
++    OtaReadyState() || OtaFailureState() => true,
++    _ => false,
++  };
+   const factory OtaState.initial({required OTAInfo info}) = OtaInitialState;
+   const factory OtaState.ready({
+     required OTAInfo info,
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.freezed.dart b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.freezed.dart
+index aefe538a..d47d83b8 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.freezed.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/bloc/ota_state.freezed.dart
+@@ -244,8 +244,8 @@ return exit(_that.info);case _:
+ /// @nodoc
+ 
+ 
+-class OtaInitialState implements OtaState {
+-  const OtaInitialState({required this.info});
++class OtaInitialState extends OtaState {
++  const OtaInitialState({required this.info}): super._();
+   
+ 
+ @override final  OTAInfo info;
+@@ -321,8 +321,8 @@ $OTAInfoCopyWith<$Res> get info {
+ /// @nodoc
+ 
+ 
+-class OtaReadyState implements OtaState {
+-  const OtaReadyState({required this.info, required this.otaStartUrl, this.isPreparingAddress = false});
++class OtaReadyState extends OtaState {
++  const OtaReadyState({required this.info, required this.otaStartUrl, this.isPreparingAddress = false}): super._();
+   
+ 
+ @override final  OTAInfo info;
+@@ -402,8 +402,8 @@ $OTAInfoCopyWith<$Res> get info {
+ /// @nodoc
+ 
+ 
+-class OtaProgressState implements OtaState {
+-  const OtaProgressState({required this.info});
++class OtaProgressState extends OtaState {
++  const OtaProgressState({required this.info}): super._();
+   
+ 
+ @override final  OTAInfo info;
+@@ -479,8 +479,8 @@ $OTAInfoCopyWith<$Res> get info {
+ /// @nodoc
+ 
+ 
+-class OtaSuccessState implements OtaState {
+-  const OtaSuccessState({required this.info});
++class OtaSuccessState extends OtaState {
++  const OtaSuccessState({required this.info}): super._();
+   
+ 
+ @override final  OTAInfo info;
+@@ -556,8 +556,8 @@ $OTAInfoCopyWith<$Res> get info {
+ /// @nodoc
+ 
+ 
+-class OtaFailureState implements OtaState {
+-  const OtaFailureState({required this.info});
++class OtaFailureState extends OtaState {
++  const OtaFailureState({required this.info}): super._();
+   
+ 
+ @override final  OTAInfo info;
+@@ -633,8 +633,8 @@ $OTAInfoCopyWith<$Res> get info {
+ /// @nodoc
+ 
+ 
+-class OtaExitState implements OtaState {
+-  const OtaExitState({required this.info});
++class OtaExitState extends OtaState {
++  const OtaExitState({required this.info}): super._();
+   
+ 
+ @override final  OTAInfo info;
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
+index 093ddccd..a90501ad 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_ready_widget.dart
+@@ -1,5 +1,8 @@
+-import 'dart:math' as math;
+-
++import 'package:dslideshow_backend/command.dart';
++import 'package:dslideshow_backend/config.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart';
++import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_bloc.dart';
+ import 'package:dslideshow_common/version.dart';
+ import 'package:dslideshow_flutter/environment.dart' as environment;
+ import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
+@@ -11,7 +14,7 @@ import 'package:dslideshow_flutter/src/injector.dart';
+ import 'package:dslideshow_i18n/i18n.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+-import 'package:qr_flutter/qr_flutter.dart';
++import 'package:dslideshow_flutter/features/shared/presentation/widgets/access_layout.dart';
+ 
+ class OtaReadyWidget extends StatelessWidget {
+   final OtaReadyState state;
+@@ -24,57 +27,22 @@ class OtaReadyWidget extends StatelessWidget {
+       fit: StackFit.expand,
+       children: [
+         Positioned.fill(
+-          child: SafeArea(
+-            child: LayoutBuilder(
+-              builder: (context, constraints) {
+-                if (constraints.maxWidth >= 1100 &&
+-                    constraints.maxHeight >= 700) {
+-                  return Row(
+-                    children: [
+-                      Expanded(
+-                        flex: constraints.maxWidth >= 1600 ? 4 : 2,
+-                        child: Padding(
+-                          padding: const EdgeInsets.symmetric(vertical: 100),
+-                          child: Center(child: _OtaQrPanel(state: state)),
+-                        ),
+-                      ),
+-                      Expanded(
+-                        flex: 2,
+-                        child: SingleChildScrollView(
+-                          padding: const EdgeInsets.fromLTRB(0, 100, 32, 100),
+-                          child: _OtaReadyInfoPanel(state: state),
+-                        ),
+-                      ),
+-                    ],
+-                  );
+-                }
+-
+-                return SingleChildScrollView(
+-                  padding: const EdgeInsets.fromLTRB(24, 100, 24, 32),
+-                  child: Column(
+-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+-                    children: [
+-                      if (state.otaStartUrl != null)
+-                        Center(
+-                          child: SizedBox.square(
+-                            dimension: math.max(0, constraints.maxWidth - 48),
+-                            child: _OtaQrPanel(state: state),
+-                          ),
+-                        ),
+-                      const SizedBox(height: 32),
+-                      _OtaReadyInfoPanel(state: state),
+-                      if (state.otaStartUrl == null) ...[
+-                        const SizedBox(height: 32),
+-                        _OtaQrPanel(state: state),
+-                      ],
+-                    ],
+-                  ),
+-                );
+-              },
+-            ),
++          child: AccessLayout(
++            panel: _OtaQrPanel(state: state),
++            information: _OtaReadyInfoPanel(state: state),
++            hasAddress: state.otaStartUrl != null,
+           ),
+         ),
+         const CommonHeaderWidget(),
++        PageButtonsHint(
++          frontend: context.read<OtaBloc>().frontendService,
++          buttons: injector<AppConfig>().slideshow.buttons,
++          bindings: const {
++            ButtonType.button0: ButtonHintBinding(
++              action: ButtonHintAction.back,
++            ),
++          },
++        ),
+         if (!environment.isLinuxEmbedded)
+           BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
+             builder: (context, state) {
+@@ -125,26 +93,7 @@ class _OtaQrPanel extends StatelessWidget {
+       );
+     }
+ 
+-    return Container(
+-      padding: const EdgeInsets.all(20),
+-      decoration: BoxDecoration(
+-        color: ThemeColors.qrCodeBackground,
+-        borderRadius: BorderRadius.circular(20),
+-        boxShadow: [
+-          BoxShadow(
+-            color: ThemeColors.qrCodeShadow,
+-            blurRadius: 15,
+-            offset: const Offset(0, 10),
+-          ),
+-        ],
+-      ),
+-      child: QrImageView(
+-        data: address,
+-        version: QrVersions.auto,
+-        backgroundColor: ThemeColors.qrCodeBackground,
+-        semanticsLabel: l10n.otaScanInstruction,
+-      ),
+-    );
++    return AccessQrCode(address: address, label: l10n.otaScanInstruction);
+   }
+ }
+ 
+diff --git a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
+index 6cc7b183..7758e475 100644
+--- a/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
++++ b/dslideshow_flutter/lib/features/ota/presentation/widgets/ota_view.dart
+@@ -1,3 +1,7 @@
++import 'package:dslideshow_backend/config.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart';
++
+ import 'dart:math' as math;
+ 
+ import 'package:dslideshow_backend/command.dart';
+@@ -82,6 +86,16 @@ class OTAView extends StatelessWidget {
+             ),
+           ],
+         ),
++        if (state.canReturnToSlideshow)
++          PageButtonsHint(
++            frontend: context.read<OtaBloc>().frontendService,
++            buttons: injector<AppConfig>().slideshow.buttons,
++            bindings: const {
++              ButtonType.button0: ButtonHintBinding(
++                action: ButtonHintAction.back,
++              ),
++            },
++          ),
+         if (!environment.isLinuxEmbedded)
+           BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
+             builder: (context, state) => DebugWidget(injector(), injector()),
+@@ -198,7 +212,7 @@ class _StatusPanel extends StatelessWidget {
+         message: info.errorText?.isNotEmpty == true
+             ? info.errorText!
+             : l10n.otaUnknownError,
+-        detail: '${l10n.otaLogDetails} ${l10n.otaReturnToSlideshow}',
++        detail: l10n.otaLogDetails,
+         icon: Icons.error_outline,
+         color: ThemeColors.otaErrorTextColor,
+       ),
+diff --git a/dslideshow_flutter/lib/features/slideshow/presentation/pages/slideshow_page.dart b/dslideshow_flutter/lib/features/slideshow/presentation/pages/slideshow_page.dart
+index 257d3237..2d02d6b6 100644
+--- a/dslideshow_flutter/lib/features/slideshow/presentation/pages/slideshow_page.dart
++++ b/dslideshow_flutter/lib/features/slideshow/presentation/pages/slideshow_page.dart
+@@ -75,7 +75,7 @@ class _SlideshowOverlays extends StatelessWidget {
+             Positioned(
+               left: hintLeft,
+               top: hintTop,
+-              child: ButtonsHintWidget(buttons: appConfig.slideshow.buttons),
++              child: const ButtonsHintWidget(),
+             ),
+             StateNotify(isPaused: state.isPaused),
+             if (state.isInfo) const SystemInfoWidget(),
+diff --git a/dslideshow_flutter/lib/features/test/presentation/test_page.dart b/dslideshow_flutter/lib/features/test/presentation/test_page.dart
+index 2d6d0333..6b72b2d1 100644
+--- a/dslideshow_flutter/lib/features/test/presentation/test_page.dart
++++ b/dslideshow_flutter/lib/features/test/presentation/test_page.dart
+@@ -71,7 +71,7 @@ class _ConfigPageState extends State<TestPage> {
+         child: Column(
+           children: <Widget>[
+             const CommonHeaderWidget(),
+-            ButtonsHintWidget(buttons: _appConfig.slideshow.buttons),
++            const ButtonsHintWidget(),
+             QrImageView(
+               backgroundColor: Colors.white,
+               data: _urlData,
+diff --git a/dslideshow_flutter/lib/main.dart b/dslideshow_flutter/lib/main.dart
+index 5cafd025..ff582d81 100644
+--- a/dslideshow_flutter/lib/main.dart
++++ b/dslideshow_flutter/lib/main.dart
+@@ -1,6 +1,7 @@
+ import 'dart:io';
+ 
+ import 'package:device_preview/device_preview.dart';
++import 'package:dslideshow_flutter/features/config/data/config_access_repository.dart';
+ import 'package:device_preview/presets.dart';
+ import 'package:flutter/foundation.dart';
+ import 'package:flutter/material.dart';
+@@ -81,6 +82,14 @@ void main() async {
+       return FrontendService(injector(), backendService, otaService);
+     });
+ 
++    injector.registerLazySingleton<ConfigAccessRepository>(
++      () => ConfigAccessRepository(
++        frontend: injector(),
++        port: injector<AppConfig>().webServer.port,
++        alwaysEnabled: injector<AppConfig>().webServer.alwaysEnabled,
++      ),
++    );
++
+     _log.info("externalStorage: '${environment.externalStorage.path}'");
+ 
+     final AppConfig config = injector();
+@@ -210,10 +219,7 @@ class MainApp extends StatelessWidget {
+                 child: const SlideShowPage(),
+               );
+             case RoutePage.config:
+-              return BlocProvider<ButtonsHintBloc>(
+-                create: (context) => injector<ButtonsHintBloc>(),
+-                child: const ConfigPage(),
+-              );
++              return const ConfigPage();
+             case RoutePage.ota:
+               return OTAPage();
+             case RoutePage.welcome:
+diff --git a/dslideshow_flutter/pubspec.yaml b/dslideshow_flutter/pubspec.yaml
+index 50689912..821ada10 100644
+--- a/dslideshow_flutter/pubspec.yaml
++++ b/dslideshow_flutter/pubspec.yaml
+@@ -1,6 +1,6 @@
+ name: dslideshow_flutter
+ description: Flutter SlideShow
+-version: 15.2.0+1
++version: 15.2.0+2
+ publish_to: none
+ 
+ environment:
+diff --git a/dslideshow_flutter/test/ota_view_test.dart b/dslideshow_flutter/test/ota_view_test.dart
+index 063fa9fa..f480073d 100644
+--- a/dslideshow_flutter/test/ota_view_test.dart
++++ b/dslideshow_flutter/test/ota_view_test.dart
+@@ -1,3 +1,7 @@
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
++import 'package:dslideshow_flutter/src/service/frontend.dart' show ButtonEvent;
++import 'package:dslideshow_flutter/src/route_bloc.dart';
+ import 'package:dslideshow_backend/command.dart';
+ import 'package:dslideshow_common/version.dart';
+ import 'package:dslideshow_flutter/features/ota/presentation/bloc/ota_state.dart';
+@@ -248,7 +252,8 @@ void main() {
+         find.textContaining('See the system log for details.'),
+         findsOneWidget,
+       );
+-      expect(find.textContaining('Back button'), findsOneWidget);
++      expect(find.byType(ButtonsHintWidget), findsOneWidget);
++      expect(find.textContaining('Back button'), findsNothing);
+       expect(
+         find.byWidgetPredicate(
+           (widget) => widget is Semantics && widget.properties.selected == true,
+@@ -329,7 +334,7 @@ void main() {
+         ).join(' '),
+       ),
+     );
+-    await tester.ensureVisible(find.textContaining('Back button'));
++    await tester.ensureVisible(find.text('Update failed'));
+     expect(tester.getRect(find.byType(TerminalView)), logRect);
+     expect(tester.takeException(), isNull);
+   });
+@@ -363,4 +368,53 @@ void main() {
+       expect(tester.takeException(), isNull);
+     },
+   );
++  testWidgets(
++    'OTA return hint follows the same availability as physical Back',
++    (tester) async {
++      final h = OtaHarness();
++      await h.mount(tester);
++      expect(find.byType(ButtonsHintWidget), findsNothing);
++      await h.initialize(tester);
++      await h.completeInfo(tester, _info);
++      await h.completeNetwork(tester);
++      final hint = find.byType(ButtonsHintWidget);
++      expect(tester.getTopLeft(hint), const Offset(2000, 20));
++      expect(
++        tester
++            .widget<ButtonsHintWidget>(hint)
++            .bindings![ButtonType.button0]!
++            .action,
++        ButtonHintAction.back,
++      );
++      for (final status in [
++        OTAStatus.uploading,
++        OTAStatus.instaling,
++        OTAStatus.finished,
++        OTAStatus.preReboot,
++      ]) {
++        await h.update(tester, _info.copyWith(status: status));
++        expect(hint, findsNothing);
++        h.frontend.buttons.add(
++          ButtonEvent(
++            button: ButtonType.button0,
++            event: ButtonEventType.released,
++            durationMs: 1,
++          ),
++        );
++        await tester.pump();
++        expect(h.routes.state.current, isNot(RoutePage.slideshow));
++      }
++      await h.update(tester, _info.copyWith(status: OTAStatus.issue));
++      expect(hint, findsOneWidget);
++      h.frontend.buttons.add(
++        ButtonEvent(
++          button: ButtonType.button0,
++          event: ButtonEventType.released,
++          durationMs: 1,
++        ),
++      );
++      await tester.pump();
++      expect(h.routes.state.current, RoutePage.slideshow);
++    },
++  );
+ }
 diff --git a/i18n/app_en.arb b/i18n/app_en.arb
-index bc59d6d..1ca64e1 100644
+index 37024924..0de0b9bb 100644
 --- a/i18n/app_en.arb
 +++ b/i18n/app_en.arb
-@@ -1253,6 +1253,7 @@
-   "effects_wave_origin": "Wave origin",
-   "effects_advanced": "Advanced",
-   "otaTitle": "Update firmware",
-+  "otaReadyTitle": "Ready to update",
-   "otaCurrentVersion": "Current version",
-   "otaAccessCode": "Access code",
-   "otaSameNetwork": "Connect your phone or computer to the same network as the frame.",
-@@ -1260,25 +1261,29 @@
-   "otaManualConnection": "Or open this address",
-   "otaAddressUnavailable": "No network address is available. Connect the frame to a network to open the update page.",
-   "otaPreparing": "Preparing the update page…",
--  "otaUploading": "Uploading firmware",
-+  "otaReceiving": "Receiving firmware",
-+  "otaTransferHint": "The file is being received. Installation starts next.",
-   "otaInstalling": "Installing firmware",
-   "otaDoNotPowerOff": "Keep the frame connected to power.",
-   "otaInstallationHint": "Installation may take a few minutes. Follow the system log below.",
+@@ -1270,7 +1270,6 @@
    "otaFailed": "Update failed",
    "otaUnknownError": "An unknown error occurred.",
    "otaLogDetails": "See the system log for details.",
--  "otaComplete": "Firmware updated",
-+  "otaReturnToSlideshow": "Press the frame’s Back button to return to the slideshow.",
-+  "otaInstalled": "Firmware installed",
-+  "otaRestartTitle": "Restarting the application",
+-  "otaReturnToSlideshow": "Press the frame’s Back button to return to the slideshow.",
+   "otaInstalled": "Firmware installed",
+   "otaRestartTitle": "Restarting the application",
    "otaWaitingRestart": "Waiting for the application to restart…",
--  "otaRestarting": "Restarting the application…",
-   "otaLeaving": "Closing the update screen…",
-   "otaSystemLog": "System log",
-+  "otaTransferLogPending": "Receiving the firmware file. The installation log will appear after the transfer.",
-+  "otaInstallLogPending": "Waiting for installation output…",
-   "otaFollowingOutput": "Following new output",
-   "otaHistoryPaused": "Viewing history · auto-scroll paused",
-   "otaLatestLine": "Go to latest line",
-   "otaDevConfig": "Developer settings",
--  "otaStageUpload": "Upload",
--  "otaStageInstall": "Install",
--  "otaStageComplete": "Complete",
-+  "otaStepReceive": "1. Receive",
-+  "otaStepInstall": "2. Install",
-+  "otaStepRestart": "3. Restart",
-   "frame_language_section": "Frame interface",
-   "frame_language_label": "Frame language",
-   "frame_language_hint": "Save and restart the frame application to apply this language. The panel language is selected separately in Appearance."
+@@ -1422,14 +1421,14 @@
+       }
+     }
+   },
+-  "gallery_purge_body": "{count} files, {bytes} bytes. They cannot be restored through the photo frame.",
++  "gallery_purge_body": "Files to delete: {count}. Expected space freed: {size}. They cannot be restored through the photo frame.",
+   "@gallery_purge_body": {
+     "placeholders": {
+       "count": {
+         "type": "int"
+       },
+-      "bytes": {
+-        "type": "int"
++      "size": {
++        "type": "String"
+       }
+     }
+   },
+@@ -1454,5 +1453,55 @@
+   },
+   "gallery_trash_file_changed": "Trash file changed",
+   "gallery_yes": "Yes",
+-  "gallery_no": "No"
++  "gallery_no": "No",
++  "gallery_more_files_trash": "Additional files to move to Trash: {count}.",
++  "@gallery_more_files_trash": {"placeholders": {"count": {"type": "int"}}},
++  "gallery_more_files_purge": "Additional files to delete: {count}.",
++  "@gallery_more_files_purge": {"placeholders": {"count": {"type": "int"}}},
++  "gallery_size_megabytes": "{value} MB",
++  "@gallery_size_megabytes": {"placeholders": {"value": {"type": "String"}}},
++  "gallery_size_bytes": "Exact size: {bytes} bytes",
++  "@gallery_size_bytes": {"placeholders": {"bytes": {"type": "int"}}},
++  "gallery_file_location": "Location",
++  "gallery_library_root": "Media library root",
++  "gallery_show_full_path": "Full path",
++  "gallery_hide_full_path": "Hide full path",
++  "gallery_resolution_unknown": "Resolution unavailable",
++  "gallery_recommend_first_copy": "Exact copies are equivalent; the first file is suggested.",
++  "gallery_recommend_first_tied": "Reason: first among files with the highest resolution",
++  "gallery_recommend_known_resolution": "Provisional: highest known resolution",
++  "gallery_recommend_first_unknown": "Resolution unavailable; the first file is suggested.",
++  "gallery_resolution_minimum": "Minimum resolution",
++  "gallery_resolution_intermediate": "Below maximum",
++  "gallery_resolution_same": "Same resolution",
++  "gallery_file_smallest": "Takes less space; not a quality rating",
++  "gallery_recommend_keep": "Recommended to keep",
++  "gallery_recommend_resolution": "Reason: highest resolution in the group",
++  "gallery_resolution_recommendation_hint": "Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.",
++  "gallery_comparison_partial": "Some resolutions are unknown; the recommendation is provisional and may change.",
++  "gallery_equivalent_copies": "Exact copies are equivalent; the first file is recommended.",
++  "configPageTitle": "Set up your photo frame",
++  "configPageIntro": "Open the settings panel on your phone or computer.",
++  "configPageStarting": "Starting settings access…",
++  "configPageAddressPreparing": "Finding the local network address…",
++  "configPageNoAddress": "Connect the frame to a local network, then check the connection.",
++  "configPageCode": "Access code",
++  "configPageNetworkStep": "1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.",
++  "configPageScanStep": "2. Scan the QR code or open the address below.",
++  "configPageCodeStep": "3. Enter the access code in the settings panel.",
++  "configPageManual": "Manual connection",
++  "configPageCheck": "Check connection",
++  "configPageRetry": "Try again",
++  "configPageReturn": "Return to slideshow",
++  "configPageReturnAnyway": "Return without confirmation",
++  "configPageChecking": "Checking the network…",
++  "configPageCacheHint": "Network information may take up to a minute to update.",
++  "configPageServerError": "Unable to start settings access.",
++  "configPageNetworkError": "Unable to read network information.",
++  "configPageTimeout": "The operation took too long.",
++  "configPageUnknownError": "Unable to prepare settings access. Try again.",
++  "configPagePending": "Waiting for the previous operation to finish. You can return to the slideshow.",
++  "configPageClosing": "Closing settings access…",
++  "configPageClosingAlways": "Closing this screen. Settings access stays enabled by configuration.",
++  "configPageCloseError": "Could not confirm that settings access has ended. Retry, or return without confirmation."
+ }
 diff --git a/i18n/app_ru.arb b/i18n/app_ru.arb
-index c8c0fb5..58deada 100644
+index 7a786239..c9c30249 100644
 --- a/i18n/app_ru.arb
 +++ b/i18n/app_ru.arb
-@@ -1253,6 +1253,7 @@
-   "effects_wave_origin": "Начало волны",
-   "effects_advanced": "Дополнительно",
-   "otaTitle": "Обновление прошивки",
-+  "otaReadyTitle": "Готово к обновлению",
-   "otaCurrentVersion": "Текущая версия",
-   "otaAccessCode": "Код доступа",
-   "otaSameNetwork": "Подключите телефон или компьютер к той же сети, что и рамка.",
-@@ -1260,25 +1261,29 @@
-   "otaManualConnection": "Или откройте этот адрес",
-   "otaAddressUnavailable": "Сетевой адрес недоступен. Подключите рамку к сети, чтобы открыть страницу обновления.",
-   "otaPreparing": "Подготовка страницы обновления…",
--  "otaUploading": "Загрузка прошивки",
-+  "otaReceiving": "Получение прошивки",
-+  "otaTransferHint": "Получаем файл на рамку. Затем начнётся установка.",
-   "otaInstalling": "Установка прошивки",
-   "otaDoNotPowerOff": "Не отключайте питание рамки.",
-   "otaInstallationHint": "Установка может занять несколько минут. Ход работы показан в журнале ниже.",
+@@ -1270,7 +1270,6 @@
    "otaFailed": "Не удалось обновить прошивку",
    "otaUnknownError": "Произошла неизвестная ошибка.",
    "otaLogDetails": "Подробности — в системном журнале.",
--  "otaComplete": "Прошивка обновлена",
-+  "otaReturnToSlideshow": "Для возврата к слайдшоу нажмите кнопку возврата на рамке.",
-+  "otaInstalled": "Прошивка установлена",
-+  "otaRestartTitle": "Перезапуск приложения",
+-  "otaReturnToSlideshow": "Для возврата к слайдшоу нажмите кнопку возврата на рамке.",
+   "otaInstalled": "Прошивка установлена",
+   "otaRestartTitle": "Перезапуск приложения",
    "otaWaitingRestart": "Ожидаем перезапуск приложения…",
--  "otaRestarting": "Перезапускаем приложение…",
-   "otaLeaving": "Закрытие экрана обновления…",
-   "otaSystemLog": "Системный журнал",
-+  "otaTransferLogPending": "Файл передаётся на рамку. Журнал установки появится после получения файла.",
-+  "otaInstallLogPending": "Ожидаем вывод установщика…",
-   "otaFollowingOutput": "Показ новых строк",
-   "otaHistoryPaused": "Просмотр истории · автопрокрутка приостановлена",
-   "otaLatestLine": "К последней строке",
-   "otaDevConfig": "Настройки разработчика",
--  "otaStageUpload": "Загрузка",
--  "otaStageInstall": "Установка",
--  "otaStageComplete": "Готово",
-+  "otaStepReceive": "1. Получение",
-+  "otaStepInstall": "2. Установка",
-+  "otaStepRestart": "3. Перезапуск",
-   "frame_language_section": "Интерфейс фоторамки",
-   "frame_language_label": "Язык фоторамки",
-   "frame_language_hint": "Сохраните настройки и перезапустите приложение рамки, чтобы применить язык. Язык панели выбирается отдельно в меню «Оформление»."
+@@ -1415,7 +1414,7 @@
+     }
+   },
+   "gallery_elapsed": "Прошло времени: {time}",
+-  "gallery_purge_body": "Файлов: {count}, байт: {bytes}. Восстановить их через фоторамку не получится.",
++  "gallery_purge_body": "Файлов для удаления: {count}. Освободится примерно: {size}. Восстановить их через фоторамку не получится.",
+   "gallery_group_position": "Группа {current} из {total}",
+   "gallery_skipped": "Пропущено файлов: {count}",
+   "gallery_trash_file_changed": "Изменён в корзине",
+@@ -1431,8 +1430,8 @@
+       "count": {
+         "type": "int"
+       },
+-      "bytes": {
+-        "type": "int"
++      "size": {
++        "type": "String"
+       }
+     }
+   },
+@@ -1454,5 +1453,55 @@
+     }
+   },
+   "gallery_yes": "Да",
+-  "gallery_no": "Нет"
++  "gallery_no": "Нет",
++  "gallery_more_files_trash": "Ещё файлов для перемещения в корзину: {count}.",
++  "@gallery_more_files_trash": {"placeholders": {"count": {"type": "int"}}},
++  "gallery_more_files_purge": "Ещё файлов для удаления: {count}.",
++  "@gallery_more_files_purge": {"placeholders": {"count": {"type": "int"}}},
++  "gallery_size_megabytes": "{value} МБ",
++  "@gallery_size_megabytes": {"placeholders": {"value": {"type": "String"}}},
++  "gallery_size_bytes": "Точный размер: {bytes} байт",
++  "@gallery_size_bytes": {"placeholders": {"bytes": {"type": "int"}}},
++  "gallery_file_location": "Расположение",
++  "gallery_library_root": "Корень медиатеки",
++  "gallery_show_full_path": "Полный путь",
++  "gallery_hide_full_path": "Скрыть полный путь",
++  "gallery_resolution_unknown": "Разрешение неизвестно",
++  "gallery_recommend_first_copy": "Точные копии равноценны; предложен первый файл в списке.",
++  "gallery_recommend_first_tied": "Причина: первый среди файлов с максимальным разрешением",
++  "gallery_recommend_known_resolution": "Предварительно: максимальное из известных разрешений",
++  "gallery_recommend_first_unknown": "Разрешение неизвестно; предложен первый файл в списке.",
++  "gallery_resolution_minimum": "Минимальное разрешение",
++  "gallery_resolution_intermediate": "Ниже максимального",
++  "gallery_resolution_same": "Одинаковое разрешение",
++  "gallery_file_smallest": "Занимает меньше места; это не оценка качества",
++  "gallery_recommend_keep": "Рекомендуется сохранить",
++  "gallery_recommend_resolution": "Причина: максимальное разрешение в группе",
++  "gallery_resolution_recommendation_hint": "Рекомендуется максимальное разрешение; при равенстве — первый файл. Качество по пикселям не оценивается. Выбор в корзину остаётся ручным.",
++  "gallery_comparison_partial": "Часть разрешений неизвестна; рекомендация предварительная и может измениться.",
++  "gallery_equivalent_copies": "Точные копии равноценны; рекомендован первый файл в списке.",
++  "configPageTitle": "Настройка фоторамки",
++  "configPageIntro": "Откройте панель настройки на телефоне или компьютере.",
++  "configPageStarting": "Запускаем доступ к настройкам…",
++  "configPageAddressPreparing": "Определяем адрес в локальной сети…",
++  "configPageNoAddress": "Подключите рамку к локальной сети и проверьте подключение.",
++  "configPageCode": "Код доступа",
++  "configPageNetworkStep": "1. Подключите телефон или компьютер к той же сети Wi-Fi, что и рамка. Интернет не требуется.",
++  "configPageScanStep": "2. Сканируйте QR-код или откройте адрес ниже.",
++  "configPageCodeStep": "3. Введите код доступа в панели настройки.",
++  "configPageManual": "Подключение вручную",
++  "configPageCheck": "Проверить подключение",
++  "configPageRetry": "Повторить",
++  "configPageReturn": "Вернуться к слайдшоу",
++  "configPageReturnAnyway": "Вернуться без подтверждения",
++  "configPageChecking": "Проверяем сеть…",
++  "configPageCacheHint": "Обновление сетевых данных может занять до минуты.",
++  "configPageServerError": "Не удалось запустить доступ к настройкам.",
++  "configPageNetworkError": "Не удалось получить сведения о сети.",
++  "configPageTimeout": "Превышено время ожидания операции.",
++  "configPageUnknownError": "Не удалось подготовить доступ к настройкам. Повторите попытку.",
++  "configPagePending": "Ожидаем завершения предыдущей операции. Можно вернуться к слайдшоу.",
++  "configPageClosing": "Завершаем доступ к настройкам…",
++  "configPageClosingAlways": "Закрываем экран. Доступ к настройкам остаётся включённым по конфигурации.",
++  "configPageCloseError": "Не удалось подтвердить завершение доступа к настройкам. Повторите попытку или вернитесь без подтверждения."
+ }
 diff --git a/i18n/lib/src/generated/app_localizations.dart b/i18n/lib/src/generated/app_localizations.dart
-index 9b6a3f8..84e9f79 100644
+index 8b251d2f..6e0b6bf0 100644
 --- a/i18n/lib/src/generated/app_localizations.dart
 +++ b/i18n/lib/src/generated/app_localizations.dart
-@@ -4628,6 +4628,12 @@ abstract class AppLocalizations {
-   /// **'Update firmware'**
-   String get otaTitle;
- 
-+  /// No description provided for @otaReadyTitle.
-+  ///
-+  /// In en, this message translates to:
-+  /// **'Ready to update'**
-+  String get otaReadyTitle;
-+
-   /// No description provided for @otaCurrentVersion.
-   ///
-   /// In en, this message translates to:
-@@ -4670,11 +4676,17 @@ abstract class AppLocalizations {
-   /// **'Preparing the update page…'**
-   String get otaPreparing;
- 
--  /// No description provided for @otaUploading.
-+  /// No description provided for @otaReceiving.
-+  ///
-+  /// In en, this message translates to:
-+  /// **'Receiving firmware'**
-+  String get otaReceiving;
-+
-+  /// No description provided for @otaTransferHint.
-   ///
-   /// In en, this message translates to:
--  /// **'Uploading firmware'**
--  String get otaUploading;
-+  /// **'The file is being received. Installation starts next.'**
-+  String get otaTransferHint;
- 
-   /// No description provided for @otaInstalling.
-   ///
-@@ -4712,23 +4724,29 @@ abstract class AppLocalizations {
+@@ -4730,12 +4730,6 @@ abstract class AppLocalizations {
    /// **'See the system log for details.'**
    String get otaLogDetails;
  
--  /// No description provided for @otaComplete.
-+  /// No description provided for @otaReturnToSlideshow.
+-  /// No description provided for @otaReturnToSlideshow.
+-  ///
+-  /// In en, this message translates to:
+-  /// **'Press the frame’s Back button to return to the slideshow.'**
+-  String get otaReturnToSlideshow;
+-
+   /// No description provided for @otaInstalled.
    ///
    /// In en, this message translates to:
--  /// **'Firmware updated'**
--  String get otaComplete;
-+  /// **'Press the frame’s Back button to return to the slideshow.'**
-+  String get otaReturnToSlideshow;
+@@ -5495,8 +5489,8 @@ abstract class AppLocalizations {
+   /// No description provided for @gallery_purge_body.
+   ///
+   /// In en, this message translates to:
+-  /// **'{count} files, {bytes} bytes. They cannot be restored through the photo frame.'**
+-  String gallery_purge_body(int count, int bytes);
++  /// **'Files to delete: {count}. Expected space freed: {size}. They cannot be restored through the photo frame.'**
++  String gallery_purge_body(int count, String size);
  
--  /// No description provided for @otaWaitingRestart.
-+  /// No description provided for @otaInstalled.
+   /// No description provided for @gallery_group_position.
    ///
+@@ -5527,6 +5521,282 @@ abstract class AppLocalizations {
    /// In en, this message translates to:
--  /// **'Waiting for the application to restart…'**
--  String get otaWaitingRestart;
-+  /// **'Firmware installed'**
-+  String get otaInstalled;
+   /// **'No'**
+   String get gallery_no;
 +
-+  /// No description provided for @otaRestartTitle.
++  /// No description provided for @gallery_more_files_trash.
 +  ///
 +  /// In en, this message translates to:
-+  /// **'Restarting the application'**
-+  String get otaRestartTitle;
- 
--  /// No description provided for @otaRestarting.
-+  /// No description provided for @otaWaitingRestart.
-   ///
-   /// In en, this message translates to:
--  /// **'Restarting the application…'**
--  String get otaRestarting;
-+  /// **'Waiting for the application to restart…'**
-+  String get otaWaitingRestart;
- 
-   /// No description provided for @otaLeaving.
-   ///
-@@ -4742,6 +4760,18 @@ abstract class AppLocalizations {
-   /// **'System log'**
-   String get otaSystemLog;
- 
-+  /// No description provided for @otaTransferLogPending.
++  /// **'Additional files to move to Trash: {count}.'**
++  String gallery_more_files_trash(int count);
++
++  /// No description provided for @gallery_more_files_purge.
 +  ///
 +  /// In en, this message translates to:
-+  /// **'Receiving the firmware file. The installation log will appear after the transfer.'**
-+  String get otaTransferLogPending;
++  /// **'Additional files to delete: {count}.'**
++  String gallery_more_files_purge(int count);
 +
-+  /// No description provided for @otaInstallLogPending.
++  /// No description provided for @gallery_size_megabytes.
 +  ///
 +  /// In en, this message translates to:
-+  /// **'Waiting for installation output…'**
-+  String get otaInstallLogPending;
++  /// **'{value} MB'**
++  String gallery_size_megabytes(String value);
 +
-   /// No description provided for @otaFollowingOutput.
-   ///
-   /// In en, this message translates to:
-@@ -4766,23 +4796,23 @@ abstract class AppLocalizations {
-   /// **'Developer settings'**
-   String get otaDevConfig;
++  /// No description provided for @gallery_size_bytes.
++  ///
++  /// In en, this message translates to:
++  /// **'Exact size: {bytes} bytes'**
++  String gallery_size_bytes(int bytes);
++
++  /// No description provided for @gallery_file_location.
++  ///
++  /// In en, this message translates to:
++  /// **'Location'**
++  String get gallery_file_location;
++
++  /// No description provided for @gallery_library_root.
++  ///
++  /// In en, this message translates to:
++  /// **'Media library root'**
++  String get gallery_library_root;
++
++  /// No description provided for @gallery_show_full_path.
++  ///
++  /// In en, this message translates to:
++  /// **'Full path'**
++  String get gallery_show_full_path;
++
++  /// No description provided for @gallery_hide_full_path.
++  ///
++  /// In en, this message translates to:
++  /// **'Hide full path'**
++  String get gallery_hide_full_path;
++
++  /// No description provided for @gallery_resolution_unknown.
++  ///
++  /// In en, this message translates to:
++  /// **'Resolution unavailable'**
++  String get gallery_resolution_unknown;
++
++  /// No description provided for @gallery_recommend_first_copy.
++  ///
++  /// In en, this message translates to:
++  /// **'Exact copies are equivalent; the first file is suggested.'**
++  String get gallery_recommend_first_copy;
++
++  /// No description provided for @gallery_recommend_first_tied.
++  ///
++  /// In en, this message translates to:
++  /// **'Reason: first among files with the highest resolution'**
++  String get gallery_recommend_first_tied;
++
++  /// No description provided for @gallery_recommend_known_resolution.
++  ///
++  /// In en, this message translates to:
++  /// **'Provisional: highest known resolution'**
++  String get gallery_recommend_known_resolution;
++
++  /// No description provided for @gallery_recommend_first_unknown.
++  ///
++  /// In en, this message translates to:
++  /// **'Resolution unavailable; the first file is suggested.'**
++  String get gallery_recommend_first_unknown;
++
++  /// No description provided for @gallery_resolution_minimum.
++  ///
++  /// In en, this message translates to:
++  /// **'Minimum resolution'**
++  String get gallery_resolution_minimum;
++
++  /// No description provided for @gallery_resolution_intermediate.
++  ///
++  /// In en, this message translates to:
++  /// **'Below maximum'**
++  String get gallery_resolution_intermediate;
++
++  /// No description provided for @gallery_resolution_same.
++  ///
++  /// In en, this message translates to:
++  /// **'Same resolution'**
++  String get gallery_resolution_same;
++
++  /// No description provided for @gallery_file_smallest.
++  ///
++  /// In en, this message translates to:
++  /// **'Takes less space; not a quality rating'**
++  String get gallery_file_smallest;
++
++  /// No description provided for @gallery_recommend_keep.
++  ///
++  /// In en, this message translates to:
++  /// **'Recommended to keep'**
++  String get gallery_recommend_keep;
++
++  /// No description provided for @gallery_recommend_resolution.
++  ///
++  /// In en, this message translates to:
++  /// **'Reason: highest resolution in the group'**
++  String get gallery_recommend_resolution;
++
++  /// No description provided for @gallery_resolution_recommendation_hint.
++  ///
++  /// In en, this message translates to:
++  /// **'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.'**
++  String get gallery_resolution_recommendation_hint;
++
++  /// No description provided for @gallery_comparison_partial.
++  ///
++  /// In en, this message translates to:
++  /// **'Some resolutions are unknown; the recommendation is provisional and may change.'**
++  String get gallery_comparison_partial;
++
++  /// No description provided for @gallery_equivalent_copies.
++  ///
++  /// In en, this message translates to:
++  /// **'Exact copies are equivalent; the first file is recommended.'**
++  String get gallery_equivalent_copies;
++
++  /// No description provided for @configPageTitle.
++  ///
++  /// In en, this message translates to:
++  /// **'Set up your photo frame'**
++  String get configPageTitle;
++
++  /// No description provided for @configPageIntro.
++  ///
++  /// In en, this message translates to:
++  /// **'Open the settings panel on your phone or computer.'**
++  String get configPageIntro;
++
++  /// No description provided for @configPageStarting.
++  ///
++  /// In en, this message translates to:
++  /// **'Starting settings access…'**
++  String get configPageStarting;
++
++  /// No description provided for @configPageAddressPreparing.
++  ///
++  /// In en, this message translates to:
++  /// **'Finding the local network address…'**
++  String get configPageAddressPreparing;
++
++  /// No description provided for @configPageNoAddress.
++  ///
++  /// In en, this message translates to:
++  /// **'Connect the frame to a local network, then check the connection.'**
++  String get configPageNoAddress;
++
++  /// No description provided for @configPageCode.
++  ///
++  /// In en, this message translates to:
++  /// **'Access code'**
++  String get configPageCode;
++
++  /// No description provided for @configPageNetworkStep.
++  ///
++  /// In en, this message translates to:
++  /// **'1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.'**
++  String get configPageNetworkStep;
++
++  /// No description provided for @configPageScanStep.
++  ///
++  /// In en, this message translates to:
++  /// **'2. Scan the QR code or open the address below.'**
++  String get configPageScanStep;
++
++  /// No description provided for @configPageCodeStep.
++  ///
++  /// In en, this message translates to:
++  /// **'3. Enter the access code in the settings panel.'**
++  String get configPageCodeStep;
++
++  /// No description provided for @configPageManual.
++  ///
++  /// In en, this message translates to:
++  /// **'Manual connection'**
++  String get configPageManual;
++
++  /// No description provided for @configPageCheck.
++  ///
++  /// In en, this message translates to:
++  /// **'Check connection'**
++  String get configPageCheck;
++
++  /// No description provided for @configPageRetry.
++  ///
++  /// In en, this message translates to:
++  /// **'Try again'**
++  String get configPageRetry;
++
++  /// No description provided for @configPageReturn.
++  ///
++  /// In en, this message translates to:
++  /// **'Return to slideshow'**
++  String get configPageReturn;
++
++  /// No description provided for @configPageReturnAnyway.
++  ///
++  /// In en, this message translates to:
++  /// **'Return without confirmation'**
++  String get configPageReturnAnyway;
++
++  /// No description provided for @configPageChecking.
++  ///
++  /// In en, this message translates to:
++  /// **'Checking the network…'**
++  String get configPageChecking;
++
++  /// No description provided for @configPageCacheHint.
++  ///
++  /// In en, this message translates to:
++  /// **'Network information may take up to a minute to update.'**
++  String get configPageCacheHint;
++
++  /// No description provided for @configPageServerError.
++  ///
++  /// In en, this message translates to:
++  /// **'Unable to start settings access.'**
++  String get configPageServerError;
++
++  /// No description provided for @configPageNetworkError.
++  ///
++  /// In en, this message translates to:
++  /// **'Unable to read network information.'**
++  String get configPageNetworkError;
++
++  /// No description provided for @configPageTimeout.
++  ///
++  /// In en, this message translates to:
++  /// **'The operation took too long.'**
++  String get configPageTimeout;
++
++  /// No description provided for @configPageUnknownError.
++  ///
++  /// In en, this message translates to:
++  /// **'Unable to prepare settings access. Try again.'**
++  String get configPageUnknownError;
++
++  /// No description provided for @configPagePending.
++  ///
++  /// In en, this message translates to:
++  /// **'Waiting for the previous operation to finish. You can return to the slideshow.'**
++  String get configPagePending;
++
++  /// No description provided for @configPageClosing.
++  ///
++  /// In en, this message translates to:
++  /// **'Closing settings access…'**
++  String get configPageClosing;
++
++  /// No description provided for @configPageClosingAlways.
++  ///
++  /// In en, this message translates to:
++  /// **'Closing this screen. Settings access stays enabled by configuration.'**
++  String get configPageClosingAlways;
++
++  /// No description provided for @configPageCloseError.
++  ///
++  /// In en, this message translates to:
++  /// **'Could not confirm that settings access has ended. Retry, or return without confirmation.'**
++  String get configPageCloseError;
+ }
  
--  /// No description provided for @otaStageUpload.
-+  /// No description provided for @otaStepReceive.
-   ///
-   /// In en, this message translates to:
--  /// **'Upload'**
--  String get otaStageUpload;
-+  /// **'1. Receive'**
-+  String get otaStepReceive;
- 
--  /// No description provided for @otaStageInstall.
-+  /// No description provided for @otaStepInstall.
-   ///
-   /// In en, this message translates to:
--  /// **'Install'**
--  String get otaStageInstall;
-+  /// **'2. Install'**
-+  String get otaStepInstall;
- 
--  /// No description provided for @otaStageComplete.
-+  /// No description provided for @otaStepRestart.
-   ///
-   /// In en, this message translates to:
--  /// **'Complete'**
--  String get otaStageComplete;
-+  /// **'3. Restart'**
-+  String get otaStepRestart;
- 
-   /// No description provided for @frame_language_section.
-   ///
+ class _AppLocalizationsDelegate
 diff --git a/i18n/lib/src/generated/app_localizations_en.dart b/i18n/lib/src/generated/app_localizations_en.dart
-index 05ba6fe..a1fb674 100644
+index b28c3ffe..75f4ff41 100644
 --- a/i18n/lib/src/generated/app_localizations_en.dart
 +++ b/i18n/lib/src/generated/app_localizations_en.dart
-@@ -2381,6 +2381,9 @@ class AppLocalizationsEn extends AppLocalizations {
+@@ -2436,10 +2436,6 @@ class AppLocalizationsEn extends AppLocalizations {
    @override
-   String get otaTitle => 'Update firmware';
- 
-+  @override
-+  String get otaReadyTitle => 'Ready to update';
-+
-   @override
-   String get otaCurrentVersion => 'Current version';
- 
-@@ -2405,7 +2408,11 @@ class AppLocalizationsEn extends AppLocalizations {
-   String get otaPreparing => 'Preparing the update page…';
- 
-   @override
--  String get otaUploading => 'Uploading firmware';
-+  String get otaReceiving => 'Receiving firmware';
-+
-+  @override
-+  String get otaTransferHint =>
-+      'The file is being received. Installation starts next.';
- 
-   @override
-   String get otaInstalling => 'Installing firmware';
-@@ -2427,13 +2434,17 @@ class AppLocalizationsEn extends AppLocalizations {
    String get otaLogDetails => 'See the system log for details.';
  
+-  @override
+-  String get otaReturnToSlideshow =>
+-      'Press the frame’s Back button to return to the slideshow.';
+-
    @override
--  String get otaComplete => 'Firmware updated';
-+  String get otaReturnToSlideshow =>
-+      'Press the frame’s Back button to return to the slideshow.';
+   String get otaInstalled => 'Firmware installed';
+ 
+@@ -2861,8 +2857,8 @@ class AppLocalizationsEn extends AppLocalizations {
+   }
  
    @override
--  String get otaWaitingRestart => 'Waiting for the application to restart…';
-+  String get otaInstalled => 'Firmware installed';
+-  String gallery_purge_body(int count, int bytes) {
+-    return '$count files, $bytes bytes. They cannot be restored through the photo frame.';
++  String gallery_purge_body(int count, String size) {
++    return 'Files to delete: $count. Expected space freed: $size. They cannot be restored through the photo frame.';
+   }
+ 
+   @override
+@@ -2883,4 +2879,168 @@ class AppLocalizationsEn extends AppLocalizations {
+ 
+   @override
+   String get gallery_no => 'No';
 +
 +  @override
-+  String get otaRestartTitle => 'Restarting the application';
- 
-   @override
--  String get otaRestarting => 'Restarting the application…';
-+  String get otaWaitingRestart => 'Waiting for the application to restart…';
- 
-   @override
-   String get otaLeaving => 'Closing the update screen…';
-@@ -2441,6 +2452,13 @@ class AppLocalizationsEn extends AppLocalizations {
-   @override
-   String get otaSystemLog => 'System log';
- 
-+  @override
-+  String get otaTransferLogPending =>
-+      'Receiving the firmware file. The installation log will appear after the transfer.';
++  String gallery_more_files_trash(int count) {
++    return 'Additional files to move to Trash: $count.';
++  }
 +
 +  @override
-+  String get otaInstallLogPending => 'Waiting for installation output…';
++  String gallery_more_files_purge(int count) {
++    return 'Additional files to delete: $count.';
++  }
 +
-   @override
-   String get otaFollowingOutput => 'Following new output';
- 
-@@ -2454,13 +2472,13 @@ class AppLocalizationsEn extends AppLocalizations {
-   String get otaDevConfig => 'Developer settings';
- 
-   @override
--  String get otaStageUpload => 'Upload';
-+  String get otaStepReceive => '1. Receive';
- 
-   @override
--  String get otaStageInstall => 'Install';
-+  String get otaStepInstall => '2. Install';
- 
-   @override
--  String get otaStageComplete => 'Complete';
-+  String get otaStepRestart => '3. Restart';
- 
-   @override
-   String get frame_language_section => 'Frame interface';
++  @override
++  String gallery_size_megabytes(String value) {
++    return '$value MB';
++  }
++
++  @override
++  String gallery_size_bytes(int bytes) {
++    return 'Exact size: $bytes bytes';
++  }
++
++  @override
++  String get gallery_file_location => 'Location';
++
++  @override
++  String get gallery_library_root => 'Media library root';
++
++  @override
++  String get gallery_show_full_path => 'Full path';
++
++  @override
++  String get gallery_hide_full_path => 'Hide full path';
++
++  @override
++  String get gallery_resolution_unknown => 'Resolution unavailable';
++
++  @override
++  String get gallery_recommend_first_copy =>
++      'Exact copies are equivalent; the first file is suggested.';
++
++  @override
++  String get gallery_recommend_first_tied =>
++      'Reason: first among files with the highest resolution';
++
++  @override
++  String get gallery_recommend_known_resolution =>
++      'Provisional: highest known resolution';
++
++  @override
++  String get gallery_recommend_first_unknown =>
++      'Resolution unavailable; the first file is suggested.';
++
++  @override
++  String get gallery_resolution_minimum => 'Minimum resolution';
++
++  @override
++  String get gallery_resolution_intermediate => 'Below maximum';
++
++  @override
++  String get gallery_resolution_same => 'Same resolution';
++
++  @override
++  String get gallery_file_smallest => 'Takes less space; not a quality rating';
++
++  @override
++  String get gallery_recommend_keep => 'Recommended to keep';
++
++  @override
++  String get gallery_recommend_resolution =>
++      'Reason: highest resolution in the group';
++
++  @override
++  String get gallery_resolution_recommendation_hint =>
++      'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.';
++
++  @override
++  String get gallery_comparison_partial =>
++      'Some resolutions are unknown; the recommendation is provisional and may change.';
++
++  @override
++  String get gallery_equivalent_copies =>
++      'Exact copies are equivalent; the first file is recommended.';
++
++  @override
++  String get configPageTitle => 'Set up your photo frame';
++
++  @override
++  String get configPageIntro =>
++      'Open the settings panel on your phone or computer.';
++
++  @override
++  String get configPageStarting => 'Starting settings access…';
++
++  @override
++  String get configPageAddressPreparing => 'Finding the local network address…';
++
++  @override
++  String get configPageNoAddress =>
++      'Connect the frame to a local network, then check the connection.';
++
++  @override
++  String get configPageCode => 'Access code';
++
++  @override
++  String get configPageNetworkStep =>
++      '1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.';
++
++  @override
++  String get configPageScanStep =>
++      '2. Scan the QR code or open the address below.';
++
++  @override
++  String get configPageCodeStep =>
++      '3. Enter the access code in the settings panel.';
++
++  @override
++  String get configPageManual => 'Manual connection';
++
++  @override
++  String get configPageCheck => 'Check connection';
++
++  @override
++  String get configPageRetry => 'Try again';
++
++  @override
++  String get configPageReturn => 'Return to slideshow';
++
++  @override
++  String get configPageReturnAnyway => 'Return without confirmation';
++
++  @override
++  String get configPageChecking => 'Checking the network…';
++
++  @override
++  String get configPageCacheHint =>
++      'Network information may take up to a minute to update.';
++
++  @override
++  String get configPageServerError => 'Unable to start settings access.';
++
++  @override
++  String get configPageNetworkError => 'Unable to read network information.';
++
++  @override
++  String get configPageTimeout => 'The operation took too long.';
++
++  @override
++  String get configPageUnknownError =>
++      'Unable to prepare settings access. Try again.';
++
++  @override
++  String get configPagePending =>
++      'Waiting for the previous operation to finish. You can return to the slideshow.';
++
++  @override
++  String get configPageClosing => 'Closing settings access…';
++
++  @override
++  String get configPageClosingAlways =>
++      'Closing this screen. Settings access stays enabled by configuration.';
++
++  @override
++  String get configPageCloseError =>
++      'Could not confirm that settings access has ended. Retry, or return without confirmation.';
+ }
 diff --git a/i18n/lib/src/generated/app_localizations_ru.dart b/i18n/lib/src/generated/app_localizations_ru.dart
-index 5ac2328..4aa85dd 100644
+index f3f5fdb1..8a13e2a4 100644
 --- a/i18n/lib/src/generated/app_localizations_ru.dart
 +++ b/i18n/lib/src/generated/app_localizations_ru.dart
-@@ -2397,6 +2397,9 @@ class AppLocalizationsRu extends AppLocalizations {
+@@ -2453,10 +2453,6 @@ class AppLocalizationsRu extends AppLocalizations {
    @override
-   String get otaTitle => 'Обновление прошивки';
- 
-+  @override
-+  String get otaReadyTitle => 'Готово к обновлению';
-+
-   @override
-   String get otaCurrentVersion => 'Текущая версия';
- 
-@@ -2422,7 +2425,11 @@ class AppLocalizationsRu extends AppLocalizations {
-   String get otaPreparing => 'Подготовка страницы обновления…';
- 
-   @override
--  String get otaUploading => 'Загрузка прошивки';
-+  String get otaReceiving => 'Получение прошивки';
-+
-+  @override
-+  String get otaTransferHint =>
-+      'Получаем файл на рамку. Затем начнётся установка.';
- 
-   @override
-   String get otaInstalling => 'Установка прошивки';
-@@ -2444,13 +2451,17 @@ class AppLocalizationsRu extends AppLocalizations {
    String get otaLogDetails => 'Подробности — в системном журнале.';
  
+-  @override
+-  String get otaReturnToSlideshow =>
+-      'Для возврата к слайдшоу нажмите кнопку возврата на рамке.';
+-
    @override
--  String get otaComplete => 'Прошивка обновлена';
-+  String get otaReturnToSlideshow =>
-+      'Для возврата к слайдшоу нажмите кнопку возврата на рамке.';
+   String get otaInstalled => 'Прошивка установлена';
+ 
+@@ -2879,8 +2875,8 @@ class AppLocalizationsRu extends AppLocalizations {
+   }
  
    @override
--  String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
-+  String get otaInstalled => 'Прошивка установлена';
+-  String gallery_purge_body(int count, int bytes) {
+-    return 'Файлов: $count, байт: $bytes. Восстановить их через фоторамку не получится.';
++  String gallery_purge_body(int count, String size) {
++    return 'Файлов для удаления: $count. Освободится примерно: $size. Восстановить их через фоторамку не получится.';
+   }
+ 
+   @override
+@@ -2901,4 +2897,169 @@ class AppLocalizationsRu extends AppLocalizations {
+ 
+   @override
+   String get gallery_no => 'Нет';
 +
 +  @override
-+  String get otaRestartTitle => 'Перезапуск приложения';
- 
-   @override
--  String get otaRestarting => 'Перезапускаем приложение…';
-+  String get otaWaitingRestart => 'Ожидаем перезапуск приложения…';
- 
-   @override
-   String get otaLeaving => 'Закрытие экрана обновления…';
-@@ -2458,6 +2469,13 @@ class AppLocalizationsRu extends AppLocalizations {
-   @override
-   String get otaSystemLog => 'Системный журнал';
- 
-+  @override
-+  String get otaTransferLogPending =>
-+      'Файл передаётся на рамку. Журнал установки появится после получения файла.';
++  String gallery_more_files_trash(int count) {
++    return 'Ещё файлов для перемещения в корзину: $count.';
++  }
 +
 +  @override
-+  String get otaInstallLogPending => 'Ожидаем вывод установщика…';
++  String gallery_more_files_purge(int count) {
++    return 'Ещё файлов для удаления: $count.';
++  }
 +
-   @override
-   String get otaFollowingOutput => 'Показ новых строк';
- 
-@@ -2472,13 +2490,13 @@ class AppLocalizationsRu extends AppLocalizations {
-   String get otaDevConfig => 'Настройки разработчика';
- 
-   @override
--  String get otaStageUpload => 'Загрузка';
-+  String get otaStepReceive => '1. Получение';
- 
-   @override
--  String get otaStageInstall => 'Установка';
-+  String get otaStepInstall => '2. Установка';
- 
-   @override
--  String get otaStageComplete => 'Готово';
-+  String get otaStepRestart => '3. Перезапуск';
- 
-   @override
-   String get frame_language_section => 'Интерфейс фоторамки';
++  @override
++  String gallery_size_megabytes(String value) {
++    return '$value МБ';
++  }
++
++  @override
++  String gallery_size_bytes(int bytes) {
++    return 'Точный размер: $bytes байт';
++  }
++
++  @override
++  String get gallery_file_location => 'Расположение';
++
++  @override
++  String get gallery_library_root => 'Корень медиатеки';
++
++  @override
++  String get gallery_show_full_path => 'Полный путь';
++
++  @override
++  String get gallery_hide_full_path => 'Скрыть полный путь';
++
++  @override
++  String get gallery_resolution_unknown => 'Разрешение неизвестно';
++
++  @override
++  String get gallery_recommend_first_copy =>
++      'Точные копии равноценны; предложен первый файл в списке.';
++
++  @override
++  String get gallery_recommend_first_tied =>
++      'Причина: первый среди файлов с максимальным разрешением';
++
++  @override
++  String get gallery_recommend_known_resolution =>
++      'Предварительно: максимальное из известных разрешений';
++
++  @override
++  String get gallery_recommend_first_unknown =>
++      'Разрешение неизвестно; предложен первый файл в списке.';
++
++  @override
++  String get gallery_resolution_minimum => 'Минимальное разрешение';
++
++  @override
++  String get gallery_resolution_intermediate => 'Ниже максимального';
++
++  @override
++  String get gallery_resolution_same => 'Одинаковое разрешение';
++
++  @override
++  String get gallery_file_smallest =>
++      'Занимает меньше места; это не оценка качества';
++
++  @override
++  String get gallery_recommend_keep => 'Рекомендуется сохранить';
++
++  @override
++  String get gallery_recommend_resolution =>
++      'Причина: максимальное разрешение в группе';
++
++  @override
++  String get gallery_resolution_recommendation_hint =>
++      'Рекомендуется максимальное разрешение; при равенстве — первый файл. Качество по пикселям не оценивается. Выбор в корзину остаётся ручным.';
++
++  @override
++  String get gallery_comparison_partial =>
++      'Часть разрешений неизвестна; рекомендация предварительная и может измениться.';
++
++  @override
++  String get gallery_equivalent_copies =>
++      'Точные копии равноценны; рекомендован первый файл в списке.';
++
++  @override
++  String get configPageTitle => 'Настройка фоторамки';
++
++  @override
++  String get configPageIntro =>
++      'Откройте панель настройки на телефоне или компьютере.';
++
++  @override
++  String get configPageStarting => 'Запускаем доступ к настройкам…';
++
++  @override
++  String get configPageAddressPreparing => 'Определяем адрес в локальной сети…';
++
++  @override
++  String get configPageNoAddress =>
++      'Подключите рамку к локальной сети и проверьте подключение.';
++
++  @override
++  String get configPageCode => 'Код доступа';
++
++  @override
++  String get configPageNetworkStep =>
++      '1. Подключите телефон или компьютер к той же сети Wi-Fi, что и рамка. Интернет не требуется.';
++
++  @override
++  String get configPageScanStep =>
++      '2. Сканируйте QR-код или откройте адрес ниже.';
++
++  @override
++  String get configPageCodeStep => '3. Введите код доступа в панели настройки.';
++
++  @override
++  String get configPageManual => 'Подключение вручную';
++
++  @override
++  String get configPageCheck => 'Проверить подключение';
++
++  @override
++  String get configPageRetry => 'Повторить';
++
++  @override
++  String get configPageReturn => 'Вернуться к слайдшоу';
++
++  @override
++  String get configPageReturnAnyway => 'Вернуться без подтверждения';
++
++  @override
++  String get configPageChecking => 'Проверяем сеть…';
++
++  @override
++  String get configPageCacheHint =>
++      'Обновление сетевых данных может занять до минуты.';
++
++  @override
++  String get configPageServerError =>
++      'Не удалось запустить доступ к настройкам.';
++
++  @override
++  String get configPageNetworkError => 'Не удалось получить сведения о сети.';
++
++  @override
++  String get configPageTimeout => 'Превышено время ожидания операции.';
++
++  @override
++  String get configPageUnknownError =>
++      'Не удалось подготовить доступ к настройкам. Повторите попытку.';
++
++  @override
++  String get configPagePending =>
++      'Ожидаем завершения предыдущей операции. Можно вернуться к слайдшоу.';
++
++  @override
++  String get configPageClosing => 'Завершаем доступ к настройкам…';
++
++  @override
++  String get configPageClosingAlways =>
++      'Закрываем экран. Доступ к настройкам остаётся включённым по конфигурации.';
++
++  @override
++  String get configPageCloseError =>
++      'Не удалось подтвердить завершение доступа к настройкам. Повторите попытку или вернитесь без подтверждения.';
+ }
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.dart
+new file mode 100644
+index 00000000..e91910f0
+--- /dev/null
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.dart
+@@ -0,0 +1,31 @@
++import 'package:dslideshow_i18n/i18n.dart';
++import 'package:flutter/material.dart';
++import 'package:freezed_annotation/freezed_annotation.dart';
++
++part 'button_hint_action.freezed.dart';
++
++enum ButtonHintAction { back, returnUnconfirmed, checkConnection, retry }
++
++extension ButtonHintActionPresentation on ButtonHintAction {
++  IconData get icon => switch (this) {
++    ButtonHintAction.back => Icons.arrow_back,
++    ButtonHintAction.returnUnconfirmed => Icons.exit_to_app,
++    ButtonHintAction.checkConnection => Icons.refresh,
++    ButtonHintAction.retry => Icons.replay,
++  };
++
++  String label(AppLocalizations l10n) => switch (this) {
++    ButtonHintAction.back => l10n.configPageReturn,
++    ButtonHintAction.returnUnconfirmed => l10n.configPageReturnAnyway,
++    ButtonHintAction.checkConnection => l10n.configPageCheck,
++    ButtonHintAction.retry => l10n.configPageRetry,
++  };
++}
++
++@freezed
++abstract class ButtonHintBinding with _$ButtonHintBinding {
++  const factory ButtonHintBinding({
++    required ButtonHintAction action,
++    @Default(true) bool enabled,
++  }) = _ButtonHintBinding;
++}
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.freezed.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.freezed.dart
+new file mode 100644
+index 00000000..03c3c229
+--- /dev/null
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/button_hint_action.freezed.dart
+@@ -0,0 +1,282 @@
++// GENERATED CODE - DO NOT MODIFY BY HAND
++// coverage:ignore-file
++// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
++// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
++
++part of 'button_hint_action.dart';
++
++// **************************************************************************
++// FreezedGenerator
++// **************************************************************************
++
++// GENERATED CODE - DO NOT MODIFY BY HAND
++// dart format off
++T _$identity<T>(T value) => value;
++/// @nodoc
++mixin _$ButtonHintBinding {
++
++ ButtonHintAction get action; bool get enabled;
++/// Create a copy of ButtonHintBinding
++/// with the given fields replaced by the non-null parameter values.
++@JsonKey(includeFromJson: false, includeToJson: false)
++@pragma('vm:prefer-inline')
++$ButtonHintBindingCopyWith<ButtonHintBinding> get copyWith => _$ButtonHintBindingCopyWithImpl<ButtonHintBinding>(this as ButtonHintBinding, _$identity);
++
++
++
++@override
++bool operator ==(Object other) {
++  final _this = this as ButtonHintBinding;
++  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonHintBinding&&(identical(other.action, _this.action) || other.action == _this.action)&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled));
++}
++
++
++@override
++int get hashCode {
++  final _this = this as ButtonHintBinding;
++  return Object.hash(runtimeType,_this.action,_this.enabled);
++}
++
++@override
++String toString() {
++  final _this = this as ButtonHintBinding;
++  return 'ButtonHintBinding(action: ${_this.action}, enabled: ${_this.enabled})';
++}
++
++
++}
++
++/// @nodoc
++abstract mixin class $ButtonHintBindingCopyWith<$Res>  {
++  factory $ButtonHintBindingCopyWith(ButtonHintBinding value, $Res Function(ButtonHintBinding) _then) = _$ButtonHintBindingCopyWithImpl;
++@useResult
++$Res call({
++ ButtonHintAction action, bool enabled
++});
++
++
++
++
++}
++/// @nodoc
++class _$ButtonHintBindingCopyWithImpl<$Res>
++    implements $ButtonHintBindingCopyWith<$Res> {
++  _$ButtonHintBindingCopyWithImpl(this._self, this._then);
++
++  final ButtonHintBinding _self;
++  final $Res Function(ButtonHintBinding) _then;
++
++/// Create a copy of ButtonHintBinding
++/// with the given fields replaced by the non-null parameter values.
++@pragma('vm:prefer-inline') @override $Res call({Object? action = null,Object? enabled = null,}) {
++  return _then(ButtonHintBinding(
++action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
++as ButtonHintAction,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
++as bool,
++  ));
++}
++
++}
++
++
++/// Adds pattern-matching-related methods to [ButtonHintBinding].
++extension ButtonHintBindingPatterns on ButtonHintBinding {
++/// A variant of `map` that fallback to returning `orElse`.
++///
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case final Subclass value:
++///     return ...;
++///   case _:
++///     return orElse();
++/// }
++/// ```
++
++@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ButtonHintBinding value)?  $default,{required TResult orElse(),}){
++final _that = this;
++switch (_that) {
++case _ButtonHintBinding() when $default != null:
++return $default(_that);case _:
++  return orElse();
++
++}
++}
++/// A `switch`-like method, using callbacks.
++///
++/// Callbacks receives the raw object, upcasted.
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case final Subclass value:
++///     return ...;
++///   case final Subclass2 value:
++///     return ...;
++/// }
++/// ```
++
++@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ButtonHintBinding value)  $default,){
++final _that = this;
++switch (_that) {
++case _ButtonHintBinding():
++return $default(_that);case _:
++  throw StateError('Unexpected subclass');
++
++}
++}
++/// A variant of `map` that fallback to returning `null`.
++///
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case final Subclass value:
++///     return ...;
++///   case _:
++///     return null;
++/// }
++/// ```
++
++@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ButtonHintBinding value)?  $default,){
++final _that = this;
++switch (_that) {
++case _ButtonHintBinding() when $default != null:
++return $default(_that);case _:
++  return null;
++
++}
++}
++/// A variant of `when` that fallback to an `orElse` callback.
++///
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case Subclass(:final field):
++///     return ...;
++///   case _:
++///     return orElse();
++/// }
++/// ```
++
++@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ButtonHintAction action,  bool enabled)?  $default,{required TResult orElse(),}) {final _that = this;
++switch (_that) {
++case _ButtonHintBinding() when $default != null:
++return $default(_that.action,_that.enabled);case _:
++  return orElse();
++
++}
++}
++/// A `switch`-like method, using callbacks.
++///
++/// As opposed to `map`, this offers destructuring.
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case Subclass(:final field):
++///     return ...;
++///   case Subclass2(:final field2):
++///     return ...;
++/// }
++/// ```
++
++@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ButtonHintAction action,  bool enabled)  $default,) {final _that = this;
++switch (_that) {
++case _ButtonHintBinding():
++return $default(_that.action,_that.enabled);case _:
++  throw StateError('Unexpected subclass');
++
++}
++}
++/// A variant of `when` that fallback to returning `null`
++///
++/// It is equivalent to doing:
++/// ```dart
++/// switch (sealedClass) {
++///   case Subclass(:final field):
++///     return ...;
++///   case _:
++///     return null;
++/// }
++/// ```
++
++@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ButtonHintAction action,  bool enabled)?  $default,) {final _that = this;
++switch (_that) {
++case _ButtonHintBinding() when $default != null:
++return $default(_that.action,_that.enabled);case _:
++  return null;
++
++}
++}
++
++}
++
++/// @nodoc
++
++
++class _ButtonHintBinding implements ButtonHintBinding {
++  const _ButtonHintBinding({required this.action, this.enabled = true});
++  
++
++@override final  ButtonHintAction action;
++@override@JsonKey() final  bool enabled;
++
++/// Create a copy of ButtonHintBinding
++/// with the given fields replaced by the non-null parameter values.
++@override @JsonKey(includeFromJson: false, includeToJson: false)
++@pragma('vm:prefer-inline')
++_$ButtonHintBindingCopyWith<_ButtonHintBinding> get copyWith => __$ButtonHintBindingCopyWithImpl<_ButtonHintBinding>(this, _$identity);
++
++
++
++@override
++bool operator ==(Object other) {
++    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonHintBinding&&(identical(other.action, action) || other.action == action)&&(identical(other.enabled, enabled) || other.enabled == enabled));
++}
++
++
++@override
++int get hashCode {
++    return Object.hash(runtimeType,action,enabled);
++}
++
++@override
++String toString() {
++    return 'ButtonHintBinding(action: $action, enabled: $enabled)';
++}
++
++
++}
++
++/// @nodoc
++abstract mixin class _$ButtonHintBindingCopyWith<$Res> implements $ButtonHintBindingCopyWith<$Res> {
++  factory _$ButtonHintBindingCopyWith(_ButtonHintBinding value, $Res Function(_ButtonHintBinding) _then) = __$ButtonHintBindingCopyWithImpl;
++@override @useResult
++$Res call({
++ ButtonHintAction action, bool enabled
++});
++
++
++
++
++}
++/// @nodoc
++class __$ButtonHintBindingCopyWithImpl<$Res>
++    implements _$ButtonHintBindingCopyWith<$Res> {
++  __$ButtonHintBindingCopyWithImpl(this._self, this._then);
++
++  final _ButtonHintBinding _self;
++  final $Res Function(_ButtonHintBinding) _then;
++
++/// Create a copy of ButtonHintBinding
++/// with the given fields replaced by the non-null parameter values.
++@override @pragma('vm:prefer-inline') $Res call({Object? action = null,Object? enabled = null,}) {
++  return _then(_ButtonHintBinding(
++action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
++as ButtonHintAction,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
++as bool,
++  ));
++}
++
++
++}
++
++// dart format on
+diff --git a/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart
+new file mode 100644
+index 00000000..b0eecf13
+--- /dev/null
++++ b/dslideshow_flutter/lib/features/header/presentation/widgets/buttons_hint/page_buttons_hint.dart
+@@ -0,0 +1,30 @@
++import 'package:dslideshow_backend/command.dart';
++import 'package:dslideshow_backend/config.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
++import 'package:dslideshow_flutter/src/service/frontend.dart';
++import 'package:flutter/material.dart';
++import 'package:flutter_bloc/flutter_bloc.dart';
++
++/// Keeps the four physical slots in their configured position on access pages.
++class PageButtonsHint extends StatelessWidget {
++  const PageButtonsHint({
++    super.key,
++    required this.frontend,
++    required this.buttons,
++    required this.bindings,
++  });
++  final FrontendService frontend;
++  final SlideShowButtons buttons;
++  final Map<ButtonType, ButtonHintBinding> bindings;
++  @override
++  Widget build(BuildContext context) => Positioned(
++    left: buttons.hintOffsetX.toDouble(),
++    top: buttons.hintOffsetY.toDouble(),
++    child: BlocProvider(
++      create: (_) => ButtonsHintBloc.contextual(frontendService: frontend),
++      child: IgnorePointer(child: ButtonsHintWidget(bindings: bindings)),
++    ),
++  );
++}
+diff --git a/dslideshow_flutter/lib/features/shared/presentation/widgets/access_layout.dart b/dslideshow_flutter/lib/features/shared/presentation/widgets/access_layout.dart
+new file mode 100644
+index 00000000..df89a85e
+--- /dev/null
++++ b/dslideshow_flutter/lib/features/shared/presentation/widgets/access_layout.dart
+@@ -0,0 +1,92 @@
++import 'dart:math' as math;
++
++import 'package:dslideshow_flutter/features/theme/presentation/theme.dart';
++import 'package:flutter/material.dart';
++import 'package:qr_flutter/qr_flutter.dart';
++
++/// Shared geometry for local access screens; owns no connection or state.
++class AccessLayout extends StatelessWidget {
++  const AccessLayout({
++    super.key,
++    required this.panel,
++    required this.information,
++    required this.hasAddress,
++  });
++  final Widget panel;
++  final Widget information;
++  final bool hasAddress;
++
++  @override
++  Widget build(BuildContext context) => SafeArea(
++    child: LayoutBuilder(
++      builder: (context, constraints) {
++        if (constraints.maxWidth >= 1100 && constraints.maxHeight >= 700) {
++          return Row(
++            children: [
++              Expanded(
++                flex: constraints.maxWidth >= 1600 ? 4 : 2,
++                child: Padding(
++                  padding: const EdgeInsets.symmetric(vertical: 100),
++                  child: Center(child: panel),
++                ),
++              ),
++              Expanded(
++                flex: 2,
++                child: SingleChildScrollView(
++                  padding: const EdgeInsets.fromLTRB(0, 100, 32, 100),
++                  child: information,
++                ),
++              ),
++            ],
++          );
++        }
++        return SingleChildScrollView(
++          padding: const EdgeInsets.fromLTRB(24, 100, 24, 32),
++          child: Column(
++            crossAxisAlignment: CrossAxisAlignment.stretch,
++            children: [
++              if (hasAddress)
++                Center(
++                  child: SizedBox.square(
++                    dimension: math.max(0, constraints.maxWidth - 48),
++                    child: panel,
++                  ),
++                ),
++              const SizedBox(height: 32),
++              information,
++              if (!hasAddress) ...[const SizedBox(height: 32), panel],
++            ],
++          ),
++        );
++      },
++    ),
++  );
++}
++
++class AccessQrCode extends StatelessWidget {
++  const AccessQrCode({super.key, required this.address, required this.label});
++  final String address;
++  final String label;
++
++  @override
++  Widget build(BuildContext context) => Container(
++    padding: const EdgeInsets.all(20),
++    decoration: BoxDecoration(
++      color: ThemeColors.qrCodeBackground,
++      borderRadius: BorderRadius.circular(20),
++      boxShadow: [
++        BoxShadow(
++          color: ThemeColors.qrCodeShadow,
++          blurRadius: 15,
++          offset: const Offset(0, 10),
++        ),
++      ],
++    ),
++    child: QrImageView(
++      data: address,
++      version: QrVersions.auto,
++      backgroundColor: ThemeColors.qrCodeBackground,
++      semanticsLabel: label,
++    ),
++  );
++}
+diff --git a/dslideshow_flutter/test/buttons_hint_test.dart b/dslideshow_flutter/test/buttons_hint_test.dart
+new file mode 100644
+index 00000000..343140d3
+--- /dev/null
++++ b/dslideshow_flutter/test/buttons_hint_test.dart
+@@ -0,0 +1,245 @@
++import 'package:flutter_bloc/flutter_bloc.dart';
++import 'package:dslideshow_backend/command.dart';
++import 'package:dslideshow_backend/config.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/button_hint_action.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint.dart';
++import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
++import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
++import 'package:dslideshow_flutter/src/service/frontend.dart' show ButtonEvent;
++import 'package:flutter/material.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:logging/logging.dart';
++
++import 'support/config_harness.dart';
++import 'support/ota_frontend.dart';
++import 'support/slideshow_frontend.dart';
++
++void main() {
++  testWidgets(
++    'contextual hints remain visible and track press/release without leaked timers',
++    (tester) async {
++      final frontend = TestFrontend();
++      final bloc = ButtonsHintBloc.contextual(frontendService: frontend);
++      try {
++        await tester.pump(const Duration(seconds: 6));
++        expect(bloc.state.isShow, isTrue);
++        frontend.buttons.add(
++          ButtonEvent(
++            button: ButtonType.button3,
++            event: ButtonEventType.pressed,
++            durationMs: 0,
++          ),
++        );
++        await tester.pump();
++        expect(bloc.state.button3isPush, isTrue);
++        await tester.pump(const Duration(seconds: 1));
++        expect(bloc.state.button3isPush, isTrue);
++        frontend.buttons.add(
++          ButtonEvent(
++            button: ButtonType.button3,
++            event: ButtonEventType.released,
++            durationMs: 1000,
++          ),
++        );
++        await tester.pump();
++        await tester.pump(const Duration(milliseconds: 199));
++        expect(bloc.state.button3isPush, isTrue);
++        await tester.pump(const Duration(milliseconds: 1));
++        expect(bloc.state.button3isPush, isFalse);
++        frontend.buttons.add(
++          ButtonEvent(
++            button: ButtonType.button0,
++            event: ButtonEventType.released,
++            durationMs: 1,
++          ),
++        );
++        await tester.pump();
++      } finally {
++        await tester.runAsync(bloc.close);
++        expect(frontend.buttons.hasListener, isFalse);
++        await tester.pump(const Duration(seconds: 6));
++        await frontend.close();
++      }
++      expect(tester.takeException(), isNull);
++    },
++  );
++
++  testWidgets(
++    'slideshow retains configured actions, five-second hiding and permanent menu hints',
++    (tester) async {
++      final frontend = TestFrontend();
++      final config = AppConfig.fromJson({});
++      config.slideshow.buttons.button0.action = SlideshowAction.pause;
++      final status = SlideshowStatusBloc(
++        frontendService: frontend,
++        config: config.slideshow,
++      );
++      final bloc = ButtonsHintBloc(
++        frontendService: frontend,
++        statusBloc: status,
++        appConfig: config,
++      );
++      try {
++        await tester.pumpWidget(
++          BlocProvider<ButtonsHintBloc>.value(
++            value: bloc,
++            child: const MaterialApp(home: Scaffold(body: ButtonsHintWidget())),
++          ),
++        );
++        await tester.pump();
++        expect(
++          find.descendant(
++            of: find.byKey(const ValueKey(ButtonType.button0)),
++            matching: find.byIcon(Icons.pause),
++          ),
++          findsOneWidget,
++        );
++        await tester.pump(const Duration(seconds: 5));
++        expect(bloc.state.isShow, isFalse);
++        await tester.pump();
++        expect(find.byKey(const ValueKey(ButtonType.button0)), findsNothing);
++        status.add(const SlideshowMenuEvent(true));
++        await tester.pump();
++        expect(bloc.state.isShow, isTrue);
++        // Status -> hint event has completed; render its new snapshot.
++        await tester.pump();
++        expect(
++          find.descendant(
++            of: find.byKey(const ValueKey(ButtonType.button0)),
++            matching: find.byIcon(Icons.arrow_back),
++          ),
++          findsOneWidget,
++        );
++        expect(
++          find.descendant(
++            of: find.byKey(const ValueKey(ButtonType.button3)),
++            matching: find.byIcon(Icons.check_circle_outline_outlined),
++          ),
++          findsOneWidget,
++        );
++        await tester.pump(const Duration(seconds: 6));
++        expect(bloc.state.isShow, isTrue);
++        status.add(const SlideshowMenuEvent(false));
++        await tester.pump();
++        await tester.pump();
++        expect(
++          find.descendant(
++            of: find.byKey(const ValueKey(ButtonType.button0)),
++            matching: find.byIcon(Icons.pause),
++          ),
++          findsOneWidget,
++        );
++      } finally {
++        await tester.runAsync(() async {
++          await bloc.close();
++          await status.close();
++        });
++        await frontend.close();
++      }
++    },
++  );
++
++  configWidgetTest(
++    'config hints preserve physical coordinates, empty slots and matching menu icons',
++    (tester, h) async {
++      final config = AppConfig.fromJson({});
++      config.slideshow.buttons.hintOffsetX = 1400;
++      config.slideshow.buttons.hintOffsetY = 24;
++      await h.mount(tester, configuration: config);
++      h.frontend.starts.single.complete('83472');
++      h.frontend.systems.single.complete(otaSystemInfo());
++      await tester.pump();
++      expect(find.textContaining('Frame buttons:'), findsNothing);
++      final hint = find.byType(ButtonsHintWidget);
++      expect(tester.getTopLeft(hint), const Offset(1400, 24));
++      final widget = tester.widget<ButtonsHintWidget>(hint);
++      expect(
++        widget.bindings![ButtonType.button0]!.action,
++        ButtonHintAction.back,
++      );
++      expect(
++        widget.bindings![ButtonType.button3]!.action,
++        ButtonHintAction.checkConnection,
++      );
++      for (final button in [ButtonType.button1, ButtonType.button2]) {
++        expect(
++          find.descendant(
++            of: find.byKey(ValueKey(button)),
++            matching: find.byType(Icon),
++          ),
++          findsNothing,
++        );
++      }
++      final retry = tester.widget<FilledButton>(
++        find.byKey(const Key('config-retry')),
++      );
++      final retryIcon = find.descendant(
++        of: find.byKey(const Key('config-retry')),
++        matching: find.byIcon(ButtonHintAction.checkConnection.icon),
++      );
++      expect(retry.onPressed, isNotNull);
++      expect(retryIcon, findsOneWidget);
++      final positions = [
++        for (final button in ButtonType.values)
++          tester.getCenter(find.byKey(ValueKey(button))).dx,
++      ];
++      expect(positions[1] - positions[0], positions[2] - positions[1]);
++      expect(positions[2] - positions[1], positions[3] - positions[2]);
++      await tester.tap(find.byKey(const Key('config-retry')));
++      await tester.pump();
++      expect(
++        tester
++            .widget<ButtonsHintWidget>(hint)
++            .bindings![ButtonType.button3]!
++            .enabled,
++        isFalse,
++      );
++      h.frontend.systems.last.completeError(Exception('network unavailable'));
++      await tester.pump();
++      expect(
++        tester
++            .widget<ButtonsHintWidget>(hint)
++            .bindings![ButtonType.button3]!
++            .action,
++        ButtonHintAction.retry,
++      );
++      expect(
++        find.descendant(
++          of: find.byKey(const Key('config-retry')),
++          matching: find.byIcon(ButtonHintAction.retry.icon),
++        ),
++        findsOneWidget,
++      );
++    },
++  );
++
++  test('closing cancels queued hint changes and logs cleanup without raw transport details', () async {
++    final frontend = TestFrontend();
++    final records = <LogRecord>[];
++    final level = Logger.root.level;
++    Logger.root.level = Level.ALL;
++    final sub = Logger.root.onRecord.listen(records.add);
++    final bloc = ButtonsHintBloc.contextual(frontendService: frontend);
++    try {
++      bloc.add(
++        const ButtonsHintEvent.buttonChanged(
++          button: ButtonType.button0,
++          type: ButtonEventType.released,
++        ),
++      );
++      await bloc.close();
++      expect(frontend.buttons.hasListener, isFalse);
++      final logs = records
++          .where((r) => r.loggerName == 'ButtonsHintBloc')
++          .map((r) => r.message)
++          .join('\n');
++      expect(logs, contains('started mode=contextual'));
++      expect(logs, contains('timers cancelled'));
++      expect(logs, contains('closed mode=contextual'));
++    } finally {
++      await sub.cancel();
++      Logger.root.level = level;
++      await frontend.close();
++    }
++  });
++}

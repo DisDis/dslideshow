@@ -56,13 +56,13 @@ extension ButtonsHintEventPatterns on ButtonsHintEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)?  $default,{TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ButtonsHintShowEvent value)?  show,TResult Function( ButtonsHintButtonChanged value)?  buttonChanged,TResult Function( ButtonsHintClearPress value)?  clearPress,TResult Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _ButtonsHintEvent() when $default != null:
-return $default(_that);case ButtonsHintShowEvent() when show != null:
-return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+case ButtonsHintShowEvent() when show != null:
+return show(_that);case ButtonsHintButtonChanged() when buttonChanged != null:
+return buttonChanged(_that);case ButtonsHintClearPress() when clearPress != null:
+return clearPress(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
 return updateButtons(_that);case _:
   return orElse();
 
@@ -81,17 +81,14 @@ return updateButtons(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ButtonsHintEvent value)  $default,{required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintPushButtonEvent value)  pushButton,required TResult Function( ButtonsHintUpdateButtonsEvent value)  updateButtons,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ButtonsHintShowEvent value)  show,required TResult Function( ButtonsHintButtonChanged value)  buttonChanged,required TResult Function( ButtonsHintClearPress value)  clearPress,required TResult Function( ButtonsHintUpdateButtonsEvent value)  updateButtons,}){
 final _that = this;
 switch (_that) {
-case _ButtonsHintEvent():
-return $default(_that);case ButtonsHintShowEvent():
-return show(_that);case ButtonsHintPushButtonEvent():
-return pushButton(_that);case ButtonsHintUpdateButtonsEvent():
-return updateButtons(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case ButtonsHintShowEvent():
+return show(_that);case ButtonsHintButtonChanged():
+return buttonChanged(_that);case ButtonsHintClearPress():
+return clearPress(_that);case ButtonsHintUpdateButtonsEvent():
+return updateButtons(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -105,13 +102,13 @@ return updateButtons(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ButtonsHintEvent value)?  $default,{TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintPushButtonEvent value)?  pushButton,TResult? Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ButtonsHintShowEvent value)?  show,TResult? Function( ButtonsHintButtonChanged value)?  buttonChanged,TResult? Function( ButtonsHintClearPress value)?  clearPress,TResult? Function( ButtonsHintUpdateButtonsEvent value)?  updateButtons,}){
 final _that = this;
 switch (_that) {
-case _ButtonsHintEvent() when $default != null:
-return $default(_that);case ButtonsHintShowEvent() when show != null:
-return show(_that);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+case ButtonsHintShowEvent() when show != null:
+return show(_that);case ButtonsHintButtonChanged() when buttonChanged != null:
+return buttonChanged(_that);case ButtonsHintClearPress() when clearPress != null:
+return clearPress(_that);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
 return updateButtons(_that);case _:
   return null;
 
@@ -129,12 +126,12 @@ return updateButtons(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( bool isShow)?  show,TResult Function( ButtonType button)?  pushButton,TResult Function()?  updateButtons,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isShow)?  show,TResult Function( ButtonType button,  ButtonEventType type)?  buttonChanged,TResult Function( ButtonType button)?  clearPress,TResult Function()?  updateButtons,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _ButtonsHintEvent() when $default != null:
-return $default();case ButtonsHintShowEvent() when show != null:
-return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+case ButtonsHintShowEvent() when show != null:
+return show(_that.isShow);case ButtonsHintButtonChanged() when buttonChanged != null:
+return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress() when clearPress != null:
+return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
 return updateButtons();case _:
   return orElse();
 
@@ -153,16 +150,13 @@ return updateButtons();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( bool isShow)  show,required TResult Function( ButtonType button)  pushButton,required TResult Function()  updateButtons,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isShow)  show,required TResult Function( ButtonType button,  ButtonEventType type)  buttonChanged,required TResult Function( ButtonType button)  clearPress,required TResult Function()  updateButtons,}) {final _that = this;
 switch (_that) {
-case _ButtonsHintEvent():
-return $default();case ButtonsHintShowEvent():
-return show(_that.isShow);case ButtonsHintPushButtonEvent():
-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent():
-return updateButtons();case _:
-  throw StateError('Unexpected subclass');
-
-}
+case ButtonsHintShowEvent():
+return show(_that.isShow);case ButtonsHintButtonChanged():
+return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress():
+return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent():
+return updateButtons();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -176,12 +170,12 @@ return updateButtons();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button)?  pushButton,TResult? Function()?  updateButtons,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isShow)?  show,TResult? Function( ButtonType button,  ButtonEventType type)?  buttonChanged,TResult? Function( ButtonType button)?  clearPress,TResult? Function()?  updateButtons,}) {final _that = this;
 switch (_that) {
-case _ButtonsHintEvent() when $default != null:
-return $default();case ButtonsHintShowEvent() when show != null:
-return show(_that.isShow);case ButtonsHintPushButtonEvent() when pushButton != null:
-return pushButton(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
+case ButtonsHintShowEvent() when show != null:
+return show(_that.isShow);case ButtonsHintButtonChanged() when buttonChanged != null:
+return buttonChanged(_that.button,_that.type);case ButtonsHintClearPress() when clearPress != null:
+return clearPress(_that.button);case ButtonsHintUpdateButtonsEvent() when updateButtons != null:
 return updateButtons();case _:
   return null;
 
@@ -189,38 +183,6 @@ return updateButtons();case _:
 }
 
 }
-
-/// @nodoc
-
-
-class _ButtonsHintEvent implements ButtonsHintEvent {
-  const _ButtonsHintEvent();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ButtonsHintEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-    return 'ButtonsHintEvent()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 
@@ -293,8 +255,78 @@ as bool,
 /// @nodoc
 
 
-class ButtonsHintPushButtonEvent implements ButtonsHintEvent {
-  const ButtonsHintPushButtonEvent({required this.button});
+class ButtonsHintButtonChanged implements ButtonsHintEvent {
+  const ButtonsHintButtonChanged({required this.button, required this.type});
+  
+
+ final  ButtonType button;
+ final  ButtonEventType type;
+
+/// Create a copy of ButtonsHintEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ButtonsHintButtonChangedCopyWith<ButtonsHintButtonChanged> get copyWith => _$ButtonsHintButtonChangedCopyWithImpl<ButtonsHintButtonChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintButtonChanged&&(identical(other.button, button) || other.button == button)&&(identical(other.type, type) || other.type == type));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,button,type);
+}
+
+@override
+String toString() {
+    return 'ButtonsHintEvent.buttonChanged(button: $button, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ButtonsHintButtonChangedCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
+  factory $ButtonsHintButtonChangedCopyWith(ButtonsHintButtonChanged value, $Res Function(ButtonsHintButtonChanged) _then) = _$ButtonsHintButtonChangedCopyWithImpl;
+@useResult
+$Res call({
+ ButtonType button, ButtonEventType type
+});
+
+
+
+
+}
+/// @nodoc
+class _$ButtonsHintButtonChangedCopyWithImpl<$Res>
+    implements $ButtonsHintButtonChangedCopyWith<$Res> {
+  _$ButtonsHintButtonChangedCopyWithImpl(this._self, this._then);
+
+  final ButtonsHintButtonChanged _self;
+  final $Res Function(ButtonsHintButtonChanged) _then;
+
+/// Create a copy of ButtonsHintEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? button = null,Object? type = null,}) {
+  return _then(ButtonsHintButtonChanged(
+button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
+as ButtonType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as ButtonEventType,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ButtonsHintClearPress implements ButtonsHintEvent {
+  const ButtonsHintClearPress({required this.button});
   
 
  final  ButtonType button;
@@ -303,13 +335,13 @@ class ButtonsHintPushButtonEvent implements ButtonsHintEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ButtonsHintPushButtonEventCopyWith<ButtonsHintPushButtonEvent> get copyWith => _$ButtonsHintPushButtonEventCopyWithImpl<ButtonsHintPushButtonEvent>(this, _$identity);
+$ButtonsHintClearPressCopyWith<ButtonsHintClearPress> get copyWith => _$ButtonsHintClearPressCopyWithImpl<ButtonsHintClearPress>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintPushButtonEvent&&(identical(other.button, button) || other.button == button));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonsHintClearPress&&(identical(other.button, button) || other.button == button));
 }
 
 
@@ -320,15 +352,15 @@ int get hashCode {
 
 @override
 String toString() {
-    return 'ButtonsHintEvent.pushButton(button: $button)';
+    return 'ButtonsHintEvent.clearPress(button: $button)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ButtonsHintPushButtonEventCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
-  factory $ButtonsHintPushButtonEventCopyWith(ButtonsHintPushButtonEvent value, $Res Function(ButtonsHintPushButtonEvent) _then) = _$ButtonsHintPushButtonEventCopyWithImpl;
+abstract mixin class $ButtonsHintClearPressCopyWith<$Res> implements $ButtonsHintEventCopyWith<$Res> {
+  factory $ButtonsHintClearPressCopyWith(ButtonsHintClearPress value, $Res Function(ButtonsHintClearPress) _then) = _$ButtonsHintClearPressCopyWithImpl;
 @useResult
 $Res call({
  ButtonType button
@@ -339,17 +371,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$ButtonsHintPushButtonEventCopyWithImpl<$Res>
-    implements $ButtonsHintPushButtonEventCopyWith<$Res> {
-  _$ButtonsHintPushButtonEventCopyWithImpl(this._self, this._then);
+class _$ButtonsHintClearPressCopyWithImpl<$Res>
+    implements $ButtonsHintClearPressCopyWith<$Res> {
+  _$ButtonsHintClearPressCopyWithImpl(this._self, this._then);
 
-  final ButtonsHintPushButtonEvent _self;
-  final $Res Function(ButtonsHintPushButtonEvent) _then;
+  final ButtonsHintClearPress _self;
+  final $Res Function(ButtonsHintClearPress) _then;
 
 /// Create a copy of ButtonsHintEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? button = null,}) {
-  return _then(ButtonsHintPushButtonEvent(
+  return _then(ButtonsHintClearPress(
 button: null == button ? _self.button : button // ignore: cast_nullable_to_non_nullable
 as ButtonType,
   ));

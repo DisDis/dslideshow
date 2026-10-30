@@ -489,10 +489,11 @@ void main() {
       startServer: false,
     );
     services.add(service);
-    service.enabled = true;
-    await Future<void>.delayed(Duration.zero);
-    service.enabled = false;
-    service.enabled = true;
+    await Future.wait([
+      service.setEnabled(true),
+      service.setEnabled(false),
+      service.setEnabled(true),
+    ]);
     await service.close();
     final available = await ServerSocket.bind(InternetAddress.anyIPv4, port);
     await available.close();

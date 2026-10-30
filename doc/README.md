@@ -17,6 +17,7 @@
 | Часы, камеры и расписания | [Специальные экраны](special-screens.md) |
 | Медиатека, корзина, дубликаты, HTTP API и миниатюры | [Галерея](gallery.md) |
 | Потоковые загрузки, серверные страницы OTA и импорт конфигурации | [Загрузки и OTA](uploads.md) |
+| Подключение к настройкам на дисплее, состояния и снимки | [Экран настройки](config-page-states.md) |
 | Состояния OTA на дисплее и происхождение снимков | [Экран обновления](ota-update-stages.md) |
 | Сон, присутствие, GPIO и питание дисплея | [Сон и присутствие](screen-presence.md) |
 | Температура и RPM вентилятора | [Системные датчики](sensors.md) |
@@ -40,8 +41,6 @@ README пакетов содержат быстрый запуск и отлич
 * [Панель настройки](plans/config-app-improvements.md).
 * [Обнаружение фоторамок в локальной сети](plans/lan-frame-discovery.md):
   автопоиск на login нативного config_app, ручной повтор и web-порт из mDNS/DNS-SD.
-* [Экран подключения к настройкам на рамке](plans/config-page-refresh.md):
-  перевод ConfigPage на Bloc/StatelessWidget и обновление UX; ожидает согласования.
 * [Эффекты и оставшаяся приёмка](plans/effects-work.md).
 * [Реальные материалы, состояния рамки и ресурсы](plans/real-materials-frame-states-plan.md).
 * [Google Photos](plans/google-photos-plan.md).

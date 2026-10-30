@@ -129,6 +129,10 @@ void main() {
         findsOneWidget,
       );
       expect(management.state.confirmation!.names, hasLength(10));
+      expect(
+        find.text('Additional files to move to Trash: 2.'),
+        findsOneWidget,
+      );
       final dialog = find.byType(AlertDialog);
       for (var index = 0; index < 10; index++) {
         expect(
@@ -164,7 +168,7 @@ void main() {
     (tester) async {
       final catalog = ManagedCatalogRepository([]);
       var entries = List.generate(
-        2,
+        12,
         (index) => GalleryTrashEntry(
           trashId: 'trash-$index',
           name: 'original-$index.jpg',
@@ -172,7 +176,7 @@ void main() {
           kind: GalleryEntryKind.image,
           sourceRevision: 'trash-revision-$index',
           trashedAt: DateTime.utc(2026),
-          sizeBytes: 1024,
+          sizeBytes: 2500000,
         ),
       );
       final requests = <GalleryOperationRequest>[];
@@ -234,11 +238,31 @@ void main() {
       expect(find.text('Delete permanently?'), findsOneWidget);
       expect(
         find.text(
-          '2 files, 2048 bytes. They cannot be restored through the photo frame.',
+          'Files to delete: 12. Expected space freed: 30.00 MB. They cannot be restored through the photo frame.',
         ),
         findsOneWidget,
       );
       expect(find.text('original-0.jpg'), findsOneWidget);
+      expect(find.text('Additional files to delete: 2.'), findsOneWidget);
+      expect(find.byTooltip('Exact size: 30000000 bytes'), findsOneWidget);
+      final dialog = find.byType(AlertDialog);
+      for (var index = 0; index < 10; index++) {
+        expect(
+          find.descendant(
+            of: dialog,
+            matching: find.text('original-$index.jpg'),
+          ),
+          findsOneWidget,
+        );
+      }
+      expect(
+        find.descendant(of: dialog, matching: find.text('original-10.jpg')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: dialog, matching: find.text('original-11.jpg')),
+        findsNothing,
+      );
       await decide(tester, '', confirm: false);
       expect(requests, isEmpty);
       await tester.tap(find.byTooltip('Delete permanently'));
