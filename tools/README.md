@@ -2,25 +2,30 @@
 
 ## Coverage Dart/Flutter
 
-`test_coverage.py` собирает локальный VM-coverage `backend`, `config_app` и
+`coverage` в Dart CLI собирает локальный VM-coverage `backend`, `config_app` и
 `dslideshow_flutter`, сохраняет исходный LCOV, машиночитаемые сводки, карту
 непокрытых строк и данные для анализа пересечения тестов. Исходники не копируются.
 
 ```bash
-python3 tools/test_coverage.py collect --analyze
-python3 -m unittest discover -s tools -p 'test_test_coverage.py' -v
+(cd tools && dart run bin/dslideshow_tools.dart coverage collect --analyze)
+(cd tools && dart test test/coverage)
 ```
 
 Настройка окружения, выборочные наборы, повторные прогоны, артефакты и ограничения
 описаны в [едином руководстве тестирования](../doc/testing.md#coverage-и-анализ-пересечения-тестов).
+`collector_sha256` и `reporter_sha256` идентифицируют код инструментов: для запуска
+из исходников учитываются `tools/lib`, `tools/bin`, `pubspec.yaml` и lock-файл;
+для AOT — байты запущенного executable. Snapshot исходников приложения остаётся
+отдельным доказательством неизменности входных данных.
 
 ## Проверка Google Photos Ambient API
 
-`ambient_api_probe.py` — самостоятельный REST-клиент для локальной проверки
-конкретного Google Cloud проекта и аккаунта. Нужны Python 3.10+ на Linux/macOS
-и доступ в интернет; дополнительные Python/Dart-пакеты, backend, SDK googleapis,
-Flutter и ffmpeg для его работы не требуются. Backend и конфигурация фоторамки
-скриптом не изменяются.
+`ambient` в Dart CLI — самостоятельный REST-клиент для локальной проверки
+конкретного Google Cloud проекта и аккаунта. Нужны Dart SDK проекта на Linux/macOS,
+заранее полученные зависимости пакета
+`tools` (`cd tools && dart pub get`) и доступ в интернет. Backend, SDK googleapis,
+Flutter и ffmpeg для его работы не требуются. Python не используется. Backend и
+конфигурация фоторамки скриптом не изменяются.
 
 Он выполняет device OAuth, создаёт тестовое Ambient-устройство, предлагает
 выбрать источники в Google Photos, получает страницы медиа конкретного источника
@@ -45,8 +50,8 @@ chmod 700 .local/ambient-api
 cp /path/to/downloaded-oauth-client.json .local/ambient-api/client.json
 chmod 600 .local/ambient-api/client.json
 
-python3 tools/ambient_api_probe.py \
-  --client-file .local/ambient-api/client.json
+(cd tools && dart run bin/dslideshow_tools.dart ambient \
+  --client-file ../.local/ambient-api/client.json)
 ```
 
 Скрипт напечатает Google verification URL и короткий пользовательский код.
@@ -100,27 +105,27 @@ JSON и загруженные медиа — 0600. Client secret остаётс
 переиспользуется, новое устройство на каждый запуск не создаётся. Если прервать
 ожидание выбора альбома, следующий запуск продолжит с сохранённым устройством.
 
-Дополнительные режимы:
+Дополнительные режимы, из каталога `tools/`:
 
 ```bash
 # Заново показать settingsUri и подтвердить в терминале завершение выбора.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json --configure
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json --configure
 
 # Выбрать другой источник из уже настроенных для устройства.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json --source-id SOURCE_ID
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json --source-id SOURCE_ID
 
 # Только получить список; это не проверяет скачивание медиа.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json --photos 0 --videos 0
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json --photos 0 --videos 0
 
 # Скачать больше контрольных файлов и проверить больше страниц.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json \
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json \
   --photos 3 --videos 2 --max-pages 20
 
 # Повторить OAuth после отзыва/истечения refresh token; устройство сохраняется.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json --reauthorize
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json --reauthorize
 
 # Удалить созданное probe устройство из Google Photos после проверки.
-python3 tools/ambient_api_probe.py --client-file .local/ambient-api/client.json --delete-device
+dart run bin/dslideshow_tools.dart ambient --client-file ../.local/ambient-api/client.json --delete-device
 ```
 
 Device ID и исходный UUID request ID записываются локально. Если Google создал
@@ -133,6 +138,8 @@ device/request/source ID очищаются; сохранённые OAuth-ток
 `--display-name`, лимиты и сроки ожидания. `--output-dir` задаёт родителя
 отдельного каталога прогона; при выборе каталога вне стандартного пути его
 игнорирование Git остаётся ответственностью вызывающего.
+Права существующего родительского каталога не меняются. Новые каталоги состояния
+и прогона создаются с правами `0700`, JSON состояния и отчётов — `0600`.
 
 ### Лимиты и трактовка результата
 
@@ -148,7 +155,8 @@ device/request/source ID очищаются; сохранённые OAuth-ток
 | 0 | Все запрошенные типы/количества скачаны, лимит страниц не обрезал обход |
 | 1 | Ошибка настройки, OAuth, устройства, выбора источника или получения списка |
 | 2 | Неполная проверка: нет нужного типа/количества, ошибка скачивания либо достигнут лимит страниц |
-| 130 | Прерывание пользователем во время прогона; состояние сохранено |
+| 64 | Некорректные аргументы; сеть не запускается |
+| 130 / 143 | SIGINT / SIGTERM во время прогона; состояние сохранено, потоки и `.part` освобождены |
 
 Скачивание требует успешного HTTP 200 и соответствующего media Content-Type
 (либо `application/octet-stream` с распознаваемой сигнатурой), проверяет
@@ -177,15 +185,16 @@ image/video-контейнеров и SHA-256.
 ### Локальные тесты
 
 ```bash
-python3 -m unittest discover -s tools -p 'test_*.py' -v
-python3 -m py_compile tools/ambient_api_probe.py tools/test_ambient_api_probe.py
+(cd tools && dart test test/ambient)
 ```
 
-Тесты без Google-аккаунта: OAuth pending/slow_down/denial/refresh, повторный запуск,
+Тесты в Dart VM, без Google-аккаунта: OAuth pending/slow_down/denial/refresh, повторный запуск,
 источники, реальные HTTP-потоки на loopback, пагинация, отсутствие видео,
 удаление устройства, ошибки и reasons, защита redirect, лимит/недокачка/Ctrl+C,
-права файлов и освобождение ресурсов. Живой доступ конкретного проекта
-подтверждается отдельным пользовательским прогоном с его OAuth JSON.
+права файлов и освобождение ресурсов. Logger `ambient` пишет начало/итог с ID
+операции, этапом, кодом результата,
+счётчиками и длительностью; секреты и URL транспорта удаляются из ошибок.
+Живой доступ конкретного проекта подтверждается отдельным пользовательским прогоном с его OAuth JSON.
 
 Официальные источники:
 
@@ -197,3 +206,239 @@ python3 -m py_compile tools/ambient_api_probe.py tools/test_ambient_api_probe.py
   [пагинация mediaItems](https://developers.google.com/photos/ambient/reference/rest/v1/mediaItems/list)
   и [текущая mediaItems-схема](https://developers.google.com/photos/ambient/reference/rest/v1/mediaItems).
 * [Скачивание фото/видео и filtering](https://developers.google.com/photos/ambient/guides/media-items).
+
+## Сборка и выпуск через Grinder
+
+Пакет `tools` имеет собственные зависимости и lock-файл; Pub Workspaces/Melos
+не используются. Подготовьте зависимости один раз: `(cd tools && dart pub get)`.
+Grinder закреплён в пакете, глобальная установка не требуется.
+
+Задачи регистрируются через публичный программный API `GrinderTask` /
+`Grinder.start()`. Аннотации `@Task`/`@Depends` не используются; зависимости
+prepare → параллельные workers → package сейчас описаны внутри `BuildPipeline`,
+а не в `depends` зарегистрированных задач. Grinder выбирает верхнеуровневую
+команду, общая очередь и параллельность принадлежат Dart-координатору.
+Установленный Grinder 0.10.2 обходит зависимости последовательно:
+один `@Depends(analyze, tests, aot, web)` не создаёт параллельный запуск.
+Это поддерживаемый программный способ использования, но не декларативный граф
+Grinder. Обычная CLI-обёртка `grind(args)` при ошибке вызывает `exit(1)`;
+прямой scheduler позволяет сохранить cleanup и коды сигналов.
+
+Из корня репозитория:
+
+```sh
+(cd tools && dart run tool/grind.dart --help)
+./deb_factory/run_analysis.sh
+./deb_factory/run_tests.sh
+(cd tools && dart run tool/grind.dart tools-tests)
+./deb_factory/build.sh
+```
+
+В ANSI-терминале stdout/stderr автоматически включаются цветные метки задач,
+статусы и компактный прогресс: активные тестовые команды обновляют свои строки,
+а сообщения, ошибки и stack traces остаются над ними. Отдельный renderer
+координирует параллельный вывод; JSON file-reporter от него не зависит.
+
+```sh
+./deb_factory/build.sh --no-progress
+./deb_factory/build.sh --no-color --no-progress > build.log 2>&1
+./deb_factory/build.sh --color
+```
+
+`--no-progress` сохраняет цвета, но переключает тесты на построчный expanded
+reporter. `--no-color` полностью отключает ANSI и обновляемые строки.
+`NO_COLOR` отключает автоматический цвет; явный `--color` имеет приоритет.
+При перенаправлении/pipe по умолчанию используется обычный построчный вывод;
+`--color` может принудительно сохранить цвета, но cursor-прогресс требует
+терминала и в файл не включается. Поэтому перед `tee` выбирайте нужный режим
+явно. Цвета меток и диагностических записей задаёт родительский formatter:
+неподдерживаемые цветовые флаги к анализатору или `flutterpi_tool` не добавляются.
+
+Обёртки выполняют соответственно задачи `analyze`, `tests`, `release` из
+`tools/tool/grind.dart`. Анализ и тесты отдельно версии не меняют. `release`
+получает блокировку checkout, готовит staging и один раз увеличивает build-номер
+через штатный autover. Затем одновременно выполняет анализаторы, тесты, AOT
+arm64/pi4 и web Wasm/JavaScript. Установка зависимостей и генерация в этой фазе
+не выполняются. `DSLIDESHOW_BUILD_JOBS` (целое положительное, по умолчанию 3)
+ограничивает общую очередь пакетных анализаторов/тестов; AOT и web имеют
+собственные процессы. Flutter-тесты получают `--concurrency=4`; положительное
+`DSLIDESHOW_FLUTTER_TEST_CONCURRENCY` переопределяет этот внутренний лимит.
+Backend внутри runner остаётся `--concurrency=1`.
+
+`tests` и тестовая ветвь `release` выполняют все тесты `common`, RPC-генератора,
+backend, i18n, системных виджетов, frontend и config_app. Из `tools` запускается
+только явный список в [`selection.dart`](lib/src/testing/selection.dart):
+
+* `test/build/`: `commands`, `console`, `grinder_entrypoint`, `supervisor`, `web_wrapper`;
+* `test/system/`: `linux`, `sensors` — нативные части приложений и Bash датчиков из DEB;
+* `test/testing/`: `groups`, `profile` — состав проверок и полнота отчёта выпуска.
+
+Во всех именах выше подразумевается суффикс `_test.dart`. Отсутствие обязательного
+файла прерывает соответствующий набор до запуска его тестовых команд.
+Benchmark bundle, Ambient API,
+coverage и остальные диагностические инструменты проверяются отдельной задачей
+`tools-tests`: она запускает весь пакет `tools`, включая перечисленные проверки.
+Анализаторы по-прежнему проверяют все пакеты. `tools-tests` не меняет версии;
+её можно явно добавить к `tests` или `release`, если нужна полная проверка инструментов.
+Grinder выполняет задачи в указанном порядке: команда
+`(cd tools && dart run tool/grind.dart tools-tests release)` проверит весь `tools`
+до начала выпуска. При обратном порядке DEB уже создан к началу `tools-tests`.
+
+DEB упаковывается после успеха всех ветвей. Проверяются версия, Package и
+Architecture; итоговый файл появляется атомарно после проверки. Ошибка или
+SIGINT/SIGTERM отменяют очередь, группы процессов и отслеженные отделившиеся
+дочерние процессы; TERM-resistant процессы получают KILL после grace-периода.
+Build-номер после неудачи не откатывается; повтор снова увеличивает его.
+Второй выпуск в том же checkout запрещён межпроцессной блокировкой.
+
+Для выпуска нужны Linux, `setsid`, `/bin/kill`, `cp`, `dpkg-deb`, подготовленный
+`deb_factory/source_arm64/flutter-pi/flutter-pi`, согласованные SDK/engine и
+локальные fork-зависимости. MD5 вычисляет Dart; `md5deep` больше не нужен.
+Требования codec/CLI и полного релиза — в [руководстве выпуска](../doc/releasing.md)
+и [README DEB](../deb_factory/readme.md). Браузер, фоторамка и Google API
+не запускаются как неявная часть локальных тестов.
+
+Logger `build` пишет `run`, `job`, фазу, результат, exit code и длительность:
+INFO для старта/успеха/отмены, SEVERE для отказа. Stdout/stderr дочерних команд
+передаются потоково с меткой задания, без накопления полного вывода в памяти.
+В консольной строке `run=...` расположен в конце, чтобы её начало сразу показывало
+действие и результат. `elapsedMs` остаётся временем от старта в миллисекундах.
+Произвольные argv и environment не дампятся; из настроек записываются лимиты,
+выбранная группа и каталог отчёта. При поиске
+причины используйте первую запись `result=failed`; `cancelled` соседних задач
+является следствием общего отказа.
+
+`elapsedMs` — монотонное время от создания владельца текущего запуска.
+Все пакетные задания отмечаются `action=queued` при готовности ветви;
+`action=dequeued queueWaitMs=...` показывает всё ожидание до получения слота,
+включая задания, до которых worker ещё не дошёл. `durationMs` у процесса
+измеряет его выполнение отдельно от очереди. Фазы подготовки, параллельных
+ветвей и упаковки также имеют начало/конец. Часы вложенного тестового процесса
+относятся к его собственному `run`, а не к внешнему выпуску.
+
+Ошибочные аргументы возвращают 64; SIGINT/SIGTERM — 130/143 после cleanup.
+Поздняя отмена повторно проверяется после финализации и до успешного возврата;
+код сигнала учитывается и при завершающем cleanup CLI. `releaseDurationMs`
+в записи отказа означает время всего выпуска, `durationMs` фазы — время этой фазы.
+Если запрошено несколько задач Grinder, после первого отказа последующие
+не запускаются. Используется программный scheduler Grinder, чтобы его
+CLI не вызывал немедленный `exit(1)` вместо освобождения ресурсов.
+На машине разработки короткий фиксированный shell-handshake передаёт `exec`
+буквальные argv и позволяет безопасно получить идентичности stdout/stderr.
+При выходе leader с живыми владельцами pipe supervisor завершает их до ожидания
+EOF; это не отменяет соседние coverage suites при обычном ненулевом результате.
+
+## Группы тестов и поиск медленных сценариев
+
+Каталог охватывает восемь пакетов, включая все тесты `tools`, и шире набора DEB.
+Состав групп задаётся
+в `lib/src/testing/groups.dart`: `effects`,
+`slideshow-media`, `gallery`, `ota`, `network`, `settings`, `hardware`,
+`localization`, `tooling-protocol`, `unclassified`. Это основной проверяемый
+контракт файла; каждый test suite входит в одну группу. Файлы сохраняют прежние
+пути, assertions и fixtures. Неизвестный набор виден как `unclassified`.
+
+Из корня репозитория:
+
+```sh
+dart run tools/bin/dslideshow_tools.dart tests groups
+dart run tools/bin/dslideshow_tools.dart tests groups --group effects
+(cd tools && dart run tool/grind.dart tests --test-group effects --no-color)
+```
+
+Выбор группы разрешён только отдельной задаче `tests` и применяется внутри
+набора приложения и сборочных инструментов. Каталог `tests groups` показывает
+также остальные tools suites и команды их прямого запуска. `tools-tests` всегда
+проверяет весь пакет `tools`; `release` — весь обязательный набор приложения и
+сборочных инструментов. Автоматический пропуск групп по Git diff не включён.
+Явная комбинация задач `tests` и `release` отклоняется до начала работы,
+поскольку выпуск уже выполняет тесты и создаёт один профиль.
+Эффекты зависят также от common-моделей, настроек backend, подготовки фото,
+сессий/жизненного цикла renderer, предпросмотра, шейдеров, assets, SDK,
+lock-файлов и тестовых harness. Основная группа не доказывает отсутствие этих
+связей и сама по себе не разрешает условный пропуск.
+
+Grinder сохраняет дополнительный штатный JSON file-reporter каждого пакета в
+`.local/grinder/<run>/tests/`, а задача `tools-tests` — в
+`.local/grinder/<run>/tools-tests/`. `DSLIDESHOW_TEST_REPORT_DIR` задаёт другой каталог;
+при совместном запросе `tests`/`release` и `tools-tests` в нём создаются отдельные
+подкаталоги `tests/` и `tools-tests/`. Относительный путь считается от корня репозитория.
+Для нового запуска каталог
+должен быть пустым: старые отчёты не удаляются и не смешиваются с новым прогоном.
+До тестов сохраняется `scope.json` с ожидаемым составом. Консольный вывод сохраняется,
+повторного запуска тестов для профиля нет. После успешных тестов формируются `summary.json`
+и `summary.md`: состав групп, результаты, длительности и медленные suites/tests.
+Повторное построение отчёта из сохранённых JSON:
+
+```sh
+dart run tools/bin/dslideshow_tools.dart tests report .local/grinder/RUN/tests
+```
+
+Длительности JSON относятся к часам test runner. Служебная загрузка и
+`setUpAll`/`tearDownAll` отделяются от обычных тестов; подготовка Flutter до
+старта reporter может оставаться за пределами этих часов. Сумма длительностей
+параллельных тестов/групп не равна wall time команды. Для очереди и полной
+длительности используйте внешний лог `build`; незавершённый JSON не является
+успешной приёмкой. Повторное построение сохраняет сводку и возвращает ненулевой
+код для частичного или неуспешного выбранного набора. `selected_scope_complete`
+подтверждает полноту запрошенных suites; `full_package_scope` и `complete` относятся
+ко всему каталогу восьми пакетов. У успешного DEB-набора и отдельного `tools-tests`
+полнота выбранного набора равна `true`, а всего каталога — `false`.
+Контракты и границы — в
+[руководстве тестирования](../doc/testing.md).
+
+## Dart-инструменты и локальные проверки
+
+Все новые инструменты и тесты пишутся только на Dart, включая одноразовые и
+inline-скрипты. Область действия и согласованное исключение для shell/Bash на
+целевой рамке закреплены в [правилах репозитория](../AGENTS.md#язык-новых-инструментов-и-тестов).
+
+Действующие собственные инструменты перенесены в `tools/lib/src/` и запускаются
+единым CLI `tools/bin/dslideshow_tools.dart`: `coverage`, `ambient`, `benchmark`,
+`native`. Исторические `doc/hw_test`, сохранённые отчёты/raw/source/release и
+сторонние исходники сохраняют оригинальный Python; он не нужен новым командам.
+Native clock/getrusage связываются с libc через сгенерированные ffigen bindings;
+перегенерация: `(cd tools && dart run tool/ffigen.dart)`, нужен установленный LLVM.
+Работа готового CLI LLVM не требует.
+
+```sh
+(cd tools && dart analyze)
+(cd tools && dart run tool/grind.dart tools-tests)
+(cd tools && dart test) # тот же полный пакет без профиля Grinder
+(cd tools && dart test test/build test/system)
+```
+
+Unit-тесты проверяют рабочие расчёты, HTTP, state и ошибки; process-тесты —
+настоящие сигналы, потоки и CMake/C++/C. Компиляторы приложений,
+сеть Google и управление systemd подменяются только на внешней границе.
+Тесты supervisor синхронизируются по readiness/gates, а не по длительности сна.
+В негативных CLI-тестах ожидаемые help и сообщения об ошибочных аргументах или
+авторизации перехватываются в буферы и проверяются вместе с кодом возврата.
+Они не засоряют общий лог; неожиданные ошибки дочерних команд не фильтруются.
+По решению пользователя удалены тесты release-конвейера, которые создавали
+временные репозитории: инкрементация версии, release-lock, отказы ветвей и
+упаковка тестового DEB. `autover` теперь вызывается один раз для рабочего
+выпуска, до параллельных задач. CLI-тесты не запускают release или `autover`.
+Версию и содержимое настоящего DEB проверяйте после полного выпуска по
+[руководству](../doc/releasing.md#выпуск).
+Тесты установщика Czkawka во временном `DPKG_ROOT` удалены по решению
+пользователя; установщик и его вызов при настройке DEB сохраняются. Работа
+предустановленного CLI проверяется существующими backend codec/CLI-тестами.
+
+Дочерние Dart-фикстуры используют `DSLIDESHOW_DART`, если он задан, иначе `dart`
+из PATH. Запуск `.dart` через VM с `--disable-dart-dev` предназначен только для
+маленьких fixtures; публичные команды используйте через `dart run`.
+Тяжёлые CLI-фикстуры компилируются в kernel один раз на файл тестов и используют
+настоящую точку входа. Подготовка имеет отдельный ограниченный срок; повторная
+компиляция не включается в каждый сценарий. Для gallery-сигналов readiness
+ожидается по событию, а завершение после сигнала по-прежнему ограничено 8 секундами.
+
+Стендовые инструменты и ARM64 bundle описаны в [README benchmarks](../benchmarks/README.md).
+Сборка CLI под ARM64 и проверка ELF не подтверждают работу launchers/tracefs на Pi;
+аппаратная приёмка проводится отдельно по [правилам стенда](../doc/raspberry-pi-benchmarks.md).
+Состав переноса, независимые тестовые данные и локальные результаты сохранены в
+[записи 30.10.2026](../doc/history/grinder-migration-2026-10-30.md).
+Позднее [OpenGL smoke на RaPi5](../benchmarks/reports/grinder-dart-device-2026-10-30/report.md)
+проверил новый ARM64 CLI, штатный effect launcher и повторную агрегацию:
+147/147 сценариев, служба восстановлена. Это приёмка конкретного smoke;
+аппаратные OTA/renderer/tracefs в него не входят.

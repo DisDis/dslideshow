@@ -15,11 +15,11 @@ flutter-pi и timeline engine отключены в используемой rel
   tid, вложенностью, аргументами, результатом и `errno`. Буфер mmap ограничен;
   overflow, незавершённые записи, ошибки часов и lifecycle сохраняются явно.
   Нет дополнительных GL-вызовов, readback или принудительного завершения GPU.
-* `trace_instance.py`: только собственная tracefs instance, `mono`, доступные
+* `dslideshow_tools native trace`: только собственная tracefs instance, `mono`, доступные
   V3D submission/IRQ и DRM queued/delivered. Сохраняются исходные форматы событий,
   данные, статистика потерь и отсутствующие возможности. Глобальный tracer не
   меняется; существующие instance/output не переиспользуются.
-* `capture_process.py`: фактически загруженный engine проверяется по
+* `dslideshow_tools native capture`: фактически загруженный engine проверяется по
   `/proc/PID/maps`, device/inode и SHA-256. PID связывается с mmap-логом сборщика.
   Однократная проверка выполняется при старте, до измеренных повторов.
 
@@ -32,7 +32,7 @@ flutter-pi и timeline engine отключены в используемой rel
 [`_Exit`](https://github.com/dart-lang/sdk/blob/04bcd1036cdc799ac6564988f159ee454d42c822/runtime/bin/process.cc#L247-L256),
 а на Linux — [`_exit`](https://github.com/dart-lang/sdk/blob/04bcd1036cdc799ac6564988f159ee454d42c822/runtime/bin/platform_linux.cc#L192-L196).
 При таком завершении C-деструктор не вызывается. После успешного supervisor
-`finalize_capture.py` создаёт отдельное подтверждение: процесс отсутствует,
+`dslideshow_tools native finalize` создаёт отдельное подтверждение: процесс отсутствует,
 launcher завершился с 0, записи полны, SHA исходного mmap, launcher status и
 engine proof неизменны. Сырой header остаётся `lifecycle=1/closed=0`, а внешний
 конец capture хранится отдельно. Проверку выполняйте на том же Pi и в том же
@@ -80,6 +80,13 @@ bash "$experiment/tools/native_pipeline/run-device.sh" diagnostic \
   /home/pi/workspace/benchmarks "$experiment" "$bundle" UNIQUE_DIAGNOSTIC
 ```
 
+`run-device.sh` использует ARM64 CLI из `BENCHMARK_TOOLS_EXECUTABLE` либо
+`BENCHMARK_ROOT/tools/dslideshow_tools`. Этот executable создаёт штатный
+`benchmarks/tool/build_tools.sh` на машине сборки; Dart SDK и pub на Pi не нужны.
+CLI закрепляется в bundle вместе с SHA-256. Для ручного переноса interposer
+сохраняйте также `tool/cli.sh` рядом с каталогом `native_pipeline`, как в исходном
+дереве инструментов. `sudo` получает абсолютный путь к ARM64 CLI.
+
 `run-device.sh` делегирует остановку/восстановление службы существующему
 `run-managed.sh`, сохраняет input hashes, останавливает и удаляет только свою
 trace instance при выходе. Job и output должны быть новыми. При sudo новый
@@ -96,11 +103,10 @@ archive до внешней финализации: сохраните такж�
 `native-pipeline-finalization.json` или упакуйте завершённый каталог collection.
 
 ```sh
-python3 benchmarks/tool/native_pipeline/analyze.py COLLECTION_OR_ATTEMPT OUTPUT \
+dart --suppress-analytics tools/bin/dslideshow_tools.dart native analyze COLLECTION_OR_ATTEMPT OUTPUT \
   --native ATTEMPT/native-pipeline.bin --trace-dir PRIVATE_TRACE \
   --engine-sha256 c466d00c4a274e78bb31589ae6cf261ac6a3c447cc980f879d49c94c48537523
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover \
-  -s benchmarks/tool/native_pipeline -p 'test_*.py'
+(cd tools && dart test test/benchmarks/native_pipeline)
 bash -n benchmarks/tool/native_pipeline/build.sh \
   benchmarks/tool/native_pipeline/runtime-wrapper.sh \
   benchmarks/tool/native_pipeline/run-device.sh
@@ -113,3 +119,16 @@ bash -n benchmarks/tool/native_pipeline/build.sh \
 снимают заявления о полноте и не заменяются нулями. Наблюдённые интервалы остаются
 доступны даже при неполной корреляции; интерпретировать их нужно с ограничениями
 в сформированном отчёте.
+
+Рабочий код находится в `tools/lib/src/benchmarks/native_pipeline/`, а точки входа
+доступны через `dslideshow_tools native --help`. Тесты используют временные
+proc/tracefs, настоящий C-interposer с fake ABI и 61 независимый вектор прежнего
+анализатора; они не открывают GPU и не проверяют службу на Pi. Системные
+CLOCK_MONOTONIC и getrusage используют сгенерированные libc bindings из
+`tools/tool/ffigen.dart`; stat/uid/chown берутся у штатных POSIX-команд.
+Перегенерация bindings: `(cd tools && dart run tool/ffigen.dart)` на Linux LP64.
+
+CLI поддерживает standalone x64 и штатную cross-compilation AArch64.
+ARM64 executable требует системные libc/libm/libpthread/libdl и Linux dynamic
+loader. Локальная сборка и просмотр ELF не подтверждают работу tracefs/launcher на фоторамке:
+такая проверка выполняется отдельным согласованным аппаратным сценарием.

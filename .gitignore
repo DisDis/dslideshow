@@ -16,6 +16,7 @@ pubspec.lock
 !dslideshow_flutter/pubspec.lock
 !benchmarks/pubspec.lock
 !autover/pubspec.lock
+!tools/pubspec.lock
 
 .DS_Store
 .atom/

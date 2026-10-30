@@ -183,8 +183,7 @@ flutter test --no-pub test/frontend_service_test.dart test/frame_frontend_contro
 Из корня репозитория:
 
 ```sh
-python3 dslideshow_flutter/tool/test_linux_dependencies.py -v
-python3 dslideshow_flutter/tool/test_linux_host_environment.py -v
+(cd tools && dart test test/system/linux_test.dart)
 (cd common && dart test)
 (cd rpc_serializers_generator && dart test)
 (cd backend && dart test)

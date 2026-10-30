@@ -54,6 +54,11 @@ Wrapper по умолчанию исполняет `/opt/dslideshow/flutter-pi` 
 * `BENCHMARK_EGL_CAPTURE_DIR` — каталог IPC, по умолчанию
   `$BENCHMARK_OUTPUT/egl-capture` текущей попытки.
 
+Provenance wrapper записывает через `dslideshow_tools native egl-provenance`.
+Используется ARM64 executable из `BENCHMARK_TOOLS_EXECUTABLE` или
+`tools/dslideshow_tools` внутри benchmark bundle; на рабочей машине допустим
+исходный Dart CLI через общий `tool/cli.sh`. Python и Dart SDK на Pi не нужны.
+
 Аргументы и код завершения настоящего runtime сохраняются. Vulkan отвергается.
 Wrapper оставляет приоритет bundle/engine в `LD_LIBRARY_PATH` и добавляет каталог
 настоящего runtime последним fallback. Существующий `LD_PRELOAD` сохраняется после
@@ -208,7 +213,7 @@ Interposer держит один directory FD до завершения проц
 
 ```sh
 # Из benchmarks/:
-PYTHONDONTWRITEBYTECODE=1 python3 tool/egl_capture/test_protocol.py
+(cd ../tools && dart test test/benchmarks/egl_capture)
 bash -n tool/egl_capture/build.sh tool/egl_capture/flutter-pi-capture.sh
 ```
 
@@ -217,5 +222,5 @@ bash -n tool/egl_capture/build.sh tool/egl_capture/flutter-pi-capture.sh
 barrier, размеры и переворот RGBA, ошибки FBO/разрешения/GL, невалидные и повторные ID,
 сохранение имеющегося raw, реальный неуспех swap, аргументы wrapper, draw/read
 surface mismatch, загруженный engine и SHA provenance. SHA-256 сверяется с
-`hashlib` на границах padding/block, отсутствие загруженного engine даёт ошибку.
+`package:crypto` на границах padding/block, отсутствие загруженного engine даёт ошибку.
 Они не открывают DRM, EGL display или драйвер и не заменяют аппаратный pixel-прогон.

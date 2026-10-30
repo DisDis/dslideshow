@@ -1539,5 +1539,12 @@
   "upload_source_unavailable": "Не удалось прочитать выбранный файл.",
   "upload_length_unknown": "Не удалось определить размер файла.",
   "upload_transfer_failed": "Не удалось подтвердить загрузку. Проверьте рамку перед повторной отправкой.",
-  "upload_folder_scan_failed": "Не удалось прочитать выбранную папку."
+  "upload_folder_scan_failed": "Не удалось прочитать выбранную папку.",
+  "@ota_file_selected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

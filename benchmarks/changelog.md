@@ -9,6 +9,20 @@
 
 ## Unreleased
 
+* Validate the Dart harness on RaPi5 with the release OpenGL smoke suite:
+  147/147 cases, 14,888 frame samples, no errors or native crashes, matching
+  device/host report aggregation and automatic frame-service restoration.
+  Preserve source/release/raw evidence and the
+  [hardware report](reports/grinder-dart-device-2026-10-30/report.md).
+
+* Move active Python diagnostics, report generators and their tests to the shared
+  Dart tools package. Ship a compiled ARM64 CLI and its SHA256 in benchmark
+  bundles; retain shell launchers, independent regression fixtures and historical
+  reports. New media generation is tagged `dart-image-v2`; CPU/timing results
+  from the new harness require a fresh matching baseline. See the
+  [migration record](../doc/history/grinder-migration-2026-10-30.md) for local
+  validation and the limits of hardware coverage.
+
 * Preserve local Louver clipping evidence: a failing VM regression, Linux
   release Impeller frames before/after and frozen diagnostic source. Retire the
   temporary probe after archiving; keep the regression in the production suite.

@@ -106,8 +106,7 @@ UI получает ON после аппаратного включения и �
 (cd dslideshow_flutter && flutter test --no-pub)
 (cd backend && dart analyze lib/src/service/hardware lib/hw_frame.dart test/screen_service_test.dart test/screen_power_test.dart test/presence_filter_test.dart test/hardware_screen_test.dart)
 (cd dslideshow_flutter && flutter analyze --no-pub lib/features/slideshow/presentation/bloc lib/src/service/cancellable_waits.dart test/screen_transition_test.dart)
-python3 dslideshow_flutter/tool/test_linux_dependencies.py -v
-python3 dslideshow_flutter/tool/test_linux_host_environment.py -v
+(cd tools && dart test test/system/linux_test.dart)
 (cd dslideshow_flutter && flutter build linux --release --no-pub)
 ```
 

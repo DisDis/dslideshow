@@ -215,8 +215,7 @@ hot reload не обновляет нативный код. Если марке�
 Из корня репозитория:
 
 ```sh
-python3 -m unittest discover -s dslideshow_flutter/tool -p 'test_linux_*.py' -v
-DS_LINUX_PROJECT_ROOT="$PWD/config_app" python3 -m unittest discover -s dslideshow_flutter/tool -p 'test_linux_*.py' -v
+(cd tools && dart test test/system/linux_test.dart)
 ```
 
 Для CMake-проверок не нужен системный GTK; тест окружения требует `clang++`,

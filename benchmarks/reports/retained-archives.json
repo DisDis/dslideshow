@@ -1850,6 +1850,33 @@
       "files": 176,
       "unpacked_bytes": 54404184,
       "verified": true
+    },
+    {
+      "path": "grinder-dart-device-2026-10-30/release.tar.gz",
+      "sha256": "308bfa214a00a7727b4feea5d3505f4a14a7862a9b04197b18c8fe24067bf633",
+      "bytes": 31082172,
+      "files": 77,
+      "unpacked_bytes": 69781114,
+      "verified": true,
+      "checked_utc_date": "2026-10-30"
+    },
+    {
+      "path": "grinder-dart-device-2026-10-30/source.tar.gz",
+      "sha256": "74a858faddaa821bdd2ca5afb9e43a65ac4030be4c83a804b6de4025e50e7fb2",
+      "bytes": 725498,
+      "files": 495,
+      "unpacked_bytes": 3907582,
+      "verified": true,
+      "checked_utc_date": "2026-10-30"
+    },
+    {
+      "path": "grinder-dart-device-2026-10-30/raw.tar.gz",
+      "sha256": "0bf01206008c6c734e5b42c500e6815fadaaf316bc7fc0931f7db482b200e9dc",
+      "bytes": 16502367,
+      "files": 31,
+      "unpacked_bytes": 34928891,
+      "verified": true,
+      "checked_utc_date": "2026-10-30"
     }
   ],
   "deduplicated_archives": 2,

@@ -25,7 +25,12 @@
 | AOT и engine стенда | `/home/pi/workspace/benchmarks/bundle` |
 | Аппаратные отчёты | `/home/pi/workspace/benchmarks/reports` |
 
-Последние сохранённые сведения о runtime —
+30.10.2026 [аппаратный smoke после переноса CLI на Dart](../benchmarks/reports/grinder-dart-device-2026-10-30/report.md)
+прошёл 147/147 сценариев OpenGL на 2560×1600 без ошибок. Проверены доставка
+ARM64 helper, кадры, агрегация и восстановление службы. Runtime остался прежним;
+это проверка smoke, а не standard/soak или A/B скорости эффектов.
+
+Предыдущие сохранённые сведения о runtime —
 [GPU A/B от 28.10.2026](../benchmarks/reports/gpu-effects-2026-10-28/report.md#условия)
 и [подготовка выпуска 15.0.0 от 29.10.2026](history/releases/release-15.0.0.md#артефакт):
 SHA-256 `/opt/dslideshow/flutter-pi` —
@@ -62,9 +67,12 @@ GPU A/B и финальный DEB используют разные engine: со
 Нужны установленный Flutter SDK, совместимый `flutterpi_tool` с поддержкой
 `--cpu=pi5`, локальные зависимости backend из
 [инструкции сборки](../dslideshow_flutter/README.md). На устройстве нужны Bash,
-Python 3, coreutils (`timeout`, `sha256sum`), `flock`, `tar` и `rsync`.
+coreutils (`timeout`, `sha256sum`), `flock`, `tar`, `rsync` и включённый в
+benchmark bundle ARM64 executable `tools/dslideshow_tools`. Python и Dart SDK
+на устройстве новым инструментам не нужны. На рабочей машине подготовьте
+самостоятельный пакет `(cd tools && dart pub get)`.
 Они используются из существующего окружения; обновление системы не является
-частью подготовки стенда. Pillow/ffmpeg нужны при пересоздании fixtures
+частью подготовки стенда. Dart image/ffmpeg нужны при пересоздании fixtures
 на рабочей машине; обычный GPU-стенд не перекодирует их на RaPi5. Отдельные
 backend-пробы миниатюр и рабочая служба после перехода на FFmpeg требуют
 `ffmpeg` в PATH (пакет `ffmpeg`, локально проверена версия 8.0.1).
@@ -77,7 +85,7 @@ cd /home/dis/workspace/dslideshow/benchmarks
 flutter pub get
 flutter analyze --no-pub
 flutter test --no-pub
-python3 -m unittest discover -s tool -p 'test_*.py'
+(cd ../tools && dart test test/benchmarks)
 bash -n run.sh build_aot_pi5.sh
 ./build_aot_pi5.sh
 ```
@@ -391,7 +399,7 @@ rsync -a --partial --append-verify --timeout=600 \
 sha256sum reports/device-downloads/ИМЯ.tar.gz
 mkdir -p reports/device-downloads/extracted
 tar -xzf reports/device-downloads/ИМЯ.tar.gz -C reports/device-downloads/extracted
-python3 tool/collect_reports.py reports/device-downloads/extracted/ИМЯ
+tool/benchmark.sh collect-reports reports/device-downloads/extracted/ИМЯ
 ```
 
 Сверьте SHA256 с `sha256sum` того же архива на устройстве. Исходный архив
@@ -439,7 +447,7 @@ FixedAnimationController намеренно растягивает перехо�
 (cd dslideshow_flutter && flutter test --no-pub)
 (cd benchmarks && flutter analyze --no-pub)
 (cd benchmarks && flutter test --no-pub)
-(cd benchmarks && python3 -m unittest discover -s tool -p 'test_*.py')
+(cd tools && dart test test/benchmarks)
 (cd benchmarks && bash -n run.sh build_aot_pi5.sh)
 (cd benchmarks && flutter test --no-pub tool/audit_effects_test.dart)
 ```

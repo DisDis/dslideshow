@@ -3,6 +3,9 @@
 История стенда и его инструментов — в [собственном changelog](changelog.md).
 Изменения приложений описываются в [корневом changelog](../changelog.md).
 Сохранённые результаты и состав архивов — в [индексе отчётов](reports/README.md).
+[Аппаратный smoke после переноса инструментов на Dart, 30.10.2026](reports/grinder-dart-device-2026-10-30/report.md):
+147/147 сценариев на RaPi5, OpenGL 2560×1600, без ошибок; служба восстановлена.
+Это проверка нового harness, не A/B скорости эффектов.
 [Правила сопровождения](../doc/benchmarks-maintenance.md) задают обновление
 документации, хранение доказательств, удаление устаревшего и ежемесячный аудит.
 [Очистка стенда 29.10.2026](reports/maintenance-2026-10-29/report.md) описывает
@@ -150,7 +153,7 @@ Stretch/CrossZoom/Radial, фото-шейдеры Glass/Film Dissolve и общ�
 эталоном на контрастных/прозрачных фото, разных панелях, размерах и камерах
 (max delta≤2), проверяет переиспользование и освобождение shader.
 
-`tool/build_info.py` включает shader assets, Dart-код и конфигурацию в fingerprint;
+`../tools/lib/src/benchmarks/provenance.dart` включает shader assets, Dart-код и конфигурацию в fingerprint;
 генерируемые build outputs исключены. Сохранённые архивы подтверждают только
 свои frozen сборки, а не текущий исходный код.
 
@@ -208,8 +211,8 @@ BlurProbe, MosaicProbe и CompositionProbe вместе с историческ�
 
 Исследовательские `tool/camera_rpc_probe.dart` и `tool/rpc_timeout_probe.dart`
 проверяют настоящий HTTP при отказах камер и удержание межизолятных RPC-слотов.
-`tool/camera_device_probe.dart` и `tool/camera_socket_probe.py` сопоставляют
-читающие RPC со снимками TCP/FD работающей рамки. `tool/camera_http_probe.py`
+`tool/camera_device_probe.dart` и `../tools/lib/src/benchmarks/camera.dart` сопоставляют
+читающие RPC со снимками TCP/FD работающей рамки. `../tools/lib/src/benchmarks/camera.dart`
 сравнивает публичный `/info` через сеть и loopback. Действующие команды —
 в [диагностике страницы устройства](../doc/config-app-device.md#диагностика-задержек-управления),
 результаты и границы наблюдений — в [исследовании timeout камер](reports/camera-rpc-2026-10-26/report.md).
@@ -219,7 +222,7 @@ BlurProbe, MosaicProbe и CompositionProbe вместе с историческ�
 [Один FFmpeg и JPEG](reports/thumbnail-jpeg-local-2026-10-27/report.md) сохраняет
 актуальное сравнение с предыдущим probe/RGBA/encode, сырые HTTP-результаты,
 медиахеши и ограничения проверки.
-`gallery_http.py --bucket 256|512|1024` берёт policy из каталога;
+`benchmark.sh gallery-http --bucket 256|512|1024` берёт policy из каталога;
 `--cold-concurrency 4` задаёт параллельный холодный проход. Инструмент измеряет
 дерево процессов: sampled sum RSS/FD/threads и CPU с reaped children.
 Сумма RSS может дважды учитывать shared pages; дискретный максимум не является
@@ -243,7 +246,7 @@ Debian 12 для 5.1 и на host для 8. Проверка не устанав
 hardware service. Ошибки не превращаются в нулевые измерения или skipped.
 
 Production-поведение, API и лимиты описаны в [руководстве галереи](../doc/gallery.md).
-`gallery_http.py` компилирует frozen backend/common с одним и тем же
+`benchmark.sh gallery-http` компилирует frozen backend/common с одним и тем же
 `gallery_http_server.dart` в AOT, запускает локальный HTTP-сервер и сравнивает
 каталоги 1k/10k, оригиналы, холодные/тёплые миниатюры, validators, отмену и
 ресурсы процесса. Чтение тел замедляется управляемым клиентом; число активных
@@ -255,14 +258,14 @@ Freeze сохраняет исходники, manifest и package config; зав
 
 ```sh
 # Baseline нужно заморозить ДО изменения production-кода:
-python3 benchmarks/tool/gallery_http.py \
+benchmarks/tool/benchmark.sh gallery-http \
   --freeze-current --variant baseline \
   --output benchmarks/reports/gallery-http-EXPERIMENT
 # После изменения production-кода, с тем же harness/SDK/media:
-python3 benchmarks/tool/gallery_http.py \
+benchmarks/tool/benchmark.sh gallery-http \
   --freeze-current --variant candidate \
   --output benchmarks/reports/gallery-http-EXPERIMENT
-python3 -m unittest discover -s benchmarks/tool -p test_gallery_http.py
+(cd tools && dart test test/benchmarks/gallery_http_test.dart)
 ```
 
 По умолчанию выполняются три свежих процесса на каждый размер коллекции,
@@ -279,14 +282,14 @@ python3 -m unittest discover -s benchmarks/tool -p test_gallery_http.py
 генератор работает только с архивными результатами и не является общим runner.
 Для повторного показа в Linux отдельно сохранён
 [before/after native warm cache](reports/gallery-native-cache-warm-2026-10-26/report.md):
-`tool/gallery_native_cache_probe.py` запускает одинаковые 63 попадания через
+`../tools/lib/src/benchmarks/native_cache.dart` запускает одинаковые 63 попадания через
 настоящий кеш в Flutter VM против замороженных исходников. Он проверяет время
 пути hit и отсутствие перезаписи metadata; сеть, декодирование и UI FPS в этот
 probe не входят. Наблюдения работающей панели и LAN отделены в отчёте.
 Тот же инструмент с `--scenario cold` проверяет первые записи JPEG в native-кеш:
 
 ```sh
-python3 benchmarks/tool/gallery_native_cache_probe.py \
+benchmarks/tool/benchmark.sh gallery-native-cache-probe \
   --freeze-current --snapshot benchmarks/reports/gallery-cold-EXPERIMENT/baseline \
   --scenario cold --fixture-parent /path/on/client/cache/filesystem \
   --payload /path/to/thumbnail.jpg --concurrency 4
@@ -305,9 +308,9 @@ python3 benchmarks/tool/gallery_native_cache_probe.py \
 [Завершённый Linux release A/B](reports/gallery-native-cache-cold-2026-10-26/linux-release-report.md)
 сохраняет frozen исходники и release-архивы. Его генераторы, привязанные к одному
 эксперименту, удалены из `tool/`. Для новых сравнений используйте универсальный
-`gallery_native_cache_probe.py`; границы его VM-проверки перечислены выше.
+`benchmark.sh gallery-native-cache-probe`; границы его VM-проверки перечислены выше.
 
-`tool/backend_local.dart` и `tool/backend_local.py` образуют отдельный pure Dart
+`tool/backend_local.dart` и `../tools/lib/src/benchmarks/backend_local.dart` образуют отдельный pure Dart
 стенд для `DiskStorage`, транспорта RPC и `SystemInfoService`. Он не запускает
 Flutter, hardware service, GPIO, MQTT, фоторамку или команды настройки сети.
 Используются существующие зависимости `backend/.dart_tool/package_config.json`;
@@ -324,17 +327,17 @@ Flutter, hardware service, GPIO, MQTT, фоторамку или команды 
 Из корня репозитория:
 
 ```bash
-python3 benchmarks/tool/backend_local.py \
+benchmarks/tool/benchmark.sh backend-local \
   --packages backend/.dart_tool/package_config.json \
   --variant baseline --output benchmarks/reports/backend-local-EXPERIMENT
 # После изменения production-кода:
-python3 benchmarks/tool/backend_local.py \
+benchmarks/tool/benchmark.sh backend-local \
   --packages backend/.dart_tool/package_config.json \
   --variant candidate --output benchmarks/reports/backend-local-EXPERIMENT
-python3 benchmarks/tool/backend_local_confirm.py \
+benchmarks/tool/benchmark.sh backend-local-confirm \
   --output benchmarks/reports/backend-local-EXPERIMENT --rounds 1
 # Необязательный отдельный process-count diagnostic, если strace уже установлен:
-python3 benchmarks/tool/backend_local_trace.py \
+benchmarks/tool/benchmark.sh backend-local-trace \
   --output benchmarks/reports/backend-local-EXPERIMENT
 ```
 
@@ -378,7 +381,7 @@ event-loop lag и пропуски сохраняются; пропущенны�
 pass считает непосредственные вызовы команд forwarding wrappers; shell internals
 и все дочерние процессы этим не подсчитываются. Эти wrappers не используются в timed pass.
 Штатный hardware service и запись production-логов на диск в этот стенд не входят.
-Необязательный `backend_local_trace.py` использует только уже установленный
+Необязательный `benchmark.sh backend-local-trace` использует только уже установленный
 `strace` и считает успешные fork/vfork/clone без `CLONE_THREAD`, включая split
 records. Если окружение запрещает ptrace, причина сохраняется в
 `process-diagnostic.json`, а полный счётчик процессов остаётся непроверенным.
@@ -388,7 +391,8 @@ records. Если окружение запрещает ptrace, причина �
 binary, compile log и diagnostic exec log. RSS/HWM относятся ко всему Linux-процессу,
 включая оба isolate. `cpu_ms` в raw / `self_cpu_ms` в summary — только Dart
 utime/stime, без системных subprocess. Подтверждение `confirm-raw.jsonl` отдельно
-собирает CPU процесса вместе с reaped descendants через Python `RUSAGE_CHILDREN`.
+собирает CPU процесса вместе с reaped descendants через Linux
+`getrusage(RUSAGE_CHILDREN)` с генерируемой FFI-привязкой.
 Малое число повторов не подтверждает устойчивый p99. Это локальные результаты;
 они не подтверждают ускорение на RaPi5 и не заменяют отдельно согласованную
 аппаратную проверку. Локальный стенд её не запускает и не планирует.
@@ -396,13 +400,41 @@ utime/stime, без системных subprocess. Подтверждение `c
 Регрессии самого инструмента (без Flutter/устройства):
 
 ```bash
-python3 -m unittest discover -s benchmarks/tool -p 'test_backend_local.py' -v
+(cd tools && dart test test/benchmarks/backend_local_test.dart)
 ```
 
 Проверяются полные циклы/один файл, RPC process exit, ошибки обхода, неизменность
 source snapshot, повреждённые fixtures и реальное завершение группы процессов
-при timeout. `DART_EXECUTABLE` переопределяет Dart для integration tests; если SDK
+при timeout и отмене, включая отделившихся через `setsid` потомков.
+Снимки `/proc` для отмены не выполняются во время измеряемого сценария.
+Logger `benchmark.backend` связывает начало/итог с ID операции и длительностью;
+отказ и отмена имеют отдельные результаты. `DART_EXECUTABLE` переопределяет Dart для integration tests; если SDK
 или backend package config отсутствует, эта часть тестов явно пропускается.
+
+## Dart-инструменты стенда
+
+Действующие CLI и их unit/process-тесты находятся в отдельном pure Dart-пакете
+[`tools`](../tools/README.md). Из корня репозитория вызывайте
+`benchmarks/tool/benchmark.sh КОМАНДА ...`; из `benchmarks/` —
+`tool/benchmark.sh КОМАНДА ...`. Обёртка сохраняет текущий каталог для относительных
+аргументов. Зависимости `tools` готовятся отдельно; Pub Workspaces не используется.
+
+`build_aot_pi5.sh`, `build_renderer_pi5.sh` и `build_ota_pi5.sh` включают
+`tools/dslideshow_tools` для Linux ARM64 и его SHA-256 в bundle. На фоторамке
+не требуется Dart SDK, pub или Python для действующего harness. Локальная
+обёртка использует `DART_EXECUTABLE`, если он указан; для запуска готового
+бинарника можно задать `BENCHMARK_TOOLS_EXECUTABLE`.
+
+Перенос меняет версию harness. Старые архивы, измерения, источники и независимые
+визуальные эталоны сохранены; новые инструменты не превращают старые результаты
+в приёмку текущего checkout. Проверки миграции используют локальные fixtures,
+HTTP и управляемые процессы без запуска Flutter engine, устройства или браузера.
+Для сигналов/loopback нужны разрешённые локальные сокеты.
+
+Генератор медиа теперь помечает manifest `generator=dart-image-v2`: Dart image
+codec и PRNG могут давать другие байты JPEG/GIF, чем Pillow. Существующие assets
+при миграции не перегенерируются. Для A/B должны совпадать реальные SHA медиа,
+а не только seed/размеры. Полные 48-Мп фото и параметры FFmpeg сохранены.
 
 ## Сборка на рабочей машине
 
@@ -417,7 +449,7 @@ cd benchmarks
 
 Результат: `build/benchmarks-pi5-release-XXXXXXXX.tar.gz` (точное имя скрипт выводит).
 В архиве bundle с AOT/engine/assets, `run.sh`, конфигурации и обработчик отчётов.
-Тестовые медиа уже включены; Pillow/ffmpeg на устройстве не нужны.
+Тестовые медиа уже включены; на устройстве их не перегенерируют.
 В сборку записываются версия SDK, git commit/dirty status и хеш исходников.
 
 При необходимости engine под Pi 4 на Pi 5: `BENCHMARK_CPU=pi4 ./build_aot_pi5.sh`.
@@ -588,13 +620,14 @@ rsync -a --partial --append-verify --timeout=600 \
   pi@192.168.50.143:/home/pi/workspace/benchmarks/reports/ИМЯ.tar.gz ./
 ```
 
-Необходим Python 3 стандартной поставки Raspberry Pi OS, Bash, coreutils, `flock`, `tar`.
+Нужны Bash, coreutils, `flock`, `tar` и ARM64 `tools/dslideshow_tools` из
+нового benchmark bundle; Python и Dart SDK на устройстве не нужны.
 Частоты/температуры/`vcgencmd` могут быть недоступны — записывается `null`, а не ноль.
 Процессный CPU может превышать 100% на нескольких ядрах. HWM — максимум процесса с запуска;
 периодический RSS может не поймать короткий пик. RSS сам по себе не доказывает утечку.
 Приоритет имеют тенденции после прогрева, HWM, FD/потоки и ошибки в длительном прогоне.
 
-`tool/compare_effect_performance.py` сравнивает raw-коллекции с проверкой условий
+`../tools/lib/src/benchmarks/comparison.dart` сравнивает raw-коллекции с проверкой условий
 и полноты измерений. Прогрев в `runs.jsonl`/`frames.jsonl` имеет `phase=warmup`,
 `cycle=0`, отрицательные `repeat` от `-config.warmups` до `-1`; измеряемые повторы
 начинаются с нуля. Прогрев не входит в FPS и хвосты FrameTiming, но его валидные
@@ -629,7 +662,7 @@ embedder не поддерживают снимки Texture, а внешнее �
 в архиве. Пользователь также подтвердил видимое видео на физическом экране
 во время прогона 25.10.2026; режим и конкретный сценарий этого наблюдения неизвестны.
 
-Для повторной генерации общего отчёта: `python3 tool/collect_reports.py reports/КАТАЛОГ`.
+Для повторной генерации общего отчёта: `tool/benchmark.sh collect-reports reports/КАТАЛОГ`.
 Потребление диска зависит от длительности и PNG; для soak предусмотрите несколько GB.
 Отчёты дописываются во время работы, checkpoint сохраняется после каждого случая.
 
@@ -666,9 +699,7 @@ readback даёт `unverified_capture`, а не ложный успех. Отк�
 ```bash
 flutter analyze --no-pub
 flutter test --no-pub
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p 'test_*.py'
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool/native_pipeline -p 'test_*.py'
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool/egl_capture -p 'test_*.py'
+(cd ../tools && dart test test/benchmarks)
 bash -n run.sh run_renderer.sh run_ota.sh build_aot_pi5.sh build_renderer_pi5.sh build_ota_pi5.sh
 flutter test --no-pub tool/render_effect_gallery_test.dart
 ```
@@ -678,8 +709,8 @@ flutter test --no-pub tool/render_effect_gallery_test.dart
 
 Галереи появятся в `build/effects/gallery-*.png`; количество файлов зависит
 от размера реестра эффектов, по 12 переходов на страницу.
-Для пересоздания встроенных медиа: `python3 tool/generate_media.py`
-(только на рабочей машине: Pillow и ffmpeg с libx264).
+Для пересоздания встроенных медиа: `tool/benchmark.sh generate-media`
+(только на рабочей машине: Dart-пакет tools/image и ffmpeg с libx264).
 
 Методика: [FrameTiming Flutter](https://api.flutter.dev/flutter/scheduler/SchedulerBinding/addTimingsCallback.html),
 [/proc Linux](https://docs.kernel.org/filesystems/proc.html),

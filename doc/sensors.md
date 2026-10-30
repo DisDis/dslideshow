@@ -76,7 +76,7 @@ frontend запрашивает сведения при запуске и раз
 
 ```bash
 sh -n deb_factory/template_build_arm64/opt/dslideshow/scripts/sensorsScript.sh
-python3 -m unittest discover -s deb_factory -p 'test_*.py' -v
+(cd tools && dart test test/system/sensors_test.dart)
 
 cd backend
 dart analyze
@@ -87,7 +87,7 @@ flutter analyze --no-pub
 flutter test --no-pub
 ```
 
-`deb_factory/test_sensors_script.py` запускает настоящий shell-скрипт с временным
+`tools/test/system/sensors_test.dart` запускает настоящий shell-скрипт с временным
 деревом sysfs и подставной `vcgencmd` через PATH. Корень sysfs задаётся необязательной
 переменной `DSLIDESHOW_SYSFS_ROOT` (по умолчанию `/sys`); это позволяет читать
 смонтированную систему или локальные fixtures без доступа к аппаратным файлам.

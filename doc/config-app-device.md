@@ -235,8 +235,8 @@ dart \
 # В другом терминале: PID читается заново у активной службы.
 ssh -o BatchMode=yes -o ConnectTimeout=120 \
   -o ServerAliveInterval=30 -o ServerAliveCountMax=10 pi@192.168.50.143 \
-  'python3 - /home/pi/dslideshow/config.json "$(systemctl show dslideshow --property=MainPID --value)" 255' \
-  < benchmarks/tool/camera_socket_probe.py > /tmp/camera-sockets.jsonl
+  '/home/pi/workspace/benchmarks/tools/dslideshow_tools benchmark camera-socket-probe /home/pi/dslideshow/config.json "$(systemctl show dslideshow --property=MainPID --value)" 255' \
+  > /tmp/camera-sockets.jsonl
 ```
 
 Socket probe читает только IPv4 `/proc/net/tcp` и FD указанного процесса.
@@ -244,22 +244,25 @@ Socket probe читает только IPv4 `/proc/net/tcp` и FD указанн
 Если несколько URL имеют один IP/порт, он выводит группу индексов через
 запятую: по TCP нельзя различить пути одного HTTP endpoint. DNS-имена, IPv6,
 отдельные network namespaces и MQTT TLS/нестандартный порт этой пробой не
-покрываются. Установка зависимостей на RaPi5 не нужна.
+покрываются. Установка зависимостей на RaPi5 не нужна: используйте ARM64 CLI из новой
+сборки стенда; в примере он находится в `/home/pi/workspace/benchmarks/tools/`.
+Если bundle размещён иначе, укажите его фактический путь.
 
 Для отдельного сравнения сети и web isolate, запустите эти две команды
 параллельно; авторизация не требуется:
 
 ```sh
-python3 benchmarks/tool/camera_http_probe.py 192.168.50.143:8080 120 \
+benchmarks/tool/benchmark.sh camera-http-probe 192.168.50.143:8080 120 \
   > /tmp/camera-http-network.json
 ssh -o BatchMode=yes -o ConnectTimeout=120 \
   -o ServerAliveInterval=30 -o ServerAliveCountMax=10 pi@192.168.50.143 \
-  'python3 - 127.0.0.1:8080 120' \
-  < benchmarks/tool/camera_http_probe.py > /tmp/camera-http-loopback.json
+  '/home/pi/workspace/benchmarks/tools/dslideshow_tools benchmark camera-http-probe 127.0.0.1:8080 120' \
+  > /tmp/camera-http-loopback.json
 ```
 
-HTTP-инструмент требует Linux/POSIX `SIGALRM`; общий deadline ограничивает
-также медленный DNS и получение заголовков. Тело не загружается.
+HTTP-инструмент использует Dart HttpClient; общий deadline ограничивает
+также медленный DNS и получение заголовков, затем закрывает клиент. Тело не
+загружается, Python/POSIX `SIGALRM` не требуется.
 
 ### Как различить причины по результатам
 

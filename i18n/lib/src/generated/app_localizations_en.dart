@@ -104,12 +104,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storage_settings_title => 'Storage Settings';
 
   @override
-  String get unknown_storage_type_configuration =>
-      'Unknown storage type configuration';
+  String get unknown_storage_type_configuration => 'Unknown storage type configuration';
 
   @override
-  String get no_configuration_needed_for_local_disk =>
-      'No configuration needed for local disk yet.';
+  String get no_configuration_needed_for_local_disk => 'No configuration needed for local disk yet.';
 
   @override
   String get slideshow_settings_title => 'Slideshow Settings';
@@ -130,19 +128,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get config_saved_state => 'No unsaved changes';
 
   @override
-  String get config_restart_hint =>
-      'Saved settings take effect after restarting the application.';
+  String get config_restart_hint => 'Saved settings take effect after restarting the application.';
 
   @override
   String get config_reload_title => 'Reload settings?';
 
   @override
-  String get config_reload_warning =>
-      'Discard your changes and load the saved settings from the device?';
+  String get config_reload_warning => 'Discard your changes and load the saved settings from the device?';
 
   @override
-  String get config_leave_warning =>
-      'Your changes have not been saved. Discard them and leave settings?';
+  String get config_leave_warning => 'Your changes have not been saved. Discard them and leave settings?';
 
   @override
   String get config_keep_editing => 'Keep editing';
@@ -151,8 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get config_discard_changes => 'Discard changes';
 
   @override
-  String get config_operation_in_progress =>
-      'Wait for the current settings operation to finish.';
+  String get config_operation_in_progress => 'Wait for the current settings operation to finish.';
 
   @override
   String get config_load_failed => 'Could not load settings';
@@ -182,8 +176,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_access_title => 'No access';
 
   @override
-  String get no_access_contact_administrator =>
-      'No access, contact your administrator';
+  String get no_access_contact_administrator => 'No access, contact your administrator';
 
   @override
   String get ch_text => 'Ch:';
@@ -201,8 +194,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_load_failed => 'Could not load the gallery.';
 
   @override
-  String get gallery_refresh_failed =>
-      'Could not refresh the gallery. Your previous list is still available.';
+  String get gallery_refresh_failed => 'Could not refresh the gallery. Your previous list is still available.';
 
   @override
   String get gallery_title => 'Gallery';
@@ -220,8 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome_back => 'Welcome back,';
 
   @override
-  String get manage_your_device_settings_and_updates =>
-      'Manage your device settings and updates.';
+  String get manage_your_device_settings_and_updates => 'Manage your device settings and updates.';
 
   @override
   String get gallery_card_title => 'Gallery';
@@ -293,15 +284,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get power_management_title => 'Power Management';
 
   @override
-  String get choose_action_on_device =>
-      'Choose an action to perform on the device';
+  String get choose_action_on_device => 'Choose an action to perform on the device';
 
   @override
   String get restart_application => 'Restart Application';
 
   @override
-  String get reload_software_without_rebooting_os =>
-      'Reloads the software without rebooting the OS.';
+  String get reload_software_without_rebooting_os => 'Reloads the software without rebooting the OS.';
 
   @override
   String get restart_application_question => 'Restart Application?';
@@ -317,8 +306,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get power_off => 'Power Off';
 
   @override
-  String get safely_shuts_down_the_device_operating_system =>
-      'Safely shuts down the device operating system.';
+  String get safely_shuts_down_the_device_operating_system => 'Safely shuts down the device operating system.';
 
   @override
   String get power_off_device_question => 'Power Off Device?';
@@ -443,8 +431,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_add_screen => 'Add screen';
 
   @override
-  String get special_empty =>
-      'Add a clock or a camera screen to the slideshow.';
+  String get special_empty => 'Add a clock or a camera screen to the slideshow.';
 
   @override
   String get special_name => 'Name';
@@ -465,8 +452,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_preview => 'Preview';
 
   @override
-  String get special_preview_unavailable =>
-      'Preview unavailable. Check the camera URL and network access.';
+  String get special_preview_unavailable => 'Preview unavailable. Check the camera URL and network access.';
 
   @override
   String get special_next_camera => 'Next camera';
@@ -523,8 +509,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_time_size => 'Time font (% of shorter screen side)';
 
   @override
-  String get special_date_size =>
-      'Date and weekday size (% of shorter screen side)';
+  String get special_date_size => 'Date and weekday size (% of shorter screen side)';
 
   @override
   String get special_text_color => 'Text color (AARRGGBB)';
@@ -545,8 +530,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_sequence => 'One camera per appearance';
 
   @override
-  String get special_sequence_help =>
-      'Each appearance shows the next camera in list order.';
+  String get special_sequence_help => 'Each appearance shows the next camera in list order.';
 
   @override
   String get special_columns => 'Grid columns (0 = automatic)';
@@ -600,8 +584,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_auth => 'Authentication (optional)';
 
   @override
-  String get special_save_hint =>
-      'Use Save on the main settings page to write changes to the device.';
+  String get special_save_hint => 'Use Save on the main settings page to write changes to the device.';
 
   @override
   String get special_browser_camera_help =>
@@ -743,8 +726,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get device_panel_title => 'Photo frame';
 
   @override
-  String get device_settings_description =>
-      'Manage media, appearance and device settings.';
+  String get device_settings_description => 'Manage media, appearance and device settings.';
 
   @override
   String get connection_title => 'Connection';
@@ -825,8 +807,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get config_editor_draft_hint =>
-      'Edits stay in the draft. Use Save on Settings to write them to the device.';
+  String get config_editor_draft_hint => 'Edits stay in the draft. Use Save on Settings to write them to the device.';
 
   @override
   String get config_reset_button => 'Undo edits';
@@ -838,13 +819,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_positive_integer => 'Enter a positive whole number.';
 
   @override
-  String get invalid_nonnegative_integer =>
-      'Enter zero or a positive whole number.';
+  String get invalid_nonnegative_integer => 'Enter zero or a positive whole number.';
 
   @override
   String slideshow_summary(num seconds) {
-    final intl.NumberFormat secondsNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat secondsNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String secondsString = secondsNumberFormat.format(seconds);
 
     return 'Photo display: $secondsString s';
@@ -859,8 +838,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_title => 'Preview';
 
   @override
-  String get preview_local_controls =>
-      'Preview controls are local and are not saved.';
+  String get preview_local_controls => 'Preview controls are local and are not saved.';
 
   @override
   String get preview_hide => 'Hide preview';
@@ -884,15 +862,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview_failed => 'Could not prepare the preview. Try again.';
 
   @override
-  String get preview_last_valid =>
-      'Showing the last valid values. Correct the marked fields.';
+  String get preview_last_valid => 'Showing the last valid values. Correct the marked fields.';
 
   @override
   String get preview_device_scale => 'Scaled relative to a 2560 × 1600 screen';
 
   @override
-  String get preview_environment_help =>
-      'Uses bundled sample photos. No external media is loaded.';
+  String get preview_environment_help => 'Uses bundled sample photos. No external media is loaded.';
 
   @override
   String get preview_clock_help => 'Uses this computer’s current time.';
@@ -937,8 +913,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome_replay => 'Replay welcome';
 
   @override
-  String get welcome_animation_help =>
-      'The welcome fades in and out; the delay sets the duration of each phase.';
+  String get welcome_animation_help => 'The welcome fades in and out; the delay sets the duration of each phase.';
 
   @override
   String get invalid_positive_number => 'Enter a positive number.';
@@ -1010,8 +985,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get milliseconds_unit => 'ms';
 
   @override
-  String get config_reset_warning =>
-      'Discard all edits and restore the last loaded or saved settings?';
+  String get config_reset_warning => 'Discard all edits and restore the last loaded or saved settings?';
 
   @override
   String get refresh_button => 'Refresh';
@@ -1049,12 +1023,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String gallery_selected(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count selected',
-      one: '$count selected',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count selected', one: '$count selected');
     return '$_temp0';
   }
 
@@ -1065,8 +1034,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_empty => 'No media files yet.';
 
   @override
-  String get upload_empty_hint =>
-      'Add photos and videos to display on the frame.';
+  String get upload_empty_hint => 'Add photos and videos to display on the frame.';
 
   @override
   String get upload_remove_task => 'Remove from queue';
@@ -1147,8 +1115,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get special_weekday_sunday => 'Sunday';
 
   @override
-  String get video_platform_unavailable =>
-      'Video playback is unavailable here. Open the panel in a supported browser.';
+  String get video_platform_unavailable => 'Video playback is unavailable here. Open the panel in a supported browser.';
 
   @override
   String get video_load_failed => 'Could not load video.';
@@ -1163,8 +1130,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get device_controls_title => 'Frame control';
 
   @override
-  String get device_telemetry_subtitle =>
-      'System readings and presence from the frame';
+  String get device_telemetry_subtitle => 'System readings and presence from the frame';
 
   @override
   String get device_controls_subtitle => 'Pause, screen power and menu';
@@ -1176,15 +1142,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get device_stale => 'The last received data is out of date.';
 
   @override
-  String get device_load_failed =>
-      'Could not read the frame state. Check the connection and frame software version.';
+  String get device_load_failed => 'Could not read the frame state. Check the connection and frame software version.';
 
   @override
   String get device_metrics_failed => 'Could not update system readings.';
 
   @override
-  String get device_command_failed =>
-      'Could not confirm the command. Refresh the state before trying again.';
+  String get device_command_failed => 'Could not confirm the command. Refresh the state before trying again.';
 
   @override
   String get device_disconnected => 'Connection to the frame was lost.';
@@ -1197,8 +1161,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The frame display app is unavailable. Controls and display details cannot be read.';
 
   @override
-  String get device_controls_context =>
-      'Pause and menu are available while the frame is showing a slideshow.';
+  String get device_controls_context => 'Pause and menu are available while the frame is showing a slideshow.';
 
   @override
   String get device_sample_time => 'Frame snapshot (UTC)';
@@ -1473,8 +1436,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rpc_receiver_unavailable => 'Receiver metrics unavailable';
 
   @override
-  String get rpc_ws_timeouts =>
-      'WebSocket request timeouts since panel startup';
+  String get rpc_ws_timeouts => 'WebSocket request timeouts since panel startup';
 
   @override
   String rpc_occupancy(int used, int capacity, int queued) {
@@ -1568,12 +1530,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effects_reset => 'Reset parameters';
 
   @override
-  String get effects_empty =>
-      'No compatible effect selected: Fade uses the global duration.';
+  String get effects_empty => 'No compatible effect selected: Fade uses the global duration.';
 
   @override
-  String get effects_invalid =>
-      'Invalid effect configuration. Fix the fields or reset the effect set.';
+  String get effects_invalid => 'Invalid effect configuration. Fix the fields or reset the effect set.';
 
   @override
   String get effects_restore => 'Reset effect set';
@@ -1591,8 +1551,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effects_fade_fraction => 'Cell fade duration';
 
   @override
-  String get effects_fade_help =>
-      'Fraction of transition time spent fading each cell. 0% gives a hard cutoff.';
+  String get effects_fade_help => 'Fraction of transition time spent fading each cell. 0% gives a hard cutoff.';
 
   @override
   String get effects_direction => 'Direction';
@@ -2077,8 +2036,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_choice_CircularDirection_clockwise => 'Clockwise';
 
   @override
-  String get effect_choice_CircularDirection_counterclockwise =>
-      'Counterclockwise';
+  String get effect_choice_CircularDirection_counterclockwise => 'Counterclockwise';
 
   @override
   String get effect_choice_LumaOrder_brightFirst => 'Bright first';
@@ -2108,8 +2066,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get effect_choice_SlideDecoration_none => 'None';
 
   @override
-  String get effect_choice_SlideDecoration_filmPerforation =>
-      'Film perforation';
+  String get effect_choice_SlideDecoration_filmPerforation => 'Film perforation';
 
   @override
   String get effect_choice_RevealShape_rectangle => 'Rectangle';
@@ -2394,8 +2351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaAccessCode => 'Access code';
 
   @override
-  String get otaSameNetwork =>
-      'Connect your phone or computer to the same network as the frame.';
+  String get otaSameNetwork => 'Connect your phone or computer to the same network as the frame.';
 
   @override
   String get otaScanInstruction => 'Scan the QR code to open the update page.';
@@ -2414,8 +2370,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaReceiving => 'Receiving firmware';
 
   @override
-  String get otaTransferHint =>
-      'The file is being received. Installation starts next.';
+  String get otaTransferHint => 'The file is being received. Installation starts next.';
 
   @override
   String get otaInstalling => 'Installing firmware';
@@ -2424,8 +2379,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otaDoNotPowerOff => 'Keep the frame connected to power.';
 
   @override
-  String get otaInstallationHint =>
-      'Installation may take a few minutes. Follow the system log below.';
+  String get otaInstallationHint => 'Installation may take a few minutes. Follow the system log below.';
 
   @override
   String get otaFailed => 'Update failed';
@@ -2514,8 +2468,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_rotate_right => 'Rotate right 90°';
 
   @override
-  String get gallery_action_failed =>
-      'Could not complete the operation. Retry the same action.';
+  String get gallery_action_failed => 'Could not complete the operation. Retry the same action.';
 
   @override
   String get gallery_file_unavailable => 'File unavailable';
@@ -2524,8 +2477,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_undo => 'Undo';
 
   @override
-  String get gallery_trashed =>
-      'Moved to trash. Disk space has not been freed.';
+  String get gallery_trashed => 'Moved to trash. Disk space has not been freed.';
 
   @override
   String get gallery_restored => 'Files restored';
@@ -2601,12 +2553,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_metadata_failed => 'Could not load file details';
 
   @override
-  String get gallery_duplicate_select_hint =>
-      'Select files to move to trash. Keep at least one file in the group.';
+  String get gallery_duplicate_select_hint => 'Select files to move to trash. Keep at least one file in the group.';
 
   @override
-  String get gallery_duplicate_review_done =>
-      'All current groups have been reviewed.';
+  String get gallery_duplicate_review_done => 'All current groups have been reviewed.';
 
   @override
   String get gallery_duplicate_review_again => 'Review again';
@@ -2629,24 +2579,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_search_both => 'Exact and similar';
 
   @override
-  String get gallery_search_exact_description =>
-      'Files with identical contents';
+  String get gallery_search_exact_description => 'Files with identical contents';
 
   @override
-  String get gallery_search_similar_description =>
-      'Similar photos, including resized copies';
+  String get gallery_search_similar_description => 'Similar photos, including resized copies';
 
   @override
-  String get gallery_search_both_description =>
-      'Both types of matches in one search';
+  String get gallery_search_both_description => 'Both types of matches in one search';
 
   @override
   String get gallery_search_preserve_results =>
       'Cancelling or a failed search keeps the previous results and your selections.';
 
   @override
-  String get gallery_search_background_hint =>
-      'You can leave this section. The search will continue.';
+  String get gallery_search_background_hint => 'You can leave this section. The search will continue.';
 
   @override
   String get gallery_search_completed => 'Search completed';
@@ -2662,23 +2608,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String gallery_search_groups(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count groups',
-      one: '$count group',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count groups', one: '$count group');
     return '$_temp0';
   }
 
   @override
   String gallery_group_files(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count files',
-      one: '$count file',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count files', one: '$count file');
     return '$_temp0';
   }
 
@@ -2728,34 +2664,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_search_none => 'No matches found';
 
   @override
-  String get gallery_search_failed =>
-      'Search failed. Previous results have not been replaced.';
+  String get gallery_search_failed => 'Search failed. Previous results have not been replaced.';
 
   @override
   String get gallery_search_cancelled => 'Search stopped';
 
   @override
-  String get gallery_search_interrupted =>
-      'Search interrupted. Start a new search.';
+  String get gallery_search_interrupted => 'Search interrupted. Start a new search.';
 
   @override
   String get gallery_skip_group => 'Skip group';
 
   @override
-  String get gallery_keep_one =>
-      'Keep at least one current file in each group.';
+  String get gallery_keep_one => 'Keep at least one current file in each group.';
 
   @override
-  String get gallery_stale_result =>
-      'A file has changed or disappeared. Search again before applying this decision.';
+  String get gallery_stale_result => 'A file has changed or disappeared. Search again before applying this decision.';
 
   @override
   String get gallery_similar_hint =>
       'Similarity does not guarantee equal quality. Compare the whole image and its details.';
 
   @override
-  String get gallery_exact_hint =>
-      'The file contents match. Names and folders may differ.';
+  String get gallery_exact_hint => 'The file contents match. Names and folders may differ.';
 
   @override
   String get gallery_result_review_title => 'Move these files to trash?';
@@ -2764,8 +2695,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_operation_details => 'Operation details';
 
   @override
-  String get gallery_not_supported =>
-      'This operation is not supported for this file.';
+  String get gallery_not_supported => 'This operation is not supported for this file.';
 
   @override
   String get gallery_error_forbidden => 'Access denied';
@@ -2774,8 +2704,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_error_busy => 'The service is busy';
 
   @override
-  String get gallery_error_conflict =>
-      'The file path or state conflicts with this action.';
+  String get gallery_error_conflict => 'The file path or state conflicts with this action.';
 
   @override
   String get gallery_error_revision => 'The file has changed';
@@ -2806,16 +2735,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Czkawka CLI reported an error. Check the exit code and the backend log for this job.';
 
   @override
-  String get gallery_search_cause_timeout =>
-      'The search exceeded its time limit. Try one search mode at a time.';
+  String get gallery_search_cause_timeout => 'The search exceeded its time limit. Try one search mode at a time.';
 
   @override
   String get gallery_search_cause_output_limit =>
       'A candidate or result limit was exceeded. Check the library size and backend limits.';
 
   @override
-  String get gallery_search_cause_invalid_result =>
-      'Czkawka CLI returned an unreadable or unexpected report.';
+  String get gallery_search_cause_invalid_result => 'Czkawka CLI returned an unreadable or unexpected report.';
 
   @override
   String get gallery_search_cause_storage_unavailable =>
@@ -2869,8 +2796,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_search_rejected => 'Report entries rejected';
 
   @override
-  String get gallery_search_snapshot_skipped =>
-      'Files skipped while preparing candidates';
+  String get gallery_search_snapshot_skipped => 'Files skipped while preparing candidates';
 
   @override
   String get gallery_search_job_id => 'Job';
@@ -2906,8 +2832,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_undo_changed => 'Some files are no longer in Trash.';
 
   @override
-  String get gallery_metadata_timeout =>
-      'The server took too long to load the details. Try again.';
+  String get gallery_metadata_timeout => 'The server took too long to load the details. Try again.';
 
   @override
   String get gallery_metadata_read_failed => 'Could not read the file details.';
@@ -2921,8 +2846,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get gallery_confirmation_changed =>
-      'The selection or files changed. Review the selection and try again.';
+  String get gallery_confirmation_changed => 'The selection or files changed. Review the selection and try again.';
 
   @override
   String gallery_failed_count(int count) {
@@ -2999,20 +2923,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_resolution_unknown => 'Resolution unavailable';
 
   @override
-  String get gallery_recommend_first_copy =>
-      'Exact copies are equivalent; the first file is suggested.';
+  String get gallery_recommend_first_copy => 'Exact copies are equivalent; the first file is suggested.';
 
   @override
-  String get gallery_recommend_first_tied =>
-      'Reason: first among files with the highest resolution';
+  String get gallery_recommend_first_tied => 'Reason: first among files with the highest resolution';
 
   @override
-  String get gallery_recommend_known_resolution =>
-      'Provisional: highest known resolution';
+  String get gallery_recommend_known_resolution => 'Provisional: highest known resolution';
 
   @override
-  String get gallery_recommend_first_unknown =>
-      'Resolution unavailable; the first file is suggested.';
+  String get gallery_recommend_first_unknown => 'Resolution unavailable; the first file is suggested.';
 
   @override
   String get gallery_resolution_minimum => 'Minimum resolution';
@@ -3030,8 +2950,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_recommend_keep => 'Recommended to keep';
 
   @override
-  String get gallery_recommend_resolution =>
-      'Reason: highest resolution in the group';
+  String get gallery_recommend_resolution => 'Reason: highest resolution in the group';
 
   @override
   String get gallery_resolution_recommendation_hint =>
@@ -3042,15 +2961,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Some resolutions are unknown; the recommendation is provisional and may change.';
 
   @override
-  String get gallery_equivalent_copies =>
-      'Exact copies are equivalent; the first file is recommended.';
+  String get gallery_equivalent_copies => 'Exact copies are equivalent; the first file is recommended.';
 
   @override
   String get configPageTitle => 'Set up your photo frame';
 
   @override
-  String get configPageIntro =>
-      'Open the settings panel on your phone or computer.';
+  String get configPageIntro => 'Open the settings panel on your phone or computer.';
 
   @override
   String get configPageStarting => 'Starting settings access…';
@@ -3059,8 +2976,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configPageAddressPreparing => 'Finding the local network address…';
 
   @override
-  String get configPageNoAddress =>
-      'Connect the frame to a local network, then check the connection.';
+  String get configPageNoAddress => 'Connect the frame to a local network, then check the connection.';
 
   @override
   String get configPageCode => 'Access code';
@@ -3070,12 +2986,10 @@ class AppLocalizationsEn extends AppLocalizations {
       '1. Connect your phone or computer to the same Wi-Fi as the frame. Internet access is not required.';
 
   @override
-  String get configPageScanStep =>
-      '2. Scan the QR code or open the address below.';
+  String get configPageScanStep => '2. Scan the QR code or open the address below.';
 
   @override
-  String get configPageCodeStep =>
-      '3. Enter the access code in the settings panel.';
+  String get configPageCodeStep => '3. Enter the access code in the settings panel.';
 
   @override
   String get configPageManual => 'Manual connection';
@@ -3096,8 +3010,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configPageChecking => 'Checking the network…';
 
   @override
-  String get configPageCacheHint =>
-      'Network information may take up to a minute to update.';
+  String get configPageCacheHint => 'Network information may take up to a minute to update.';
 
   @override
   String get configPageServerError => 'Unable to start settings access.';
@@ -3109,19 +3022,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get configPageTimeout => 'The operation took too long.';
 
   @override
-  String get configPageUnknownError =>
-      'Unable to prepare settings access. Try again.';
+  String get configPageUnknownError => 'Unable to prepare settings access. Try again.';
 
   @override
-  String get configPagePending =>
-      'Waiting for the previous operation to finish. You can return to the slideshow.';
+  String get configPagePending => 'Waiting for the previous operation to finish. You can return to the slideshow.';
 
   @override
   String get configPageClosing => 'Closing settings access…';
 
   @override
-  String get configPageClosingAlways =>
-      'Closing this screen. Settings access stays enabled by configuration.';
+  String get configPageClosingAlways => 'Closing this screen. Settings access stays enabled by configuration.';
 
   @override
   String get configPageCloseError =>
@@ -3139,23 +3049,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ota_file_empty => 'The firmware file is empty.';
 
   @override
-  String get ota_file_unavailable =>
-      'Could not read the selected firmware file.';
+  String get ota_file_unavailable => 'Could not read the selected firmware file.';
 
   @override
-  String get ota_request_failed =>
-      'Could not complete the OTA request. Try again.';
+  String get ota_request_failed => 'Could not complete the OTA request. Try again.';
 
   @override
-  String get ota_response_invalid =>
-      'The frame returned an invalid OTA response.';
+  String get ota_response_invalid => 'The frame returned an invalid OTA response.';
 
   @override
   String get ota_upload_rejected => 'The frame rejected the firmware upload.';
 
   @override
-  String get wifi_operation_unknown =>
-      'The operation result is unknown. Check the frame before trying again.';
+  String get wifi_operation_unknown => 'The operation result is unknown. Check the frame before trying again.';
 
   @override
   String get wifi_refresh_failed =>
@@ -3168,8 +3074,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upload_length_unknown => 'Could not determine the file size.';
 
   @override
-  String get upload_transfer_failed =>
-      'Could not confirm the upload. Check the frame before retrying.';
+  String get upload_transfer_failed => 'Could not confirm the upload. Check the frame before retrying.';
 
   @override
   String get upload_folder_scan_failed => 'Could not read the selected folder.';

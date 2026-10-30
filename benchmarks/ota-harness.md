@@ -11,7 +11,7 @@
 ```sh
 flutter analyze --no-pub lib/ota_main.dart
 flutter test --no-pub test/ota_harness_test.dart
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tool -p test_renderer_launcher.py -v
+(cd ../tools && dart test test/benchmarks/launcher_test.dart)
 bash -n build_ota_pi5.sh run_ota.sh
 ./build_ota_pi5.sh
 ```

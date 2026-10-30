@@ -3,6 +3,7 @@
 set -euo pipefail
 ulimit -c 0
 app_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+source "$app_dir/tool/cli.sh"
 suite=${BENCHMARK_SUITE:-}
 renderers=${BENCHMARK_RENDERERS:-opengl}
 bundle=${BENCHMARK_BUNDLE:-$app_dir/bundle}
@@ -31,7 +32,7 @@ while (($#)); do
 done
 if [[ -z "$suite" ]]; then
   if [[ -n "$config" ]]; then
-    suite=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("suite", "standard"))' "$config")
+    suite=$(benchmark_tool json-field "$config" suite standard)
   else
     suite=standard
   fi
@@ -40,7 +41,7 @@ case "$suite" in smoke|standard|soak) ;; *) echo 'Invalid suite' >&2; exit 2;; e
 case "$renderers" in both) renderer_list=(opengl vulkan);; opengl|vulkan) renderer_list=("$renderers");; *) echo 'Invalid renderers' >&2; exit 2;; esac
 [[ "$timeout_s" =~ ^[1-9][0-9]*$ ]] || { echo 'timeout must be a positive integer' >&2; exit 2; }
 case "$vulkan_video" in '') unset BENCHMARK_VULKAN_VIDEO;; true|false) export BENCHMARK_VULKAN_VIDEO="$vulkan_video";; *) echo 'BENCHMARK_VULKAN_VIDEO must be true or false' >&2; exit 2;; esac
-for dependency in python3 timeout flock tar tee sha256sum; do command -v "$dependency" >/dev/null; done
+for dependency in timeout flock tar tee sha256sum; do command -v "$dependency" >/dev/null; done
 if [[ ! -d "$bundle" && -d "$app_dir/build/flutter-pi/pi5-64" ]]; then bundle="$app_dir/build/flutter-pi/pi5-64"; fi
 bundle=$(realpath "$bundle")
 runtime=$(realpath "$runtime")
@@ -53,11 +54,11 @@ flock -n 9 || { echo 'Another benchmark launcher is active' >&2; exit 2; }
 collection=$(mktemp -d "$output/$(date -u +%Y%m%dT%H%M%SZ)-$suite-XXXXXXXX")
 mode=release
 if [[ -f "$bundle/assets/build-info.json" ]]; then
-  mode=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("mode", "release"))' "$bundle/assets/build-info.json")
+  mode=$(benchmark_tool json-field "$bundle/assets/build-info.json" mode release)
 elif [[ -f "$app_dir/build-info.json" ]]; then
-  mode=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("mode", "release"))' "$app_dir/build-info.json")
+  mode=$(benchmark_tool json-field "$app_dir/build-info.json" mode release)
 elif [[ -f "$app_dir/assets/build-info.json" ]]; then
-  mode=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("mode", "release"))' "$app_dir/assets/build-info.json")
+  mode=$(benchmark_tool json-field "$app_dir/assets/build-info.json" mode release)
 fi
 case "$mode" in release|profile) ;; *) echo 'Invalid build mode' >&2; exit 2;; esac
 export DSLIDESHOW_EMBEDDED=true
@@ -75,7 +76,7 @@ collection_result=0
 finish() {
   ((finished)) && return
   finished=1
-  python3 "$app_dir/tool/collect_reports.py" "$collection" --fail-on-errors || collection_result=$?
+  benchmark_tool collect-reports "$collection" --fail-on-errors || collection_result=$?
   tar -czf "$collection.tar.gz" -C "$output" "$(basename "$collection")"
   echo "BENCHMARK_ARCHIVE=$collection.tar.gz"
 }
@@ -106,14 +107,7 @@ for renderer in "${renderer_list[@]}"; do
   [[ "$renderer" != vulkan ]] || args+=(--vulkan)
   [[ "$video_mode" == none ]] || args+=(--videomode "$video_mode")
   args+=("$bundle" "${extra[@]}")
-  python3 - "$BENCHMARK_OUTPUT/launch.json" "$renderer" "${args[@]}" <<'PY'
-import hashlib, json, pathlib, sys
-from datetime import datetime, timezone
-exe = pathlib.Path(sys.argv[3])
-pathlib.Path(sys.argv[1]).write_text(json.dumps(dict(
-    renderer=sys.argv[2], argv=sys.argv[3:], utc=datetime.now(timezone.utc).isoformat(),
-    flutter_pi_sha256=hashlib.sha256(exe.read_bytes()).hexdigest()), indent=2))
-PY
+  benchmark_tool launch-argv "$BENCHMARK_OUTPUT/launch.json" "$renderer" "${args[@]}"
   timeout --kill-after=2s 5s "$runtime" --help > "$BENCHMARK_OUTPUT/flutter-pi-help.txt" 2>&1 || true
   # timeout forwards TERM and kills a stuck engine after the grace period.
   # Native logs are preserved even if Dart cannot start or the GPU process aborts.
@@ -121,16 +115,15 @@ PY
   child=$!
   code=0
   wait "$child" || code=$?
-  if ((interrupted)); then wait "$child" 2>/dev/null || true; code=130; fi
+  if ((interrupted)); then
+    # Reap the timeout/runtime before collecting or restoring the GPU service.
+    while kill -0 "$child" 2>/dev/null; do wait "$child" 2>/dev/null || true; done
+    code=130
+  fi
   child=''
-  python3 - "$BENCHMARK_OUTPUT/launcher-status.json" "$code" <<'PY'
-import json, pathlib, sys
-from datetime import datetime, timezone
-pathlib.Path(sys.argv[1]).write_text(json.dumps(dict(exit_code=int(sys.argv[2]),
-    finished_utc=datetime.now(timezone.utc).isoformat()), indent=2))
-PY
+  benchmark_tool status "$BENCHMARK_OUTPUT/launcher-status.json" "$code"
   ((code == 0)) || result=2
-  decision=$(python3 "$app_dir/tool/resume_plan.py" "$renderer_dir" "$BENCHMARK_OUTPUT" "$code")
+  decision=$(benchmark_tool resume-plan "$renderer_dir" "$BENCHMARK_OUTPUT" "$code")
   [[ "$decision" == resume && "$suite" != soak ]] || break
   echo "BENCHMARK_RESUME renderer=$renderer after=$attempt_name"
   done

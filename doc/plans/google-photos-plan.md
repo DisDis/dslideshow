@@ -51,7 +51,7 @@ Backend всё ещё использует внешний path-пакет google
 позволять подключить клиент выбранного Photos API после решения вопроса доступа.
 
 1. Добавить одну команду подготовки, независимую от `pub get` backend:
-   предполагаемая точка входа — `tools/prepare_googleapis.py`.
+   предполагаемая точка входа — `tools/prepare_googleapis.dart`.
    Инструментарий генератора хранить отдельно в `tools/googleapis_codegen/`:
    официальный генератор из Git на закреплённом commit, его dependency lock
    и небольшой entry point. Не использовать

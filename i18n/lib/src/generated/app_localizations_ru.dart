@@ -107,8 +107,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unknown_storage_type_configuration => 'Неизвестный тип хранилища';
 
   @override
-  String get no_configuration_needed_for_local_disk =>
-      'Для локального диска дополнительные настройки пока не нужны.';
+  String get no_configuration_needed_for_local_disk => 'Для локального диска дополнительные настройки пока не нужны.';
 
   @override
   String get slideshow_settings_title => 'Настройки слайд-шоу';
@@ -129,19 +128,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get config_saved_state => 'Нет несохранённых изменений';
 
   @override
-  String get config_restart_hint =>
-      'Сохранённые настройки вступят в силу после перезапуска приложения.';
+  String get config_restart_hint => 'Сохранённые настройки вступят в силу после перезапуска приложения.';
 
   @override
   String get config_reload_title => 'Загрузить настройки заново?';
 
   @override
-  String get config_reload_warning =>
-      'Отменить изменения и загрузить сохранённые настройки с устройства?';
+  String get config_reload_warning => 'Отменить изменения и загрузить сохранённые настройки с устройства?';
 
   @override
-  String get config_leave_warning =>
-      'Изменения не сохранены. Отменить их и выйти из настроек?';
+  String get config_leave_warning => 'Изменения не сохранены. Отменить их и выйти из настроек?';
 
   @override
   String get config_keep_editing => 'Продолжить редактирование';
@@ -150,8 +146,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get config_discard_changes => 'Отменить изменения';
 
   @override
-  String get config_operation_in_progress =>
-      'Дождитесь завершения текущей операции с настройками.';
+  String get config_operation_in_progress => 'Дождитесь завершения текущей операции с настройками.';
 
   @override
   String get config_load_failed => 'Не удалось загрузить настройки';
@@ -181,8 +176,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get no_access_title => 'Нет доступа';
 
   @override
-  String get no_access_contact_administrator =>
-      'Нет доступа. Обратитесь к администратору.';
+  String get no_access_contact_administrator => 'Нет доступа. Обратитесь к администратору.';
 
   @override
   String get ch_text => 'Канал:';
@@ -200,8 +194,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_load_failed => 'Не удалось загрузить галерею.';
 
   @override
-  String get gallery_refresh_failed =>
-      'Не удалось обновить галерею. Предыдущий список остаётся доступен.';
+  String get gallery_refresh_failed => 'Не удалось обновить галерею. Предыдущий список остаётся доступен.';
 
   @override
   String get gallery_title => 'Галерея';
@@ -219,8 +212,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get welcome_back => 'С возвращением!';
 
   @override
-  String get manage_your_device_settings_and_updates =>
-      'Управляйте настройками и обновлениями фоторамки.';
+  String get manage_your_device_settings_and_updates => 'Управляйте настройками и обновлениями фоторамки.';
 
   @override
   String get gallery_card_title => 'Галерея';
@@ -298,8 +290,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get restart_application => 'Перезапустить приложение';
 
   @override
-  String get reload_software_without_rebooting_os =>
-      'Перезапускает приложение без перезагрузки операционной системы.';
+  String get reload_software_without_rebooting_os => 'Перезапускает приложение без перезагрузки операционной системы.';
 
   @override
   String get restart_application_question => 'Перезапустить приложение?';
@@ -462,8 +453,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get special_preview => 'Предпросмотр';
 
   @override
-  String get special_preview_unavailable =>
-      'Предпросмотр недоступен. Проверьте адрес камеры и доступ к сети.';
+  String get special_preview_unavailable => 'Предпросмотр недоступен. Проверьте адрес камеры и доступ к сети.';
 
   @override
   String get special_next_camera => 'Следующая камера';
@@ -517,12 +507,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get special_date_format => 'Формат даты';
 
   @override
-  String get special_time_size =>
-      'Размер времени (% от короткой стороны экрана)';
+  String get special_time_size => 'Размер времени (% от короткой стороны экрана)';
 
   @override
-  String get special_date_size =>
-      'Размер даты и дня недели (% от короткой стороны экрана)';
+  String get special_date_size => 'Размер даты и дня недели (% от короткой стороны экрана)';
 
   @override
   String get special_text_color => 'Цвет текста (AARRGGBB)';
@@ -543,8 +531,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get special_sequence => 'Одна камера за показ';
 
   @override
-  String get special_sequence_help =>
-      'При каждом появлении экрана показывается следующая камера из списка.';
+  String get special_sequence_help => 'При каждом появлении экрана показывается следующая камера из списка.';
 
   @override
   String get special_columns => 'Столбцы сетки (0 = автоматически)';
@@ -562,8 +549,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get special_show_names => 'Показывать названия камер';
 
   @override
-  String get special_refresh =>
-      'Обновление (секунды; 0 = только при появлении)';
+  String get special_refresh => 'Обновление (секунды; 0 = только при появлении)';
 
   @override
   String get special_add_camera => 'Добавить камеру';
@@ -587,8 +573,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get special_invalid_url => 'Введите адрес HTTP/HTTPS.';
 
   @override
-  String get special_invalid_color =>
-      'Введите 8 шестнадцатеричных цифр (AARRGGBB).';
+  String get special_invalid_color => 'Введите 8 шестнадцатеричных цифр (AARRGGBB).';
 
   @override
   String get special_camera_required => 'Добавьте хотя бы одну камеру.';
@@ -614,8 +599,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get photo_motion_off => 'Выключено';
 
   @override
-  String get photo_motion_ken_burns =>
-      'Кен Бёрнс (плавное движение и увеличение)';
+  String get photo_motion_ken_burns => 'Кен Бёрнс (плавное движение и увеличение)';
 
   @override
   String get photo_motion_zoom => 'Максимальное увеличение';
@@ -744,8 +728,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get device_panel_title => 'Фоторамка';
 
   @override
-  String get device_settings_description =>
-      'Медиафайлы, оформление и настройки устройства.';
+  String get device_settings_description => 'Медиафайлы, оформление и настройки устройства.';
 
   @override
   String get connection_title => 'Подключение';
@@ -841,13 +824,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get invalid_positive_integer => 'Введите целое положительное число.';
 
   @override
-  String get invalid_nonnegative_integer =>
-      'Введите ноль или целое положительное число.';
+  String get invalid_nonnegative_integer => 'Введите ноль или целое положительное число.';
 
   @override
   String slideshow_summary(num seconds) {
-    final intl.NumberFormat secondsNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat secondsNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String secondsString = secondsNumberFormat.format(seconds);
 
     return 'Показ фото: $secondsString с';
@@ -862,8 +843,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_title => 'Предпросмотр';
 
   @override
-  String get preview_local_controls =>
-      'Локальные инструменты предпросмотра — не сохраняются';
+  String get preview_local_controls => 'Локальные инструменты предпросмотра — не сохраняются';
 
   @override
   String get preview_hide => 'Скрыть предпросмотр';
@@ -884,19 +864,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preview_resume => 'Продолжить';
 
   @override
-  String get preview_failed =>
-      'Не удалось подготовить предпросмотр. Повторите попытку.';
+  String get preview_failed => 'Не удалось подготовить предпросмотр. Повторите попытку.';
 
   @override
-  String get preview_last_valid =>
-      'Показаны последние допустимые значения. Исправьте отмеченные поля.';
+  String get preview_last_valid => 'Показаны последние допустимые значения. Исправьте отмеченные поля.';
 
   @override
   String get preview_device_scale => 'Масштаб относительно экрана 2560 × 1600';
 
   @override
-  String get preview_environment_help =>
-      'Используются встроенные фотографии. Внешние медиа не загружаются.';
+  String get preview_environment_help => 'Используются встроенные фотографии. Внешние медиа не загружаются.';
 
   @override
   String get preview_clock_help => 'Используется время этого компьютера';
@@ -1071,8 +1048,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_empty => 'Медиафайлов пока нет.';
 
   @override
-  String get upload_empty_hint =>
-      'Добавьте фото и видео для показа на фоторамке.';
+  String get upload_empty_hint => 'Добавьте фото и видео для показа на фоторамке.';
 
   @override
   String get upload_remove_task => 'Убрать из очереди';
@@ -1169,8 +1145,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get device_controls_title => 'Управление фоторамкой';
 
   @override
-  String get device_telemetry_subtitle =>
-      'Показатели системы и присутствие с фоторамки';
+  String get device_telemetry_subtitle => 'Показатели системы и присутствие с фоторамки';
 
   @override
   String get device_controls_subtitle => 'Пауза, питание экрана и меню';
@@ -1182,16 +1157,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get device_stale => 'Последние полученные данные устарели.';
 
   @override
-  String get device_load_failed =>
-      'Не удалось получить состояние рамки. Проверьте подключение и версию ПО рамки.';
+  String get device_load_failed => 'Не удалось получить состояние рамки. Проверьте подключение и версию ПО рамки.';
 
   @override
-  String get device_metrics_failed =>
-      'Не удалось обновить системные показатели.';
+  String get device_metrics_failed => 'Не удалось обновить системные показатели.';
 
   @override
-  String get device_command_failed =>
-      'Не удалось подтвердить команду. Обновите состояние перед повтором.';
+  String get device_command_failed => 'Не удалось подтвердить команду. Обновите состояние перед повтором.';
 
   @override
   String get device_disconnected => 'Соединение с фоторамкой потеряно.';
@@ -1204,8 +1176,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Приложение показа рамки недоступно. Управление и сведения о дисплее недоступны.';
 
   @override
-  String get device_controls_context =>
-      'Пауза и меню доступны, когда рамка показывает слайд-шоу.';
+  String get device_controls_context => 'Пауза и меню доступны, когда рамка показывает слайд-шоу.';
 
   @override
   String get device_sample_time => 'Снимок состояния рамки (UTC)';
@@ -1578,8 +1549,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'При отсутствии выбранных совместимых эффектов используется затухание с общей длительностью.';
 
   @override
-  String get effects_invalid =>
-      'Некорректные настройки эффектов. Исправьте поля или сбросьте набор.';
+  String get effects_invalid => 'Некорректные настройки эффектов. Исправьте поля или сбросьте набор.';
 
   @override
   String get effects_restore => 'Сбросить набор эффектов';
@@ -1597,8 +1567,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effects_fade_fraction => 'Плавность ячеек';
 
   @override
-  String get effects_fade_help =>
-      'Доля времени перехода для затухания одной ячейки. 0% — исчезновение без затухания.';
+  String get effects_fade_help => 'Доля времени перехода для затухания одной ячейки. 0% — исчезновение без затухания.';
 
   @override
   String get effects_direction => 'Направление';
@@ -1966,8 +1935,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_parameter_springStrength => 'Сила пружины';
 
   @override
-  String get effect_parameter_cellsAcross =>
-      'Число фигур вдоль длинной стороны';
+  String get effect_parameter_cellsAcross => 'Число фигур вдоль длинной стороны';
 
   @override
   String get effect_parameter_colorShiftFraction => 'Цветовой сдвиг';
@@ -1994,8 +1962,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_choice_FadeStyle_plain => 'Обычное';
 
   @override
-  String get effect_choice_FadeStyle_linearLight =>
-      'Линейное цветовое пространство';
+  String get effect_choice_FadeStyle_linearLight => 'Линейное цветовое пространство';
 
   @override
   String get effect_choice_FadeStyle_blur => 'С размытием';
@@ -2052,12 +2019,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_choice_WipeEdgeStyle_neon => 'Неоновая';
 
   @override
-  String get effect_choice_RevealOperation_revealIncoming =>
-      'Раскрывать новый кадр';
+  String get effect_choice_RevealOperation_revealIncoming => 'Раскрывать новый кадр';
 
   @override
-  String get effect_choice_RevealOperation_hideOutgoing =>
-      'Закрывать старый кадр';
+  String get effect_choice_RevealOperation_hideOutgoing => 'Закрывать старый кадр';
 
   @override
   String get effect_choice_SliceMode_slide => 'Сдвиг';
@@ -2069,8 +2034,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_choice_StripPattern_alternating => 'Встречное';
 
   @override
-  String get effect_choice_StripPattern_sameDirection =>
-      'Одинаковое направление';
+  String get effect_choice_StripPattern_sameDirection => 'Одинаковое направление';
 
   @override
   String get effect_choice_SequenceOrder_forward => 'Прямой';
@@ -2088,8 +2052,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_choice_CircularDirection_clockwise => 'По часовой стрелке';
 
   @override
-  String get effect_choice_CircularDirection_counterclockwise =>
-      'Против часовой стрелки';
+  String get effect_choice_CircularDirection_counterclockwise => 'Против часовой стрелки';
 
   @override
   String get effect_choice_LumaOrder_brightFirst => 'Сначала светлые';
@@ -2119,8 +2082,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_choice_SlideDecoration_none => 'Нет';
 
   @override
-  String get effect_choice_SlideDecoration_filmPerforation =>
-      'Перфорация плёнки';
+  String get effect_choice_SlideDecoration_filmPerforation => 'Перфорация плёнки';
 
   @override
   String get effect_choice_RevealShape_rectangle => 'Прямоугольник';
@@ -2321,8 +2283,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_preset_mosaicBottomLeft => 'Мозаика из нижнего левого угла';
 
   @override
-  String get effect_preset_mosaicBottomRight =>
-      'Мозаика из нижнего правого угла';
+  String get effect_preset_mosaicBottomRight => 'Мозаика из нижнего правого угла';
 
   @override
   String get effect_preset_slidePushRight => 'Вытеснение вправо';
@@ -2373,20 +2334,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get effect_preset_curtainVertical => 'Вертикальная штора';
 
   @override
-  String get effect_preset_diagonalTopRight =>
-      'Диагональ из верхнего правого угла';
+  String get effect_preset_diagonalTopRight => 'Диагональ из верхнего правого угла';
 
   @override
-  String get effect_preset_diagonalBottomLeft =>
-      'Диагональ из нижнего левого угла';
+  String get effect_preset_diagonalBottomLeft => 'Диагональ из нижнего левого угла';
 
   @override
-  String get effect_preset_diagonalBottomRight =>
-      'Диагональ из нижнего правого угла';
+  String get effect_preset_diagonalBottomRight => 'Диагональ из нижнего правого угла';
 
   @override
-  String get effect_preset_diagonalTopLeft =>
-      'Диагональ из верхнего левого угла';
+  String get effect_preset_diagonalTopLeft => 'Диагональ из верхнего левого угла';
 
   @override
   String get effect_preset_irisCenter => 'Круг из центра';
@@ -2410,12 +2367,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaAccessCode => 'Код доступа';
 
   @override
-  String get otaSameNetwork =>
-      'Подключите телефон или компьютер к той же сети, что и рамка.';
+  String get otaSameNetwork => 'Подключите телефон или компьютер к той же сети, что и рамка.';
 
   @override
-  String get otaScanInstruction =>
-      'Отсканируйте QR-код, чтобы открыть страницу обновления.';
+  String get otaScanInstruction => 'Отсканируйте QR-код, чтобы открыть страницу обновления.';
 
   @override
   String get otaManualConnection => 'Или откройте этот адрес';
@@ -2431,8 +2386,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaReceiving => 'Получение прошивки';
 
   @override
-  String get otaTransferHint =>
-      'Получаем файл на рамку. Затем начнётся установка.';
+  String get otaTransferHint => 'Получаем файл на рамку. Затем начнётся установка.';
 
   @override
   String get otaInstalling => 'Установка прошивки';
@@ -2441,8 +2395,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaDoNotPowerOff => 'Не отключайте питание рамки.';
 
   @override
-  String get otaInstallationHint =>
-      'Установка может занять несколько минут. Ход работы показан в журнале ниже.';
+  String get otaInstallationHint => 'Установка может занять несколько минут. Ход работы показан в журнале ниже.';
 
   @override
   String get otaFailed => 'Не удалось обновить прошивку';
@@ -2469,8 +2422,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaSystemLog => 'Системный журнал';
 
   @override
-  String get otaTransferLogPending =>
-      'Файл передаётся на рамку. Журнал установки появится после получения файла.';
+  String get otaTransferLogPending => 'Файл передаётся на рамку. Журнал установки появится после получения файла.';
 
   @override
   String get otaInstallLogPending => 'Ожидаем вывод установщика…';
@@ -2479,8 +2431,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get otaFollowingOutput => 'Показ новых строк';
 
   @override
-  String get otaHistoryPaused =>
-      'Просмотр истории · автопрокрутка приостановлена';
+  String get otaHistoryPaused => 'Просмотр истории · автопрокрутка приостановлена';
 
   @override
   String get otaLatestLine => 'К последней строке';
@@ -2532,8 +2483,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_rotate_right => 'Повернуть вправо на 90°';
 
   @override
-  String get gallery_action_failed =>
-      'Не удалось завершить операцию. Повторите действие.';
+  String get gallery_action_failed => 'Не удалось завершить операцию. Повторите действие.';
 
   @override
   String get gallery_file_unavailable => 'Файл недоступен';
@@ -2542,8 +2492,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_undo => 'Отменить';
 
   @override
-  String get gallery_trashed =>
-      'Перемещено в корзину. Место на диске ещё не освобождено.';
+  String get gallery_trashed => 'Перемещено в корзину. Место на диске ещё не освобождено.';
 
   @override
   String get gallery_restored => 'Файлы восстановлены';
@@ -2623,8 +2572,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Выберите файлы для переноса в корзину. Оставьте хотя бы один файл в группе.';
 
   @override
-  String get gallery_duplicate_review_done =>
-      'Все актуальные группы просмотрены.';
+  String get gallery_duplicate_review_done => 'Все актуальные группы просмотрены.';
 
   @override
   String get gallery_duplicate_review_again => 'Просмотреть снова';
@@ -2647,24 +2595,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_search_both => 'Точные и похожие';
 
   @override
-  String get gallery_search_exact_description =>
-      'Полностью одинаковое содержимое файлов';
+  String get gallery_search_exact_description => 'Полностью одинаковое содержимое файлов';
 
   @override
-  String get gallery_search_similar_description =>
-      'Похожие фото, включая копии другого разрешения';
+  String get gallery_search_similar_description => 'Похожие фото, включая копии другого разрешения';
 
   @override
-  String get gallery_search_both_description =>
-      'Оба типа совпадений в одном поиске';
+  String get gallery_search_both_description => 'Оба типа совпадений в одном поиске';
 
   @override
-  String get gallery_search_preserve_results =>
-      'При отмене или ошибке предыдущие результаты и ваш выбор сохранятся.';
+  String get gallery_search_preserve_results => 'При отмене или ошибке предыдущие результаты и ваш выбор сохранятся.';
 
   @override
-  String get gallery_search_background_hint =>
-      'Можно выйти из раздела — поиск продолжится.';
+  String get gallery_search_background_hint => 'Можно выйти из раздела — поиск продолжится.';
 
   @override
   String get gallery_search_completed => 'Поиск завершён';
@@ -2737,8 +2680,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_similar_images => 'Похожие фотографии';
 
   @override
-  String get gallery_search_scope =>
-      'Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.';
+  String get gallery_search_scope => 'Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.';
 
   @override
   String get gallery_search_running => 'Выполняется поиск…';
@@ -2750,34 +2692,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_search_none => 'Совпадения не найдены';
 
   @override
-  String get gallery_search_failed =>
-      'Ошибка поиска. Предыдущие результаты не заменены.';
+  String get gallery_search_failed => 'Ошибка поиска. Предыдущие результаты не заменены.';
 
   @override
   String get gallery_search_cancelled => 'Поиск остановлен';
 
   @override
-  String get gallery_search_interrupted =>
-      'Поиск прерван. Запустите новый поиск.';
+  String get gallery_search_interrupted => 'Поиск прерван. Запустите новый поиск.';
 
   @override
   String get gallery_skip_group => 'Пропустить группу';
 
   @override
-  String get gallery_keep_one =>
-      'Оставьте хотя бы один актуальный файл в каждой группе.';
+  String get gallery_keep_one => 'Оставьте хотя бы один актуальный файл в каждой группе.';
 
   @override
-  String get gallery_stale_result =>
-      'Файл изменён или исчез. Перед применением решения повторите поиск.';
+  String get gallery_stale_result => 'Файл изменён или исчез. Перед применением решения повторите поиск.';
 
   @override
-  String get gallery_similar_hint =>
-      'Сходство не означает одинаковое качество. Сравните целый кадр и детали.';
+  String get gallery_similar_hint => 'Сходство не означает одинаковое качество. Сравните целый кадр и детали.';
 
   @override
-  String get gallery_exact_hint =>
-      'Содержимое файлов совпадает. Имена и папки могут различаться.';
+  String get gallery_exact_hint => 'Содержимое файлов совпадает. Имена и папки могут различаться.';
 
   @override
   String get gallery_result_review_title => 'Переместить эти файлы в корзину?';
@@ -2786,8 +2722,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_operation_details => 'Результаты операции';
 
   @override
-  String get gallery_not_supported =>
-      'Операция не поддерживается для этого файла.';
+  String get gallery_not_supported => 'Операция не поддерживается для этого файла.';
 
   @override
   String get gallery_error_forbidden => 'Нет доступа';
@@ -2835,8 +2770,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Превышен лимит кандидатов или результата. Проверьте размер коллекции и ограничения backend.';
 
   @override
-  String get gallery_search_cause_invalid_result =>
-      'Czkawka CLI вернула нечитаемый отчёт или неожиданный формат.';
+  String get gallery_search_cause_invalid_result => 'Czkawka CLI вернула нечитаемый отчёт или неожиданный формат.';
 
   @override
   String get gallery_search_cause_storage_unavailable =>
@@ -2890,8 +2824,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_search_rejected => 'Отклонено записей отчёта';
 
   @override
-  String get gallery_search_snapshot_skipped =>
-      'Пропущено при подготовке кандидатов';
+  String get gallery_search_snapshot_skipped => 'Пропущено при подготовке кандидатов';
 
   @override
   String get gallery_search_job_id => 'Задание';
@@ -2920,19 +2853,16 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get gallery_mutation_unknown =>
-      'Результат операции неизвестен. Обновите список и проверьте оставшиеся файлы.';
+  String get gallery_mutation_unknown => 'Результат операции неизвестен. Обновите список и проверьте оставшиеся файлы.';
 
   @override
   String get gallery_undo_changed => 'Некоторых файлов уже нет в корзине.';
 
   @override
-  String get gallery_metadata_timeout =>
-      'Сервер не успел загрузить сведения. Повторите запрос.';
+  String get gallery_metadata_timeout => 'Сервер не успел загрузить сведения. Повторите запрос.';
 
   @override
-  String get gallery_metadata_read_failed =>
-      'Не удалось прочитать сведения о файле.';
+  String get gallery_metadata_read_failed => 'Не удалось прочитать сведения о файле.';
 
   @override
   String get gallery_trash_title => 'Переместить в корзину?';
@@ -2943,8 +2873,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get gallery_confirmation_changed =>
-      'Выбор или файлы изменились. Проверьте выбор и повторите действие.';
+  String get gallery_confirmation_changed => 'Выбор или файлы изменились. Проверьте выбор и повторите действие.';
 
   @override
   String gallery_failed_count(int count) {
@@ -3021,20 +2950,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_resolution_unknown => 'Разрешение неизвестно';
 
   @override
-  String get gallery_recommend_first_copy =>
-      'Точные копии равноценны; предложен первый файл в списке.';
+  String get gallery_recommend_first_copy => 'Точные копии равноценны; предложен первый файл в списке.';
 
   @override
-  String get gallery_recommend_first_tied =>
-      'Причина: первый среди файлов с максимальным разрешением';
+  String get gallery_recommend_first_tied => 'Причина: первый среди файлов с максимальным разрешением';
 
   @override
-  String get gallery_recommend_known_resolution =>
-      'Предварительно: максимальное из известных разрешений';
+  String get gallery_recommend_known_resolution => 'Предварительно: максимальное из известных разрешений';
 
   @override
-  String get gallery_recommend_first_unknown =>
-      'Разрешение неизвестно; предложен первый файл в списке.';
+  String get gallery_recommend_first_unknown => 'Разрешение неизвестно; предложен первый файл в списке.';
 
   @override
   String get gallery_resolution_minimum => 'Минимальное разрешение';
@@ -3046,15 +2971,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_resolution_same => 'Одинаковое разрешение';
 
   @override
-  String get gallery_file_smallest =>
-      'Занимает меньше места; это не оценка качества';
+  String get gallery_file_smallest => 'Занимает меньше места; это не оценка качества';
 
   @override
   String get gallery_recommend_keep => 'Рекомендуется сохранить';
 
   @override
-  String get gallery_recommend_resolution =>
-      'Причина: максимальное разрешение в группе';
+  String get gallery_recommend_resolution => 'Причина: максимальное разрешение в группе';
 
   @override
   String get gallery_resolution_recommendation_hint =>
@@ -3065,15 +2988,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Часть разрешений неизвестна; рекомендация предварительная и может измениться.';
 
   @override
-  String get gallery_equivalent_copies =>
-      'Точные копии равноценны; рекомендован первый файл в списке.';
+  String get gallery_equivalent_copies => 'Точные копии равноценны; рекомендован первый файл в списке.';
 
   @override
   String get configPageTitle => 'Настройка фоторамки';
 
   @override
-  String get configPageIntro =>
-      'Откройте панель настройки на телефоне или компьютере.';
+  String get configPageIntro => 'Откройте панель настройки на телефоне или компьютере.';
 
   @override
   String get configPageStarting => 'Запускаем доступ к настройкам…';
@@ -3082,8 +3003,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get configPageAddressPreparing => 'Определяем адрес в локальной сети…';
 
   @override
-  String get configPageNoAddress =>
-      'Подключите рамку к локальной сети и проверьте подключение.';
+  String get configPageNoAddress => 'Подключите рамку к локальной сети и проверьте подключение.';
 
   @override
   String get configPageCode => 'Код доступа';
@@ -3093,8 +3013,7 @@ class AppLocalizationsRu extends AppLocalizations {
       '1. Подключите телефон или компьютер к той же сети Wi-Fi, что и рамка. Интернет не требуется.';
 
   @override
-  String get configPageScanStep =>
-      '2. Сканируйте QR-код или откройте адрес ниже.';
+  String get configPageScanStep => '2. Сканируйте QR-код или откройте адрес ниже.';
 
   @override
   String get configPageCodeStep => '3. Введите код доступа в панели настройки.';
@@ -3118,12 +3037,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get configPageChecking => 'Проверяем сеть…';
 
   @override
-  String get configPageCacheHint =>
-      'Обновление сетевых данных может занять до минуты.';
+  String get configPageCacheHint => 'Обновление сетевых данных может занять до минуты.';
 
   @override
-  String get configPageServerError =>
-      'Не удалось запустить доступ к настройкам.';
+  String get configPageServerError => 'Не удалось запустить доступ к настройкам.';
 
   @override
   String get configPageNetworkError => 'Не удалось получить сведения о сети.';
@@ -3132,19 +3049,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get configPageTimeout => 'Превышено время ожидания операции.';
 
   @override
-  String get configPageUnknownError =>
-      'Не удалось подготовить доступ к настройкам. Повторите попытку.';
+  String get configPageUnknownError => 'Не удалось подготовить доступ к настройкам. Повторите попытку.';
 
   @override
-  String get configPagePending =>
-      'Ожидаем завершения предыдущей операции. Можно вернуться к слайдшоу.';
+  String get configPagePending => 'Ожидаем завершения предыдущей операции. Можно вернуться к слайдшоу.';
 
   @override
   String get configPageClosing => 'Завершаем доступ к настройкам…';
 
   @override
-  String get configPageClosingAlways =>
-      'Закрываем экран. Доступ к настройкам остаётся включённым по конфигурации.';
+  String get configPageClosingAlways => 'Закрываем экран. Доступ к настройкам остаётся включённым по конфигурации.';
 
   @override
   String get configPageCloseError =>
@@ -3162,12 +3076,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ota_file_empty => 'Файл прошивки пуст.';
 
   @override
-  String get ota_file_unavailable =>
-      'Не удалось прочитать выбранный файл прошивки.';
+  String get ota_file_unavailable => 'Не удалось прочитать выбранный файл прошивки.';
 
   @override
-  String get ota_request_failed =>
-      'Не удалось выполнить OTA-запрос. Повторите попытку.';
+  String get ota_request_failed => 'Не удалось выполнить OTA-запрос. Повторите попытку.';
 
   @override
   String get ota_response_invalid => 'Рамка вернула некорректный ответ OTA.';
@@ -3176,25 +3088,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ota_upload_rejected => 'Рамка отклонила загрузку прошивки.';
 
   @override
-  String get wifi_operation_unknown =>
-      'Результат операции неизвестен. Проверьте рамку перед повторной попыткой.';
+  String get wifi_operation_unknown => 'Результат операции неизвестен. Проверьте рамку перед повторной попыткой.';
 
   @override
   String get wifi_refresh_failed =>
       'Операция Wi-Fi завершена, но списки не удалось обновить. Обновите их перед следующим изменением.';
 
   @override
-  String get upload_source_unavailable =>
-      'Не удалось прочитать выбранный файл.';
+  String get upload_source_unavailable => 'Не удалось прочитать выбранный файл.';
 
   @override
   String get upload_length_unknown => 'Не удалось определить размер файла.';
 
   @override
-  String get upload_transfer_failed =>
-      'Не удалось подтвердить загрузку. Проверьте рамку перед повторной отправкой.';
+  String get upload_transfer_failed => 'Не удалось подтвердить загрузку. Проверьте рамку перед повторной отправкой.';
 
   @override
-  String get upload_folder_scan_failed =>
-      'Не удалось прочитать выбранную папку.';
+  String get upload_folder_scan_failed => 'Не удалось прочитать выбранную папку.';
 }

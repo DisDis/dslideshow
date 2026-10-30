@@ -8,7 +8,10 @@
 Для изменений поведения **диагностические логи входят в критерии приёмки**:
 нужно связать начало и итог операции, увидеть количества, ошибку, отмену
 и повтор с указанием действия. Проверяйте реальные записи logger в тестах
-сервисов/Bloc, вместе с наблюдаемым результатом действия. Проверка должна
+сервисов/Bloc, вместе с наблюдаемым результатом действия. Для проверки
+безопасности собирайте записи всех компонентов сценария, включая нижележащие
+сервисы. Наличие нужных событий и их уровни проверяйте отдельно от безопасности
+общего журнала: фильтрация по logger не должна скрывать утечки. Проверка должна
 обнаруживать потерянную диагностику, утечку авторизованного URL/EXIF и
 неограниченный поток INFO при большой коллекции; точный текст каждой строки
 и временные значения фиксировать не нужно. Уровни и команды получения
@@ -23,6 +26,18 @@
 всего репозитория. Сторонние исходники не форматируются.
 
 ## Кто проверяет контракт
+
+Функциональные группы и JSON-профили длительностей описаны в
+[tools](../tools/README.md#группы-тестов-и-поиск-медленных-сценариев).
+Каталог групп относится к основному контракту suite, а не к транзитивной карте
+покрытия. Задача `tests` и выпуск DEB выполняют все тесты приложений и явный
+набор сборочных проверок `tools`. Весь пакет инструментов запускается отдельно:
+`(cd tools && dart run tool/grind.dart tools-tests)`.
+Каталог групп включает также эти дополнительные tools suites. Автоматического
+выбора по Git diff нет. Отдельный запуск эффектов внутри набора `tests` доступен через
+`(cd tools && dart run tool/grind.dart tests --test-group effects)`.
+Изменения моделей, renderer, подготовки изображений, preview, assets/шейдеров,
+SDK, lock-файлов и тестовых helpers также могут влиять на эффекты.
 
 | Набор | Ответственность |
 | --- | --- |
@@ -133,6 +148,11 @@ JavaScript. Необязательный скрипт страницы прош�
 
 ## Запуск
 
+После массового изменения или удаления полей, параметров и API сначала
+отформатируйте изменённые Dart-файлы и выполните анализ затронутых пакетов.
+К тестам переходите после устранения ошибок компиляции; команды анализаторов
+приведены в конце этого раздела.
+
 Из корня репозитория:
 
 ```bash
@@ -215,7 +235,7 @@ installer и не устанавливают пакет в систему. Ан�
 Из корня репозитория, с уже подготовленными зависимостями:
 
 ```bash
-python3 tools/test_coverage.py collect --analyze
+dart run tools/bin/dslideshow_tools.dart coverage collect --analyze
 ```
 
 Инструмент запускает только `test/` в VM: backend последовательно через
@@ -259,11 +279,11 @@ Flutter launcher может потребовать запись служебно
 Для раздельного анализа двух существующих наборов:
 
 ```bash
-python3 tools/test_coverage.py collect --packages config_app \
+dart run tools/bin/dslideshow_tools.dart coverage collect --packages config_app \
   --tests test/gallery_management_ui_test.dart --out .local/coverage-management
-python3 tools/test_coverage.py collect --packages config_app \
+dart run tools/bin/dslideshow_tools.dart coverage collect --packages config_app \
   --tests test/gallery_trash_bulk_test.dart --out .local/coverage-bulk
-python3 tools/test_coverage.py compare .local/coverage-management .local/coverage-bulk
+dart run tools/bin/dslideshow_tools.dart coverage compare .local/coverage-management .local/coverage-bulk
 ```
 
 `--tests` принимает только существующие пути внутри `test/` одного пакета.
@@ -272,8 +292,8 @@ python3 tools/test_coverage.py compare .local/coverage-management .local/coverag
 набор в общем отчёте; повторные hit не суммируются:
 
 ```bash
-python3 tools/test_coverage.py collect --packages config_app --analyze --out .local/coverage-config-rerun
-python3 tools/test_coverage.py merge .local/coverage-full .local/coverage-config-rerun --out .local/coverage-final
+dart run tools/bin/dslideshow_tools.dart coverage collect --packages config_app --analyze --out .local/coverage-config-rerun
+dart run tools/bin/dslideshow_tools.dart coverage merge .local/coverage-full .local/coverage-config-rerun --out .local/coverage-final
 ```
 
 Здесь `.local/coverage-full` — ранее полученный полный прогон с тем же снимком.
@@ -290,7 +310,7 @@ python3 tools/test_coverage.py merge .local/coverage-full .local/coverage-config
 вместе с датированным отчётом. Большие raw-файлы остаются локально; baseline
 не следует переписывать при изменении кода.
 
-Проверки инструмента: `python3 -m unittest discover -s tools -p 'test_test_coverage.py' -v`.
+Проверки инструмента: `(cd tools && dart test test/coverage)`.
 [Ревью и baseline 30.10.2026](history/review-2026-10-30/README.md) содержат
 известные пробелы, проверенные пересечения и границы конкретного прогона.
 [Исправления и повторный снимок](history/review-fixes-2026-10-30/README.md)

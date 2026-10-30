@@ -13,7 +13,9 @@ done
 : "${BENCH_NATIVE_PIPELINE_ENGINE:?Missing frozen engine path}"
 : "${BENCH_NATIVE_PIPELINE_ENGINE_SHA256:?Missing frozen engine hash}"
 [[ -x "$runtime" && -f "$tool_dir/libnative_pipeline.so" ]]
-python3 "$tool_dir/capture_process.py" "$$" \
+app_dir=$(cd -- "$tool_dir/../.." && pwd)
+source "$tool_dir/../cli.sh"
+benchmark_tools native capture "$$" \
   "$BENCH_NATIVE_PIPELINE_ENGINE" "$BENCH_NATIVE_PIPELINE_ENGINE_SHA256" \
   "$BENCHMARK_OUTPUT/native-pipeline-provenance.json" \
   > "$BENCHMARK_OUTPUT/native-pipeline-provenance.log" 2>&1 &

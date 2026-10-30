@@ -1,5 +1,5 @@
 // Benchmark-only loopback adapter around the production WebService handler.
-// Run via gallery_http.py; no hardware or production service is started.
+// Run via benchmark.sh gallery-http; no hardware or production service is started.
 // ignore_for_file: depend_on_referenced_packages, avoid_print
 import 'dart:async';
 import 'dart:convert';
