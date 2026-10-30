@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/discovery.dart';
 import 'package:dslideshow_backend/src/web_server/web_server.dart';
 import 'package:dslideshow_backend/src/web_server/web_service.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -12,6 +14,33 @@ import 'helpers/capture_logs.dart';
 class _Remote implements RemoteService {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _Publisher implements FramePublisher {
+  final ports = <int>[];
+  int removals = 0;
+  int closes = 0;
+  bool fail = false;
+  bool failRemoval = false;
+  Future<void> Function(int)? inspectListener;
+
+  @override
+  Future<void> publish(int port) async {
+    await inspectListener?.call(port);
+    ports.add(port);
+    if (fail) throw StateError('private-publisher-payload');
+  }
+
+  @override
+  Future<void> unpublish() async {
+    removals++;
+    if (failRemoval) throw StateError('private-removal-payload');
+  }
+
+  @override
+  Future<void> close() async {
+    closes++;
+  }
 }
 
 void main() {
@@ -27,7 +56,7 @@ void main() {
     services.clear();
     await root.delete(recursive: true);
   });
-  WebService create(int port, {bool always = false}) {
+  WebService create(int port, {bool always = false, FramePublisher framePublisher = const NoopFramePublisher()}) {
     final config = AppConfig.fromJson({
       'web': {'port': port, 'alwaysEnabled': always, 'permanentCode': 'secret-83472'},
     });
@@ -38,6 +67,7 @@ void main() {
       cacheDirectory: Directory('${root.path}/media')..createSync(),
       galleryDirectory: Directory('${root.path}/gallery'),
       startServer: false,
+      framePublisher: framePublisher,
     );
     services.add(service);
     return service;
@@ -120,6 +150,78 @@ void main() {
     expect(await get(port), isIn([200, 404, 301]));
     await service.close();
     services.remove(service);
+    final socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
+    await socket.close();
+  });
+
+  test('discovery follows the bound port and HTTP lifetime, including alwaysEnabled', () async {
+    final publisher = _Publisher();
+    final service = create(0, framePublisher: publisher);
+    publisher.inspectListener = (port) async => expect(await get(port), isIn([200, 404, 301]));
+    expect(publisher.ports, isEmpty);
+    await service.setEnabled(true);
+    expect(publisher.ports.single, greaterThan(0));
+    await service.setEnabled(true);
+    expect(publisher.ports, hasLength(1));
+    await service.setEnabled(false);
+    expect(publisher.removals, 1);
+    await service.setEnabled(true);
+    expect(publisher.ports, hasLength(2));
+    await service.close();
+    services.remove(service);
+    expect(publisher.closes, 1);
+    expect(publisher.removals, 2);
+
+    final alwaysPublisher = _Publisher();
+    final always = create(0, always: true, framePublisher: alwaysPublisher);
+    await always.setEnabled(true);
+    await always.setEnabled(false);
+    expect(alwaysPublisher.ports, hasLength(1));
+    expect(alwaysPublisher.removals, 0);
+  });
+
+  test(
+    'failed bind is not advertised and discovery failure preserves manual HTTP access',
+    () => captureLogs((records) async {
+      final publisher = _Publisher();
+      final socket = await ServerSocket.bind(InternetAddress.anyIPv4, 0);
+      final service = create(socket.port, framePublisher: publisher);
+      await expectLater(service.setEnabled(true), throwsA(isA<SocketException>()));
+      expect(publisher.ports, isEmpty);
+      await socket.close();
+      publisher.fail = true;
+      await service.setEnabled(true);
+      expect(await get(publisher.ports.single), isIn([200, 404, 301]));
+      publisher.failRemoval = true;
+      await service.setEnabled(false);
+      final freed = await ServerSocket.bind(InternetAddress.anyIPv4, publisher.ports.single);
+      await freed.close();
+      final messages = records.map((record) => record.message).join('\n');
+      expect(messages, contains('Advertisement publish failed type=StateError'));
+      expect(messages, contains('Advertisement removal failed type=StateError'));
+      expect(messages, isNot(contains('private-publisher-payload')));
+      expect(messages, isNot(contains('private-removal-payload')));
+    }),
+  );
+
+  test('shutdown waits for in-flight publication and retracts it before releasing ownership', () async {
+    final ready = Completer<int>();
+    final release = Completer<void>();
+    final publisher = _Publisher()
+      ..inspectListener = (port) {
+        ready.complete(port);
+        return release.future;
+      };
+    final service = create(0, framePublisher: publisher);
+    final activation = expectLater(service.setEnabled(true), throwsStateError);
+    final port = await ready.future;
+    final closed = service.close();
+    release.complete();
+    await activation;
+    await closed;
+    services.remove(service);
+    expect(publisher.removals, 1);
+    expect(publisher.closes, 1);
     final socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
     await socket.close();
   });

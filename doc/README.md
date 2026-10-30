@@ -41,7 +41,7 @@ README пакетов содержат быстрый запуск и отлич
   воспроизводимость сборки и границы пакетов.
 * [Панель настройки](plans/config-app-improvements.md).
 * [Обнаружение фоторамок в локальной сети](plans/lan-frame-discovery.md):
-  автопоиск на login нативного config_app, ручной повтор и web-порт из mDNS/DNS-SD.
+  Linux-реализация готова; остаётся приёмка на физических рамках.
 * [Эффекты и оставшаяся приёмка](plans/effects-work.md).
 * [Реальные материалы, состояния рамки и ресурсы](plans/real-materials-frame-states-plan.md).
 * [Google Photos](plans/google-photos-plan.md).

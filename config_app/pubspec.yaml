@@ -75,6 +75,7 @@ dependencies:
 
   dslideshow_i18n:
     path: ../i18n
+  pub_semver: ^2.2.1
 
 dev_dependencies:
   freezed: ^4.0.3

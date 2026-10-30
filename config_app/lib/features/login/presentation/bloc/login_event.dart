@@ -2,12 +2,10 @@ part of 'login_bloc.dart';
 
 @freezed
 sealed class LoginEvent with _$LoginEvent {
-  const factory LoginEvent.changedUsename(String username) =
-      LoginUsernameChanged;
-  const factory LoginEvent.changedPassword(String password) =
-      LoginPasswordChanged;
-  const factory LoginEvent.changedConnectUri(String connectUri) =
-      LoginConnectUriChanged;
+  const factory LoginEvent.changedUsename(String username) = LoginUsernameChanged;
+  const factory LoginEvent.changedPassword(String password) = LoginPasswordChanged;
+  const factory LoginEvent.changedConnectUri(String connectUri) = LoginConnectUriChanged;
+  const factory LoginEvent.selectedConnectUri(String connectUri) = LoginConnectUriSelected;
   const factory LoginEvent.submit() = LoginSubmitted;
   const factory LoginEvent.autoChangedConnectUri() = LoginConnectUriAutoChanged;
 }

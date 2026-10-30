@@ -153,10 +153,16 @@ void main() {
   });
   test('application build commands preserve target and offline web resources', () async {
     final recorder = _Recorder();
-    final pipeline = BuildPipeline(root: Directory('/fixture'), supervisor: recorder);
+    final root = Directory('/fixture');
+    final pipeline = BuildPipeline(root: root, supervisor: recorder, flutterExecutable: 'sdk-flutter');
     await pipeline.aot();
     await pipeline.web();
+    expect(recorder.commands, hasLength(2));
+    expect(recorder.commands[0].$1, 'flutterpi_tool');
+    expect(recorder.commands[0].$3, p.join(root.path, 'dslideshow_flutter'));
     expect(recorder.commands[0].$2, ['build', '--arch=arm64', '--cpu=pi4', '--release']);
+    expect(recorder.commands[1].$1, 'sdk-flutter');
+    expect(recorder.commands[1].$3, p.join(root.path, 'config_app'));
     expect(recorder.commands[1].$2, ['build', 'web', '--release', '--no-pub', '--no-web-resources-cdn', '--wasm']);
   });
 

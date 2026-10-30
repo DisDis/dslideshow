@@ -149,6 +149,20 @@ cd deb_factory
 native binary, и инструменты из [README упаковки](../deb_factory/readme.md).
 До запуска получите зависимости всех production-пакетов; автоматический прогон
 Flutter-тестов и параллельная web-сборка используют `--no-pub`.
+После изменения зависимостей backend обновите также каждый пакет-потребитель:
+`pub get` только в `backend/` не обновляет чужие lock-файлы и
+`.dart_tool/package_config.json`. Из корня репозитория:
+
+```bash
+(cd backend && dart pub get)
+(cd dslideshow_flutter && flutter pub get)
+(cd config_app && flutter pub get)
+(cd benchmarks && flutter pub get)
+```
+
+Это относится и к транзитивным пакетам, например `dbus` для объявления рамки.
+Ошибка AOT `Couldn't resolve the package 'dbus'` при наличии зависимости в
+backend означает, что нужно обновить граф зависимостей приложения фоторамки.
 До завершения не меняйте зависимости и сгенерированные исходники и не запускайте
 другую сборку в том же checkout. Integration-тесты и бенчмарки на устройстве
 выполняются перед выпуском отдельно, когда они нужны для затронутых путей.

@@ -1,5 +1,18 @@
 # Unreleased
 
+# 17.1.0+1 — 2026-10-30
+
+* Discover frames with enabled web access automatically on the native Linux
+  login page. Retry discovery, select a frame with its configured web port,
+  or keep entering an address manually. Advertise the frame only while its
+  HTTP server is running; retain the existing access-code login.
+* Use compact frame-selection cards on the login page and preserve known frames
+  while retrying discovery or when refresh fails. Show one concise search status.
+  Move version information into navigation and warn when the connected backend
+  has a different major version from the panel's build target. Keep an editable
+  address template for manual login; wait for Avahi address resolution without
+  cutting off its lookup window.
+
 # 17.0.0+1 — 2026-10-30
 
 * Keep the current slide and stop automatic loading on backend source errors;

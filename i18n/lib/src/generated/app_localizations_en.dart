@@ -3068,6 +3068,49 @@ class AppLocalizationsEn extends AppLocalizations {
       'The Wi-Fi operation completed, but the lists could not be refreshed. Refresh before making another change.';
 
   @override
+  String get frame_discovery_title => 'Frames on your network';
+
+  @override
+  String get frame_discovery_retry => 'Retry';
+
+  @override
+  String get frame_discovery_searching => 'Looking for frames on your network…';
+
+  @override
+  String get frame_discovery_select => 'Select frame';
+
+  @override
+  String get frame_discovery_selected => 'Selected';
+
+  @override
+  String get frame_discovery_manual => 'or enter the address manually';
+
+  @override
+  String get frame_discovery_empty => 'No frames found. Check that both devices are on the same network.';
+
+  @override
+  String get frame_discovery_unavailable => 'Network discovery is unavailable. Try again.';
+
+  @override
+  String get frame_discovery_failure => 'Could not refresh the list. Try again.';
+
+  @override
+  String get frame_discovery_partial => 'The list may be incomplete.';
+
+  @override
+  String navigation_backend_version(String version) {
+    return 'Backend $version';
+  }
+
+  @override
+  String navigation_backend_major_mismatch(String actual, String expected) {
+    return 'Backend $actual and the panel target $expected have different major versions.';
+  }
+
+  @override
+  String get navigation_backend_version_unknown => 'The backend version could not be determined.';
+
+  @override
   String get upload_source_unavailable => 'Could not read the selected file.';
 
   @override

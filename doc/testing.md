@@ -39,8 +39,16 @@
 Изменения моделей, renderer, подготовки изображений, preview, assets/шейдеров,
 SDK, lock-файлов и тестовых helpers также могут влиять на эффекты.
 
+Поиск рамок относится к группе `network`: Avahi-адаптеры backend, discovery
+Bloc и выбор адреса на login в `config_app`. При добавлении нового test suite
+обновляйте каталог `tools/lib/src/testing/groups.dart`: проверка полноты каталога
+входит в обязательный набор выпуска, неизвестный suite блокирует его.
+
 | Набор | Ответственность |
 | --- | --- |
+| `backend/test/frame_discovery_test.dart`, `web_server_control_test.dart` | Рабочие Avahi-адаптеры через изолированную D-Bus: порт, конфликт имени, UTF-8 предел, resolve/lost, очередь, отмена и закрытие соединения; связь публикации с реальным HTTP bind/close, отказом и `alwaysEnabled`. |
+| `config_app/test/frame_discovery_bloc_test.dart`, `login_discovery_test.dart`, `app_startup_test.dart` | Автозапуск только на нативном login, повтор с сохранением рамок при ошибке, обновление успешного снимка, дедупликация, отмена/поздняя готовность, безопасные логи, компактные карточки/tooltip, один статус, подстановка порта и сохранение реквизитов. Fake подменяет внешний discovery-провайдер, сеть в обычных VM-тестах не используется. |
+| `config_app/test/backend_version_test.dart` | Версия подключённого backend в навигации; сравнение major с целью сборки, отсутствие ложного предупреждения для minor/build и неизвестных версий, красный значок и tooltip, безопасные логи, очистка при logout и поздний ответ предыдущего подключения. |
 | `dslideshow_flutter/test/buttons_hint_test.dart` и `ota_view_test.dart` | Контекстные значки в физических координатах, четыре постоянных позиции, соответствие и доступность экранных действий, Wi-Fi вместо LAN; подсветка/автоскрытие виртуальным временем, отмена таймеров/подписки и блокировка возврата OTA во время передачи, установки и ожидания перезапуска. |
 | `dslideshow_flutter/test/config_bloc_test.dart`, `config_access_session_test.dart`, `config_timeout_test.dart`, `config_view_test.dart`, `config_ready_paint_test.dart` | Подготовка доступа, snapshot/live сеть, ошибки/timeout/повтор, физические и экранные действия, внешний демонтаж/новая сессия и фактические пиксели QR/кода; [команды и границы](config-page-states.md#проверки-и-повторный-захват). |
 | `backend/test/web_server_control_test.dart` | Подтверждение реального HTTP bind/close, занятый порт, восстановление, последовательность команд и alwaysEnabled; код в логах только по принятому пользователем контракту отладки. |

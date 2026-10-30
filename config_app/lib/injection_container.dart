@@ -10,6 +10,11 @@ import 'package:config_app/features/user/domain/repository/user_repository.dart'
 import 'package:config_app/features/auth/data/repository/authentication_repository.dart';
 import 'package:config_app/features/user/data/repository/user_repository.dart';
 import 'package:get_it/get_it.dart';
+import 'package:dslideshow_common/frame_discovery.dart';
+
+import 'features/login/data/frame_discovery_provider.dart';
+import 'features/device/data/device_repository.dart';
+import 'features/uikit/presentation/bloc/backend_version_bloc.dart';
 
 // import 'package:wa_api_gen/wa_api_gen.dart';
 // import 'package:wa_common/environment.dart';
@@ -23,28 +28,26 @@ Future<void> initializeAllDependencies({
   String webSocketHost = "localhost",
   int webSocketPort = 8000,
 }) async {
+  sl.registerSingleton<FrameDiscoveryProvider>(createFrameDiscoveryProvider());
   final realtimeClient = ClientServiceImpl();
-  sl.registerSingleton<RealtimeService>(
-    realtimeClient,
-    dispose: (_) => realtimeClient.dispose(),
-  );
+  sl.registerSingleton<RealtimeService>(realtimeClient, dispose: (_) => realtimeClient.dispose());
   sl.registerSingleton<UserRepository>(UserRepositoryImpl());
-  sl.registerSingleton<AuthenticationRepository>(
-    AuthenticationRepositoryImpl(client: sl()),
-  );
+  sl.registerSingleton<AuthenticationRepository>(AuthenticationRepositoryImpl(client: sl()));
   sl.registerSingleton<PhotoframeRepository>(PhotoframeRepository(sl()));
 
   sl.registerSingleton<UploadQueueBloc>(UploadQueueBloc(client: sl()));
 
   sl.registerSingleton<PermissionService>(PermissionService());
 
+  final authentication = AuthenticationBloc(
+    authenticationRepository: sl(),
+    permissionService: sl(),
+    // ignore: no-equal-arguments
+    userRepository: sl(),
+  );
+  sl.registerSingleton(authentication);
   sl.registerSingleton(
-    AuthenticationBloc(
-      authenticationRepository: sl(),
-      permissionService: sl(),
-      // ignore: no-equal-arguments
-      userRepository: sl(),
-    ),
+    BackendVersionBloc(authentication: authentication, repository: DeviceRepository(realtimeClient)),
   );
 
   /*final api = WaApiGen(interceptors: [], basePathOverride: apiUrl);

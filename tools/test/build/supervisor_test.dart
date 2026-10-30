@@ -270,7 +270,7 @@ void main() {
     await gate.ready(1);
     gate.send('failure', 'fail');
     await failed;
-    await expectLater(owner.run('/missing/executable', []), throwsA(isA<ProcessJobFailure>()));
+    await expectLater(owner.run('/missing/executable', [], streamOutput: false), throwsA(isA<ProcessJobFailure>()));
     await expectLater(
       owner.run(dart, [], workingDirectory: '/missing/working-directory', streamOutput: false),
       throwsA(isA<ProcessJobFailure>().having((error) => error.reason, 'reason', 'start')),

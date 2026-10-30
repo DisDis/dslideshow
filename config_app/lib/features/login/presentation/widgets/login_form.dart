@@ -1,10 +1,12 @@
 import 'package:config_app/features/login/presentation/bloc/login_bloc.dart';
+import 'package:config_app/features/login/presentation/bloc/models/connectUri.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
-import 'package:dslideshow_common/version.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:flutter/foundation.dart';
+
+import 'frame_discovery_panel.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -12,6 +14,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -20,9 +23,7 @@ class LoginForm extends StatelessWidget {
               SnackBar(
                 content: Text(
                   context.localizations.authentication_failure,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onError,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onError),
                 ),
                 backgroundColor: Theme.of(context).colorScheme.error,
                 behavior: SnackBarBehavior.floating,
@@ -37,35 +38,17 @@ class LoginForm extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Header
-              Icon(
-                Icons.admin_panel_settings,
-                size: 64,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              Icon(Icons.admin_panel_settings, size: 64, color: Theme.of(context).colorScheme.primary),
               const SizedBox(height: 16),
               Text(
-                context.localizations.login_page_name, // "Login"
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
                 context.localizations.please_sign_in_to_continue,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              Text(
-                "v${ApplicationInfo.frontendVersion}/v${ApplicationInfo.backendVersion}",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               const SizedBox(height: 32),
 
               // Inputs
+              if (!kIsWeb) const FrameDiscoveryPanel(),
               _ConnectUriInput(),
               const SizedBox(height: 16),
               _UsernameInput(),
@@ -88,28 +71,25 @@ class _ConnectUriInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       buildWhen: (previous, current) =>
-          previous.connectUri != current.connectUri,
+          previous.connectUri != current.connectUri ||
+          previous.connectUriRevision != current.connectUriRevision ||
+          previous.status != current.status,
       builder: (context, state) {
-        // Мы сохраняем логику с созданием контроллера на лету,
-        // так как это единственный способ обновить текст из Блока в Stateless
-        // без использования хуков.
-        return TextField(
-          key: const Key('loginForm_connectUriInput_textField'),
-          controller: state.connectUri.isPure
-              ? TextEditingController(text: state.connectUri.value)
-              : null,
-          onChanged: (connectUri) =>
-              context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
-          decoration: InputDecoration(
-            labelText: context.localizations.server_uri,
-            hintText: 'ws://192.168.1.x:8080/ws',
-            prefixIcon: const Icon(Icons.link),
-            enabled: !kIsWeb,
-            errorText: state.connectUri.displayError != null
-                ? context.localizations.invalid_uri
-                : null,
+        return KeyedSubtree(
+          key: ValueKey(state.connectUriRevision),
+          child: TextFormField(
+            key: const Key('loginForm_connectUriInput_textField'),
+            initialValue: state.connectUri.value,
+            onChanged: (connectUri) => context.read<LoginBloc>().add(LoginConnectUriChanged(connectUri)),
+            decoration: InputDecoration(
+              labelText: context.localizations.server_uri,
+              hintText: ConnectUri.manualTemplate,
+              prefixIcon: const Icon(Icons.link),
+              enabled: !kIsWeb && !state.status.isInProgress,
+              errorText: state.connectUri.displayError != null ? context.localizations.invalid_uri : null,
+            ),
+            keyboardType: TextInputType.url,
           ),
-          keyboardType: TextInputType.url,
         );
       },
     );
@@ -124,17 +104,12 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
-          controller: state.username.isPure
-              ? TextEditingController(text: state.username.value)
-              : null,
-          onChanged: (username) =>
-              context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+          controller: state.username.isPure ? TextEditingController(text: state.username.value) : null,
+          onChanged: (username) => context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             labelText: context.localizations.username,
             prefixIcon: const Icon(Icons.person_outline),
-            errorText: state.username.displayError != null
-                ? context.localizations.invalid_username
-                : null,
+            errorText: state.username.displayError != null ? context.localizations.invalid_username : null,
           ),
           textInputAction: TextInputAction.next,
         );
@@ -151,18 +126,13 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          controller: state.password.isPure
-              ? TextEditingController(text: state.password.value)
-              : null,
-          onChanged: (password) =>
-              context.read<LoginBloc>().add(LoginPasswordChanged(password)),
+          controller: state.password.isPure ? TextEditingController(text: state.password.value) : null,
+          onChanged: (password) => context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true, // Всегда скрыт, так как мы в Stateless
           decoration: InputDecoration(
             labelText: context.localizations.password,
             prefixIcon: const Icon(Icons.lock_outline),
-            errorText: state.password.displayError != null
-                ? context.localizations.invalid_password
-                : null,
+            errorText: state.password.displayError != null ? context.localizations.invalid_password : null,
           ),
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
@@ -180,9 +150,7 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          (previous.status != current.status) ||
-          (previous.isValid != current.isValid),
+      buildWhen: (previous, current) => (previous.status != current.status) || (previous.isValid != current.isValid),
       builder: (context, state) {
         if (state.status.isInProgress) {
           return const Center(child: CircularProgressIndicator());

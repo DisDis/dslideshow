@@ -58,6 +58,7 @@ extension LoginEventPatterns on LoginEvent {
     TResult Function(LoginUsernameChanged value)? changedUsename,
     TResult Function(LoginPasswordChanged value)? changedPassword,
     TResult Function(LoginConnectUriChanged value)? changedConnectUri,
+    TResult Function(LoginConnectUriSelected value)? selectedConnectUri,
     TResult Function(LoginSubmitted value)? submit,
     TResult Function(LoginConnectUriAutoChanged value)? autoChangedConnectUri,
     required TResult orElse(),
@@ -70,6 +71,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that);
       case LoginConnectUriChanged() when changedConnectUri != null:
         return changedConnectUri(_that);
+      case LoginConnectUriSelected() when selectedConnectUri != null:
+        return selectedConnectUri(_that);
       case LoginSubmitted() when submit != null:
         return submit(_that);
       case LoginConnectUriAutoChanged() when autoChangedConnectUri != null:
@@ -97,6 +100,7 @@ extension LoginEventPatterns on LoginEvent {
     required TResult Function(LoginUsernameChanged value) changedUsename,
     required TResult Function(LoginPasswordChanged value) changedPassword,
     required TResult Function(LoginConnectUriChanged value) changedConnectUri,
+    required TResult Function(LoginConnectUriSelected value) selectedConnectUri,
     required TResult Function(LoginSubmitted value) submit,
     required TResult Function(LoginConnectUriAutoChanged value)
     autoChangedConnectUri,
@@ -109,6 +113,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that);
       case LoginConnectUriChanged():
         return changedConnectUri(_that);
+      case LoginConnectUriSelected():
+        return selectedConnectUri(_that);
       case LoginSubmitted():
         return submit(_that);
       case LoginConnectUriAutoChanged():
@@ -133,6 +139,7 @@ extension LoginEventPatterns on LoginEvent {
     TResult? Function(LoginUsernameChanged value)? changedUsename,
     TResult? Function(LoginPasswordChanged value)? changedPassword,
     TResult? Function(LoginConnectUriChanged value)? changedConnectUri,
+    TResult? Function(LoginConnectUriSelected value)? selectedConnectUri,
     TResult? Function(LoginSubmitted value)? submit,
     TResult? Function(LoginConnectUriAutoChanged value)? autoChangedConnectUri,
   }) {
@@ -144,6 +151,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that);
       case LoginConnectUriChanged() when changedConnectUri != null:
         return changedConnectUri(_that);
+      case LoginConnectUriSelected() when selectedConnectUri != null:
+        return selectedConnectUri(_that);
       case LoginSubmitted() when submit != null:
         return submit(_that);
       case LoginConnectUriAutoChanged() when autoChangedConnectUri != null:
@@ -170,6 +179,7 @@ extension LoginEventPatterns on LoginEvent {
     TResult Function(String username)? changedUsename,
     TResult Function(String password)? changedPassword,
     TResult Function(String connectUri)? changedConnectUri,
+    TResult Function(String connectUri)? selectedConnectUri,
     TResult Function()? submit,
     TResult Function()? autoChangedConnectUri,
     required TResult orElse(),
@@ -182,6 +192,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that.password);
       case LoginConnectUriChanged() when changedConnectUri != null:
         return changedConnectUri(_that.connectUri);
+      case LoginConnectUriSelected() when selectedConnectUri != null:
+        return selectedConnectUri(_that.connectUri);
       case LoginSubmitted() when submit != null:
         return submit();
       case LoginConnectUriAutoChanged() when autoChangedConnectUri != null:
@@ -209,6 +221,7 @@ extension LoginEventPatterns on LoginEvent {
     required TResult Function(String username) changedUsename,
     required TResult Function(String password) changedPassword,
     required TResult Function(String connectUri) changedConnectUri,
+    required TResult Function(String connectUri) selectedConnectUri,
     required TResult Function() submit,
     required TResult Function() autoChangedConnectUri,
   }) {
@@ -220,6 +233,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that.password);
       case LoginConnectUriChanged():
         return changedConnectUri(_that.connectUri);
+      case LoginConnectUriSelected():
+        return selectedConnectUri(_that.connectUri);
       case LoginSubmitted():
         return submit();
       case LoginConnectUriAutoChanged():
@@ -244,6 +259,7 @@ extension LoginEventPatterns on LoginEvent {
     TResult? Function(String username)? changedUsename,
     TResult? Function(String password)? changedPassword,
     TResult? Function(String connectUri)? changedConnectUri,
+    TResult? Function(String connectUri)? selectedConnectUri,
     TResult? Function()? submit,
     TResult? Function()? autoChangedConnectUri,
   }) {
@@ -255,6 +271,8 @@ extension LoginEventPatterns on LoginEvent {
         return changedPassword(_that.password);
       case LoginConnectUriChanged() when changedConnectUri != null:
         return changedConnectUri(_that.connectUri);
+      case LoginConnectUriSelected() when selectedConnectUri != null:
+        return selectedConnectUri(_that.connectUri);
       case LoginSubmitted() when submit != null:
         return submit();
       case LoginConnectUriAutoChanged() when autoChangedConnectUri != null:
@@ -503,6 +521,86 @@ class _$LoginConnectUriChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
+class LoginConnectUriSelected
+    with DiagnosticableTreeMixin
+    implements LoginEvent {
+  const LoginConnectUriSelected(this.connectUri);
+
+  final String connectUri;
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $LoginConnectUriSelectedCopyWith<LoginConnectUriSelected> get copyWith =>
+      _$LoginConnectUriSelectedCopyWithImpl<LoginConnectUriSelected>(
+        this,
+        _$identity,
+      );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LoginEvent.selectedConnectUri'))
+      ..add(DiagnosticsProperty('connectUri', connectUri));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is LoginConnectUriSelected &&
+            (identical(other.connectUri, connectUri) ||
+                other.connectUri == connectUri));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, connectUri);
+  }
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'LoginEvent.selectedConnectUri(connectUri: $connectUri)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $LoginConnectUriSelectedCopyWith<$Res>
+    implements $LoginEventCopyWith<$Res> {
+  factory $LoginConnectUriSelectedCopyWith(
+    LoginConnectUriSelected value,
+    $Res Function(LoginConnectUriSelected) _then,
+  ) = _$LoginConnectUriSelectedCopyWithImpl;
+  @useResult
+  $Res call({String connectUri});
+}
+
+/// @nodoc
+class _$LoginConnectUriSelectedCopyWithImpl<$Res>
+    implements $LoginConnectUriSelectedCopyWith<$Res> {
+  _$LoginConnectUriSelectedCopyWithImpl(this._self, this._then);
+
+  final LoginConnectUriSelected _self;
+  final $Res Function(LoginConnectUriSelected) _then;
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? connectUri = null}) {
+    return _then(
+      LoginConnectUriSelected(
+        null == connectUri
+            ? _self.connectUri
+            : connectUri // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
 class LoginSubmitted with DiagnosticableTreeMixin implements LoginEvent {
   const LoginSubmitted();
 
@@ -561,6 +659,7 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
   Username get username;
   Password get password;
   ConnectUri get connectUri;
+  int get connectUriRevision;
   bool get isValid;
 
   /// Create a copy of LoginState
@@ -579,6 +678,7 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('username', _this.username))
       ..add(DiagnosticsProperty('password', _this.password))
       ..add(DiagnosticsProperty('connectUri', _this.connectUri))
+      ..add(DiagnosticsProperty('connectUriRevision', _this.connectUriRevision))
       ..add(DiagnosticsProperty('isValid', _this.isValid));
   }
 
@@ -596,6 +696,8 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
                 other.password == _this.password) &&
             (identical(other.connectUri, _this.connectUri) ||
                 other.connectUri == _this.connectUri) &&
+            (identical(other.connectUriRevision, _this.connectUriRevision) ||
+                other.connectUriRevision == _this.connectUriRevision) &&
             (identical(other.isValid, _this.isValid) ||
                 other.isValid == _this.isValid));
   }
@@ -609,6 +711,7 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
       _this.username,
       _this.password,
       _this.connectUri,
+      _this.connectUriRevision,
       _this.isValid,
     );
   }
@@ -616,7 +719,7 @@ mixin _$LoginState implements DiagnosticableTreeMixin {
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     final _this = this as LoginState;
-    return 'LoginState(status: ${_this.status}, username: ${_this.username}, password: ${_this.password}, connectUri: ${_this.connectUri}, isValid: ${_this.isValid})';
+    return 'LoginState(status: ${_this.status}, username: ${_this.username}, password: ${_this.password}, connectUri: ${_this.connectUri}, connectUriRevision: ${_this.connectUriRevision}, isValid: ${_this.isValid})';
   }
 }
 
@@ -632,6 +735,7 @@ abstract mixin class $LoginStateCopyWith<$Res> {
     Username username,
     Password password,
     ConnectUri connectUri,
+    int connectUriRevision,
     bool isValid,
   });
 }
@@ -652,6 +756,7 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
     Object? username = null,
     Object? password = null,
     Object? connectUri = null,
+    Object? connectUriRevision = null,
     Object? isValid = null,
   }) {
     return _then(
@@ -672,6 +777,10 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
             ? _self.connectUri
             : connectUri // ignore: cast_nullable_to_non_nullable
                   as ConnectUri,
+        connectUriRevision: null == connectUriRevision
+            ? _self.connectUriRevision
+            : connectUriRevision // ignore: cast_nullable_to_non_nullable
+                  as int,
         isValid: null == isValid
             ? _self.isValid
             : isValid // ignore: cast_nullable_to_non_nullable
@@ -777,6 +886,7 @@ extension LoginStatePatterns on LoginState {
       Username username,
       Password password,
       ConnectUri connectUri,
+      int connectUriRevision,
       bool isValid,
     )?
     $default, {
@@ -790,6 +900,7 @@ extension LoginStatePatterns on LoginState {
           _that.username,
           _that.password,
           _that.connectUri,
+          _that.connectUriRevision,
           _that.isValid,
         );
       case _:
@@ -817,6 +928,7 @@ extension LoginStatePatterns on LoginState {
       Username username,
       Password password,
       ConnectUri connectUri,
+      int connectUriRevision,
       bool isValid,
     )
     $default,
@@ -829,6 +941,7 @@ extension LoginStatePatterns on LoginState {
           _that.username,
           _that.password,
           _that.connectUri,
+          _that.connectUriRevision,
           _that.isValid,
         );
     }
@@ -853,6 +966,7 @@ extension LoginStatePatterns on LoginState {
       Username username,
       Password password,
       ConnectUri connectUri,
+      int connectUriRevision,
       bool isValid,
     )?
     $default,
@@ -865,6 +979,7 @@ extension LoginStatePatterns on LoginState {
           _that.username,
           _that.password,
           _that.connectUri,
+          _that.connectUriRevision,
           _that.isValid,
         );
       case _:
@@ -880,9 +995,8 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
     this.status = FormzSubmissionStatus.initial,
     this.username = const Username.pure(defaultValue: 'admin'),
     this.password = const Password.pure(defaultValue: '123'),
-    this.connectUri = const ConnectUri.pure(
-      defaultValue: 'ws://192.168.50.xx:8080/ws',
-    ),
+    this.connectUri = const ConnectUri.pure(),
+    this.connectUriRevision = 0,
     this.isValid = false,
   });
 
@@ -898,6 +1012,9 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
   @override
   @JsonKey()
   final ConnectUri connectUri;
+  @override
+  @JsonKey()
+  final int connectUriRevision;
   @override
   @JsonKey()
   final bool isValid;
@@ -918,6 +1035,7 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
       ..add(DiagnosticsProperty('username', username))
       ..add(DiagnosticsProperty('password', password))
       ..add(DiagnosticsProperty('connectUri', connectUri))
+      ..add(DiagnosticsProperty('connectUriRevision', connectUriRevision))
       ..add(DiagnosticsProperty('isValid', isValid));
   }
 
@@ -933,6 +1051,8 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
                 other.password == password) &&
             (identical(other.connectUri, connectUri) ||
                 other.connectUri == connectUri) &&
+            (identical(other.connectUriRevision, connectUriRevision) ||
+                other.connectUriRevision == connectUriRevision) &&
             (identical(other.isValid, isValid) || other.isValid == isValid));
   }
 
@@ -944,13 +1064,14 @@ class _LoginState with DiagnosticableTreeMixin implements LoginState {
       username,
       password,
       connectUri,
+      connectUriRevision,
       isValid,
     );
   }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoginState(status: $status, username: $username, password: $password, connectUri: $connectUri, isValid: $isValid)';
+    return 'LoginState(status: $status, username: $username, password: $password, connectUri: $connectUri, connectUriRevision: $connectUriRevision, isValid: $isValid)';
   }
 }
 
@@ -968,6 +1089,7 @@ abstract mixin class _$LoginStateCopyWith<$Res>
     Username username,
     Password password,
     ConnectUri connectUri,
+    int connectUriRevision,
     bool isValid,
   });
 }
@@ -988,6 +1110,7 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
     Object? username = null,
     Object? password = null,
     Object? connectUri = null,
+    Object? connectUriRevision = null,
     Object? isValid = null,
   }) {
     return _then(
@@ -1008,6 +1131,10 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
             ? _self.connectUri
             : connectUri // ignore: cast_nullable_to_non_nullable
                   as ConnectUri,
+        connectUriRevision: null == connectUriRevision
+            ? _self.connectUriRevision
+            : connectUriRevision // ignore: cast_nullable_to_non_nullable
+                  as int,
         isValid: null == isValid
             ? _self.isValid
             : isValid // ignore: cast_nullable_to_non_nullable

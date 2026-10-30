@@ -3,10 +3,10 @@
 import 'package:formz/formz.dart' show FormzInput;
 
 class ConnectUri extends FormzInput<String, ConnectUriValidationError> {
-  const ConnectUri.pure(
-      {String defaultValue = /*'ws://127.0.0.1:8080/ws'*/
-          'ws://dslideshow1.local:8080/ws'})
-      : super.pure(defaultValue);
+  static const manualTemplate = 'ws://192.168.50.xx:8080/ws';
+  static final _placeholderHost = RegExp(r'^\d{1,3}(?:\.\d{1,3}){2}\.xx$');
+
+  const ConnectUri.pure({String defaultValue = manualTemplate}) : super.pure(defaultValue);
   const ConnectUri.dirty([super.value = '']) : super.dirty();
 
   @override
@@ -16,7 +16,8 @@ class ConnectUri extends FormzInput<String, ConnectUriValidationError> {
       if (connectUri != null &&
           connectUri.scheme == 'ws' &&
           connectUri.hasAuthority &&
-          !connectUri.hasEmptyPath) {
+          !connectUri.hasEmptyPath &&
+          !_placeholderHost.hasMatch(connectUri.host)) {
         return null;
       } else {
         return ConnectUriValidationError.invalid;

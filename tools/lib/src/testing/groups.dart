@@ -84,6 +84,7 @@ const _contracts = <String, Map<TestGroup, List<String>>>{
     ],
     TestGroup.ota: ['ota_config_transfer', 'ota', 'ota_upload'],
     TestGroup.network: [
+      'frame_discovery',
       'web_socket_config',
       'web_socket_user',
       'wifi_rpc_completion',
@@ -217,6 +218,9 @@ const _contracts = <String, Map<TestGroup, List<String>>>{
     ],
     TestGroup.ota: ['ota_panel_widget', 'ota_client', 'ota_panel_bloc'],
     TestGroup.network: [
+      'frame_discovery_bloc',
+      'backend_version',
+      'login_discovery',
       'client_service',
       'wifi_tab_bloc',
       'web_client',

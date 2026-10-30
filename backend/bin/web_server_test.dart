@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/discovery.dart';
 import 'package:dslideshow_backend/src/web_server/web_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
@@ -18,12 +19,15 @@ void main(List<String> args) async {
   try {
     getInjectorModule();
     final injector = GetIt.instance;
+    final framePublisher = AvahiFramePublisher();
+    injector.registerSingleton<FramePublisher>(framePublisher);
     injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
       return new WebService(
         _config,
         _config.webServer,
         new FakeRemoteService(name: 'backend'),
+        framePublisher: framePublisher,
       );
     });
 

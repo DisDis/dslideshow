@@ -4,6 +4,7 @@ import 'package:config_app/features/theme/presentation/app_preferences.dart';
 import 'package:config_app/features/theme/presentation/l10n/app_locale.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/injection_container.dart';
+import 'package:config_app/features/uikit/presentation/bloc/backend_version_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -43,11 +44,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
   final Future<bool> Function()? onLogoutRequested;
   final bool embedded;
 
-  const ConfigAppNavigationBar({
-    super.key,
-    this.onLogoutRequested,
-    this.embedded = false,
-  });
+  const ConfigAppNavigationBar({super.key, this.onLogoutRequested, this.embedded = false});
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +53,9 @@ class ConfigAppNavigationBar extends StatelessWidget {
     final router = GoRouter.maybeOf(context);
     final path = router?.routeInformationProvider.value.uri.path;
     final preferences = AppPreferencesScope.maybeOf(context);
-    final client = sl.isRegistered<RealtimeService>()
-        ? sl<RealtimeService>()
-        : null;
+    final client = sl.isRegistered<RealtimeService>() ? sl<RealtimeService>() : null;
     final uri = client?.connectUri;
-    final address = uri == null || uri.host.isEmpty
-        ? null
-        : '${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
+    final address = uri == null || uri.host.isEmpty ? null : '${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
     final navigation = SafeArea(
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
@@ -74,18 +67,15 @@ class ConfigAppNavigationBar extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.filter_frames_outlined,
-                      color: theme.colorScheme.primary,
-                    ),
+                    Icon(Icons.filter_frames_outlined, color: theme.colorScheme.primary),
                     const SizedBox(width: 10),
                     Text('Dslideshow', style: theme.textTheme.titleMedium),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Text(l.device_panel_title, style: theme.textTheme.titleSmall),
-                if (address != null)
-                  SelectableText(address, style: theme.textTheme.bodySmall),
+                if (address != null) SelectableText(address, style: theme.textTheme.bodySmall),
+                const _BackendVersion(),
               ],
             ),
           ),
@@ -107,10 +97,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
                       },
               ),
             ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Divider(),
-          ),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider()),
           if (preferences != null)
             ExpansionTile(
               tilePadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -125,10 +112,7 @@ class ConfigAppNavigationBar extends StatelessWidget {
                   decoration: InputDecoration(labelText: l.language_label),
                   items: [
                     for (final locale in AppLocale.values)
-                      DropdownMenuItem(
-                        value: locale,
-                        child: Text(locale.toLanguage(context)),
-                      ),
+                      DropdownMenuItem(value: locale, child: Text(locale.toLanguage(context))),
                   ],
                   onChanged: (locale) {
                     if (locale != null) preferences.setLocale(locale);
@@ -163,17 +147,51 @@ class ConfigAppNavigationBar extends StatelessWidget {
             onTap: () async {
               final mayLogout = await onLogoutRequested?.call() ?? true;
               if (mayLogout && context.mounted) {
-                context.read<AuthenticationBloc?>()?.add(
-                  const AuthenticationLogoutRequested(),
-                );
+                context.read<AuthenticationBloc?>()?.add(const AuthenticationLogoutRequested());
               }
             },
           ),
         ],
       ),
     );
-    return embedded
-        ? Material(color: theme.colorScheme.surface, child: navigation)
-        : Drawer(child: navigation);
+    return embedded ? Material(color: theme.colorScheme.surface, child: navigation) : Drawer(child: navigation);
+  }
+}
+
+class _BackendVersion extends StatelessWidget {
+  const _BackendVersion();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<BackendVersionBloc?>();
+    if (bloc == null || bloc.state.status == BackendVersionStatus.idle) return const SizedBox.shrink();
+    final state = bloc.state;
+    final l = context.localizations;
+    final theme = Theme.of(context);
+    final mismatch = state.compatibility == BackendCompatibility.mismatched;
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l.navigation_backend_version(state.compatibility == BackendCompatibility.unknown ? '—' : state.version!),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+          ),
+          if (mismatch)
+            Tooltip(
+              key: const Key('backend-major-mismatch'),
+              message: l.navigation_backend_major_mismatch(state.version!, bloc.expectedVersion),
+              child: Icon(Icons.warning_amber_rounded, size: 20, color: theme.colorScheme.error),
+            ),
+          if (state.status == BackendVersionStatus.failure ||
+              state.status == BackendVersionStatus.ready && state.compatibility == BackendCompatibility.unknown)
+            Tooltip(message: l.navigation_backend_version_unknown, child: const Icon(Icons.help_outline, size: 18)),
+        ],
+      ),
+    );
   }
 }

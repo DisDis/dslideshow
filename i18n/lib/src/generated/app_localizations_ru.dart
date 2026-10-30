@@ -3095,6 +3095,49 @@ class AppLocalizationsRu extends AppLocalizations {
       'Операция Wi-Fi завершена, но списки не удалось обновить. Обновите их перед следующим изменением.';
 
   @override
+  String get frame_discovery_title => 'Фоторамки в сети';
+
+  @override
+  String get frame_discovery_retry => 'Повторить';
+
+  @override
+  String get frame_discovery_searching => 'Ищем рамки в вашей сети…';
+
+  @override
+  String get frame_discovery_select => 'Выбрать рамку';
+
+  @override
+  String get frame_discovery_selected => 'Выбрана';
+
+  @override
+  String get frame_discovery_manual => 'или введите адрес вручную';
+
+  @override
+  String get frame_discovery_empty => 'Рамки не найдены. Проверьте, что оба устройства в одной сети.';
+
+  @override
+  String get frame_discovery_unavailable => 'Поиск в сети недоступен. Попробуйте ещё раз.';
+
+  @override
+  String get frame_discovery_failure => 'Не удалось обновить список. Попробуйте ещё раз.';
+
+  @override
+  String get frame_discovery_partial => 'Список может быть неполным.';
+
+  @override
+  String navigation_backend_version(String version) {
+    return 'Backend $version';
+  }
+
+  @override
+  String navigation_backend_major_mismatch(String actual, String expected) {
+    return 'Мажорная версия backend ($actual) не совпадает с версией, для которой собрана панель ($expected).';
+  }
+
+  @override
+  String get navigation_backend_version_unknown => 'Не удалось определить версию backend.';
+
+  @override
   String get upload_source_unavailable => 'Не удалось прочитать выбранный файл.';
 
   @override

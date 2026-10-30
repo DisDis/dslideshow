@@ -8,6 +8,9 @@ import 'dart:isolate';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/gallery.dart';
+
+import '../service/discovery/frame_publisher.dart';
+
 import 'package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_files.dart';
 import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
@@ -46,6 +49,7 @@ class WebService {
   final io.Directory _cacheFolder;
   final StreamingUploadReceiver _uploadReceiver;
   final int _maxConcurrentUploads;
+  final FramePublisher _framePublisher;
   late final io.Directory _galleryDirectory;
   late final GalleryCatalogService _galleryCatalog;
   late final ThumbnailService _thumbnails;
@@ -148,9 +152,11 @@ class WebService {
     int maxConcurrentUploads = 2,
     GalleryToolRunner? galleryToolRunner,
     String duplicateExecutable = 'czkawka_cli',
+    FramePublisher framePublisher = const NoopFramePublisher(),
     bool startServer = true,
   }) : _cacheFolder = cacheDirectory ?? io.Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME)),
        _uploadReceiver = uploadReceiver ?? StreamingUploadReceiver(),
+       _framePublisher = framePublisher,
        _maxConcurrentUploads = maxConcurrentUploads {
     if (maxConcurrentUploads <= 0) {
       throw ArgumentError.value(maxConcurrentUploads, 'maxConcurrentUploads');
@@ -415,9 +421,19 @@ class WebService {
       'HTTP server listening port=${server.port} accessCode=$_code '
       'logLevel=${Logger.root.level.name}',
     );
+    try {
+      await _framePublisher.publish(server.port);
+    } catch (error) {
+      _log.warning('Advertisement publish failed type=${error.runtimeType}');
+    }
   }
 
   Future<void> _stopWebServer() async {
+    try {
+      await _framePublisher.unpublish();
+    } catch (error) {
+      _log.warning('Advertisement removal failed type=${error.runtimeType}');
+    }
     for (final cancellation in _uploads.keys.toList()) {
       cancellation.cancel();
     }
@@ -436,8 +452,13 @@ class WebService {
     _closed = true;
     _enabled = false;
     final pending = _uploads.values.map((done) => done.future).toList();
-    await _stopWebServer();
     await _serverTransition;
+    await _stopWebServer();
+    try {
+      await _framePublisher.close();
+    } catch (error) {
+      _log.warning('Advertisement cleanup failed type=${error.runtimeType}');
+    }
     await Future.wait(pending);
     await _galleryManagement.close();
     await _galleryCatalog.close();

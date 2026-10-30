@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          # Match config_app and keep generated models formatted.
+          format: true

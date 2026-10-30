@@ -5966,6 +5966,84 @@ abstract class AppLocalizations {
   /// **'The Wi-Fi operation completed, but the lists could not be refreshed. Refresh before making another change.'**
   String get wifi_refresh_failed;
 
+  /// No description provided for @frame_discovery_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Frames on your network'**
+  String get frame_discovery_title;
+
+  /// No description provided for @frame_discovery_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get frame_discovery_retry;
+
+  /// No description provided for @frame_discovery_searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for frames on your network…'**
+  String get frame_discovery_searching;
+
+  /// No description provided for @frame_discovery_select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select frame'**
+  String get frame_discovery_select;
+
+  /// No description provided for @frame_discovery_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get frame_discovery_selected;
+
+  /// No description provided for @frame_discovery_manual.
+  ///
+  /// In en, this message translates to:
+  /// **'or enter the address manually'**
+  String get frame_discovery_manual;
+
+  /// No description provided for @frame_discovery_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No frames found. Check that both devices are on the same network.'**
+  String get frame_discovery_empty;
+
+  /// No description provided for @frame_discovery_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Network discovery is unavailable. Try again.'**
+  String get frame_discovery_unavailable;
+
+  /// No description provided for @frame_discovery_failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh the list. Try again.'**
+  String get frame_discovery_failure;
+
+  /// No description provided for @frame_discovery_partial.
+  ///
+  /// In en, this message translates to:
+  /// **'The list may be incomplete.'**
+  String get frame_discovery_partial;
+
+  /// No description provided for @navigation_backend_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend {version}'**
+  String navigation_backend_version(String version);
+
+  /// No description provided for @navigation_backend_major_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend {actual} and the panel target {expected} have different major versions.'**
+  String navigation_backend_major_mismatch(String actual, String expected);
+
+  /// No description provided for @navigation_backend_version_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'The backend version could not be determined.'**
+  String get navigation_backend_version_unknown;
+
   /// No description provided for @upload_source_unavailable.
   ///
   /// In en, this message translates to:

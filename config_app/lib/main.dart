@@ -2,6 +2,7 @@ import 'package:config_app/app.dart';
 import 'package:config_app/environment.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:config_app/src/video_backend.dart';
+import 'package:config_app/features/uikit/presentation/bloc/backend_version_bloc.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -10,9 +11,7 @@ final Logger _log = Logger('main');
 
 Future _setup() async {
   final currentUrl = Uri.parse(Uri.base.toString());
-  final apiUrl = currentUrl.scheme == 'file'
-      ? null
-      : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
+  final apiUrl = currentUrl.scheme == 'file' ? null : '${currentUrl.scheme}://${currentUrl.host}:${currentUrl.port}/v1';
   _log.info('Initializing application dependencies');
   await initializeAllDependencies(apiUrl: apiUrl);
 }
@@ -24,5 +23,5 @@ void main() async {
   initializeConfigAppVideoBackend();
   initEnvironment();
   await _setup();
-  runApp(const App());
+  runApp(App(backendVersion: sl<BackendVersionBloc>()));
 }

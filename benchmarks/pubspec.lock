@@ -217,6 +217,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.14"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: f7db8504e715b835f5ebe5fe74604ccd961d504c73389a5d8e81bafc2e2f3612
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   device_preview:
     dependency: transitive
     description:
@@ -238,7 +246,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "17.0.0+1"
+    version: "17.1.0+1"
   dslideshow_common:
     dependency: transitive
     description:
@@ -252,7 +260,7 @@ packages:
       path: "../dslideshow_flutter"
       relative: true
     source: path
-    version: "17.0.0+1"
+    version: "17.1.0+1"
   dslideshow_i18n:
     dependency: transitive
     description:
@@ -814,6 +822,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: "2f1564aadb14215e478563b5406cb80729d022158c01dc50c96013c2f7eb4790"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.1.0"
   platform:
     dependency: transitive
     description:
@@ -1146,6 +1162,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      sha256: "0fe8cc98946def31cbcbc8734aa4067031e6f65ea3a78a508060bfed2200bfeb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.1.0"
   xterm:
     dependency: transitive
     description:
