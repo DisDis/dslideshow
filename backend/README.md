@@ -322,8 +322,8 @@ EXIF и сведения изображений читаются в Dart пак�
 передаются без изменений. Категория и сообщения логирования сохранены.
 
 `HardwareService.dispose()` ожидает отмену всех этих подписок перед освобождением
-`ApplicationStateService`, экрана, GPIO, Storage и SystemInfo. Повторный вызов
-возвращает то же завершение. Сам `DeviceEventBindings` владеет только подписками:
+`ApplicationStateService`, экрана, GPIO, Storage, SystemInfo, Wi-Fi и MQTT;
+владелец вызывает завершение один раз. Сам `DeviceEventBindings` владеет только подписками:
 он не закрывает внедрённые сервисы и не ожидает уже отправленные RPC.
 Состояние и переходы экрана остаются в `ScreenService`, current/next — в Storage.
 Подробнее: [сон экрана и присутствие](../doc/screen-presence.md).
