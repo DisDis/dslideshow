@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:config_app/features/upload/domain/upload_task.dart';
+import 'package:config_app/features/upload/domain/upload_folder_file.dart';
 import 'package:config_app/src/web_client/web_client.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
@@ -23,6 +25,7 @@ sealed class UploadQueueState with _$UploadQueueState {
     @Default({}) Map<String, double> activeProgress,
     @Default(0) int taskRevision,
     @Default(false) bool isScanningFolder,
+    @Default(false) bool isSelecting,
     UploadSelectionIssue? selectionIssue,
     @Default(0) int selectionRevision,
   }) = _UploadQueueState;
@@ -37,6 +40,10 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   final RealtimeService client;
   final WebClient Function() _webClientFactory;
   final Stream<FileSystemEntity> Function(String) _listFolder;
+  final Future<List<PlatformFile>> Function() _pickFiles;
+  final Future<String?> Function() _pickFolder;
+  final Stream<UploadFolderFile> Function(String)? listPlatformFolder;
+  final UploadPickedPathMode pickedPathMode;
   final _tasks = <String, UploadTask>{};
   final _sources = <String, _UploadSource>{};
   final _waiting = Queue<String>();
@@ -53,22 +60,24 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     required this.client,
     WebClient Function()? webClientFactory,
     Stream<FileSystemEntity> Function(String)? listFolder,
+    Future<List<PlatformFile>> Function()? pickFiles,
+    Future<String?> Function()? pickFolder,
+    this.listPlatformFolder,
+    this.pickedPathMode = UploadPickedPathMode.parentFolder,
   }) : _webClientFactory =
            webClientFactory ??
            (() => WebClient(
              code: client.authCode,
              host: client.connectUri.host,
              port: client.connectUri.port,
-             scheme:
-                 client.connectUri.scheme == 'wss' ||
-                     client.connectUri.scheme == 'https'
-                 ? 'https'
-                 : 'http',
+             scheme: client.connectUri.scheme == 'wss' || client.connectUri.scheme == 'https' ? 'https' : 'http',
            )),
-       _listFolder =
-           listFolder ?? ((path) => Directory(path).list(recursive: true)),
+       _pickFiles = pickFiles ?? FilePicker.pickFiles,
+       _pickFolder = pickFolder ?? FilePicker.getDirectoryPath,
+       _listFolder = listFolder ?? ((path) => Directory(path).list(recursive: true)),
        super(const UploadQueueState()) {
     on<_AddFiles>(_onAddFiles);
+    on<_Select>(_onSelect);
     on<_AddPlatformFiles>(_onAddPlatformFiles);
     on<_AddFolder>(_onAddFolder);
     on<_FolderChunk>(_onFolderChunk);
@@ -76,6 +85,42 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     on<_RetryTask>(_onRetryTask);
     on<_UpdateProgress>(_onUpdateProgress);
     on<_TaskFinished>(_onTaskFinished);
+  }
+
+  Future<void> _onSelect(_Select event, Emitter<UploadQueueState> emit) async {
+    if (_closing || state.isSelecting || event.kind == UploadSelectionKind.folder && state.isScanningFolder) return;
+    emit(state.copyWith(isSelecting: true, selectionIssue: null));
+    _log.info('selection start kind=${event.kind.name}');
+    try {
+      switch (event.kind) {
+        case UploadSelectionKind.files:
+          final files = await _pickFiles();
+          if (_closing || emit.isDone) return;
+          _log.info('selection ${files.isEmpty ? 'cancelled' : 'completed'} kind=files count=${files.length}');
+          if (files.isNotEmpty) add(UploadQueueEvent.addPlatformFiles(files: files, rootPath: ''));
+        case UploadSelectionKind.folder:
+          final folder = await _pickFolder();
+          if (_closing || emit.isDone) return;
+          _log.info('selection ${folder == null ? 'cancelled' : 'completed'} kind=folder');
+          if (folder != null) add(UploadQueueEvent.addFolder(folder));
+      }
+    } catch (error) {
+      if (_closing || emit.isDone) {
+        _log.info('selection cancelled kind=${event.kind.name}');
+        return;
+      }
+      _log.warning('selection failed kind=${event.kind.name} type=${error.runtimeType}');
+      if (!_closing && !emit.isDone) {
+        emit(
+          state.copyWith(
+            selectionIssue: UploadSelectionIssue.pickerFailed,
+            selectionRevision: state.selectionRevision + 1,
+          ),
+        );
+      }
+    } finally {
+      if (!_closing && !emit.isDone) emit(state.copyWith(isSelecting: false));
+    }
   }
 
   _UploadBatch _newBatch({bool open = false, String? retryOf}) {
@@ -92,18 +137,8 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     return batch;
   }
 
-  void _enqueue(
-    _UploadBatch batch,
-    String localPath,
-    String serverPath,
-    _UploadSource source,
-  ) {
-    final task = UploadTask(
-      id: const Uuid().v4(),
-      localPath: localPath,
-      serverPath: serverPath,
-      batchId: batch.id,
-    );
+  void _enqueue(_UploadBatch batch, String localPath, String serverPath, _UploadSource source) {
+    final task = UploadTask(id: const Uuid().v4(), localPath: localPath, serverPath: serverPath, batchId: batch.id);
     _tasks[task.id] = task;
     _sources[task.id] = source;
     _waiting.add(task.id);
@@ -115,26 +150,15 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     if (_closing || event.files.isEmpty) return;
     final batch = _newBatch();
     for (final file in event.files) {
-      _enqueue(
-        batch,
-        file.path,
-        p.relative(file.path, from: p.dirname(event.rootPath)),
-        _FileSource(file),
-      );
+      _enqueue(batch, file.path, p.relative(file.path, from: p.dirname(event.rootPath)), _FileSource(file));
     }
     _pump(emit);
   }
 
-  void _onAddPlatformFiles(
-    _AddPlatformFiles event,
-    Emitter<UploadQueueState> emit,
-  ) {
+  void _onAddPlatformFiles(_AddPlatformFiles event, Emitter<UploadQueueState> emit) {
     if (_closing || event.files.isEmpty) return;
     final batch = _newBatch();
-    final firstPath = event.files
-        .map((file) => file.path)
-        .whereType<String>()
-        .firstOrNull;
+    final firstPath = event.files.map((file) => file.path).whereType<String>().firstOrNull;
     final root = event.rootPath.isNotEmpty
         ? p.dirname(event.rootPath)
         : firstPath == null
@@ -145,7 +169,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       _enqueue(
         batch,
         path ?? file.name,
-        path != null && root != null ? p.relative(path, from: root) : file.name,
+        pickedPathMode == UploadPickedPathMode.parentFolder && path != null && root != null
+            ? p.relative(path, from: root)
+            : file.name,
         _PickedSource(file),
       );
     }
@@ -161,36 +187,33 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   }
 
   Future<void> _scanFolder(_FolderScan scan, String path) async {
-    final files = <File>[];
+    final files = <UploadFolderFile>[];
     UploadSelectionIssue? issue;
     var count = 0;
     try {
-      final iterator = StreamIterator(_listFolder(path));
+      final iterator = StreamIterator(_folderFiles(path));
       scan.iterator = iterator;
       while (!scan.cancelled && await iterator.moveNext()) {
         final entity = iterator.current;
-        if (entity is! File ||
-            !FileSettings.isSupportFile(p.extension(entity.path))) {
+        if (!FileSettings.isSupportFile(p.extension(entity.relativePath))) {
           continue;
         }
         files.add(entity);
         count++;
         if (files.length == _folderChunkSize) {
           if (!_closing && !scan.cancelled) {
-            add(
-              UploadQueueEvent.folderChunk(
-                scanId: scan.id,
-                files: List.of(files),
-                rootPath: path,
-              ),
-            );
+            add(UploadQueueEvent.folderChunk(scanId: scan.id, files: List.of(files)));
           }
           files.clear();
         }
       }
       if (count == 0) issue = UploadSelectionIssue.emptyFolder;
-    } catch (_) {
-      if (!scan.cancelled) issue = UploadSelectionIssue.folderReadFailed;
+    } catch (error) {
+      if (!scan.cancelled) {
+        issue = UploadSelectionIssue.folderReadFailed;
+        final code = error is PlatformException ? error.code : error.runtimeType;
+        _log.warning('folder source failed code=$code');
+      }
     } finally {
       try {
         await scan.iterator?.cancel();
@@ -198,30 +221,30 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         if (!scan.cancelled) issue = UploadSelectionIssue.folderReadFailed;
       }
       if (!_closing && !scan.cancelled) {
-        add(
-          UploadQueueEvent.folderChunk(
-            scanId: scan.id,
-            files: files,
-            rootPath: path,
-            finished: true,
-            issue: issue,
-          ),
-        );
+        add(UploadQueueEvent.folderChunk(scanId: scan.id, files: files, finished: true, issue: issue));
       }
       scan.done.complete();
     }
+  }
+
+  Stream<UploadFolderFile> _folderFiles(String path) {
+    final platform = listPlatformFolder;
+    if (platform != null) return platform(path);
+    return _listFolder(path)
+        .where((entry) => entry is File)
+        .map((entry) => UploadFolderFile.local(entry as File, p.relative(entry.path, from: p.dirname(path))));
   }
 
   void _onFolderChunk(_FolderChunk event, Emitter<UploadQueueState> emit) {
     final scan = _scan;
     if (_closing || scan == null || scan.id != event.scanId) return;
     for (final file in event.files) {
-      _enqueue(
-        scan.batch,
-        file.path,
-        p.relative(file.path, from: p.dirname(event.rootPath)),
-        _FileSource(file),
-      );
+      switch (file) {
+        case LocalUploadFolderFile(:final file, :final relativePath):
+          _enqueue(scan.batch, file.path, relativePath, _FileSource(file));
+        case DocumentUploadFolderFile(:final file, :final relativePath):
+          _enqueue(scan.batch, file.name, relativePath, _PickedSource(file));
+      }
     }
     if (event.finished) {
       scan.batch.open = false;
@@ -231,9 +254,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         ' issue=${event.issue?.name ?? 'none'}',
       );
       if (event.issue == UploadSelectionIssue.folderReadFailed) {
-        _log.warning(
-          'folder failed batchId=${scan.batch.id} count=${scan.batch.total}',
-        );
+        _log.warning('folder failed batchId=${scan.batch.id} count=${scan.batch.total}');
       }
       emit(
         state.copyWith(
@@ -255,9 +276,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     if (attempt != null) {
       attempt.removed = true;
       attempt.cancellation.cancel();
-      _log.fine(
-        'attempt cancel batchId=${attempt.batchId} taskId=${task.id} attemptId=${attempt.id}',
-      );
+      _log.fine('attempt cancel batchId=${attempt.batchId} taskId=${task.id} attemptId=${attempt.id}');
     } else {
       _sources.remove(task.id);
       if (task.status == UploadStatus.queued) {
@@ -270,19 +289,12 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   void _onRetryTask(_RetryTask event, Emitter<UploadQueueState> emit) {
     if (_closing) return;
     final task = _tasks[event.taskId];
-    if (task == null ||
-        task.status != UploadStatus.error ||
-        _active.containsKey(task.id)) {
+    if (task == null || task.status != UploadStatus.error || _active.containsKey(task.id)) {
       return;
     }
     final batch = _newBatch(retryOf: task.batchId);
     batch.total = batch.remaining = 1;
-    _tasks[task.id] = task.copyWith(
-      batchId: batch.id,
-      status: UploadStatus.queued,
-      progress: 0,
-      failure: null,
-    );
+    _tasks[task.id] = task.copyWith(batchId: batch.id, status: UploadStatus.queued, progress: 0, failure: null);
     _waiting.add(task.id);
     _pump(emit);
   }
@@ -297,19 +309,13 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       // Reserve synchronously, before reading metadata or opening a transport.
       _active[id] = attempt;
       _tasks[id] = task.copyWith(status: UploadStatus.uploading);
-      _log.fine(
-        'attempt start batchId=${task.batchId} taskId=$id attemptId=${attempt.id}',
-      );
+      _log.fine('attempt start batchId=${task.batchId} taskId=$id attemptId=${attempt.id}');
       unawaited(_runAttempt(attempt, task, _sources[id]!));
     }
     _publishTasks(emit);
   }
 
-  Future<void> _runAttempt(
-    _UploadAttempt attempt,
-    UploadTask task,
-    _UploadSource source,
-  ) async {
+  Future<void> _runAttempt(_UploadAttempt attempt, UploadTask task, _UploadSource source) async {
     final progressClock = Stopwatch()..start();
     var lastProgressMs = -250;
     try {
@@ -325,9 +331,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
           final now = progressClock.elapsedMilliseconds;
           if (sent == total || now - lastProgressMs >= 250) {
             lastProgressMs = now;
-            add(
-              UploadQueueEvent.updateProgress(task.id, attempt.id, sent, total),
-            );
+            add(UploadQueueEvent.updateProgress(task.id, attempt.id, sent, total));
           }
         },
       );
@@ -345,22 +349,12 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       attempt.cancelled = attempt.cancelled || attempt.cancellation.isCancelled;
       attempt.done.complete();
       if (!_closing) {
-        add(
-          UploadQueueEvent.taskFinished(
-            task.id,
-            attempt.id,
-            attempt.failure,
-            attempt.cancelled,
-          ),
-        );
+        add(UploadQueueEvent.taskFinished(task.id, attempt.id, attempt.failure, attempt.cancelled));
       }
     }
   }
 
-  void _onUpdateProgress(
-    _UpdateProgress event,
-    Emitter<UploadQueueState> emit,
-  ) {
+  void _onUpdateProgress(_UpdateProgress event, Emitter<UploadQueueState> emit) {
     final attempt = _active[event.taskId];
     if (_closing ||
         attempt == null ||
@@ -370,14 +364,8 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         !_tasks.containsKey(event.taskId)) {
       return;
     }
-    final progress = event.total <= 0
-        ? 0.0
-        : (event.sent / event.total).clamp(0.0, 1.0);
-    emit(
-      state.copyWith(
-        activeProgress: {...state.activeProgress, event.taskId: progress},
-      ),
-    );
+    final progress = event.total <= 0 ? 0.0 : (event.sent / event.total).clamp(0.0, 1.0);
+    emit(state.copyWith(activeProgress: {...state.activeProgress, event.taskId: progress}));
   }
 
   void _onTaskFinished(_TaskFinished event, Emitter<UploadQueueState> emit) {
@@ -395,15 +383,9 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       if (attempt.cancelled) {
         _tasks.remove(task.id);
       } else if (attempt.failure != null) {
-        _tasks[task.id] = task.copyWith(
-          status: UploadStatus.error,
-          failure: attempt.failure,
-        );
+        _tasks[task.id] = task.copyWith(status: UploadStatus.error, failure: attempt.failure);
       } else {
-        _tasks[task.id] = task.copyWith(
-          status: UploadStatus.completed,
-          progress: 1,
-        );
+        _tasks[task.id] = task.copyWith(status: UploadStatus.completed, progress: 1);
         _completed.add(task.id);
         while (_completed.length > _maxHistorySize) {
           _tasks.remove(_completed.removeFirst());
@@ -413,11 +395,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     if (attempt.cancelled || attempt.failure == null) {
       _sources.remove(attempt.taskId);
     }
-    _recordResult(
-      attempt.batchId,
-      failure: attempt.failure,
-      cancelled: attempt.cancelled,
-    );
+    _recordResult(attempt.batchId, failure: attempt.failure, cancelled: attempt.cancelled);
     _log.fine(
       'attempt result batchId=${attempt.batchId} taskId=${attempt.taskId}'
       ' attemptId=${attempt.id} result=${attempt.cancelled ? 'cancelled' : attempt.failure?.name ?? 'completed'}',
@@ -437,11 +415,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
     );
   }
 
-  void _recordResult(
-    String batchId, {
-    UploadFailure? failure,
-    bool cancelled = false,
-  }) {
+  void _recordResult(String batchId, {UploadFailure? failure, bool cancelled = false}) {
     final batch = _batches[batchId];
     if (batch == null) return;
     batch.remaining--;
@@ -470,17 +444,15 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
   }
 
   @override
-  Future<void> close() =>
-      _closeFuture ??= _closeQueue().whenComplete(() => super.close());
+  Future<void> close() => _closeFuture ??= _closeQueue().whenComplete(() => super.close());
 
   Future<void> _closeQueue() async {
     _closing = true;
+    if (state.isSelecting) _log.info('selection cancelled reason=queueClosed');
     final scan = _scan;
     if (scan != null) {
       scan.cancelled = true;
-      _log.info(
-        'folder cancel batchId=${scan.batch.id} count=${scan.batch.total}',
-      );
+      _log.info('folder cancel batchId=${scan.batch.id} count=${scan.batch.total}');
       try {
         await scan.iterator?.cancel();
       } catch (_) {
@@ -559,7 +531,7 @@ class _FolderScan {
   final int id;
   final _UploadBatch batch;
   final done = Completer<void>();
-  StreamIterator<FileSystemEntity>? iterator;
+  StreamIterator<UploadFolderFile>? iterator;
   bool cancelled = false;
   _FolderScan(this.id, this.batch);
 }

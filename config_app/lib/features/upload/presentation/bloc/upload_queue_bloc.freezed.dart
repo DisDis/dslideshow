@@ -18,6 +18,7 @@ mixin _$UploadQueueState {
   Map<String, double> get activeProgress;
   int get taskRevision;
   bool get isScanningFolder;
+  bool get isSelecting;
   UploadSelectionIssue? get selectionIssue;
   int get selectionRevision;
 
@@ -26,10 +27,7 @@ mixin _$UploadQueueState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $UploadQueueStateCopyWith<UploadQueueState> get copyWith =>
-      _$UploadQueueStateCopyWithImpl<UploadQueueState>(
-        this as UploadQueueState,
-        _$identity,
-      );
+      _$UploadQueueStateCopyWithImpl<UploadQueueState>(this as UploadQueueState, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -38,16 +36,12 @@ mixin _$UploadQueueState {
         (other.runtimeType == runtimeType &&
             other is UploadQueueState &&
             const DeepCollectionEquality().equals(other.tasks, _this.tasks) &&
-            const DeepCollectionEquality().equals(
-              other.activeProgress,
-              _this.activeProgress,
-            ) &&
-            (identical(other.taskRevision, _this.taskRevision) ||
-                other.taskRevision == _this.taskRevision) &&
+            const DeepCollectionEquality().equals(other.activeProgress, _this.activeProgress) &&
+            (identical(other.taskRevision, _this.taskRevision) || other.taskRevision == _this.taskRevision) &&
             (identical(other.isScanningFolder, _this.isScanningFolder) ||
                 other.isScanningFolder == _this.isScanningFolder) &&
-            (identical(other.selectionIssue, _this.selectionIssue) ||
-                other.selectionIssue == _this.selectionIssue) &&
+            (identical(other.isSelecting, _this.isSelecting) || other.isSelecting == _this.isSelecting) &&
+            (identical(other.selectionIssue, _this.selectionIssue) || other.selectionIssue == _this.selectionIssue) &&
             (identical(other.selectionRevision, _this.selectionRevision) ||
                 other.selectionRevision == _this.selectionRevision));
   }
@@ -61,6 +55,7 @@ mixin _$UploadQueueState {
       const DeepCollectionEquality().hash(_this.activeProgress),
       _this.taskRevision,
       _this.isScanningFolder,
+      _this.isSelecting,
       _this.selectionIssue,
       _this.selectionRevision,
     );
@@ -69,30 +64,28 @@ mixin _$UploadQueueState {
   @override
   String toString() {
     final _this = this as UploadQueueState;
-    return 'UploadQueueState(tasks: ${_this.tasks}, activeProgress: ${_this.activeProgress}, taskRevision: ${_this.taskRevision}, isScanningFolder: ${_this.isScanningFolder}, selectionIssue: ${_this.selectionIssue}, selectionRevision: ${_this.selectionRevision})';
+    return 'UploadQueueState(tasks: ${_this.tasks}, activeProgress: ${_this.activeProgress}, taskRevision: ${_this.taskRevision}, isScanningFolder: ${_this.isScanningFolder}, isSelecting: ${_this.isSelecting}, selectionIssue: ${_this.selectionIssue}, selectionRevision: ${_this.selectionRevision})';
   }
 }
 
 /// @nodoc
 abstract mixin class $UploadQueueStateCopyWith<$Res> {
-  factory $UploadQueueStateCopyWith(
-    UploadQueueState value,
-    $Res Function(UploadQueueState) _then,
-  ) = _$UploadQueueStateCopyWithImpl;
+  factory $UploadQueueStateCopyWith(UploadQueueState value, $Res Function(UploadQueueState) _then) =
+      _$UploadQueueStateCopyWithImpl;
   @useResult
   $Res call({
     List<UploadTask> tasks,
     Map<String, double> activeProgress,
     int taskRevision,
     bool isScanningFolder,
+    bool isSelecting,
     UploadSelectionIssue? selectionIssue,
     int selectionRevision,
   });
 }
 
 /// @nodoc
-class _$UploadQueueStateCopyWithImpl<$Res>
-    implements $UploadQueueStateCopyWith<$Res> {
+class _$UploadQueueStateCopyWithImpl<$Res> implements $UploadQueueStateCopyWith<$Res> {
   _$UploadQueueStateCopyWithImpl(this._self, this._then);
 
   final UploadQueueState _self;
@@ -107,6 +100,7 @@ class _$UploadQueueStateCopyWithImpl<$Res>
     Object? activeProgress = null,
     Object? taskRevision = null,
     Object? isScanningFolder = null,
+    Object? isSelecting = null,
     Object? selectionIssue = freezed,
     Object? selectionRevision = null,
   }) {
@@ -127,6 +121,10 @@ class _$UploadQueueStateCopyWithImpl<$Res>
         isScanningFolder: null == isScanningFolder
             ? _self.isScanningFolder
             : isScanningFolder // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isSelecting: null == isSelecting
+            ? _self.isSelecting
+            : isSelecting // ignore: cast_nullable_to_non_nullable
                   as bool,
         selectionIssue: freezed == selectionIssue
             ? _self.selectionIssue
@@ -183,9 +181,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
   /// ```
 
   @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_UploadQueueState value) $default,
-  ) {
+  TResult map<TResult extends Object?>(TResult Function(_UploadQueueState value) $default) {
     final _that = this;
     switch (_that) {
       case _UploadQueueState():
@@ -206,9 +202,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
   /// ```
 
   @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_UploadQueueState value)? $default,
-  ) {
+  TResult? mapOrNull<TResult extends Object?>(TResult? Function(_UploadQueueState value)? $default) {
     final _that = this;
     switch (_that) {
       case _UploadQueueState() when $default != null:
@@ -237,6 +231,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
       Map<String, double> activeProgress,
       int taskRevision,
       bool isScanningFolder,
+      bool isSelecting,
       UploadSelectionIssue? selectionIssue,
       int selectionRevision,
     )?
@@ -251,6 +246,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
           _that.activeProgress,
           _that.taskRevision,
           _that.isScanningFolder,
+          _that.isSelecting,
           _that.selectionIssue,
           _that.selectionRevision,
         );
@@ -279,6 +275,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
       Map<String, double> activeProgress,
       int taskRevision,
       bool isScanningFolder,
+      bool isSelecting,
       UploadSelectionIssue? selectionIssue,
       int selectionRevision,
     )
@@ -292,6 +289,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
           _that.activeProgress,
           _that.taskRevision,
           _that.isScanningFolder,
+          _that.isSelecting,
           _that.selectionIssue,
           _that.selectionRevision,
         );
@@ -317,6 +315,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
       Map<String, double> activeProgress,
       int taskRevision,
       bool isScanningFolder,
+      bool isSelecting,
       UploadSelectionIssue? selectionIssue,
       int selectionRevision,
     )?
@@ -330,6 +329,7 @@ extension UploadQueueStatePatterns on UploadQueueState {
           _that.activeProgress,
           _that.taskRevision,
           _that.isScanningFolder,
+          _that.isSelecting,
           _that.selectionIssue,
           _that.selectionRevision,
         );
@@ -347,6 +347,7 @@ class _UploadQueueState implements UploadQueueState {
     Map<String, double> activeProgress = const {},
     this.taskRevision = 0,
     this.isScanningFolder = false,
+    this.isSelecting = false,
     this.selectionIssue,
     this.selectionRevision = 0,
   }) : _tasks = tasks,
@@ -377,6 +378,9 @@ class _UploadQueueState implements UploadQueueState {
   @JsonKey()
   final bool isScanningFolder;
   @override
+  @JsonKey()
+  final bool isSelecting;
+  @override
   final UploadSelectionIssue? selectionIssue;
   @override
   @JsonKey()
@@ -396,18 +400,12 @@ class _UploadQueueState implements UploadQueueState {
         (other.runtimeType == runtimeType &&
             other is _UploadQueueState &&
             const DeepCollectionEquality().equals(other.tasks, _tasks) &&
-            const DeepCollectionEquality().equals(
-              other.activeProgress,
-              _activeProgress,
-            ) &&
-            (identical(other.taskRevision, taskRevision) ||
-                other.taskRevision == taskRevision) &&
-            (identical(other.isScanningFolder, isScanningFolder) ||
-                other.isScanningFolder == isScanningFolder) &&
-            (identical(other.selectionIssue, selectionIssue) ||
-                other.selectionIssue == selectionIssue) &&
-            (identical(other.selectionRevision, selectionRevision) ||
-                other.selectionRevision == selectionRevision));
+            const DeepCollectionEquality().equals(other.activeProgress, _activeProgress) &&
+            (identical(other.taskRevision, taskRevision) || other.taskRevision == taskRevision) &&
+            (identical(other.isScanningFolder, isScanningFolder) || other.isScanningFolder == isScanningFolder) &&
+            (identical(other.isSelecting, isSelecting) || other.isSelecting == isSelecting) &&
+            (identical(other.selectionIssue, selectionIssue) || other.selectionIssue == selectionIssue) &&
+            (identical(other.selectionRevision, selectionRevision) || other.selectionRevision == selectionRevision));
   }
 
   @override
@@ -418,6 +416,7 @@ class _UploadQueueState implements UploadQueueState {
       const DeepCollectionEquality().hash(_activeProgress),
       taskRevision,
       isScanningFolder,
+      isSelecting,
       selectionIssue,
       selectionRevision,
     );
@@ -425,17 +424,14 @@ class _UploadQueueState implements UploadQueueState {
 
   @override
   String toString() {
-    return 'UploadQueueState(tasks: $tasks, activeProgress: $activeProgress, taskRevision: $taskRevision, isScanningFolder: $isScanningFolder, selectionIssue: $selectionIssue, selectionRevision: $selectionRevision)';
+    return 'UploadQueueState(tasks: $tasks, activeProgress: $activeProgress, taskRevision: $taskRevision, isScanningFolder: $isScanningFolder, isSelecting: $isSelecting, selectionIssue: $selectionIssue, selectionRevision: $selectionRevision)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$UploadQueueStateCopyWith<$Res>
-    implements $UploadQueueStateCopyWith<$Res> {
-  factory _$UploadQueueStateCopyWith(
-    _UploadQueueState value,
-    $Res Function(_UploadQueueState) _then,
-  ) = __$UploadQueueStateCopyWithImpl;
+abstract mixin class _$UploadQueueStateCopyWith<$Res> implements $UploadQueueStateCopyWith<$Res> {
+  factory _$UploadQueueStateCopyWith(_UploadQueueState value, $Res Function(_UploadQueueState) _then) =
+      __$UploadQueueStateCopyWithImpl;
   @override
   @useResult
   $Res call({
@@ -443,14 +439,14 @@ abstract mixin class _$UploadQueueStateCopyWith<$Res>
     Map<String, double> activeProgress,
     int taskRevision,
     bool isScanningFolder,
+    bool isSelecting,
     UploadSelectionIssue? selectionIssue,
     int selectionRevision,
   });
 }
 
 /// @nodoc
-class __$UploadQueueStateCopyWithImpl<$Res>
-    implements _$UploadQueueStateCopyWith<$Res> {
+class __$UploadQueueStateCopyWithImpl<$Res> implements _$UploadQueueStateCopyWith<$Res> {
   __$UploadQueueStateCopyWithImpl(this._self, this._then);
 
   final _UploadQueueState _self;
@@ -465,6 +461,7 @@ class __$UploadQueueStateCopyWithImpl<$Res>
     Object? activeProgress = null,
     Object? taskRevision = null,
     Object? isScanningFolder = null,
+    Object? isSelecting = null,
     Object? selectionIssue = freezed,
     Object? selectionRevision = null,
   }) {
@@ -486,6 +483,10 @@ class __$UploadQueueStateCopyWithImpl<$Res>
             ? _self.isScanningFolder
             : isScanningFolder // ignore: cast_nullable_to_non_nullable
                   as bool,
+        isSelecting: null == isSelecting
+            ? _self.isSelecting
+            : isSelecting // ignore: cast_nullable_to_non_nullable
+                  as bool,
         selectionIssue: freezed == selectionIssue
             ? _self.selectionIssue
             : selectionIssue // ignore: cast_nullable_to_non_nullable
@@ -503,8 +504,7 @@ class __$UploadQueueStateCopyWithImpl<$Res>
 mixin _$UploadQueueEvent {
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is UploadQueueEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType && other is UploadQueueEvent);
   }
 
   @override
@@ -518,10 +518,7 @@ mixin _$UploadQueueEvent {
 
 /// @nodoc
 class $UploadQueueEventCopyWith<$Res> {
-  $UploadQueueEventCopyWith(
-    UploadQueueEvent _,
-    $Res Function(UploadQueueEvent) __,
-  );
+  $UploadQueueEventCopyWith(UploadQueueEvent _, $Res Function(UploadQueueEvent) __);
 }
 
 /// Adds pattern-matching-related methods to [UploadQueueEvent].
@@ -540,6 +537,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Select value)? select,
     TResult Function(_AddFiles value)? addFiles,
     TResult Function(_AddPlatformFiles value)? addPlatformFiles,
     TResult Function(_AddFolder value)? addFolder,
@@ -552,6 +550,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   }) {
     final _that = this;
     switch (_that) {
+      case _Select() when select != null:
+        return select(_that);
       case _AddFiles() when addFiles != null:
         return addFiles(_that);
       case _AddPlatformFiles() when addPlatformFiles != null:
@@ -588,6 +588,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
+    required TResult Function(_Select value) select,
     required TResult Function(_AddFiles value) addFiles,
     required TResult Function(_AddPlatformFiles value) addPlatformFiles,
     required TResult Function(_AddFolder value) addFolder,
@@ -599,6 +600,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   }) {
     final _that = this;
     switch (_that) {
+      case _Select():
+        return select(_that);
       case _AddFiles():
         return addFiles(_that);
       case _AddPlatformFiles():
@@ -632,6 +635,7 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Select value)? select,
     TResult? Function(_AddFiles value)? addFiles,
     TResult? Function(_AddPlatformFiles value)? addPlatformFiles,
     TResult? Function(_AddFolder value)? addFolder,
@@ -643,6 +647,8 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
   }) {
     final _that = this;
     switch (_that) {
+      case _Select() when select != null:
+        return select(_that);
       case _AddFiles() when addFiles != null:
         return addFiles(_that);
       case _AddPlatformFiles() when addPlatformFiles != null:
@@ -678,33 +684,21 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
+    TResult Function(UploadSelectionKind kind)? select,
     TResult Function(List<File> files, String rootPath)? addFiles,
-    TResult Function(List<PlatformFile> files, String rootPath)?
-    addPlatformFiles,
+    TResult Function(List<PlatformFile> files, String rootPath)? addPlatformFiles,
     TResult Function(String path)? addFolder,
     TResult Function(String taskId)? removeTask,
     TResult Function(String taskId)? retryTask,
-    TResult Function(String taskId, int attemptId, int sent, int total)?
-    updateProgress,
-    TResult Function(
-      String taskId,
-      int attemptId,
-      UploadFailure? failure,
-      bool cancelled,
-    )?
-    taskFinished,
-    TResult Function(
-      int scanId,
-      List<File> files,
-      String rootPath,
-      bool finished,
-      UploadSelectionIssue? issue,
-    )?
-    folderChunk,
+    TResult Function(String taskId, int attemptId, int sent, int total)? updateProgress,
+    TResult Function(String taskId, int attemptId, UploadFailure? failure, bool cancelled)? taskFinished,
+    TResult Function(int scanId, List<UploadFolderFile> files, bool finished, UploadSelectionIssue? issue)? folderChunk,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
+      case _Select() when select != null:
+        return select(_that.kind);
       case _AddFiles() when addFiles != null:
         return addFiles(_that.files, _that.rootPath);
       case _AddPlatformFiles() when addPlatformFiles != null:
@@ -716,27 +710,11 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
       case _RetryTask() when retryTask != null:
         return retryTask(_that.taskId);
       case _UpdateProgress() when updateProgress != null:
-        return updateProgress(
-          _that.taskId,
-          _that.attemptId,
-          _that.sent,
-          _that.total,
-        );
+        return updateProgress(_that.taskId, _that.attemptId, _that.sent, _that.total);
       case _TaskFinished() when taskFinished != null:
-        return taskFinished(
-          _that.taskId,
-          _that.attemptId,
-          _that.failure,
-          _that.cancelled,
-        );
+        return taskFinished(_that.taskId, _that.attemptId, _that.failure, _that.cancelled);
       case _FolderChunk() when folderChunk != null:
-        return folderChunk(
-          _that.scanId,
-          _that.files,
-          _that.rootPath,
-          _that.finished,
-          _that.issue,
-        );
+        return folderChunk(_that.scanId, _that.files, _that.finished, _that.issue);
       case _:
         return orElse();
     }
@@ -757,32 +735,21 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
+    required TResult Function(UploadSelectionKind kind) select,
     required TResult Function(List<File> files, String rootPath) addFiles,
-    required TResult Function(List<PlatformFile> files, String rootPath)
-    addPlatformFiles,
+    required TResult Function(List<PlatformFile> files, String rootPath) addPlatformFiles,
     required TResult Function(String path) addFolder,
     required TResult Function(String taskId) removeTask,
     required TResult Function(String taskId) retryTask,
-    required TResult Function(String taskId, int attemptId, int sent, int total)
-    updateProgress,
-    required TResult Function(
-      String taskId,
-      int attemptId,
-      UploadFailure? failure,
-      bool cancelled,
-    )
-    taskFinished,
-    required TResult Function(
-      int scanId,
-      List<File> files,
-      String rootPath,
-      bool finished,
-      UploadSelectionIssue? issue,
-    )
+    required TResult Function(String taskId, int attemptId, int sent, int total) updateProgress,
+    required TResult Function(String taskId, int attemptId, UploadFailure? failure, bool cancelled) taskFinished,
+    required TResult Function(int scanId, List<UploadFolderFile> files, bool finished, UploadSelectionIssue? issue)
     folderChunk,
   }) {
     final _that = this;
     switch (_that) {
+      case _Select():
+        return select(_that.kind);
       case _AddFiles():
         return addFiles(_that.files, _that.rootPath);
       case _AddPlatformFiles():
@@ -794,27 +761,11 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
       case _RetryTask():
         return retryTask(_that.taskId);
       case _UpdateProgress():
-        return updateProgress(
-          _that.taskId,
-          _that.attemptId,
-          _that.sent,
-          _that.total,
-        );
+        return updateProgress(_that.taskId, _that.attemptId, _that.sent, _that.total);
       case _TaskFinished():
-        return taskFinished(
-          _that.taskId,
-          _that.attemptId,
-          _that.failure,
-          _that.cancelled,
-        );
+        return taskFinished(_that.taskId, _that.attemptId, _that.failure, _that.cancelled);
       case _FolderChunk():
-        return folderChunk(
-          _that.scanId,
-          _that.files,
-          _that.rootPath,
-          _that.finished,
-          _that.issue,
-        );
+        return folderChunk(_that.scanId, _that.files, _that.finished, _that.issue);
     }
   }
 
@@ -832,32 +783,21 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(UploadSelectionKind kind)? select,
     TResult? Function(List<File> files, String rootPath)? addFiles,
-    TResult? Function(List<PlatformFile> files, String rootPath)?
-    addPlatformFiles,
+    TResult? Function(List<PlatformFile> files, String rootPath)? addPlatformFiles,
     TResult? Function(String path)? addFolder,
     TResult? Function(String taskId)? removeTask,
     TResult? Function(String taskId)? retryTask,
-    TResult? Function(String taskId, int attemptId, int sent, int total)?
-    updateProgress,
-    TResult? Function(
-      String taskId,
-      int attemptId,
-      UploadFailure? failure,
-      bool cancelled,
-    )?
-    taskFinished,
-    TResult? Function(
-      int scanId,
-      List<File> files,
-      String rootPath,
-      bool finished,
-      UploadSelectionIssue? issue,
-    )?
+    TResult? Function(String taskId, int attemptId, int sent, int total)? updateProgress,
+    TResult? Function(String taskId, int attemptId, UploadFailure? failure, bool cancelled)? taskFinished,
+    TResult? Function(int scanId, List<UploadFolderFile> files, bool finished, UploadSelectionIssue? issue)?
     folderChunk,
   }) {
     final _that = this;
     switch (_that) {
+      case _Select() when select != null:
+        return select(_that.kind);
       case _AddFiles() when addFiles != null:
         return addFiles(_that.files, _that.rootPath);
       case _AddPlatformFiles() when addPlatformFiles != null:
@@ -869,27 +809,11 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
       case _RetryTask() when retryTask != null:
         return retryTask(_that.taskId);
       case _UpdateProgress() when updateProgress != null:
-        return updateProgress(
-          _that.taskId,
-          _that.attemptId,
-          _that.sent,
-          _that.total,
-        );
+        return updateProgress(_that.taskId, _that.attemptId, _that.sent, _that.total);
       case _TaskFinished() when taskFinished != null:
-        return taskFinished(
-          _that.taskId,
-          _that.attemptId,
-          _that.failure,
-          _that.cancelled,
-        );
+        return taskFinished(_that.taskId, _that.attemptId, _that.failure, _that.cancelled);
       case _FolderChunk() when folderChunk != null:
-        return folderChunk(
-          _that.scanId,
-          _that.files,
-          _that.rootPath,
-          _that.finished,
-          _that.issue,
-        );
+        return folderChunk(_that.scanId, _that.files, _that.finished, _that.issue);
       case _:
         return null;
     }
@@ -898,9 +822,67 @@ extension UploadQueueEventPatterns on UploadQueueEvent {
 
 /// @nodoc
 
+class _Select implements UploadQueueEvent {
+  const _Select(this.kind);
+
+  final UploadSelectionKind kind;
+
+  /// Create a copy of UploadQueueEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SelectCopyWith<_Select> get copyWith => __$SelectCopyWithImpl<_Select>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Select && (identical(other.kind, kind) || other.kind == kind));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, kind);
+  }
+
+  @override
+  String toString() {
+    return 'UploadQueueEvent.select(kind: $kind)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SelectCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$SelectCopyWith(_Select value, $Res Function(_Select) _then) = __$SelectCopyWithImpl;
+  @useResult
+  $Res call({UploadSelectionKind kind});
+}
+
+/// @nodoc
+class __$SelectCopyWithImpl<$Res> implements _$SelectCopyWith<$Res> {
+  __$SelectCopyWithImpl(this._self, this._then);
+
+  final _Select _self;
+  final $Res Function(_Select) _then;
+
+  /// Create a copy of UploadQueueEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? kind = null}) {
+    return _then(
+      _Select(
+        null == kind
+            ? _self.kind
+            : kind // ignore: cast_nullable_to_non_nullable
+                  as UploadSelectionKind,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
 class _AddFiles implements UploadQueueEvent {
-  const _AddFiles({required List<File> files, required this.rootPath})
-    : _files = files;
+  const _AddFiles({required List<File> files, required this.rootPath}) : _files = files;
 
   final List<File> _files;
   List<File> get files {
@@ -915,8 +897,7 @@ class _AddFiles implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$AddFilesCopyWith<_AddFiles> get copyWith =>
-      __$AddFilesCopyWithImpl<_AddFiles>(this, _$identity);
+  _$AddFilesCopyWith<_AddFiles> get copyWith => __$AddFilesCopyWithImpl<_AddFiles>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -924,17 +905,12 @@ class _AddFiles implements UploadQueueEvent {
         (other.runtimeType == runtimeType &&
             other is _AddFiles &&
             const DeepCollectionEquality().equals(other.files, _files) &&
-            (identical(other.rootPath, rootPath) ||
-                other.rootPath == rootPath));
+            (identical(other.rootPath, rootPath) || other.rootPath == rootPath));
   }
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_files),
-      rootPath,
-    );
+    return Object.hash(runtimeType, const DeepCollectionEquality().hash(_files), rootPath);
   }
 
   @override
@@ -944,10 +920,8 @@ class _AddFiles implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$AddFilesCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$AddFilesCopyWith(_AddFiles value, $Res Function(_AddFiles) _then) =
-      __$AddFilesCopyWithImpl;
+abstract mixin class _$AddFilesCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$AddFilesCopyWith(_AddFiles value, $Res Function(_AddFiles) _then) = __$AddFilesCopyWithImpl;
   @useResult
   $Res call({List<File> files, String rootPath});
 }
@@ -981,10 +955,7 @@ class __$AddFilesCopyWithImpl<$Res> implements _$AddFilesCopyWith<$Res> {
 /// @nodoc
 
 class _AddPlatformFiles implements UploadQueueEvent {
-  const _AddPlatformFiles({
-    required List<PlatformFile> files,
-    required this.rootPath,
-  }) : _files = files;
+  const _AddPlatformFiles({required List<PlatformFile> files, required this.rootPath}) : _files = files;
 
   final List<PlatformFile> _files;
   List<PlatformFile> get files {
@@ -1008,17 +979,12 @@ class _AddPlatformFiles implements UploadQueueEvent {
         (other.runtimeType == runtimeType &&
             other is _AddPlatformFiles &&
             const DeepCollectionEquality().equals(other.files, _files) &&
-            (identical(other.rootPath, rootPath) ||
-                other.rootPath == rootPath));
+            (identical(other.rootPath, rootPath) || other.rootPath == rootPath));
   }
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_files),
-      rootPath,
-    );
+    return Object.hash(runtimeType, const DeepCollectionEquality().hash(_files), rootPath);
   }
 
   @override
@@ -1028,19 +994,15 @@ class _AddPlatformFiles implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$AddPlatformFilesCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$AddPlatformFilesCopyWith(
-    _AddPlatformFiles value,
-    $Res Function(_AddPlatformFiles) _then,
-  ) = __$AddPlatformFilesCopyWithImpl;
+abstract mixin class _$AddPlatformFilesCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$AddPlatformFilesCopyWith(_AddPlatformFiles value, $Res Function(_AddPlatformFiles) _then) =
+      __$AddPlatformFilesCopyWithImpl;
   @useResult
   $Res call({List<PlatformFile> files, String rootPath});
 }
 
 /// @nodoc
-class __$AddPlatformFilesCopyWithImpl<$Res>
-    implements _$AddPlatformFilesCopyWith<$Res> {
+class __$AddPlatformFilesCopyWithImpl<$Res> implements _$AddPlatformFilesCopyWith<$Res> {
   __$AddPlatformFilesCopyWithImpl(this._self, this._then);
 
   final _AddPlatformFiles _self;
@@ -1076,8 +1038,7 @@ class _AddFolder implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$AddFolderCopyWith<_AddFolder> get copyWith =>
-      __$AddFolderCopyWithImpl<_AddFolder>(this, _$identity);
+  _$AddFolderCopyWith<_AddFolder> get copyWith => __$AddFolderCopyWithImpl<_AddFolder>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -1099,12 +1060,8 @@ class _AddFolder implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$AddFolderCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$AddFolderCopyWith(
-    _AddFolder value,
-    $Res Function(_AddFolder) _then,
-  ) = __$AddFolderCopyWithImpl;
+abstract mixin class _$AddFolderCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$AddFolderCopyWith(_AddFolder value, $Res Function(_AddFolder) _then) = __$AddFolderCopyWithImpl;
   @useResult
   $Res call({String path});
 }
@@ -1142,8 +1099,7 @@ class _RemoveTask implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$RemoveTaskCopyWith<_RemoveTask> get copyWith =>
-      __$RemoveTaskCopyWithImpl<_RemoveTask>(this, _$identity);
+  _$RemoveTaskCopyWith<_RemoveTask> get copyWith => __$RemoveTaskCopyWithImpl<_RemoveTask>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -1165,12 +1121,8 @@ class _RemoveTask implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$RemoveTaskCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$RemoveTaskCopyWith(
-    _RemoveTask value,
-    $Res Function(_RemoveTask) _then,
-  ) = __$RemoveTaskCopyWithImpl;
+abstract mixin class _$RemoveTaskCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$RemoveTaskCopyWith(_RemoveTask value, $Res Function(_RemoveTask) _then) = __$RemoveTaskCopyWithImpl;
   @useResult
   $Res call({String taskId});
 }
@@ -1208,8 +1160,7 @@ class _RetryTask implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$RetryTaskCopyWith<_RetryTask> get copyWith =>
-      __$RetryTaskCopyWithImpl<_RetryTask>(this, _$identity);
+  _$RetryTaskCopyWith<_RetryTask> get copyWith => __$RetryTaskCopyWithImpl<_RetryTask>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -1231,12 +1182,8 @@ class _RetryTask implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$RetryTaskCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$RetryTaskCopyWith(
-    _RetryTask value,
-    $Res Function(_RetryTask) _then,
-  ) = __$RetryTaskCopyWithImpl;
+abstract mixin class _$RetryTaskCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$RetryTaskCopyWith(_RetryTask value, $Res Function(_RetryTask) _then) = __$RetryTaskCopyWithImpl;
   @useResult
   $Res call({String taskId});
 }
@@ -1286,8 +1233,7 @@ class _UpdateProgress implements UploadQueueEvent {
         (other.runtimeType == runtimeType &&
             other is _UpdateProgress &&
             (identical(other.taskId, taskId) || other.taskId == taskId) &&
-            (identical(other.attemptId, attemptId) ||
-                other.attemptId == attemptId) &&
+            (identical(other.attemptId, attemptId) || other.attemptId == attemptId) &&
             (identical(other.sent, sent) || other.sent == sent) &&
             (identical(other.total, total) || other.total == total));
   }
@@ -1304,19 +1250,15 @@ class _UpdateProgress implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$UpdateProgressCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$UpdateProgressCopyWith(
-    _UpdateProgress value,
-    $Res Function(_UpdateProgress) _then,
-  ) = __$UpdateProgressCopyWithImpl;
+abstract mixin class _$UpdateProgressCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$UpdateProgressCopyWith(_UpdateProgress value, $Res Function(_UpdateProgress) _then) =
+      __$UpdateProgressCopyWithImpl;
   @useResult
   $Res call({String taskId, int attemptId, int sent, int total});
 }
 
 /// @nodoc
-class __$UpdateProgressCopyWithImpl<$Res>
-    implements _$UpdateProgressCopyWith<$Res> {
+class __$UpdateProgressCopyWithImpl<$Res> implements _$UpdateProgressCopyWith<$Res> {
   __$UpdateProgressCopyWithImpl(this._self, this._then);
 
   final _UpdateProgress _self;
@@ -1325,12 +1267,7 @@ class __$UpdateProgressCopyWithImpl<$Res>
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-    Object? attemptId = null,
-    Object? sent = null,
-    Object? total = null,
-  }) {
+  $Res call({Object? taskId = null, Object? attemptId = null, Object? sent = null, Object? total = null}) {
     return _then(
       _UpdateProgress(
         null == taskId
@@ -1357,12 +1294,7 @@ class __$UpdateProgressCopyWithImpl<$Res>
 /// @nodoc
 
 class _TaskFinished implements UploadQueueEvent {
-  const _TaskFinished(
-    this.taskId,
-    this.attemptId,
-    this.failure,
-    this.cancelled,
-  );
+  const _TaskFinished(this.taskId, this.attemptId, this.failure, this.cancelled);
 
   final String taskId;
   final int attemptId;
@@ -1373,8 +1305,7 @@ class _TaskFinished implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$TaskFinishedCopyWith<_TaskFinished> get copyWith =>
-      __$TaskFinishedCopyWithImpl<_TaskFinished>(this, _$identity);
+  _$TaskFinishedCopyWith<_TaskFinished> get copyWith => __$TaskFinishedCopyWithImpl<_TaskFinished>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -1382,11 +1313,9 @@ class _TaskFinished implements UploadQueueEvent {
         (other.runtimeType == runtimeType &&
             other is _TaskFinished &&
             (identical(other.taskId, taskId) || other.taskId == taskId) &&
-            (identical(other.attemptId, attemptId) ||
-                other.attemptId == attemptId) &&
+            (identical(other.attemptId, attemptId) || other.attemptId == attemptId) &&
             (identical(other.failure, failure) || other.failure == failure) &&
-            (identical(other.cancelled, cancelled) ||
-                other.cancelled == cancelled));
+            (identical(other.cancelled, cancelled) || other.cancelled == cancelled));
   }
 
   @override
@@ -1401,24 +1330,14 @@ class _TaskFinished implements UploadQueueEvent {
 }
 
 /// @nodoc
-abstract mixin class _$TaskFinishedCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$TaskFinishedCopyWith(
-    _TaskFinished value,
-    $Res Function(_TaskFinished) _then,
-  ) = __$TaskFinishedCopyWithImpl;
+abstract mixin class _$TaskFinishedCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$TaskFinishedCopyWith(_TaskFinished value, $Res Function(_TaskFinished) _then) = __$TaskFinishedCopyWithImpl;
   @useResult
-  $Res call({
-    String taskId,
-    int attemptId,
-    UploadFailure? failure,
-    bool cancelled,
-  });
+  $Res call({String taskId, int attemptId, UploadFailure? failure, bool cancelled});
 }
 
 /// @nodoc
-class __$TaskFinishedCopyWithImpl<$Res>
-    implements _$TaskFinishedCopyWith<$Res> {
+class __$TaskFinishedCopyWithImpl<$Res> implements _$TaskFinishedCopyWith<$Res> {
   __$TaskFinishedCopyWithImpl(this._self, this._then);
 
   final _TaskFinished _self;
@@ -1427,12 +1346,7 @@ class __$TaskFinishedCopyWithImpl<$Res>
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? taskId = null,
-    Object? attemptId = null,
-    Object? failure = freezed,
-    Object? cancelled = null,
-  }) {
+  $Res call({Object? taskId = null, Object? attemptId = null, Object? failure = freezed, Object? cancelled = null}) {
     return _then(
       _TaskFinished(
         null == taskId
@@ -1459,23 +1373,17 @@ class __$TaskFinishedCopyWithImpl<$Res>
 /// @nodoc
 
 class _FolderChunk implements UploadQueueEvent {
-  const _FolderChunk({
-    required this.scanId,
-    required List<File> files,
-    required this.rootPath,
-    this.finished = false,
-    this.issue,
-  }) : _files = files;
+  const _FolderChunk({required this.scanId, required List<UploadFolderFile> files, this.finished = false, this.issue})
+    : _files = files;
 
   final int scanId;
-  final List<File> _files;
-  List<File> get files {
+  final List<UploadFolderFile> _files;
+  List<UploadFolderFile> get files {
     if (_files is EqualUnmodifiableListView) return _files;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_files);
   }
 
-  final String rootPath;
   @JsonKey()
   final bool finished;
   final UploadSelectionIssue? issue;
@@ -1484,8 +1392,7 @@ class _FolderChunk implements UploadQueueEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$FolderChunkCopyWith<_FolderChunk> get copyWith =>
-      __$FolderChunkCopyWithImpl<_FolderChunk>(this, _$identity);
+  _$FolderChunkCopyWith<_FolderChunk> get copyWith => __$FolderChunkCopyWithImpl<_FolderChunk>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -1494,46 +1401,26 @@ class _FolderChunk implements UploadQueueEvent {
             other is _FolderChunk &&
             (identical(other.scanId, scanId) || other.scanId == scanId) &&
             const DeepCollectionEquality().equals(other.files, _files) &&
-            (identical(other.rootPath, rootPath) ||
-                other.rootPath == rootPath) &&
-            (identical(other.finished, finished) ||
-                other.finished == finished) &&
+            (identical(other.finished, finished) || other.finished == finished) &&
             (identical(other.issue, issue) || other.issue == issue));
   }
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      scanId,
-      const DeepCollectionEquality().hash(_files),
-      rootPath,
-      finished,
-      issue,
-    );
+    return Object.hash(runtimeType, scanId, const DeepCollectionEquality().hash(_files), finished, issue);
   }
 
   @override
   String toString() {
-    return 'UploadQueueEvent.folderChunk(scanId: $scanId, files: $files, rootPath: $rootPath, finished: $finished, issue: $issue)';
+    return 'UploadQueueEvent.folderChunk(scanId: $scanId, files: $files, finished: $finished, issue: $issue)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$FolderChunkCopyWith<$Res>
-    implements $UploadQueueEventCopyWith<$Res> {
-  factory _$FolderChunkCopyWith(
-    _FolderChunk value,
-    $Res Function(_FolderChunk) _then,
-  ) = __$FolderChunkCopyWithImpl;
+abstract mixin class _$FolderChunkCopyWith<$Res> implements $UploadQueueEventCopyWith<$Res> {
+  factory _$FolderChunkCopyWith(_FolderChunk value, $Res Function(_FolderChunk) _then) = __$FolderChunkCopyWithImpl;
   @useResult
-  $Res call({
-    int scanId,
-    List<File> files,
-    String rootPath,
-    bool finished,
-    UploadSelectionIssue? issue,
-  });
+  $Res call({int scanId, List<UploadFolderFile> files, bool finished, UploadSelectionIssue? issue});
 }
 
 /// @nodoc
@@ -1546,13 +1433,7 @@ class __$FolderChunkCopyWithImpl<$Res> implements _$FolderChunkCopyWith<$Res> {
   /// Create a copy of UploadQueueEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? scanId = null,
-    Object? files = null,
-    Object? rootPath = null,
-    Object? finished = null,
-    Object? issue = freezed,
-  }) {
+  $Res call({Object? scanId = null, Object? files = null, Object? finished = null, Object? issue = freezed}) {
     return _then(
       _FolderChunk(
         scanId: null == scanId
@@ -1562,11 +1443,7 @@ class __$FolderChunkCopyWithImpl<$Res> implements _$FolderChunkCopyWith<$Res> {
         files: null == files
             ? _self._files
             : files // ignore: cast_nullable_to_non_nullable
-                  as List<File>,
-        rootPath: null == rootPath
-            ? _self.rootPath
-            : rootPath // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as List<UploadFolderFile>,
         finished: null == finished
             ? _self.finished
             : finished // ignore: cast_nullable_to_non_nullable

@@ -14,6 +14,7 @@ import 'package:dslideshow_common/frame_discovery.dart';
 
 import 'features/login/data/frame_discovery_provider.dart';
 import 'features/device/data/device_repository.dart';
+import 'features/upload/data/upload_platform.dart';
 import 'features/uikit/presentation/bloc/backend_version_bloc.dart';
 
 // import 'package:wa_api_gen/wa_api_gen.dart';
@@ -35,7 +36,14 @@ Future<void> initializeAllDependencies({
   sl.registerSingleton<AuthenticationRepository>(AuthenticationRepositoryImpl(client: sl()));
   sl.registerSingleton<PhotoframeRepository>(PhotoframeRepository(sl()));
 
-  sl.registerSingleton<UploadQueueBloc>(UploadQueueBloc(client: sl()));
+  sl.registerSingleton<UploadQueueBloc>(
+    UploadQueueBloc(
+      client: realtimeClient,
+      pickFolder: platformPickDirectory,
+      listPlatformFolder: platformListDirectory,
+      pickedPathMode: platformPickedPathMode,
+    ),
+  );
 
   sl.registerSingleton<PermissionService>(PermissionService());
 

@@ -1,4 +1,6 @@
 {
+  "upload_folder_button": "Загрузить папку",
+  "upload_file_selection_failed": "Не удалось выбрать файлы. Попробуйте ещё раз.",
   "password": "Пароль",
   "username": "Имя пользователя",
   "helloWorld": "Привет, мир!",

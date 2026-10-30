@@ -1,4 +1,6 @@
 {
+  "upload_folder_button": "Upload folder",
+  "upload_file_selection_failed": "Could not open the file picker. Please try again.",
   "password": "Password",
   "username": "Username",
   "helloWorld": "Hello World!",

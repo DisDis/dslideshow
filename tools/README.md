@@ -1,5 +1,31 @@
 # Локальные инструменты
 
+## Android APK панели
+
+Сначала подготовьте зависимости: `(cd tools && dart pub get)` из корня репозитория.
+Затем из корня:
+
+```sh
+./config_app/build_android.sh
+# Либо напрямую:
+(cd tools && dart run bin/dslideshow_tools.dart build-android)
+```
+
+Команда читает версию `backend/pubspec.yaml`, записывает её в `config_app/pubspec.yaml`,
+запускает обычный `flutter build apk --release` и после успеха копирует штатный APK в
+`config_app/build/app/outputs/flutter-apk/config_app_<version>.apk`.
+Суффикс `+N` сохраняется в имени файла, `N` должен быть целым числом от 1 до 2100000000.
+Остальные поля pubspec сохраняются; Flutter получает зависимости штатным способом.
+Версия панели остаётся обновлённой и при отказе сборки. Ошибка Flutter возвращается вызывающему,
+после ошибки новый файл не публикуется. SIGINT/SIGTERM останавливают группу процесса сборки.
+Logger `AndroidBuild` пишет начало, версию, итог или отказ/отмену; штатный вывод Flutter
+передаётся в консоль. Требования SDK, подпись и проверка APK — в
+[README панели](../config_app/README.md#android-apk).
+
+```sh
+dart test test/build/android_test.dart
+```
+
 ## Coverage Dart/Flutter
 
 `coverage` в Dart CLI собирает локальный VM-coverage `backend`, `config_app` и

@@ -10,6 +10,12 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get upload_folder_button => 'Загрузить папку';
+
+  @override
+  String get upload_file_selection_failed => 'Не удалось выбрать файлы. Попробуйте ещё раз.';
+
+  @override
   String get password => 'Пароль';
 
   @override

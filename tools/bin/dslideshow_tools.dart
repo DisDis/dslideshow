@@ -5,11 +5,12 @@ import 'package:args/command_runner.dart';
 import 'package:dslideshow_tools/src/ambient/cli.dart';
 import 'package:dslideshow_tools/src/benchmarks/cli.dart';
 import 'package:dslideshow_tools/src/benchmarks/native_pipeline/cli.dart';
+import 'package:dslideshow_tools/src/build/android.dart';
 import 'package:dslideshow_tools/src/coverage/cli.dart';
 import 'package:dslideshow_tools/src/testing/cli.dart';
 import 'package:logging/logging.dart';
 
-enum _Command { coverage, ambient, benchmark, nativePipeline, tests }
+enum _Command { coverage, ambient, benchmark, nativePipeline, tests, android }
 
 const _testsUsage =
     'Usage: dslideshow_tools tests <groups [options]|report DIRECTORY>\n'
@@ -18,7 +19,7 @@ const _testsUsage =
 Future<void> main(List<String> arguments) async {
   if (arguments.isEmpty || arguments.first == '--help' || arguments.first == '-h') {
     stdout.writeln(
-      'DSlideshow tools\nUsage: dslideshow_tools <coverage|ambient|benchmark|native|tests> [arguments]\n'
+      'DSlideshow tools\nUsage: dslideshow_tools <coverage|ambient|benchmark|native|tests|build-android> [arguments]\n'
       'Production release: dart run tool/grind.dart release',
     );
     return;
@@ -29,6 +30,7 @@ Future<void> main(List<String> arguments) async {
     'benchmark' => _Command.benchmark,
     'native' => _Command.nativePipeline,
     'tests' => _Command.tests,
+    'build-android' => _Command.android,
     _ => null,
   };
   if (command == null) {
@@ -48,6 +50,7 @@ Future<void> main(List<String> arguments) async {
       _Command.benchmark => runBenchmark(rest),
       _Command.nativePipeline => runNativePipeline(rest),
       _Command.tests => runTests(rest),
+      _Command.android => runAndroidBuild(rest),
     };
   } on UsageException catch (error) {
     stderr.writeln(error.message);

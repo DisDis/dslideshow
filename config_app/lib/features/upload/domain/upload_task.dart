@@ -6,7 +6,11 @@ enum UploadStatus { queued, uploading, completed, error }
 
 enum UploadFailure { sourceUnavailable, lengthUnknown, transferFailed }
 
-enum UploadSelectionIssue { emptyFolder, folderReadFailed }
+enum UploadSelectionIssue { emptyFolder, folderReadFailed, pickerFailed }
+
+enum UploadSelectionKind { files, folder }
+
+enum UploadPickedPathMode { parentFolder, fileName }
 
 @freezed
 sealed class UploadTask with _$UploadTask {

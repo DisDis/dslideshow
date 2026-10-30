@@ -12,50 +12,80 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/upload_support.dart';
 
 void main() {
-  testWidgets(
-    'typed error, retry, progress and cancellation use the working upload queue',
-    (tester) async {
-      final transport = ControlledUploadHttpClient();
-      final bloc = UploadQueueBloc(
-        client: UploadRealtimeService(),
-        webClientFactory: () => WebClient(
-          host: 'frame',
-          port: 80,
-          code: '',
-          clientFactory: () => transport,
+  testWidgets('empty mobile queue shows a folder button that opens the folder picker', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    var selections = 0;
+    final bloc = UploadQueueBloc(
+      client: UploadRealtimeService(),
+      pickFolder: () async {
+        selections++;
+        return null;
+      },
+      pickFiles: () async => fail('Folder button must not open the file picker'),
+    );
+    addTearDown(bloc.close);
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)),
+          child: child!,
         ),
-      );
-      addTearDown(bloc.close);
-      final file = SelectedUploadFile('photo.jpg', size: null);
-      await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider.value(value: bloc, child: const UploadScreen()),
-        ),
-      );
-      bloc.add(UploadQueueEvent.addPlatformFiles(files: [file], rootPath: ''));
-      await tester.pump();
-      expect(bloc.state.tasks.single.status, UploadStatus.error);
-      expect(find.text('Could not determine the file size.'), findsOneWidget);
-      expect(find.byTooltip('Retry'), findsOneWidget);
-      file.size = 4;
-      await tester.tap(find.byTooltip('Retry'));
-      await tester.pump();
-      expect(bloc.state.tasks.single.status, UploadStatus.uploading);
-      expect(find.byTooltip('Cancel'), findsOneWidget);
-      file.chunks.add(Uint8List.fromList([1, 2]));
-      await tester.pump();
-      expect(find.text('50'), findsOneWidget);
-      await tester.tap(find.byTooltip('Cancel'));
-      await tester.pump();
-      await tester.pump();
-      expect(bloc.state.tasks, isEmpty);
-      expect(find.text('Queue is empty'), findsOneWidget);
-      expect(transport.closed, isTrue);
-      expect(file.cancelStarted.isCompleted, isTrue);
-      expect(file.byteReads, 0);
-    },
-  );
+        home: BlocProvider.value(value: bloc, child: const UploadScreen()),
+      ),
+    );
+    expect(find.text('Upload folder'), findsOneWidget);
+    expect(find.byKey(const ValueKey('upload-add-files')), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const ValueKey('upload-add-folder')));
+    await tester.tap(find.byKey(const ValueKey('upload-add-folder')));
+    await tester.pumpAndSettle();
+    expect(selections, 1);
+    expect(bloc.state.selectionIssue, isNull);
+    expect(bloc.state.isSelecting, isFalse);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('typed error, retry, progress and cancellation use the working upload queue', (tester) async {
+    final transport = ControlledUploadHttpClient();
+    final bloc = UploadQueueBloc(
+      client: UploadRealtimeService(),
+      webClientFactory: () => WebClient(host: 'frame', port: 80, code: '', clientFactory: () => transport),
+    );
+    addTearDown(bloc.close);
+    final file = SelectedUploadFile('photo.jpg', size: null);
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BlocProvider.value(value: bloc, child: const UploadScreen()),
+      ),
+    );
+    bloc.add(UploadQueueEvent.addPlatformFiles(files: [file], rootPath: ''));
+    await tester.pump();
+    expect(bloc.state.tasks.single.status, UploadStatus.error);
+    expect(find.text('Could not determine the file size.'), findsOneWidget);
+    expect(find.byTooltip('Retry'), findsOneWidget);
+    file.size = 4;
+    await tester.tap(find.byTooltip('Retry'));
+    await tester.pump();
+    expect(bloc.state.tasks.single.status, UploadStatus.uploading);
+    expect(find.byTooltip('Cancel'), findsOneWidget);
+    file.chunks.add(Uint8List.fromList([1, 2]));
+    await tester.pump();
+    expect(find.text('50'), findsOneWidget);
+    await tester.tap(find.byTooltip('Cancel'));
+    await tester.pump();
+    await tester.pump();
+    expect(bloc.state.tasks, isEmpty);
+    expect(find.text('Queue is empty'), findsOneWidget);
+    expect(transport.closed, isTrue);
+    expect(file.cancelStarted.isCompleted, isTrue);
+    expect(file.byteReads, 0);
+  });
 }

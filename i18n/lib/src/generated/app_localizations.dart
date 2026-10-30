@@ -92,6 +92,18 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ru')];
 
+  /// No description provided for @upload_folder_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload folder'**
+  String get upload_folder_button;
+
+  /// No description provided for @upload_file_selection_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the file picker. Please try again.'**
+  String get upload_file_selection_failed;
+
   /// No description provided for @password.
   ///
   /// In en, this message translates to:

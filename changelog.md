@@ -1,5 +1,13 @@
 # Unreleased
 
+* Discover photo frames on Android through the system network service discovery.
+  Import selected folders and subfolders through Android's document picker without
+  requiring access to the entire storage; stream active files and report picker errors.
+
+* Build the Android configuration panel as DSlideshow Config with network access
+  in release builds and HTTP/WebSocket connections to the photo frame. Set its
+  application version from the backend version when using the Android build script.
+
 # 17.1.0+1 — 2026-10-30
 
 * Discover frames with enabled web access automatically on the native Linux

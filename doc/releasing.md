@@ -8,6 +8,13 @@
 
 * `backend/pubspec.yaml` и `dslideshow_flutter/pubspec.yaml` — синхронные версии
   backend и frontend, включая build-суффикс `+N`.
+* `config_app/build_android.sh` берёт версию Android-панели из `backend/pubspec.yaml`:
+  перед сборкой записывает её в `config_app/pubspec.yaml`. `versionName` получает
+  часть до `+`, `versionCode` — положительный build-номер.
+  Результат — `config_app/build/app/outputs/flutter-apk/config_app_<version>.apk`.
+  Записанная версия сохраняется и для прямого `flutter build apk` без скрипта,
+  даже если Android-сборка завершилась ошибкой. DEB-конвейер автоматически
+  увеличивает версии только backend и frontend.
 * `common/lib/version.dart.template` → `common/lib/version.dart` —
   `ApplicationInfo`, используемый интерфейсом, HTTP/MQTT и OTA.
 * `dslideshow_flutter/autover.yaml` — конфиг генерации во время сборки DEB.

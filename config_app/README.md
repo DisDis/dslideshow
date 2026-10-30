@@ -1,16 +1,17 @@
 # DSlideshow Config
 
 Панель настройки проекта DSlideshow. Отображаемое имя — **DSlideshow Config**:
-заголовок Linux-окна, вкладка браузера, имя установленного web-приложения
-и системный заголовок Flutter. Название одинаковое для RU/EN; Flutter получает
+заголовок Linux-окна, имя Android-приложения, вкладка браузера, имя установленного
+web-приложения и системный заголовок Flutter. Название одинаковое для RU/EN; Flutter получает
 его из `config_app_title` в ARB пакета `i18n`. Статические имена до запуска
-Flutter задаются в `web/index.html`, `web/manifest.json` и Linux runner.
-В репозитории платформенные runner есть для Web и Linux. При добавлении
+Flutter задаются в `web/index.html`, `web/manifest.json`, Linux runner и
+`android/app/src/main/res/values/strings.xml`.
+В репозитории платформенные runner есть для Web, Linux и Android. При добавлении
 других платформ задавайте это же отображаемое имя в их нативных метаданных.
 Внутреннее имя Dart-пакета и исполняемого Linux-файла остаётся `config_app`.
 
-Обе цели `config_app` собираются обычным Flutter SDK: `flutter build web`
-и `flutter build linux`. `flutterpi_tool` применяется только к
+Все цели `config_app` собираются обычным Flutter SDK: `flutter build web`,
+`flutter build linux` и `flutter build apk`. `flutterpi_tool` применяется только к
 `dslideshow_flutter` для ARM64-приложения фоторамки. При выпуске DEB из
 `config_app` включается только статический web bundle `build/web`;
 нативный `config_app` для RaPi5 не собирается.
@@ -146,7 +147,7 @@ JSON-каталога и локальных проверок — в
 несовпадение major с целью сборки отмечено красным значком с tooltip.
 Настройка службы, ограничения
 сети и логи — в [руководстве панели](../doc/config-app.md#поиск-рамок-на-странице-входа).
-Нативные сборки Windows/macOS/Android/iOS подготавливаются отдельно.
+Нативные сборки Windows/macOS/iOS подготавливаются отдельно.
 
 Из папки `config_app`:
 
@@ -213,6 +214,87 @@ SDK не должен оставаться в сборке. Если систе�
 Для отладки из VS Code откройте `lib/main.dart` этого пакета, выберите устройство
 Linux и запустите F5. После изменения Linux runner выполните Stop → Start.
 Отдельный pre-launch скрипт для обновления путей зависимостей не требуется.
+
+## Android APK
+
+Исходники Android runner хранятся в Git. Для сборки требуется установленная
+Android SDK Platform API 37: `compileSdk = 37` задан в
+`android/app/build.gradle.kts`, поскольку его требует `permission_handler_android`.
+Локальные пути `android/local.properties`, Gradle/Kotlin/CMake-кеши, результаты
+сборки, сгенерированный регистратор плагинов и ключи подписи исключены из Git.
+Gradle wrapper scripts/JAR также исключены: Flutter восстанавливает их при сборке
+из своего SDK; версия Gradle сохраняется в `gradle/wrapper/gradle-wrapper.properties`.
+
+Для скрипта нужны подготовленные зависимости Dart-пакета `tools`
+(`cd tools && dart pub get` из корня репозитория). Из папки `config_app`:
+
+```sh
+./build_android.sh
+```
+
+В Flutter 3.47.7 не добавляйте `--no-pub` к Android release-сборке:
+после обычного `pub get` регистратор плагинов содержит dev-плагин `integration_test`,
+а `--no-pub` пропускает его повторную генерацию для release. Обычный
+`flutter build apk --release`, используемый скриптом, обновляет регистратор
+([описание проблемы во Flutter](https://github.com/flutter/flutter/pull/194204)).
+
+Скрипт вызывает Dart-команду `build-android` из пакета `tools`. Перед сборкой она
+записывает версию из `../backend/pubspec.yaml` в `config_app/pubspec.yaml`, затем
+выполняет обычный `flutter build apk --release`: для `17.1.0+1` Android получает
+`versionName = 17.1.0` и `versionCode = 1`. Версия backend должна содержать положительный целочисленный
+build-номер `+N`, не превышающий Android-лимит 2100000000.
+Остальные поля pubspec сохраняются; Flutter получает зависимости штатным способом.
+Записанная версия остаётся в `config_app/pubspec.yaml`, в том числе при последующем отказе сборки.
+
+После успешной сборки рядом со штатным `build/app/outputs/flutter-apk/app-release.apk`
+появляется `build/app/outputs/flutter-apk/config_app_<version>.apk`, например
+`config_app_17.1.0+1.apk`. При отказе Flutter переименование/копирование не выполняется,
+код ошибки сохраняется. Прямой вызов `flutter build apk` также использует
+записанную версию из `config_app/pubspec.yaml`.
+Локальный runner использует debug-подпись для release; для публикации
+необходимо отдельно настроить release-подпись.
+
+Основной Android-манифест задаёт `INTERNET` и `ACCESS_NETWORK_STATE` для всех
+режимов сборки, включая release. `usesCleartextTraffic = true` разрешает
+HTTP/WS-подключение к адресу фоторамки, задаваемому пользователем.
+Это необходимо для штатного HTTP-сервера рамки без TLS. Подробнее —
+[сетевые разрешения](https://developer.android.com/develop/connectivity/network-ops/connecting)
+и [настройка cleartext](https://developer.android.com/guide/topics/manifest/application-element#usesCleartextTraffic).
+Текущий `targetSdk` берётся из Flutter SDK (36); `compileSdk = 37` его не меняет.
+При переходе на `targetSdk >= 37` потребуется отдельный runtime-запрос
+`ACCESS_LOCAL_NETWORK` перед подключением к локальной сети
+([правила Android](https://developer.android.com/privacy-and-security/local-network-permission)).
+На Android рамки ищет системный NSD по `_dslideshow._tcp.`; адрес можно также ввести вручную.
+На Android до API 34 поиск временно удерживает Wi-Fi multicast lock; для него объявлен
+`CHANGE_WIFI_MULTICAST_STATE`. Окно поиска — 8 секунд, очередь ограничена 256 сервисами,
+разрешение адресов выполняется последовательно. Завершение, уход в фон и закрытие login
+останавливают NSD и освобождают lock; Linux продолжает использовать Avahi/D-Bus.
+
+Фото и видео выбираются системным файловым диалогом. «Добавить папку» на Android
+использует Storage Access Framework: приложение получает доступ только к выбранному
+дереву, обходит подпапки страницами по 128 записей и читает активные файлы через
+ContentResolver блоками до 64 КиБ, сохраняя относительные имена. Общие разрешения
+`READ_MEDIA_*`, `READ_EXTERNAL_STORAGE` и `MANAGE_EXTERNAL_STORAGE` для этого не нужны.
+Ограничения выбора системных каталогов задаёт Android; корень Download и Android/data
+могут быть недоступны, но обычную вложенную папку можно выбрать. Неизвестный размер
+файла показывается существующей ошибкой источника, без чтения всей папки в память.
+NSD и SAF встроены в Android runner: после их изменения нужны полная пересборка,
+установка APK и запуск отладки заново; одного hot reload недостаточно.
+Поиск диагностируют `FrameDiscovery`/`AndroidDiscovery`, выбор и импорт — `UploadQueueBloc`.
+Ошибки подключения диагностируются существующими logger `ClientService` и
+`AuthenticationRepository`, получение логов — `flutter logs -d <device-id>`.
+
+После сборки проверьте установочные метаданные и упакованный манифест:
+
+```sh
+"$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
+"$ANDROID_HOME/build-tools/36.0.0/aapt" dump xmltree build/app/outputs/flutter-apk/app-release.apk AndroidManifest.xml
+```
+
+Используйте установленную версию build-tools, если она отличается от примера.
+Ожидаются имя `DSlideshow Config`, версия из `backend/pubspec.yaml`, оба сетевых разрешения
+и `usesCleartextTraffic = true`. Это проверяет содержимое APK; подключение
+с Android-устройства к фоторамке проверяется отдельно.
 
 ## Проверки видео
 

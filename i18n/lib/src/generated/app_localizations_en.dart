@@ -10,6 +10,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get upload_folder_button => 'Upload folder';
+
+  @override
+  String get upload_file_selection_failed => 'Could not open the file picker. Please try again.';
+
+  @override
   String get password => 'Password';
 
   @override
