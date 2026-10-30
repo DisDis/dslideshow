@@ -1,6 +1,9 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_bloc.dart';
+import 'package:dslideshow_flutter/features/menu/presentation/bloc/main_menu_bloc.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
 import 'package:dslideshow_flutter/main.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
@@ -13,7 +16,7 @@ import 'ota_frontend.dart';
 
 /// Mounts the actual application and OTA page, retaining Scaffold's ordinary
 /// body constraints. An optional boundary captures what reaches the display.
-Future<void> mountFrameOtaApp(
+Future<RouteBloc> mountFrameOtaApp(
   WidgetTester tester, {
   AppConfig? config,
   GlobalKey? boundaryKey,
@@ -41,6 +44,28 @@ Future<void> mountFrameOtaApp(
       scope.registerSingleton<AppConfig>(appConfig);
       scope.registerSingleton<FrontendService>(frontend);
       scope.registerSingleton<RouteBloc>(routes);
+      scope.registerFactory<SlideshowBloc>(
+        () => SlideshowBloc(
+          frontendService: frontend,
+          config: appConfig.slideshow,
+          statusBloc: status,
+        ),
+      );
+      scope.registerFactory<MainMenuBloc>(
+        () => MainMenuBloc(
+          routeBloc: routes,
+          frontendService: frontend,
+          slideshowStatusBloc: status,
+          config: appConfig.slideshow.menu,
+        ),
+      );
+      scope.registerFactory<ButtonsHintBloc>(
+        () => ButtonsHintBloc(
+          frontendService: frontend,
+          statusBloc: status,
+          appConfig: appConfig,
+        ),
+      );
     },
   );
   tester.view.devicePixelRatio = 1;
@@ -71,4 +96,5 @@ Future<void> mountFrameOtaApp(
     ),
   );
   await tester.pump();
+  return routes;
 }

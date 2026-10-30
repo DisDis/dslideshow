@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'wifi_tab_state.freezed.dart';
 
+enum WifiFailureKind { rejected, unknown, refresh }
+
 @freezed
 class WifiTabState with _$WifiTabState {
   const factory WifiTabState.uninitialized() = UnWifiTabState;
@@ -10,5 +12,8 @@ class WifiTabState with _$WifiTabState {
     required Iterable<WiFiNetworkInfo> availableNetworks,
     required Iterable<WiFiConnectionInfo> connections,
   }) = InWifiTabState;
-  const factory WifiTabState.error(String errorMessage) = ErrorWifiTabState;
+  const factory WifiTabState.error(
+    String errorMessage, {
+    @Default(WifiFailureKind.rejected) WifiFailureKind kind,
+  }) = ErrorWifiTabState;
 }

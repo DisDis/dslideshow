@@ -18,7 +18,10 @@ class TestFrontend implements FrontendService {
   bool holdLocks = false;
   Completer<void>? turn;
   Completer<MediaItem>? media;
+  Future<Object?> Function()? onStorageNext;
+  Future<MediaItem> Function()? onReadStorageCurrent;
   int loads = 0;
+  int reads = 0;
   @override
   Stream<ButtonEvent> get onButtonEvent => buttons.stream;
   @override
@@ -29,13 +32,19 @@ class TestFrontend implements FrontendService {
   Future<void> updateFrontendState({bool? isPaused, bool? isMenu}) async {}
 
   @override
-  Future<void> storageNext() async {
+  Future<Object?> storageNext() async {
     loads++;
+    return onStorageNext?.call();
   }
 
   @override
-  Future<MediaItem> getStorageCurrentItem() async =>
-      media == null ? MediaItem.empty : await media!.future;
+  Future<MediaItem> getStorageCurrentItem() async {
+    reads++;
+    final read = onReadStorageCurrent;
+    if (read != null) return read();
+    return media == null ? MediaItem.empty : await media!.future;
+  }
+
   @override
   Future<RpcResult> changeScreenLock(bool value) async {
     lockChanges.add(value);

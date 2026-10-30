@@ -13,30 +13,21 @@ part 'gallery_duplicates_bloc.freezed.dart';
 
 enum GalleryDuplicateDecision { keep, trash }
 
-enum GalleryDuplicatesNotice {
-  keepOne,
-  stale,
-  refreshFailed,
-  actionFailed,
-  review,
-  completed,
-}
+enum GalleryDuplicatesNotice { keepOne, stale, refreshFailed, actionFailed, review, completed }
 
 /// Collection equality belongs to a new catalogue snapshot, never to elapsed
 /// clock ticks or decisions. States share this exact immutable value.
 @freezed
-abstract class GalleryDuplicatesCatalogSnapshot
-    with _$GalleryDuplicatesCatalogSnapshot {
+abstract class GalleryDuplicatesCatalogSnapshot with _$GalleryDuplicatesCatalogSnapshot {
   const factory GalleryDuplicatesCatalogSnapshot({
     @Default([]) List<GalleryItem> items,
     @Default({}) Map<String, GalleryItem> byId,
   }) = _GalleryDuplicatesCatalogSnapshot;
 
-  static GalleryDuplicatesCatalogSnapshot index(List<GalleryItem> items) =>
-      GalleryDuplicatesCatalogSnapshot(
-        items: List.unmodifiable(items),
-        byId: {for (final item in items) item.mediaId: item},
-      );
+  static GalleryDuplicatesCatalogSnapshot index(List<GalleryItem> items) => GalleryDuplicatesCatalogSnapshot(
+    items: List.unmodifiable(items),
+    byId: {for (final item in items) item.mediaId: item},
+  );
 }
 
 @freezed
@@ -54,10 +45,8 @@ abstract class GalleryDuplicatesEffect with _$GalleryDuplicatesEffect {
 abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
   const GalleryDuplicatesState._();
   const factory GalleryDuplicatesState({
-    @Default(GalleryDuplicatesCatalogSnapshot())
-    GalleryDuplicatesCatalogSnapshot catalogSnapshot,
-    @Default({GalleryDuplicateMode.exact, GalleryDuplicateMode.similar})
-    Set<GalleryDuplicateMode> modes,
+    @Default(GalleryDuplicatesCatalogSnapshot()) GalleryDuplicatesCatalogSnapshot catalogSnapshot,
+    @Default({GalleryDuplicateMode.exact, GalleryDuplicateMode.similar}) Set<GalleryDuplicateMode> modes,
     @Default({}) Map<String, GalleryDuplicateDecision> decisions,
     @Default(0) int selectedCount,
     @Default(0) int selectedBytes,
@@ -80,19 +69,11 @@ abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
   List<GalleryItem> get catalog => catalogSnapshot.items;
   Map<String, GalleryItem> get catalogById => catalogSnapshot.byId;
 
-  bool get running =>
-      job?.status == GalleryDuplicateStatus.running ||
-      job?.status == GalleryDuplicateStatus.stopping;
+  bool get running => job?.status == GalleryDuplicateStatus.running || job?.status == GalleryDuplicateStatus.stopping;
   bool current(GalleryDuplicateMember member) =>
-      !invalidated.contains(
-        GalleryMediaRef(
-          mediaId: member.mediaId,
-          sourceRevision: member.sourceRevision,
-        ),
-      ) &&
+      !invalidated.contains(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision)) &&
       catalogById[member.mediaId]?.revision == member.sourceRevision;
-  GalleryItem? item(GalleryDuplicateMember member) =>
-      current(member) ? catalogById[member.mediaId] : null;
+  GalleryItem? item(GalleryDuplicateMember member) => current(member) ? catalogById[member.mediaId] : null;
   GalleryDuplicateGroup? get group => visibleGroup;
 
   List<GalleryDuplicateMember> get visibleMembers {
@@ -107,39 +88,25 @@ abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
 sealed class GalleryDuplicatesEvent with _$GalleryDuplicatesEvent {
   const factory GalleryDuplicatesEvent.load() = GalleryDuplicatesLoad;
   const factory GalleryDuplicatesEvent.tick() = GalleryDuplicatesTick;
-  const factory GalleryDuplicatesEvent.catalog(List<GalleryItem> items) =
-      GalleryDuplicatesCatalog;
-  const factory GalleryDuplicatesEvent.start({
-    Set<GalleryDuplicateMode>? modes,
-  }) = GalleryDuplicatesStart;
+  const factory GalleryDuplicatesEvent.catalog(List<GalleryItem> items) = GalleryDuplicatesCatalog;
+  const factory GalleryDuplicatesEvent.start({Set<GalleryDuplicateMode>? modes}) = GalleryDuplicatesStart;
   const factory GalleryDuplicatesEvent.stop() = GalleryDuplicatesStop;
-  const factory GalleryDuplicatesEvent.decide(
-    String groupId,
-    String mediaId,
-    GalleryDuplicateDecision decision,
-  ) = GalleryDuplicatesDecide;
-  const factory GalleryDuplicatesEvent.members(int offset) =
-      GalleryDuplicatesMembers;
+  const factory GalleryDuplicatesEvent.decide(String groupId, String mediaId, GalleryDuplicateDecision decision) =
+      GalleryDuplicatesDecide;
+  const factory GalleryDuplicatesEvent.members(int offset) = GalleryDuplicatesMembers;
   const factory GalleryDuplicatesEvent.skip() = GalleryDuplicatesSkip;
-  const factory GalleryDuplicatesEvent.group(int index) =
-      GalleryDuplicatesGroup;
-  const factory GalleryDuplicatesEvent.clearSelection() =
-      GalleryDuplicatesClearSelection;
-  const factory GalleryDuplicatesEvent.invalidate(
-    GalleryDuplicateMember member,
-  ) = GalleryDuplicatesInvalidate;
+  const factory GalleryDuplicatesEvent.group(int index) = GalleryDuplicatesGroup;
+  const factory GalleryDuplicatesEvent.clearSelection() = GalleryDuplicatesClearSelection;
+  const factory GalleryDuplicatesEvent.invalidate(GalleryDuplicateMember member) = GalleryDuplicatesInvalidate;
   const factory GalleryDuplicatesEvent.review() = GalleryDuplicatesReview;
-  const factory GalleryDuplicatesEvent.apply(
-    String jobId,
-    List<GalleryDuplicateMember> members,
-  ) = GalleryDuplicatesApply;
+  const factory GalleryDuplicatesEvent.apply(String jobId, List<GalleryDuplicateMember> members) =
+      GalleryDuplicatesApply;
 }
 
 /// Owns the duplicate workflow independently from widget rebuilds. The view
 /// handles only user-facing effects; subscriptions, retries and identities live
 /// here, and every asynchronous reply is guarded by its request generation.
-class GalleryDuplicatesBloc
-    extends Bloc<GalleryDuplicatesEvent, GalleryDuplicatesState> {
+class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicatesState> {
   static final _log = Logger('GalleryDuplicatesBloc');
   final GalleryManagementRepository repository;
   final Future<void> Function() onRefresh;
@@ -164,11 +131,7 @@ class GalleryDuplicatesBloc
     Stream<List<GalleryItem>>? catalogUpdates,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now,
-       super(
-         GalleryDuplicatesState(
-           catalogSnapshot: GalleryDuplicatesCatalogSnapshot.index(catalog),
-         ),
-       ) {
+       super(GalleryDuplicatesState(catalogSnapshot: GalleryDuplicatesCatalogSnapshot.index(catalog))) {
     on<GalleryDuplicatesEvent>(_handle);
     _catalogSubscription = catalogUpdates?.listen((items) {
       if (!_closing) add(GalleryDuplicatesEvent.catalog(items));
@@ -201,9 +164,7 @@ class GalleryDuplicatesBloc
 
   GalleryDuplicatesState _accepted(GalleryDuplicateJob job) {
     final changed = state.job?.jobId != job.jobId;
-    final running =
-        job.status == GalleryDuplicateStatus.running ||
-        job.status == GalleryDuplicateStatus.stopping;
+    final running = job.status == GalleryDuplicateStatus.running || job.status == GalleryDuplicateStatus.stopping;
     final terminal = !running && job.status != GalleryDuplicateStatus.idle;
     if (changed || state.running && terminal) {
       _membersById.clear();
@@ -213,18 +174,13 @@ class GalleryDuplicatesBloc
         }
       }
     }
-    final previous =
-        terminal &&
-            job.jobId == _replacementJobId &&
-            job.status != GalleryDuplicateStatus.completed
+    final previous = terminal && job.jobId == _replacementJobId && job.status != GalleryDuplicateStatus.completed
         ? _previousResult
         : null;
     if (changed || state.job?.status != job.status) {
       final message =
-          'event=jobStatusChanged jobId=${GalleryLog.id(job.jobId)} status=${job.status.name} modes=${job.modes.map((mode) => mode.name).join(',')} groups=${job.groups.length} skipped=${job.skipped} code=${job.error?.name ?? 'none'} elapsedMs=${job.startedAt == null ? 0 : (job.finishedAt ?? _now()).difference(job.startedAt!).inMilliseconds}';
-      job.status == GalleryDuplicateStatus.failed
-          ? _log.warning(message)
-          : _log.info(message);
+          'event=jobStatusChanged jobId=${GalleryLog.id(job.jobId)} status=${job.status.name} modes=${job.modes.map((mode) => mode.name).join(',')} groups=${job.groups.length} skipped=${job.skipped} code=${job.error?.name ?? 'none'}';
+      job.status == GalleryDuplicateStatus.failed ? _log.warning(message) : _log.info(message);
     }
     var accepted = state.copyWith(
       job: job,
@@ -240,28 +196,24 @@ class GalleryDuplicatesBloc
       memberOffset: changed ? 0 : state.memberOffset,
       visibleGroup: changed ? null : state.visibleGroup,
       groupLoading: changed ? false : state.groupLoading,
-      elapsedSeconds: job.startedAt == null
-          ? 0
-          : _now().difference(job.startedAt!).inSeconds.clamp(0, 1 << 30),
+      elapsedSeconds: job.startedAt == null ? 0 : _now().difference(job.startedAt!).inSeconds.clamp(0, 1 << 30),
     );
     if (previous != null) {
       final decisions = <String, GalleryDuplicateDecision>{};
       for (final entry in previous.decisions.entries) {
         final member = _membersById[entry.key];
         if (member != null &&
-            previous.catalogById[entry.key]?.revision ==
-                member.sourceRevision &&
+            previous.catalogById[entry.key]?.revision == member.sourceRevision &&
             accepted.current(member)) {
           decisions[entry.key] = entry.value;
         }
       }
-      accepted = _withDecisions(accepted, decisions).copyWith(
-        groupIndex: previous.groupIndex.clamp(0, job.groups.length),
-        invalidated: previous.invalidated,
-      );
+      accepted = _withDecisions(
+        accepted,
+        decisions,
+      ).copyWith(groupIndex: previous.groupIndex.clamp(0, job.groups.length), invalidated: previous.invalidated);
       _log.fine(
-        () =>
-            'event=previousSelectionRestored jobId=${GalleryLog.id(job.jobId)} selected=${accepted.selectedCount}',
+        () => 'event=previousSelectionRestored jobId=${GalleryLog.id(job.jobId)} selected=${accepted.selectedCount}',
       );
     }
     if (terminal && job.jobId == _replacementJobId) {
@@ -274,42 +226,27 @@ class GalleryDuplicatesBloc
   bool _live(Emitter<GalleryDuplicatesState> emit, int generation) =>
       !_closing && !emit.isDone && generation == _generation;
 
-  Future<void> _handle(
-    GalleryDuplicatesEvent event,
-    Emitter<GalleryDuplicatesState> emit,
-  ) async {
+  Future<void> _handle(GalleryDuplicatesEvent event, Emitter<GalleryDuplicatesState> emit) async {
     if (_closing) return;
     switch (event) {
       case GalleryDuplicatesLoad():
         if (state.polling || state.busy) return;
         final generation = ++_generation;
-        final clock = Stopwatch()..start();
         _log.fine(() => 'event=statusLoadStarted generation=$generation');
         emit(state.copyWith(polling: true));
         try {
-          final job = await _requestScope(
-            repository.duplicates(cancel: _cancel.future),
-          );
+          final job = await _requestScope(repository.duplicates(cancel: _cancel.future));
           if (_live(emit, generation)) {
             emit(_accepted(job));
             if (!state.running && job.groups.isNotEmpty) {
               await _openGroup(emit, state.groupIndex);
             }
           }
-          _log.fine(
-            () =>
-                'event=statusLoadCompleted generation=$generation elapsedMs=${clock.elapsedMilliseconds}',
-          );
+          _log.fine(() => 'event=statusLoadCompleted generation=$generation');
         } catch (error) {
-          _failure('statusLoad', error, clock: clock);
+          _failure('statusLoad', error);
           if (_live(emit, generation)) {
-            emit(
-              state.copyWith(
-                loading: false,
-                failed: true,
-                requestError: _requestError(error),
-              ),
-            );
+            emit(state.copyWith(loading: false, failed: true, requestError: _requestError(error)));
           }
         } finally {
           if (!_closing && !emit.isDone) emit(state.copyWith(polling: false));
@@ -317,31 +254,21 @@ class GalleryDuplicatesBloc
       case GalleryDuplicatesTick():
         final started = state.job?.startedAt;
         emit(
-          state.copyWith(
-            elapsedSeconds: started == null
-                ? 0
-                : _now().difference(started).inSeconds.clamp(0, 1 << 30),
-          ),
+          state.copyWith(elapsedSeconds: started == null ? 0 : _now().difference(started).inSeconds.clamp(0, 1 << 30)),
         );
         if (++_ticks % 2 == 0 && !state.polling && !state.busy) {
           add(const GalleryDuplicatesEvent.load());
         }
       case GalleryDuplicatesCatalog(:final items):
-        final updated = state.copyWith(
-          catalogSnapshot: GalleryDuplicatesCatalogSnapshot.index(items),
-        );
-        final decisions = Map<String, GalleryDuplicateDecision>.of(
-          updated.decisions,
-        );
-        for (final group
-            in updated.job?.groups ?? const <GalleryDuplicateGroup>[]) {
+        final updated = state.copyWith(catalogSnapshot: GalleryDuplicatesCatalogSnapshot.index(items));
+        final decisions = Map<String, GalleryDuplicateDecision>.of(updated.decisions);
+        for (final group in updated.job?.groups ?? const <GalleryDuplicateGroup>[]) {
           for (final member in group.items) {
             if (!updated.current(member)) decisions.remove(member.mediaId);
           }
         }
         emit(_withDecisions(updated, decisions));
-        if (state.group?.items.any((member) => !state.current(member)) ??
-            false) {
+        if (state.group?.items.any((member) => !state.current(member)) ?? false) {
           await _openGroup(emit, state.groupIndex);
         }
       case GalleryDuplicatesStart(:final modes):
@@ -351,55 +278,30 @@ class GalleryDuplicatesBloc
         if (modes != null) emit(state.copyWith(modes: modes));
         final generation = ++_generation;
         final old = state.pendingStart;
-        final request =
-            old != null &&
-                old.modes.length == state.modes.length &&
-                old.modes.every(state.modes.contains)
+        final request = old != null && old.modes.length == state.modes.length && old.modes.every(state.modes.contains)
             ? old
-            : GalleryDuplicateStartRequest(
-                operationId: repository.newOperationId(),
-                modes: state.modes.toList(),
-              );
+            : GalleryDuplicateStartRequest(operationId: repository.newOperationId(), modes: state.modes.toList());
         if (_replacementJobId != request.operationId) {
           _previousResult = state.job?.groups.isNotEmpty == true ? state : null;
           _replacementJobId = request.operationId;
         }
-        final clock = Stopwatch()..start();
         _log.info(
-          'event=jobStartRequested operationId=${GalleryLog.id(request.operationId)} modes=${request.modes.map((mode) => mode.name).join(',')} retry=${identical(old, request)}',
+          'event=jobStartRequested modes=${request.modes.map((mode) => mode.name).join(',')} retry=${identical(old, request)}',
         );
-        emit(
-          state.copyWith(
-            busy: true,
-            pendingStart: request,
-            failed: false,
-            requestError: null,
-          ),
-        );
+        emit(state.copyWith(busy: true, pendingStart: request, failed: false, requestError: null));
         try {
-          final job = await _requestScope(
-            repository.start(request, cancel: _cancel.future),
-          );
+          final job = await _requestScope(repository.start(request, cancel: _cancel.future));
           if (_live(emit, generation)) {
             emit(_accepted(job).copyWith(pendingStart: null));
             if (!state.running && job.groups.isNotEmpty) {
               await _openGroup(emit, state.groupIndex);
             }
-            _log.info(
-              'event=jobStartCompleted operationId=${GalleryLog.id(request.operationId)} jobId=${GalleryLog.id(job.jobId)} status=${job.status.name} elapsedMs=${clock.elapsedMilliseconds}',
-            );
+            _log.info('event=jobStartCompleted jobId=${GalleryLog.id(job.jobId)} status=${job.status.name}');
           }
         } catch (error) {
-          _failure(
-            'jobStart',
-            error,
-            operationId: request.operationId,
-            clock: clock,
-          );
+          _failure('jobStart', error);
           if (_live(emit, generation)) {
-            emit(
-              state.copyWith(failed: true, requestError: _requestError(error)),
-            );
+            emit(state.copyWith(failed: true, requestError: _requestError(error)));
           }
         } finally {
           if (_live(emit, generation)) emit(state.copyWith(busy: false));
@@ -408,58 +310,41 @@ class GalleryDuplicatesBloc
         if (state.busy || state.job == null) return;
         final generation = ++_generation;
         final jobId = state.job!.jobId;
-        final clock = Stopwatch()..start();
         _log.info('event=jobStopRequested jobId=${GalleryLog.id(jobId)}');
         emit(state.copyWith(busy: true, failed: false, requestError: null));
         try {
-          final job = await _requestScope(
-            repository.stop(jobId, cancel: _cancel.future),
-          );
+          final job = await _requestScope(repository.stop(jobId, cancel: _cancel.future));
           if (_live(emit, generation)) {
             emit(_accepted(job));
             if (!state.running && job.groups.isNotEmpty) {
               await _openGroup(emit, state.groupIndex);
             }
           }
-          _log.info(
-            'event=jobStopCompleted jobId=${GalleryLog.id(jobId)} status=${job.status.name} elapsedMs=${clock.elapsedMilliseconds}',
-          );
+          _log.info('event=jobStopCompleted jobId=${GalleryLog.id(jobId)} status=${job.status.name}');
         } catch (error) {
-          _failure('jobStop', error, jobId: jobId, clock: clock);
+          _failure('jobStop', error, jobId: jobId);
           if (_live(emit, generation)) {
-            emit(
-              state.copyWith(failed: true, requestError: _requestError(error)),
-            );
+            emit(state.copyWith(failed: true, requestError: _requestError(error)));
           }
         } finally {
           if (_live(emit, generation)) emit(state.copyWith(busy: false));
         }
-      case GalleryDuplicatesDecide(
-        :final groupId,
-        :final mediaId,
-        :final decision,
-      ):
+      case GalleryDuplicatesDecide(:final groupId, :final mediaId, :final decision):
         if (state.busy) return;
-        final group = state.job?.groups
-            .where((group) => group.groupId == groupId)
-            .firstOrNull;
-        final member = group?.items
-            .where((member) => member.mediaId == mediaId)
-            .firstOrNull;
+        final group = state.job?.groups.where((group) => group.groupId == groupId).firstOrNull;
+        final member = group?.items.where((member) => member.mediaId == mediaId).firstOrNull;
         if (group == null || member == null || !state.current(member)) return;
         if (decision == GalleryDuplicateDecision.trash &&
             !group.items.any(
               (other) =>
                   other.mediaId != mediaId &&
                   state.current(other) &&
-                  state.decisions[other.mediaId] !=
-                      GalleryDuplicateDecision.trash,
+                  state.decisions[other.mediaId] != GalleryDuplicateDecision.trash,
             )) {
           _notice(emit, GalleryDuplicatesNotice.keepOne);
           return;
         }
-        final wasSelected =
-            state.decisions[mediaId] == GalleryDuplicateDecision.trash;
+        final wasSelected = state.decisions[mediaId] == GalleryDuplicateDecision.trash;
         final selected = decision == GalleryDuplicateDecision.trash;
         final delta = (selected ? 1 : 0) - (wasSelected ? 1 : 0);
         emit(
@@ -472,48 +357,33 @@ class GalleryDuplicatesBloc
       case GalleryDuplicatesClearSelection():
         if (state.busy || state.groupLoading) return;
         _log.fine(
-          () =>
-              'event=selectionCleared jobId=${GalleryLog.id(state.job?.jobId ?? '')} selected=${state.selectedCount}',
+          () => 'event=selectionCleared jobId=${GalleryLog.id(state.job?.jobId ?? '')} selected=${state.selectedCount}',
         );
         emit(state.copyWith(decisions: {}, selectedCount: 0, selectedBytes: 0));
       case GalleryDuplicatesGroup(:final index):
-        if (!state.busy &&
-            !state.groupLoading &&
-            index >= 0 &&
-            index < (state.job?.groups.length ?? 0)) {
+        if (!state.busy && !state.groupLoading && index >= 0 && index < (state.job?.groups.length ?? 0)) {
           await _openGroup(emit, index);
         }
       case GalleryDuplicatesMembers(:final offset):
         final count = state.group?.items.length ?? 0;
-        if (!state.busy &&
-            !state.groupLoading &&
-            offset >= 0 &&
-            offset < count) {
+        if (!state.busy && !state.groupLoading && offset >= 0 && offset < count) {
           emit(state.copyWith(memberOffset: offset));
         }
       case GalleryDuplicatesSkip():
         if (!state.busy && !state.groupLoading && state.job != null) {
-          await _openGroup(
-            emit,
-            state.group == null ? 0 : state.groupIndex + 1,
-          );
+          await _openGroup(emit, state.group == null ? 0 : state.groupIndex + 1);
         }
       case GalleryDuplicatesInvalidate(:final member):
         _log.fine(
           () =>
               'event=revisionInvalidated source=${GalleryLog.source(member.mediaId)} revision=${GalleryLog.source(member.sourceRevision)} recoveryPending=${_revisionRecovery != null}',
         );
-        final decisions = Map<String, GalleryDuplicateDecision>.of(
-          state.decisions,
-        )..remove(member.mediaId);
+        final decisions = Map<String, GalleryDuplicateDecision>.of(state.decisions)..remove(member.mediaId);
         emit(
           _withDecisions(state, decisions).copyWith(
             invalidated: {
               ...state.invalidated,
-              GalleryMediaRef(
-                mediaId: member.mediaId,
-                sourceRevision: member.sourceRevision,
-              ),
+              GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision),
             },
           ),
         );
@@ -536,37 +406,24 @@ class GalleryDuplicatesBloc
         final members = <String, GalleryDuplicateMember>{
           for (final group in state.job!.groups)
             for (final item in group.items)
-              if (state.decisions[item.mediaId] ==
-                  GalleryDuplicateDecision.trash)
-                item.mediaId: item,
+              if (state.decisions[item.mediaId] == GalleryDuplicateDecision.trash) item.mediaId: item,
         };
         if (!_validSelection(members.values.toList())) {
           _notice(emit, GalleryDuplicatesNotice.keepOne);
         } else {
-          _notice(
-            emit,
-            GalleryDuplicatesNotice.review,
-            jobId: state.job!.jobId,
-            members: members.values.toList(),
-          );
+          _notice(emit, GalleryDuplicatesNotice.review, jobId: state.job!.jobId, members: members.values.toList());
         }
       case GalleryDuplicatesApply(:final jobId, :final members):
         if (state.busy) return;
         if (state.job?.jobId != jobId || !_validSelection(members)) {
           _log.fine(
-            () =>
-                'event=mutationRejected jobId=${GalleryLog.id(jobId)} code=revisionMismatch items=${members.length}',
+            () => 'event=mutationRejected jobId=${GalleryLog.id(jobId)} code=revisionMismatch items=${members.length}',
           );
           _notice(emit, GalleryDuplicatesNotice.stale);
           return;
         }
         final refs = members
-            .map(
-              (item) => GalleryMediaRef(
-                mediaId: item.mediaId,
-                sourceRevision: item.sourceRevision,
-              ),
-            )
+            .map((item) => GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.sourceRevision))
             .toList();
         final request = GalleryOperationRequest(
           operationId: repository.newOperationId(),
@@ -574,25 +431,16 @@ class GalleryDuplicatesBloc
           duplicateJobId: jobId,
           items: refs,
         );
-        final clock = Stopwatch()..start();
-        _log.info(
-          'event=mutationStarted operationId=${GalleryLog.id(request.operationId)} jobId=${GalleryLog.id(jobId)} action=trash items=${refs.length}',
-        );
+        _log.info('event=mutationStarted jobId=${GalleryLog.id(jobId)} action=trash items=${refs.length}');
         emit(state.copyWith(busy: true));
         try {
-          final result = await _requestScope(
-            repository.operate(request, cancel: _cancel.future),
-          );
+          final result = await _requestScope(repository.operate(request, cancel: _cancel.future));
           if (_closing || emit.isDone) return;
-          final failed = result.items
-              .where((item) => item.state == GalleryItemOperationState.failed)
-              .length;
+          final failed = result.items.where((item) => item.state == GalleryItemOperationState.failed).length;
           final message =
-              'event=${failed == 0 ? 'mutationCompleted' : 'mutationPartial'} operationId=${GalleryLog.id(request.operationId)} jobId=${GalleryLog.id(jobId)} action=trash items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed elapsedMs=${clock.elapsedMilliseconds}';
+              'event=${failed == 0 ? 'mutationCompleted' : 'mutationPartial'} jobId=${GalleryLog.id(jobId)} action=trash items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed';
           failed == 0 ? _log.info(message) : _log.warning(message);
-          final decisions = Map<String, GalleryDuplicateDecision>.of(
-            state.decisions,
-          );
+          final decisions = Map<String, GalleryDuplicateDecision>.of(state.decisions);
           for (final item in result.items) {
             if (item.state == GalleryItemOperationState.succeeded) {
               decisions.remove(item.mediaId);
@@ -611,13 +459,7 @@ class GalleryDuplicatesBloc
             await _openGroup(emit, state.groupIndex);
           }
         } catch (error) {
-          _failure(
-            'mutation',
-            error,
-            operationId: request.operationId,
-            jobId: jobId,
-            clock: clock,
-          );
+          _failure('mutation', error, jobId: jobId);
           if (!_closing && !emit.isDone) {
             _notice(emit, GalleryDuplicatesNotice.actionFailed);
             try {
@@ -637,22 +479,14 @@ class GalleryDuplicatesBloc
     }
   }
 
-  Future<void> _openGroup(
-    Emitter<GalleryDuplicatesState> emit,
-    int index,
-  ) async {
+  Future<void> _openGroup(Emitter<GalleryDuplicatesState> emit, int index) async {
     final job = state.job;
     if (job == null || _closing || emit.isDone) return;
     final generation = ++_groupGeneration;
     emit(state.copyWith(groupLoading: true));
     try {
-      final page = await _requestScope(
-        repository.duplicateGroup(job.jobId, index, cancel: _cancel.future),
-      );
-      if (_closing ||
-          emit.isDone ||
-          generation != _groupGeneration ||
-          state.job?.jobId != job.jobId) {
+      final page = await _requestScope(repository.duplicateGroup(job.jobId, index, cancel: _cancel.future));
+      if (_closing || emit.isDone || generation != _groupGeneration || state.job?.jobId != job.jobId) {
         return;
       }
       if (page.jobId != job.jobId ||
@@ -665,13 +499,8 @@ class GalleryDuplicatesBloc
                     page.group!.items.length < 2)) {
         throw const FormatException('Invalid duplicate group response');
       }
-      _log.fine(
-        () =>
-            'event=groupOpened index=${page.index} members=${page.group?.items.length ?? 0}',
-      );
-      final decisions = Map<String, GalleryDuplicateDecision>.of(
-        state.decisions,
-      );
+      _log.fine(() => 'event=groupOpened index=${page.index} members=${page.group?.items.length ?? 0}');
+      final decisions = Map<String, GalleryDuplicateDecision>.of(state.decisions);
       for (var skipped = index; skipped < page.index; skipped++) {
         for (final member in job.groups[skipped].items) {
           decisions.remove(member.mediaId);
@@ -679,18 +508,11 @@ class GalleryDuplicatesBloc
       }
       final invalidated = Set<GalleryMediaRef>.of(state.invalidated);
       if (page.group != null) {
-        final available = page.group!.items
-            .map((member) => member.mediaId)
-            .toSet();
+        final available = page.group!.items.map((member) => member.mediaId).toSet();
         for (final member in job.groups[page.index].items) {
           if (!available.contains(member.mediaId)) {
             decisions.remove(member.mediaId);
-            invalidated.add(
-              GalleryMediaRef(
-                mediaId: member.mediaId,
-                sourceRevision: member.sourceRevision,
-              ),
-            );
+            invalidated.add(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision));
           }
         }
       }
@@ -706,22 +528,11 @@ class GalleryDuplicatesBloc
         ),
       );
     } catch (error) {
-      if (_closing ||
-          emit.isDone ||
-          generation != _groupGeneration ||
-          state.job?.jobId != job.jobId) {
+      if (_closing || emit.isDone || generation != _groupGeneration || state.job?.jobId != job.jobId) {
         return;
       }
-      _log.warning(
-        'event=groupLoadFailed code=${_requestError(error).name} type=${error.runtimeType}',
-      );
-      emit(
-        state.copyWith(
-          groupLoading: false,
-          failed: true,
-          requestError: _requestError(error),
-        ),
-      );
+      _log.warning('event=groupLoadFailed code=${_requestError(error).name} type=${error.runtimeType}');
+      emit(state.copyWith(groupLoading: false, failed: true, requestError: _requestError(error)));
     }
   }
 
@@ -732,27 +543,17 @@ class GalleryDuplicatesBloc
     final allowed = {
       for (final group in state.job?.groups ?? const <GalleryDuplicateGroup>[])
         for (final member in group.items)
-          GalleryMediaRef(
-            mediaId: member.mediaId,
-            sourceRevision: member.sourceRevision,
-          ),
+          GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision),
     };
     if (members.any(
-      (member) => !allowed.contains(
-        GalleryMediaRef(
-          mediaId: member.mediaId,
-          sourceRevision: member.sourceRevision,
-        ),
-      ),
+      (member) => !allowed.contains(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision)),
     )) {
       return false;
     }
     final ids = members.map((member) => member.mediaId).toSet();
     for (final group in state.job?.groups ?? const <GalleryDuplicateGroup>[]) {
       if (group.items.any((member) => ids.contains(member.mediaId)) &&
-          !group.items.any(
-            (member) => !ids.contains(member.mediaId) && state.current(member),
-          )) {
+          !group.items.any((member) => !ids.contains(member.mediaId) && state.current(member))) {
         return false;
       }
     }
@@ -761,10 +562,7 @@ class GalleryDuplicatesBloc
 
   // Reconcile totals only after bulk changes. Individual checkbox actions above
   // update them by delta, without walking the library or all previous choices.
-  GalleryDuplicatesState _withDecisions(
-    GalleryDuplicatesState base,
-    Map<String, GalleryDuplicateDecision> decisions,
-  ) {
+  GalleryDuplicatesState _withDecisions(GalleryDuplicatesState base, Map<String, GalleryDuplicateDecision> decisions) {
     var count = 0, bytes = 0;
     for (final entry in decisions.entries) {
       if (entry.value == GalleryDuplicateDecision.trash) {
@@ -772,11 +570,7 @@ class GalleryDuplicatesBloc
         bytes += _membersById[entry.key]?.sizeBytes ?? 0;
       }
     }
-    return base.copyWith(
-      decisions: decisions,
-      selectedCount: count,
-      selectedBytes: bytes,
-    );
+    return base.copyWith(decisions: decisions, selectedCount: count, selectedBytes: bytes);
   }
 
   Future<void> _refreshScope() async {
@@ -784,32 +578,20 @@ class GalleryDuplicatesBloc
     await Future.any<void>([Future<void>.sync(onRefresh), _cancel.future]);
   }
 
-  void _failure(
-    String event,
-    Object error, {
-    String operationId = '',
-    String jobId = '',
-    required Stopwatch clock,
-  }) {
-    final code = error is GalleryManagementException
-        ? error.code
-        : GalleryErrorCode.unknown;
+  void _failure(String event, Object error, {String jobId = ''}) {
+    final code = error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
     final cancelled = _closing || code == GalleryErrorCode.cancelled;
     final message =
-        'event=$event${cancelled ? 'Cancelled' : 'Failed'} operationId=${GalleryLog.id(operationId)} jobId=${GalleryLog.id(jobId)} code=${code.name} type=${error.runtimeType} elapsedMs=${clock.elapsedMilliseconds}';
+        'event=$event${cancelled ? 'Cancelled' : 'Failed'} jobId=${GalleryLog.id(jobId)} code=${code.name} type=${error.runtimeType}';
     cancelled ? _log.fine(message) : _log.warning(message);
   }
 
   static GalleryErrorCode _requestError(Object error) =>
-      error is GalleryManagementException
-      ? error.code
-      : GalleryErrorCode.unknown;
+      error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
 
   Future<T> _requestScope<T>(Future<T> request) => Future.any<T>([
     request,
-    _cancel.future.then<T>(
-      (_) => throw const GalleryManagementException(GalleryErrorCode.cancelled),
-    ),
+    _cancel.future.then<T>((_) => throw const GalleryManagementException(GalleryErrorCode.cancelled)),
   ]);
 
   @override
@@ -826,7 +608,6 @@ class GalleryDuplicatesBloc
     _cancel.complete();
     final subscription = _catalogSubscription?.cancel();
     final closing = super.close();
-    return _closingFuture = Future.wait<void>([?subscription, closing])
-        .then<void>((_) {});
+    return _closingFuture = Future.wait<void>([?subscription, closing]).then<void>((_) {});
   }
 }

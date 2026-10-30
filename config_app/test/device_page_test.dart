@@ -101,7 +101,10 @@ class _ConnectedClient extends _UnusedClient {
   @override
   Stream<void> get onDisconnect => disconnectEvents.stream;
   @override
-  Future<WebSocketResult> send(WebSocketCommand command) async {
+  Future<WebSocketResult> send(
+    WebSocketCommand command, {
+    Duration? timeout,
+  }) async {
     final request = serializers.deserialize(
       (command as WSSendRpcCommand).commandData,
     );

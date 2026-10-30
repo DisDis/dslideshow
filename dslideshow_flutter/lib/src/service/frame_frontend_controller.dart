@@ -5,23 +5,32 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/s
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:flutter/widgets.dart';
 
+typedef FrameDisplayInfoReader = FrameDisplayInfo? Function();
+
 /// Reads the running frame, rather than the browser that opened its settings.
 class FrameFrontendController {
   final SlideshowStatusBloc Function() statusBloc;
-  final RouteBloc Function() routeBloc;
-  final FrameDisplayInfo? Function() displayInfo;
+  final RouteBloc routeBloc;
+  final FrameDisplayInfoReader displayInfo;
   final Duration commandTimeout;
 
   FrameFrontendController({
     required this.statusBloc,
     required this.routeBloc,
-    FrameDisplayInfo? Function()? displayInfo,
+    required this.displayInfo,
     this.commandTimeout = const Duration(seconds: 2),
-  }) : displayInfo = displayInfo ?? readDisplayInfo;
+  });
+
+  void updateSystemInfo(SystemInfo info) {
+    final status = statusBloc();
+    if (!status.isClosed && status.state.hasInternet != info.networkInfo.hasInternet) {
+      status.add(SlideshowInternetEvent(info.networkInfo.hasInternet));
+    }
+  }
 
   FrameFrontendState readState() {
     final status = statusBloc();
-    final route = routeBloc();
+    final route = routeBloc;
     if (status.isClosed || route.isClosed) {
       throw StateError('Frontend is shutting down');
     }
@@ -41,12 +50,11 @@ class FrameFrontendController {
 
   Future<void> setControl(FrameControl control, bool enabled) async {
     final status = statusBloc();
-    final route = routeBloc();
+    final route = routeBloc;
     if (status.isClosed || route.isClosed) {
       throw StateError('Frontend is shutting down');
     }
-    if (control != FrameControl.screen &&
-        route.state.current != RoutePage.slideshow) {
+    if (control != FrameControl.screen && route.state.current != RoutePage.slideshow) {
       throw StateError('This control requires the slideshow page');
     }
     final action = switch (control) {

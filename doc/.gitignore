@@ -3,3 +3,10 @@
 # The repository ignores scratch plans/ directories; maintained plans belong in Git.
 !plans/
 !plans/*.md
+
+plans/medium-article-plan.md
+plans/medium-article-shooting-checklist.md
+
+history/
+
+!history/releases/

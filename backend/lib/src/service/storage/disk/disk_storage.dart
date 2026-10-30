@@ -26,9 +26,7 @@ class DiskStorage extends Storage {
   Directory get folder => _folder;
 
   DiskStorage(DiskStorageConfig config, {Directory? folder, Random? random})
-    : _folder =
-          folder ??
-          Directory(path.join(externalStorage.path, CACHE_FOLDER_NAME)),
+    : _folder = folder ?? Directory(path.join(externalStorage.path, CACHE_FOLDER_NAME)),
       _rnd = random ?? Random();
 
   final StreamController<DateTime> _scStub = StreamController.broadcast();
@@ -117,7 +115,6 @@ class DiskStorage extends Storage {
       final items = <Uri>[];
       final index = <Uri>{};
       var unchanged = true;
-      final stopwatch = Stopwatch()..start();
       try {
         final iterator = StreamIterator(_folder.list(recursive: true));
         _scanIterator = iterator;
@@ -160,11 +157,7 @@ class DiskStorage extends Storage {
         }
       } catch (error, stack) {
         if (_released) return;
-        _log.warning(
-          'Could not build file cache; keeping previous index',
-          error,
-          stack,
-        );
+        _log.warning('Could not build file cache; keeping previous index', error, stack);
         _dirty = true;
         _scheduleRefresh();
         if (!_hasPublishedIndex) Error.throwWithStackTrace(error, stack);
@@ -184,9 +177,7 @@ class DiskStorage extends Storage {
       _timerFolderUpdate?.cancel();
       _timerFolderUpdate = null;
       _startWatching();
-      _log.fine(
-        'File cache has ${index.length} file(s), built in ${stopwatch.elapsedMilliseconds} ms',
-      );
+      _log.fine('File cache has ${index.length} file(s)');
       return;
     }
     if (!_released) {
@@ -195,8 +186,7 @@ class DiskStorage extends Storage {
     }
   }
 
-  static bool _isUploadTemporary(String filename) =>
-      _uploadTemporaryName.hasMatch(path.basename(filename));
+  static bool _isUploadTemporary(String filename) => _uploadTemporaryName.hasMatch(path.basename(filename));
 
   static final _nullMediaItem = DiskMediaItem(null, null);
 
@@ -206,19 +196,14 @@ class DiskStorage extends Storage {
       if (_released) return _nullMediaItem;
       final nextUri = await _getRandomItem();
       if (_released) return _nullMediaItem;
-      final item = nextUri == null
-          ? _nullMediaItem
-          : DiskMediaItem(nextUri.path, nextUri);
+      final item = nextUri == null ? _nullMediaItem : DiskMediaItem(nextUri.path, nextUri);
       // No await between these assignments: readers see the previous pair
       // throughout preparation, and the new pair after it completes.
       _current = _next;
       _next = item;
       return item;
     });
-    _nextOperations = operation.then<void>(
-      (_) {},
-      onError: (Object _, StackTrace __) {},
-    );
+    _nextOperations = operation.then<void>((_) {}, onError: (Object _, StackTrace __) {});
     return operation;
   }
 
@@ -265,9 +250,7 @@ class DiskStorage extends Storage {
     if (!event.isDirectory && _isUploadTemporary(event.path)) {
       // A move from .part into its final name publishes a ready file. A move
       // with an unknown destination must be treated conservatively as well.
-      if (event is! FileSystemMoveEvent ||
-          (event.destination != null &&
-              _isUploadTemporary(event.destination!))) {
+      if (event is! FileSystemMoveEvent || (event.destination != null && _isUploadTemporary(event.destination!))) {
         return;
       }
     }

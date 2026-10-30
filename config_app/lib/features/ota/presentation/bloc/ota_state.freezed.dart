@@ -14,24 +14,153 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$OtaState {
+  OtaPhase get phase;
+  String get version;
+  String get code;
+  String? get filename;
+  int? get fileSize;
+  bool get pickingFile;
+  double get progress;
+  OtaFailure? get failure;
+  int get formGeneration;
+
+  /// Create a copy of OtaState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OtaStateCopyWith<OtaState> get copyWith =>
+      _$OtaStateCopyWithImpl<OtaState>(this as OtaState, _$identity);
+
   @override
   bool operator ==(Object other) {
+    final _this = this as OtaState;
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is OtaState);
+        (other.runtimeType == runtimeType &&
+            other is OtaState &&
+            (identical(other.phase, _this.phase) ||
+                other.phase == _this.phase) &&
+            (identical(other.version, _this.version) ||
+                other.version == _this.version) &&
+            (identical(other.code, _this.code) || other.code == _this.code) &&
+            (identical(other.filename, _this.filename) ||
+                other.filename == _this.filename) &&
+            (identical(other.fileSize, _this.fileSize) ||
+                other.fileSize == _this.fileSize) &&
+            (identical(other.pickingFile, _this.pickingFile) ||
+                other.pickingFile == _this.pickingFile) &&
+            (identical(other.progress, _this.progress) ||
+                other.progress == _this.progress) &&
+            (identical(other.failure, _this.failure) ||
+                other.failure == _this.failure) &&
+            (identical(other.formGeneration, _this.formGeneration) ||
+                other.formGeneration == _this.formGeneration));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode {
+    final _this = this as OtaState;
+    return Object.hash(
+      runtimeType,
+      _this.phase,
+      _this.version,
+      _this.code,
+      _this.filename,
+      _this.fileSize,
+      _this.pickingFile,
+      _this.progress,
+      _this.failure,
+      _this.formGeneration,
+    );
+  }
 
   @override
   String toString() {
-    return 'OtaState()';
+    final _this = this as OtaState;
+    return 'OtaState(phase: ${_this.phase}, version: ${_this.version}, code: ${_this.code}, filename: ${_this.filename}, fileSize: ${_this.fileSize}, pickingFile: ${_this.pickingFile}, progress: ${_this.progress}, failure: ${_this.failure}, formGeneration: ${_this.formGeneration})';
   }
 }
 
 /// @nodoc
-class $OtaStateCopyWith<$Res> {
-  $OtaStateCopyWith(OtaState _, $Res Function(OtaState) __);
+abstract mixin class $OtaStateCopyWith<$Res> {
+  factory $OtaStateCopyWith(OtaState value, $Res Function(OtaState) _then) =
+      _$OtaStateCopyWithImpl;
+  @useResult
+  $Res call({
+    OtaPhase phase,
+    String version,
+    String code,
+    String? filename,
+    int? fileSize,
+    bool pickingFile,
+    double progress,
+    OtaFailure? failure,
+    int formGeneration,
+  });
+}
+
+/// @nodoc
+class _$OtaStateCopyWithImpl<$Res> implements $OtaStateCopyWith<$Res> {
+  _$OtaStateCopyWithImpl(this._self, this._then);
+
+  final OtaState _self;
+  final $Res Function(OtaState) _then;
+
+  /// Create a copy of OtaState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? phase = null,
+    Object? version = null,
+    Object? code = null,
+    Object? filename = freezed,
+    Object? fileSize = freezed,
+    Object? pickingFile = null,
+    Object? progress = null,
+    Object? failure = freezed,
+    Object? formGeneration = null,
+  }) {
+    return _then(
+      OtaState(
+        phase: null == phase
+            ? _self.phase
+            : phase // ignore: cast_nullable_to_non_nullable
+                  as OtaPhase,
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+        code: null == code
+            ? _self.code
+            : code // ignore: cast_nullable_to_non_nullable
+                  as String,
+        filename: freezed == filename
+            ? _self.filename
+            : filename // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        fileSize: freezed == fileSize
+            ? _self.fileSize
+            : fileSize // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        pickingFile: null == pickingFile
+            ? _self.pickingFile
+            : pickingFile // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        progress: null == progress
+            ? _self.progress
+            : progress // ignore: cast_nullable_to_non_nullable
+                  as double,
+        failure: freezed == failure
+            ? _self.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as OtaFailure?,
+        formGeneration: null == formGeneration
+            ? _self.formGeneration
+            : formGeneration // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
 }
 
 /// Adds pattern-matching-related methods to [OtaState].
@@ -49,26 +178,14 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UninitializedOtaState value)? uninitialized,
-    TResult Function(InitializedOtaState value)? initialized,
-    TResult Function(UploadingOtaState value)? uploading,
-    TResult Function(UploadCompleteOtaState value)? uploadComplete,
-    TResult Function(ErrorOtaState value)? error,
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_OtaState value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState() when uninitialized != null:
-        return uninitialized(_that);
-      case InitializedOtaState() when initialized != null:
-        return initialized(_that);
-      case UploadingOtaState() when uploading != null:
-        return uploading(_that);
-      case UploadCompleteOtaState() when uploadComplete != null:
-        return uploadComplete(_that);
-      case ErrorOtaState() when error != null:
-        return error(_that);
+      case _OtaState() when $default != null:
+        return $default(_that);
       case _:
         return orElse();
     }
@@ -88,25 +205,13 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UninitializedOtaState value) uninitialized,
-    required TResult Function(InitializedOtaState value) initialized,
-    required TResult Function(UploadingOtaState value) uploading,
-    required TResult Function(UploadCompleteOtaState value) uploadComplete,
-    required TResult Function(ErrorOtaState value) error,
-  }) {
+  TResult map<TResult extends Object?>(
+    TResult Function(_OtaState value) $default,
+  ) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState():
-        return uninitialized(_that);
-      case InitializedOtaState():
-        return initialized(_that);
-      case UploadingOtaState():
-        return uploading(_that);
-      case UploadCompleteOtaState():
-        return uploadComplete(_that);
-      case ErrorOtaState():
-        return error(_that);
+      case _OtaState():
+        return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -125,25 +230,13 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UninitializedOtaState value)? uninitialized,
-    TResult? Function(InitializedOtaState value)? initialized,
-    TResult? Function(UploadingOtaState value)? uploading,
-    TResult? Function(UploadCompleteOtaState value)? uploadComplete,
-    TResult? Function(ErrorOtaState value)? error,
-  }) {
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_OtaState value)? $default,
+  ) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState() when uninitialized != null:
-        return uninitialized(_that);
-      case InitializedOtaState() when initialized != null:
-        return initialized(_that);
-      case UploadingOtaState() when uploading != null:
-        return uploading(_that);
-      case UploadCompleteOtaState() when uploadComplete != null:
-        return uploadComplete(_that);
-      case ErrorOtaState() when error != null:
-        return error(_that);
+      case _OtaState() when $default != null:
+        return $default(_that);
       case _:
         return null;
     }
@@ -162,26 +255,35 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? uninitialized,
-    TResult Function(String version)? initialized,
-    TResult Function(double progress)? uploading,
-    TResult Function()? uploadComplete,
-    TResult Function(String errorMessage)? error,
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+      OtaPhase phase,
+      String version,
+      String code,
+      String? filename,
+      int? fileSize,
+      bool pickingFile,
+      double progress,
+      OtaFailure? failure,
+      int formGeneration,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState() when uninitialized != null:
-        return uninitialized();
-      case InitializedOtaState() when initialized != null:
-        return initialized(_that.version);
-      case UploadingOtaState() when uploading != null:
-        return uploading(_that.progress);
-      case UploadCompleteOtaState() when uploadComplete != null:
-        return uploadComplete();
-      case ErrorOtaState() when error != null:
-        return error(_that.errorMessage);
+      case _OtaState() when $default != null:
+        return $default(
+          _that.phase,
+          _that.version,
+          _that.code,
+          _that.filename,
+          _that.fileSize,
+          _that.pickingFile,
+          _that.progress,
+          _that.failure,
+          _that.formGeneration,
+        );
       case _:
         return orElse();
     }
@@ -201,25 +303,34 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() uninitialized,
-    required TResult Function(String version) initialized,
-    required TResult Function(double progress) uploading,
-    required TResult Function() uploadComplete,
-    required TResult Function(String errorMessage) error,
-  }) {
+  TResult when<TResult extends Object?>(
+    TResult Function(
+      OtaPhase phase,
+      String version,
+      String code,
+      String? filename,
+      int? fileSize,
+      bool pickingFile,
+      double progress,
+      OtaFailure? failure,
+      int formGeneration,
+    )
+    $default,
+  ) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState():
-        return uninitialized();
-      case InitializedOtaState():
-        return initialized(_that.version);
-      case UploadingOtaState():
-        return uploading(_that.progress);
-      case UploadCompleteOtaState():
-        return uploadComplete();
-      case ErrorOtaState():
-        return error(_that.errorMessage);
+      case _OtaState():
+        return $default(
+          _that.phase,
+          _that.version,
+          _that.code,
+          _that.filename,
+          _that.fileSize,
+          _that.pickingFile,
+          _that.progress,
+          _that.failure,
+          _that.formGeneration,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -238,25 +349,34 @@ extension OtaStatePatterns on OtaState {
   /// ```
 
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? uninitialized,
-    TResult? Function(String version)? initialized,
-    TResult? Function(double progress)? uploading,
-    TResult? Function()? uploadComplete,
-    TResult? Function(String errorMessage)? error,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+      OtaPhase phase,
+      String version,
+      String code,
+      String? filename,
+      int? fileSize,
+      bool pickingFile,
+      double progress,
+      OtaFailure? failure,
+      int formGeneration,
+    )?
+    $default,
+  ) {
     final _that = this;
     switch (_that) {
-      case UninitializedOtaState() when uninitialized != null:
-        return uninitialized();
-      case InitializedOtaState() when initialized != null:
-        return initialized(_that.version);
-      case UploadingOtaState() when uploading != null:
-        return uploading(_that.progress);
-      case UploadCompleteOtaState() when uploadComplete != null:
-        return uploadComplete();
-      case ErrorOtaState() when error != null:
-        return error(_that.errorMessage);
+      case _OtaState() when $default != null:
+        return $default(
+          _that.phase,
+          _that.version,
+          _that.code,
+          _that.filename,
+          _that.fileSize,
+          _that.pickingFile,
+          _that.progress,
+          _that.failure,
+          _that.formGeneration,
+        );
       case _:
         return null;
     }
@@ -265,242 +385,175 @@ extension OtaStatePatterns on OtaState {
 
 /// @nodoc
 
-class UninitializedOtaState implements OtaState {
-  const UninitializedOtaState();
+class _OtaState extends OtaState {
+  const _OtaState({
+    this.phase = OtaPhase.uninitialized,
+    this.version = '',
+    this.code = '',
+    this.filename,
+    this.fileSize,
+    this.pickingFile = false,
+    this.progress = 0.0,
+    this.failure,
+    this.formGeneration = 0,
+  }) : super._();
 
   @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is UninitializedOtaState);
-  }
-
+  @JsonKey()
+  final OtaPhase phase;
   @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'OtaState.uninitialized()';
-  }
-}
-
-/// @nodoc
-
-class InitializedOtaState implements OtaState {
-  const InitializedOtaState({required this.version});
-
+  @JsonKey()
   final String version;
+  @override
+  @JsonKey()
+  final String code;
+  @override
+  final String? filename;
+  @override
+  final int? fileSize;
+  @override
+  @JsonKey()
+  final bool pickingFile;
+  @override
+  @JsonKey()
+  final double progress;
+  @override
+  final OtaFailure? failure;
+  @override
+  @JsonKey()
+  final int formGeneration;
 
   /// Create a copy of OtaState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $InitializedOtaStateCopyWith<InitializedOtaState> get copyWith =>
-      _$InitializedOtaStateCopyWithImpl<InitializedOtaState>(this, _$identity);
+  _$OtaStateCopyWith<_OtaState> get copyWith =>
+      __$OtaStateCopyWithImpl<_OtaState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is InitializedOtaState &&
-            (identical(other.version, version) || other.version == version));
+            other is _OtaState &&
+            (identical(other.phase, phase) || other.phase == phase) &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.filename, filename) ||
+                other.filename == filename) &&
+            (identical(other.fileSize, fileSize) ||
+                other.fileSize == fileSize) &&
+            (identical(other.pickingFile, pickingFile) ||
+                other.pickingFile == pickingFile) &&
+            (identical(other.progress, progress) ||
+                other.progress == progress) &&
+            (identical(other.failure, failure) || other.failure == failure) &&
+            (identical(other.formGeneration, formGeneration) ||
+                other.formGeneration == formGeneration));
   }
 
   @override
   int get hashCode {
-    return Object.hash(runtimeType, version);
+    return Object.hash(
+      runtimeType,
+      phase,
+      version,
+      code,
+      filename,
+      fileSize,
+      pickingFile,
+      progress,
+      failure,
+      formGeneration,
+    );
   }
 
   @override
   String toString() {
-    return 'OtaState.initialized(version: $version)';
+    return 'OtaState(phase: $phase, version: $version, code: $code, filename: $filename, fileSize: $fileSize, pickingFile: $pickingFile, progress: $progress, failure: $failure, formGeneration: $formGeneration)';
   }
 }
 
 /// @nodoc
-abstract mixin class $InitializedOtaStateCopyWith<$Res>
+abstract mixin class _$OtaStateCopyWith<$Res>
     implements $OtaStateCopyWith<$Res> {
-  factory $InitializedOtaStateCopyWith(
-    InitializedOtaState value,
-    $Res Function(InitializedOtaState) _then,
-  ) = _$InitializedOtaStateCopyWithImpl;
+  factory _$OtaStateCopyWith(_OtaState value, $Res Function(_OtaState) _then) =
+      __$OtaStateCopyWithImpl;
+  @override
   @useResult
-  $Res call({String version});
+  $Res call({
+    OtaPhase phase,
+    String version,
+    String code,
+    String? filename,
+    int? fileSize,
+    bool pickingFile,
+    double progress,
+    OtaFailure? failure,
+    int formGeneration,
+  });
 }
 
 /// @nodoc
-class _$InitializedOtaStateCopyWithImpl<$Res>
-    implements $InitializedOtaStateCopyWith<$Res> {
-  _$InitializedOtaStateCopyWithImpl(this._self, this._then);
+class __$OtaStateCopyWithImpl<$Res> implements _$OtaStateCopyWith<$Res> {
+  __$OtaStateCopyWithImpl(this._self, this._then);
 
-  final InitializedOtaState _self;
-  final $Res Function(InitializedOtaState) _then;
+  final _OtaState _self;
+  final $Res Function(_OtaState) _then;
 
   /// Create a copy of OtaState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? version = null}) {
+  $Res call({
+    Object? phase = null,
+    Object? version = null,
+    Object? code = null,
+    Object? filename = freezed,
+    Object? fileSize = freezed,
+    Object? pickingFile = null,
+    Object? progress = null,
+    Object? failure = freezed,
+    Object? formGeneration = null,
+  }) {
     return _then(
-      InitializedOtaState(
+      _OtaState(
+        phase: null == phase
+            ? _self.phase
+            : phase // ignore: cast_nullable_to_non_nullable
+                  as OtaPhase,
         version: null == version
             ? _self.version
             : version // ignore: cast_nullable_to_non_nullable
                   as String,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class UploadingOtaState implements OtaState {
-  const UploadingOtaState({required this.progress});
-
-  final double progress;
-
-  /// Create a copy of OtaState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $UploadingOtaStateCopyWith<UploadingOtaState> get copyWith =>
-      _$UploadingOtaStateCopyWithImpl<UploadingOtaState>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is UploadingOtaState &&
-            (identical(other.progress, progress) ||
-                other.progress == progress));
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(runtimeType, progress);
-  }
-
-  @override
-  String toString() {
-    return 'OtaState.uploading(progress: $progress)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $UploadingOtaStateCopyWith<$Res>
-    implements $OtaStateCopyWith<$Res> {
-  factory $UploadingOtaStateCopyWith(
-    UploadingOtaState value,
-    $Res Function(UploadingOtaState) _then,
-  ) = _$UploadingOtaStateCopyWithImpl;
-  @useResult
-  $Res call({double progress});
-}
-
-/// @nodoc
-class _$UploadingOtaStateCopyWithImpl<$Res>
-    implements $UploadingOtaStateCopyWith<$Res> {
-  _$UploadingOtaStateCopyWithImpl(this._self, this._then);
-
-  final UploadingOtaState _self;
-  final $Res Function(UploadingOtaState) _then;
-
-  /// Create a copy of OtaState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? progress = null}) {
-    return _then(
-      UploadingOtaState(
+        code: null == code
+            ? _self.code
+            : code // ignore: cast_nullable_to_non_nullable
+                  as String,
+        filename: freezed == filename
+            ? _self.filename
+            : filename // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        fileSize: freezed == fileSize
+            ? _self.fileSize
+            : fileSize // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        pickingFile: null == pickingFile
+            ? _self.pickingFile
+            : pickingFile // ignore: cast_nullable_to_non_nullable
+                  as bool,
         progress: null == progress
             ? _self.progress
             : progress // ignore: cast_nullable_to_non_nullable
                   as double,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class UploadCompleteOtaState implements OtaState {
-  const UploadCompleteOtaState();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is UploadCompleteOtaState);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'OtaState.uploadComplete()';
-  }
-}
-
-/// @nodoc
-
-class ErrorOtaState implements OtaState {
-  const ErrorOtaState(this.errorMessage);
-
-  final String errorMessage;
-
-  /// Create a copy of OtaState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $ErrorOtaStateCopyWith<ErrorOtaState> get copyWith =>
-      _$ErrorOtaStateCopyWithImpl<ErrorOtaState>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is ErrorOtaState &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(runtimeType, errorMessage);
-  }
-
-  @override
-  String toString() {
-    return 'OtaState.error(errorMessage: $errorMessage)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $ErrorOtaStateCopyWith<$Res>
-    implements $OtaStateCopyWith<$Res> {
-  factory $ErrorOtaStateCopyWith(
-    ErrorOtaState value,
-    $Res Function(ErrorOtaState) _then,
-  ) = _$ErrorOtaStateCopyWithImpl;
-  @useResult
-  $Res call({String errorMessage});
-}
-
-/// @nodoc
-class _$ErrorOtaStateCopyWithImpl<$Res>
-    implements $ErrorOtaStateCopyWith<$Res> {
-  _$ErrorOtaStateCopyWithImpl(this._self, this._then);
-
-  final ErrorOtaState _self;
-  final $Res Function(ErrorOtaState) _then;
-
-  /// Create a copy of OtaState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? errorMessage = null}) {
-    return _then(
-      ErrorOtaState(
-        null == errorMessage
-            ? _self.errorMessage
-            : errorMessage // ignore: cast_nullable_to_non_nullable
-                  as String,
+        failure: freezed == failure
+            ? _self.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as OtaFailure?,
+        formGeneration: null == formGeneration
+            ? _self.formGeneration
+            : formGeneration // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }

@@ -11,20 +11,12 @@ import 'gallery_catalog_service.dart';
 
 part 'gallery_tool_runner.freezed.dart';
 
-enum _ToolLaunchReason {
-  missingExecutable,
-  permissionDenied,
-  invalidExecutable,
-  other,
-}
+enum _ToolLaunchReason { missingExecutable, permissionDenied, invalidExecutable, other }
 
 @freezed
 abstract class GalleryToolResult with _$GalleryToolResult {
-  const factory GalleryToolResult({
-    required int exitCode,
-    required String stdout,
-    required String stderr,
-  }) = _GalleryToolResult;
+  const factory GalleryToolResult({required int exitCode, required String stdout, required String stderr}) =
+      _GalleryToolResult;
 }
 
 /// A command boundary: implementations must finish process and pipe cleanup
@@ -67,16 +59,8 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
     this.pipeCleanupTimeout = const Duration(seconds: 2),
   }) : _start = startProcess ?? _startProcess;
 
-  static Future<Process> _startProcess(
-    String executable,
-    List<String> args, {
-    Map<String, String>? environment,
-  }) => Process.start(
-    executable,
-    args,
-    runInShell: false,
-    environment: environment,
-  );
+  static Future<Process> _startProcess(String executable, List<String> args, {Map<String, String>? environment}) =>
+      Process.start(executable, args, runInShell: false, environment: environment);
 
   @override
   Future<GalleryToolResult> run(
@@ -94,14 +78,7 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
     if (maxOutputBytes < 1 || (timeout != null && timeout <= Duration.zero)) {
       throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
     }
-    final command = _GalleryCommand(
-      _start,
-      killGrace,
-      pipeCleanupTimeout,
-      maxOutputBytes,
-      _toolName(executable),
-    );
-    final clock = Stopwatch()..start();
+    final command = _GalleryCommand(_start, killGrace, pipeCleanupTimeout, maxOutputBytes, _toolName(executable));
     _active.add(command);
     _log.fine(
       () =>
@@ -121,7 +98,7 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
       _log.fine(
         () =>
             'Tool finished tool=${command.tool} exit=${result.exitCode} '
-            'outputBytes=${command._collectedBytes} elapsedMs=${clock.elapsedMilliseconds}',
+            'outputBytes=${command._collectedBytes}',
       );
       return result;
     } on GalleryCatalogFailure catch (error) {
@@ -129,14 +106,14 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
         error.code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
         () =>
             'Tool failed tool=${command.tool} code=${error.code.name} '
-            'outputBytes=${command._collectedBytes} elapsedMs=${clock.elapsedMilliseconds}',
+            'outputBytes=${command._collectedBytes}',
       );
       rethrow;
     } on Object {
       _log.warning(
         () =>
             'Tool failed tool=${command.tool} '
-            'code=${GalleryErrorCode.processingFailed.name} elapsedMs=${clock.elapsedMilliseconds}',
+            'code=${GalleryErrorCode.processingFailed.name}',
       );
       rethrow;
     } finally {
@@ -146,15 +123,14 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
   }
 
   // Never log an executable path or arbitrary user-controlled basename.
-  static String _toolName(String executable) =>
-      switch (executable.split('/').last) {
-        'czkawka_cli' => 'czkawka_cli',
-        'ffprobe' => 'ffprobe',
-        'jpegtran' => 'jpegtran',
-        'ffmpeg' => 'ffmpeg',
-        'chmod' => 'chmod',
-        _ => 'external',
-      };
+  static String _toolName(String executable) => switch (executable.split('/').last) {
+    'czkawka_cli' => 'czkawka_cli',
+    'ffprobe' => 'ffprobe',
+    'jpegtran' => 'jpegtran',
+    'ffmpeg' => 'ffmpeg',
+    'chmod' => 'chmod',
+    _ => 'external',
+  };
 
   @override
   Future<void> close() => _closing ??= _close();
@@ -191,13 +167,7 @@ class _GalleryCommand {
   bool _exited = false;
   int _collectedBytes = 0;
 
-  _GalleryCommand(
-    this.start,
-    this.killGrace,
-    this.pipeCleanupTimeout,
-    this.maxOutputBytes,
-    this.tool,
-  );
+  _GalleryCommand(this.start, this.killGrace, this.pipeCleanupTimeout, this.maxOutputBytes, this.tool);
 
   void stop(GalleryErrorCode reason) {
     _failure ??= reason;
@@ -235,10 +205,7 @@ class _GalleryCommand {
   ) async {
     final timer = Timer(timeout, () => stop(GalleryErrorCode.timeout));
     final listener = _CancellationListener(this);
-    cancellation?.then<void>(
-      (_) => listener.cancel(),
-      onError: (Object _) => listener.cancel(),
-    );
+    cancellation?.then<void>((_) => listener.cancel(), onError: (Object _) => listener.cancel());
     _CommandOutput? output;
     _CommandOutput? errors;
     Future<void>? stdinClosed;
@@ -258,23 +225,17 @@ class _GalleryCommand {
         };
         ProcessGalleryToolRunner._log.log(
           _failure == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
-          () =>
-              'Tool launch failed tool=$tool reason=${reason.name} osError=${error.errorCode}',
+          () => 'Tool launch failed tool=$tool reason=${reason.name} osError=${error.errorCode}',
         );
         _failure ??= GalleryErrorCode.unavailable;
         _check();
       }
       final process = _process!;
-      ProcessGalleryToolRunner._log.fine(
-        () => 'Tool process ready tool=$tool pid=${process.pid}',
-      );
+      ProcessGalleryToolRunner._log.fine(() => 'Tool process ready tool=$tool pid=${process.pid}');
       output = _collect(process.stdout, discard: discardStdout);
       errors = _collect(process.stderr);
       process.stdin.done.ignore();
-      stdinClosed = process.stdin.close().then<void>(
-        (_) {},
-        onError: (Object _) {},
-      );
+      stdinClosed = process.stdin.close().then<void>((_) {}, onError: (Object _) {});
       if (_failure != null) stop(_failure!);
       final exitCode = await process.exitCode;
       _exited = true;
@@ -336,20 +297,12 @@ class _GalleryCommand {
     return output;
   }
 
-  Future<void> _finishPipes(
-    _CommandOutput output,
-    _CommandOutput errors,
-    Future<void> stdinClosed,
-  ) async {
+  Future<void> _finishPipes(_CommandOutput output, _CommandOutput errors, Future<void> stdinClosed) async {
     try {
-      await Future.wait([output.done.future, errors.done.future, stdinClosed])
-          .timeout(pipeCleanupTimeout);
+      await Future.wait([output.done.future, errors.done.future, stdinClosed]).timeout(pipeCleanupTimeout);
     } on TimeoutException {
       _failure ??= GalleryErrorCode.timeout;
-      await Future.wait([
-        output.subscription.cancel(),
-        errors.subscription.cancel(),
-      ]);
+      await Future.wait([output.subscription.cancel(), errors.subscription.cancel()]);
       if (!output.done.isCompleted) output.done.complete();
       if (!errors.done.isCompleted) errors.done.complete();
     }

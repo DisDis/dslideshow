@@ -30,6 +30,7 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/pages/slidesh
 import 'package:dslideshow_flutter/features/welcome/presrntation/pages/welcome_page.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
 
 import 'src/injector.dart';
 import 'src/frame_language.dart';
@@ -54,33 +55,22 @@ void main() async {
       kind: DeviceKind.tablet,
     );
     DevicePreview.controller.registerPreset(photoFrame);
-    await DevicePreview.controller.applyPreset(
-      photoFrame,
-      orientation: Orientation.landscape,
-    );
+    await DevicePreview.controller.applyPreset(photoFrame, orientation: Orientation.landscape);
   }
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-    ]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
   try {
-    late RemoteServiceImpl backendService;
-    late RemoteServiceImpl otaService;
-
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
 
     _log.info("Config path: '$localPath'");
 
-    injector.registerSingleton<RouteBloc>(RouteBloc());
+    injector.registerSingleton<RouteBloc>(RouteBloc(), dispose: (bloc) => bloc.close());
     injector.registerSingleton<AppConfig>(AppConfig.fromFile(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
-    injector.registerLazySingleton<FrontendService>(() {
-      return FrontendService(injector(), backendService, otaService);
-    });
 
     injector.registerLazySingleton<ConfigAccessRepository>(
       () => ConfigAccessRepository(
@@ -96,7 +86,7 @@ void main() async {
     Logger.root.level = config.log.levelMain;
 
     final rpcTelemetry = RpcTelemetry(RpcNode.frontend);
-    otaService = RemoteServiceImpl(
+    final otaService = RemoteServiceImpl(
       serializers: serializers,
       telemetry: rpcTelemetry,
       peer: RpcNode.ota,
@@ -104,38 +94,33 @@ void main() async {
     );
     await otaService.spawn(ota.serviceMain, debugName: "ota");
 
-    backendService = RemoteServiceImpl(
-      serializers: serializers,
-      telemetry: rpcTelemetry,
-      peer: RpcNode.backend,
-    );
+    final backendService = RemoteServiceImpl(serializers: serializers, telemetry: rpcTelemetry, peer: RpcNode.backend);
     await backendService.spawn(hw_frame.serviceMain, debugName: "backend");
 
-    final FrontendService frontendService = injector();
+    injector.registerSingleton<FrameDisplayInfoReader>(FrameFrontendController.readDisplayInfo);
+    late final SlideshowStatusBloc statusBloc;
+    final frameController = FrameFrontendController(
+      statusBloc: () => statusBloc,
+      routeBloc: injector<RouteBloc>(),
+      displayInfo: injector<FrameDisplayInfoReader>(),
+    );
+    final frontendService = FrontendService(config, backendService, otaService, frameController: frameController);
+    statusBloc = SlideshowStatusBloc(frontendService: frontendService, config: config.slideshow);
+    injector.registerSingleton<SlideshowStatusBloc>(statusBloc, dispose: (bloc) => bloc.close());
+    injector.registerSingleton<FrameFrontendController>(frameController);
+    injector.registerSingleton<FrontendService>(frontendService, dispose: (service) => service.dispose());
+    frontendService.onSystemInfoUpdate.listen(frameController.updateSystemInfo);
+
     backendService.service.processing(frontendService, serializers);
     otaService.service.processing(frontendService, serializers);
 
-    injector.registerLazySingleton<SlideshowStatusBloc>(() {
-      return SlideshowStatusBloc(
-        frontendService: frontendService,
-        config: config.slideshow,
-      );
-    });
-
     injector.registerFactory<SlideshowBloc>(() {
-      return SlideshowBloc(
-        frontendService: frontendService,
-        config: config.slideshow,
-        statusBloc: injector(),
-      );
+      return SlideshowBloc(frontendService: frontendService, config: config.slideshow, statusBloc: injector());
     });
 
     injector.registerFactory<ButtonsHintBloc>(() {
-      return ButtonsHintBloc(
-        frontendService: frontendService,
-        statusBloc: injector(),
-        appConfig: config,
-      )..add(ButtonsHintEvent.show(isShow: true));
+      return ButtonsHintBloc(frontendService: frontendService, statusBloc: injector(), appConfig: config)
+        ..add(ButtonsHintEvent.show(isShow: true));
     });
     injector.registerFactory<MainMenuBloc>(() {
       return MainMenuBloc(
@@ -192,9 +177,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: const ColorScheme.dark(surface: Colors.black),
-      ),
+      theme: ThemeData(colorScheme: const ColorScheme.dark(surface: Colors.black)),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: injector<AppConfig>().language.locale,
@@ -204,17 +187,9 @@ class MainApp extends StatelessWidget {
             case RoutePage.slideshow:
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider<SlideshowBloc>(
-                    lazy: false,
-                    create: (context) => injector<SlideshowBloc>(),
-                  ),
-                  BlocProvider<MainMenuBloc>(
-                    lazy: false,
-                    create: (context) => injector<MainMenuBloc>(),
-                  ),
-                  BlocProvider<ButtonsHintBloc>(
-                    create: (context) => injector<ButtonsHintBloc>(),
-                  ),
+                  BlocProvider<SlideshowBloc>(lazy: false, create: (context) => injector<SlideshowBloc>()),
+                  BlocProvider<MainMenuBloc>(lazy: false, create: (context) => injector<MainMenuBloc>()),
+                  BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>()),
                 ],
                 child: const SlideShowPage(),
               );

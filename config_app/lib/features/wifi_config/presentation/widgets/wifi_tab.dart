@@ -45,7 +45,13 @@ class WiFiConfigTab extends StatelessWidget {
                     color: Theme.of(context).colorScheme.error,
                   ),
                   const SizedBox(height: 16),
-                  Text(state.errorMessage, textAlign: TextAlign.center),
+                  Text(switch (state.kind) {
+                    WifiFailureKind.unknown =>
+                      context.localizations.wifi_operation_unknown,
+                    WifiFailureKind.refresh =>
+                      context.localizations.wifi_refresh_failed,
+                    WifiFailureKind.rejected => state.errorMessage,
+                  }, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   FilledButton.icon(
                     onPressed: () => context.read<WifiTabBloc>().add(

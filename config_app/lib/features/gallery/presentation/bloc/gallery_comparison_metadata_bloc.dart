@@ -12,8 +12,7 @@ import '../../../../src/gallery/gallery_log.dart';
 part 'gallery_comparison_metadata_bloc.freezed.dart';
 
 @freezed
-abstract class GalleryComparisonMetadataState
-    with _$GalleryComparisonMetadataState {
+abstract class GalleryComparisonMetadataState with _$GalleryComparisonMetadataState {
   const factory GalleryComparisonMetadataState({
     required GalleryItem? item,
     GalleryMetadata? metadata,
@@ -25,17 +24,13 @@ abstract class GalleryComparisonMetadataState
 }
 
 @freezed
-sealed class GalleryComparisonMetadataEvent
-    with _$GalleryComparisonMetadataEvent {
-  const factory GalleryComparisonMetadataEvent.load() =
-      GalleryComparisonMetadataLoad;
+sealed class GalleryComparisonMetadataEvent with _$GalleryComparisonMetadataEvent {
+  const factory GalleryComparisonMetadataEvent.load() = GalleryComparisonMetadataLoad;
 }
 
 /// One visible comparison card owns one cancellable read. A keyed provider
 /// replaces this owner on media, revision or repository changes.
-class GalleryComparisonMetadataBloc
-    extends
-        Bloc<GalleryComparisonMetadataEvent, GalleryComparisonMetadataState> {
+class GalleryComparisonMetadataBloc extends Bloc<GalleryComparisonMetadataEvent, GalleryComparisonMetadataState> {
   static final _log = Logger('GalleryComparisonMetadataBloc');
   final GalleryManagementRepository repository;
   Completer<void>? _cancel;
@@ -43,24 +38,18 @@ class GalleryComparisonMetadataBloc
   bool _closing = false;
   Future<void>? _closingFuture;
 
-  GalleryComparisonMetadataBloc({
-    required this.repository,
-    required GalleryItem? item,
-  }) : super(GalleryComparisonMetadataState(item: item)) {
+  GalleryComparisonMetadataBloc({required this.repository, required GalleryItem? item})
+    : super(GalleryComparisonMetadataState(item: item)) {
     on<GalleryComparisonMetadataLoad>(_load);
     add(const GalleryComparisonMetadataEvent.load());
   }
 
-  Future<void> _load(
-    GalleryComparisonMetadataLoad event,
-    Emitter<GalleryComparisonMetadataState> emit,
-  ) async {
+  Future<void> _load(GalleryComparisonMetadataLoad event, Emitter<GalleryComparisonMetadataState> emit) async {
     final generation = ++_generation;
     _cancelRead();
     final item = state.item;
     if (item == null || _closing) return;
     final cancel = _cancel = Completer<void>();
-    final clock = Stopwatch()..start();
     _log.fine(
       () =>
           'event=metadataStarted generation=$generation source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)}',
@@ -69,32 +58,15 @@ class GalleryComparisonMetadataBloc
     try {
       final data = await Future.any<GalleryMetadata>([
         repository.metadata(item, cancel: cancel.future),
-        cancel.future.then<GalleryMetadata>(
-          (_) => throw const GalleryManagementException(
-            GalleryErrorCode.cancelled,
-          ),
-        ),
+        cancel.future.then<GalleryMetadata>((_) => throw const GalleryManagementException(GalleryErrorCode.cancelled)),
       ]);
       if (!_closing && !emit.isDone && generation == _generation) {
-        _log.fine(
-          () =>
-              'event=metadataCompleted generation=$generation elapsedMs=${clock.elapsedMilliseconds}',
-        );
-        emit(
-          state.copyWith(
-            metadata: data,
-            loading: false,
-            failed: false,
-            error: null,
-          ),
-        );
+        _log.fine(() => 'event=metadataCompleted generation=$generation');
+        emit(state.copyWith(metadata: data, loading: false, failed: false, error: null));
       }
     } catch (error) {
       if (_closing || emit.isDone || generation != _generation) {
-        _log.fine(
-          () =>
-              'event=metadataCancelled generation=$generation elapsedMs=${clock.elapsedMilliseconds}',
-        );
+        _log.fine(() => 'event=metadataCancelled generation=$generation');
         return;
       }
       final code = error is GalleryManagementException
@@ -102,9 +74,7 @@ class GalleryComparisonMetadataBloc
           : error is FormatException || error is TypeError
           ? GalleryErrorCode.processingFailed
           : GalleryErrorCode.unknown;
-      _log.warning(
-        'event=metadataFailed generation=$generation code=${code.name} type=${error.runtimeType} elapsedMs=${clock.elapsedMilliseconds}',
-      );
+      _log.warning('event=metadataFailed generation=$generation code=${code.name} type=${error.runtimeType}');
       emit(
         state.copyWith(
           loading: false,
@@ -112,10 +82,7 @@ class GalleryComparisonMetadataBloc
           error: code,
           revisionMismatch:
               state.revisionMismatch +
-              (error is GalleryManagementException &&
-                      error.code == GalleryErrorCode.revisionMismatch
-                  ? 1
-                  : 0),
+              (error is GalleryManagementException && error.code == GalleryErrorCode.revisionMismatch ? 1 : 0),
         ),
       );
     }

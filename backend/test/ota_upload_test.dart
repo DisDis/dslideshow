@@ -22,9 +22,7 @@ const _boundary = 'ota-test-boundary';
 final _inputTag = RegExp(r'<input\b[^>]*>');
 final _formTag = RegExp(r'<form\b[^>]*>');
 final _scriptTag = RegExp(r'<script>(.*?)</script>', dotAll: true);
-final _codeConstraint = RegExp(
-  r'\b(?:pattern|minlength|maxlength|inputmode)\s*=',
-);
+final _codeConstraint = RegExp(r'\b(?:pattern|minlength|maxlength|inputmode)\s*=');
 
 String _field(String name, String value) =>
     '--$_boundary\r\n'
@@ -46,21 +44,17 @@ List<int> _multipart(
   '$extra--$_boundary--\r\n',
 );
 
-Request _request(
-  Stream<List<int>> body, {
-  int? contentLength,
-  String endpoint = '/ota_upload',
-  String? accept,
-}) => Request(
-  'POST',
-  Uri.parse('http://localhost$endpoint'),
-  headers: {
-    'content-type': 'multipart/form-data; boundary=$_boundary',
-    if (contentLength != null) 'content-length': '$contentLength',
-    if (accept != null) 'accept': accept,
-  },
-  body: body,
-);
+Request _request(Stream<List<int>> body, {int? contentLength, String endpoint = '/ota_upload', String? accept}) =>
+    Request(
+      'POST',
+      Uri.parse('http://localhost$endpoint'),
+      headers: {
+        'content-type': 'multipart/form-data; boundary=$_boundary',
+        if (contentLength != null) 'content-length': '$contentLength',
+        if (accept != null) 'accept': accept,
+      },
+      body: body,
+    );
 
 Future<void> _until(bool Function() condition) async {
   final watch = Stopwatch()..start();
@@ -116,10 +110,7 @@ class _Installer implements FirmwareInstaller {
   void Function(String)? emitOutput;
 
   @override
-  Future<int> install(
-    File package, {
-    required void Function(String) onOutput,
-  }) async {
+  Future<int> install(File package, {required void Function(String) onOutput}) async {
     files.add(package.path);
     data.add(await package.readAsBytes());
     emitOutput = onOutput;
@@ -144,15 +135,9 @@ class _Writer implements UploadFileWriter {
   final Completer<void>? closeGate;
   final Completer<void>? firstWrite;
 
-  _Writer(
-    this.file, {
-    this.fault = _Fault.none,
-    this.closeGate,
-    this.firstWrite,
-  });
+  _Writer(this.file, {this.fault = _Fault.none, this.closeGate, this.firstWrite});
 
-  FileSystemException get _noSpace =>
-      const FileSystemException('full', '', OSError('No space left', 28));
+  FileSystemException get _noSpace => const FileSystemException('full', '', OSError('No space left', 28));
 
   @override
   Future<void> write(List<int> bytes) async {
@@ -203,10 +188,7 @@ void main() {
       startServer: false,
       firmwareDirectory: directory,
       installer: installer,
-      uploadReceiver: StreamingUploadReceiver(
-        limits: limits,
-        writerFactory: writerFactory,
-      ),
+      uploadReceiver: StreamingUploadReceiver(limits: limits, writerFactory: writerFactory),
       configUploadReceiver: configUploadReceiver,
       latestRelease: latestRelease,
       downloadClientFactory: downloadClientFactory,
@@ -219,13 +201,12 @@ void main() {
     return result;
   }
 
-  Future<Response> upload(
-    OTAService ota, {
-    String data = 'package contents',
-  }) async {
-    return ota.handler(
-      _request(Stream.value(_multipart(ota.code, data: data))),
-    );
+  Future<void> closeService(OTAService service) async {
+    if (services.remove(service)) await service.close();
+  }
+
+  Future<Response> upload(OTAService ota, {String data = 'package contents'}) async {
+    return ota.handler(_request(Stream.value(_multipart(ota.code, data: data))));
   }
 
   setUp(() async {
@@ -235,8 +216,8 @@ void main() {
   });
 
   tearDown(() async {
-    for (final ota in services) {
-      await ota.close();
+    for (final ota in services.toList()) {
+      await closeService(ota);
     }
     services.clear();
     await directory.delete(recursive: true);
@@ -249,9 +230,7 @@ void main() {
   ]) {
     test('$endpoint provides an autonomous native form and slideshow exit', () async {
       final ota = service();
-      final response = await ota.handler(
-        Request('GET', Uri.parse('http://localhost$endpoint')),
-      );
+      final response = await ota.handler(Request('GET', Uri.parse('http://localhost$endpoint')));
       final html = await response.readAsString();
       expect(response.statusCode, 200);
       expect(response.headers['content-type'], contains('text/html'));
@@ -259,36 +238,17 @@ void main() {
       expect(html, contains('<html lang="en">'));
       expect(html, contains('DSlideshow · OTA'));
       expect(html, contains(' · DSlideshow</title>'));
-      expect(
-        html,
-        contains(
-          'frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>',
-        ),
-      );
-      expect(
-        html,
-        contains(
-          'backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>',
-        ),
-      );
+      expect(html, contains('frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>'));
+      expect(html, contains('backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>'));
       final form = _formTag.firstMatch(html)!.group(0)!;
       expect(form, contains('method="post"'));
       expect(form, contains('action="$action"'));
-      final inputs = _inputTag
-          .allMatches(html)
-          .map((match) => match.group(0)!)
-          .toList();
+      final inputs = _inputTag.allMatches(html).map((match) => match.group(0)!).toList();
       final code = inputs.singleWhere((input) => input.contains('name="code"'));
       expect(code, contains('type="text"'));
-      expect(
-        _codeConstraint.hasMatch(code),
-        isFalse,
-        reason: 'Codes can contain arbitrary text',
-      );
+      expect(_codeConstraint.hasMatch(code), isFalse, reason: 'Codes can contain arbitrary text');
       if (fileType != null) {
-        final file = inputs.singleWhere(
-          (input) => input.contains('name="file"'),
-        );
+        final file = inputs.singleWhere((input) => input.contains('name="file"'));
         expect(form, contains('enctype="multipart/form-data"'));
         expect(file, contains('accept="$fileType"'));
         expect(file, isNot(contains('multiple')));
@@ -303,19 +263,11 @@ void main() {
         expect(html, contains('data-uploading-label="Uploading…"'));
         final scripts = _scriptTag.allMatches(html).toList();
         expect(scripts, hasLength(1));
-        final scriptHash = base64.encode(
-          crypto.sha256.convert(utf8.encode(scripts.single.group(1)!)).bytes,
-        );
-        expect(
-          response.headers['content-security-policy'],
-          contains("script-src 'sha256-$scriptHash'"),
-        );
+        final scriptHash = base64.encode(crypto.sha256.convert(utf8.encode(scripts.single.group(1)!)).bytes);
+        expect(response.headers['content-security-policy'], contains("script-src 'sha256-$scriptHash'"));
       } else {
         expect(html, isNot(contains('<script')));
-        expect(
-          response.headers['content-security-policy'],
-          isNot(contains('script-src')),
-        );
+        expect(response.headers['content-security-policy'], isNot(contains('script-src')));
       }
     });
   }
@@ -323,29 +275,15 @@ void main() {
   test('browser language preferences select RU while unsupported languages use EN', () async {
     final ota = service();
     final response = await ota.handler(
-      Request(
-        'GET',
-        Uri.parse('http://localhost/ota_start'),
-        headers: {'accept-language': 'ru-RU, en;q=0.5'},
-      ),
+      Request('GET', Uri.parse('http://localhost/ota_start'), headers: {'accept-language': 'ru-RU, en;q=0.5'}),
     );
     final html = await response.readAsString();
     expect(html, contains('<html lang="ru">'));
     expect(html, contains('Отменить и вернуться к слайдшоу'));
     expect(html, contains('data-uploading-label="Загрузка…"'));
     expect(html, contains('DSlideshow · OTA'));
-    expect(
-      html,
-      contains(
-        'frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>',
-      ),
-    );
-    expect(
-      html,
-      contains(
-        'backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>',
-      ),
-    );
+    expect(html, contains('frontend: <strong class="version-number">${ApplicationInfo.frontendVersion}</strong>'));
+    expect(html, contains('backend: <strong class="version-number">${ApplicationInfo.backendVersion}</strong>'));
     for (final (header, expected) in <(String?, OtaPageLanguage)>[
       (null, OtaPageLanguage.en),
       ('fr', OtaPageLanguage.en),
@@ -375,17 +313,11 @@ void main() {
 
   test('return to slideshow sends the exit command and preserves plain API response', () async {
     final ota = service();
-    final response = await ota.handler(
-      Request('GET', Uri.parse('http://localhost/ota_stop')),
-    );
+    final response = await ota.handler(Request('GET', Uri.parse('http://localhost/ota_stop')));
     expect(await response.readAsString(), 'Return to normal mode');
     expect(remote.commands.whereType<OTAReadyCommand>().single.ready, isFalse);
     final htmlResponse = await ota.handler(
-      Request(
-        'GET',
-        Uri.parse('http://localhost/ota_stop'),
-        headers: {'accept': 'text/html'},
-      ),
+      Request('GET', Uri.parse('http://localhost/ota_stop'), headers: {'accept': 'text/html'}),
     );
     expect(htmlResponse.statusCode, 200);
     final html = await htmlResponse.readAsString();
@@ -406,28 +338,15 @@ void main() {
     final response = await ota.handler(download(ota.code));
     expect(response.statusCode, 200);
     expect(await response.read().expand((bytes) => bytes).toList(), original);
-    expect(
-      response.headers['content-disposition'],
-      'attachment; filename="config.json"',
-    );
+    expect(response.headers['content-disposition'], 'attachment; filename="config.json"');
     expect(response.headers['cache-control'], 'no-store');
     final denied = await ota.handler(download('wrong'));
     expect(denied.statusCode, 403);
     expect(await denied.readAsString(), 'Incorrect code');
-    final missing = await ota.handler(
-      Request(
-        'POST',
-        Uri.parse('http://localhost/ota_download_config'),
-        body: '',
-      ),
-    );
+    final missing = await ota.handler(Request('POST', Uri.parse('http://localhost/ota_download_config'), body: ''));
     expect(missing.statusCode, 400);
     final repeated = await ota.handler(
-      Request(
-        'POST',
-        Uri.parse('http://localhost/ota_download_config'),
-        body: 'code=${ota.code}&code=${ota.code}',
-      ),
+      Request('POST', Uri.parse('http://localhost/ota_download_config'), body: 'code=${ota.code}&code=${ota.code}'),
     );
     expect(repeated.statusCode, 400);
     await File(ota.config.fullConfigFilename).delete();
@@ -443,10 +362,7 @@ void main() {
       ),
     );
     expect(htmlUnavailable.statusCode, 500);
-    expect(
-      await htmlUnavailable.readAsString(),
-      contains('The saved configuration could not be read.'),
-    );
+    expect(await htmlUnavailable.readAsString(), contains('The saved configuration could not be read.'));
   });
 
   test('configuration import changes saved bytes while active services and installer remain untouched', () async {
@@ -455,9 +371,7 @@ void main() {
     const content = '{"web":{"port":8123},"future-setting":"keep"}\n';
     final response = await ota.handler(
       _request(
-        Stream.value(
-          _multipart(ota.code, filename: 'config.json', data: content),
-        ),
+        Stream.value(_multipart(ota.code, filename: 'config.json', data: content)),
         endpoint: '/ota_upload_config',
       ),
     );
@@ -470,9 +384,7 @@ void main() {
     expect(installer.restarts, 0);
     final rejected = await ota.handler(
       _request(
-        Stream.value(
-          _multipart(ota.code, filename: 'config.json', data: '{bad'),
-        ),
+        Stream.value(_multipart(ota.code, filename: 'config.json', data: '{bad')),
         endpoint: '/ota_upload_config',
         accept: 'text/html',
       ),
@@ -490,27 +402,16 @@ void main() {
     await File(ota.config.fullConfigFilename).writeAsString(oldConfig);
     final body = StreamController<List<int>>();
     addTearDown(() => body.close());
-    final pending = ota.handler(
-      _request(body.stream, endpoint: '/ota_upload_config'),
-    );
-    body.add(
-      utf8.encode('${_field('code', ota.code)}${_fileHeader('config.json')}{'),
-    );
+    final pending = ota.handler(_request(body.stream, endpoint: '/ota_upload_config'));
+    body.add(utf8.encode('${_field('code', ota.code)}${_fileHeader('config.json')}{'));
     expect(ota.busy, isTrue);
     expect((await upload(ota)).statusCode, 409);
-    await ota.close();
+    await closeService(ota);
     expect((await pending).statusCode, 408);
     expect(await File(ota.config.fullConfigFilename).readAsString(), oldConfig);
     expect(ota.busy, isFalse);
-    expect(directory.listSync().map((entry) => path.basename(entry.path)), [
-      'config.json',
-    ]);
-    expect(
-      (await ota.handler(
-        Request('GET', Uri.parse('http://localhost/ota_start')),
-      )).statusCode,
-      503,
-    );
+    expect(directory.listSync().map((entry) => path.basename(entry.path)), ['config.json']);
+    expect((await ota.handler(Request('GET', Uri.parse('http://localhost/ota_start')))).statusCode, 503);
   });
 
   test('HTTP remains usable when the frontend never responds', () async {
@@ -520,23 +421,16 @@ void main() {
     await ota.start();
     final client = HttpClient();
     addTearDown(() => client.close(force: true));
-    final request = await client.getUrl(
-      Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_start'),
-    );
+    final request = await client.getUrl(Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_start'));
     final response = await request.close();
     expect(response.statusCode, 200);
-    expect(
-      await utf8.decoder.bind(response).join(),
-      contains('action="/ota_upload"'),
-    );
+    expect(await utf8.decoder.bind(response).join(), contains('action="/ota_upload"'));
     expect(remote.commands, hasLength(1));
-    final configRequest = await client.getUrl(
-      Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_upload_config'),
-    );
+    final configRequest = await client.getUrl(Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_upload_config'));
     final configResponse = await configRequest.close();
     expect(configResponse.statusCode, 200);
     await configResponse.drain<void>();
-    await ota.close();
+    await closeService(ota);
     expect(ota.boundPort, isNull);
   });
 
@@ -557,34 +451,21 @@ void main() {
     expect(ota.info.errorText, isNull);
   });
 
-  test(
-    'unknown Content-Length saves one package before HTTP 200 and install',
-    () async {
-      final ota = service();
-      final response = await ota.handler(
-        _request(Stream.value(_multipart(ota.code)), accept: 'text/html'),
-      );
-      expect(response.statusCode, 200);
-      expect(response.headers['content-type'], contains('text/html'));
-      final html = await response.readAsString();
-      expect(
-        html,
-        contains('The file was received and passed to the installer.'),
-      );
-      expect(html, isNot(contains('href="/ota_stop"')));
-      await _until(() => installer.data.isNotEmpty);
-      expect(installer.data.single, utf8.encode('package contents'));
-      expect(installer.files.single, path.join(directory.path, 'update.deb'));
-      expect(directory.listSync().whereType<File>().length, 1);
-      expect(
-        remote.infos.every((info) => info.uploadingPercent.isFinite),
-        isTrue,
-      );
-      await _until(
-        () => remote.infos.any((info) => info.uploadingPercent == 100),
-      );
-    },
-  );
+  test('unknown Content-Length saves one package before HTTP 200 and install', () async {
+    final ota = service();
+    final response = await ota.handler(_request(Stream.value(_multipart(ota.code)), accept: 'text/html'));
+    expect(response.statusCode, 200);
+    expect(response.headers['content-type'], contains('text/html'));
+    final html = await response.readAsString();
+    expect(html, contains('The file was received and passed to the installer.'));
+    expect(html, isNot(contains('href="/ota_stop"')));
+    await _until(() => installer.data.isNotEmpty);
+    expect(installer.data.single, utf8.encode('package contents'));
+    expect(installer.files.single, path.join(directory.path, 'update.deb'));
+    expect(directory.listSync().whereType<File>().length, 1);
+    expect(remote.infos.every((info) => info.uploadingPercent.isFinite), isTrue);
+    await _until(() => remote.infos.any((info) => info.uploadingPercent == 100));
+  });
 
   test('success and installer both wait for writer close and rename', () async {
     final gate = Completer<void>();
@@ -594,10 +475,7 @@ void main() {
     final created = Completer<_Writer>();
     final ota = service(
       writerFactory: (file) async {
-        final writer = _Writer(
-          await file.open(mode: FileMode.write),
-          closeGate: gate,
-        );
+        final writer = _Writer(await file.open(mode: FileMode.write), closeGate: gate);
         created.complete(writer);
         return writer;
       },
@@ -619,34 +497,29 @@ void main() {
   });
 
   for (final codeFirst in [true, false]) {
-    test(
-      'rejects ${codeFirst ? 'wrong code' : 'file before code'} before reading file body',
-      () async {
-        var readBody = false;
-        var createdWriter = false;
-        final ota = service(
-          writerFactory: (file) async {
-            createdWriter = true;
-            return _Writer(await file.open(mode: FileMode.write));
-          },
-        );
-        Stream<List<int>> body() async* {
-          yield utf8.encode(
-            '${codeFirst ? _field('code', 'wrong') : ''}${_fileHeader()}',
-          );
-          readBody = true;
-          yield utf8.encode('large file\r\n--$_boundary--\r\n');
-        }
+    test('rejects ${codeFirst ? 'wrong code' : 'file before code'} before reading file body', () async {
+      var readBody = false;
+      var createdWriter = false;
+      final ota = service(
+        writerFactory: (file) async {
+          createdWriter = true;
+          return _Writer(await file.open(mode: FileMode.write));
+        },
+      );
+      Stream<List<int>> body() async* {
+        yield utf8.encode('${codeFirst ? _field('code', 'wrong') : ''}${_fileHeader()}');
+        readBody = true;
+        yield utf8.encode('large file\r\n--$_boundary--\r\n');
+      }
 
-        final original = ota.info;
-        final response = await ota.handler(_request(body()));
-        expect(response.statusCode, 403);
-        expect(readBody, isFalse);
-        expect(createdWriter, isFalse);
-        expect(identical(ota.info, original), isTrue);
-        expect(ota.busy, isFalse);
-      },
-    );
+      final original = ota.info;
+      final response = await ota.handler(_request(body()));
+      expect(response.statusCode, 403);
+      expect(readBody, isFalse);
+      expect(createdWriter, isFalse);
+      expect(identical(ota.info, original), isTrue);
+      expect(ota.busy, isFalse);
+    });
   }
 
   test('large wrong-code HTTP upload returns a complete HTML error without resetting the connection', () async {
@@ -664,13 +537,8 @@ void main() {
     final request = await client.postUrl(endpoint);
     request.headers.set(HttpHeaders.acceptHeader, 'text/html');
     request.headers.set(HttpHeaders.acceptLanguageHeader, 'en');
-    request.headers.set(
-      HttpHeaders.contentTypeHeader,
-      'multipart/form-data; boundary=$_boundary',
-    );
-    final prefix = utf8.encode(
-      '${_field('code', 'wrong-access-code')}${_fileHeader()}',
-    );
+    request.headers.set(HttpHeaders.contentTypeHeader, 'multipart/form-data; boundary=$_boundary');
+    final prefix = utf8.encode('${_field('code', 'wrong-access-code')}${_fileHeader()}');
     final suffix = utf8.encode('\r\n--$_boundary--\r\n');
     const fileBytes = 32 * 1024 * 1024;
     final chunk = List<int>.filled(64 * 1024, 1);
@@ -687,19 +555,11 @@ void main() {
     // rather than after a small body has already arrived at the server.
     await request.addStream(body()).timeout(const Duration(seconds: 10));
     final response = await request.close().timeout(const Duration(seconds: 10));
-    final html = await utf8.decoder
-        .bind(response)
-        .join()
-        .timeout(const Duration(seconds: 10));
+    final html = await utf8.decoder.bind(response).join().timeout(const Duration(seconds: 10));
     expect(response.statusCode, HttpStatus.forbidden);
     expect(response.headers.contentType?.mimeType, 'text/html');
     expect(html, contains('<html lang="en">'));
-    expect(
-      html,
-      contains(
-        'The code does not match. Return to the form and enter it exactly as shown on the frame.',
-      ),
-    );
+    expect(html, contains('The code does not match. Return to the form and enter it exactly as shown on the frame.'));
     expect(html, contains('</html>'));
     expect(createdWriter, isFalse);
     expect(directory.listSync(), isEmpty);
@@ -708,426 +568,321 @@ void main() {
     expect(ota.busy, isFalse);
 
     final next = await client.getUrl(endpoint.resolve('/ota_start'));
-    final nextResponse = await next.close().timeout(
-      const Duration(seconds: 10),
-    );
+    final nextResponse = await next.close().timeout(const Duration(seconds: 10));
     expect(nextResponse.statusCode, HttpStatus.ok);
-    expect(
-      await utf8.decoder.bind(nextResponse).join(),
-      contains('DSlideshow'),
-    );
+    expect(await utf8.decoder.bind(nextResponse).join(), contains('DSlideshow'));
   });
 
-  test(
-    'extension, duplicate files and duplicate code never start installer',
-    () async {
-      final ota = service();
-      final wrongType = await ota.handler(
-        _request(Stream.value(_multipart(ota.code, filename: 'bad.zip'))),
-      );
-      expect(wrongType.statusCode, 415);
-      final duplicateFile = await ota.handler(
-        _request(
-          Stream.value(
-            _multipart(
-              ota.code,
-              extra: '${_fileHeader('second.deb')}other\r\n',
-            ),
+  test('extension, duplicate files and duplicate code never start installer', () async {
+    final ota = service();
+    final wrongType = await ota.handler(_request(Stream.value(_multipart(ota.code, filename: 'bad.zip'))));
+    expect(wrongType.statusCode, 415);
+    final duplicateFile = await ota.handler(
+      _request(Stream.value(_multipart(ota.code, extra: '${_fileHeader('second.deb')}other\r\n'))),
+    );
+    expect(duplicateFile.statusCode, 413);
+    final duplicateCode = await ota.handler(
+      _request(
+        Stream.value(
+          utf8.encode(
+            '${_field('code', ota.code)}${_field('code', ota.code)}'
+            '${_fileHeader()}data\r\n--$_boundary--\r\n',
           ),
         ),
-      );
-      expect(duplicateFile.statusCode, 413);
-      final duplicateCode = await ota.handler(
-        _request(
-          Stream.value(
-            utf8.encode(
-              '${_field('code', ota.code)}${_field('code', ota.code)}'
-              '${_fileHeader()}data\r\n--$_boundary--\r\n',
-            ),
-          ),
-        ),
-      );
-      expect(duplicateCode.statusCode, 400);
-      expect(installer.files, isEmpty);
-      expect(directory.listSync(), isEmpty);
-    },
-  );
+      ),
+    );
+    expect(duplicateCode.statusCode, 400);
+    expect(installer.files, isEmpty);
+    expect(directory.listSync(), isEmpty);
+  });
 
   test('empty and missing package are rejected without installation', () async {
     final ota = service();
     expect((await upload(ota, data: '')).statusCode, 400);
     final missing = await ota.handler(
-      _request(
-        Stream.value(
-          utf8.encode('${_field('code', ota.code)}--$_boundary--\r\n'),
-        ),
-      ),
+      _request(Stream.value(utf8.encode('${_field('code', ota.code)}--$_boundary--\r\n'))),
     );
     expect(missing.statusCode, 400);
     expect(installer.files, isEmpty);
     expect(directory.listSync(), isEmpty);
   });
 
-  test(
-    'actual byte limit works without Content-Length and removes staging',
-    () async {
-      final ota = service(
-        limits: const UploadLimits(maxBytes: 512, maxFiles: 1, maxParts: 2),
-      );
-      final result = await upload(ota, data: 'x' * 1024);
-      expect(result.statusCode, 413);
-      expect(installer.files, isEmpty);
-      expect(directory.listSync(), isEmpty);
-      expect(ota.busy, isFalse);
-    },
-  );
+  test('actual byte limit works without Content-Length and removes staging', () async {
+    final ota = service(limits: const UploadLimits(maxBytes: 512, maxFiles: 1, maxParts: 2));
+    final result = await upload(ota, data: 'x' * 1024);
+    expect(result.statusCode, 413);
+    expect(installer.files, isEmpty);
+    expect(directory.listSync(), isEmpty);
+    expect(ota.busy, isFalse);
+  });
 
   test('bounded code and malformed multipart return errors', () async {
-    final ota = service(
-      limits: const UploadLimits(maxFieldBytes: 8, maxFiles: 1, maxParts: 2),
-    );
-    final largeCode = await ota.handler(
-      _request(Stream.value(_multipart('x' * 100))),
-    );
+    final ota = service(limits: const UploadLimits(maxFieldBytes: 8, maxFiles: 1, maxParts: 2));
+    final largeCode = await ota.handler(_request(Stream.value(_multipart('x' * 100))));
     expect(largeCode.statusCode, 413);
-    final malformed = await ota.handler(
-      _request(Stream.value(utf8.encode('bad body'))),
-    );
+    final malformed = await ota.handler(_request(Stream.value(utf8.encode('bad body'))));
     expect(malformed.statusCode, 400);
     expect(installer.files, isEmpty);
     expect(directory.listSync(), isEmpty);
   });
 
-  test(
-    'stream error and truncated body clean staging and allow retry',
-    () async {
-      final ota = service();
-      Stream<List<int>> failedBody() async* {
-        yield utf8.encode('${_field('code', ota.code)}${_fileHeader()}partial');
-        throw StateError('connection lost');
-      }
+  test('stream error and truncated body clean staging and allow retry', () async {
+    final ota = service();
+    Stream<List<int>> failedBody() async* {
+      yield utf8.encode('${_field('code', ota.code)}${_fileHeader()}partial');
+      throw StateError('connection lost');
+    }
 
-      expect((await ota.handler(_request(failedBody()))).statusCode, 400);
-      expect(directory.listSync(), isEmpty);
-      expect(ota.info.status, OTAStatus.issue);
-      expect(ota.busy, isFalse);
-      final truncated = await ota.handler(
-        _request(
-          Stream.value(
-            utf8.encode('${_field('code', ota.code)}${_fileHeader()}partial'),
-          ),
-        ),
-      );
-      expect(truncated.statusCode, 400);
-      expect(directory.listSync(), isEmpty);
-      expect((await upload(ota)).statusCode, 200);
-      await _until(() => installer.data.isNotEmpty);
-      expect(installer.data.length, 1);
-    },
-  );
+    expect((await ota.handler(_request(failedBody()))).statusCode, 400);
+    expect(directory.listSync(), isEmpty);
+    expect(ota.info.status, OTAStatus.issue);
+    expect(ota.busy, isFalse);
+    final truncated = await ota.handler(
+      _request(Stream.value(utf8.encode('${_field('code', ota.code)}${_fileHeader()}partial'))),
+    );
+    expect(truncated.statusCode, 400);
+    expect(directory.listSync(), isEmpty);
+    expect((await upload(ota)).statusCode, 200);
+    await _until(() => installer.data.isNotEmpty);
+    expect(installer.data.length, 1);
+  });
 
   for (final fault in [_Fault.write, _Fault.flush, _Fault.close]) {
-    test(
-      'disk-full during ${fault.name} returns 507 without install',
-      () async {
-        final ota = service(
-          writerFactory: (file) async {
-            return _Writer(await file.open(mode: FileMode.write), fault: fault);
-          },
-        );
-        expect((await upload(ota)).statusCode, 507);
-        expect(installer.files, isEmpty);
-        expect(directory.listSync(), isEmpty);
-        expect(ota.busy, isFalse);
-        expect(ota.info.status, OTAStatus.issue);
-      },
-    );
+    test('disk-full during ${fault.name} returns 507 without install', () async {
+      final ota = service(
+        writerFactory: (file) async {
+          return _Writer(await file.open(mode: FileMode.write), fault: fault);
+        },
+      );
+      expect((await upload(ota)).statusCode, 507);
+      expect(installer.files, isEmpty);
+      expect(directory.listSync(), isEmpty);
+      expect(ota.busy, isFalse);
+      expect(ota.info.status, OTAStatus.issue);
+    });
   }
 
-  test(
-    'close cancels stalled transfer and waits for temporary cleanup',
-    () async {
-      final firstWrite = Completer<void>();
-      final ota = service(
-        writerFactory: (file) async {
-          return _Writer(
-            await file.open(mode: FileMode.write),
-            firstWrite: firstWrite,
-          );
-        },
-      );
-      final body = StreamController<List<int>>();
-      addTearDown(() async {
-        await ota.close();
-        await body.close();
-      });
-      final response = ota.handler(_request(body.stream));
-      body.add(
-        utf8.encode(
-          '${_field('code', ota.code)}${_fileHeader()}${'partial' * 100}',
-        ),
-      );
-      // Wait for a completed write, rather than observing the directory between
-      // OS creation and the receiver taking ownership of the temporary file.
-      await firstWrite.future;
-      await ota.close();
-      expect((await response).statusCode, 408);
-      expect(directory.listSync(), isEmpty);
-      expect(installer.files, isEmpty);
-      expect(ota.info.status, OTAStatus.disabled);
-      await body.close();
-    },
-  );
-
-  test(
-    'parallel request is rejected without reading body or changing owner state',
-    () async {
-      final gate = Completer<void>();
-      installer.pending = Completer<int>();
-      addTearDown(() {
-        if (!gate.isCompleted) gate.complete();
-        if (!installer.pending!.isCompleted) installer.pending!.complete(1);
-      });
-      final created = Completer<_Writer>();
-      final ota = service(
-        writerFactory: (file) async {
-          final writer = _Writer(
-            await file.open(mode: FileMode.write),
-            closeGate: gate,
-          );
-          created.complete(writer);
-          return writer;
-        },
-      );
-      final first = upload(ota);
-      final writer = await created.future;
-      await writer.closeEntered.future;
-      final ownerInfo = ota.info;
-      var consumed = false;
-      Stream<List<int>> rejectedBody() async* {
-        consumed = true;
-        yield _multipart(ota.code);
-      }
-
-      expect((await ota.handler(_request(rejectedBody()))).statusCode, 409);
-      expect(consumed, isFalse);
-      expect(identical(ota.info, ownerInfo), isTrue);
-      gate.complete();
-      expect((await first).statusCode, 200);
-      await _until(() => installer.data.isNotEmpty);
-      expect((await upload(ota)).statusCode, 409);
-      installer.pending!.complete(1);
-      await _until(() => !ota.busy);
-    },
-  );
-
-  test(
-    'release lookup owns the lock against manual and automatic requests',
-    () async {
-      final lookup = Completer<ReleaseInfo?>();
-      var lookups = 0;
-      final ota = service(
-        latestRelease: () {
-          lookups++;
-          return lookup.future;
-        },
-      );
-      final first = ota.checkLatestRelease();
-      expect(ota.busy, isTrue);
-      await ota.checkLatestRelease();
-      expect(lookups, 1);
-      expect((await upload(ota)).statusCode, 409);
-      lookup.complete(null);
-      await first;
-      expect(ota.busy, isFalse);
-      expect(installer.files, isEmpty);
-    },
-  );
-
-  for (final version in [
-    Version.parse(ApplicationInfo.frontendVersion),
-    Version(0, 0, 0),
-  ]) {
-    test(
-      'release $version does not download or install an existing version',
-      () async {
-        var downloads = 0;
-        final ota = service(
-          latestRelease: () async => ReleaseInfo(
-            version: version,
-            debUrl: 'https://example.invalid/should-not-download.deb',
-          ),
-          downloadClientFactory: () {
-            downloads++;
-            throw StateError('An installed version must not be downloaded');
-          },
-        );
-        await ota.checkLatestRelease();
-        expect(downloads, 0);
-        expect(ota.busy, isFalse);
-        expect(installer.files, isEmpty);
-        expect(remote.commands, isEmpty);
-        expect(directory.listSync(), isEmpty);
-        expect(ota.info.status, OTAStatus.disabled);
+  test('close cancels stalled transfer and waits for temporary cleanup', () async {
+    final firstWrite = Completer<void>();
+    final ota = service(
+      writerFactory: (file) async {
+        return _Writer(await file.open(mode: FileMode.write), firstWrite: firstWrite);
       },
     );
+    final body = StreamController<List<int>>();
+    addTearDown(() async {
+      await closeService(ota);
+      await body.close();
+    });
+    final response = ota.handler(_request(body.stream));
+    body.add(utf8.encode('${_field('code', ota.code)}${_fileHeader()}${'partial' * 100}'));
+    // Wait for a completed write, rather than observing the directory between
+    // OS creation and the receiver taking ownership of the temporary file.
+    await firstWrite.future;
+    await closeService(ota);
+    expect((await response).statusCode, 408);
+    expect(directory.listSync(), isEmpty);
+    expect(installer.files, isEmpty);
+    expect(ota.info.status, OTAStatus.disabled);
+    await body.close();
+  });
+
+  test('parallel request is rejected without reading body or changing owner state', () async {
+    final gate = Completer<void>();
+    installer.pending = Completer<int>();
+    addTearDown(() {
+      if (!gate.isCompleted) gate.complete();
+      if (!installer.pending!.isCompleted) installer.pending!.complete(1);
+    });
+    final created = Completer<_Writer>();
+    final ota = service(
+      writerFactory: (file) async {
+        final writer = _Writer(await file.open(mode: FileMode.write), closeGate: gate);
+        created.complete(writer);
+        return writer;
+      },
+    );
+    final first = upload(ota);
+    final writer = await created.future;
+    await writer.closeEntered.future;
+    final ownerInfo = ota.info;
+    var consumed = false;
+    Stream<List<int>> rejectedBody() async* {
+      consumed = true;
+      yield _multipart(ota.code);
+    }
+
+    expect((await ota.handler(_request(rejectedBody()))).statusCode, 409);
+    expect(consumed, isFalse);
+    expect(identical(ota.info, ownerInfo), isTrue);
+    gate.complete();
+    expect((await first).statusCode, 200);
+    await _until(() => installer.data.isNotEmpty);
+    expect((await upload(ota)).statusCode, 409);
+    installer.pending!.complete(1);
+    await _until(() => !ota.busy);
+  });
+
+  test('release lookup owns the lock against manual and automatic requests', () async {
+    final lookup = Completer<ReleaseInfo?>();
+    var lookups = 0;
+    final ota = service(
+      latestRelease: () {
+        lookups++;
+        return lookup.future;
+      },
+    );
+    final first = ota.checkLatestRelease();
+    expect(ota.busy, isTrue);
+    await ota.checkLatestRelease();
+    expect(lookups, 1);
+    expect((await upload(ota)).statusCode, 409);
+    lookup.complete(null);
+    await first;
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+  });
+
+  for (final version in [Version.parse(ApplicationInfo.frontendVersion), Version(0, 0, 0)]) {
+    test('release $version does not download or install an existing version', () async {
+      var downloads = 0;
+      final ota = service(
+        latestRelease: () async =>
+            ReleaseInfo(version: version, debUrl: 'https://example.invalid/should-not-download.deb'),
+        downloadClientFactory: () {
+          downloads++;
+          throw StateError('An installed version must not be downloaded');
+        },
+      );
+      await ota.checkLatestRelease();
+      expect(downloads, 0);
+      expect(ota.busy, isFalse);
+      expect(installer.files, isEmpty);
+      expect(remote.commands, isEmpty);
+      expect(directory.listSync(), isEmpty);
+      expect(ota.info.status, OTAStatus.disabled);
+    });
   }
 
   test('close does not wait for an external release lookup', () async {
     final lookup = Completer<ReleaseInfo?>();
     final ota = service(latestRelease: () => lookup.future);
     final check = ota.checkLatestRelease();
-    await ota.close();
+    await closeService(ota);
     await check;
     lookup.complete(null);
     expect(ota.info.status, OTAStatus.disabled);
     expect(installer.files, isEmpty);
   });
 
-  test(
-    'automatic chunked download decodes the package name before installation',
-    () async {
-      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-      addTearDown(() => server.close(force: true));
-      server.listen((request) async {
-        request.response.bufferOutput = false;
-        request.response.add(utf8.encode('downloaded '));
-        await request.response.flush();
-        request.response.add(utf8.encode('package'));
-        await request.response.close();
-      });
-      final ota = service(
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1:${server.port}/automatic%2B7.deb',
-        ),
-      );
-      await ota.checkLatestRelease();
-      await _until(() => installer.data.isNotEmpty);
-      expect(installer.data.single, utf8.encode('downloaded package'));
-      expect(
-        installer.files.single,
-        path.join(directory.path, 'automatic+7.deb'),
-      );
-      expect(directory.listSync().whereType<File>().length, 1);
-      expect(
-        remote.infos.every((info) => info.uploadingPercent.isFinite),
-        isTrue,
-      );
-    },
-  );
+  test('automatic chunked download decodes the package name before installation', () async {
+    final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    addTearDown(() => server.close(force: true));
+    server.listen((request) async {
+      request.response.bufferOutput = false;
+      request.response.add(utf8.encode('downloaded '));
+      await request.response.flush();
+      request.response.add(utf8.encode('package'));
+      await request.response.close();
+    });
+    final ota = service(
+      latestRelease: () async =>
+          ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1:${server.port}/automatic%2B7.deb'),
+    );
+    await ota.checkLatestRelease();
+    await _until(() => installer.data.isNotEmpty);
+    expect(installer.data.single, utf8.encode('downloaded package'));
+    expect(installer.files.single, path.join(directory.path, 'automatic+7.deb'));
+    expect(directory.listSync().whereType<File>().length, 1);
+    expect(remote.infos.every((info) => info.uploadingPercent.isFinite), isTrue);
+  });
 
-  test(
-    'automatic download HTTP failure is observable and releases lock',
-    () async {
-      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-      addTearDown(() => server.close(force: true));
-      server.listen((request) async {
-        request.response.statusCode = 503;
-        await request.response.close();
-      });
-      final ota = service(
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1:${server.port}/automatic.deb',
-        ),
-      );
-      await ota.checkLatestRelease();
-      expect(ota.info.status, OTAStatus.issue);
-      expect(ota.info.errorText, contains('503'));
-      expect(ota.busy, isFalse);
-      expect(installer.files, isEmpty);
-    },
-  );
+  test('automatic download HTTP failure is observable and releases lock', () async {
+    final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    addTearDown(() => server.close(force: true));
+    server.listen((request) async {
+      request.response.statusCode = 503;
+      await request.response.close();
+    });
+    final ota = service(
+      latestRelease: () async =>
+          ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1:${server.port}/automatic.deb'),
+    );
+    await ota.checkLatestRelease();
+    expect(ota.info.status, OTAStatus.issue);
+    expect(ota.info.errorText, contains('503'));
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+  });
 
   test('close cancels a blocked frontend screen request', () async {
     remote.blockedReady = Completer<RpcResult>();
     final ota = service(
-      latestRelease: () async => ReleaseInfo(
-        version: Version(999, 0, 0),
-        debUrl: 'http://127.0.0.1/automatic.deb',
-      ),
+      latestRelease: () async => ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
     );
     final check = ota.checkLatestRelease();
     await _until(() => remote.readyRequested);
-    await ota.close();
+    await closeService(ota);
     await check;
     remote.blockedReady!.complete(const EmptyResult(id: 1));
     expect(installer.files, isEmpty);
     expect(ota.busy, isFalse);
   });
 
-  test(
-    'blocked frontend has a deadline and releases automatic OTA lock',
-    () async {
-      remote.blockedReady = Completer<RpcResult>();
-      final ota = service(
-        networkTimeout: const Duration(milliseconds: 20),
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1/automatic.deb',
-        ),
-      );
-      await ota.checkLatestRelease();
-      expect(ota.info.status, OTAStatus.issue);
-      expect(ota.busy, isFalse);
-      expect(installer.files, isEmpty);
-      remote.blockedReady!.complete(const EmptyResult(id: 1));
-    },
-  );
+  test('blocked frontend has a deadline and releases automatic OTA lock', () async {
+    remote.blockedReady = Completer<RpcResult>();
+    final ota = service(
+      networkTimeout: const Duration(milliseconds: 20),
+      latestRelease: () async => ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
+    );
+    await ota.checkLatestRelease();
+    expect(ota.info.status, OTAStatus.issue);
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+    remote.blockedReady!.complete(const EmptyResult(id: 1));
+  });
 
-  test(
-    'automatic download response headers have an explicit deadline',
-    () async {
-      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-      addTearDown(() => server.close(force: true));
-      server.listen((request) {});
-      final ota = service(
-        networkTimeout: const Duration(milliseconds: 20),
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1:${server.port}/automatic.deb',
-        ),
-      );
-      await ota.checkLatestRelease();
-      expect(ota.info.status, OTAStatus.issue);
-      expect(ota.info.errorText, contains('TimeoutException'));
-      expect(ota.busy, isFalse);
-      expect(installer.files, isEmpty);
-    },
-  );
+  test('automatic download response headers have an explicit deadline', () async {
+    final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    addTearDown(() => server.close(force: true));
+    server.listen((request) {});
+    final ota = service(
+      networkTimeout: const Duration(milliseconds: 20),
+      latestRelease: () async =>
+          ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1:${server.port}/automatic.deb'),
+    );
+    await ota.checkLatestRelease();
+    expect(ota.info.status, OTAStatus.issue);
+    expect(ota.info.errorText, contains('TimeoutException'));
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+  });
 
-  test(
-    'automatic download enforces actual bytes without Content-Length',
-    () async {
-      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-      addTearDown(() => server.close(force: true));
-      server.listen((request) async {
-        request.response.bufferOutput = false;
-        request.response.add(List.filled(128, 1));
-        await request.response.close();
-      });
-      final ota = service(
-        limits: const UploadLimits(maxBytes: 64, maxFiles: 1, maxParts: 2),
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1:${server.port}/automatic.deb',
-        ),
-      );
-      await ota.checkLatestRelease();
-      expect(ota.info.status, OTAStatus.issue);
-      expect(ota.busy, isFalse);
-      expect(installer.files, isEmpty);
-      expect(directory.listSync(), isEmpty);
-    },
-  );
+  test('automatic download enforces actual bytes without Content-Length', () async {
+    final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    addTearDown(() => server.close(force: true));
+    server.listen((request) async {
+      request.response.bufferOutput = false;
+      request.response.add(List.filled(128, 1));
+      await request.response.close();
+    });
+    final ota = service(
+      limits: const UploadLimits(maxBytes: 64, maxFiles: 1, maxParts: 2),
+      latestRelease: () async =>
+          ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1:${server.port}/automatic.deb'),
+    );
+    await ota.checkLatestRelease();
+    expect(ota.info.status, OTAStatus.issue);
+    expect(ota.busy, isFalse);
+    expect(installer.files, isEmpty);
+    expect(directory.listSync(), isEmpty);
+  });
 
   test('stalled frontend keeps one RPC and bounded output, then delivers latest state', () async {
     remote.blockedAll = Completer<RpcResult>();
     installer.pending = Completer<int>();
     addTearDown(() {
-      if (!remote.blockedAll!.isCompleted)
-        remote.blockedAll!.complete(const EmptyResult(id: 1));
+      if (!remote.blockedAll!.isCompleted) remote.blockedAll!.complete(const EmptyResult(id: 1));
       if (!installer.pending!.isCompleted) installer.pending!.complete(1);
     });
     final ota = service();
@@ -1140,47 +895,31 @@ void main() {
     expect(remote.commands.length, 1);
     remote.blockedAll!.complete(const EmptyResult(id: 1));
     await _until(
-      () =>
-          remote.infos.last.status == OTAStatus.issue &&
-          remote.commands.whereType<OTAOutputCommand>().isNotEmpty,
+      () => remote.infos.last.status == OTAStatus.issue && remote.commands.whereType<OTAOutputCommand>().isNotEmpty,
     );
-    final output = remote.commands
-        .whereType<OTAOutputCommand>()
-        .map((command) => command.output)
-        .join();
+    final output = remote.commands.whereType<OTAOutputCommand>().map((command) => command.output).join();
     expect(utf8.encode(output).length, lessThanOrEqualTo(64 * 1024));
     expect(remote.infos.last.status, OTAStatus.issue);
   });
 
-  test(
-    'repeated screen timeouts share the same unresolved RPC and recover',
-    () async {
-      remote.blockedAll = Completer<RpcResult>();
-      addTearDown(() {
-        if (!remote.blockedAll!.isCompleted)
-          remote.blockedAll!.complete(const EmptyResult(id: 1));
-      });
-      final ota = service(
-        networkTimeout: const Duration(milliseconds: 10),
-        latestRelease: () async => ReleaseInfo(
-          version: Version(999, 0, 0),
-          debUrl: 'http://127.0.0.1/automatic.deb',
-        ),
-      );
-      for (var index = 0; index < 3; index++) {
-        await ota.checkLatestRelease();
-        expect(ota.busy, isFalse);
-      }
-      expect(remote.commands.length, 1);
-      remote.blockedAll!.complete(const EmptyResult(id: 1));
-      await _until(
-        () =>
-            remote.infos.isNotEmpty &&
-            remote.infos.last.status == OTAStatus.issue,
-      );
-      expect(installer.files, isEmpty);
-    },
-  );
+  test('repeated screen timeouts share the same unresolved RPC and recover', () async {
+    remote.blockedAll = Completer<RpcResult>();
+    addTearDown(() {
+      if (!remote.blockedAll!.isCompleted) remote.blockedAll!.complete(const EmptyResult(id: 1));
+    });
+    final ota = service(
+      networkTimeout: const Duration(milliseconds: 10),
+      latestRelease: () async => ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
+    );
+    for (var index = 0; index < 3; index++) {
+      await ota.checkLatestRelease();
+      expect(ota.busy, isFalse);
+    }
+    expect(remote.commands.length, 1);
+    remote.blockedAll!.complete(const EmptyResult(id: 1));
+    await _until(() => remote.infos.isNotEmpty && remote.infos.last.status == OTAStatus.issue);
+    expect(installer.files, isEmpty);
+  });
 
   test('installer exceptions and frontend errors are caught', () async {
     installer.installError = StateError('could not start installer');
@@ -1193,6 +932,32 @@ void main() {
     expect(installer.restarts, 0);
   });
 
+  test('a nonzero installer result remains observable until a new attempt and does not close the screen', () async {
+    installer.exitCode = 17;
+    final ota = service(alwaysEnabled: true);
+    expect((await upload(ota)).statusCode, 200);
+    await _until(() => !ota.busy && remote.infos.any((info) => info.status == OTAStatus.issue));
+    final failure = ota.info;
+    expect(failure.status, OTAStatus.issue);
+    expect(failure.exitCode, 17);
+    expect(failure.errorText, contains('17'));
+    expect(remote.infos.last, failure);
+    final snapshot = await ota.executeCommand(OTAGetInfoCommand(id: 42));
+    expect((snapshot as OTAGetInfoCommandResult).info, failure);
+    expect(remote.commands.whereType<OTAReadyCommand>().where((c) => !c.ready), isEmpty);
+    expect(installer.restarts, 0);
+
+    installer.pending = Completer<int>();
+    expect((await upload(ota)).statusCode, 200);
+    await _until(() => installer.files.length == 2);
+    expect(ota.info.status, OTAStatus.instaling);
+    expect(ota.info.errorText, isNull);
+    expect(ota.info.exitCode, isNull);
+    installer.pending!.complete(23);
+    await _until(() => !ota.busy);
+    expect(ota.info.exitCode, 23);
+  });
+
   test('successful installer holds lock through restart and reports restart failure', () async {
     installer.exitCode = 0;
     installer.restartError = StateError('restart failed');
@@ -1202,49 +967,37 @@ void main() {
     expect(ota.busy, isTrue);
     expect((await upload(ota)).statusCode, 409);
     await _until(() => installer.restarts == 1 && !ota.busy);
-    expect(
-      remote.infos.any((info) => info.status == OTAStatus.preReboot),
-      isTrue,
-    );
+    expect(remote.infos.any((info) => info.status == OTAStatus.preReboot), isTrue);
     expect(ota.info.status, OTAStatus.issue);
     expect(ota.info.errorText, contains('restart failed'));
   });
 
-  test(
-    'close leaves running installer alone and cancels future restart',
-    () async {
-      installer.pending = Completer<int>();
-      final ota = service(restartDelay: Duration.zero);
-      expect((await upload(ota)).statusCode, 200);
-      await _until(() => installer.data.isNotEmpty);
-      await ota.close();
-      expect(installer.pending!.isCompleted, isFalse);
-      installer.pending!.complete(0);
-      await Future<void>.delayed(const Duration(milliseconds: 10));
-      expect(installer.restarts, 0);
-      expect(ota.info.status, OTAStatus.disabled);
-    },
-  );
+  test('close leaves running installer alone and cancels future restart', () async {
+    installer.pending = Completer<int>();
+    final ota = service(restartDelay: Duration.zero);
+    expect((await upload(ota)).statusCode, 200);
+    await _until(() => installer.data.isNotEmpty);
+    await closeService(ota);
+    expect(installer.pending!.isCompleted, isFalse);
+    installer.pending!.complete(0);
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    expect(installer.restarts, 0);
+    expect(ota.info.status, OTAStatus.disabled);
+  });
 
-  test(
-    'start is awaitable and autostop waits for active installation',
-    () async {
-      installer.pending = Completer<int>();
-      final ota = service(
-        alwaysEnabled: false,
-        autostopDelay: const Duration(milliseconds: 10),
-      );
-      await ota.start();
-      expect(ota.enabled, isTrue);
-      expect((await upload(ota)).statusCode, 200);
-      await _until(() => installer.data.isNotEmpty);
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-      expect(ota.enabled, isTrue);
-      expect(ota.info.status, OTAStatus.instaling);
-      installer.pending!.complete(1);
-      await _until(() => !ota.enabled && !ota.busy);
-    },
-  );
+  test('start is awaitable and autostop waits for active installation', () async {
+    installer.pending = Completer<int>();
+    final ota = service(alwaysEnabled: false, autostopDelay: const Duration(milliseconds: 10));
+    await ota.start();
+    expect(ota.enabled, isTrue);
+    expect((await upload(ota)).statusCode, 200);
+    await _until(() => installer.data.isNotEmpty);
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+    expect(ota.enabled, isTrue);
+    expect(ota.info.status, OTAStatus.instaling);
+    installer.pending!.complete(1);
+    await _until(() => !ota.enabled && !ota.busy);
+  });
 
   test('rapid start stop start finishes with a reachable listener', () async {
     final ota = service(alwaysEnabled: false);
@@ -1253,50 +1006,32 @@ void main() {
     expect(ota.boundPort, isNotNull);
     final client = HttpClient();
     addTearDown(() => client.close(force: true));
-    final request = await client.getUrl(
-      Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_start?format=json'),
-    );
+    final request = await client.getUrl(Uri.parse('http://127.0.0.1:${ota.boundPort}/ota_start?format=json'));
     final response = await request.close();
     expect(response.statusCode, 200);
-    expect(
-      json.decode(await utf8.decoder.bind(response).join()),
-      contains('version'),
-    );
+    expect(json.decode(await utf8.decoder.bind(response).join()), contains('version'));
   });
 
-  test(
-    'progress remains finite and intermediate updates are at most 4 Hz',
-    () async {
-      final ota = service();
-      final body = _multipart(ota.code, data: 'x' * 1000);
-      Stream<List<int>> chunks() async* {
-        for (var offset = 0; offset < body.length; offset += 64) {
-          yield body.sublist(offset, (offset + 64).clamp(0, body.length));
-          await Future<void>.delayed(const Duration(milliseconds: 30));
-        }
+  test('progress remains finite and intermediate updates are at most 4 Hz', () async {
+    final ota = service();
+    final body = _multipart(ota.code, data: 'x' * 1000);
+    Stream<List<int>> chunks() async* {
+      for (var offset = 0; offset < body.length; offset += 64) {
+        yield body.sublist(offset, (offset + 64).clamp(0, body.length));
+        await Future<void>.delayed(const Duration(milliseconds: 30));
       }
+    }
 
-      expect(
-        (await ota.handler(_request(chunks(), contentLength: body.length)))
-            .statusCode,
-        200,
-      );
-      expect(remote.progressTimes, isNotEmpty);
-      for (var index = 1; index < remote.progressTimes.length; index++) {
-        expect(
-          remote.progressTimes[index] - remote.progressTimes[index - 1],
-          greaterThanOrEqualTo(250000),
-        );
-      }
-      expect(
-        remote.infos.every(
-          (info) =>
-              info.uploadingPercent.isFinite &&
-              info.uploadingPercent >= 0 &&
-              info.uploadingPercent <= 100,
-        ),
-        isTrue,
-      );
-    },
-  );
+    expect((await ota.handler(_request(chunks(), contentLength: body.length))).statusCode, 200);
+    expect(remote.progressTimes, isNotEmpty);
+    for (var index = 1; index < remote.progressTimes.length; index++) {
+      expect(remote.progressTimes[index] - remote.progressTimes[index - 1], greaterThanOrEqualTo(250000));
+    }
+    expect(
+      remote.infos.every(
+        (info) => info.uploadingPercent.isFinite && info.uploadingPercent >= 0 && info.uploadingPercent <= 100,
+      ),
+      isTrue,
+    );
+  });
 }

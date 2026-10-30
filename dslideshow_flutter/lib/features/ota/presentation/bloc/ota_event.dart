@@ -8,6 +8,8 @@ class OtaEvent with _$OtaEvent {
   const factory OtaEvent.initialization() = OtaInitializationEvent;
   const factory OtaEvent.updateInfo(OTAInfo info) = OtaUpdateInfoEvent;
   const factory OtaEvent.exit() = OtaExitEvent;
+  const factory OtaEvent.returnAfterFailure(int generation) =
+      OtaReturnAfterFailureEvent;
   const factory OtaEvent.addTextToTerminal(String message) =
       OtaAddTextToTerminalEvent;
 }

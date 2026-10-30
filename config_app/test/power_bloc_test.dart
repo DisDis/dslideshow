@@ -199,7 +199,7 @@ class _RealtimeService implements RealtimeService {
   final oneWayCommands = <WebSocketCommand>[];
 
   @override
-  Future<WebSocketResult> send(WebSocketCommand command) {
+  Future<WebSocketResult> send(WebSocketCommand command, {Duration? timeout}) {
     commands.add(command);
     return handleSend!(command);
   }

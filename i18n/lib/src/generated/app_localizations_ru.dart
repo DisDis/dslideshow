@@ -3149,4 +3149,52 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get configPageCloseError =>
       'Не удалось подтвердить завершение доступа к настройкам. Повторите попытку или вернитесь без подтверждения.';
+
+  @override
+  String ota_file_selected(String name) {
+    return 'Выбран: $name';
+  }
+
+  @override
+  String get ota_file_invalid => 'Выберите файл прошивки .deb.';
+
+  @override
+  String get ota_file_empty => 'Файл прошивки пуст.';
+
+  @override
+  String get ota_file_unavailable =>
+      'Не удалось прочитать выбранный файл прошивки.';
+
+  @override
+  String get ota_request_failed =>
+      'Не удалось выполнить OTA-запрос. Повторите попытку.';
+
+  @override
+  String get ota_response_invalid => 'Рамка вернула некорректный ответ OTA.';
+
+  @override
+  String get ota_upload_rejected => 'Рамка отклонила загрузку прошивки.';
+
+  @override
+  String get wifi_operation_unknown =>
+      'Результат операции неизвестен. Проверьте рамку перед повторной попыткой.';
+
+  @override
+  String get wifi_refresh_failed =>
+      'Операция Wi-Fi завершена, но списки не удалось обновить. Обновите их перед следующим изменением.';
+
+  @override
+  String get upload_source_unavailable =>
+      'Не удалось прочитать выбранный файл.';
+
+  @override
+  String get upload_length_unknown => 'Не удалось определить размер файла.';
+
+  @override
+  String get upload_transfer_failed =>
+      'Не удалось подтвердить загрузку. Проверьте рамку перед повторной отправкой.';
+
+  @override
+  String get upload_folder_scan_failed =>
+      'Не удалось прочитать выбранную папку.';
 }

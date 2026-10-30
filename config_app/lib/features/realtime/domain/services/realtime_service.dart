@@ -11,7 +11,7 @@ abstract class RealtimeService {
   Future<WebSocketResult> connect(Uri uri, String code);
   void disconnect();
   Stream get onDisconnect;
-  Future<WebSocketResult> send(WebSocketCommand cmd);
+  Future<WebSocketResult> send(WebSocketCommand cmd, {Duration? timeout});
   void sendOneWay(WebSocketCommand cmd);
   void response(WebSocketResult result);
 }

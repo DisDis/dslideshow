@@ -35,11 +35,7 @@ class ThumbnailVariantSpec {
   final String bucketId;
   final String policyRevision;
   final int size;
-  const ThumbnailVariantSpec({
-    required this.bucketId,
-    required this.size,
-    this.policyRevision = '',
-  });
+  const ThumbnailVariantSpec({required this.bucketId, required this.size, this.policyRevision = ''});
 }
 
 class ThumbnailArtifact {
@@ -47,12 +43,7 @@ class ThumbnailArtifact {
   final int length;
   final String etag;
   final String mimeType;
-  const ThumbnailArtifact({
-    required this.path,
-    required this.length,
-    required this.etag,
-    required this.mimeType,
-  });
+  const ThumbnailArtifact({required this.path, required this.length, required this.etag, required this.mimeType});
 }
 
 /// Pins the artifact against eviction until the response body finishes/cancels.
@@ -64,9 +55,7 @@ class ThumbnailLease {
   Future<void> release() => _released ??= _release();
 }
 
-typedef ThumbnailSourceValidator = Future<bool> Function(
-  ThumbnailSource source,
-);
+typedef ThumbnailSourceValidator = Future<bool> Function(ThumbnailSource source);
 
 class ThumbnailService {
   static final _log = Logger('ThumbnailService');
@@ -150,8 +139,7 @@ class ThumbnailService {
           _checkOpen();
           if (entity is! File) continue;
           final filename = path.basename(entity.path);
-          if (_temporaryName.hasMatch(filename) ||
-              _legacyName.hasMatch(filename)) {
+          if (_temporaryName.hasMatch(filename) || _legacyName.hasMatch(filename)) {
             await _delete(entity);
             continue;
           }
@@ -161,20 +149,13 @@ class ThumbnailService {
           final match = _name.firstMatch(path.basename(file.path))!;
           try {
             final stat = await file.stat();
-            if (stat.size > policy.maxOutputBytes ||
-                (await md5.bind(file.openRead()).first).toString() !=
-                    match[2]) {
+            if (stat.size > policy.maxOutputBytes || (await md5.bind(file.openRead()).first).toString() != match[2]) {
               await _delete(file);
               continue;
             }
             final entry = _CacheEntry(
               match[1]!,
-              ThumbnailArtifact(
-                path: file.path,
-                length: stat.size,
-                etag: '"${match[2]}"',
-                mimeType: 'image/jpeg',
-              ),
+              ThumbnailArtifact(path: file.path, length: stat.size, etag: '"${match[2]}"', mimeType: 'image/jpeg'),
               stat.modified,
             );
             final previous = _entries[entry.key];
@@ -206,8 +187,7 @@ class ThumbnailService {
       }).catchError((Object error, StackTrace stack) {
         _log.log(
           error is ThumbnailFailure ? Level.FINE : Level.WARNING,
-          () =>
-              'Thumbnail cache initialization failed directory=${jsonEncode(cacheDirectory.path)}',
+          () => 'Thumbnail cache initialization failed directory=${jsonEncode(cacheDirectory.path)}',
           error,
           stack,
         );
@@ -232,9 +212,7 @@ class ThumbnailService {
     final timedOut = Completer<ThumbnailFailure>();
     final remove = cancellation?.listen(() {
       if (!timedOut.isCompleted) {
-        timedOut.complete(
-          const ThumbnailFailure(ThumbnailFailureKind.cancelled),
-        );
+        timedOut.complete(const ThumbnailFailure(ThumbnailFailureKind.cancelled));
       }
       token.cancel();
     });
@@ -248,10 +226,7 @@ class ThumbnailService {
       _waiters--;
     });
     try {
-      return await Future.any([
-        operation,
-        timedOut.future.then<ThumbnailLease>((failure) => throw failure),
-      ]);
+      return await Future.any([operation, timedOut.future.then<ThumbnailLease>((failure) => throw failure)]);
     } finally {
       timer.cancel();
       remove?.call();
@@ -368,9 +343,7 @@ class ThumbnailService {
     final remove = token.listen(() {
       if (pendingJob.waiters.remove(waiter)) {
         if (!waiter.result.isCompleted) {
-          waiter.result.completeError(
-            const ThumbnailFailure(ThumbnailFailureKind.cancelled),
-          );
+          waiter.result.completeError(const ThumbnailFailure(ThumbnailFailureKind.cancelled));
         }
         if (pendingJob.waiters.isEmpty) {
           pendingJob.cancellation.cancel();
@@ -412,7 +385,6 @@ class ThumbnailService {
   }
 
   Future<void> _run(_Job job) async {
-    final clock = Stopwatch()..start();
     _log.fine(
       () =>
           'Thumbnail generation started mediaId=${job.source.mediaId} '
@@ -445,9 +417,7 @@ class ThumbnailService {
         throw const ThumbnailFailure(ThumbnailFailureKind.staleSource);
       }
       final bytes = result.bytes;
-      if (bytes.isEmpty ||
-          bytes.length > policy.maxOutputBytes ||
-          bytes.length > policy.maxCacheBytes) {
+      if (bytes.isEmpty || bytes.length > policy.maxOutputBytes || bytes.length > policy.maxCacheBytes) {
         throw const ThumbnailFailure(ThumbnailFailureKind.sourceTooLarge);
       }
       await _cacheOperation(() async {
@@ -455,24 +425,13 @@ class ThumbnailService {
         _checkCancelled(job.cancellation);
         // Reserve before writing: pinned responses cannot push cache over budget.
         await _trim(incomingBytes: bytes.length, incomingObjects: 1);
-        if (_usedBytes + bytes.length > policy.maxCacheBytes ||
-            _entries.length + 1 > policy.maxCacheObjects) {
+        if (_usedBytes + bytes.length > policy.maxCacheBytes || _entries.length + 1 > policy.maxCacheObjects) {
           throw const ThumbnailFailure(ThumbnailFailureKind.queueFull);
         }
-        final nonce = List.generate(
-          16,
-          (_) => _random.nextInt(256).toRadixString(16).padLeft(2, '0'),
-        ).join();
-        final temporary = File(
-          path.join(cacheDirectory.path, '.thumb-$nonce.part'),
-        );
+        final nonce = List.generate(16, (_) => _random.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
+        final temporary = File(path.join(cacheDirectory.path, '.thumb-$nonce.part'));
         const extension = 'jpg';
-        final destination = File(
-          path.join(
-            cacheDirectory.path,
-            '${job.key}-${result.digest}.$extension',
-          ),
-        );
+        final destination = File(path.join(cacheDirectory.path, '${job.key}-${result.digest}.$extension'));
         var renamed = false;
         var committed = false;
         try {
@@ -485,9 +444,7 @@ class ThumbnailService {
           }
           await temporary.rename(destination.path);
           renamed = true;
-          if (_closed ||
-              job.cancellation.isCancelled ||
-              !await _isCurrent(job.source)) {
+          if (_closed || job.cancellation.isCancelled || !await _isCurrent(job.source)) {
             await _delete(destination);
             _checkOpen();
             _checkCancelled(job.cancellation);
@@ -508,8 +465,7 @@ class ThumbnailService {
           _usedBytes += bytes.length;
           committed = true;
           for (final waiter in job.waiters) {
-            if (!waiter.result.isCompleted)
-              waiter.result.complete(_lease(entry));
+            if (!waiter.result.isCompleted) waiter.result.complete(_lease(entry));
           }
           job.waiters.clear();
         } finally {
@@ -520,14 +476,12 @@ class ThumbnailService {
       _log.fine(
         () =>
             'Thumbnail ready mediaId=${job.source.mediaId} '
-            'size=${job.variant.size} bytes=${bytes.length} '
-            'elapsedMs=${clock.elapsedMilliseconds}',
+            'size=${job.variant.size} bytes=${bytes.length} ',
       );
     } catch (error, stack) {
       final failure = error is ThumbnailFailure
           ? error
-          : error is FileSystemException &&
-                [28, 122].contains(error.osError?.errorCode)
+          : error is FileSystemException && [28, 122].contains(error.osError?.errorCode)
           ? const ThumbnailFailure(ThumbnailFailureKind.diskFull)
           : const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
       _log.log(
@@ -541,8 +495,7 @@ class ThumbnailService {
         () =>
             'Thumbnail generation failed mediaId=${job.source.mediaId} '
             'revision=${job.source.revision} size=${job.variant.size} '
-            'source=${jsonEncode(job.source.path)} reason=${failure.kind.name} '
-            'elapsedMs=${clock.elapsedMilliseconds}',
+            'source=${jsonEncode(job.source.path)} reason=${failure.kind.name} ',
         error is ThumbnailFailure ? null : error,
         error is ThumbnailFailure ? null : stack,
       );
@@ -553,10 +506,7 @@ class ThumbnailService {
         ThumbnailFailureKind.sourceTooLarge,
       ].contains(failure.kind)) {
         _negative.remove(job.key);
-        _negative[job.key] = _NegativeEntry(
-          failure,
-          _elapsed + policy.negativeTtl,
-        );
+        _negative[job.key] = _NegativeEntry(failure, _elapsed + policy.negativeTtl);
         while (_negative.length > policy.maxNegativeEntries) {
           _negative.remove(_negative.keys.first);
         }
@@ -583,10 +533,7 @@ class ThumbnailService {
 
   Future<T> _cacheOperation<T>(Future<T> Function() action) {
     final operation = _cacheTail.then((_) => action());
-    _cacheTail = operation.then<void>(
-      (_) {},
-      onError: (Object _, StackTrace __) {},
-    );
+    _cacheTail = operation.then<void>((_) {}, onError: (Object _, StackTrace __) {});
     return operation;
   }
 
@@ -616,9 +563,7 @@ class ThumbnailService {
       job.cancellation.cancel();
       for (final waiter in job.waiters) {
         if (!waiter.result.isCompleted) {
-          waiter.result.completeError(
-            const ThumbnailFailure(ThumbnailFailureKind.closed),
-          );
+          waiter.result.completeError(const ThumbnailFailure(ThumbnailFailureKind.closed));
         }
       }
       job.waiters.clear();

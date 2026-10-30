@@ -37,18 +37,10 @@ import 'package:dslideshow_backend/environment.dart';
 // Preserve the existing import path for WebSocket session consumers.
 export 'web_socket_user.dart' show WebSocketUser, WebSocketUserStatus;
 
-enum _GalleryRequestKind {
-  catalog,
-  refresh,
-  original,
-  thumbnail,
-  legacyCatalog,
-}
+enum _GalleryRequestKind { catalog, refresh, original, thumbnail, legacyCatalog }
 
 class WebService {
-  static final _thumbnailPolicyPattern = RegExp(
-    r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$',
-  );
+  static final _thumbnailPolicyPattern = RegExp(r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$');
   static final Logger _log = new Logger('WebService');
   static final math.Random _rnd = math.Random();
   final io.Directory _cacheFolder;
@@ -77,12 +69,9 @@ class WebService {
   }) {
     final cancelled =
         error is ThumbnailFailure &&
-        (error.kind == ThumbnailFailureKind.cancelled ||
-            error.kind == ThumbnailFailureKind.closed);
+        (error.kind == ThumbnailFailureKind.cancelled || error.kind == ThumbnailFailureKind.closed);
     _log.log(
-      response.statusCode >= 500 && !_closed && !cancelled
-          ? Level.WARNING
-          : Level.FINE,
+      response.statusCode >= 500 && !_closed && !cancelled ? Level.WARNING : Level.FINE,
       () =>
           'Gallery ${kind.name} ${reason == null ? 'response' : 'rejected'} status=${response.statusCode}'
           '${reason == null ? '' : ' reason=${reason.name}'}'
@@ -103,15 +92,11 @@ class WebService {
   bool _enabled = false;
   bool get enabled => _enabled;
 
-  int _controlId = 0;
-
   Future<void> setEnabled(bool requested) {
     if (_closed) return Future.error(StateError('Web service is closed'));
     final target = requested || _config.alwaysEnabled;
-    final operation = ++_controlId;
     final result = _serverTransition.then((_) async {
-      final watch = Stopwatch()..start();
-      _log.info('Web control id=$operation target=$target started');
+      _log.info('Web control target=$target started');
       try {
         if (_closed) throw StateError('Web service is closed');
         _enabled = target;
@@ -121,13 +106,9 @@ class WebService {
           await _stopWebServer();
         }
         if (_closed) throw StateError('Web service is closed');
-        _log.info(
-          'Web control id=$operation completed elapsedMs=${watch.elapsedMilliseconds}',
-        );
+        _log.info('Web control target=$target completed');
       } catch (error) {
-        _log.warning(
-          'Web control id=$operation failed type=${error.runtimeType} elapsedMs=${watch.elapsedMilliseconds}',
-        );
+        _log.warning('Web control target=$target failed type=${error.runtimeType}');
         rethrow;
       }
     });
@@ -168,19 +149,13 @@ class WebService {
     GalleryToolRunner? galleryToolRunner,
     String duplicateExecutable = 'czkawka_cli',
     bool startServer = true,
-  }) : _cacheFolder =
-           cacheDirectory ??
-           io.Directory(
-             path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME),
-           ),
+  }) : _cacheFolder = cacheDirectory ?? io.Directory(path.join(externalStorage.path, DiskStorage.CACHE_FOLDER_NAME)),
        _uploadReceiver = uploadReceiver ?? StreamingUploadReceiver(),
        _maxConcurrentUploads = maxConcurrentUploads {
     if (maxConcurrentUploads <= 0) {
       throw ArgumentError.value(maxConcurrentUploads, 'maxConcurrentUploads');
     }
-    final effectiveThumbnailPolicy =
-        thumbnailPolicy ??
-        ThumbnailPolicy.fromConfig(_appConfig.gallery.thumbnail);
+    final effectiveThumbnailPolicy = thumbnailPolicy ?? ThumbnailPolicy.fromConfig(_appConfig.gallery.thumbnail);
     _galleryDirectory = galleryDirectory ?? galleryStateDirectory(_cacheFolder);
     _galleryCatalog = GalleryCatalogService(
       originals: _cacheFolder,
@@ -195,29 +170,19 @@ class WebService {
       ],
     );
     _mediaFiles = MediaFileResponder(
-      maxStreams:
-          maxConcurrentMediaStreams ??
-          _appConfig.gallery.maxConcurrentMediaStreams,
+      maxStreams: maxConcurrentMediaStreams ?? _appConfig.gallery.maxConcurrentMediaStreams,
     );
     _thumbnails = ThumbnailService(
-      cacheDirectory: io.Directory(
-        path.join(_galleryDirectory.path, 'thumbnails'),
-      ),
+      cacheDirectory: io.Directory(path.join(_galleryDirectory.path, 'thumbnails')),
       originalsDirectory: _cacheFolder,
       policy: effectiveThumbnailPolicy,
       worker: thumbnailWorker,
       isCurrent: (source) async {
         try {
-          final current = await _galleryCatalog.resolve(
-            source.mediaId,
-            revision: source.revision,
-          );
-          return current.absolutePath == source.path &&
-              current.fingerprint == source.fingerprintToken;
+          final current = await _galleryCatalog.resolve(source.mediaId, revision: source.revision);
+          return current.absolutePath == source.path && current.fingerprint == source.fingerprintToken;
         } on GalleryCatalogFailure catch (error) {
-          if (error.code == GalleryErrorCode.notFound ||
-              error.code == GalleryErrorCode.revisionMismatch)
-            return false;
+          if (error.code == GalleryErrorCode.notFound || error.code == GalleryErrorCode.revisionMismatch) return false;
           if (error.code == GalleryErrorCode.busy) {
             throw const ThumbnailFailure(ThumbnailFailureKind.queueFull);
           }
@@ -247,16 +212,12 @@ class WebService {
     updateCode();
     _router.options(
       '/cache/<code>/<tail|.*>',
-      (Request request, String code, String tail) =>
-          Response(code == _code ? 204 : 403, headers: galleryCorsHeaders),
+      (Request request, String code, String tail) => Response(code == _code ? 204 : 403, headers: galleryCorsHeaders),
     );
     _router.get('/cache/<code>/v2/catalog', _getCatalog);
     _router.post('/cache/<code>/v2/catalog/refresh', _refreshCatalog);
     _galleryManagement.register(_router);
-    _router.get(
-      '/cache/<code>/v2/thumbnail/<id>/<revision>/<policy>/<bucket>',
-      _getThumbnail,
-    );
+    _router.get('/cache/<code>/v2/thumbnail/<id>/<revision>/<policy>/<bucket>', _getThumbnail);
     _router.get(WebServerRoutes.info, _getInfo);
     _router.get(WebServerRoutes.webSocket, _webSocketHandler);
     _router.get(WebServerRoutes.getMedialItemsList, _getItemsList);
@@ -264,16 +225,9 @@ class WebService {
     _router.post(WebServerRoutes.uploadMedia, _postUploadMedia);
     _router.get(WebServerRoutes.uploadMedia, _getUploadForm);
 
-    final fsPath = path.join(
-      io.Directory.current.path,
-      'web',
-    ); // path to server
+    final fsPath = path.join(io.Directory.current.path, 'web'); // path to server
     _log.info('Web routes configured logLevel=${Logger.root.level.name}');
-    final virtualDir = ShelfVirtualDirectory(
-      fsPath,
-      defaultFile: 'index.html',
-      default404File: '404.html',
-    );
+    final virtualDir = ShelfVirtualDirectory(fsPath, defaultFile: 'index.html', default404File: '404.html');
     _router.mount('/', virtualDir.router);
 
     if (startServer) {
@@ -290,10 +244,7 @@ class WebService {
   io.HttpServer? _server;
 
   Response _getUploadForm(Request request) {
-    return Response.ok(
-      _uploadMediaForm,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_uploadMediaForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   static const _uploadMediaForm =
@@ -321,16 +272,10 @@ class WebService {
   Response _getInfo(Request request) {
     if (request.params.isNotEmpty && request.params.containsKey("format")) {
       if (request.params['format'] == 'json') {
-        return Response.ok(
-          _infoJSON,
-          headers: {'content-type': 'text/json; charset=utf-8'},
-        );
+        return Response.ok(_infoJSON, headers: {'content-type': 'text/json; charset=utf-8'});
       }
     }
-    return Response.ok(
-      _infoHtml,
-      headers: {'content-type': 'text/html; charset=utf-8'},
-    );
+    return Response.ok(_infoHtml, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
   static const _infoJSON =
@@ -354,19 +299,10 @@ class WebService {
 
   final _activeUsers = <WebSocketUser>[];
   Future<Response> _webSocketHandler(Request request) async {
-    final clock = Stopwatch()..start();
     _log.fine('WebSocket upgrade requested');
     final response = await webSocketHandler((WebSocketChannel webSocket, _) {
-      _log.fine(
-        'WebSocket upgrade accepted elapsedMs=${clock.elapsedMilliseconds}',
-      );
-      final newUser = new WebSocketUser(
-        _appConfig,
-        _code,
-        webSocket,
-        request.headers,
-        this._remoteBackendService,
-      );
+      _log.fine('WebSocket upgrade accepted');
+      final newUser = new WebSocketUser(_appConfig, _code, webSocket, request.headers, this._remoteBackendService);
       _activeUsers.add(newUser);
       _log.info('WebSocket connected active=${_activeUsers.length}');
       newUser.onDisconnect.then((dynamic value) {
@@ -376,8 +312,7 @@ class WebService {
     })(request);
     _log.log(
       response.statusCode >= 500 ? Level.WARNING : Level.FINE,
-      'WebSocket upgrade rejected status=${response.statusCode} '
-      'elapsedMs=${clock.elapsedMilliseconds}',
+      'WebSocket upgrade rejected status=${response.statusCode} ',
     );
     return response;
   }
@@ -386,11 +321,7 @@ class WebService {
     if (_closed) return Response(503, body: 'Web server is closed');
     if (code != _code) return Response.forbidden('Code is incorrect');
     if (_uploads.length >= _maxConcurrentUploads) {
-      return Response(
-        429,
-        body: 'Upload slots are busy',
-        headers: {'retry-after': '1'},
-      );
+      return Response(429, body: 'Upload slots are busy', headers: {'retry-after': '1'});
     }
 
     final cancellation = UploadCancellationToken();
@@ -516,16 +447,14 @@ class WebService {
 
   Future<Response> _getItemsList(Request request, String code) async {
     const kind = _GalleryRequestKind.legacyCatalog;
-    Response reject(GalleryErrorCode code) =>
-        _galleryResponse(kind, _galleryError(code), reason: code);
+    Response reject(GalleryErrorCode code) => _galleryResponse(kind, _galleryError(code), reason: code);
     if (code != _code) return reject(GalleryErrorCode.forbidden);
     if (_closed) return reject(GalleryErrorCode.unavailable);
     final items = <String>[];
     if (await _cacheFolder.exists()) {
       await for (final item in _cacheFolder.list(recursive: true)) {
         if (_closed) return reject(GalleryErrorCode.unavailable);
-        if (!isGalleryStagingPath(item.path))
-          items.add(path.relative(item.path, from: _cacheFolder.path));
+        if (!isGalleryStagingPath(item.path)) items.add(path.relative(item.path, from: _cacheFolder.path));
       }
     }
     return _galleryResponse(
@@ -560,20 +489,12 @@ class WebService {
   Future<Response> _getCatalog(Request request, String code) async {
     const kind = _GalleryRequestKind.catalog;
     if (code != _code)
-      return _galleryResponse(
-        kind,
-        _galleryError(GalleryErrorCode.forbidden),
-        reason: GalleryErrorCode.forbidden,
-      );
+      return _galleryResponse(kind, _galleryError(GalleryErrorCode.forbidden), reason: GalleryErrorCode.forbidden);
     try {
       final catalog = await _galleryCatalog.catalog();
       return _galleryResponse(kind, await _catalogResponse(catalog));
     } on GalleryCatalogFailure catch (error) {
-      return _galleryResponse(
-        kind,
-        _galleryError(error.code),
-        reason: error.code,
-      );
+      return _galleryResponse(kind, _galleryError(error.code), reason: error.code);
     } on Object catch (error) {
       return _galleryResponse(
         kind,
@@ -591,16 +512,11 @@ class WebService {
     if (code != _code) return reject(GalleryErrorCode.forbidden);
     try {
       final bytes = <int>[];
-      await for (final chunk in request.read().timeout(
-        const Duration(seconds: 5),
-      )) {
-        if (bytes.length + chunk.length > 4096)
-          return reject(GalleryErrorCode.invalidRequest);
+      await for (final chunk in request.read().timeout(const Duration(seconds: 5))) {
+        if (bytes.length + chunk.length > 4096) return reject(GalleryErrorCode.invalidRequest);
         bytes.addAll(chunk);
       }
-      final refresh = GalleryRefreshRequest.fromJson(
-        jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>,
-      );
+      final refresh = GalleryRefreshRequest.fromJson(jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>);
       final catalog = await _galleryCatalog.refresh(refresh);
       return _galleryResponse(kind, await _catalogResponse(catalog));
     } on GalleryCatalogFailure catch (error) {
@@ -626,33 +542,22 @@ class WebService {
   ) async {
     const kind = _GalleryRequestKind.thumbnail;
     Response reject(GalleryErrorCode reason, {Object? error}) =>
-        _galleryResponse(
-          kind,
-          _galleryError(reason),
-          reason: reason,
-          error: error,
-          mediaId: id,
-        );
+        _galleryResponse(kind, _galleryError(reason), reason: reason, error: error, mediaId: id);
 
     if (code != _code) return reject(GalleryErrorCode.forbidden);
     final size = int.tryParse(bucket);
-    if (!_thumbnailPolicyPattern.hasMatch(policy) ||
-        size == null ||
-        size <= 0) {
+    if (!_thumbnailPolicyPattern.hasMatch(policy) || size == null || size <= 0) {
       return reject(GalleryErrorCode.invalidRequest);
     }
     if (policy != _galleryCatalog.thumbnailPolicy.identity) {
       return reject(GalleryErrorCode.revisionMismatch);
     }
-    if (!_galleryCatalog.thumbnailPolicy.sizes.any(
-      (item) => item.pixels == size,
-    )) {
+    if (!_galleryCatalog.thumbnailPolicy.sizes.any((item) => item.pixels == size)) {
       return reject(GalleryErrorCode.invalidRequest);
     }
     try {
       final source = await _galleryCatalog.resolve(id, revision: revision);
-      if (!source.entry.thumbnailSupported)
-        return reject(GalleryErrorCode.unsupported);
+      if (!source.entry.thumbnailSupported) return reject(GalleryErrorCode.unsupported);
       final lease = await _thumbnails.acquire(
         ThumbnailSource(
           mediaId: id,
@@ -660,11 +565,7 @@ class WebService {
           path: source.absolutePath,
           fingerprintToken: source.fingerprint,
         ),
-        ThumbnailVariantSpec(
-          bucketId: bucket,
-          size: size,
-          policyRevision: _galleryCatalog.thumbnailPolicy.revision,
-        ),
+        ThumbnailVariantSpec(bucketId: bucket, size: size, policyRevision: _galleryCatalog.thumbnailPolicy.revision),
       );
       final response = await _mediaFiles.serve(
         request,
@@ -682,8 +583,7 @@ class WebService {
       return reject(switch (error.kind) {
         ThumbnailFailureKind.queueFull => GalleryErrorCode.busy,
         ThumbnailFailureKind.staleSource => GalleryErrorCode.revisionMismatch,
-        ThumbnailFailureKind.unsupported ||
-        ThumbnailFailureKind.sourceTooLarge => GalleryErrorCode.unsupported,
+        ThumbnailFailureKind.unsupported || ThumbnailFailureKind.sourceTooLarge => GalleryErrorCode.unsupported,
         _ => GalleryErrorCode.unavailable,
       }, error: error);
     } on Object catch (error) {
@@ -706,25 +606,18 @@ class WebService {
       ...galleryCorsHeaders,
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store',
-      if (code == GalleryErrorCode.busy || code == GalleryErrorCode.unavailable)
-        'retry-after': '1',
+      if (code == GalleryErrorCode.busy || code == GalleryErrorCode.unavailable) 'retry-after': '1',
     },
   );
 
-  Future<Response> _getItem(
-    Request request,
-    String code,
-    String itemPath,
-  ) async {
+  Future<Response> _getItem(Request request, String code, String itemPath) async {
     const kind = _GalleryRequestKind.original;
-    Response reject(GalleryErrorCode code) =>
-        _galleryResponse(kind, _galleryError(code), reason: code);
+    Response reject(GalleryErrorCode code) => _galleryResponse(kind, _galleryError(code), reason: code);
     if (code != _code) return reject(GalleryErrorCode.forbidden);
     if (_closed) return reject(GalleryErrorCode.unavailable);
     itemPath = Uri.decodeFull(itemPath);
     final absolute = path.absolute(path.join(_cacheFolder.path, itemPath));
-    if (!absolute.startsWith(_cacheFolder.path))
-      return reject(GalleryErrorCode.notFound);
+    if (!absolute.startsWith(_cacheFolder.path)) return reject(GalleryErrorCode.notFound);
     try {
       GallerySource? source;
       final revision = request.url.queryParameters['rev'];
@@ -739,9 +632,7 @@ class WebService {
         await _mediaFiles.serve(
           request,
           io.File(absolute),
-          isCurrent: source == null
-              ? null
-              : () => _galleryCatalog.isCurrent(source!),
+          isCurrent: source == null ? null : () => _galleryCatalog.isCurrent(source!),
         ),
       );
     } on GalleryCatalogFailure catch (error) {

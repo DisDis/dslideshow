@@ -6,7 +6,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
 import '../../../../src/gallery/gallery_management_repository.dart';
-import '../../../../src/gallery/gallery_log.dart';
 
 part 'gallery_undo_bloc.freezed.dart';
 
@@ -25,9 +24,7 @@ abstract class GalleryUndoState with _$GalleryUndoState {
 
 @freezed
 sealed class GalleryUndoEvent with _$GalleryUndoEvent {
-  const factory GalleryUndoEvent.restore(
-    Completer<GalleryOperationResult> completion,
-  ) = GalleryUndoRestoreRequested;
+  const factory GalleryUndoEvent.restore(Completer<GalleryOperationResult> completion) = GalleryUndoRestoreRequested;
 }
 
 /// Lives as long as the snackbar and any request it starts, independently of
@@ -49,18 +46,13 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
 
   Future<GalleryOperationResult> restore() {
     if (_closing || isClosed) {
-      return Future.error(
-        const GalleryManagementException(GalleryErrorCode.cancelled),
-      );
+      return Future.error(const GalleryManagementException(GalleryErrorCode.cancelled));
     }
     final pending = _restoring;
     if (pending != null) return pending;
     final result = state.result;
     if (state.phase == GalleryUndoPhase.succeeded && result != null) {
-      _log.fine(
-        () =>
-            'event=restoreResultReused operationId=${GalleryLog.id(result.operationId)} items=${result.items.length}',
-      );
+      _log.fine(() => 'event=restoreResultReused items=${result.items.length}');
       return Future.value(result);
     }
     final completion = Completer<GalleryOperationResult>();
@@ -69,17 +61,10 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
     return _restoring!;
   }
 
-  Future<void> _restore(
-    GalleryUndoRestoreRequested event,
-    Emitter<GalleryUndoState> emit,
-  ) async {
-    final clock = Stopwatch()..start();
+  Future<void> _restore(GalleryUndoRestoreRequested event, Emitter<GalleryUndoState> emit) async {
     final requestId = repository.newOperationId();
-    final operationId = GalleryLog.id(requestId);
     final retry = state.phase == GalleryUndoPhase.failed;
-    _log.info(
-      'event=restoreStarted operationId=$operationId action=restore items=${_trashIds.length} retry=$retry',
-    );
+    _log.info('event=restoreStarted action=restore items=${_trashIds.length} retry=$retry');
     emit(state.copyWith(phase: GalleryUndoPhase.restoring, error: null));
     try {
       final catalog = await repository.trash();
@@ -91,12 +76,7 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
         operationId: requestId,
         action: GalleryMutation.restore,
         items: present.values
-            .map(
-              (entry) => GalleryMediaRef(
-                mediaId: entry.trashId,
-                sourceRevision: entry.sourceRevision,
-              ),
-            )
+            .map((entry) => GalleryMediaRef(mediaId: entry.trashId, sourceRevision: entry.sourceRevision))
             .toList(),
       );
       emit(state.copyWith(request: request));
@@ -105,31 +85,21 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
           : await repository.operate(request);
       final result = response;
       final missing = _trashIds.length - present.length;
-      final failed = result.items
-          .where((item) => item.state == GalleryItemOperationState.failed)
-          .length;
+      final failed = result.items.where((item) => item.state == GalleryItemOperationState.failed).length;
       final message =
-          'event=${failed == 0 ? 'restoreCompleted' : 'restorePartial'} operationId=$operationId action=restore items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed missing=$missing elapsedMs=${clock.elapsedMilliseconds}';
+          'event=${failed == 0 ? 'restoreCompleted' : 'restorePartial'} action=restore items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed missing=$missing';
       failed == 0 ? _log.info(message) : _log.warning(message);
-      emit(
-        state.copyWith(
-          phase: GalleryUndoPhase.succeeded,
-          result: result,
-          missingCount: missing,
-        ),
-      );
+      emit(state.copyWith(phase: GalleryUndoPhase.succeeded, result: result, missingCount: missing));
       event.completion.complete(result);
     } catch (error, stack) {
       _log.warning(
-        'event=restoreFailed operationId=$operationId action=restore code=${error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name} type=${error.runtimeType} elapsedMs=${clock.elapsedMilliseconds}',
+        'event=restoreFailed action=restore code=${error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name} type=${error.runtimeType}',
       );
       emit(
         state.copyWith(
           phase: GalleryUndoPhase.failed,
           request: null,
-          error: error is GalleryManagementException
-              ? error.code
-              : GalleryErrorCode.unknown,
+          error: error is GalleryManagementException ? error.code : GalleryErrorCode.unknown,
         ),
       );
       event.completion.completeError(error, stack);

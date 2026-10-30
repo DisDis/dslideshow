@@ -5,9 +5,10 @@ import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:typed_data/typed_data.dart' as typed;
 
 import 'mqtt_config.dart';
+
+enum _MqttAction { pause, screen, menu }
 
 class MqttService {
   static final Logger _log = new Logger('MqttService');
@@ -19,6 +20,14 @@ class MqttService {
   final String _prefixMotionTopic;
   final ApplicationStateService applicationStateService;
 
+  /// The completion of the initial connection attempt, including a safe failure.
+  late final Future<void> ready;
+  StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _updates;
+  StreamSubscription<ApplicationState>? _applicationChanges;
+  bool _closed = false;
+  bool _connectedBefore = false;
+  Future<void>? _closing;
+
   final StreamController<bool> _scPause = new StreamController.broadcast();
   Stream<bool> get onPause => _scPause.stream;
 
@@ -29,27 +38,31 @@ class MqttService {
   Stream<bool> get onScreen => _scScreen.stream;
 
   bool get isConnected =>
+      !_closed &&
       _client.connectionStatus?.state == MqttConnectionState.connected;
 
-  MqttService(this._config, {required this.applicationStateService})
-    : _client = MqttServerClient.withPort(
-        _config.server,
-        _config.clientId,
-        _config.serverPort,
-      ),
-      _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
-      _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
-      _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
-      _prefixMotionTopic = _config.getDiscoveryPrefix(
-        SensorType.binarySensor.value,
-        'motion',
-      ) {
-    if (_config.enabled) {
-      _init();
-    }
+  MqttService(
+    this._config, {
+    required this.applicationStateService,
+    MqttServerClient? client,
+  }) : _client =
+           client ??
+           MqttServerClient.withPort(
+             _config.server,
+             _config.clientId,
+             _config.serverPort,
+           ),
+       _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
+       _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
+       _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
+       _prefixMotionTopic = _config.getDiscoveryPrefix(
+         SensorType.binarySensor.value,
+         'motion',
+       ) {
+    ready = _config.enabled ? _init() : Future<void>.value();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     _client.logging(on: false);
     _client.setProtocolV311();
     _client.keepAlivePeriod = _config.keepAlivePeriod;
@@ -73,7 +86,7 @@ class MqttService {
         .startClean() // Non persistent session for testing
         .withWillQos(MqttQos.atLeastOnce);
 
-    _log.info('Mosquitto client connecting....');
+    _log.info('event=connecting');
     _client.connectionMessage = connMess;
 
     /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
@@ -81,67 +94,97 @@ class MqttService {
     /// never send malformed messages.
     try {
       await _client.connect(_config.user, _config.pass);
-    } on Exception catch (e) {
-      _log.warning('client exception', e);
+    } catch (error) {
+      if (!_closed) {
+        _log.warning('event=connectFailed type=${error.runtimeType}');
+      }
       _client.disconnect();
+      return;
+    }
+
+    if (_closed) {
+      _client.disconnect();
+      return;
     }
 
     /// Check we are connected
     if (isConnected) {
-      _log.info(
-        'Mosquitto client connected "${_config.server}" port:${_config.serverPort}',
+      _log.info('event=connected');
+      _updates = _client.updates?.listen(
+        _onUpdate,
+        onError: (Object error) =>
+            _log.warning('event=updatesFailed type=${error.runtimeType}'),
       );
-      _client.updates?.listen(_onUpdate);
+      _applicationChanges = applicationStateService.onChangedState.listen(
+        _onApplicationChangeState,
+      );
     } else {
       _log.warning(
-        'Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus?.state}',
+        'event=connectRejected state=${_client.connectionStatus?.state.name}',
       );
       _client.disconnect();
     }
-    applicationStateService.onChangedState.listen(_onApplicationChangeState);
   }
 
   void _onUpdate(List<MqttReceivedMessage<MqttMessage>> msgs) {
-    msgs.forEach((element) {
-      final MqttPublishMessage recMess = element.payload as MqttPublishMessage;
-      final pt = MqttPublishPayload.bytesToStringAsString(
-        recMess.payload.message,
-      );
-
-      _log.info('topic is <${element.topic}>, payload is <-- $pt -->');
-      if (element.topic.startsWith(_prefixPauseTopic)) {
-        _client.publishMessage(
-          "$_prefixPauseTopic/${_config.state_topic}",
-          MqttQos.atLeastOnce,
-          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
-        );
-        _scPause.add(pt == 'ON');
-      } else if (element.topic.startsWith(_prefixScreenTopic)) {
-        _client.publishMessage(
-          "$_prefixScreenTopic/${_config.state_topic}",
-          MqttQos.atLeastOnce,
-          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
-        );
-        _scScreen.add(pt == 'ON');
-      } else if (element.topic.startsWith(_prefixMenuTopic)) {
-        _client.publishMessage(
-          "$_prefixMenuTopic/${_config.state_topic}",
-          MqttQos.atLeastOnce,
-          (MqttClientPayloadBuilder()..addUTF8String(pt)).payload!,
-        );
-        _scMenu.add(pt == 'ON');
+    if (_closed || !isConnected) return;
+    var accepted = 0;
+    var rejected = 0;
+    var ignored = 0;
+    for (final element in msgs) {
+      final action = _actionForTopic(element.topic);
+      if (action == null) {
+        ignored++;
+        continue;
       }
-    });
+      final payload = element.payload;
+      if (payload is! MqttPublishMessage) {
+        rejected++;
+        continue;
+      }
+      final value = MqttPublishPayload.bytesToStringAsString(
+        payload.payload.message,
+      );
+      if (value != 'ON' && value != 'OFF') {
+        rejected++;
+        continue;
+      }
+      try {
+        final (prefix, controller) = switch (action) {
+          _MqttAction.pause => (_prefixPauseTopic, _scPause),
+          _MqttAction.screen => (_prefixScreenTopic, _scScreen),
+          _MqttAction.menu => (_prefixMenuTopic, _scMenu),
+        };
+        _client.publishMessage(
+          '$prefix/${_config.state_topic}',
+          MqttQos.atLeastOnce,
+          (MqttClientPayloadBuilder()..addUTF8String(value)).payload!,
+        );
+        controller.add(value == 'ON');
+        accepted++;
+      } catch (error) {
+        rejected++;
+        _log.warning(
+          'event=commandFailed action=${action.name} type=${error.runtimeType}',
+        );
+      }
+    }
+    _log.info(
+      'event=commands received=${msgs.length} accepted=$accepted rejected=$rejected ignored=$ignored',
+    );
   }
 
-  // ignore: unused_element
-  void _unpublishSwitchConfig(MqttServerClient client, String id) {
-    final discovery_prefix = _config.getDiscoveryPrefix('switch', id);
-    client.publishMessage(
-      "$discovery_prefix/${_config.configuration_topic}",
-      MqttQos.atMostOnce,
-      typed.Uint8Buffer(),
-    );
+  _MqttAction? _actionForTopic(String topic) {
+    if (topic == '$_prefixPauseTopic/${_config.command_topic}') {
+      return _MqttAction.pause;
+    }
+    if (topic == '$_prefixScreenTopic/${_config.command_topic}') {
+      return _MqttAction.screen;
+    }
+    if (topic == '$_prefixMenuTopic/${_config.command_topic}') {
+      return _MqttAction.menu;
+    }
+    return null;
   }
 
   void _publishSwitchConfig(MqttServerClient client, String id, String name) {
@@ -184,25 +227,33 @@ class MqttService {
 
   /// The unsolicited disconnect callback
   void _onDisconnected() {
-    _log.info('Client onDisconnected');
+    if (!_closed) _log.info('event=disconnected');
   }
 
   void _onConnected() {
-    _client.subscribe(
-      "$_prefixPauseTopic/${_config.command_topic}",
-      MqttQos.atMostOnce,
-    );
-    _client.subscribe(
-      "$_prefixScreenTopic/${_config.command_topic}",
-      MqttQos.atMostOnce,
-    );
-    _client.subscribe(
-      "$_prefixMenuTopic/${_config.command_topic}",
-      MqttQos.atMostOnce,
-    );
-    _publishAllConfig();
+    // The SDK invokes this callback again before onAutoReconnected. Its
+    // existing subscription manager resubscribes on that path.
+    if (_closed || _connectedBefore) return;
+    try {
+      _client.subscribe(
+        "$_prefixPauseTopic/${_config.command_topic}",
+        MqttQos.atMostOnce,
+      );
+      _client.subscribe(
+        "$_prefixScreenTopic/${_config.command_topic}",
+        MqttQos.atMostOnce,
+      );
+      _client.subscribe(
+        "$_prefixMenuTopic/${_config.command_topic}",
+        MqttQos.atMostOnce,
+      );
+      _connectedBefore = true;
+      _publishAllConfig();
 
-    _onApplicationChangeState(applicationStateService.state);
+      _onApplicationChangeState(applicationStateService.state);
+    } catch (error) {
+      _log.warning('event=connectedSetupFailed type=${error.runtimeType}');
+    }
   }
 
   void _publishAllConfig() {
@@ -213,11 +264,18 @@ class MqttService {
   }
 
   void _onAutoReconnected() {
-    _log.info('onAutoReconnected');
-    _publishAllConfig();
+    if (_closed) return;
+    _log.info('event=reconnected');
+    try {
+      _publishAllConfig();
+      _onApplicationChangeState(applicationStateService.state);
+    } catch (error) {
+      _log.warning('event=reconnectSetupFailed type=${error.runtimeType}');
+    }
   }
 
   void _onApplicationChangeState(ApplicationState newState) {
+    if (_closed || !isConnected) return;
     try {
       final state = applicationStateService.state;
       _client.publishMessage(
@@ -247,8 +305,46 @@ class MqttService {
               ..addUTF8String(state.isMotion ? 'ON' : 'OFF'))
             .payload!,
       );
-    } catch (e, s) {
-      _log.severe('Fatal error: $e, $s', e, s);
+    } catch (error) {
+      _log.warning('event=statePublishFailed type=${error.runtimeType}');
+    }
+  }
+
+  /// Detaches subscriptions, disables reconnection and closes owned streams.
+  Future<void> close() => _closing ??= _close();
+
+  Future<void> _close() async {
+    _closed = true;
+    _client.autoReconnect = false;
+    _client.onConnected = null;
+    _client.onDisconnected = null;
+    _client.onAutoReconnected = null;
+    try {
+      await Future.wait<void>([
+        if (_updates != null) _cancel(_updates!),
+        if (_applicationChanges != null) _cancel(_applicationChanges!),
+      ]);
+    } finally {
+      try {
+        _client.disconnect();
+      } catch (error) {
+        _log.warning('event=disconnectFailed type=${error.runtimeType}');
+      } finally {
+        await Future.wait<void>([
+          _scPause.close(),
+          _scScreen.close(),
+          _scMenu.close(),
+        ]);
+        _log.info('event=closed');
+      }
+    }
+  }
+
+  Future<void> _cancel(StreamSubscription<dynamic> subscription) async {
+    try {
+      await subscription.cancel();
+    } catch (error) {
+      _log.warning('event=cancelFailed type=${error.runtimeType}');
     }
   }
 }

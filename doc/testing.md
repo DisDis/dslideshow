@@ -7,12 +7,20 @@
 
 Для изменений поведения **диагностические логи входят в критерии приёмки**:
 нужно связать начало и итог операции, увидеть количества, ошибку, отмену
-и повтор по безопасному ID. Проверяйте реальные записи logger в тестах
+и повтор с указанием действия. Проверяйте реальные записи logger в тестах
 сервисов/Bloc, вместе с наблюдаемым результатом действия. Проверка должна
 обнаруживать потерянную диагностику, утечку авторизованного URL/EXIF и
 неограниченный поток INFO при большой коллекции; точный текст каждой строки
 и временные значения фиксировать не нужно. Уровни и команды получения
 [логов галереи](gallery.md#логи-управления-медиатекой) описаны в руководстве.
+
+## Форматирование Dart
+
+Ширина по умолчанию — 120 символов: `formatter.page_width: 120` в корневом
+и пакетных `analysis_options.yaml`. Обычный `dart format` использует настройку
+без `--page-width`; пакеты без собственного файла используют корневой.
+Изменение настройки не требует общей перегенерации моделей или форматирования
+всего репозитория. Сторонние исходники не форматируются.
 
 ## Кто проверяет контракт
 
@@ -72,6 +80,25 @@ Fake-зависимости панели находятся в `config_app/test/
 bundle подменяет только получение байтов и контролирует поздние ответы/ошибки.
 Общий захват пикселей
 frontend находится в `dslideshow_flutter/test/support/pixel_capture.dart`.
+
+## Границы регрессий сервисов и загрузки
+
+После исправлений ревью следующие наборы проверяют разные рабочие границы:
+
+| Набор | Ответственность |
+| --- | --- |
+| `backend/test/wifi_service_diagnostics_test.dart`, `wifi_rpc_completion_test.dart`; `config_app/test/wifi_tab_bloc_test.dart`, `client_service_test.dart` | Процесс/cleanup и безопасные ошибки → RPC с исходным ID → 65-секундное ожидание, подтверждение перед refresh и неизвестный исход без повторной мутации. |
+| `config_app/test/upload_queue_bloc_test.dart`, `web_client_test.dart`, `upload_picker_test.dart`, `upload_screen_test.dart` | Два слота до cleanup, ленивый источник и отмена; отдельно настоящий HTTP multipart/URI, выбор файлов и действия экрана. |
+| `config_app/test/ota_panel_bloc_test.dart`, `ota_panel_widget_test.dart`, `ota_client_test.dart` | Выбор/код/поздние ответы и освобождение попытки; отдельно submit/rebuild/reset экрана и HTTP-контракт потоковой отправки. |
+| `backend/test/ota_upload_test.dart`; `dslideshow_flutter/test/ota_failure_return_test.dart` | Backend создаёт окончательный отказ и сохраняет диагностику; frontend проверяет 29,999/30 секунд, отмену таймера и фактический маршрут/экран. Полная матрица отказов не повторяется на каждом уровне. |
+| `dslideshow_flutter/test/slideshow_storage_error_test.dart`, `slideshow_renderer_lifecycle_test.dart` | Ошибки backend без автоматических повторов, новая явная загрузка, защита фазой от дублей событий и поздние ответы после close; отдельно сохранение рабочей сессии renderer при ошибке. |
+| `dslideshow_flutter/test/frontend_service_test.dart`, `frame_frontend_controller_test.dart`, `main_menu_bloc_test.dart` | Настоящий RPC-facade с явными зависимостями конструктора, доставка SystemInfo в рабочий Bloc и актуальная геометрия дисплея с fake RemoteService; отдельно управление состоянием и кнопки/команды меню с рабочими Route/Status Bloc. |
+| `config_app/test/settings_forms_test.dart`; `backend/test/app_storage_test.dart`, `mqtt_service_test.dart` | Ввод и общий черновик форм; настоящий key-value persistence на временных файлах и MqttService с подменой внешнего клиента. |
+
+Пересечение строк между наборами само по себе не означает дублирование тестов:
+очередь, HTTP-клиент, сервер и экран проверяют собственные отказы и ресурсы.
+Проценты и состав конкретного прогона находятся в
+[датированном отчёте](history/review-fixes-2026-10-30/README.md).
 
 ## Браузерные проверки
 
@@ -266,3 +293,5 @@ python3 tools/test_coverage.py merge .local/coverage-full .local/coverage-config
 Проверки инструмента: `python3 -m unittest discover -s tools -p 'test_test_coverage.py' -v`.
 [Ревью и baseline 30.10.2026](history/review-2026-10-30/README.md) содержат
 известные пробелы, проверенные пересечения и границы конкретного прогона.
+[Исправления и повторный снимок](history/review-fixes-2026-10-30/README.md)
+сохраняют новое coverage отдельно, с оценкой качества тестов и оставшихся пробелов.

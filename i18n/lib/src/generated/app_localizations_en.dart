@@ -3126,4 +3126,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get configPageCloseError =>
       'Could not confirm that settings access has ended. Retry, or return without confirmation.';
+
+  @override
+  String ota_file_selected(String name) {
+    return 'Selected: $name';
+  }
+
+  @override
+  String get ota_file_invalid => 'Select a .deb firmware file.';
+
+  @override
+  String get ota_file_empty => 'The firmware file is empty.';
+
+  @override
+  String get ota_file_unavailable =>
+      'Could not read the selected firmware file.';
+
+  @override
+  String get ota_request_failed =>
+      'Could not complete the OTA request. Try again.';
+
+  @override
+  String get ota_response_invalid =>
+      'The frame returned an invalid OTA response.';
+
+  @override
+  String get ota_upload_rejected => 'The frame rejected the firmware upload.';
+
+  @override
+  String get wifi_operation_unknown =>
+      'The operation result is unknown. Check the frame before trying again.';
+
+  @override
+  String get wifi_refresh_failed =>
+      'The Wi-Fi operation completed, but the lists could not be refreshed. Refresh before making another change.';
+
+  @override
+  String get upload_source_unavailable => 'Could not read the selected file.';
+
+  @override
+  String get upload_length_unknown => 'Could not determine the file size.';
+
+  @override
+  String get upload_transfer_failed =>
+      'Could not confirm the upload. Check the frame before retrying.';
+
+  @override
+  String get upload_folder_scan_failed => 'Could not read the selected folder.';
 }

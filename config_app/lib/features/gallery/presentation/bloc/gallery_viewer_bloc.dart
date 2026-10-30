@@ -49,16 +49,11 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
   int _confirmationId = 0;
   Completer<void>? _metadataCancel;
   Completer<void>? _operationCancel;
-  Stopwatch? _metadataClock;
-  Stopwatch? _operationClock;
-  String _operationLogId = 'none';
   bool _closing = false;
   Future<void>? _closeFuture;
 
   static GalleryViewerState _initialState(GalleryViewerConfiguration inputs) {
-    final current = inputs.currentItem == null
-        ? inputs.item
-        : inputs.currentItem!();
+    final current = inputs.currentItem == null ? inputs.item : inputs.currentItem!();
     return GalleryViewerState(
       item: current ?? inputs.item,
       missing: current == null,
@@ -81,10 +76,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     final previous = _subscription;
     final generation = ++_subscriptionGeneration;
     if (previous != null) {
-      _subscriptionCleanup = Future.wait([
-        _subscriptionCleanup,
-        previous.cancel(),
-      ]).then((_) {});
+      _subscriptionCleanup = Future.wait([_subscriptionCleanup, previous.cancel()]).then((_) {});
     }
     _subscription = _configuration.itemUpdates?.listen(
       (item) {
@@ -105,8 +97,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     final contextChanged =
         previous.management != _configuration.management ||
         previous.trashEntry?.trashId != _configuration.trashEntry?.trashId ||
-        previous.trashEntry?.sourceRevision !=
-            _configuration.trashEntry?.sourceRevision;
+        previous.trashEntry?.sourceRevision != _configuration.trashEntry?.sourceRevision;
     if (contextChanged) {
       if (state.confirmation != null) ++_confirmationId;
       _cancelMetadata();
@@ -118,12 +109,8 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
         managementAvailable: _configuration.management != null,
         trashEntry: _configuration.trashEntry,
         metadata: contextChanged ? null : state.metadata,
-        metadataStatus: contextChanged
-            ? GalleryViewerMetadataStatus.idle
-            : state.metadataStatus,
-        operation: contextChanged
-            ? GalleryViewerOperation.idle
-            : state.operation,
+        metadataStatus: contextChanged ? GalleryViewerMetadataStatus.idle : state.metadataStatus,
+        operation: contextChanged ? GalleryViewerOperation.idle : state.operation,
         mutationRequest: contextChanged ? null : state.mutationRequest,
       ),
     );
@@ -137,14 +124,10 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       _cancelMetadata();
       emit(
         state.copyWith(
-          metadataStatus: state.metadata == null
-              ? GalleryViewerMetadataStatus.idle
-              : GalleryViewerMetadataStatus.ready,
+          metadataStatus: state.metadata == null ? GalleryViewerMetadataStatus.idle : GalleryViewerMetadataStatus.ready,
         ),
       );
-    } else if (state.showInfo &&
-        state.metadata == null &&
-        !state.metadataLoading) {
+    } else if (state.showInfo && state.metadata == null && !state.metadataLoading) {
       _loadMetadata(emit);
     }
   }
@@ -154,13 +137,9 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       item.scope != state.item.scope ||
       !state.supersededRevisions.contains(item.revision);
 
-  Set<String> _superseded(GalleryItem item) =>
-      item.mediaId != state.item.mediaId || item.scope != state.item.scope
+  Set<String> _superseded(GalleryItem item) => item.mediaId != state.item.mediaId || item.scope != state.item.scope
       ? {}
-      : {
-          ...state.supersededRevisions,
-          if (item.revision != state.item.revision) state.item.revision,
-        };
+      : {...state.supersededRevisions, if (item.revision != state.item.revision) state.item.revision};
 
   void _receiveItem(GalleryItem? item, Emitter<GalleryViewerState> emit) {
     if (item != null && !_canAccept(item)) {
@@ -172,9 +151,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     }
     final changed = item == null
         ? !state.missing
-        : state.missing ||
-              item.selectionIdentity != state.item.selectionIdentity ||
-              item.scope != state.item.scope;
+        : state.missing || item.selectionIdentity != state.item.selectionIdentity || item.scope != state.item.scope;
     if (!changed) {
       if (item != null && item != state.item) emit(state.copyWith(item: item));
       return;
@@ -186,9 +163,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       state.copyWith(
         item: item ?? state.item,
         missing: item == null,
-        supersededRevisions: item == null
-            ? state.supersededRevisions
-            : _superseded(item),
+        supersededRevisions: item == null ? state.supersededRevisions : _superseded(item),
         metadata: null,
         metadataStatus: GalleryViewerMetadataStatus.idle,
         metadataError: null,
@@ -200,19 +175,14 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     if (state.showInfo && state.canReadMetadata) _loadMetadata(emit);
   }
 
-  void _onInfoToggled(
-    ViewerInfoToggled event,
-    Emitter<GalleryViewerState> emit,
-  ) {
+  void _onInfoToggled(ViewerInfoToggled event, Emitter<GalleryViewerState> emit) {
     if (_closing) return;
     if (state.showInfo) {
       _cancelMetadata();
       emit(
         state.copyWith(
           showInfo: false,
-          metadataStatus: state.metadata == null
-              ? GalleryViewerMetadataStatus.idle
-              : GalleryViewerMetadataStatus.ready,
+          metadataStatus: state.metadata == null ? GalleryViewerMetadataStatus.idle : GalleryViewerMetadataStatus.ready,
         ),
       );
     } else {
@@ -229,87 +199,46 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     final item = state.item;
     final trash = state.trash;
     final repository = _configuration.management!;
-    _metadataClock = Stopwatch()..start();
     _log.fine(
       () =>
           'event=metadataStarted generation=$generation source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} trash=$trash',
     );
-    emit(
-      state.copyWith(
-        metadataStatus: GalleryViewerMetadataStatus.loading,
-        metadataError: null,
-      ),
-    );
+    emit(state.copyWith(metadataStatus: GalleryViewerMetadataStatus.loading, metadataError: null));
     unawaited(() async {
       try {
-        final data = await repository.metadata(
-          item,
-          cancel: cancel.future,
-          trash: trash,
-        );
-        _post(
-          GalleryViewerEvent.metadataCompleted(
-            generation: generation,
-            data: data,
-          ),
-        );
+        final data = await repository.metadata(item, cancel: cancel.future, trash: trash);
+        _post(GalleryViewerEvent.metadataCompleted(generation: generation, data: data));
       } catch (error) {
-        _post(
-          GalleryViewerEvent.metadataCompleted(
-            generation: generation,
-            error: _code(error),
-          ),
-        );
+        _post(GalleryViewerEvent.metadataCompleted(generation: generation, error: _code(error)));
       }
     }());
   }
 
-  void _onMetadataCompleted(
-    ViewerMetadataCompleted event,
-    Emitter<GalleryViewerState> emit,
-  ) {
-    if (event.generation != _metadataGeneration ||
-        !state.showInfo ||
-        state.missing) {
+  void _onMetadataCompleted(ViewerMetadataCompleted event, Emitter<GalleryViewerState> emit) {
+    if (event.generation != _metadataGeneration || !state.showInfo || state.missing) {
       return;
     }
     _finishMetadata();
     final data = event.data;
-    final valid =
-        data != null &&
-        data.mediaId == state.item.mediaId &&
-        data.sourceRevision == state.item.revision;
+    final valid = data != null && data.mediaId == state.item.mediaId && data.sourceRevision == state.item.revision;
     if (valid) {
-      _log.fine(
-        () =>
-            'event=metadataCompleted generation=${event.generation} elapsedMs=${_metadataClock?.elapsedMilliseconds ?? 0}',
-      );
+      _log.fine(() => 'event=metadataCompleted generation=${event.generation}');
     } else {
       _log.warning(
-        'event=metadataFailed generation=${event.generation} code=${(event.error ?? GalleryErrorCode.revisionMismatch).name} elapsedMs=${_metadataClock?.elapsedMilliseconds ?? 0}',
+        'event=metadataFailed generation=${event.generation} code=${(event.error ?? GalleryErrorCode.revisionMismatch).name}',
       );
     }
     emit(
       state.copyWith(
         metadata: valid ? data : null,
-        metadataStatus: valid
-            ? GalleryViewerMetadataStatus.ready
-            : GalleryViewerMetadataStatus.failed,
-        metadataError: valid
-            ? null
-            : event.error ?? GalleryErrorCode.revisionMismatch,
+        metadataStatus: valid ? GalleryViewerMetadataStatus.ready : GalleryViewerMetadataStatus.failed,
+        metadataError: valid ? null : event.error ?? GalleryErrorCode.revisionMismatch,
       ),
     );
   }
 
-  void _onRotationRequested(
-    ViewerRotationRequested event,
-    Emitter<GalleryViewerState> emit,
-  ) {
-    if (_closing ||
-        state.busy ||
-        state.confirmation != null ||
-        !state.canRotate) {
+  void _onRotationRequested(ViewerRotationRequested event, Emitter<GalleryViewerState> emit) {
+    if (_closing || state.busy || state.confirmation != null || !state.canRotate) {
       return;
     }
     final repository = _configuration.management!;
@@ -323,71 +252,41 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     _cancelOperation();
     final generation = _operationGeneration;
     final cancel = _operationCancel = Completer<void>();
-    _operationClock = Stopwatch()..start();
-    _operationLogId = GalleryLog.id(request.operationId);
-    _log.info(
-      'event=rotationStarted operationId=$_operationLogId rotation=${request.rotation.name} items=1',
-    );
+    _log.info('event=rotationStarted rotation=${request.rotation.name} items=1');
     emit(
       state.copyWith(
         operation: GalleryViewerOperation.rotating,
         operationError: null,
-        metadataStatus: state.metadata == null
-            ? GalleryViewerMetadataStatus.idle
-            : GalleryViewerMetadataStatus.ready,
+        metadataStatus: state.metadata == null ? GalleryViewerMetadataStatus.idle : GalleryViewerMetadataStatus.ready,
       ),
     );
     unawaited(() async {
       try {
         final data = await repository.rotate(request, cancel: cancel.future);
-        _post(
-          GalleryViewerEvent.rotationCompleted(
-            generation: generation,
-            data: data,
-          ),
-        );
+        _post(GalleryViewerEvent.rotationCompleted(generation: generation, data: data));
       } catch (error) {
-        _post(
-          GalleryViewerEvent.rotationCompleted(
-            generation: generation,
-            error: _code(error),
-          ),
-        );
+        _post(GalleryViewerEvent.rotationCompleted(generation: generation, error: _code(error)));
       }
     }());
   }
 
-  void _onRotationCompleted(
-    ViewerRotationCompleted event,
-    Emitter<GalleryViewerState> emit,
-  ) {
-    if (event.generation != _operationGeneration ||
-        state.operation != GalleryViewerOperation.rotating) {
+  void _onRotationCompleted(ViewerRotationCompleted event, Emitter<GalleryViewerState> emit) {
+    if (event.generation != _operationGeneration || state.operation != GalleryViewerOperation.rotating) {
       return;
     }
     _finishOperation();
     final data = event.data;
     if (data == null || data.mediaId != state.item.mediaId) {
-      _operationFailed(
-        event.error ?? GalleryErrorCode.processingFailed,
-        emit,
-        refreshCatalog: true,
-      );
+      _operationFailed(event.error ?? GalleryErrorCode.processingFailed, emit, refreshCatalog: true);
       return;
     }
     final item = _configuration.management!.updatedItem(state.item, data);
     if (item.revision.isEmpty || !_canAccept(item)) {
-      _operationFailed(
-        GalleryErrorCode.revisionMismatch,
-        emit,
-        refreshCatalog: true,
-      );
+      _operationFailed(GalleryErrorCode.revisionMismatch, emit, refreshCatalog: true);
       return;
     }
     _cancelMetadata();
-    _log.info(
-      'event=rotationCompleted operationId=$_operationLogId items=1 elapsedMs=${_operationClock?.elapsedMilliseconds ?? 0}',
-    );
+    _log.info('event=rotationCompleted items=1');
     emit(
       state.copyWith(
         item: item,
@@ -403,35 +302,19 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     );
   }
 
-  void _onMutationRequested(
-    ViewerMutationRequested event,
-    Emitter<GalleryViewerState> emit,
-  ) {
-    if (_closing ||
-        state.busy ||
-        state.confirmation != null ||
-        !state.canMutate(event.action)) {
+  void _onMutationRequested(ViewerMutationRequested event, Emitter<GalleryViewerState> emit) {
+    if (_closing || state.busy || state.confirmation != null || !state.canMutate(event.action)) {
       return;
     }
-    if (event.action == GalleryMutation.purge ||
-        event.action == GalleryMutation.trash) {
+    if (event.action == GalleryMutation.purge || event.action == GalleryMutation.trash) {
       final confirmation = GalleryMutationConfirmation(
         token: ++_confirmationId,
         action: event.action,
-        items: [
-          GalleryMediaRef(
-            mediaId: state.item.mediaId,
-            sourceRevision: state.item.revision,
-          ),
-        ],
+        items: [GalleryMediaRef(mediaId: state.item.mediaId, sourceRevision: state.item.revision)],
         names: [state.item.title],
-        sizeBytes: event.action == GalleryMutation.purge
-            ? state.trashEntry!.sizeBytes
-            : null,
+        sizeBytes: event.action == GalleryMutation.purge ? state.trashEntry!.sizeBytes : null,
       );
-      _log.info(
-        'event=confirmationRequested token=${confirmation.token} action=${event.action.name} items=1',
-      );
+      _log.info('event=confirmationRequested token=${confirmation.token} action=${event.action.name} items=1');
       emit(
         state.copyWith(
           confirmation: confirmation,
@@ -444,19 +327,14 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     _beginMutation(event.action, emit);
   }
 
-  void _onMutationDecision(
-    ViewerMutationDecision event,
-    Emitter<GalleryViewerState> emit,
-  ) {
+  void _onMutationDecision(ViewerMutationDecision event, Emitter<GalleryViewerState> emit) {
     if (_closing) return;
     final confirmation = state.confirmation;
     if (confirmation == null || confirmation.token != event.confirmationId) {
       return;
     }
     final ref = confirmation.items.single;
-    final current = _configuration.currentItem == null
-        ? state.item
-        : _configuration.currentItem!();
+    final current = _configuration.currentItem == null ? state.item : _configuration.currentItem!();
     final valid =
         confirmation.token == _confirmationId &&
         !state.busy &&
@@ -470,8 +348,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     emit(state.copyWith(confirmation: null));
     if (!event.confirmed) {
       _log.fine(
-        () =>
-            'event=confirmationCancelled token=${event.confirmationId} action=${confirmation.action.name} items=1',
+        () => 'event=confirmationCancelled token=${event.confirmationId} action=${confirmation.action.name} items=1',
       );
       return;
     }
@@ -480,51 +357,30 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
         () =>
             'event=confirmationRejected token=${event.confirmationId} action=${confirmation.action.name} code=revisionMismatch',
       );
-      emit(
-        state.copyWith(
-          effectId: state.effectId + 1,
-          effect: const GalleryViewerEffect.confirmationChanged(),
-        ),
-      );
+      emit(state.copyWith(effectId: state.effectId + 1, effect: const GalleryViewerEffect.confirmationChanged()));
       return;
     }
-    _log.info(
-      'event=confirmationAccepted token=${event.confirmationId} action=${confirmation.action.name} items=1',
-    );
+    _log.info('event=confirmationAccepted token=${event.confirmationId} action=${confirmation.action.name} items=1');
     _beginMutation(confirmation.action, emit);
   }
 
-  void _beginMutation(
-    GalleryMutation action,
-    Emitter<GalleryViewerState> emit,
-  ) {
+  void _beginMutation(GalleryMutation action, Emitter<GalleryViewerState> emit) {
     final repository = _configuration.management!;
     final request = GalleryOperationRequest(
       operationId: repository.newOperationId(),
       action: action,
-      items: [
-        GalleryMediaRef(
-          mediaId: state.item.mediaId,
-          sourceRevision: state.item.revision,
-        ),
-      ],
+      items: [GalleryMediaRef(mediaId: state.item.mediaId, sourceRevision: state.item.revision)],
     );
     _cancelMetadata();
     _cancelOperation();
     final generation = _operationGeneration;
     final cancel = _operationCancel = Completer<void>();
-    _operationClock = Stopwatch()..start();
-    _operationLogId = GalleryLog.id(request.operationId);
-    _log.info(
-      'event=mutationStarted operationId=$_operationLogId action=${request.action.name} items=1',
-    );
+    _log.info('event=mutationStarted action=${request.action.name} items=1');
     emit(
       state.copyWith(
         mutationRequest: request,
         operationError: null,
-        metadataStatus: state.metadata == null
-            ? GalleryViewerMetadataStatus.idle
-            : GalleryViewerMetadataStatus.ready,
+        metadataStatus: state.metadata == null ? GalleryViewerMetadataStatus.idle : GalleryViewerMetadataStatus.ready,
         operation: switch (action) {
           GalleryMutation.trash => GalleryViewerOperation.trashing,
           GalleryMutation.restore => GalleryViewerOperation.restoring,
@@ -535,66 +391,37 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     unawaited(() async {
       try {
         final result = await repository.operate(request, cancel: cancel.future);
-        _post(
-          GalleryViewerEvent.mutationCompleted(
-            generation: generation,
-            result: result,
-          ),
-        );
+        _post(GalleryViewerEvent.mutationCompleted(generation: generation, result: result));
       } catch (error) {
-        _post(
-          GalleryViewerEvent.mutationCompleted(
-            generation: generation,
-            error: _code(error),
-          ),
-        );
+        _post(GalleryViewerEvent.mutationCompleted(generation: generation, error: _code(error)));
       }
     }());
   }
 
-  void _onMutationCompleted(
-    ViewerMutationCompleted event,
-    Emitter<GalleryViewerState> emit,
-  ) {
-    if (event.generation != _operationGeneration ||
-        state.mutationRequest == null ||
-        !state.busy) {
+  void _onMutationCompleted(ViewerMutationCompleted event, Emitter<GalleryViewerState> emit) {
+    if (event.generation != _operationGeneration || state.mutationRequest == null || !state.busy) {
       return;
     }
     _finishOperation();
     final result = event.result;
     if (result == null) {
-      _operationFailed(
-        event.error ?? GalleryErrorCode.processingFailed,
-        emit,
-        refreshCatalog: true,
-      );
+      _operationFailed(event.error ?? GalleryErrorCode.processingFailed, emit, refreshCatalog: true);
       return;
     }
     final request = state.mutationRequest!;
     if (result.operationId != request.operationId ||
         result.items.length != 1 ||
         result.items.single.mediaId != request.items.single.mediaId) {
-      _operationFailed(
-        GalleryErrorCode.processingFailed,
-        emit,
-        refreshCatalog: true,
-      );
+      _operationFailed(GalleryErrorCode.processingFailed, emit, refreshCatalog: true);
       return;
     }
     emit(state.copyWith(mutationRequest: null));
     final item = result.items.single;
     if (item.state != GalleryItemOperationState.succeeded) {
-      _operationFailed(
-        item.error ?? GalleryErrorCode.unknown,
-        emit,
-        refreshCatalog: true,
-      );
+      _operationFailed(item.error ?? GalleryErrorCode.unknown, emit, refreshCatalog: true);
       return;
     }
-    _log.info(
-      'event=mutationCompleted operationId=$_operationLogId action=${request.action.name} items=1 succeeded=1 failed=0 elapsedMs=${_operationClock?.elapsedMilliseconds ?? 0}',
-    );
+    _log.info('event=mutationCompleted action=${request.action.name} items=1 succeeded=1 failed=0');
     emit(
       state.copyWith(
         missing: true,
@@ -609,24 +436,15 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     );
   }
 
-  void _operationFailed(
-    GalleryErrorCode code,
-    Emitter<GalleryViewerState> emit, {
-    bool refreshCatalog = false,
-  }) {
-    _log.warning(
-      'event=operationFailed operationId=$_operationLogId action=${state.operation.name} code=${code.name} elapsedMs=${_operationClock?.elapsedMilliseconds ?? 0}',
-    );
+  void _operationFailed(GalleryErrorCode code, Emitter<GalleryViewerState> emit, {bool refreshCatalog = false}) {
+    _log.warning('event=operationFailed action=${state.operation.name} code=${code.name}');
     emit(
       state.copyWith(
         operation: GalleryViewerOperation.idle,
         operationError: code,
         mutationRequest: refreshCatalog ? null : state.mutationRequest,
         effectId: state.effectId + 1,
-        effect: GalleryViewerEffect.operationFailed(
-          code,
-          refreshCatalog: refreshCatalog,
-        ),
+        effect: GalleryViewerEffect.operationFailed(code, refreshCatalog: refreshCatalog),
       ),
     );
     if (state.showInfo && state.metadata == null) _loadMetadata(emit);
@@ -634,10 +452,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
 
   void _cancelMetadata() {
     if (_metadataCancel != null) {
-      _log.fine(
-        () =>
-            'event=metadataCancelled generation=$_metadataGeneration elapsedMs=${_metadataClock?.elapsedMilliseconds ?? 0}',
-      );
+      _log.fine(() => 'event=metadataCancelled generation=$_metadataGeneration');
     }
     ++_metadataGeneration;
     _finishMetadata();
@@ -651,10 +466,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
 
   void _cancelOperation() {
     if (_operationCancel != null) {
-      _log.fine(
-        () =>
-            'event=operationCancelled operationId=$_operationLogId action=${state.operation.name} elapsedMs=${_operationClock?.elapsedMilliseconds ?? 0}',
-      );
+      _log.fine(() => 'event=operationCancelled action=${state.operation.name}');
     }
     ++_operationGeneration;
     _finishOperation();
@@ -667,9 +479,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
   }
 
   static GalleryErrorCode _code(Object error) =>
-      error is GalleryManagementException
-      ? error.code
-      : GalleryErrorCode.unknown;
+      error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
   void _post(GalleryViewerEvent event) {
     if (!_closing && !isClosed) add(event);
   }
@@ -678,10 +488,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
   Future<void> close() {
     if (_closeFuture != null) return _closeFuture!;
     _closing = true;
-    _log.fine(
-      () =>
-          'event=closed operation=${state.operation.name} metadataLoading=${state.metadataLoading}',
-    );
+    _log.fine(() => 'event=closed operation=${state.operation.name} metadataLoading=${state.metadataLoading}');
     _cancelMetadata();
     _cancelOperation();
     ++_subscriptionGeneration;

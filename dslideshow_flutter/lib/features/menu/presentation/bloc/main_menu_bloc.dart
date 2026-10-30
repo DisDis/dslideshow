@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -7,12 +8,19 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/s
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
+import 'package:logging/logging.dart';
 
 part 'main_menu_event.dart';
 part 'main_menu_state.dart';
 part 'main_menu_bloc.freezed.dart';
 
 class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
+  static final _log = Logger('MainMenuBloc');
+  final _waits = CancellableWaits();
+  bool _executing = false;
+  Future<void>? _closeFuture;
   final RouteBloc routeBloc;
   final FrontendService frontendService;
   final SlideShowMenuConfig config;
@@ -28,13 +36,11 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
   }) : super(MainMenuState(selectedIndex: -1)) {
     on<MainMenuSelectEvent>(_onSelectItem);
     on<MainMenuExecuteEvent>(_onExecuteItem);
-    _onButtonEventSubscription = frontendService.onButtonEvent.listen(
-      _onButtonEvent,
-    );
+    _onButtonEventSubscription = frontendService.onButtonEvent.listen(_onButtonEvent);
   }
 
   void _onButtonEvent(ButtonEvent event) {
-    if (!slideshowStatusBloc.state.isMenu) {
+    if (_waits.isClosed || slideshowStatusBloc.isClosed || !slideshowStatusBloc.state.isMenu) {
       // Skip button push
       return;
     }
@@ -56,7 +62,8 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     }
   }
 
-  FutureOr<void> _onSelectItem(MainMenuSelectEvent event, emit) {
+  void _onSelectItem(MainMenuSelectEvent event, Emitter<MainMenuState> emit) {
+    if (_waits.isClosed) return;
     int index = event.index;
     if (index >= options.length) {
       index = 0;
@@ -66,54 +73,68 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     emit(state.copyWith(selectedIndex: index));
   }
 
-  FutureOr<void> _onExecuteItem(
-    MainMenuExecuteEvent event,
-    Emitter<MainMenuState> emit,
-  ) async {
-    MenuCommand? command = event.command;
-    if (command == null) {
-      if (state.selectedIndex != -1) {
-        command = options[state.selectedIndex].command;
+  FutureOr<void> _onExecuteItem(MainMenuExecuteEvent event, Emitter<MainMenuState> emit) async {
+    if (_waits.isClosed || _executing) return;
+    final command = event.command ?? (state.selectedIndex < 0 ? null : options[state.selectedIndex].command);
+    if (command == null) return;
+    _executing = true;
+    _log.info('command start action=${command.name}');
+    try {
+      if (routeBloc.isClosed || slideshowStatusBloc.isClosed) {
+        throw StateError('Menu dependencies are closed');
       }
+      switch (command) {
+        case MenuCommand.config:
+          routeBloc.add(ChangePageEvent(RoutePage.config));
+        case MenuCommand.update:
+          routeBloc.add(ChangePageEvent(RoutePage.ota));
+        case MenuCommand.powerOff:
+          final result = await _waits.wait(frontendService.powerOff());
+          if (_waits.isClosed) return;
+          _checkResponse(result);
+        case MenuCommand.restartApp:
+          final result = await _waits.wait(frontendService.restartApp());
+          if (_waits.isClosed) return;
+          _checkResponse(result);
+        case MenuCommand.returnToSlideshow:
+          break;
+      }
+      if (_waits.isClosed || emit.isDone || slideshowStatusBloc.isClosed) {
+        return;
+      }
+      slideshowStatusBloc.add(SlideshowMenuEvent(false));
+      _log.info('command completed action=${command.name}');
+    } catch (error) {
+      if (!_waits.isClosed) {
+        _log.warning(
+          'command failed'
+          ' action=${command.name} errorType=${error.runtimeType}',
+        );
+      }
+    } finally {
+      if (_waits.isClosed) {
+        _log.info(
+          'command cancelled'
+          ' action=${command.name}',
+        );
+      }
+      _executing = false;
     }
-    if (command == null) {
-      //Skip
-      return;
-    }
-    switch (command) {
-      case MenuCommand.config:
-        routeBloc.add(ChangePageEvent(RoutePage.config));
-        break;
-      case MenuCommand.update:
-        routeBloc.add(ChangePageEvent(RoutePage.ota));
-        break;
-
-      case MenuCommand.powerOff:
-        _powerOff();
-        break;
-
-      case MenuCommand.restartApp:
-        _restartApp();
-        break;
-      case MenuCommand.returnToSlideshow:
-        break;
-    }
-    slideshowStatusBloc.add(SlideshowMenuEvent(false));
   }
 
-  void _powerOff() {
-    frontendService.powerOff();
-  }
-
-  void _restartApp() {
-    frontendService.restartApp();
+  void _checkResponse(Object? result) {
+    if (result is RpcErrorResult) throw RpcErrorResultException(result);
+    if (result is! EmptyResult) {
+      throw StateError('Unexpected menu command response');
+    }
   }
 
   @override
-  Future<void> close() {
-    _onButtonEventSubscription?.cancel();
-    _onButtonEventSubscription = null;
+  Future<void> close() => _closeFuture ??= _closeMenu().whenComplete(() => super.close());
 
-    return super.close();
+  Future<void> _closeMenu() async {
+    _waits.close();
+    await _onButtonEventSubscription?.cancel();
+    _onButtonEventSubscription = null;
   }
 }

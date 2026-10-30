@@ -1,3 +1,6 @@
+formatter:
+  page_width: 120
+
 include: package:flutter_lints/flutter.yaml
 
 analyzer:

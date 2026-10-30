@@ -17,10 +17,10 @@ mixin _$UploadTask {
   String get id;
   String get localPath;
   String get serverPath;
-  Uint8List? get bytes;
+  String get batchId;
   UploadStatus get status;
   double get progress;
-  String? get errorMessage;
+  UploadFailure? get failure;
 
   /// Create a copy of UploadTask
   /// with the given fields replaced by the non-null parameter values.
@@ -40,13 +40,14 @@ mixin _$UploadTask {
                 other.localPath == _this.localPath) &&
             (identical(other.serverPath, _this.serverPath) ||
                 other.serverPath == _this.serverPath) &&
-            const DeepCollectionEquality().equals(other.bytes, _this.bytes) &&
+            (identical(other.batchId, _this.batchId) ||
+                other.batchId == _this.batchId) &&
             (identical(other.status, _this.status) ||
                 other.status == _this.status) &&
             (identical(other.progress, _this.progress) ||
                 other.progress == _this.progress) &&
-            (identical(other.errorMessage, _this.errorMessage) ||
-                other.errorMessage == _this.errorMessage));
+            (identical(other.failure, _this.failure) ||
+                other.failure == _this.failure));
   }
 
   @override
@@ -57,17 +58,17 @@ mixin _$UploadTask {
       _this.id,
       _this.localPath,
       _this.serverPath,
-      const DeepCollectionEquality().hash(_this.bytes),
+      _this.batchId,
       _this.status,
       _this.progress,
-      _this.errorMessage,
+      _this.failure,
     );
   }
 
   @override
   String toString() {
     final _this = this as UploadTask;
-    return 'UploadTask(id: ${_this.id}, localPath: ${_this.localPath}, serverPath: ${_this.serverPath}, bytes: ${_this.bytes}, status: ${_this.status}, progress: ${_this.progress}, errorMessage: ${_this.errorMessage})';
+    return 'UploadTask(id: ${_this.id}, localPath: ${_this.localPath}, serverPath: ${_this.serverPath}, batchId: ${_this.batchId}, status: ${_this.status}, progress: ${_this.progress}, failure: ${_this.failure})';
   }
 }
 
@@ -82,10 +83,10 @@ abstract mixin class $UploadTaskCopyWith<$Res> {
     String id,
     String localPath,
     String serverPath,
-    Uint8List? bytes,
+    String batchId,
     UploadStatus status,
     double progress,
-    String? errorMessage,
+    UploadFailure? failure,
   });
 }
 
@@ -104,10 +105,10 @@ class _$UploadTaskCopyWithImpl<$Res> implements $UploadTaskCopyWith<$Res> {
     Object? id = null,
     Object? localPath = null,
     Object? serverPath = null,
-    Object? bytes = freezed,
+    Object? batchId = null,
     Object? status = null,
     Object? progress = null,
-    Object? errorMessage = freezed,
+    Object? failure = freezed,
   }) {
     return _then(
       UploadTask(
@@ -123,10 +124,10 @@ class _$UploadTaskCopyWithImpl<$Res> implements $UploadTaskCopyWith<$Res> {
             ? _self.serverPath
             : serverPath // ignore: cast_nullable_to_non_nullable
                   as String,
-        bytes: freezed == bytes
-            ? _self.bytes
-            : bytes // ignore: cast_nullable_to_non_nullable
-                  as Uint8List?,
+        batchId: null == batchId
+            ? _self.batchId
+            : batchId // ignore: cast_nullable_to_non_nullable
+                  as String,
         status: null == status
             ? _self.status
             : status // ignore: cast_nullable_to_non_nullable
@@ -135,10 +136,10 @@ class _$UploadTaskCopyWithImpl<$Res> implements $UploadTaskCopyWith<$Res> {
             ? _self.progress
             : progress // ignore: cast_nullable_to_non_nullable
                   as double,
-        errorMessage: freezed == errorMessage
-            ? _self.errorMessage
-            : errorMessage // ignore: cast_nullable_to_non_nullable
-                  as String?,
+        failure: freezed == failure
+            ? _self.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as UploadFailure?,
       ),
     );
   }
@@ -239,10 +240,10 @@ extension UploadTaskPatterns on UploadTask {
       String id,
       String localPath,
       String serverPath,
-      Uint8List? bytes,
+      String batchId,
       UploadStatus status,
       double progress,
-      String? errorMessage,
+      UploadFailure? failure,
     )?
     $default, {
     required TResult orElse(),
@@ -254,10 +255,10 @@ extension UploadTaskPatterns on UploadTask {
           _that.id,
           _that.localPath,
           _that.serverPath,
-          _that.bytes,
+          _that.batchId,
           _that.status,
           _that.progress,
-          _that.errorMessage,
+          _that.failure,
         );
       case _:
         return orElse();
@@ -283,10 +284,10 @@ extension UploadTaskPatterns on UploadTask {
       String id,
       String localPath,
       String serverPath,
-      Uint8List? bytes,
+      String batchId,
       UploadStatus status,
       double progress,
-      String? errorMessage,
+      UploadFailure? failure,
     )
     $default,
   ) {
@@ -297,10 +298,10 @@ extension UploadTaskPatterns on UploadTask {
           _that.id,
           _that.localPath,
           _that.serverPath,
-          _that.bytes,
+          _that.batchId,
           _that.status,
           _that.progress,
-          _that.errorMessage,
+          _that.failure,
         );
     }
   }
@@ -323,10 +324,10 @@ extension UploadTaskPatterns on UploadTask {
       String id,
       String localPath,
       String serverPath,
-      Uint8List? bytes,
+      String batchId,
       UploadStatus status,
       double progress,
-      String? errorMessage,
+      UploadFailure? failure,
     )?
     $default,
   ) {
@@ -337,10 +338,10 @@ extension UploadTaskPatterns on UploadTask {
           _that.id,
           _that.localPath,
           _that.serverPath,
-          _that.bytes,
+          _that.batchId,
           _that.status,
           _that.progress,
-          _that.errorMessage,
+          _that.failure,
         );
       case _:
         return null;
@@ -355,10 +356,10 @@ class _UploadTask implements UploadTask {
     required this.id,
     required this.localPath,
     required this.serverPath,
-    this.bytes,
+    this.batchId = '',
     this.status = UploadStatus.queued,
     this.progress = 0.0,
-    this.errorMessage,
+    this.failure,
   });
 
   @override
@@ -368,7 +369,8 @@ class _UploadTask implements UploadTask {
   @override
   final String serverPath;
   @override
-  final Uint8List? bytes;
+  @JsonKey()
+  final String batchId;
   @override
   @JsonKey()
   final UploadStatus status;
@@ -376,7 +378,7 @@ class _UploadTask implements UploadTask {
   @JsonKey()
   final double progress;
   @override
-  final String? errorMessage;
+  final UploadFailure? failure;
 
   /// Create a copy of UploadTask
   /// with the given fields replaced by the non-null parameter values.
@@ -396,12 +398,11 @@ class _UploadTask implements UploadTask {
                 other.localPath == localPath) &&
             (identical(other.serverPath, serverPath) ||
                 other.serverPath == serverPath) &&
-            const DeepCollectionEquality().equals(other.bytes, bytes) &&
+            (identical(other.batchId, batchId) || other.batchId == batchId) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.progress, progress) ||
                 other.progress == progress) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.failure, failure) || other.failure == failure));
   }
 
   @override
@@ -411,16 +412,16 @@ class _UploadTask implements UploadTask {
       id,
       localPath,
       serverPath,
-      const DeepCollectionEquality().hash(bytes),
+      batchId,
       status,
       progress,
-      errorMessage,
+      failure,
     );
   }
 
   @override
   String toString() {
-    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, bytes: $bytes, status: $status, progress: $progress, errorMessage: $errorMessage)';
+    return 'UploadTask(id: $id, localPath: $localPath, serverPath: $serverPath, batchId: $batchId, status: $status, progress: $progress, failure: $failure)';
   }
 }
 
@@ -437,10 +438,10 @@ abstract mixin class _$UploadTaskCopyWith<$Res>
     String id,
     String localPath,
     String serverPath,
-    Uint8List? bytes,
+    String batchId,
     UploadStatus status,
     double progress,
-    String? errorMessage,
+    UploadFailure? failure,
   });
 }
 
@@ -459,10 +460,10 @@ class __$UploadTaskCopyWithImpl<$Res> implements _$UploadTaskCopyWith<$Res> {
     Object? id = null,
     Object? localPath = null,
     Object? serverPath = null,
-    Object? bytes = freezed,
+    Object? batchId = null,
     Object? status = null,
     Object? progress = null,
-    Object? errorMessage = freezed,
+    Object? failure = freezed,
   }) {
     return _then(
       _UploadTask(
@@ -478,10 +479,10 @@ class __$UploadTaskCopyWithImpl<$Res> implements _$UploadTaskCopyWith<$Res> {
             ? _self.serverPath
             : serverPath // ignore: cast_nullable_to_non_nullable
                   as String,
-        bytes: freezed == bytes
-            ? _self.bytes
-            : bytes // ignore: cast_nullable_to_non_nullable
-                  as Uint8List?,
+        batchId: null == batchId
+            ? _self.batchId
+            : batchId // ignore: cast_nullable_to_non_nullable
+                  as String,
         status: null == status
             ? _self.status
             : status // ignore: cast_nullable_to_non_nullable
@@ -490,10 +491,10 @@ class __$UploadTaskCopyWithImpl<$Res> implements _$UploadTaskCopyWith<$Res> {
             ? _self.progress
             : progress // ignore: cast_nullable_to_non_nullable
                   as double,
-        errorMessage: freezed == errorMessage
-            ? _self.errorMessage
-            : errorMessage // ignore: cast_nullable_to_non_nullable
-                  as String?,
+        failure: freezed == failure
+            ? _self.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as UploadFailure?,
       ),
     );
   }

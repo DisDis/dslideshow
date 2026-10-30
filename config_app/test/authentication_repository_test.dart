@@ -310,7 +310,7 @@ class _FakeRealtimeService implements RealtimeService {
   Future<void> close() => _disconnects.close();
 
   @override
-  Future<WebSocketResult> send(WebSocketCommand cmd) =>
+  Future<WebSocketResult> send(WebSocketCommand cmd, {Duration? timeout}) =>
       throw UnimplementedError();
 
   @override

@@ -10,266 +10,327 @@ part of 'ota_event.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$OtaEvent {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is OtaEvent);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
+  @override
+  String toString() {
     return 'OtaEvent()';
-}
-
-
+  }
 }
 
 /// @nodoc
-class $OtaEventCopyWith<$Res>  {
-$OtaEventCopyWith(OtaEvent _, $Res Function(OtaEvent) __);
+class $OtaEventCopyWith<$Res> {
+  $OtaEventCopyWith(OtaEvent _, $Res Function(OtaEvent) __);
 }
-
 
 /// Adds pattern-matching-related methods to [OtaEvent].
 extension OtaEventPatterns on OtaEvent {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OtaInitializationEvent value)?  initialization,TResult Function( OtaUpdateInfoEvent value)?  updateInfo,TResult Function( OtaExitEvent value)?  exit,TResult Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case OtaInitializationEvent() when initialization != null:
-return initialization(_that);case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that);case OtaExitEvent() when exit != null:
-return exit(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
-return addTextToTerminal(_that);case _:
-  return orElse();
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OtaInitializationEvent value)? initialization,
+    TResult Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult Function(OtaExitEvent value)? exit,
+    TResult Function(OtaReturnAfterFailureEvent value)? returnAfterFailure,
+    TResult Function(OtaAddTextToTerminalEvent value)? addTextToTerminal,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent() when initialization != null:
+        return initialization(_that);
+      case OtaUpdateInfoEvent() when updateInfo != null:
+        return updateInfo(_that);
+      case OtaExitEvent() when exit != null:
+        return exit(_that);
+      case OtaReturnAfterFailureEvent() when returnAfterFailure != null:
+        return returnAfterFailure(_that);
+      case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+        return addTextToTerminal(_that);
+      case _:
+        return orElse();
+    }
+  }
 
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OtaInitializationEvent value)  initialization,required TResult Function( OtaUpdateInfoEvent value)  updateInfo,required TResult Function( OtaExitEvent value)  exit,required TResult Function( OtaAddTextToTerminalEvent value)  addTextToTerminal,}){
-final _that = this;
-switch (_that) {
-case OtaInitializationEvent():
-return initialization(_that);case OtaUpdateInfoEvent():
-return updateInfo(_that);case OtaExitEvent():
-return exit(_that);case OtaAddTextToTerminalEvent():
-return addTextToTerminal(_that);case _:
-  throw StateError('Unexpected subclass');
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OtaInitializationEvent value) initialization,
+    required TResult Function(OtaUpdateInfoEvent value) updateInfo,
+    required TResult Function(OtaExitEvent value) exit,
+    required TResult Function(OtaReturnAfterFailureEvent value)
+    returnAfterFailure,
+    required TResult Function(OtaAddTextToTerminalEvent value)
+    addTextToTerminal,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent():
+        return initialization(_that);
+      case OtaUpdateInfoEvent():
+        return updateInfo(_that);
+      case OtaExitEvent():
+        return exit(_that);
+      case OtaReturnAfterFailureEvent():
+        return returnAfterFailure(_that);
+      case OtaAddTextToTerminalEvent():
+        return addTextToTerminal(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
 
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OtaInitializationEvent value)?  initialization,TResult? Function( OtaUpdateInfoEvent value)?  updateInfo,TResult? Function( OtaExitEvent value)?  exit,TResult? Function( OtaAddTextToTerminalEvent value)?  addTextToTerminal,}){
-final _that = this;
-switch (_that) {
-case OtaInitializationEvent() when initialization != null:
-return initialization(_that);case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that);case OtaExitEvent() when exit != null:
-return exit(_that);case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
-return addTextToTerminal(_that);case _:
-  return null;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OtaInitializationEvent value)? initialization,
+    TResult? Function(OtaUpdateInfoEvent value)? updateInfo,
+    TResult? Function(OtaExitEvent value)? exit,
+    TResult? Function(OtaReturnAfterFailureEvent value)? returnAfterFailure,
+    TResult? Function(OtaAddTextToTerminalEvent value)? addTextToTerminal,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent() when initialization != null:
+        return initialization(_that);
+      case OtaUpdateInfoEvent() when updateInfo != null:
+        return updateInfo(_that);
+      case OtaExitEvent() when exit != null:
+        return exit(_that);
+      case OtaReturnAfterFailureEvent() when returnAfterFailure != null:
+        return returnAfterFailure(_that);
+      case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+        return addTextToTerminal(_that);
+      case _:
+        return null;
+    }
+  }
 
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialization,TResult Function( OTAInfo info)?  updateInfo,TResult Function()?  exit,TResult Function( String message)?  addTextToTerminal,required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case OtaInitializationEvent() when initialization != null:
-return initialization();case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that.info);case OtaExitEvent() when exit != null:
-return exit();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
-return addTextToTerminal(_that.message);case _:
-  return orElse();
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initialization,
+    TResult Function(OTAInfo info)? updateInfo,
+    TResult Function()? exit,
+    TResult Function(int generation)? returnAfterFailure,
+    TResult Function(String message)? addTextToTerminal,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent() when initialization != null:
+        return initialization();
+      case OtaUpdateInfoEvent() when updateInfo != null:
+        return updateInfo(_that.info);
+      case OtaExitEvent() when exit != null:
+        return exit();
+      case OtaReturnAfterFailureEvent() when returnAfterFailure != null:
+        return returnAfterFailure(_that.generation);
+      case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+        return addTextToTerminal(_that.message);
+      case _:
+        return orElse();
+    }
+  }
 
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialization,required TResult Function( OTAInfo info)  updateInfo,required TResult Function()  exit,required TResult Function( String message)  addTextToTerminal,}) {final _that = this;
-switch (_that) {
-case OtaInitializationEvent():
-return initialization();case OtaUpdateInfoEvent():
-return updateInfo(_that.info);case OtaExitEvent():
-return exit();case OtaAddTextToTerminalEvent():
-return addTextToTerminal(_that.message);case _:
-  throw StateError('Unexpected subclass');
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initialization,
+    required TResult Function(OTAInfo info) updateInfo,
+    required TResult Function() exit,
+    required TResult Function(int generation) returnAfterFailure,
+    required TResult Function(String message) addTextToTerminal,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent():
+        return initialization();
+      case OtaUpdateInfoEvent():
+        return updateInfo(_that.info);
+      case OtaExitEvent():
+        return exit();
+      case OtaReturnAfterFailureEvent():
+        return returnAfterFailure(_that.generation);
+      case OtaAddTextToTerminalEvent():
+        return addTextToTerminal(_that.message);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
 
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialization,TResult? Function( OTAInfo info)?  updateInfo,TResult? Function()?  exit,TResult? Function( String message)?  addTextToTerminal,}) {final _that = this;
-switch (_that) {
-case OtaInitializationEvent() when initialization != null:
-return initialization();case OtaUpdateInfoEvent() when updateInfo != null:
-return updateInfo(_that.info);case OtaExitEvent() when exit != null:
-return exit();case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
-return addTextToTerminal(_that.message);case _:
-  return null;
-
-}
-}
-
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initialization,
+    TResult? Function(OTAInfo info)? updateInfo,
+    TResult? Function()? exit,
+    TResult? Function(int generation)? returnAfterFailure,
+    TResult? Function(String message)? addTextToTerminal,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case OtaInitializationEvent() when initialization != null:
+        return initialization();
+      case OtaUpdateInfoEvent() when updateInfo != null:
+        return updateInfo(_that.info);
+      case OtaExitEvent() when exit != null:
+        return exit();
+      case OtaReturnAfterFailureEvent() when returnAfterFailure != null:
+        return returnAfterFailure(_that.generation);
+      case OtaAddTextToTerminalEvent() when addTextToTerminal != null:
+        return addTextToTerminal(_that.message);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
-
 
 class OtaInitializationEvent implements OtaEvent {
   const OtaInitializationEvent();
-  
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is OtaInitializationEvent);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaInitializationEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
+  @override
+  String toString() {
     return 'OtaEvent.initialization()';
+  }
 }
-
-
-}
-
-
-
 
 /// @nodoc
-
 
 class OtaUpdateInfoEvent implements OtaEvent {
   const OtaUpdateInfoEvent(this.info);
-  
 
- final  OTAInfo info;
+  final OTAInfo info;
 
-/// Create a copy of OtaEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$OtaUpdateInfoEventCopyWith<OtaUpdateInfoEvent> get copyWith => _$OtaUpdateInfoEventCopyWithImpl<OtaUpdateInfoEvent>(this, _$identity);
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OtaUpdateInfoEventCopyWith<OtaUpdateInfoEvent> get copyWith =>
+      _$OtaUpdateInfoEventCopyWithImpl<OtaUpdateInfoEvent>(this, _$identity);
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OtaUpdateInfoEvent &&
+            (identical(other.info, info) || other.info == info));
+  }
 
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, info);
+  }
 
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaUpdateInfoEvent&&(identical(other.info, info) || other.info == info));
-}
-
-
-@override
-int get hashCode {
-    return Object.hash(runtimeType,info);
-}
-
-@override
-String toString() {
+  @override
+  String toString() {
     return 'OtaEvent.updateInfo(info: $info)';
-}
-
-
+  }
 }
 
 /// @nodoc
-abstract mixin class $OtaUpdateInfoEventCopyWith<$Res> implements $OtaEventCopyWith<$Res> {
-  factory $OtaUpdateInfoEventCopyWith(OtaUpdateInfoEvent value, $Res Function(OtaUpdateInfoEvent) _then) = _$OtaUpdateInfoEventCopyWithImpl;
-@useResult
-$Res call({
- OTAInfo info
-});
+abstract mixin class $OtaUpdateInfoEventCopyWith<$Res>
+    implements $OtaEventCopyWith<$Res> {
+  factory $OtaUpdateInfoEventCopyWith(
+    OtaUpdateInfoEvent value,
+    $Res Function(OtaUpdateInfoEvent) _then,
+  ) = _$OtaUpdateInfoEventCopyWithImpl;
+  @useResult
+  $Res call({OTAInfo info});
 
-
-$OTAInfoCopyWith<$Res> get info;
-
+  $OTAInfoCopyWith<$Res> get info;
 }
+
 /// @nodoc
 class _$OtaUpdateInfoEventCopyWithImpl<$Res>
     implements $OtaUpdateInfoEventCopyWith<$Res> {
@@ -278,107 +339,170 @@ class _$OtaUpdateInfoEventCopyWithImpl<$Res>
   final OtaUpdateInfoEvent _self;
   final $Res Function(OtaUpdateInfoEvent) _then;
 
-/// Create a copy of OtaEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? info = null,}) {
-  return _then(OtaUpdateInfoEvent(
-null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
-as OTAInfo,
-  ));
-}
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? info = null}) {
+    return _then(
+      OtaUpdateInfoEvent(
+        null == info
+            ? _self.info
+            : info // ignore: cast_nullable_to_non_nullable
+                  as OTAInfo,
+      ),
+    );
+  }
 
-/// Create a copy of OtaEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$OTAInfoCopyWith<$Res> get info {
-  
-  return $OTAInfoCopyWith<$Res>(_self.info, (value) {
-    return _then(_self.copyWith(info: value));
-  });
-}
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OTAInfoCopyWith<$Res> get info {
+    return $OTAInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
 }
 
 /// @nodoc
-
 
 class OtaExitEvent implements OtaEvent {
   const OtaExitEvent();
-  
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is OtaExitEvent);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaExitEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
+  @override
+  String toString() {
     return 'OtaEvent.exit()';
+  }
 }
-
-
-}
-
-
-
 
 /// @nodoc
 
+class OtaReturnAfterFailureEvent implements OtaEvent {
+  const OtaReturnAfterFailureEvent(this.generation);
+
+  final int generation;
+
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OtaReturnAfterFailureEventCopyWith<OtaReturnAfterFailureEvent>
+  get copyWith =>
+      _$OtaReturnAfterFailureEventCopyWithImpl<OtaReturnAfterFailureEvent>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OtaReturnAfterFailureEvent &&
+            (identical(other.generation, generation) ||
+                other.generation == generation));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, generation);
+  }
+
+  @override
+  String toString() {
+    return 'OtaEvent.returnAfterFailure(generation: $generation)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $OtaReturnAfterFailureEventCopyWith<$Res>
+    implements $OtaEventCopyWith<$Res> {
+  factory $OtaReturnAfterFailureEventCopyWith(
+    OtaReturnAfterFailureEvent value,
+    $Res Function(OtaReturnAfterFailureEvent) _then,
+  ) = _$OtaReturnAfterFailureEventCopyWithImpl;
+  @useResult
+  $Res call({int generation});
+}
+
+/// @nodoc
+class _$OtaReturnAfterFailureEventCopyWithImpl<$Res>
+    implements $OtaReturnAfterFailureEventCopyWith<$Res> {
+  _$OtaReturnAfterFailureEventCopyWithImpl(this._self, this._then);
+
+  final OtaReturnAfterFailureEvent _self;
+  final $Res Function(OtaReturnAfterFailureEvent) _then;
+
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? generation = null}) {
+    return _then(
+      OtaReturnAfterFailureEvent(
+        null == generation
+            ? _self.generation
+            : generation // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
 
 class OtaAddTextToTerminalEvent implements OtaEvent {
   const OtaAddTextToTerminalEvent(this.message);
-  
 
- final  String message;
+  final String message;
 
-/// Create a copy of OtaEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$OtaAddTextToTerminalEventCopyWith<OtaAddTextToTerminalEvent> get copyWith => _$OtaAddTextToTerminalEventCopyWithImpl<OtaAddTextToTerminalEvent>(this, _$identity);
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $OtaAddTextToTerminalEventCopyWith<OtaAddTextToTerminalEvent> get copyWith =>
+      _$OtaAddTextToTerminalEventCopyWithImpl<OtaAddTextToTerminalEvent>(
+        this,
+        _$identity,
+      );
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is OtaAddTextToTerminalEvent &&
+            (identical(other.message, message) || other.message == message));
+  }
 
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, message);
+  }
 
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OtaAddTextToTerminalEvent&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode {
-    return Object.hash(runtimeType,message);
-}
-
-@override
-String toString() {
+  @override
+  String toString() {
     return 'OtaEvent.addTextToTerminal(message: $message)';
-}
-
-
+  }
 }
 
 /// @nodoc
-abstract mixin class $OtaAddTextToTerminalEventCopyWith<$Res> implements $OtaEventCopyWith<$Res> {
-  factory $OtaAddTextToTerminalEventCopyWith(OtaAddTextToTerminalEvent value, $Res Function(OtaAddTextToTerminalEvent) _then) = _$OtaAddTextToTerminalEventCopyWithImpl;
-@useResult
-$Res call({
- String message
-});
-
-
-
-
+abstract mixin class $OtaAddTextToTerminalEventCopyWith<$Res>
+    implements $OtaEventCopyWith<$Res> {
+  factory $OtaAddTextToTerminalEventCopyWith(
+    OtaAddTextToTerminalEvent value,
+    $Res Function(OtaAddTextToTerminalEvent) _then,
+  ) = _$OtaAddTextToTerminalEventCopyWithImpl;
+  @useResult
+  $Res call({String message});
 }
+
 /// @nodoc
 class _$OtaAddTextToTerminalEventCopyWithImpl<$Res>
     implements $OtaAddTextToTerminalEventCopyWith<$Res> {
@@ -387,16 +511,17 @@ class _$OtaAddTextToTerminalEventCopyWithImpl<$Res>
   final OtaAddTextToTerminalEvent _self;
   final $Res Function(OtaAddTextToTerminalEvent) _then;
 
-/// Create a copy of OtaEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(OtaAddTextToTerminalEvent(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
+  /// Create a copy of OtaEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? message = null}) {
+    return _then(
+      OtaAddTextToTerminalEvent(
+        null == message
+            ? _self.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
 }
-
-
-}
-
-// dart format on

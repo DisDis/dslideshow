@@ -58,7 +58,6 @@ class HardwareService implements RpcService {
   late final DeviceEventBindings _eventBindings;
   late final FrameStateReader _frameStateReader;
   bool _disposed = false;
-  Future<void>? _disposeFuture;
   Future<void> _screenNotifications = Future.value();
   Completer<void>? _notificationWait;
   static const _frontendTimeout = Duration(seconds: 3);
@@ -90,19 +89,13 @@ class HardwareService implements RpcService {
         _notificationWait = completion;
         unawaited(
           _frontendService
-              .send(
-                ScreenTurnCommand(
-                  enabled: enabled,
-                  id: RpcCommand.generateId(),
-                ),
-              )
+              .send(ScreenTurnCommand(enabled: enabled, id: RpcCommand.generateId()))
               .then<void>(
                 (_) {
                   if (!completion.isCompleted) completion.complete();
                 },
                 onError: (Object error, StackTrace stack) {
-                  if (!completion.isCompleted)
-                    completion.completeError(error, stack);
+                  if (!completion.isCompleted) completion.completeError(error, stack);
                 },
               ),
         );
@@ -115,9 +108,7 @@ class HardwareService implements RpcService {
     });
   }
 
-  Future<void> dispose() => _disposeFuture ??= _dispose();
-
-  Future<void> _dispose() async {
+  Future<void> dispose() async {
     _disposed = true;
     for (final wait in _frontendWaits.toList()) {
       if (!wait.isCompleted) {
@@ -125,40 +116,26 @@ class HardwareService implements RpcService {
       }
     }
     final notification = _notificationWait;
-    if (notification != null && !notification.isCompleted)
-      notification.complete();
+    if (notification != null && !notification.isCompleted) notification.complete();
     await _eventBindings.dispose();
     await _applicationStateService.dispose();
     await _screenService.dispose();
     await _gpioService.release();
-    await Future.wait([_storage.release(), _systemInfoService.release()]);
+    await Future.wait([_storage.release(), _systemInfoService.release(), _wifiService.close(), _mqttService.close()]);
     await _screenNotifications;
   }
 
   void testEcho(String text) async {
-    final result = await _frontendService.send(
-      new EchoCommand(text: text, id: RpcCommand.generateId()),
-    );
+    final result = await _frontendService.send(new EchoCommand(text: text, id: RpcCommand.generateId()));
     _log.info("Message: $result");
   }
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
-    if (_disposed)
-      return _generateErrorResult(
-        StateError('Hardware service disposed'),
-        command,
-      );
+    if (_disposed) return _generateErrorResult(StateError('Hardware service disposed'), command);
     //    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
-    Stopwatch work = new Stopwatch()
-      ..reset()
-      ..start();
     return _executeCommand(command).whenComplete(() {
-      work.stop();
-      _log.fine(
-        () =>
-            "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds}ms",
-      );
+      _log.fine(() => "Command: [${command.hashCode}]${command.id}:${command.type}");
     });
   }
 
@@ -167,13 +144,9 @@ class HardwareService implements RpcService {
       case AreYouReadyCommand.TYPE:
         return _executeAreYouReadyCommand(command as AreYouReadyCommand);
       case WebServerControlCommand.TYPE:
-        return _executeWebServerControlCommand(
-          command as WebServerControlCommand,
-        );
+        return _executeWebServerControlCommand(command as WebServerControlCommand);
       case UpdateFrontendStateCommand.TYPE:
-        return _executeUpdateFrontendStateCommand(
-          command as UpdateFrontendStateCommand,
-        );
+        return _executeUpdateFrontendStateCommand(command as UpdateFrontendStateCommand);
       case PowerOffCommand.TYPE:
         return _executePowerOffCommand(command as PowerOffCommand);
       case RestartAppCommand.TYPE:
@@ -189,17 +162,13 @@ class HardwareService implements RpcService {
       case GetFrameStateCommand.TYPE:
         return _executeGetFrameStateCommand(command as GetFrameStateCommand);
       case SetFrameControlCommand.TYPE:
-        return _executeSetFrameControlCommand(
-          command as SetFrameControlCommand,
-        );
+        return _executeSetFrameControlCommand(command as SetFrameControlCommand);
       case GetMediaItemCommand.TYPE:
         return _executeGetMediaItemCommand(command as GetMediaItemCommand);
       case StorageNextCommand.TYPE:
         return _executeStorageNextCommand(command as StorageNextCommand);
       case EmulatePushButtonCommand.TYPE:
-        return _executeEmulatePushButtonCommand(
-          command as EmulatePushButtonCommand,
-        );
+        return _executeEmulatePushButtonCommand(command as EmulatePushButtonCommand);
       case WiFiRescanCommand.TYPE:
         return _executeWiFiRescanCommand(command as WiFiRescanCommand);
       case WiFiListCommand.TYPE:
@@ -209,23 +178,15 @@ class HardwareService implements RpcService {
       case WiFiRemoveCommand.TYPE:
         return _executeWiFiRemoveCommand(command as WiFiRemoveCommand);
       case WiFiGetConnectionsCommand.TYPE:
-        return _executeWiFiGetConnectionsCommand(
-          command as WiFiGetConnectionsCommand,
-        );
+        return _executeWiFiGetConnectionsCommand(command as WiFiGetConnectionsCommand);
       case EchoCommand.TYPE:
         return _executeEchoCommand(command as EchoCommand);
       default:
-        return _generateErrorResult(
-          new Exception("Unknown command: ${command.type}"),
-          command,
-        );
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  Future<RpcErrorResult> _generateErrorResult(
-    Object e,
-    RpcCommand command,
-  ) async {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -233,25 +194,16 @@ class HardwareService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} Service ${new DateTime.now()}",
-    );
+    return EchoCommandResult(id: command.id, resultText: "${command.text} Service ${new DateTime.now()}");
   }
 
-  Future<RpcResult> _executeStorageNextCommand(
-    StorageNextCommand command,
-  ) async {
+  Future<RpcResult> _executeStorageNextCommand(StorageNextCommand command) async {
     await _storage.next();
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executeGetMediaItemCommand(
-    GetMediaItemCommand command,
-  ) async {
-    final item = await (command.isCurrent
-        ? _storage.getCurrent()
-        : _storage.getNext());
+  Future<RpcResult> _executeGetMediaItemCommand(GetMediaItemCommand command) async {
+    final item = await (command.isCurrent ? _storage.getCurrent() : _storage.getNext());
     return GetMediaItemCommandResult(
       id: command.id,
       mediaId: item != null ? item.id : null,
@@ -259,9 +211,7 @@ class HardwareService implements RpcService {
     );
   }
 
-  Future<RpcResult> _executeGetSystemInfoCommand(
-    GetSystemInfoCommand command,
-  ) async {
+  Future<RpcResult> _executeGetSystemInfoCommand(GetSystemInfoCommand command) async {
     try {
       final info = await _systemInfoService.getFullInfo();
       return GetSystemInfoCommandResult(id: command.id, systemInfo: info);
@@ -297,23 +247,16 @@ class HardwareService implements RpcService {
     if (_disposed) throw StateError('Hardware service disposed');
   }
 
-  Future<RpcResult> _executeGetFrameStateCommand(
-    GetFrameStateCommand command,
-  ) async {
+  Future<RpcResult> _executeGetFrameStateCommand(GetFrameStateCommand command) async {
     try {
-      return GetFrameStateResult(
-        id: command.id,
-        state: await _frameStateReader.read(),
-      );
+      return GetFrameStateResult(id: command.id, state: await _frameStateReader.read());
     } catch (error, stack) {
       _log.warning('Could not collect frame state', error, stack);
       return _generateErrorResult(error, command);
     }
   }
 
-  Future<RpcResult> _executeSetFrameControlCommand(
-    SetFrameControlCommand command,
-  ) async {
+  Future<RpcResult> _executeSetFrameControlCommand(SetFrameControlCommand command) async {
     try {
       final result = await _waitFrontend(_frontendService.send(command));
       if (result is RpcErrorResult) {
@@ -325,10 +268,7 @@ class HardwareService implements RpcService {
       // A poll started before the acknowledgement may describe the old intent.
       // Read again after acceptance instead of returning that in-flight sample.
       _frameStateReader.invalidateFrontendRequest();
-      return GetFrameStateResult(
-        id: command.id,
-        state: await _frameStateReader.read(),
-      );
+      return GetFrameStateResult(id: command.id, state: await _frameStateReader.read());
     } catch (error, stack) {
       _log.warning('Frame control failed', error, stack);
       return _generateErrorResult(error, command);
@@ -347,13 +287,7 @@ class HardwareService implements RpcService {
   }
 
   Future<RpcResult> _executeAction(SlideshowAction action, bool value) async {
-    return _frontendService.send(
-      ExecuteSSActionCommand(
-        action: action,
-        value: value,
-        id: RpcCommand.generateId(),
-      ),
-    );
+    return _frontendService.send(ExecuteSSActionCommand(action: action, value: value, id: RpcCommand.generateId()));
   }
 
   Future<RpcResult> _executeLEDControlCommand(LEDControlCommand command) async {
@@ -395,15 +329,11 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executeWebServerControlCommand(
-    WebServerControlCommand command,
-  ) async {
+  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
     return _webServer.send(command);
   }
 
-  Future<RpcResult> _executeAreYouReadyCommand(
-    AreYouReadyCommand command,
-  ) async {
+  Future<RpcResult> _executeAreYouReadyCommand(AreYouReadyCommand command) async {
     if (_initFutures.isNotEmpty) {
       await Future.wait<dynamic>(_initFutures);
       _initFutures.clear();
@@ -411,52 +341,55 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executeEmulatePushButtonCommand(
-    EmulatePushButtonCommand command,
-  ) async {
+  Future<RpcResult> _executeEmulatePushButtonCommand(EmulatePushButtonCommand command) async {
     //Emulate
     _sendButtonEvent(
-      ButtonEvent(
-        button: command.button,
-        event: ButtonEventType.released,
-        durationMs: command.durationMs,
-      ),
+      ButtonEvent(button: command.button, event: ButtonEventType.released, durationMs: command.durationMs),
     );
     return EmptyResult.respond(command);
   }
 
-  Future<WiFiListResult> _executeWiFiListCommand(
-    WiFiListCommand command,
-  ) async {
-    var result = await _wifiService.list();
-    return new WiFiListResult(id: command.id, networks: result);
-  }
+  Future<RpcResult> _executeWiFiListCommand(WiFiListCommand command) =>
+      _wifiReply(command, () async => WiFiListResult(id: command.id, networks: await _wifiService.list()));
 
-  Future<RpcResult> _executeWiFiRescanCommand(WiFiRescanCommand command) async {
-    _wifiService.rescan();
+  Future<RpcResult> _executeWiFiRescanCommand(WiFiRescanCommand command) => _wifiReply(command, () async {
+    await _wifiService.rescan();
     return EmptyResult.respond(command);
-  }
+  });
 
-  Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {
-    _wifiService.addWiFiConnection(command.name, command.SSID, command.psk);
+  Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) => _wifiReply(command, () async {
+    await _wifiService.addWiFiConnection(command.name, command.SSID, command.psk);
     return EmptyResult.respond(command);
-  }
+  });
 
-  Future<RpcResult> _executeWiFiRemoveCommand(WiFiRemoveCommand command) async {
-    _wifiService.deleteConnection(command.connectionId);
+  Future<RpcResult> _executeWiFiRemoveCommand(WiFiRemoveCommand command) => _wifiReply(command, () async {
+    await _wifiService.deleteConnection(command.connectionId);
     return EmptyResult.respond(command);
+  });
+
+  Future<RpcResult> _executeWiFiGetConnectionsCommand(WiFiGetConnectionsCommand command) => _wifiReply(
+    command,
+    () async => WiFiGetConnectionsResult(id: command.id, networks: await _wifiService.getConnections()),
+  );
+
+  Future<RpcResult> _wifiReply(RpcCommand command, Future<RpcResult> Function() operation) async {
+    _log.info('event=wifiStarted rpcId=${command.id} action=${command.type}');
+    try {
+      final result = await operation();
+      _ensureActive();
+      _log.info('event=wifiCompleted rpcId=${command.id} action=${command.type}');
+      return result;
+    } catch (error) {
+      _log.log(
+        _disposed ? Level.INFO : Level.WARNING,
+        'event=${_disposed ? 'wifiCancelled' : 'wifiFailed'} rpcId=${command.id} '
+        'action=${command.type} type=${error.runtimeType}',
+      );
+      return _generateErrorResult(error, command);
+    }
   }
 
-  Future<RpcResult> _executeWiFiGetConnectionsCommand(
-    WiFiGetConnectionsCommand command,
-  ) async {
-    var result = await _wifiService.getConnections();
-    return WiFiGetConnectionsResult(id: command.id, networks: result);
-  }
-
-  Future<RpcResult> _executeUpdateFrontendStateCommand(
-    UpdateFrontendStateCommand command,
-  ) async {
+  Future<RpcResult> _executeUpdateFrontendStateCommand(UpdateFrontendStateCommand command) async {
     var state = _applicationStateService.state;
 
     if (command.isMenu != null) {

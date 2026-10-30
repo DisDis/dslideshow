@@ -9,152 +9,173 @@ import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
+enum _WifiAction { load, add, remove, rescan }
+
+class _WifiWaitCancelled implements Exception {
+  const _WifiWaitCancelled();
+}
+
 class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
   static final _log = Logger('WifiTabBloc');
   final RealtimeService client;
-  WifiTabBloc({required WifiTabState initialState, required this.client})
-    : super(initialState) {
-    // on<WifiTabEvent>((WifiTabEvent event, emit) {
-    //   return emit.forEach<WifiTabState>(
-    //     event.applyAsync(currentState: state, bloc: this),
-    //     onData: (state) => state,
-    //     onError: (error, stackTrace) {
-    //       developer.log('$error', name: 'WifiTabBloc', error: error, stackTrace: stackTrace);
-    //       return ErrorWifiTabState(error.toString());
-    //     },
-    //   );
-    // });
-    on<LoadWifiTabEvent>(_onLoadWifi);
+  final Duration requestTimeout;
+  final _waiters = <void Function()>{};
+  bool _pending = false;
+  bool _closing = false;
+  int _generation = 0;
+  int? _acknowledgedGeneration;
 
-    on<AddWifiTabEvent>((AddWifiTabEvent event, emit) async {
-      emit(const UnWifiTabState());
-      try {
-        await client.send(
-          WSSendRpcCommand.byCommand(
-            WiFiAddCommand(
-              id: RpcCommand.generateId(),
-              name: event.name,
-              SSID: event.SSID,
-              psk: event.psk,
-            ),
-          ),
+  WifiTabBloc({
+    required WifiTabState initialState,
+    required this.client,
+    this.requestTimeout = const Duration(seconds: 65),
+  }) : super(initialState) {
+    if (requestTimeout <= Duration.zero) {
+      throw ArgumentError.value(requestTimeout, 'requestTimeout', 'Must be positive');
+    }
+    on<LoadWifiTabEvent>((event, emit) => _perform(_WifiAction.load, emit, _updateData));
+    on<AddWifiTabEvent>(
+      (event, emit) => _perform(_WifiAction.add, emit, (generation, emit) async {
+        await _send<EmptyResult>(
+          WiFiAddCommand(id: RpcCommand.generateId(), name: event.name, SSID: event.SSID, psk: event.psk),
         );
-        await _updateData(emit);
-      } catch (e, st) {
-        _log.severe(
-          'Adding Wi-Fi connection failed (${e.runtimeType})',
-          null,
-          st,
-        );
-        emit(ErrorWifiTabState(e.toString()));
-      }
-    });
-
-    on<RemoveWifiTabEvent>((RemoveWifiTabEvent event, emit) async {
-      emit(const UnWifiTabState());
-      try {
-        await client.send(
-          WSSendRpcCommand.byCommand(
-            WiFiRemoveCommand(
-              id: RpcCommand.generateId(),
-              connectionId: event.connectionId,
-            ),
-          ),
-        );
-        await _updateData(emit);
-      } catch (e, st) {
-        _log.severe(
-          'Removing Wi-Fi connection failed (${e.runtimeType})',
-          null,
-          st,
-        );
-        emit(ErrorWifiTabState(e.toString()));
-      }
-    });
-
-    on<EnableWifiTabEvent>((EnableWifiTabEvent event, emit) async {
-      emit(const UnWifiTabState());
-      // await _client.send(WSSendRpcCommand((b) => b.command = WiFiEnableCommand((b)=>b..wifiId=event.wifiId..value=event.value)));
-      try {
-        await _updateData(emit);
-      } catch (e, st) {
-        _log.severe(
-          'Loading Wi-Fi connections failed (${e.runtimeType})',
-          null,
-          st,
-        );
-        emit(ErrorWifiTabState(e.toString()));
-      }
-    });
-    on<RescanWifiTabEvent>(_rescan);
+        _acknowledged(generation, _WifiAction.add);
+        if (_isCurrent(generation, emit)) await _updateData(generation, emit);
+      }),
+    );
+    on<RemoveWifiTabEvent>(
+      (event, emit) => _perform(_WifiAction.remove, emit, (generation, emit) async {
+        await _send<EmptyResult>(WiFiRemoveCommand(id: RpcCommand.generateId(), connectionId: event.connectionId));
+        _acknowledged(generation, _WifiAction.remove);
+        if (_isCurrent(generation, emit)) await _updateData(generation, emit);
+      }),
+    );
+    // The existing enable action only refreshes the data; no enable RPC exists.
+    on<EnableWifiTabEvent>((event, emit) => _perform(_WifiAction.load, emit, _updateData));
+    on<RescanWifiTabEvent>(
+      (event, emit) => _perform(_WifiAction.rescan, emit, (generation, emit) async {
+        await _send<EmptyResult>(WiFiRescanCommand(id: RpcCommand.generateId()));
+        _acknowledged(generation, _WifiAction.rescan);
+        if (_isCurrent(generation, emit)) await _updateData(generation, emit);
+      }),
+    );
   }
 
-  Future<void> _rescan(
-    RescanWifiTabEvent event,
+  Future<void> _perform(
+    _WifiAction action,
     Emitter<WifiTabState> emit,
+    Future<void> Function(int, Emitter<WifiTabState>) operation,
   ) async {
+    if (_closing || _pending) return;
+    _pending = true;
+    final generation = ++_generation;
+    _log.info('event=started action=${action.name}');
+    emit(const UnWifiTabState());
     try {
-      await client.send(
-        WSSendRpcCommand.byCommand(
-          WiFiRescanCommand(id: RpcCommand.generateId()),
-        ),
+      await operation(generation, emit);
+      if (_isCurrent(generation, emit)) {
+        _log.info('event=completed action=${action.name}');
+      }
+    } catch (error) {
+      if (error is _WifiWaitCancelled || !_isCurrent(generation, emit)) {
+        _log.info('event=cancelled action=${action.name}');
+        return;
+      }
+      final kind = _acknowledgedGeneration == generation
+          ? WifiFailureKind.refresh
+          : error is RpcErrorResultException
+          ? WifiFailureKind.rejected
+          : WifiFailureKind.unknown;
+      final event = switch (kind) {
+        WifiFailureKind.rejected => 'failed',
+        WifiFailureKind.unknown => 'outcomeUnknown',
+        WifiFailureKind.refresh => 'refreshFailed',
+      };
+      _log.warning(
+        'event=$event '
+        'action=${kind == WifiFailureKind.refresh ? _WifiAction.load.name : action.name} '
+        '${kind == WifiFailureKind.refresh ? 'sourceAction=${action.name} ' : ''}'
+        'type=${error.runtimeType}',
       );
-    } catch (e, st) {
-      _log.severe(
-        'Scanning Wi-Fi networks failed (${e.runtimeType})',
-        null,
-        st,
-      );
-      emit(ErrorWifiTabState(e.toString()));
+      // Only a confirmed backend rejection has a diagnostic message. Unknown
+      // transport outcomes and refresh failures use localized view hints.
+      emit(ErrorWifiTabState(kind == WifiFailureKind.rejected ? error.toString() : '', kind: kind));
+    } finally {
+      _pending = false;
     }
   }
 
-  Future<void> _updateData(
-    Emitter<WifiTabState> emit, [
-    minDuration = const Duration(milliseconds: 0),
-  ]) async {
-    final waitF = Future.delayed(minDuration);
-    final results = await Future.wait([
-      client.send(
-        WSSendRpcCommand.byCommand(
-          WiFiListCommand(id: RpcCommand.generateId()),
-        ),
-      ),
-      client.send(
-        WSSendRpcCommand.byCommand(
-          WiFiGetConnectionsCommand(id: RpcCommand.generateId()),
-        ),
-      ),
-    ]);
-    final scanResult = serializers.deserialize(
-      (results[0] as WSRpcResult).resultData,
-    ) as WiFiListResult;
-    final storedResult = serializers.deserialize(
-      (results[1] as WSRpcResult).resultData,
-    ) as WiFiGetConnectionsResult;
-    final availableNetworks = scanResult.networks.toList(growable: false);
+  void _acknowledged(int generation, _WifiAction action) {
+    if (_closing || generation != _generation) return;
+    _acknowledgedGeneration = generation;
+    _log.info('event=acknowledged action=${action.name}');
+  }
 
-    final connections = storedResult.networks.toList(growable: false);
-    await waitF;
+  Future<T> _send<T extends RpcResult>(RpcCommand command) async {
+    if (_closing) throw const _WifiWaitCancelled();
+    final envelope = WSSendRpcCommand.byCommand(command);
+    final response = await _wait(client.send(envelope, timeout: requestTimeout));
+    if (response is! WSRpcResult) {
+      throw StateError('Unexpected Wi-Fi RPC envelope');
+    }
+    final result = serializers.deserialize(response.resultData);
+    if (result is RpcErrorResult) throw RpcErrorResultException(result);
+    if (result is! T) throw StateError('Unexpected Wi-Fi RPC result');
+    return result;
+  }
+
+  Future<void> _updateData(int generation, Emitter<WifiTabState> emit) async {
+    // Observe both operations immediately, including the second error if the
+    // first has already failed. No successful refresh precedes mutation ack.
+    final results = await Future.wait<RpcResult>([
+      _send<WiFiListResult>(WiFiListCommand(id: RpcCommand.generateId())),
+      _send<WiFiGetConnectionsResult>(WiFiGetConnectionsCommand(id: RpcCommand.generateId())),
+    ]);
+    if (!_isCurrent(generation, emit)) return;
     emit(
       InWifiTabState(
-        availableNetworks: availableNetworks,
-        connections: connections,
+        availableNetworks: (results[0] as WiFiListResult).networks,
+        connections: (results[1] as WiFiGetConnectionsResult).networks,
       ),
     );
   }
 
-  Future _onLoadWifi(WifiTabEvent event, emit) async {
-    emit(const UnWifiTabState());
-    try {
-      await _updateData(emit, Duration(milliseconds: 500));
-    } catch (e, st) {
-      _log.severe(
-        'Loading Wi-Fi connections failed (${e.runtimeType})',
-        null,
-        st,
-      );
-      emit(ErrorWifiTabState(e.toString()));
+  bool _isCurrent(int generation, Emitter<WifiTabState> emit) => !_closing && !emit.isDone && generation == _generation;
+
+  Future<T> _wait<T>(Future<T> operation) {
+    final result = Completer<T>();
+    void cancelled() {
+      if (!result.isCompleted) result.completeError(const _WifiWaitCancelled());
     }
+
+    if (_closing) {
+      cancelled();
+    } else {
+      _waiters.add(cancelled);
+    }
+    unawaited(
+      operation.then<void>(
+        (value) {
+          _waiters.remove(cancelled);
+          if (!result.isCompleted) result.complete(value);
+        },
+        onError: (Object error, StackTrace stack) {
+          _waiters.remove(cancelled);
+          if (!result.isCompleted) result.completeError(error, stack);
+        },
+      ),
+    );
+    return result.future;
+  }
+
+  @override
+  Future<void> close() async {
+    _closing = true;
+    _generation++;
+    for (final cancel in _waiters) {
+      cancel();
+    }
+    _waiters.clear();
+    await super.close();
   }
 }

@@ -29,11 +29,7 @@ void main() {
   });
   WebService create(int port, {bool always = false}) {
     final config = AppConfig.fromJson({
-      'web': {
-        'port': port,
-        'alwaysEnabled': always,
-        'permanentCode': 'secret-83472',
-      },
+      'web': {'port': port, 'alwaysEnabled': always, 'permanentCode': 'secret-83472'},
     });
     final service = WebService(
       config,
@@ -57,9 +53,7 @@ void main() {
   Future<int> get(int port) async {
     final client = HttpClient();
     try {
-      final request = await client.getUrl(
-        Uri(scheme: 'http', host: '127.0.0.1', port: port, path: '/'),
-      );
+      final request = await client.getUrl(Uri(scheme: 'http', host: '127.0.0.1', port: port, path: '/'));
       final response = await request.close();
       await response.drain<void>();
       return response.statusCode;
@@ -71,19 +65,11 @@ void main() {
   test('RPC acknowledges only after bind, and stop frees the port', () async {
     final port = await unusedPort();
     final service = create(port);
-    final server = WebServer(
-      AppConfig.fromJson({}).webServer,
-      _Remote(),
-      service,
-    );
-    final result = await server.executeCommand(
-      const WebServerControlCommand(id: 1, enable: true),
-    );
+    final server = WebServer(AppConfig.fromJson({}).webServer, _Remote(), service);
+    final result = await server.executeCommand(const WebServerControlCommand(id: 1, enable: true));
     expect(result, isA<WebServerControlCommandResult>());
     expect(await get(port), isIn([200, 404, 301]));
-    await server.executeCommand(
-      const WebServerControlCommand(id: 2, enable: false),
-    );
+    await server.executeCommand(const WebServerControlCommand(id: 2, enable: false));
     final socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
     await socket.close();
   });
@@ -94,32 +80,21 @@ void main() {
       final socket = await ServerSocket.bind(InternetAddress.anyIPv4, 0);
       final port = socket.port;
       final service = create(port);
-      final server = WebServer(
-        AppConfig.fromJson({}).webServer,
-        _Remote(),
-        service,
-      );
-      final failed = await server.executeCommand(
-        const WebServerControlCommand(id: 3, enable: true),
-      );
+      final server = WebServer(AppConfig.fromJson({}).webServer, _Remote(), service);
+      final failed = await server.executeCommand(const WebServerControlCommand(id: 3, enable: true));
       expect(failed, isA<RpcErrorResult>());
       await socket.close();
       expect(
-        await server.executeCommand(
-          const WebServerControlCommand(id: 4, enable: true),
-        ),
+        await server.executeCommand(const WebServerControlCommand(id: 4, enable: true)),
         isA<WebServerControlCommandResult>(),
       );
       expect(await get(port), isIn([200, 404, 301]));
       final logs = records.map((r) => r.message).join('\n');
-      expect(logs, contains('Web control id=1'));
+      expect(logs, contains('Web control target=true started'));
       expect(logs, contains('failed type=SocketException'));
-      expect(logs, contains('Web control id=2'));
+      expect(logs, contains('Web control target=true completed'));
       expect(logs, contains('Access code updated code=secret-83472'));
-      expect(
-        logs,
-        contains('Permanent access code configured code=secret-83472'),
-      );
+      expect(logs, contains('Permanent access code configured code=secret-83472'));
       expect(logs, contains('accessCode=secret-83472'));
       expect(logs, isNot(contains('authCode')));
     }),
@@ -137,22 +112,15 @@ void main() {
     await socket.close();
   });
 
-  test(
-    'alwaysEnabled survives disable and overlapping commands remain ordered',
-    () async {
-      final port = await unusedPort();
-      final service = create(port, always: true);
-      await Future.wait([
-        service.setEnabled(true),
-        service.setEnabled(false),
-        service.setEnabled(true),
-      ]);
-      expect(service.enabled, isTrue);
-      expect(await get(port), isIn([200, 404, 301]));
-      await service.close();
-      services.remove(service);
-      final socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
-      await socket.close();
-    },
-  );
+  test('alwaysEnabled survives disable and overlapping commands remain ordered', () async {
+    final port = await unusedPort();
+    final service = create(port, always: true);
+    await Future.wait([service.setEnabled(true), service.setEnabled(false), service.setEnabled(true)]);
+    expect(service.enabled, isTrue);
+    expect(await get(port), isIn([200, 404, 301]));
+    await service.close();
+    services.remove(service);
+    final socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
+    await socket.close();
+  });
 }

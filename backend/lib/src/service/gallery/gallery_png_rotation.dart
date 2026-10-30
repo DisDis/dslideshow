@@ -44,10 +44,7 @@ class GalleryPngRotation {
     this.maxMetadataBytes = 4 * 1024 * 1024,
     this.timeout = const Duration(seconds: 60),
   }) {
-    if (maxSourceBytes < 1 ||
-        maxSourcePixels < 1 ||
-        maxMetadataBytes < 1 ||
-        timeout <= Duration.zero) {
+    if (maxSourceBytes < 1 || maxSourcePixels < 1 || maxMetadataBytes < 1 || timeout <= Duration.zero) {
       throw ArgumentError('Invalid PNG rotation limits');
     }
   }
@@ -58,13 +55,10 @@ class GalleryPngRotation {
     required GalleryRotation rotation,
     Future<void>? cancellation,
   }) async {
-    if (_closed)
-      throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
-    if (_active.isNotEmpty)
-      throw const GalleryCatalogFailure(GalleryErrorCode.busy);
+    if (_closed) throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
+    if (_active.isNotEmpty) throw const GalleryCatalogFailure(GalleryErrorCode.busy);
     final job = _PngJob(this);
     _active.add(job);
-    final clock = Stopwatch()..start();
     _log.fine(
       'PNG rotation started direction=${rotation.name} '
       'maxSourceBytes=$maxSourceBytes maxSourcePixels=$maxSourcePixels '
@@ -72,21 +66,17 @@ class GalleryPngRotation {
     );
     try {
       await job.run(source, staged, rotation, cancellation);
-      _log.fine(
-        'PNG rotation completed direction=${rotation.name} '
-        'elapsedMs=${clock.elapsedMilliseconds}',
-      );
+      _log.fine('PNG rotation completed direction=${rotation.name} ');
     } on GalleryCatalogFailure catch (error) {
       _log.log(
         error.code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
-        'PNG rotation stopped direction=${rotation.name} code=${error.code.name} '
-        'elapsedMs=${clock.elapsedMilliseconds}',
+        'PNG rotation stopped direction=${rotation.name} code=${error.code.name} ',
       );
       rethrow;
     } on Object {
       _log.warning(
         'PNG rotation stopped direction=${rotation.name} '
-        'code=processingFailed elapsedMs=${clock.elapsedMilliseconds}',
+        'code=processingFailed',
       );
       throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
     } finally {
@@ -130,18 +120,10 @@ class _PngJob {
     if (_failure != null) throw GalleryCatalogFailure(_failure!);
   }
 
-  Future<void> run(
-    File source,
-    File staged,
-    GalleryRotation rotation,
-    Future<void>? cancellation,
-  ) async {
+  Future<void> run(File source, File staged, GalleryRotation rotation, Future<void>? cancellation) async {
     final timer = Timer(owner.timeout, () => stop(GalleryErrorCode.timeout));
     final listener = _PngCancellation(this);
-    cancellation?.then<void>(
-      (_) => listener.stop(),
-      onError: (Object _) => listener.stop(),
-    );
+    cancellation?.then<void>((_) => listener.stop(), onError: (Object _) => listener.stop());
     final port = ReceivePort();
     final exited = Completer<void>();
     TransferableTypedData? rendered;
@@ -154,19 +136,15 @@ class _PngJob {
       } else if (message is TransferableTypedData) {
         rendered = message;
       } else {
-        resultError = message is GalleryErrorCode
-            ? message
-            : GalleryErrorCode.processingFailed;
+        resultError = message is GalleryErrorCode ? message : GalleryErrorCode.processingFailed;
       }
     });
     try {
       await Future<void>.value();
       _check();
       if (path.equals(source.absolute.path, staged.absolute.path) ||
-          await FileSystemEntity.type(staged.path, followLinks: false) !=
-              FileSystemEntityType.file ||
-          await source.resolveSymbolicLinks() ==
-              await staged.resolveSymbolicLinks()) {
+          await FileSystemEntity.type(staged.path, followLinks: false) != FileSystemEntityType.file ||
+          await source.resolveSymbolicLinks() == await staged.resolveSymbolicLinks()) {
         throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
       }
       final bytes = await _read(source);
@@ -197,18 +175,13 @@ class _PngJob {
       _check();
       if (resultError != null) throw GalleryCatalogFailure(resultError!);
       final encoded = rendered;
-      if (encoded == null)
-        throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+      if (encoded == null) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
       final output = encoded.materialize().asUint8List();
       final file = await staged.open(mode: FileMode.write);
       try {
         for (var offset = 0; offset < output.length; offset += 64 * 1024) {
           _check();
-          await file.writeFrom(
-            output,
-            offset,
-            min(offset + 64 * 1024, output.length),
-          );
+          await file.writeFrom(output, offset, min(offset + 64 * 1024, output.length));
         }
         _check();
         await file.flush();
@@ -240,10 +213,7 @@ class _PngJob {
     final bytes = BytesBuilder(copy: false);
     var count = 0;
     try {
-      while (await Future.any<bool>([
-        input.moveNext(),
-        _stopped.future.then((_) => false),
-      ])) {
+      while (await Future.any<bool>([input.moveNext(), _stopped.future.then((_) => false)])) {
         _check();
         count += input.current.length;
         if (count > owner.maxSourceBytes) {
@@ -316,25 +286,13 @@ class _PngCodec {
     return crc;
   }, growable: false);
 
-  static Uint8List rotate(
-    Uint8List bytes,
-    GalleryRotation rotation,
-    int maxBytes,
-    int maxPixels,
-    int maxMetadata,
-  ) {
+  static Uint8List rotate(Uint8List bytes, GalleryRotation rotation, int maxBytes, int maxPixels, int maxMetadata) {
     final source = _scan(bytes, maxPixels, maxMetadata);
     var exif = image.ExifData();
     if (source.exif case final Uint8List payload) {
       if (payload.length < 8 ||
-          !((payload[0] == 73 &&
-                  payload[1] == 73 &&
-                  payload[2] == 42 &&
-                  payload[3] == 0) ||
-              (payload[0] == 77 &&
-                  payload[1] == 77 &&
-                  payload[2] == 0 &&
-                  payload[3] == 42)))
+          !((payload[0] == 73 && payload[1] == 73 && payload[2] == 42 && payload[3] == 0) ||
+              (payload[0] == 77 && payload[1] == 77 && payload[2] == 0 && payload[3] == 42)))
         _bad();
       exif = image.ExifData.fromInputBuffer(image.InputBuffer(payload));
       if (!exif.directories.containsKey('ifd0')) _bad();
@@ -350,8 +308,7 @@ class _PngCodec {
       pixelInput.add(chunk);
     }
     pixelInput.add(source.end);
-    var pixels = image.PngDecoder(maxPixels: maxPixels)
-        .decode(pixelInput.takeBytes());
+    var pixels = image.PngDecoder(maxPixels: maxPixels).decode(pixelInput.takeBytes());
     if (pixels == null) _bad();
     final channels = switch (source.colorType) {
       0 => 1,
@@ -359,16 +316,10 @@ class _PngCodec {
       4 => 2,
       _ => 4,
     };
-    if (pixels.bitsPerChannel != source.depth ||
-        pixels.numChannels != channels ||
-        pixels.hasPalette)
-      _bad();
+    if (pixels.bitsPerChannel != source.depth || pixels.numChannels != channels || pixels.hasPalette) _bad();
     pixels.exif = exif;
     if (orientation != 1) pixels = image.bakeOrientation(pixels);
-    pixels = image.copyRotate(
-      pixels,
-      angle: rotation == GalleryRotation.right ? 90 : -90,
-    );
+    pixels = image.copyRotate(pixels, angle: rotation == GalleryRotation.right ? 90 : -90);
     exif = pixels.exif;
     exif.imageIfd.orientation = 1;
     exif.imageIfd[0x0100] = image.IfdValueLong(pixels.width);
@@ -384,9 +335,7 @@ class _PngCodec {
     pixels.textData = null;
     final encoded = image.PngEncoder(level: 6).encode(pixels);
     final rendered = _scan(encoded, maxPixels, maxMetadata);
-    if (rendered.depth != source.depth ||
-        rendered.colorType != source.colorType)
-      _bad();
+    if (rendered.depth != source.depth || rendered.colorType != source.colorType) _bad();
     final swapsAxes = orientation < 5;
     List<Uint8List> metadata(List<Uint8List> chunks) => chunks
         .map((chunk) {
@@ -426,9 +375,7 @@ class _PngCodec {
   }
 
   static _PngScan _scan(Uint8List bytes, int maxPixels, int maxMetadata) {
-    if (bytes.length < 33 ||
-        !List.generate(8, (i) => bytes[i] == _signature[i]).every((v) => v))
-      _bad();
+    if (bytes.length < 33 || !List.generate(8, (i) => bytes[i] == _signature[i]).every((v) => v)) _bad();
     final before = <Uint8List>[], after = <Uint8List>[], pixels = <Uint8List>[];
     Uint8List? header, exif;
     var width = 0, height = 0, depth = 0, colorType = 0;
@@ -437,23 +384,15 @@ class _PngCodec {
     var paletteEntries = 0, seenBackground = false;
     final singles = <String>{};
     final paletteNames = <String>{};
-    for (
-      var count = 0;
-      count < 100000 && offset + 12 <= bytes.length;
-      count++
-    ) {
+    for (var count = 0; count < 100000 && offset + 12 <= bytes.length; count++) {
       final size = ByteData.sublistView(bytes, offset, offset + 4).getUint32(0);
       if (size > 0x7fffffff || offset + size + 12 > bytes.length) _bad();
       final typeBytes = Uint8List.sublistView(bytes, offset + 4, offset + 8);
-      if (typeBytes.any((b) => !(b >= 65 && b <= 90 || b >= 97 && b <= 122)) ||
-          typeBytes[2] & 0x20 != 0)
-        _bad();
+      if (typeBytes.any((b) => !(b >= 65 && b <= 90 || b >= 97 && b <= 122)) || typeBytes[2] & 0x20 != 0) _bad();
       final type = ascii.decode(typeBytes), kind = _kind(type);
       final end = offset + size + 12;
       final chunk = Uint8List.sublistView(bytes, offset, end);
-      if (_crc(bytes, offset + 4, end - 4) !=
-          ByteData.sublistView(bytes, end - 4, end).getUint32(0))
-        _bad();
+      if (_crc(bytes, offset + 4, end - 4) != ByteData.sublistView(bytes, end - 4, end).getUint32(0)) _bad();
       if (header == null && kind != _ChunkKind.header) _bad();
       if (kind == _ChunkKind.header) {
         if (header != null || size != 13) _bad();
@@ -464,9 +403,7 @@ class _PngCodec {
         depth = chunk[16];
         colorType = chunk[17];
         if (width == 0 || height == 0) _bad();
-        if (width > maxPixels ~/ height ||
-            !const {8, 16}.contains(depth) ||
-            !const {0, 2, 4, 6}.contains(colorType))
+        if (width > maxPixels ~/ height || !const {8, 16}.contains(depth) || !const {0, 2, 4, 6}.contains(colorType))
           _unsupported();
         if (chunk[18] != 0 || chunk[19] != 0 || chunk[20] > 1) _unsupported();
       } else if (kind == _ChunkKind.pixels) {
@@ -490,9 +427,7 @@ class _PngCodec {
             after: after,
           );
         }
-        if (kind == _ChunkKind.forbidden ||
-            kind == _ChunkKind.unknown && typeBytes[0] & 0x20 == 0)
-          _unsupported();
+        if (kind == _ChunkKind.forbidden || kind == _ChunkKind.unknown && typeBytes[0] & 0x20 == 0) _unsupported();
         final single =
             kind == _ChunkKind.exif ||
             kind == _ChunkKind.palette ||
@@ -511,10 +446,7 @@ class _PngCodec {
           _bad();
         if (kind == _ChunkKind.color && paletteEntries != 0) _bad();
         if (kind == _ChunkKind.palette &&
-            (!const {2, 6}.contains(colorType) ||
-                size == 0 ||
-                size > 768 ||
-                size % 3 != 0))
+            (!const {2, 6}.contains(colorType) || size == 0 || size > 768 || size % 3 != 0))
           _unsupported();
         if (kind == _ChunkKind.palette) {
           if (seenBackground) _bad();
@@ -525,9 +457,7 @@ class _PngCodec {
           if (size != (colorType == 0 || colorType == 4 ? 2 : 6)) _bad();
           seenBackground = true;
         }
-        if (kind == _ChunkKind.histogram &&
-            (paletteEntries == 0 || size != paletteEntries * 2))
-          _bad();
+        if (kind == _ChunkKind.histogram && (paletteEntries == 0 || size != paletteEntries * 2)) _bad();
         if (kind == _ChunkKind.suggestedPalette) {
           final payload = Uint8List.sublistView(chunk, 8, 8 + size);
           final nameEnd = payload.indexOf(0);
@@ -575,14 +505,7 @@ class _PngCodec {
     'bKGD' => _ChunkKind.background,
     'hIST' => _ChunkKind.histogram,
     'sPLT' => _ChunkKind.suggestedPalette,
-    'cHRM' ||
-    'gAMA' ||
-    'iCCP' ||
-    'sRGB' ||
-    'sBIT' ||
-    'cICP' ||
-    'mDCV' ||
-    'cLLI' => _ChunkKind.color,
+    'cHRM' || 'gAMA' || 'iCCP' || 'sRGB' || 'sBIT' || 'cICP' || 'mDCV' || 'cLLI' => _ChunkKind.color,
     'tEXt' || 'zTXt' || 'iTXt' || 'tIME' => _ChunkKind.metadata,
     'tRNS' || 'acTL' || 'fcTL' || 'fdAT' => _ChunkKind.forbidden,
     _ => _ChunkKind.unknown,
@@ -593,8 +516,7 @@ class _PngCodec {
     ByteData.sublistView(result).setUint32(0, payload.length);
     result.setRange(4, 8, ascii.encode(type));
     result.setRange(8, 8 + payload.length, payload);
-    ByteData.sublistView(result)
-        .setUint32(result.length - 4, _crc(result, 4, result.length - 4));
+    ByteData.sublistView(result).setUint32(result.length - 4, _crc(result, 4, result.length - 4));
     return result;
   }
 
@@ -606,8 +528,6 @@ class _PngCodec {
     return (crc ^ 0xffffffff) & 0xffffffff;
   }
 
-  static Never _bad() =>
-      throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
-  static Never _unsupported() =>
-      throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
+  static Never _bad() => throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+  static Never _unsupported() => throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
 }

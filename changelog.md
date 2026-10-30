@@ -1,5 +1,29 @@
 # Unreleased
 
+* Assemble frontend dependencies through injector and pass them through constructors;
+  publish SystemInfo separately from the controller that updates slideshow status
+  and handles frame controls.
+* Simplify global-service teardown: the owner calls dispose/close once without
+  caching its Future. Use regular inter-isolate RPC for SystemInfo polling.
+* Keep the current slide on backend source errors and stop automatic loading;
+  remove slideshow retries and their state.
+* Remove diagnostic operation IDs and their counters from application logs.
+* Keep at most two media uploads active through transport cleanup. Stream picked
+  files lazily, cancel removed tasks, scan folders asynchronously and preserve
+  explicit retries and correctly escaped request URLs.
+* Validate OTA file selection and keep the panel form stable across rebuilds.
+  Cancel pending transfers on reset or close. Return the frame to its slideshow
+  after displaying a confirmed OTA failure for 30 seconds.
+* Confirm Wi-Fi changes after the system command completes, report rejected and
+  unknown outcomes, and distinguish a successful command from failed list refresh.
+  Bound command execution and keep credentials out of failure diagnostics.
+* Recover invalid or null app storage documents without exposing their contents
+  in diagnostic logs; preserve pending values after a failed save.
+* Release MQTT subscriptions on shutdown and avoid duplicate setup after
+  reconnect. Ignore malformed control topics and payloads without logging them.
+* Handle background SystemInfo refresh failures and release the frontend polling
+  timer on disposal. Keep the frame menu available when power or restart fails.
+
 # 16.0.0+1 — 2026-10-30
 
 * Add gallery file management: move selected media to `images.gallery/trash`,

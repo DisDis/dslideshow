@@ -185,7 +185,7 @@ void main() {
     'OTA version and upload labels use the active language and theme',
     (tester) async {
       final bloc = OtaBloc(
-        initialState: const InitializedOtaState(version: '1.2.3'),
+        initialState: const OtaState(phase: OtaPhase.ready, version: '1.2.3'),
         client: _Client(),
       );
       addTearDown(bloc.close);
@@ -213,7 +213,7 @@ void main() {
     'OTA progress uses a Russian decimal separator and percent spacing',
     (tester) async {
       final bloc = OtaBloc(
-        initialState: const UploadingOtaState(progress: .125),
+        initialState: const OtaState(phase: OtaPhase.uploading, version: '1.2.3', progress: .125),
         client: _Client(),
       );
       addTearDown(bloc.close);

@@ -6,8 +6,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_routes.dart';
-import 'package:dslideshow_backend/src/web_server/web_service.dart'
-    show WebService;
+import 'package:dslideshow_backend/src/web_server/web_service.dart' show WebService;
 import 'package:dslideshow_backend/src/web_server/web_socket_user.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:fake_async/fake_async.dart';
@@ -60,56 +59,30 @@ void main() {
     () => captureLogs((records) async {
       fakeAsync((clock) {
         final rejected = _Fixture();
-        rejected.channel.receive(
-          const WSAuthCommand(
-            userName: 'private-user',
-            code: 'private-secret',
-            id: 1,
-          ),
-        );
+        rejected.channel.receive(const WSAuthCommand(userName: 'private-user', code: 'private-secret', id: 1));
         clock.elapse(const Duration(seconds: 1));
         expect(rejected.channel.sink.closeCalls, 1);
         rejected.close(clock);
         final accepted = _Fixture();
         accepted.authenticate(clock);
-        accepted.channel.receive(
-          const WSEchoCommand(id: 2, msg: 'private-echo-payload'),
-        );
+        accepted.channel.receive(const WSEchoCommand(id: 2, msg: 'private-echo-payload'));
         clock.flushMicrotasks();
-        expect(
-          accepted.channel.sent.last,
-          const WSEchoResult(id: 2, msg: 'private-echo-payload'),
-        );
+        expect(accepted.channel.sent.last, const WSEchoResult(id: 2, msg: 'private-echo-payload'));
         accepted.channel.incoming.add('private-malformed-json');
         clock.flushMicrotasks();
         accepted.close(clock);
       });
-      final sessions = records.where(
-        (record) => record.loggerName.startsWith('WebSocketUser'),
-      );
-      expect(
-        sessions.any(
-          (record) => record.message == 'WebSocket authorization rejected',
-        ),
-        isTrue,
-      );
-      expect(
-        sessions.any(
-          (record) => record.message == 'WebSocket authorization succeeded',
-        ),
-        isTrue,
-      );
+      final sessions = records.where((record) => record.loggerName.startsWith('WebSocketUser'));
+      expect(sessions.any((record) => record.message == 'WebSocket authorization rejected'), isTrue);
+      expect(sessions.any((record) => record.message == 'WebSocket authorization succeeded'), isTrue);
       expect(
         sessions.any(
           (record) =>
-              record.message.startsWith('WebSocket message rejected') &&
-              record.message.contains('FormatException'),
+              record.message.startsWith('WebSocket message rejected') && record.message.contains('FormatException'),
         ),
         isTrue,
       );
-      final text = sessions
-          .map((record) => '${record.message} ${record.error ?? ''}')
-          .join('\n');
+      final text = sessions.map((record) => '${record.message} ${record.error ?? ''}').join('\n');
       for (final secret in [
         'private-user',
         'private-secret',
@@ -150,46 +123,21 @@ void main() {
       addTearDown(() async {
         if (!serviceClosed) await service.close();
       });
-      final server = await shelf_io.serve(
-        service.handler,
-        InternetAddress.loopbackIPv4,
-        0,
-      );
+      final server = await shelf_io.serve(service.handler, InternetAddress.loopbackIPv4, 0);
       addTearDown(() => server.close(force: true));
-      final channel = WebSocketChannel.connect(
-        Uri.parse('ws://127.0.0.1:${server.port}${WebServerRoutes.webSocket}'),
-      );
+      final channel = WebSocketChannel.connect(Uri.parse('ws://127.0.0.1:${server.port}${WebServerRoutes.webSocket}'));
       addTearDown(() => channel.sink.close());
       await channel.ready;
       final messages = StreamIterator(channel.stream);
       addTearDown(messages.cancel);
-      channel.sink.add(
-        jsonEncode(
-          serializers.serialize(
-            const WSAuthCommand(userName: 'admin', code: 'code', id: 1),
-          ),
-        ),
-      );
+      channel.sink.add(jsonEncode(serializers.serialize(const WSAuthCommand(userName: 'admin', code: 'code', id: 1))));
       expect(await messages.moveNext(), isTrue);
-      expect(
-        serializers.deserialize(jsonDecode(messages.current as String)),
-        isA<WSHelloCommand>(),
-      );
+      expect(serializers.deserialize(jsonDecode(messages.current as String)), isA<WSHelloCommand>());
       expect(await messages.moveNext(), isTrue);
-      expect(
-        serializers.deserialize(jsonDecode(messages.current as String)),
-        const WSResultOk(id: 1),
-      );
-      channel.sink.add(
-        jsonEncode(
-          serializers.serialize(const WSEchoCommand(id: 2, msg: 'route')),
-        ),
-      );
+      expect(serializers.deserialize(jsonDecode(messages.current as String)), const WSResultOk(id: 1));
+      channel.sink.add(jsonEncode(serializers.serialize(const WSEchoCommand(id: 2, msg: 'route'))));
       expect(await messages.moveNext(), isTrue);
-      expect(
-        serializers.deserialize(jsonDecode(messages.current as String)),
-        const WSEchoResult(id: 2, msg: 'route'),
-      );
+      expect(serializers.deserialize(jsonDecode(messages.current as String)), const WSEchoResult(id: 2, msg: 'route'));
       await service.close();
       serviceClosed = true;
       expect(await messages.moveNext(), isFalse);
@@ -198,7 +146,7 @@ void main() {
           (record) =>
               record.loggerName == 'WebService' &&
               record.message.startsWith('WebSocket upgrade accepted') &&
-              record.message.contains('elapsedMs='),
+              !record.message.contains('elapsedMs='),
         ),
         isTrue,
       );
@@ -209,10 +157,7 @@ void main() {
     fakeAsync((clock) {
       final fixture = _Fixture();
       fixture.authenticate(clock);
-      expect(fixture.channel.sent, [
-        isA<WSHelloCommand>(),
-        const WSResultOk(id: 1),
-      ]);
+      expect(fixture.channel.sent, [isA<WSHelloCommand>(), const WSResultOk(id: 1)]);
       fixture.close(clock);
     });
   });
@@ -222,10 +167,7 @@ void main() {
       final fixture = _Fixture();
       fixture.authenticate(clock, code: 'incorrect');
       expect(fixture.channel.sink.closeCalls, 1);
-      expect(
-        fixture.channel.sent.single,
-        isA<WSErrorResult>().having((result) => result.id, 'id', 1),
-      );
+      expect(fixture.channel.sent.single, isA<WSErrorResult>().having((result) => result.id, 'id', 1));
       expect(fixture.remote.commands, isEmpty);
       fixture.close(clock);
     });
@@ -249,16 +191,10 @@ void main() {
       fixture.authenticate(clock);
       fixture.channel.receive(const WSEchoCommand(id: 2, msg: 'hello'));
       clock.flushMicrotasks();
-      expect(
-        fixture.channel.sent.last,
-        const WSEchoResult(id: 2, msg: 'hello'),
-      );
+      expect(fixture.channel.sent.last, const WSEchoResult(id: 2, msg: 'hello'));
       fixture.channel.receive(const WSEchoCommand(id: 3, msg: 'error'));
       clock.flushMicrotasks();
-      expect(
-        fixture.channel.sent.last,
-        const WSErrorResult(id: 3, error: 'error'),
-      );
+      expect(fixture.channel.sent.last, const WSErrorResult(id: 3, error: 'error'));
       fixture.close(clock);
     });
   });
@@ -270,71 +206,54 @@ void main() {
         fixture.authenticate(clock);
         fixture.channel.sent.clear();
         const inner = EchoCommand(id: 41, text: 'backend');
-        fixture.channel.receive(
-          WSSendRpcCommand(id: 9, commandData: serializers.serialize(inner)!),
-        );
+        fixture.channel.receive(WSSendRpcCommand(id: 9, commandData: serializers.serialize(inner)!));
         clock.flushMicrotasks();
         expect(fixture.remote.commands.single, inner);
         expect(fixture.channel.sent, isEmpty);
         if (fail) {
-          fixture.remote.pending.completeError(
-            StateError('backend unavailable'),
-          );
+          fixture.remote.pending.completeError(StateError('backend unavailable'));
         } else {
-          fixture.remote.pending.complete(
-            const EchoCommandResult(id: 41, resultText: 'done'),
-          );
+          fixture.remote.pending.complete(const EchoCommandResult(id: 41, resultText: 'done'));
         }
         clock.flushMicrotasks();
         final result = fixture.channel.sent.last;
         expect(result.id, 9);
         if (fail) {
           expect(result, isA<WSErrorResult>());
-          expect(
-            (result as WSErrorResult).error,
-            contains('backend unavailable'),
-          );
+          expect((result as WSErrorResult).error, contains('backend unavailable'));
         } else {
           final rpc = result as WSRpcResult;
-          expect(
-            serializers.deserialize(rpc.resultData),
-            const EchoCommandResult(id: 41, resultText: 'done'),
-          );
+          expect(serializers.deserialize(rpc.resultData), const EchoCommandResult(id: 41, resultText: 'done'));
         }
         fixture.close(clock);
       });
     });
   }
 
-  test(
-    'server requests resolve by id and explicit disconnect fails pending',
-    () {
-      fakeAsync((clock) {
-        final fixture = _Fixture();
-        final responses = <WebSocketResult>[];
-        final errors = <Object>[];
-        fixture.user
-            .send(const WSEchoCommand(id: 20, msg: 'outgoing'))
-            .then(responses.add);
-        fixture.channel.receive(const WSEchoResult(id: 21, msg: 'unrelated'));
-        clock.flushMicrotasks();
-        expect(responses, isEmpty);
-        fixture.channel.receive(const WSEchoResult(id: 20, msg: 'reply'));
-        clock.flushMicrotasks();
-        expect(responses, [const WSEchoResult(id: 20, msg: 'reply')]);
+  test('server requests resolve by id and explicit disconnect fails pending', () {
+    fakeAsync((clock) {
+      final fixture = _Fixture();
+      final responses = <WebSocketResult>[];
+      final errors = <Object>[];
+      fixture.user.send(const WSEchoCommand(id: 20, msg: 'outgoing')).then(responses.add);
+      fixture.channel.receive(const WSEchoResult(id: 21, msg: 'unrelated'));
+      clock.flushMicrotasks();
+      expect(responses, isEmpty);
+      fixture.channel.receive(const WSEchoResult(id: 20, msg: 'reply'));
+      clock.flushMicrotasks();
+      expect(responses, [const WSEchoResult(id: 20, msg: 'reply')]);
 
-        fixture.user
-            .send(const WSEchoCommand(id: 22, msg: 'pending'))
-            .then(responses.add, onError: (Object error) => errors.add(error));
-        fixture.user.disconnect();
-        clock.flushMicrotasks();
-        expect(errors, [const WSErrorResult(id: 22, error: 'disconnect')]);
-        expect(fixture.channel.sink.closeCalls, 1);
-        var disconnected = false;
-        fixture.user.onDisconnect.then((_) => disconnected = true);
-        fixture.close(clock);
-        expect(disconnected, isTrue);
-      });
-    },
-  );
+      fixture.user
+          .send(const WSEchoCommand(id: 22, msg: 'pending'))
+          .then(responses.add, onError: (Object error) => errors.add(error));
+      fixture.user.disconnect();
+      clock.flushMicrotasks();
+      expect(errors, [const WSErrorResult(id: 22, error: 'disconnect')]);
+      expect(fixture.channel.sink.closeCalls, 1);
+      var disconnected = false;
+      fixture.user.onDisconnect.then((_) => disconnected = true);
+      fixture.close(clock);
+      expect(disconnected, isTrue);
+    });
+  });
 }

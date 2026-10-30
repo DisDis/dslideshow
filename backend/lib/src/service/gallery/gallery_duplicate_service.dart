@@ -31,12 +31,8 @@ class GalleryDuplicateService {
   static const _similarImageFilter = 'Lanczos3';
   static final _log = Logger('GalleryDuplicateService');
   static final _operationPattern = RegExp(r'^[a-zA-Z0-9_-]{1,100}$');
-  static final _versionPattern = RegExp(
-    r'^czkawka(?:_cli)?\s+([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})(?:\s|$)',
-  );
-  static final _numericVersionPattern = RegExp(
-    r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$',
-  );
+  static final _versionPattern = RegExp(r'^czkawka(?:_cli)?\s+([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})(?:\s|$)');
+  static final _numericVersionPattern = RegExp(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$');
   final GalleryCatalogService catalog;
   final GalleryToolRunner _runner;
   final bool _ownsRunner;
@@ -45,10 +41,7 @@ class GalleryDuplicateService {
   final Duration processTimeout;
   final int maxCandidates;
   final int threads;
-  GalleryDuplicateJob _job = const GalleryDuplicateJob(
-    jobId: '',
-    status: GalleryDuplicateStatus.idle,
-  );
+  GalleryDuplicateJob _job = const GalleryDuplicateJob(jobId: '', status: GalleryDuplicateStatus.idle);
   GalleryDuplicateJob? _previous;
   final Map<String, GalleryDuplicateJob> _history = {};
   Future<void>? _initializing;
@@ -67,9 +60,7 @@ class GalleryDuplicateService {
     this.processTimeout = const Duration(hours: 6),
     this.maxCandidates = 100000,
     this.threads = 1,
-  }) : directory =
-           directory ??
-           Directory(path.join(catalog.stateDirectory.path, 'duplicates')),
+  }) : directory = directory ?? Directory(path.join(catalog.stateDirectory.path, 'duplicates')),
        _runner = runner ?? ProcessGalleryToolRunner(),
        _ownsRunner = runner == null {
     if (maxCandidates < 1 || threads < 1 || processTimeout <= Duration.zero) {
@@ -94,18 +85,14 @@ class GalleryDuplicateService {
       _job = GalleryDuplicateJob.fromJson(decoded as Map<String, dynamic>);
       final loadedGroups = _job.groups;
       _job = _job.copyWith(groups: await _deduplicateGroups(loadedGroups));
-      if (_job.status == GalleryDuplicateStatus.running ||
-          _job.status == GalleryDuplicateStatus.stopping) {
-        _job = _job.copyWith(
-          status: GalleryDuplicateStatus.interrupted,
-          finishedAt: DateTime.now().toUtc(),
-        );
+      if (_job.status == GalleryDuplicateStatus.running || _job.status == GalleryDuplicateStatus.stopping) {
+        _job = _job.copyWith(status: GalleryDuplicateStatus.interrupted, finishedAt: DateTime.now().toUtc());
         await _save();
       }
       if (_job.jobId.isNotEmpty) _remember(_job);
       _log.info(
         () =>
-            'Search state recovered operation=${_operationLabel(_job.jobId)} '
+            'Search state recovered '
             'status=${_job.status.name} groups=${_job.groups.length} reportedGroups=${loadedGroups.length} '
             'groupMembers=${_job.groups.fold<int>(0, (count, group) => count + group.items.length)}',
       );
@@ -123,16 +110,14 @@ class GalleryDuplicateService {
     await _initialize();
     _log.fine(
       () =>
-          'Search status operation=${_operationLabel(_job.jobId)} '
+          'Search status '
           'status=${_job.status.name} active=${_work != null}',
     );
     if (_work != null &&
         _job.status != GalleryDuplicateStatus.running &&
         _job.status != GalleryDuplicateStatus.stopping) {
       return _job.copyWith(
-        status: _cancel?.isCompleted == true
-            ? GalleryDuplicateStatus.stopping
-            : GalleryDuplicateStatus.running,
+        status: _cancel?.isCompleted == true ? GalleryDuplicateStatus.stopping : GalleryDuplicateStatus.running,
         finishedAt: null,
         error: null,
         groups: const [],
@@ -141,9 +126,7 @@ class GalleryDuplicateService {
     return _job;
   }
 
-  Future<GalleryDuplicateJob> start(
-    GalleryDuplicateStartRequest request,
-  ) async {
+  Future<GalleryDuplicateJob> start(GalleryDuplicateStartRequest request) async {
     _ensureOpen();
     if (!_operationPattern.hasMatch(request.operationId) ||
         request.modes.isEmpty ||
@@ -151,13 +134,12 @@ class GalleryDuplicateService {
       throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
     }
     await _initialize();
-    final modes = request.modes.toList()
-      ..sort((a, b) => a.index.compareTo(b.index));
+    final modes = request.modes.toList()..sort((a, b) => a.index.compareTo(b.index));
     final existing = _history[request.operationId];
     if (existing != null) {
       _log.fine(
         () =>
-            'Search start replay operation=${_operationLabel(request.operationId)} '
+            'Search start replay '
             'status=${existing.status.name}',
       );
       if (!_sameModes(existing.modes, modes)) {
@@ -170,15 +152,12 @@ class GalleryDuplicateService {
       }
       return existing;
     }
-    if (_starting || _work != null)
-      throw const GalleryCatalogFailure(GalleryErrorCode.busy);
+    if (_starting || _work != null) throw const GalleryCatalogFailure(GalleryErrorCode.busy);
     _starting = true;
     final startDone = _startDone = Completer<void>();
     try {
       _ensureOpen();
-      _previous = _job.status == GalleryDuplicateStatus.completed
-          ? _job
-          : _previous;
+      _previous = _job.status == GalleryDuplicateStatus.completed ? _job : _previous;
       _job = GalleryDuplicateJob(
         jobId: request.operationId,
         status: GalleryDuplicateStatus.running,
@@ -189,7 +168,7 @@ class GalleryDuplicateService {
       _remember(_job);
       _log.info(
         () =>
-            'Search started operation=${_operationLabel(request.operationId)} '
+            'Search started '
             'modes=${modes.map((mode) => mode.name).join(',')} '
             'maxCandidates=$maxCandidates '
             'timeoutMs=${processTimeout.inMilliseconds} threads=$threads',
@@ -199,16 +178,14 @@ class GalleryDuplicateService {
       _work = _run(request.operationId, modes, cancellation);
       return _job;
     } on Object catch (error) {
-      final code = error is GalleryCatalogFailure
-          ? error.code
-          : GalleryErrorCode.unavailable;
+      final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.unavailable;
       final diagnostics = GalleryDuplicateDiagnostics(
         stage: GalleryDuplicateStage.persistence,
         failureReason: _failureReason(code, GalleryDuplicateStage.persistence),
       );
       _log.warning(
         () =>
-            'Search start failed operation=${_operationLabel(request.operationId)} '
+            'Search start failed '
             'code=${code.name} ${_diagnosticLog(diagnostics)}',
       );
       _job = _job.copyWith(
@@ -230,35 +207,25 @@ class GalleryDuplicateService {
     }
   }
 
-  static bool _sameModes(
-    List<GalleryDuplicateMode> first,
-    List<GalleryDuplicateMode> second,
-  ) => first.length == second.length && first.every(second.contains);
+  static bool _sameModes(List<GalleryDuplicateMode> first, List<GalleryDuplicateMode> second) =>
+      first.length == second.length && first.every(second.contains);
 
   Future<GalleryDuplicateJob> stop(String jobId) async {
     _ensureOpen();
     await _initialize();
-    if (_job.jobId != jobId)
-      throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
+    if (_job.jobId != jobId) throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
     final cancel = _cancel;
     if (cancel != null &&
         !cancel.isCompleted &&
-        (_job.status == GalleryDuplicateStatus.running ||
-            _job.status == GalleryDuplicateStatus.stopping)) {
+        (_job.status == GalleryDuplicateStatus.running || _job.status == GalleryDuplicateStatus.stopping)) {
       _job = _job.copyWith(status: GalleryDuplicateStatus.stopping);
-      _log.info(
-        () =>
-            'Search stop requested operation=${_operationLabel(jobId)} status=stopping',
-      );
+      _log.info(() => 'Search stop requested status=stopping');
       _remember(_job);
       cancel.complete();
     }
     await _startDone?.future;
     await _work;
-    _log.info(
-      () =>
-          'Search stop finished operation=${_operationLabel(jobId)} status=${_job.status.name}',
-    );
+    _log.info(() => 'Search stop finished status=${_job.status.name}');
     return _job;
   }
 
@@ -271,16 +238,9 @@ class GalleryDuplicateService {
     }
   }
 
-  Future<void> _run(
-    String jobId,
-    List<GalleryDuplicateMode> modes,
-    Completer<void> cancel,
-  ) async {
-    final clock = Stopwatch()..start();
+  Future<void> _run(String jobId, List<GalleryDuplicateMode> modes, Completer<void> cancel) async {
     Directory? temporary;
-    var diagnostics = const GalleryDuplicateDiagnostics(
-      stage: GalleryDuplicateStage.snapshot,
-    );
+    var diagnostics = const GalleryDuplicateDiagnostics(stage: GalleryDuplicateStage.snapshot);
     void publishDiagnostics() {
       _job = _job.copyWith(diagnostics: diagnostics);
     }
@@ -290,9 +250,7 @@ class GalleryDuplicateService {
         await _assertRoot(root, cancel);
       } on GalleryCatalogFailure catch (error) {
         if (error.code != GalleryErrorCode.cancelled) {
-          diagnostics = diagnostics.copyWith(
-            failureReason: GalleryDuplicateFailureReason.storageUnavailable,
-          );
+          diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.storageUnavailable);
         }
         rethrow;
       }
@@ -308,18 +266,13 @@ class GalleryDuplicateService {
       );
       publishDiagnostics();
       _log.log(
-        snapshot.candidates.isEmpty || snapshot.unreadable > 0
-            ? Level.WARNING
-            : Level.INFO,
+        snapshot.candidates.isEmpty || snapshot.unreadable > 0 ? Level.WARNING : Level.INFO,
         () =>
-            'Search snapshot operation=${_operationLabel(jobId)} '
-            '${_diagnosticLog(diagnostics)} unreadable=${snapshot.unreadable} '
-            'elapsedMs=${clock.elapsedMilliseconds}',
+            'Search snapshot '
+            '${_diagnosticLog(diagnostics)} unreadable=${snapshot.unreadable} ',
       );
       if (snapshot.candidates.isEmpty && snapshot.unreadable > 0) {
-        diagnostics = diagnostics.copyWith(
-          failureReason: GalleryDuplicateFailureReason.storageUnavailable,
-        );
+        diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.storageUnavailable);
         throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
       }
       await verifyRoot(snapshot.root);
@@ -328,9 +281,7 @@ class GalleryDuplicateService {
         'XDG_CACHE_HOME': path.join(temporary.path, 'cache'),
         'XDG_CONFIG_HOME': path.join(temporary.path, 'config'),
       };
-      diagnostics = diagnostics.copyWith(
-        stage: GalleryDuplicateStage.versionProbe,
-      );
+      diagnostics = diagnostics.copyWith(stage: GalleryDuplicateStage.versionProbe);
       publishDiagnostics();
       final version = await _runner.run(
         executable,
@@ -341,14 +292,9 @@ class GalleryDuplicateService {
         environment: environment,
       );
       final match = _versionPattern.firstMatch(version.stdout.trim());
-      diagnostics = diagnostics.copyWith(
-        toolVersion: match?.group(1),
-        exitCode: version.exitCode,
-      );
+      diagnostics = diagnostics.copyWith(toolVersion: match?.group(1), exitCode: version.exitCode);
       if (version.exitCode != 0) {
-        diagnostics = diagnostics.copyWith(
-          failureReason: GalleryDuplicateFailureReason.versionProbeFailed,
-        );
+        diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.versionProbeFailed);
         throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
       }
       final generation = switch (match?.group(1)?.split('.').first) {
@@ -357,32 +303,25 @@ class GalleryDuplicateService {
         _ => null,
       };
       if (generation == null) {
-        diagnostics = diagnostics.copyWith(
-          failureReason: GalleryDuplicateFailureReason.unsupportedVersion,
-        );
+        diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.unsupportedVersion);
         throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
       }
       _log.fine(
         () =>
-            'Search probe completed operation=${_operationLabel(jobId)} '
+            'Search probe completed '
             'generation=${generation.name} ${_diagnosticLog(diagnostics)}',
       );
       final groups = <GalleryDuplicateGroup>[];
       var skipped = 0;
       for (final mode in modes) {
-        final modeClock = Stopwatch()..start();
         final previousGroups = groups.length;
         final previousSkipped = skipped;
         await verifyRoot(snapshot.root);
-        diagnostics = diagnostics.copyWith(
-          stage: GalleryDuplicateStage.scanning,
-          mode: mode,
-          exitCode: null,
-        );
+        diagnostics = diagnostics.copyWith(stage: GalleryDuplicateStage.scanning, mode: mode, exitCode: null);
         publishDiagnostics();
         _log.info(
           () =>
-              'Search mode started operation=${_operationLabel(jobId)} '
+              'Search mode started '
               '${_diagnosticLog(diagnostics)}'
               '${mode == GalleryDuplicateMode.similar ? ' imageFilter=$_similarImageFilter' : ''}',
         );
@@ -427,14 +366,10 @@ class GalleryDuplicateService {
         diagnostics = diagnostics.copyWith(exitCode: result.exitCode);
         await verifyRoot(snapshot.root);
         if (result.exitCode != 0 && result.exitCode != 11) {
-          diagnostics = diagnostics.copyWith(
-            failureReason: GalleryDuplicateFailureReason.processFailed,
-          );
+          diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.processFailed);
           throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
         }
-        diagnostics = diagnostics.copyWith(
-          stage: GalleryDuplicateStage.validation,
-        );
+        diagnostics = diagnostics.copyWith(stage: GalleryDuplicateStage.validation);
         publishDiagnostics();
         final decoded = await _readJson(output);
         final rawGroups = _extractGroups(decoded, mode);
@@ -448,9 +383,7 @@ class GalleryDuplicateService {
                 data['path'] is! String ||
                 data['size'] is! int ||
                 (data['size'] as int) < 0) {
-              throw const GalleryCatalogFailure(
-                GalleryErrorCode.processingFailed,
-              );
+              throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
             }
             final rawPath = data['path'] as String;
             final absolute = path.normalize(rawPath);
@@ -468,40 +401,24 @@ class GalleryDuplicateService {
             );
           }
           if (members.length < 2) continue;
-          final sorted = members.values.toList()
-            ..sort((a, b) => a.path.compareTo(b.path));
+          final sorted = members.values.toList()..sort((a, b) => a.path.compareTo(b.path));
           final digest = sha256.convert(
-            utf8.encode(
-              '${mode.name}:${sorted.map((m) => '${m.mediaId}:${m.sourceRevision}').join(',')}',
-            ),
+            utf8.encode('${mode.name}:${sorted.map((m) => '${m.mediaId}:${m.sourceRevision}').join(',')}'),
           );
-          groups.add(
-            GalleryDuplicateGroup(
-              groupId: digest.toString(),
-              mode: mode,
-              items: sorted,
-            ),
-          );
+          groups.add(GalleryDuplicateGroup(groupId: digest.toString(), mode: mode, items: sorted));
         }
-        diagnostics = diagnostics.copyWith(
-          matchedFileCount: _matchedCount(groups),
-          rejectedResultCount: skipped,
-        );
+        diagnostics = diagnostics.copyWith(matchedFileCount: _matchedCount(groups), rejectedResultCount: skipped);
         publishDiagnostics();
         _log.info(
           () =>
-              'Search mode completed operation=${_operationLabel(jobId)} '
+              'Search mode completed '
               'groups=${groups.length - previousGroups} '
               'reportedGroups=${rawGroups.length} reportedMembers=$rawMembers '
-              'skipped=${skipped - previousSkipped} ${_diagnosticLog(diagnostics)} '
-              'elapsedMs=${modeClock.elapsedMilliseconds}',
+              'skipped=${skipped - previousSkipped} ${_diagnosticLog(diagnostics)} ',
         );
       }
       // An earlier mode's files may have changed while a later mode ran.
-      diagnostics = diagnostics.copyWith(
-        stage: GalleryDuplicateStage.validation,
-        mode: null,
-      );
+      diagnostics = diagnostics.copyWith(stage: GalleryDuplicateStage.validation, mode: null);
       publishDiagnostics();
       final validated = <GalleryDuplicateGroup>[];
       for (final group in groups) {
@@ -520,14 +437,9 @@ class GalleryDuplicateService {
       final uniqueGroups = await _deduplicateGroups(validated);
       _checkCancelled(cancel);
       if (uniqueGroups.length != validated.length) {
-        _log.info(
-          'Search groups normalized operation=${_operationLabel(jobId)} reportedGroups=${validated.length} groups=${uniqueGroups.length}',
-        );
+        _log.info('Search groups normalized reportedGroups=${validated.length} groups=${uniqueGroups.length}');
       }
-      diagnostics = diagnostics.copyWith(
-        matchedFileCount: _matchedCount(uniqueGroups),
-        rejectedResultCount: skipped,
-      );
+      diagnostics = diagnostics.copyWith(matchedFileCount: _matchedCount(uniqueGroups), rejectedResultCount: skipped);
       _job = _job.copyWith(
         status: GalleryDuplicateStatus.completed,
         finishedAt: DateTime.now().toUtc(),
@@ -539,13 +451,10 @@ class GalleryDuplicateService {
       diagnostics = diagnostics.copyWith(
         failureReason: cancel.isCompleted
             ? null
-            : diagnostics.failureReason ??
-                  _failureReason(error.code, diagnostics.stage),
+            : diagnostics.failureReason ?? _failureReason(error.code, diagnostics.stage),
       );
       _job = _job.copyWith(
-        status: cancel.isCompleted
-            ? GalleryDuplicateStatus.cancelled
-            : GalleryDuplicateStatus.failed,
+        status: cancel.isCompleted ? GalleryDuplicateStatus.cancelled : GalleryDuplicateStatus.failed,
         finishedAt: DateTime.now().toUtc(),
         error: cancel.isCompleted ? null : error.code,
         groups: _previous?.groups ?? const [],
@@ -562,9 +471,7 @@ class GalleryDuplicateService {
             : GalleryDuplicateFailureReason.unexpected,
       );
       _job = _job.copyWith(
-        status: cancel.isCompleted
-            ? GalleryDuplicateStatus.cancelled
-            : GalleryDuplicateStatus.failed,
+        status: cancel.isCompleted ? GalleryDuplicateStatus.cancelled : GalleryDuplicateStatus.failed,
         finishedAt: DateTime.now().toUtc(),
         error: cancel.isCompleted ? null : GalleryErrorCode.processingFailed,
         groups: _previous?.groups ?? const [],
@@ -577,7 +484,7 @@ class GalleryDuplicateService {
         } on FileSystemException {
           _log.warning(
             () =>
-                'Search temporary cleanup failed operation=${_operationLabel(jobId)} '
+                'Search temporary cleanup failed '
                 'code=${GalleryErrorCode.unavailable.name}',
           );
         }
@@ -587,17 +494,13 @@ class GalleryDuplicateService {
       } on Object catch (error) {
         diagnostics = diagnostics.copyWith(
           stage: GalleryDuplicateStage.persistence,
-          failureReason:
-              error is GalleryCatalogFailure &&
-                  error.code == GalleryErrorCode.outputLimitExceeded
+          failureReason: error is GalleryCatalogFailure && error.code == GalleryErrorCode.outputLimitExceeded
               ? GalleryDuplicateFailureReason.outputLimitExceeded
               : GalleryDuplicateFailureReason.storageUnavailable,
         );
         _job = _job.copyWith(
           status: GalleryDuplicateStatus.failed,
-          error: error is GalleryCatalogFailure
-              ? error.code
-              : GalleryErrorCode.unavailable,
+          error: error is GalleryCatalogFailure ? error.code : GalleryErrorCode.unavailable,
           groups: _previous?.groups ?? const [],
           diagnostics: diagnostics,
         );
@@ -609,83 +512,60 @@ class GalleryDuplicateService {
       }
       _remember(_job);
       _log.log(
-        _job.status == GalleryDuplicateStatus.failed
-            ? Level.WARNING
-            : Level.INFO,
+        _job.status == GalleryDuplicateStatus.failed ? Level.WARNING : Level.INFO,
         () =>
-            'Search finished operation=${_operationLabel(jobId)} status=${_job.status.name} '
+            'Search finished status=${_job.status.name} '
             'code=${_job.error?.name ?? 'none'} groups=${_job.groups.length} '
             'groupMembers=${_job.groups.fold<int>(0, (count, group) => count + group.items.length)} '
-            'skipped=${_job.skipped} ${_diagnosticLog(diagnostics)} '
-            'elapsedMs=${clock.elapsedMilliseconds}',
+            'skipped=${_job.skipped} ${_diagnosticLog(diagnostics)} ',
       );
       if (identical(_cancel, cancel)) _cancel = null;
       _work = null;
     }
   }
 
-  // Operation IDs are supplied by clients. Hashing also keeps malformed or
-  // deliberately sensitive identifiers out of otherwise useful correlation.
-  static String _operationLabel(String value) =>
-      'id-${sha256.convert(utf8.encode(value)).toString().substring(0, 12)}';
-
-  static Future<List<GalleryDuplicateGroup>> _deduplicateGroups(
-    List<GalleryDuplicateGroup> groups,
-  ) => Isolate.run(() {
+  static Future<List<GalleryDuplicateGroup>> _deduplicateGroups(List<GalleryDuplicateGroup> groups) => Isolate.run(() {
     final unique = <String, GalleryDuplicateGroup>{};
     for (final group in groups) {
       final members = group.items.toList()
         ..sort((a, b) {
           final byId = a.mediaId.compareTo(b.mediaId);
-          return byId == 0
-              ? a.sourceRevision.compareTo(b.sourceRevision)
-              : byId;
+          return byId == 0 ? a.sourceRevision.compareTo(b.sourceRevision) : byId;
         });
       final key = sha256
           .convert(
             utf8.encode(
               jsonEncode([
-                for (final member in members)
-                  [member.mediaId, member.sourceRevision],
+                for (final member in members) [member.mediaId, member.sourceRevision],
               ]),
             ),
           )
           .toString();
       final previous = unique[key];
       if (previous == null ||
-          (previous.mode != GalleryDuplicateMode.exact &&
-              group.mode == GalleryDuplicateMode.exact)) {
+          (previous.mode != GalleryDuplicateMode.exact && group.mode == GalleryDuplicateMode.exact)) {
         unique[key] = group;
       }
     }
     return unique.values.toList();
   });
 
-  static int _matchedCount(List<GalleryDuplicateGroup> groups) => groups
-      .expand((group) => group.items)
-      .map((member) => member.mediaId)
-      .toSet()
-      .length;
+  static int _matchedCount(List<GalleryDuplicateGroup> groups) =>
+      groups.expand((group) => group.items).map((member) => member.mediaId).toSet().length;
 
-  static GalleryDuplicateFailureReason _failureReason(
-    GalleryErrorCode code,
-    GalleryDuplicateStage stage,
-  ) => switch (code) {
-    GalleryErrorCode.timeout => GalleryDuplicateFailureReason.timeout,
-    GalleryErrorCode.outputLimitExceeded =>
-      GalleryDuplicateFailureReason.outputLimitExceeded,
-    GalleryErrorCode.unsupported =>
-      GalleryDuplicateFailureReason.unsupportedVersion,
-    GalleryErrorCode.unavailable
-        when stage == GalleryDuplicateStage.versionProbe ||
-            stage == GalleryDuplicateStage.scanning =>
-      GalleryDuplicateFailureReason.toolUnavailable,
-    GalleryErrorCode.unavailable || GalleryErrorCode.revisionMismatch =>
-      GalleryDuplicateFailureReason.storageUnavailable,
-    _ when stage == GalleryDuplicateStage.validation =>
-      GalleryDuplicateFailureReason.invalidResult,
-    _ => GalleryDuplicateFailureReason.unexpected,
-  };
+  static GalleryDuplicateFailureReason _failureReason(GalleryErrorCode code, GalleryDuplicateStage stage) =>
+      switch (code) {
+        GalleryErrorCode.timeout => GalleryDuplicateFailureReason.timeout,
+        GalleryErrorCode.outputLimitExceeded => GalleryDuplicateFailureReason.outputLimitExceeded,
+        GalleryErrorCode.unsupported => GalleryDuplicateFailureReason.unsupportedVersion,
+        GalleryErrorCode.unavailable
+            when stage == GalleryDuplicateStage.versionProbe || stage == GalleryDuplicateStage.scanning =>
+          GalleryDuplicateFailureReason.toolUnavailable,
+        GalleryErrorCode.unavailable ||
+        GalleryErrorCode.revisionMismatch => GalleryDuplicateFailureReason.storageUnavailable,
+        _ when stage == GalleryDuplicateStage.validation => GalleryDuplicateFailureReason.invalidResult,
+        _ => GalleryDuplicateFailureReason.unexpected,
+      };
 
   static _CzkawkaExitClass _exitClass(int? exitCode) => switch (exitCode) {
     null => _CzkawkaExitClass.unavailable,
@@ -697,10 +577,7 @@ class GalleryDuplicateService {
 
   static String _diagnosticLog(GalleryDuplicateDiagnostics diagnostics) {
     final version = diagnostics.toolVersion;
-    final safeVersion =
-        version != null && _numericVersionPattern.hasMatch(version)
-        ? version
-        : 'unknown';
+    final safeVersion = version != null && _numericVersionPattern.hasMatch(version) ? version : 'unknown';
     return 'tool=czkawka_cli version=$safeVersion stage=${diagnostics.stage.name} '
         'mode=${diagnostics.mode?.name ?? 'none'} '
         'reason=${diagnostics.failureReason?.name ?? 'none'} '
@@ -713,36 +590,25 @@ class GalleryDuplicateService {
 
   static int? _dimension(Object? value) {
     if (value == null) return null;
-    if (value is! int || value <= 0)
-      throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+    if (value is! int || value <= 0) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
     return value;
   }
 
-  static List<List<dynamic>> _extractGroups(
-    Object? decoded,
-    GalleryDuplicateMode mode,
-  ) {
+  static List<List<dynamic>> _extractGroups(Object? decoded, GalleryDuplicateMode mode) {
     final groups = <List<dynamic>>[];
     if (mode == GalleryDuplicateMode.exact) {
-      if (decoded is! Map<String, dynamic>)
-        throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+      if (decoded is! Map<String, dynamic>) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
       for (final entries in decoded.values) {
-        if (entries is! List)
-          throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+        if (entries is! List) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
         for (final group in entries) {
-          if (group is! List)
-            throw const GalleryCatalogFailure(
-              GalleryErrorCode.processingFailed,
-            );
+          if (group is! List) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
           groups.add(group);
         }
       }
     } else {
-      if (decoded is! List)
-        throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+      if (decoded is! List) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
       for (final group in decoded) {
-        if (group is! List)
-          throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+        if (group is! List) throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
         groups.add(group);
       }
     }
@@ -761,21 +627,13 @@ class GalleryDuplicateService {
       if (entry.kind != GalleryEntryKind.image) continue;
       imageEntries++;
       if (entry.sourceRevision == null) continue;
-      if (snapshot.length >= maxCandidates)
-        throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
+      if (snapshot.length >= maxCandidates) throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
       try {
-        final source = await catalog.resolve(
-          entry.mediaId,
-          revision: entry.sourceRevision,
-        );
+        final source = await catalog.resolve(entry.mediaId, revision: entry.sourceRevision);
         final absolute = path.normalize(source.absolutePath);
         final resolved = await File(absolute).resolveSymbolicLinks();
-        if (!path.isWithin(root, resolved) ||
-            resolved != path.join(root, entry.path))
-          continue;
-        if (await FileSystemEntity.type(absolute, followLinks: false) !=
-            FileSystemEntityType.file)
-          continue;
+        if (!path.isWithin(root, resolved) || resolved != path.join(root, entry.path)) continue;
+        if (await FileSystemEntity.type(absolute, followLinks: false) != FileSystemEntityType.file) continue;
         try {
           // stat/length alone succeed for chmod000 files. Czkawka may then
           // return exit0 plus empty JSON, keeping read errors only on stdout.
@@ -821,14 +679,11 @@ class GalleryDuplicateService {
   Future<void> _assertRoot(String root, Completer<void> cancel) async {
     _checkCancelled(cancel);
     try {
-      final current = path.normalize(
-        await catalog.originals.resolveSymbolicLinks(),
-      );
+      final current = path.normalize(await catalog.originals.resolveSymbolicLinks());
       if (current != root) {
         throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
       }
-      if (await FileSystemEntity.type(root, followLinks: false) !=
-          FileSystemEntityType.directory) {
+      if (await FileSystemEntity.type(root, followLinks: false) != FileSystemEntityType.directory) {
         throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
       }
       // Read at most the first directory entry, including the valid empty case.
@@ -841,23 +696,14 @@ class GalleryDuplicateService {
 
   Future<bool> _isCurrent(GalleryDuplicateMember member, {String? root}) async {
     try {
-      final source = await catalog.resolve(
-        member.mediaId,
-        revision: member.sourceRevision,
-      );
-      final currentRoot = path.normalize(
-        await catalog.originals.resolveSymbolicLinks(),
-      );
+      final source = await catalog.resolve(member.mediaId, revision: member.sourceRevision);
+      final currentRoot = path.normalize(await catalog.originals.resolveSymbolicLinks());
       if (root != null && root != currentRoot) return false;
       final resolved = await File(source.absolutePath).resolveSymbolicLinks();
       return source.entry.path == member.path &&
           resolved == path.join(currentRoot, member.path) &&
           path.isWithin(currentRoot, resolved) &&
-          await FileSystemEntity.type(
-                source.absolutePath,
-                followLinks: false,
-              ) ==
-              FileSystemEntityType.file;
+          await FileSystemEntity.type(source.absolutePath, followLinks: false) == FileSystemEntityType.file;
     } on GalleryCatalogFailure catch (error) {
       if (error.code == GalleryErrorCode.notFound ||
           error.code == GalleryErrorCode.revisionMismatch ||
@@ -893,8 +739,7 @@ class GalleryDuplicateService {
       }
       if (current.length < 2) continue;
       _log.fine(
-        () =>
-            'Duplicate group ready index=$position members=${current.length} skippedGroups=${position - index}',
+        () => 'Duplicate group ready index=$position members=${current.length} skippedGroups=${position - index}',
       );
       return GalleryDuplicateGroupPage(
         jobId: jobId,
@@ -903,12 +748,8 @@ class GalleryDuplicateService {
       );
     }
     _ensureOpen();
-    if (!identical(job, _job))
-      throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
-    _log.fine(
-      () =>
-          'Duplicate review finished skippedGroups=${job.groups.length - index}',
-    );
+    if (!identical(job, _job)) throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
+    _log.fine(() => 'Duplicate review finished skippedGroups=${job.groups.length - index}');
     return GalleryDuplicateGroupPage(jobId: jobId, index: job.groups.length);
   }
 
@@ -919,32 +760,24 @@ class GalleryDuplicateService {
     final job = _job;
     final usable =
         job.status == GalleryDuplicateStatus.completed ||
-        ((job.status == GalleryDuplicateStatus.cancelled ||
-                job.status == GalleryDuplicateStatus.failed) &&
+        ((job.status == GalleryDuplicateStatus.cancelled || job.status == GalleryDuplicateStatus.failed) &&
             job.groups.isNotEmpty);
-    if (request.action != GalleryMutation.trash ||
-        request.duplicateJobId != job.jobId ||
-        !usable) {
+    if (request.action != GalleryMutation.trash || request.duplicateJobId != job.jobId || !usable) {
       throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     }
-    final chosen = {
-      for (final item in request.items) item.mediaId: item.sourceRevision,
-    };
+    final chosen = {for (final item in request.items) item.mediaId: item.sourceRevision};
     final members = {
       for (final group in job.groups)
         for (final item in group.items) item.mediaId: item,
     };
     for (final selection in chosen.entries) {
       final member = members[selection.key];
-      if (member == null ||
-          member.sourceRevision != selection.value ||
-          !await _isCurrent(member)) {
+      if (member == null || member.sourceRevision != selection.value || !await _isCurrent(member)) {
         throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
       }
     }
     for (final group in job.groups) {
-      if (!group.items.any((item) => chosen.containsKey(item.mediaId)))
-        continue;
+      if (!group.items.any((item) => chosen.containsKey(item.mediaId))) continue;
       var remaining = false;
       for (final member in group.items) {
         if (!chosen.containsKey(member.mediaId) && await _isCurrent(member)) {
@@ -952,14 +785,12 @@ class GalleryDuplicateService {
           break;
         }
       }
-      if (!remaining)
-        throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
+      if (!remaining) throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
     }
   }
 
   static Future<Object?> _readJson(File file) async {
-    if (await FileSystemEntity.type(file.path, followLinks: false) !=
-        FileSystemEntityType.file) {
+    if (await FileSystemEntity.type(file.path, followLinks: false) != FileSystemEntityType.file) {
       throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
     }
     final encoded = await file.readAsString();
@@ -969,9 +800,7 @@ class GalleryDuplicateService {
   Future<void> _save() async {
     final data = _job.toJson();
     final encoded = await Isolate.run(() => jsonEncode(data));
-    final temporary = File(
-      path.join(directory.path, 'job-${galleryToken()}.tmp'),
-    );
+    final temporary = File(path.join(directory.path, 'job-${galleryToken()}.tmp'));
     try {
       await temporary.writeAsString(encoded, flush: true);
       await temporary.rename(_stateFile.path);
@@ -981,13 +810,11 @@ class GalleryDuplicateService {
   }
 
   void _checkCancelled(Completer<void> cancel) {
-    if (cancel.isCompleted || _closed)
-      throw const GalleryCatalogFailure(GalleryErrorCode.cancelled);
+    if (cancel.isCompleted || _closed) throw const GalleryCatalogFailure(GalleryErrorCode.cancelled);
   }
 
   void _ensureOpen() {
-    if (_closed)
-      throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
+    if (_closed) throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
   }
 
   Future<void> close() => _closing ??= _close();

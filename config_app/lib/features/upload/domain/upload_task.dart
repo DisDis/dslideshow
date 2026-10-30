@@ -1,10 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'upload_task.freezed.dart';
 
 enum UploadStatus { queued, uploading, completed, error }
+
+enum UploadFailure { sourceUnavailable, lengthUnknown, transferFailed }
+
+enum UploadSelectionIssue { emptyFolder, folderReadFailed }
 
 @freezed
 sealed class UploadTask with _$UploadTask {
@@ -12,9 +14,9 @@ sealed class UploadTask with _$UploadTask {
     required String id, // Уникальный ID (uuid)
     required String localPath, // Абсолютный путь на устройстве
     required String serverPath, // Путь на сервере (например subfolder/img.jpg)
-    Uint8List? bytes,
+    @Default('') String batchId,
     @Default(UploadStatus.queued) UploadStatus status,
     @Default(0.0) double progress, // 0.0 to 1.0
-    String? errorMessage,
+    UploadFailure? failure,
   }) = _UploadTask;
 }

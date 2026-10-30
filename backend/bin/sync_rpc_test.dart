@@ -13,11 +13,7 @@ main() async {
   initLog("local");
   _log.info("Run.");
   final backendService = RemoteServiceImpl(serializers: serializers);
-  await backendService.spawn(
-    serviceMain1,
-    resultIPortCount: 3,
-    debugName: "remote",
-  );
+  await backendService.spawn(serviceMain1, resultIPortCount: 3, debugName: "remote");
   backendService.service.processing(LocalService(), serializers);
 
   final futures = <Future>[];
@@ -29,11 +25,7 @@ main() async {
 
 checkMessage(int i, RemoteServiceImpl backendService) async {
   final text = "_${i}_";
-  final result =
-      (await backendService.send(
-            EchoCommand(text: text, id: RpcCommand.generateId()),
-          ))
-          as EchoCommandResult;
+  final result = (await backendService.send(EchoCommand(text: text, id: RpcCommand.generateId()))) as EchoCommandResult;
   if (result.resultText!.startsWith(text)) {
     print('OK: $i->${result.resultText}');
   } else {
@@ -48,14 +40,8 @@ class LocalService implements RpcService {
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
     //    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
-    Stopwatch work = new Stopwatch()
-      ..reset()
-      ..start();
     return _executeCommand(command).whenComplete(() {
-      work.stop();
-      _log.info(
-        "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms",
-      );
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type}");
     });
   }
 
@@ -64,17 +50,11 @@ class LocalService implements RpcService {
       case EchoCommand.TYPE:
         return _executeEchoCommand(command as EchoCommand);
       default:
-        return _generateErrorResult(
-          new Exception("Unknown command: ${command.type}"),
-          command,
-        );
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  Future<RpcErrorResult> _generateErrorResult(
-    Object e,
-    RpcCommand command,
-  ) async {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -82,10 +62,7 @@ class LocalService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
-    return EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} LS ${new DateTime.now().microsecond}",
-    );
+    return EchoCommandResult(id: command.id, resultText: "${command.text} LS ${new DateTime.now().microsecond}");
   }
 }
 
@@ -115,14 +92,8 @@ class RemoteService implements RpcService {
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
     //    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
-    Stopwatch work = new Stopwatch()
-      ..reset()
-      ..start();
     return _executeCommand(command).whenComplete(() {
-      work.stop();
-      _log.info(
-        "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms",
-      );
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type}");
     });
   }
 
@@ -131,17 +102,11 @@ class RemoteService implements RpcService {
       case EchoCommand.TYPE:
         return _executeEchoCommand(command as EchoCommand);
       default:
-        return _generateErrorResult(
-          new Exception("Unknown command: ${command.type}"),
-          command,
-        );
+        return _generateErrorResult(new Exception("Unknown command: ${command.type}"), command);
     }
   }
 
-  Future<RpcErrorResult> _generateErrorResult(
-    Object e,
-    RpcCommand command,
-  ) async {
+  Future<RpcErrorResult> _generateErrorResult(Object e, RpcCommand command) async {
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -150,9 +115,6 @@ class RemoteService implements RpcService {
       return _generateErrorResult(new Exception("Echo error"), command);
     }
     await Future.delayed(Duration(milliseconds: 100 + rnd.nextInt(2000)));
-    return EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} S ${new DateTime.now().microsecond}",
-    );
+    return EchoCommandResult(id: command.id, resultText: "${command.text} S ${new DateTime.now().microsecond}");
   }
 }

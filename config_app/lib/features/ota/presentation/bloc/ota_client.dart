@@ -1,88 +1,170 @@
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
+import 'ota_state.dart';
+
+/// A safe failure code; transport exceptions and response bodies stay private.
+class OtaClientException implements Exception {
+  const OtaClientException(this.failure);
+
+  final OtaFailure failure;
+}
+
+/// Owns the transports for one panel action. Does not own a picked file's bytes.
 class OTAClient {
+  OTAClient({required this.baseUri, http.Client Function()? clientFactory, this.timeout = const Duration(minutes: 30)})
+    : _clientFactory = clientFactory ?? http.Client.new {
+    if (timeout <= Duration.zero) throw ArgumentError.value(timeout, 'timeout');
+  }
+
   static final _log = Logger('OTAClient');
-  final String host;
-  static const int port = 8282;
+  static const _maxResponseBytes = 64 * 1024;
+  final Uri baseUri;
+  final http.Client Function() _clientFactory;
+  final Duration timeout;
+  final _clients = <http.Client>{};
+  final _requests = <Future<void>>{};
+  final _sources = <_OtaUploadSource>{};
+  bool _closed = false;
+  Future<void>? _closeFuture;
 
-  OTAClient({required this.host});
-
-  void stop() async {
-    final url = 'http://$host:$port/ota_stop';
-    try {
-      await http.get(
-        Uri.parse(url),
-        headers: {'content-type': 'application/json; charset=utf-8'},
-      );
-    } catch (e) {
-      throw Exception('Ошибка при выполнении HTTP-запроса: $e');
+  Future<String> start({required Future<void> cancellation}) async {
+    final uri = baseUri.resolve('/ota_start?format=json');
+    final request = http.AbortableRequest('GET', uri, abortTrigger: cancellation);
+    final response = await _send(request);
+    if (response.$1 != 200) {
+      throw const OtaClientException(OtaFailure.requestFailed);
     }
+    try {
+      final payload = jsonDecode(response.$2);
+      if (payload case {'version': {'frontend': final String version}}) {
+        if (version.isNotEmpty) return version;
+      }
+    } catch (_) {
+      // A malformed JSON exception can contain the server's entire payload.
+    }
+    throw const OtaClientException(OtaFailure.invalidResponse);
   }
 
-  Future<void> uploadFile(String codeValue, String filePath) async {
-    // 1. URL вашего API
-    var uri = Uri.parse('http://$host:$port/ota_upload');
-
-    // 2. Создаем MultipartRequest (POST)
-    var request = http.MultipartRequest('POST', uri);
-
-    // 3. Добавляем текстовое поле 'code'
-    request.fields['code'] = codeValue;
-
-    // 4. Добавляем файл 'file'
-    // MultipartFile.fromPath автоматически определяет content-type,
-    // но вы можете указать его вручную, если нужно.
-    var multipartFile = await http.MultipartFile.fromPath(
-      'file', // Название поля на сервере
-      filePath,
+  Future<void> uploadFile({
+    required String code,
+    required PlatformFile file,
+    required int length,
+    required Future<void> cancellation,
+    required void Function(int sent, int total) onProgress,
+  }) async {
+    if (_closed) throw const OtaClientException(OtaFailure.cancelled);
+    final request = http.AbortableMultipartRequest('POST', baseUri.resolve('/ota_upload'), abortTrigger: cancellation);
+    request.fields['code'] = code;
+    var sent = 0;
+    final source = _OtaUploadSource(
+      () => file.readAsByteStream().map((chunk) {
+        sent += chunk.length;
+        onProgress(sent, length);
+        return chunk;
+      }),
     );
-    request.files.add(multipartFile);
-
-    // 5. Отправляем запрос
+    _sources.add(source);
     try {
-      var streamedResponse = await request.send();
-
-      // 6. Обрабатываем ответ
-      if (streamedResponse.statusCode == 200) {
-        // Если нужно получить тело ответа (строку):
-        var response = await http.Response.fromStream(streamedResponse);
-        _log.info("Server response: ${response.body}");
-      } else {
-        throw Exception('Ошибка загрузки: ${streamedResponse.statusCode}');
+      request.files.add(http.MultipartFile('file', source.stream, length, filename: file.name));
+      final response = await _send(request);
+      if (response.$1 != 200) {
+        throw const OtaClientException(OtaFailure.uploadRejected);
       }
-    } catch (e) {
-      throw Exception('Произошла ошибка соединения: $e');
+    } finally {
+      await source.cancel();
+      _sources.remove(source);
     }
   }
 
-  Future<Map<String, dynamic>> start() async {
-    final url = 'http://$host:$port/ota_start?format=json';
-
+  Future<(int, String)> _send(http.BaseRequest request) async {
+    if (_closed) throw const OtaClientException(OtaFailure.cancelled);
+    final client = _clientFactory();
+    final done = Completer<void>();
+    _requests.add(done.future);
+    _clients.add(client);
+    final ordinaryTimeout = timeout < const Duration(seconds: 60) ? timeout : const Duration(seconds: 60);
+    final requestTimeout = request is http.MultipartRequest ? timeout : ordinaryTimeout;
     try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'content-type': 'application/json; charset=utf-8'},
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        if (jsonData is Map<String, dynamic> &&
-            jsonData.containsKey('version')) {
-          return jsonData;
-        } else {
-          throw Exception('Неверный формат ответа: отсутствует поле "items"');
+      final response = await client.send(request).timeout(requestTimeout);
+      final bytes = <int>[];
+      await for (final chunk in response.stream.timeout(ordinaryTimeout)) {
+        if (bytes.length + chunk.length > _maxResponseBytes) {
+          throw const OtaClientException(OtaFailure.invalidResponse);
         }
-      } else {
-        throw Exception(
-          'Ошибка при старте OTA: ${response.statusCode} - ${response.body}',
-        );
+        bytes.addAll(chunk);
       }
-    } on FormatException {
-      throw Exception('Неверный формат JSON в ответе сервера');
-    } catch (e) {
-      throw Exception('Ошибка при выполнении HTTP-запроса: $e');
+      _log.fine('event=response status=${response.statusCode} bytes=${bytes.length}');
+      return (response.statusCode, utf8.decode(bytes, allowMalformed: true));
+    } on OtaClientException {
+      rethrow;
+    } on http.RequestAbortedException {
+      throw const OtaClientException(OtaFailure.cancelled);
+    } catch (error) {
+      if (_closed) throw const OtaClientException(OtaFailure.cancelled);
+      _log.warning('event=requestFailed type=${error.runtimeType}');
+      throw const OtaClientException(OtaFailure.requestFailed);
+    } finally {
+      if (_clients.remove(client)) client.close();
+      done.complete();
+      _requests.remove(done.future);
+    }
+  }
+
+  Future<void> close() => _closeFuture ??= _close();
+
+  Future<void> _close() async {
+    _closed = true;
+    for (final client in _clients) {
+      client.close();
+    }
+    _clients.clear();
+    await Future.wait(_sources.map((source) => source.cancel()).toList());
+    await Future.wait(_requests.toList());
+  }
+}
+
+/// Forwards back pressure and explicitly owns asynchronous file cancellation.
+class _OtaUploadSource {
+  _OtaUploadSource(Stream<List<int>> Function() open) {
+    _controller = StreamController<List<int>>(
+      sync: true,
+      onListen: () {
+        if (_cancelled) return;
+        try {
+          _subscription = open().listen(_controller.add, onError: _controller.addError, onDone: _controller.close);
+        } catch (error, stack) {
+          _controller.addError(error, stack);
+          unawaited(_controller.close());
+        }
+      },
+      onPause: () => _subscription?.pause(),
+      onResume: () => _subscription?.resume(),
+      onCancel: cancel,
+    );
+  }
+
+  late final StreamController<List<int>> _controller;
+  StreamSubscription<List<int>>? _subscription;
+  bool _cancelled = false;
+  Future<void>? _cancelFuture;
+  Stream<List<int>> get stream => _controller.stream;
+
+  Future<void> cancel() => _cancelFuture ??= _cancel();
+
+  Future<void> _cancel() async {
+    _cancelled = true;
+    try {
+      await _subscription?.cancel();
+    } catch (error) {
+      OTAClient._log.warning('event=sourceCleanupFailed type=${error.runtimeType}');
+    } finally {
+      // Closing an unconsumed controller need not delay releasing its source.
+      unawaited(_controller.close());
     }
   }
 }

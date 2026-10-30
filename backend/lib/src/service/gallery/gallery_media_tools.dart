@@ -56,11 +56,7 @@ class GalleryMediaTools {
        _ownsMetadataReader = metadataReader == null {
     _metadataReader =
         metadataReader ??
-        GalleryMetadataReader(
-          runner: _runner,
-          cancellation: _cancellation.future,
-          checkActive: _checkActive,
-        );
+        GalleryMetadataReader(runner: _runner, cancellation: _cancellation.future, checkActive: _checkActive);
   }
 
   void _checkActive() {
@@ -77,9 +73,7 @@ class GalleryMediaTools {
       return await work();
     } on FileSystemException catch (error) {
       throw GalleryCatalogFailure(
-        error.osError?.errorCode == 13
-            ? GalleryErrorCode.forbidden
-            : GalleryErrorCode.unavailable,
+        error.osError?.errorCode == 13 ? GalleryErrorCode.forbidden : GalleryErrorCode.unavailable,
       );
     } finally {
       _active.remove(done.future);
@@ -90,23 +84,17 @@ class GalleryMediaTools {
   Future<GalleryMetadata> metadata(String id, {required String revision}) {
     _checkActive();
     if (id.isEmpty || revision.isEmpty) {
-      return Future.error(
-        const GalleryCatalogFailure(GalleryErrorCode.invalidRequest),
-      );
+      return Future.error(const GalleryCatalogFailure(GalleryErrorCode.invalidRequest));
     }
     final key = '$id:$revision';
     final pending = _metadataReads[key];
     if (pending != null) {
-      _log.fine(
-        () =>
-            'Metadata shared media=${_logId(id)} active=${_metadataReads.length}',
-      );
+      _log.fine(() => 'Metadata shared media=${_logId(id)} active=${_metadataReads.length}');
       return pending;
     }
     if (_metadataReads.length >= _maxConcurrentMetadata) {
       return Future.error(const GalleryCatalogFailure(GalleryErrorCode.busy));
     }
-    final clock = Stopwatch()..start();
     final read = _track(() async {
       final source = await _resolve(id, revision);
       _log.fine(
@@ -135,19 +123,15 @@ class GalleryMediaTools {
         _log.fine(
           () =>
               'Metadata finished media=${_logId(id)} '
-              'elapsedMs=${clock.elapsedMilliseconds} cached=${_cache.length}',
+              ' cached=${_cache.length}',
         );
       },
       onError: (Object error) {
         _metadataReads.remove(key);
-        final code = error is GalleryCatalogFailure
-            ? error.code
-            : GalleryErrorCode.processingFailed;
+        final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.processingFailed;
         _log.log(
           code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
-          () =>
-              'Metadata failed media=${_logId(id)} code=${code.name} '
-              'elapsedMs=${clock.elapsedMilliseconds}',
+          () => 'Metadata failed media=${_logId(id)} code=${code.name} ',
         );
       },
     );
@@ -163,8 +147,7 @@ class GalleryMediaTools {
       throw const GalleryCatalogFailure(GalleryErrorCode.forbidden);
     }
     final resolved = await file.resolveSymbolicLinks();
-    if (!path.isWithin(originalRoot, resolved) ||
-        resolved != path.join(originalRoot, source.entry.path)) {
+    if (!path.isWithin(originalRoot, resolved) || resolved != path.join(originalRoot, source.entry.path)) {
       throw const GalleryCatalogFailure(GalleryErrorCode.forbidden);
     }
     return source;
@@ -178,22 +161,21 @@ class GalleryMediaTools {
 
   /// The trash owner validates the entry/revision and confinement before and
   /// after this call; no original catalogue identity is assigned to this file.
-  Future<GalleryMetadata> trashMetadata(GalleryTrashEntry entry, File file) =>
-      _track(
-        () => _read(
-          GallerySource(
-            GalleryEntry(
-              mediaId: entry.trashId,
-              path: entry.originalPath,
-              name: entry.name,
-              kind: entry.kind,
-              sourceRevision: entry.sourceRevision,
-            ),
-            file.path,
-            entry.sourceRevision,
-          ),
+  Future<GalleryMetadata> trashMetadata(GalleryTrashEntry entry, File file) => _track(
+    () => _read(
+      GallerySource(
+        GalleryEntry(
+          mediaId: entry.trashId,
+          path: entry.originalPath,
+          name: entry.name,
+          kind: entry.kind,
+          sourceRevision: entry.sourceRevision,
         ),
-      );
+        file.path,
+        entry.sourceRevision,
+      ),
+    ),
+  );
 
   Future<GalleryMetadata> _read(GallerySource source, {String? input}) async {
     if (_activeMetadataReads >= _maxConcurrentMetadata) {
@@ -208,30 +190,26 @@ class GalleryMediaTools {
   }
 
   Future<GalleryMetadata> rotate(GalleryRotateRequest request) async {
-    final clock = Stopwatch()..start();
-    final operation = _logId(request.operationId);
     _log.info(
       () =>
-          'Rotation started operation=$operation direction=${request.rotation.name} metadataPolicy=jpegCopyPngNormalize '
+          'Rotation started direction=${request.rotation.name} metadataPolicy=jpegCopyPngNormalize '
           'maxSourceBytes=$_maxSourceBytes maxSourcePixels=$_maxSourcePixels',
     );
     try {
       final result = await _rotate(request);
       _log.info(
         () =>
-            'Rotation finished operation=$operation direction=${request.rotation.name} '
-            'format=${_ImageFormat.parse(result.format).name} elapsedMs=${clock.elapsedMilliseconds}',
+            'Rotation finished direction=${request.rotation.name} '
+            'format=${_ImageFormat.parse(result.format).name}',
       );
       return result;
     } on Object catch (error) {
-      final code = error is GalleryCatalogFailure
-          ? error.code
-          : GalleryErrorCode.processingFailed;
+      final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.processingFailed;
       _log.log(
         code == GalleryErrorCode.cancelled ? Level.INFO : Level.WARNING,
         () =>
-            'Rotation failed operation=$operation direction=${request.rotation.name} '
-            'code=${code.name} elapsedMs=${clock.elapsedMilliseconds}',
+            'Rotation failed direction=${request.rotation.name} '
+            'code=${code.name}',
       );
       rethrow;
     }
@@ -256,9 +234,7 @@ class GalleryMediaTools {
       final originalExif = format == _ImageFormat.jpeg
           ? await _metadataReader.exifDigest(File(source.absolutePath))
           : null;
-      if (format == _ImageFormat.other ||
-          before.width == null ||
-          before.height == null) {
+      if (format == _ImageFormat.other || before.width == null || before.height == null) {
         throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
       }
       if (before.sizeBytes > _maxSourceBytes ||
@@ -270,7 +246,7 @@ class GalleryMediaTools {
       final orientation = _ExifOrientation.parse(before.orientation);
       _log.info(
         () =>
-            'Rotation codec selected operation=${_logId(request.operationId)} '
+            'Rotation codec selected '
             'tool=${format == _ImageFormat.jpeg ? 'jpegtran' : 'dartImage'} '
             'format=${format.name}',
       );
@@ -280,24 +256,13 @@ class GalleryMediaTools {
       final height = swapsAxes ? before.width! : before.height!;
       // This reserved staging pattern is already excluded from every original
       // scan; using the source directory also guarantees same-volume rename.
-      final staged = File(
-        path.join(
-          path.dirname(source.absolutePath),
-          '.upload-${galleryToken()}.part',
-        ),
-      );
+      final staged = File(path.join(path.dirname(source.absolutePath), '.upload-${galleryToken()}.part'));
       try {
         await staged.create();
         // Apply source permissions while the staging file is still empty;
         // codecs truncate it in place and metadata rewriting is checked below.
-        await _command('chmod', [
-          '--reference=${source.absolutePath}',
-          '--',
-          staged.path,
-        ]);
-        final originalProfile = await _metadataReader.profileDigest(
-          File(source.absolutePath),
-        );
+        await _command('chmod', ['--reference=${source.absolutePath}', '--', staged.path]);
+        final originalProfile = await _metadataReader.profileDigest(File(source.absolutePath));
         switch (format) {
           case _ImageFormat.jpeg:
             await _command('jpegtran', [
@@ -320,17 +285,12 @@ class GalleryMediaTools {
           case _ImageFormat.other:
             throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
         }
-        if (!await staged.exists() ||
-            await staged.length() == 0 ||
-            await staged.length() > _maxSourceBytes) {
+        if (!await staged.exists() || await staged.length() == 0 || await staged.length() > _maxSourceBytes) {
           throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
         }
         final after = await _read(source, input: staged.path);
-        if (format == _ImageFormat.jpeg &&
-            await _metadataReader.exifDigest(staged) != originalExif) {
-          _log.warning(
-            'Rotation EXIF changed operation=${_logId(request.operationId)} format=jpeg',
-          );
+        if (format == _ImageFormat.jpeg && await _metadataReader.exifDigest(staged) != originalExif) {
+          _log.warning('Rotation EXIF changed format=jpeg');
         }
         if (_ImageFormat.parse(after.format) != format ||
             after.width != width ||
@@ -340,17 +300,12 @@ class GalleryMediaTools {
                 : _ExifOrientation.parse(after.orientation) != orientation) ||
             after.bitDepth != before.bitDepth ||
             after.hasAlpha != before.hasAlpha ||
-            (format == _ImageFormat.png &&
-                !_preservedMetadata(before, after)) ||
+            (format == _ImageFormat.png && !_preservedMetadata(before, after)) ||
             await _metadataReader.profileDigest(staged) != originalProfile) {
           throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
         }
         if (((await staged.stat()).mode & 0xfff) != (beforeStat.mode & 0xfff)) {
-          await _command('chmod', [
-            '--reference=${source.absolutePath}',
-            '--',
-            staged.path,
-          ]);
+          await _command('chmod', ['--reference=${source.absolutePath}', '--', staged.path]);
         }
         _checkActive();
         await _ensureCurrent(source);
@@ -365,9 +320,7 @@ class GalleryMediaTools {
         final updated = await catalog.resolve(request.mediaId);
         final details = after.copyWith(
           sourceRevision: updated.entry.sourceRevision!,
-          fileModified: (await File(
-            source.absolutePath,
-          ).stat()).modified.toUtc(),
+          fileModified: (await File(source.absolutePath).stat()).modified.toUtc(),
         );
         _cache.removeWhere((_, value) => value.mediaId == request.mediaId);
         return details;
@@ -377,8 +330,7 @@ class GalleryMediaTools {
     }),
   );
 
-  static String _logId(String value) =>
-      'id-${sha256.convert(utf8.encode(value)).toString().substring(0, 12)}';
+  static String _logId(String value) => 'id-${sha256.convert(utf8.encode(value)).toString().substring(0, 12)}';
 
   static bool _sameStat(FileStat left, FileStat right) =>
       left.type == right.type &&
@@ -419,10 +371,7 @@ class GalleryMediaTools {
 
   Future<void> _close() async {
     _closed = true;
-    _log.fine(
-      () =>
-          'Media tools closing active=${_active.length} cached=${_cache.length}',
-    );
+    _log.fine(() => 'Media tools closing active=${_active.length} cached=${_cache.length}');
     _cancellation.complete();
     await _pngRotation.close();
     if (_ownsMetadataReader) await _metadataReader.close();
@@ -477,9 +426,7 @@ enum _ExifOrientation {
 
   _PhysicalTransform retainedMetadataRotation(GalleryRotation direction) {
     final clockwise = direction == GalleryRotation.right;
-    return clockwise != mirrored
-        ? _PhysicalTransform.rotate90
-        : _PhysicalTransform.rotate270;
+    return clockwise != mirrored ? _PhysicalTransform.rotate90 : _PhysicalTransform.rotate270;
   }
 }
 

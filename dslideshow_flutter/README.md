@@ -120,6 +120,49 @@ DSLIDESHOW_EMBEDDED=true flutter test --no-pub test/ota_bloc_test.dart \
 
 ## Проверки
 
+Зависимости frontend собираются через сервис-локатор `injector` (GetIt)
+в `lib/main.dart`. `RouteBloc`, `SlideshowStatusBloc`, `FrameFrontendController`,
+`FrameDisplayInfoReader` и `FrontendService` регистрируются как singleton
+до обработки входящих RPC. Геометрия дисплея читается зарегистрированной
+функцией при каждом запросе, поэтому resize отражается в ответе.
+
+`FrontendService` владеет минутным опросом SystemInfo и локальными ожиданиями
+RPC. SystemInfo запрашивается при создании сервиса и затем на каждом минутном
+тике через надёжный межизолятный RPC к backend. Отдельного флага выполняющегося
+опроса нет. Ошибка backend диагностируется без сырого исключения,
+следующий тик запрашивает данные заново. `dispose()`
+отменяет таймер, локальные ожидания и потоки событий; поздний ответ не обновляет
+закрытый сервис. Общий RemoteService принадлежит уровню запуска и этим методом
+не закрывается. GetIt-регистрация подключает `dispose` к своему lifecycle
+и вызывает его один раз при завершении владельца. Результат `dispose`
+не кешируется для повторных вызовов.
+
+FrontendService публикует `onSystemInfoUpdate` без зависимости от Bloc.
+В `main.dart` этот поток подключён к `FrameFrontendController`, который
+обновляет `hasInternet` в `SlideshowStatusBloc`. Зависимости классов передаются
+через конструкторы; `injector` используется в точке сборки приложения.
+FrontendService получает готовый контроллер, контроллер — маршрут, функцию
+чтения дисплея и отложенный provider StatusBloc. Provider разрывает цикл
+инициализации StatusBloc → FrontendService → FrameFrontendController → StatusBloc.
+Unit-тесты создают рабочие объекты через те же конструкторы с fake внешнего RPC.
+
+`MainMenuBloc` ждёт подтверждения power/restart и закрывает меню после успеха.
+Отказ оставляет меню доступным, повторное выполнение до окончания текущего
+игнорируется. Закрытие отменяет локальное ожидание и ждёт отмены подписки
+кнопок. Логи `FrontendService` используют `requestId` для RPC и название действия
+для refresh; `MainMenuBloc` записывает действие и итог.
+Ошибки/отмена не раскрывают текст исключения или содержимое RPC.
+
+```sh
+# Из dslideshow_flutter/
+flutter test --no-pub test/frontend_service_test.dart test/frame_frontend_controller_test.dart test/main_menu_bloc_test.dart
+```
+
+Тесты используют рабочие сервис/Bloc с fake внешнего RemoteService, виртуальное
+время и управляемые ответы. Они не выключают устройство и не перезапускают
+службу. Содержимое callback выбора страницы и команды проверяется отдельно
+от layout меню.
+
 [Распределение покрытия и быстрые локальные команды](../doc/testing.md).
 
 [Специальные экраны](../doc/special-screens.md): часы, снимки камер по HTTP/HTTPS,
@@ -149,7 +192,17 @@ python3 dslideshow_flutter/tool/test_linux_host_environment.py -v
 `dslideshow_flutter/` и `config_app/`. Для watch-режима доступны скрипты
 `generate_models.sh`. Используется штатный запуск build_runner без дополнительных
 ограничений генератора; история обновления SDK сохранена [отдельно](../doc/history/sdk-update-2026-10.md).
-В backend эта же команда генерирует RPC-реестр из `@RpcSerializers`:
+Для форматированного вывода события OTA после общей генерации выполните из
+`dslideshow_flutter/`:
+
+```sh
+dart run build_runner build --define freezed:freezed=format=true \
+  --build-filter lib/features/ota/presentation/bloc/ota_event.freezed.dart
+```
+
+Freezed 4 задаёт форматирование builder-опцией; сгенерированный файл вручную
+не редактируется. Остальные модели этой командой не перезаписываются.
+В backend обычный `dart run build_runner build` генерирует также RPC-реестр из `@RpcSerializers`:
 [подключение builder и правила регистрации](../rpc_serializers_generator/README.md).
 
 Device Preview 3 подключается до инициализации WidgetsBinding. В desktop debug/profile

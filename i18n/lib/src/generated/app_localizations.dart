@@ -5917,6 +5917,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not confirm that settings access has ended. Retry, or return without confirmation.'**
   String get configPageCloseError;
+
+  /// No description provided for @ota_file_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {name}'**
+  String ota_file_selected(String name);
+
+  /// No description provided for @ota_file_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a .deb firmware file.'**
+  String get ota_file_invalid;
+
+  /// No description provided for @ota_file_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'The firmware file is empty.'**
+  String get ota_file_empty;
+
+  /// No description provided for @ota_file_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the selected firmware file.'**
+  String get ota_file_unavailable;
+
+  /// No description provided for @ota_request_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete the OTA request. Try again.'**
+  String get ota_request_failed;
+
+  /// No description provided for @ota_response_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame returned an invalid OTA response.'**
+  String get ota_response_invalid;
+
+  /// No description provided for @ota_upload_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame rejected the firmware upload.'**
+  String get ota_upload_rejected;
+
+  /// No description provided for @wifi_operation_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'The operation result is unknown. Check the frame before trying again.'**
+  String get wifi_operation_unknown;
+
+  /// No description provided for @wifi_refresh_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The Wi-Fi operation completed, but the lists could not be refreshed. Refresh before making another change.'**
+  String get wifi_refresh_failed;
+
+  /// No description provided for @upload_source_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the selected file.'**
+  String get upload_source_unavailable;
+
+  /// No description provided for @upload_length_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not determine the file size.'**
+  String get upload_length_unknown;
+
+  /// No description provided for @upload_transfer_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not confirm the upload. Check the frame before retrying.'**
+  String get upload_transfer_failed;
+
+  /// No description provided for @upload_folder_scan_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the selected folder.'**
+  String get upload_folder_scan_failed;
 }
 
 class _AppLocalizationsDelegate

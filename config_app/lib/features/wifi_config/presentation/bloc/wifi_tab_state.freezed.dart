@@ -151,7 +151,7 @@ extension WifiTabStatePatterns on WifiTabState {
       Iterable<WiFiConnectionInfo> connections,
     )?
     initialized,
-    TResult Function(String errorMessage)? error,
+    TResult Function(String errorMessage, WifiFailureKind kind)? error,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -161,7 +161,7 @@ extension WifiTabStatePatterns on WifiTabState {
       case InWifiTabState() when initialized != null:
         return initialized(_that.availableNetworks, _that.connections);
       case ErrorWifiTabState() when error != null:
-        return error(_that.errorMessage);
+        return error(_that.errorMessage, _that.kind);
       case _:
         return orElse();
     }
@@ -188,7 +188,7 @@ extension WifiTabStatePatterns on WifiTabState {
       Iterable<WiFiConnectionInfo> connections,
     )
     initialized,
-    required TResult Function(String errorMessage) error,
+    required TResult Function(String errorMessage, WifiFailureKind kind) error,
   }) {
     final _that = this;
     switch (_that) {
@@ -197,7 +197,7 @@ extension WifiTabStatePatterns on WifiTabState {
       case InWifiTabState():
         return initialized(_that.availableNetworks, _that.connections);
       case ErrorWifiTabState():
-        return error(_that.errorMessage);
+        return error(_that.errorMessage, _that.kind);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -223,7 +223,7 @@ extension WifiTabStatePatterns on WifiTabState {
       Iterable<WiFiConnectionInfo> connections,
     )?
     initialized,
-    TResult? Function(String errorMessage)? error,
+    TResult? Function(String errorMessage, WifiFailureKind kind)? error,
   }) {
     final _that = this;
     switch (_that) {
@@ -232,7 +232,7 @@ extension WifiTabStatePatterns on WifiTabState {
       case InWifiTabState() when initialized != null:
         return initialized(_that.availableNetworks, _that.connections);
       case ErrorWifiTabState() when error != null:
-        return error(_that.errorMessage);
+        return error(_that.errorMessage, _that.kind);
       case _:
         return null;
     }
@@ -351,9 +351,14 @@ class _$InWifiTabStateCopyWithImpl<$Res>
 /// @nodoc
 
 class ErrorWifiTabState implements WifiTabState {
-  const ErrorWifiTabState(this.errorMessage);
+  const ErrorWifiTabState(
+    this.errorMessage, {
+    this.kind = WifiFailureKind.rejected,
+  });
 
   final String errorMessage;
+  @JsonKey()
+  final WifiFailureKind kind;
 
   /// Create a copy of WifiTabState
   /// with the given fields replaced by the non-null parameter values.
@@ -368,17 +373,18 @@ class ErrorWifiTabState implements WifiTabState {
         (other.runtimeType == runtimeType &&
             other is ErrorWifiTabState &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            (identical(other.kind, kind) || other.kind == kind));
   }
 
   @override
   int get hashCode {
-    return Object.hash(runtimeType, errorMessage);
+    return Object.hash(runtimeType, errorMessage, kind);
   }
 
   @override
   String toString() {
-    return 'WifiTabState.error(errorMessage: $errorMessage)';
+    return 'WifiTabState.error(errorMessage: $errorMessage, kind: $kind)';
   }
 }
 
@@ -390,7 +396,7 @@ abstract mixin class $ErrorWifiTabStateCopyWith<$Res>
     $Res Function(ErrorWifiTabState) _then,
   ) = _$ErrorWifiTabStateCopyWithImpl;
   @useResult
-  $Res call({String errorMessage});
+  $Res call({String errorMessage, WifiFailureKind kind});
 }
 
 /// @nodoc
@@ -404,13 +410,17 @@ class _$ErrorWifiTabStateCopyWithImpl<$Res>
   /// Create a copy of WifiTabState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? errorMessage = null}) {
+  $Res call({Object? errorMessage = null, Object? kind = null}) {
     return _then(
       ErrorWifiTabState(
         null == errorMessage
             ? _self.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
                   as String,
+        kind: null == kind
+            ? _self.kind
+            : kind // ignore: cast_nullable_to_non_nullable
+                  as WifiFailureKind,
       ),
     );
   }

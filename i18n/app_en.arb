@@ -1526,5 +1526,25 @@
   "configPagePending": "Waiting for the previous operation to finish. You can return to the slideshow.",
   "configPageClosing": "Closing settings access…",
   "configPageClosingAlways": "Closing this screen. Settings access stays enabled by configuration.",
-  "configPageCloseError": "Could not confirm that settings access has ended. Retry, or return without confirmation."
+  "configPageCloseError": "Could not confirm that settings access has ended. Retry, or return without confirmation.",
+  "ota_file_selected": "Selected: {name}",
+  "ota_file_invalid": "Select a .deb firmware file.",
+  "ota_file_empty": "The firmware file is empty.",
+  "ota_file_unavailable": "Could not read the selected firmware file.",
+  "ota_request_failed": "Could not complete the OTA request. Try again.",
+  "ota_response_invalid": "The frame returned an invalid OTA response.",
+  "ota_upload_rejected": "The frame rejected the firmware upload.",
+  "wifi_operation_unknown": "The operation result is unknown. Check the frame before trying again.",
+  "wifi_refresh_failed": "The Wi-Fi operation completed, but the lists could not be refreshed. Refresh before making another change.",
+  "upload_source_unavailable": "Could not read the selected file.",
+  "upload_length_unknown": "Could not determine the file size.",
+  "upload_transfer_failed": "Could not confirm the upload. Check the frame before retrying.",
+  "upload_folder_scan_failed": "Could not read the selected folder.",
+  "@ota_file_selected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

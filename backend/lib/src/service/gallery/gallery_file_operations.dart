@@ -59,30 +59,21 @@ class GalleryFileOperations {
     this.maxCatalogEntries = 100000,
     this.maxCatalogBytes = 64 * 1024 * 1024,
     this.beforeMutation,
-  }) : trashDirectory =
-           trashDirectory ??
-           Directory(path.join(catalog.stateDirectory.absolute.path, 'trash')) {
-    if (maxPendingOperations < 1 ||
-        maxItemsPerOperation < 1 ||
-        maxCatalogEntries < 1 ||
-        maxCatalogBytes < 1) {
+  }) : trashDirectory = trashDirectory ?? Directory(path.join(catalog.stateDirectory.absolute.path, 'trash')) {
+    if (maxPendingOperations < 1 || maxItemsPerOperation < 1 || maxCatalogEntries < 1 || maxCatalogBytes < 1) {
       throw ArgumentError('Invalid gallery operation limits');
     }
     final originals = path.normalize(catalog.originals.absolute.path);
     final trash = path.normalize(this.trashDirectory.absolute.path);
     final state = path.normalize(catalog.stateDirectory.absolute.path);
     if (_overlaps(originals, trash) || _conflictsWithState(state, trash)) {
-      throw ArgumentError(
-        'Trash must be outside originals and other gallery state',
-      );
+      throw ArgumentError('Trash must be outside originals and other gallery state');
     }
   }
 
   Future<T> withMediaLock<T>(Future<T> Function() work) {
     if (_closed) {
-      return Future.error(
-        const GalleryCatalogFailure(GalleryErrorCode.unavailable),
-      );
+      return Future.error(const GalleryCatalogFailure(GalleryErrorCode.unavailable));
     }
     if (_pending >= maxPendingOperations) {
       return Future.error(const GalleryCatalogFailure(GalleryErrorCode.busy));
@@ -101,34 +92,27 @@ class GalleryFileOperations {
     } else {
       await _scanTrash();
     }
-    final entries = _entriesById!.values.toList()
-      ..sort((a, b) => b.trashedAt.compareTo(a.trashedAt));
+    final entries = _entriesById!.values.toList()..sort((a, b) => b.trashedAt.compareTo(a.trashedAt));
     return GalleryTrashCatalog(entries: entries);
   });
 
-  Future<File> resolveTrash(String trashId, {required String revision}) =>
-      withMediaLock(() async {
-        await _initialize();
-        final entry = await _currentEntry(trashId, revision);
-        return _trashFile(entry.originalPath);
-      });
+  Future<File> resolveTrash(String trashId, {required String revision}) => withMediaLock(() async {
+    await _initialize();
+    final entry = await _currentEntry(trashId, revision);
+    return _trashFile(entry.originalPath);
+  });
 
-  Future<GalleryTrashEntry> resolveTrashEntry(
-    String trashId, {
-    required String revision,
-  }) => withMediaLock(() async {
+  Future<GalleryTrashEntry> resolveTrashEntry(String trashId, {required String revision}) => withMediaLock(() async {
     await _initialize();
     return _currentEntry(trashId, revision);
   });
 
   Future<GalleryOperationResult> mutate(GalleryOperationRequest request) async {
-    final clock = Stopwatch()..start();
-    final operationId = _safeOperationId(request.operationId);
     final closedAtStart = _closed;
     final reasons = <_GalleryPathRejection, int>{};
     _log.log(
       _closed ? Level.FINE : Level.INFO,
-      'Gallery mutation started operationId=$operationId '
+      'Gallery mutation started '
       'action=${request.action.name} requested=${request.items.length} pending=$_pending',
     );
     try {
@@ -142,23 +126,18 @@ class GalleryFileOperations {
         final results = <GalleryOperationItemResult>[];
         for (var index = 0; index < request.items.length; index++) {
           final item = request.items[index];
-          final itemClock = Stopwatch()..start();
           var rejection = _GalleryPathRejection.none;
           GalleryOperationItemResult itemResult;
           try {
             itemResult = switch (request.action) {
-              GalleryMutation.trash => await _trash(item, operationId),
+              GalleryMutation.trash => await _trash(item),
               GalleryMutation.restore => await _restore(item),
               GalleryMutation.purge => await _purge(item),
             };
           } on Object catch (error) {
             rejection = _rejection(error);
             if (rejection != _GalleryPathRejection.none) {
-              reasons.update(
-                rejection,
-                (count) => count + 1,
-                ifAbsent: () => 1,
-              );
+              reasons.update(rejection, (count) => count + 1, ifAbsent: () => 1);
             }
             itemResult = GalleryOperationItemResult(
               mediaId: item.mediaId,
@@ -168,37 +147,24 @@ class GalleryFileOperations {
           }
           results.add(itemResult);
           _log.fine(
-            'Gallery mutation item completed operationId=$operationId '
+            'Gallery mutation item completed '
             'action=${request.action.name} itemIndex=$index state=${itemResult.state.name} '
-            'code=${itemResult.error?.name ?? 'none'} reason=${rejection.name} '
-            'elapsedMs=${itemClock.elapsedMilliseconds}',
+            'code=${itemResult.error?.name ?? 'none'} reason=${rejection.name} ',
           );
         }
         if (request.action != GalleryMutation.purge) {
           try {
             await _refresh();
           } on Object catch (error) {
-            _auxiliaryFailure(
-              _GalleryAuxiliaryPhase.catalogRefreshFailed,
-              request.action,
-              operationId,
-              error,
-            );
+            _auxiliaryFailure(_GalleryAuxiliaryPhase.catalogRefreshFailed, request.action, error);
           }
         }
-        return GalleryOperationResult(
-          operationId: request.operationId,
-          items: results,
-        );
+        return GalleryOperationResult(operationId: request.operationId, items: results);
       });
       final codes = <GalleryErrorCode, int>{};
       for (final item in result.items) {
         if (item.state == GalleryItemOperationState.failed) {
-          codes.update(
-            item.error ?? GalleryErrorCode.unknown,
-            (count) => count + 1,
-            ifAbsent: () => 1,
-          );
+          codes.update(item.error ?? GalleryErrorCode.unknown, (count) => count + 1, ifAbsent: () => 1);
         }
       }
       final failed = codes.values.fold(0, (total, count) => total + count);
@@ -208,24 +174,21 @@ class GalleryFileOperations {
             : codes.keys.every((code) => code == GalleryErrorCode.cancelled)
             ? Level.FINE
             : Level.WARNING,
-        'Gallery mutation completed operationId=$operationId action=${request.action.name} '
+        'Gallery mutation completed action=${request.action.name} '
         'requested=${request.items.length} succeeded=${result.items.length - failed} '
         'failed=$failed codes=${codes.entries.map((e) => '${e.key.name}:${e.value}').join(',')} '
-        'reasons=${reasons.entries.map((e) => '${e.key.name}:${e.value}').join(',')} '
-        'elapsedMs=${clock.elapsedMilliseconds}',
+        'reasons=${reasons.entries.map((e) => '${e.key.name}:${e.value}').join(',')} ',
       );
       return result;
     } on Object catch (error) {
       final code = _errorCode(error);
       final expectedStop =
-          code == GalleryErrorCode.cancelled ||
-          (closedAtStart && code == GalleryErrorCode.unavailable);
+          code == GalleryErrorCode.cancelled || (closedAtStart && code == GalleryErrorCode.unavailable);
       _log.log(
         expectedStop ? Level.FINE : Level.WARNING,
         'Gallery mutation ${expectedStop ? 'cancelled' : 'failed'} '
-        'operationId=$operationId action=${request.action.name} requested=${request.items.length} '
-        'code=${code.name} type=${error.runtimeType} reason=${_rejection(error).name} '
-        'elapsedMs=${clock.elapsedMilliseconds}',
+        'action=${request.action.name} requested=${request.items.length} '
+        'code=${code.name} type=${error.runtimeType} reason=${_rejection(error).name} ',
       );
       rethrow;
     }
@@ -236,15 +199,9 @@ class GalleryFileOperations {
         request.operationId.length > 100 ||
         request.items.isEmpty ||
         request.items.length > maxItemsPerOperation ||
-        request.items.map((item) => item.mediaId).toSet().length !=
-            request.items.length ||
-        request.items.any(
-          (item) => item.mediaId.isEmpty || item.sourceRevision.isEmpty,
-        )) {
-      throw const _GalleryFileFailure(
-        GalleryErrorCode.invalidRequest,
-        _GalleryPathRejection.invalidCommand,
-      );
+        request.items.map((item) => item.mediaId).toSet().length != request.items.length ||
+        request.items.any((item) => item.mediaId.isEmpty || item.sourceRevision.isEmpty)) {
+      throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.invalidCommand);
     }
   }
 
@@ -258,17 +215,13 @@ class GalleryFileOperations {
           path.normalize(await catalog.stateDirectory.resolveSymbolicLinks()),
           path.normalize(await trashDirectory.resolveSymbolicLinks()),
         )) {
-      throw const _GalleryFileFailure(
-        GalleryErrorCode.invalidRequest,
-        _GalleryPathRejection.rootOverlap,
-      );
+      throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.rootOverlap);
     }
     if (await catalog.originals.exists()) await _originalRootPath();
     await _scanTrash();
   }
 
   Future<void> _scanTrash() async {
-    final clock = Stopwatch()..start();
     await _assertNoLinks(trashDirectory.absolute.path);
     final byId = <String, GalleryTrashEntry>{};
     final byPath = <String, GalleryTrashEntry>{};
@@ -276,25 +229,15 @@ class GalleryFileOperations {
     if (bytes > maxCatalogBytes) {
       throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
     }
-    await for (final entity in trashDirectory.list(
-      recursive: true,
-      followLinks: false,
-    )) {
-      if (entity is! File ||
-          !FileSettings.isSupportFile(path.extension(entity.path)))
-        continue;
-      final relative = path.relative(
-        entity.absolute.path,
-        from: trashDirectory.absolute.path,
-      );
+    await for (final entity in trashDirectory.list(recursive: true, followLinks: false)) {
+      if (entity is! File || !FileSettings.isSupportFile(path.extension(entity.path))) continue;
+      final relative = path.relative(entity.absolute.path, from: trashDirectory.absolute.path);
       try {
         final file = await _trashFile(relative);
         final entry = _entry(relative, await file.stat());
         bytes += _entryBytes(entry) + (byId.isEmpty ? 0 : 1);
         if (byId.length >= maxCatalogEntries || bytes > maxCatalogBytes) {
-          throw const GalleryCatalogFailure(
-            GalleryErrorCode.outputLimitExceeded,
-          );
+          throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
         }
         byId[entry.trashId] = entry;
         byPath[relative] = entry;
@@ -307,16 +250,12 @@ class GalleryFileOperations {
     _entriesById = byId;
     _entriesByPath = byPath;
     _catalogBytes = bytes;
-    _log.fine(
-      'Gallery trash catalog scanned entries=${byId.length} '
-      'elapsedMs=${clock.elapsedMilliseconds}',
-    );
+    _log.fine('Gallery trash catalog scanned entries=${byId.length} ');
   }
 
   Future<GalleryTrashEntry> _currentEntry(String id, String revision) async {
     final entry = _entriesById![id];
-    if (entry == null)
-      throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
+    if (entry == null) throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
     if (entry.sourceRevision != revision) {
       throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     }
@@ -327,14 +266,8 @@ class GalleryFileOperations {
     return entry;
   }
 
-  Future<GalleryOperationItemResult> _trash(
-    GalleryMediaRef item,
-    String operationId,
-  ) async {
-    final source = await catalog.resolve(
-      item.mediaId,
-      revision: item.sourceRevision,
-    );
+  Future<GalleryOperationItemResult> _trash(GalleryMediaRef item) async {
+    final source = await catalog.resolve(item.mediaId, revision: item.sourceRevision);
     if (source.entry.kind == GalleryEntryKind.directory ||
         !FileSettings.isSupportFile(path.extension(source.entry.path))) {
       throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
@@ -342,8 +275,7 @@ class GalleryFileOperations {
     final original = await _originalFile(source.entry.path);
     final before = await original.stat();
     final destination = await _trashFile(source.entry.path, allowMissing: true);
-    if (await FileSystemEntity.type(destination.path, followLinks: false) !=
-        FileSystemEntityType.notFound) {
+    if (await FileSystemEntity.type(destination.path, followLinks: false) != FileSystemEntityType.notFound) {
       throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
     }
     _admit(_entry(source.entry.path, before));
@@ -354,8 +286,7 @@ class GalleryFileOperations {
     await _originalFile(source.entry.path);
     await _trashFile(source.entry.path, allowMissing: true);
     _assertStat(original, before);
-    if (await FileSystemEntity.type(destination.path, followLinks: false) !=
-        FileSystemEntityType.notFound) {
+    if (await FileSystemEntity.type(destination.path, followLinks: false) != FileSystemEntityType.notFound) {
       throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
     }
     await original.rename(destination.path);
@@ -368,12 +299,7 @@ class GalleryFileOperations {
       // The atomic move committed. If its new stat cannot be observed, an
       // explicit trash refresh will discover the entry; do not claim failure
       // or manufacture a revision/Undo ID from its old filesystem metadata.
-      _auxiliaryFailure(
-        _GalleryAuxiliaryPhase.trashIndexUpdateFailed,
-        GalleryMutation.trash,
-        operationId,
-        error,
-      );
+      _auxiliaryFailure(_GalleryAuxiliaryPhase.trashIndexUpdateFailed, GalleryMutation.trash, error);
     }
     return GalleryOperationItemResult(
       mediaId: item.mediaId,
@@ -388,19 +314,12 @@ class GalleryFileOperations {
     var relative = entry.originalPath;
     for (var attempt = 0; attempt <= 1000; attempt++) {
       if (attempt > 0) relative = _restoredName(entry.originalPath, attempt);
-      final target = await _originalFile(
-        relative,
-        allowMissing: true,
-        allowDirectory: true,
-      );
-      if (await FileSystemEntity.type(target.path, followLinks: false) !=
-          FileSystemEntityType.notFound)
-        continue;
+      final target = await _originalFile(relative, allowMissing: true, allowDirectory: true);
+      if (await FileSystemEntity.type(target.path, followLinks: false) != FileSystemEntityType.notFound) continue;
       await _ensureParent(target, await _originalRootPath());
       await _currentEntry(item.mediaId, item.sourceRevision);
       await _originalFile(relative, allowMissing: true, allowDirectory: true);
-      if (await FileSystemEntity.type(target.path, followLinks: false) !=
-          FileSystemEntityType.notFound) {
+      if (await FileSystemEntity.type(target.path, followLinks: false) != FileSystemEntityType.notFound) {
         continue;
       }
       await source.rename(target.path);
@@ -421,20 +340,12 @@ class GalleryFileOperations {
     await _currentEntry(item.mediaId, item.sourceRevision);
     await file.delete();
     _removeEntry(entry);
-    return GalleryOperationItemResult(
-      mediaId: item.mediaId,
-      state: GalleryItemOperationState.succeeded,
-    );
+    return GalleryOperationItemResult(mediaId: item.mediaId, state: GalleryItemOperationState.succeeded);
   }
 
-  static void _auxiliaryFailure(
-    _GalleryAuxiliaryPhase phase,
-    GalleryMutation action,
-    String operationId,
-    Object error,
-  ) {
+  static void _auxiliaryFailure(_GalleryAuxiliaryPhase phase, GalleryMutation action, Object error) {
     _log.warning(
-      'Gallery mutation auxiliary update failed operationId=$operationId '
+      'Gallery mutation auxiliary update failed '
       'action=${action.name} phase=${phase.name} code=${_errorCode(error).name} '
       'type=${error.runtimeType}',
     );
@@ -443,11 +354,7 @@ class GalleryFileOperations {
   void _admit(GalleryTrashEntry entry) {
     final old = _entriesByPath[entry.originalPath];
     final count = _entriesById!.length + (old == null ? 1 : 0);
-    final bytes =
-        _catalogBytes +
-        _entryBytes(entry) -
-        (old == null ? 0 : _entryBytes(old)) +
-        128;
+    final bytes = _catalogBytes + _entryBytes(entry) - (old == null ? 0 : _entryBytes(old)) + 128;
     if (count > maxCatalogEntries || bytes > maxCatalogBytes) {
       throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
     }
@@ -468,16 +375,11 @@ class GalleryFileOperations {
     _catalogBytes -= _entryBytes(entry) + (_entriesById!.isEmpty ? 0 : 1);
   }
 
-  static int _emptyCatalogBytes() => utf8
-      .encode(jsonEncode(const GalleryTrashCatalog(entries: []).toJson()))
-      .length;
-  static int _entryBytes(GalleryTrashEntry entry) =>
-      utf8.encode(jsonEncode(entry.toJson())).length;
+  static int _emptyCatalogBytes() => utf8.encode(jsonEncode(const GalleryTrashCatalog(entries: []).toJson())).length;
+  static int _entryBytes(GalleryTrashEntry entry) => utf8.encode(jsonEncode(entry.toJson())).length;
   static String _revision(FileStat stat) => sha256
       .convert(
-        utf8.encode(
-          '${stat.size}:${stat.modified.microsecondsSinceEpoch}:${stat.changed.microsecondsSinceEpoch}',
-        ),
+        utf8.encode('${stat.size}:${stat.modified.microsecondsSinceEpoch}:${stat.changed.microsecondsSinceEpoch}'),
       )
       .toString();
   static GalleryTrashEntry _entry(String relative, FileStat stat) {
@@ -487,9 +389,7 @@ class GalleryFileOperations {
     final revision = _revision(stat);
     final extension = path.extension(relative).toLowerCase();
     return GalleryTrashEntry(
-      trashId: sha256
-          .convert(utf8.encode(jsonEncode([relative, revision])))
-          .toString(),
+      trashId: sha256.convert(utf8.encode(jsonEncode([relative, revision]))).toString(),
       name: path.basename(relative),
       originalPath: relative,
       kind: extension == '.gif'
@@ -512,11 +412,7 @@ class GalleryFileOperations {
     );
   }
 
-  Future<File> _originalFile(
-    String relative, {
-    bool allowMissing = false,
-    bool allowDirectory = false,
-  }) async {
+  Future<File> _originalFile(String relative, {bool allowMissing = false, bool allowDirectory = false}) async {
     return _checkedFile(
       await _originalRootPath(),
       relative,
@@ -535,17 +431,11 @@ class GalleryFileOperations {
         path.isAbsolute(relative) ||
         path.split(relative).any((part) => part == '..' || part == '.') ||
         path.normalize(relative) != relative) {
-      throw const _GalleryFileFailure(
-        GalleryErrorCode.invalidRequest,
-        _GalleryPathRejection.invalidRelativePath,
-      );
+      throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.invalidRelativePath);
     }
     final file = File(path.join(root, relative));
     if (!path.isWithin(root, file.path)) {
-      throw const _GalleryFileFailure(
-        GalleryErrorCode.invalidRequest,
-        _GalleryPathRejection.invalidRelativePath,
-      );
+      throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.invalidRelativePath);
     }
     await _assertNoLinks(file.path, allowMissing: allowMissing);
     final type = await FileSystemEntity.type(file.path, followLinks: false);
@@ -553,9 +443,7 @@ class GalleryFileOperations {
     if (allowDirectory && type == FileSystemEntityType.directory) return file;
     if (type != FileSystemEntityType.file) {
       throw GalleryCatalogFailure(
-        type == FileSystemEntityType.directory
-            ? GalleryErrorCode.unsupported
-            : GalleryErrorCode.notFound,
+        type == FileSystemEntityType.directory ? GalleryErrorCode.unsupported : GalleryErrorCode.notFound,
       );
     }
     return file;
@@ -572,10 +460,7 @@ class GalleryFileOperations {
       if (type == FileSystemEntityType.notFound) {
         await Directory(current).create();
       } else if (type != FileSystemEntityType.directory) {
-        throw const _GalleryFileFailure(
-          GalleryErrorCode.invalidRequest,
-          _GalleryPathRejection.wrongEntryType,
-        );
+        throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.wrongEntryType);
       }
       await _assertNoLinks(current);
     }
@@ -583,8 +468,7 @@ class GalleryFileOperations {
 
   static void _assertStat(File file, FileStat before) {
     final now = file.statSync();
-    if (FileSystemEntity.typeSync(file.path, followLinks: false) !=
-            FileSystemEntityType.file ||
+    if (FileSystemEntity.typeSync(file.path, followLinks: false) != FileSystemEntityType.file ||
         now.type != FileSystemEntityType.file ||
         now.size != before.size ||
         now.modified != before.modified ||
@@ -594,31 +478,19 @@ class GalleryFileOperations {
   }
 
   Future<String> _originalRootPath() async {
-    final resolved = path.normalize(
-      await catalog.originals.resolveSymbolicLinks(),
-    );
+    final resolved = path.normalize(await catalog.originals.resolveSymbolicLinks());
     final pinned = _canonicalOriginalRoot;
     if (pinned != null && pinned != resolved) {
-      throw const _GalleryFileFailure(
-        GalleryErrorCode.revisionMismatch,
-        _GalleryPathRejection.rootChanged,
-      );
+      throw const _GalleryFileFailure(GalleryErrorCode.revisionMismatch, _GalleryPathRejection.rootChanged);
     }
     if (pinned == null) {
       await _assertNoLinks(resolved);
-      if (await FileSystemEntity.type(resolved, followLinks: false) !=
-          FileSystemEntityType.directory) {
-        throw const _GalleryFileFailure(
-          GalleryErrorCode.unsupported,
-          _GalleryPathRejection.wrongEntryType,
-        );
+      if (await FileSystemEntity.type(resolved, followLinks: false) != FileSystemEntityType.directory) {
+        throw const _GalleryFileFailure(GalleryErrorCode.unsupported, _GalleryPathRejection.wrongEntryType);
       }
       final trash = path.normalize(await trashDirectory.resolveSymbolicLinks());
       if (_overlaps(trash, resolved)) {
-        throw const _GalleryFileFailure(
-          GalleryErrorCode.invalidRequest,
-          _GalleryPathRejection.rootOverlap,
-        );
+        throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.rootOverlap);
       }
       _canonicalOriginalRoot = resolved;
       _log.fine(
@@ -629,25 +501,18 @@ class GalleryFileOperations {
     return resolved;
   }
 
-  static bool _overlaps(String a, String b) =>
-      a == b || path.isWithin(a, b) || path.isWithin(b, a);
+  static bool _overlaps(String a, String b) => a == b || path.isWithin(a, b) || path.isWithin(b, a);
 
   static bool _conflictsWithState(String state, String trash) =>
       _overlaps(state, trash) && trash != path.join(state, 'trash');
 
-  static Future<void> _assertNoLinks(
-    String absolute, {
-    bool allowMissing = false,
-  }) async {
+  static Future<void> _assertNoLinks(String absolute, {bool allowMissing = false}) async {
     var current = path.rootPrefix(absolute);
     for (final part in path.split(absolute).skip(1)) {
       current = path.join(current, part);
       final type = await FileSystemEntity.type(current, followLinks: false);
       if (type == FileSystemEntityType.link) {
-        throw const _GalleryFileFailure(
-          GalleryErrorCode.invalidRequest,
-          _GalleryPathRejection.symlinkSegment,
-        );
+        throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.symlinkSegment);
       }
       if (type == FileSystemEntityType.notFound) {
         if (allowMissing) return;
@@ -675,27 +540,15 @@ class GalleryFileOperations {
 
   static _GalleryPathRejection _rejection(Object error) =>
       error is _GalleryFileFailure ? error.reason : _GalleryPathRejection.none;
-  static String _safeOperationId(String value) => value.isEmpty
-      ? 'none'
-      : 'id-${sha256.convert(utf8.encode(value)).toString().substring(0, 12)}';
 
   Future<void> _refresh() => catalog
-      .refresh(
-        GalleryRefreshRequest(
-          operationId: 'files-${galleryToken()}',
-          mode: GalleryRefreshMode.scan,
-        ),
-      )
+      .refresh(GalleryRefreshRequest(operationId: 'files-${galleryToken()}', mode: GalleryRefreshMode.scan))
       .then((_) {});
 
   Future<void> close() => _closing ??= () async {
-    final clock = Stopwatch()..start();
     final pendingAtClose = _pending;
     _closed = true;
     await _tail;
-    _log.info(
-      'Gallery file operations closed pendingAtClose=$pendingAtClose '
-      'elapsedMs=${clock.elapsedMilliseconds}',
-    );
+    _log.info('Gallery file operations closed pendingAtClose=$pendingAtClose ');
   }();
 }

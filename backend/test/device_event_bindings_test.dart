@@ -7,8 +7,8 @@ import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart'
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
-import 'hardware_screen_test.dart' show FakeGPIO, FakeMqtt;
-import 'screen_service_test.dart' show ControlledPower;
+import 'support/hardware_fixture.dart' show FakeGPIO, FakeMqtt;
+import 'support/controlled_screen_power.dart' show ControlledPower;
 
 class _SlowCancelGPIO extends FakeGPIO {
   final cancellation = Completer<void>();

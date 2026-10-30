@@ -195,6 +195,77 @@ void main() {
   });
 
   group('ClientService requests', () {
+    testWidgets('a Wi-Fi deadline does not change the default RPC deadline', (
+      tester,
+    ) async {
+      final channel = _ControlledChannel();
+      final client = clientFor(channel);
+      await connect(tester, client, channel);
+      final wifi = client.send(
+        const WSConfigDownloadCommand(id: 21990),
+        timeout: const Duration(seconds: 65),
+      );
+      var wifiCompleted = false;
+      wifi.then((_) => wifiCompleted = true);
+      final regular = client.send(const WSConfigDownloadCommand(id: 21991));
+      final timedOut = expectLater(regular, throwsA(isA<TimeoutException>()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 15));
+      await timedOut;
+      expect(wifiCompleted, isFalse);
+      expect(client.requestTimeouts, 1);
+      await tester.pump(const Duration(seconds: 49));
+      channel.receive(const WSResultOk(id: 21990));
+      await tester.pump();
+      expect(await wifi, const WSResultOk(id: 21990));
+      expect(client.requestTimeouts, 1);
+    });
+
+    testWidgets(
+      'an individual deadline expires once and ignores a late reply',
+      (tester) async {
+        final channel = _ControlledChannel();
+        final client = clientFor(channel);
+        await connect(tester, client, channel);
+        final pending = client.send(
+          const WSConfigDownloadCommand(id: 21992),
+          timeout: const Duration(seconds: 65),
+        );
+        final timedOut = expectLater(pending, throwsA(isA<TimeoutException>()));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 64999));
+        expect(client.requestTimeouts, 0);
+        await tester.pump(const Duration(milliseconds: 1));
+        await timedOut;
+        expect(client.requestTimeouts, 1);
+        final next = client.send(const WSConfigDownloadCommand(id: 21993));
+        await tester.pump();
+        channel.receive(const WSResultOk(id: 21992));
+        channel.receive(const WSResultOk(id: 21993));
+        await tester.pump();
+        expect(await next, const WSResultOk(id: 21993));
+        expect(client.requestTimeouts, 1);
+      },
+    );
+
+    testWidgets('rejects an invalid individual deadline without sending', (
+      tester,
+    ) async {
+      final channel = _ControlledChannel();
+      final client = clientFor(channel);
+      await connect(tester, client, channel);
+      final before = channel.sent.length;
+      await expectLater(
+        client.send(
+          const WSConfigDownloadCommand(id: 21994),
+          timeout: Duration.zero,
+        ),
+        throwsArgumentError,
+      );
+      expect(channel.sent, hasLength(before));
+      expect(client.requestTimeouts, 0);
+    });
+
     testWidgets('registers requests before synchronously delivered response', (
       tester,
     ) async {

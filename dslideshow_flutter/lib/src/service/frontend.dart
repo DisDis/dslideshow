@@ -4,19 +4,19 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
-import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
+import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = Logger('FrontendService');
   late final RemoteService _backendService;
   late final RemoteService _otaService;
-  late final FrameFrontendController _frameController;
+  final FrameFrontendController _frameController;
+  final _waits = CancellableWaits();
+  Timer? _systemInfoTimer;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = StreamController<SystemInfo>.broadcast();
-  // final _onPushButton = StreamController<ButtonType>.broadcast();
   final _onButtonEvent = StreamController<ButtonEvent>.broadcast();
 
   final _onAction = StreamController<ActionWithParam<bool>>.broadcast();
@@ -31,59 +31,91 @@ class FrontendService implements RpcService {
 
   Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
   Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
-  //Stream<ButtonType> get onPushButton => _onPushButton.stream;
   Stream<ButtonEvent> get onButtonEvent => _onButtonEvent.stream;
   Stream<ActionWithParam> get onAction => _onAction.stream;
 
-  FrontendService(AppConfig config, this._backendService, this._otaService) {
-    _frameController = FrameFrontendController(
-      statusBloc: () => injector(),
-      routeBloc: () => injector(),
-    );
-    Timer.periodic(const Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
-    _updateSystemInfo();
+  FrontendService(
+    AppConfig config,
+    this._backendService,
+    this._otaService, {
+    required this._frameController,
+    Duration systemInfoInterval = const Duration(minutes: 1),
+  }) {
+    if (systemInfoInterval <= Duration.zero) {
+      throw ArgumentError.value(systemInfoInterval, 'systemInfoInterval', 'Must be positive');
+    }
+    _systemInfoTimer = Timer.periodic(systemInfoInterval, (_) {
+      unawaited(_updateSystemInfo());
+    });
+    unawaited(_updateSystemInfo());
   }
 
   @override
-  Future<RpcResult> executeCommand(RpcCommand command) {
-//    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
-    Stopwatch work = Stopwatch()
-      ..reset()
-      ..start();
-    return _executeCommand(command).whenComplete(() {
-      work.stop();
-      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
-    });
+  Future<RpcResult> executeCommand(RpcCommand command) async {
+    if (_waits.isClosed) {
+      return _generateErrorResult(StateError('Frontend service is closed'), command);
+    }
+    try {
+      return await _executeCommand(command);
+    } catch (error) {
+      return _generateErrorResult(error, command);
+    } finally {
+      _log.fine('command result requestId=${command.id} type=${command.type}');
+    }
+  }
+
+  Future<RpcResult> _sendBackend(RpcCommand command) => _send(_backendService, command);
+  Future<RpcResult> _sendOta(RpcCommand command) => _send(_otaService, command);
+
+  Future<RpcResult> _send(RemoteService remote, RpcCommand command) async {
+    if (_waits.isClosed) throw StateError('Frontend service is closed');
+    try {
+      final result = await _waits.wait(remote.send(command));
+      if (_waits.isClosed || result == null) {
+        throw StateError('Frontend service is closed');
+      }
+      if (result is RpcErrorResult) throw RpcErrorResultException(result);
+      return result;
+    } catch (error) {
+      if (!_waits.isClosed) {
+        _log.fine(
+          'RPC failed requestId=${command.id}'
+          ' type=${command.type} errorType=${error.runtimeType}',
+        );
+      }
+      rethrow;
+    } finally {
+      _log.fine(
+        'RPC result requestId=${command.id} type=${command.type}'
+        ' cancelled=${_waits.isClosed}',
+      );
+    }
   }
 
   Future<MediaItem> getStorageCurrentItem() async {
-    final result = await _backendService.send(GetMediaItemCommand(isCurrent: true, id: RpcCommand.generateId()));
+    final result = await _sendBackend(GetMediaItemCommand(isCurrent: true, id: RpcCommand.generateId()));
     var resultMediaItem = result as GetMediaItemCommandResult;
     return MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
 
   Future<MediaItem> getStorageNextItem() async {
-    final result = await _backendService.send(GetMediaItemCommand(isCurrent: false, id: RpcCommand.generateId()));
-//    _log.info("Message: $result");
+    final result = await _sendBackend(GetMediaItemCommand(isCurrent: false, id: RpcCommand.generateId()));
     var resultMediaItem = result as GetMediaItemCommandResult;
     return MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
 
   Future swithLED(LEDType type, bool value) async {
-    return _backendService.send(LEDControlCommand(
-      id: RpcCommand.generateId(),
-      led: type,
-      value: value,
-    ));
+    return _sendBackend(LEDControlCommand(id: RpcCommand.generateId(), led: type, value: value));
   }
 
   Future storageNext() async {
-    return _backendService.send(StorageNextCommand(id: RpcCommand.generateId()));
+    return _sendBackend(StorageNextCommand(id: RpcCommand.generateId()));
   }
 
-  void testEcho(String text) async {
-    final result = await _backendService.send(EchoCommand(id: RpcCommand.generateId(), text: text));
-    _log.info("Message: $result");
+  Future<void> testEcho(String text) async {
+    final command = EchoCommand(id: RpcCommand.generateId(), text: text);
+    await _sendBackend(command);
+    _log.fine('echo complete requestId=${command.id}');
   }
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
@@ -112,22 +144,15 @@ class FrontendService implements RpcService {
     }
   }
 
-  Future<RpcResult> _executeFrameStateCommand(
-    GetFrameFrontendStateCommand command,
-  ) async {
+  Future<RpcResult> _executeFrameStateCommand(GetFrameFrontendStateCommand command) async {
     try {
-      return GetFrameFrontendStateResult(
-        id: command.id,
-        state: _frameController.readState(),
-      );
+      return GetFrameFrontendStateResult(id: command.id, state: _frameController.readState());
     } catch (error) {
       return _generateErrorResult(error, command);
     }
   }
 
-  Future<RpcResult> _executeFrameControlCommand(
-    SetFrameControlCommand command,
-  ) async {
+  Future<RpcResult> _executeFrameControlCommand(SetFrameControlCommand command) async {
     try {
       await _frameController.setControl(command.control, command.enabled);
       return EmptyResult.respond(command);
@@ -140,10 +165,7 @@ class FrontendService implements RpcService {
     if (command.text == 'error') {
       return _generateErrorResult(Exception("Echo error"), command);
     }
-    return EchoCommandResult(
-      id: command.id,
-      resultText: "${command.text} Service ${DateTime.now()}",
-    );
+    return EchoCommandResult(id: command.id, resultText: "${command.text} Service ${DateTime.now()}");
   }
 
   Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
@@ -152,25 +174,52 @@ class FrontendService implements RpcService {
   }
 
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return ErrorResult(
-      id: command.id,
-      error: "$e",
-    );
+    _log.warning('command failed requestId=${command.id} type=${command.type} errorType=${e.runtimeType}');
+    return ErrorResult(id: command.id, error: "$e");
   }
 
   Future<SystemInfo> getSystemInfo() async {
-    final resultRaw = await _backendService.send(GetSystemInfoCommand(id: RpcCommand.generateId()));
+    final resultRaw = await _sendBackend(GetSystemInfoCommand(id: RpcCommand.generateId()));
     var result = resultRaw as GetSystemInfoCommandResult;
     return result.systemInfo;
   }
 
-  void _updateSystemInfo() async {
-    var result = await getSystemInfo();
-    final SlideshowStatusBloc bloc = injector();
-    if (bloc.state.hasInternet != result.networkInfo.hasInternet) {
-      bloc.add(SlideshowInternetEvent(result.networkInfo.hasInternet));
+  Future<void> _updateSystemInfo() async {
+    if (_waits.isClosed) return;
+    _log.fine('systemInfo start');
+    try {
+      final result = await getSystemInfo();
+      if (_waits.isClosed) return;
+      _onSystemInfoUpdate.add(result);
+      _log.fine('systemInfo completed');
+    } catch (error) {
+      if (!_waits.isClosed) {
+        _log.warning(
+          'systemInfo failed'
+          ' errorType=${error.runtimeType}',
+        );
+      }
+    } finally {
+      if (_waits.isClosed) {
+        _log.fine('systemInfo cancelled');
+      }
     }
-    _onSystemInfoUpdate.add(result);
+  }
+
+  Future<void> dispose() async {
+    _systemInfoTimer?.cancel();
+    _systemInfoTimer = null;
+    _waits.close();
+    _log.info('dispose');
+    await Future.wait([
+      _screenStateChangePreparation.close(),
+      _onSystemInfoUpdate.close(),
+      _onButtonEvent.close(),
+      _onAction.close(),
+      _onOTAReady.close(),
+      _onOTAInfo.close(),
+      _onOTAOutput.close(),
+    ]);
   }
 
   Future<RpcResult> _executeButtonChangeStateCommand(ButtonChangeStateCommand command) async {
@@ -179,43 +228,43 @@ class FrontendService implements RpcService {
   }
 
   Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async {
-    return _backendService.send(ScreenLockCommand(id: RpcCommand.generateId(), isLock: isScreenLockNewValue));
+    return _sendBackend(ScreenLockCommand(id: RpcCommand.generateId(), isLock: isScreenLockNewValue));
   }
 
-  Future emulatePushButton(ButtonType buttonType,[int durationMs = 1000]) async {
-    return _backendService.send(EmulatePushButtonCommand(id: RpcCommand.generateId(), button: buttonType, durationMs: durationMs));
+  Future emulatePushButton(ButtonType buttonType, [int durationMs = 1000]) async {
+    return _sendBackend(
+      EmulatePushButtonCommand(id: RpcCommand.generateId(), button: buttonType, durationMs: durationMs),
+    );
   }
 
   Future screenTurn(bool value) async {
-    return _backendService.send(ScreenTurnCommand(id: RpcCommand.generateId(), enabled: value));
+    return _sendBackend(ScreenTurnCommand(id: RpcCommand.generateId(), enabled: value));
   }
 
   Future powerOff() async {
-    return _backendService.send(PowerOffCommand(id: RpcCommand.generateId()));
+    return _sendBackend(PowerOffCommand(id: RpcCommand.generateId()));
   }
 
   Future restartApp() async {
-    return _backendService.send(RestartAppCommand(id: RpcCommand.generateId()));
+    return _sendBackend(RestartAppCommand(id: RpcCommand.generateId()));
   }
 
   Future backendIsReady() async {
-    return _backendService.send(AreYouReadyCommand(id: RpcCommand.generateId()));
+    return _sendBackend(AreYouReadyCommand(id: RpcCommand.generateId()));
   }
 
   Future stopWebServer() async {
-    return _backendService.send(WebServerControlCommand(id: RpcCommand.generateId(), enable: false));
+    return _sendBackend(WebServerControlCommand(id: RpcCommand.generateId(), enable: false));
   }
 
   Future updateFrontendState({bool? isPaused, bool? isMenu}) async {
-    return _backendService.send(UpdateFrontendStateCommand(
-      id: RpcCommand.generateId(),
-      isPaused: isPaused,
-      isMenu: isMenu,
-    ));
+    return _sendBackend(UpdateFrontendStateCommand(id: RpcCommand.generateId(), isPaused: isPaused, isMenu: isMenu));
   }
 
   Future<String> startWebServer() async {
-    var codeMsg = await _backendService.send(WebServerControlCommand(id: RpcCommand.generateId(), enable: true)) as WebServerControlCommandResult;
+    var codeMsg = await _sendBackend(
+      WebServerControlCommand(id: RpcCommand.generateId(), enable: true),
+    ) as WebServerControlCommandResult;
     return codeMsg.code;
   }
 
@@ -230,7 +279,7 @@ class FrontendService implements RpcService {
   }
 
   Future<OTAInfo> getOTAInfo() async {
-    var result = await _otaService.send(OTAGetInfoCommand(id: RpcCommand.generateId()));
+    var result = await _sendOta(OTAGetInfoCommand(id: RpcCommand.generateId()));
     return (result as OTAGetInfoCommandResult).info;
   }
 
@@ -252,7 +301,7 @@ class ActionWithParam<T> {
   const ActionWithParam({required this.action, required this.param});
 }
 
-class ButtonEvent{
+class ButtonEvent {
   final ButtonType button;
   final ButtonEventType event;
   final int durationMs;

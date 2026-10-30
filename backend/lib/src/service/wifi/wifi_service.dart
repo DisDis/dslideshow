@@ -1,158 +1,107 @@
-import 'package:dslideshow_backend/src/command/wifi_commands.dart';
-import 'package:dslideshow_backend/src/service/wifi/wifi_config.dart';
+import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:dslideshow_backend/src/command/wifi_commands.dart';
+import 'package:dslideshow_backend/src/service/system_info/system_command_runner.dart';
+import 'package:dslideshow_backend/src/service/wifi/wifi_config.dart';
 import 'package:logging/logging.dart';
 
+enum _WiFiAction { list, rescan, add, up, down, delete, connections }
+
+enum _WiFiFailureReason { launch, exitCode, timeout, outputLimit, cancelled, execution }
+
+/// A safe failure boundary: never retains process arguments or output.
+class _WiFiCommandFailure implements Exception {
+  final _WiFiAction action;
+  final _WiFiFailureReason reason;
+  final int? code;
+
+  const _WiFiCommandFailure(this.action, this.reason, this.code);
+
+  @override
+  String toString() => 'Wi-Fi ${action.name} failed (${reason.name}${code == null ? '' : ', code=$code'})';
+}
+
 class WiFiService {
-  static final Logger _log = new Logger('WiFiService');
+  static final Logger _log = Logger('WiFiService');
   // ignore: unused_field
   final WiFiConfig _config;
-  WiFiService(this._config);
-  static final _environment = {'LC_ALL': 'C'};
+  final SystemCommandRunner _commandRunner;
+  bool _closed = false;
+  Future<void>? _closing;
 
-  Future<List<WiFiNetworkInfo>> list([bool isRescan = true]) async {
-    _log.info('list');
-    try {
-      final args = ['nmcli', 'device', 'wifi', 'list'];
-      if (isRescan) {
-        args.addAll(['--rescan', 'auto']);
-      }
+  static const commandTimeout = Duration(seconds: 60);
 
-      var result = await io.Process.run(
-        'sudo',
-        args,
-        environment: _environment,
-      );
-      if (result.exitCode == 0) {
-        return parseScanOutput(result.stdout.toString());
-      } else {
-        throw Exception(
-          'nmcli device wifi list${isRescan ? ' --rescan auto' : ''} -> exit code: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('list', e, s);
-    }
-    return <WiFiNetworkInfo>[];
-  }
+  WiFiService(this._config, {SystemCommandRunner? commandRunner})
+    : _commandRunner = commandRunner ?? BoundedSystemCommandRunner(deadline: commandTimeout);
 
-  void rescan() async {
-    _log.info('rescan');
-    try {
-      var result = await io.Process.run('sudo', [
-        'nmcli',
-        'device',
-        'wifi',
-        'rescan',
-      ], environment: _environment);
-      if (result.exitCode != 0) {
-        throw Exception(
-          'nmcli device wifi rescan -> exit code: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('scan', e, s);
-    }
-  }
-
+  static const _environment = {'LC_ALL': 'C'};
   static final _parseRateRegExp = RegExp(r'[^0-9]');
 
-  void addWiFiConnection(String name, String SSID, String psk) async {
-    _log.info('addWiFiConnection "$SSID"');
-
+  Future<io.ProcessResult> _run(_WiFiAction action, String executable, List<String> arguments) async {
+    _log.info('event=started action=${action.name}');
     try {
-      var result = await io.Process.run('sudo', [
-        'nmcli',
-        'device',
-        'wifi',
-        'connect',
-        SSID,
-        'password',
-        psk,
-        'name',
-        name,
-      ], environment: _environment);
+      if (_closed) throw StateError('Wi-Fi service is closed');
+      final result = await _commandRunner.run(executable, arguments, environment: _environment);
+      if (_closed) throw StateError('Wi-Fi service is closed');
       if (result.exitCode != 0) {
-        throw Exception(
-          'nmcli device wifi connect "$SSID" password "***" name "$name" -> exit code: ${result.exitCode}',
-        );
+        throw _WiFiCommandFailure(action, _WiFiFailureReason.exitCode, result.exitCode);
       }
-    } catch (e, s) {
-      _log.severe('addWiFiConnection', e, s);
+      _log.info(
+        'event=completed action=${action.name} '
+        'exitCode=0',
+      );
+      return result;
+    } catch (error) {
+      final failure = error is _WiFiCommandFailure
+          ? error
+          : _WiFiCommandFailure(
+              action,
+              _closed
+                  ? _WiFiFailureReason.cancelled
+                  : switch (error) {
+                      io.ProcessException() => _WiFiFailureReason.launch,
+                      TimeoutException() => _WiFiFailureReason.timeout,
+                      SystemCommandOutputLimit() => _WiFiFailureReason.outputLimit,
+                      _ => _WiFiFailureReason.execution,
+                    },
+              error is io.ProcessException ? error.errorCode : null,
+            );
+      _log.log(
+        failure.reason == _WiFiFailureReason.cancelled ? Level.INFO : Level.WARNING,
+        'event=failed action=${action.name} '
+        'reason=${failure.reason.name} type=${error.runtimeType}'
+        '${failure.code == null ? '' : ' code=${failure.code}'}',
+      );
+      throw failure;
     }
   }
 
-  void upConnection(String connectionUUID) async {
-    _log.info('upConnection "$connectionUUID"');
-    try {
-      /*
-nmcli connection up  <UUID>
- */
-      var result = await io.Process.run('sudo', [
-        'nmcli',
-        'connection',
-        'up',
-        '$connectionUUID',
-      ], environment: _environment);
-      _log.info("nmcli connection up -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0) {
-        throw Exception(
-          'nmcli connection up $connectionUUID -> exitCode: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('upConnection "$connectionUUID"', e, s);
-      throw e;
-    }
+  Future<List<WiFiNetworkInfo>> list([bool isRescan = true]) async {
+    final args = ['nmcli', 'device', 'wifi', 'list'];
+    if (isRescan) args.addAll(['--rescan', 'auto']);
+    final result = await _run(_WiFiAction.list, 'sudo', args);
+    return parseScanOutput(result.stdout.toString());
   }
 
-  void downConnection(String connectionUUID) async {
-    _log.info('downConnection "$connectionUUID"');
-    try {
-      /*
-nmcli connection down  <UUID>
- */
-      var result = await io.Process.run('sudo', [
-        'nmcli',
-        'connection',
-        'down',
-        '$connectionUUID',
-      ], environment: _environment);
-      _log.info("nmcli connection down -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0) {
-        throw Exception(
-          'nmcli connection down $connectionUUID -> exitCode: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('downConnection "$connectionUUID"', e, s);
-      throw e;
-    }
+  Future<void> rescan() async {
+    await _run(_WiFiAction.rescan, 'sudo', ['nmcli', 'device', 'wifi', 'rescan']);
   }
 
-  void deleteConnection(String connectionUUID) async {
-    _log.info('deleteConnection "$connectionUUID"');
-    try {
-      /*
-nmcli connection delete <UUID>
- */
-      var result = await io.Process.run('sudo', [
-        'nmcli',
-        'connection',
-        'delete',
-        '$connectionUUID',
-      ], environment: _environment);
-      _log.info("nmcli connection delete -> '${result.stdout.toString()}'");
-      if (result.exitCode != 0) {
-        throw Exception(
-          'nmcli connection delete $connectionUUID -> exitCode: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('deleteConnection "$connectionUUID"', e, s);
-      throw e;
-    }
+  Future<void> addWiFiConnection(String name, String SSID, String psk) async {
+    await _run(_WiFiAction.add, 'sudo', ['nmcli', 'device', 'wifi', 'connect', SSID, 'password', psk, 'name', name]);
+  }
+
+  Future<void> upConnection(String connectionUUID) async {
+    await _run(_WiFiAction.up, 'sudo', ['nmcli', 'connection', 'up', connectionUUID]);
+  }
+
+  Future<void> downConnection(String connectionUUID) async {
+    await _run(_WiFiAction.down, 'sudo', ['nmcli', 'connection', 'down', connectionUUID]);
+  }
+
+  Future<void> deleteConnection(String connectionUUID) async {
+    await _run(_WiFiAction.delete, 'sudo', ['nmcli', 'connection', 'delete', connectionUUID]);
   }
 
   List<WiFiNetworkInfo> parseScanOutput(String outputStr) {
@@ -163,17 +112,7 @@ nmcli connection delete <UUID>
     }
 
     final headers = lines[0];
-    const neededColumns = [
-      'BSSID',
-      ' SSID',
-      'MODE',
-      'RATE',
-      'BARS',
-      'SIGNAL',
-      'SECURITY',
-      'RATE',
-      'CHAN',
-    ];
+    const neededColumns = ['BSSID', ' SSID', 'MODE', 'RATE', 'BARS', 'SIGNAL', 'SECURITY', 'RATE', 'CHAN'];
     final columnIndices = <String, List<int>>{};
 
     // Находим позиции начала и конца каждого столбца
@@ -212,8 +151,7 @@ nmcli connection delete <UUID>
 
         indices = columnIndices['BSSID']!;
         bssid = line.substring(indices[0], indices[1]).trim();
-        if (bssid.isEmpty || bssid == '--')
-          continue; // Пропускаем сети без BSSID
+        if (bssid.isEmpty || bssid == '--') continue; // Пропускаем сети без BSSID
 
         indices = columnIndices['SSID']!;
         ssid = line.substring(indices[0], indices[1]).trim();
@@ -235,17 +173,10 @@ nmcli connection delete <UUID>
         rate = int.tryParse(rateStr.replaceAll(_parseRateRegExp, '')) ?? 0;
 
         networks.add(
-          WiFiNetworkInfo(
-            BSSID: bssid,
-            SSID: ssid,
-            signal: signal,
-            channel: channel,
-            security: security,
-            rate: rate,
-          ),
+          WiFiNetworkInfo(BSSID: bssid, SSID: ssid, signal: signal, channel: channel, security: security, rate: rate),
         );
-      } catch (e, s) {
-        _log.severe('Error parsing line $i', e, s);
+      } catch (error) {
+        _log.warning('Wi-Fi scan row rejected row=$i type=${error.runtimeType}');
       }
     }
 
@@ -253,24 +184,15 @@ nmcli connection delete <UUID>
   }
 
   Future<List<WiFiConnectionInfo>> getConnections() async {
-    _log.info('getConnections');
-    try {
-      var result = await io.Process.run('nmcli', [
-        'connection',
-        'show',
-      ], environment: _environment);
-      if (result.exitCode == 0) {
-        return parseConnectionsOutput(result.stdout.toString());
-      } else {
-        throw Exception(
-          'nmcli connection show -> exit code: ${result.exitCode}',
-        );
-      }
-    } catch (e, s) {
-      _log.severe('getConnections', e, s);
-      throw e;
-    }
+    final result = await _run(_WiFiAction.connections, 'nmcli', ['connection', 'show']);
+    return parseConnectionsOutput(result.stdout.toString());
   }
+
+  /// Stops owned commands and waits for process/pipe cleanup before returning.
+  Future<void> close() => _closing ??= () async {
+    _closed = true;
+    await _commandRunner.close();
+  }();
 
   List<WiFiConnectionInfo> parseConnectionsOutput(String outputStr) {
     List<String> lines = outputStr.split('\n');
@@ -330,16 +252,9 @@ nmcli connection delete <UUID>
         indices = columnIndices['DEVICE']!;
         device = line.substring(indices[0] /*, indices[1]*/).trim();
 
-        result.add(
-          WiFiConnectionInfo(
-            name: name,
-            UUID: uuid,
-            type: type,
-            device: device,
-          ),
-        );
-      } catch (e, s) {
-        _log.severe('Error parsing line $i', e, s);
+        result.add(WiFiConnectionInfo(name: name, UUID: uuid, type: type, device: device));
+      } catch (error) {
+        _log.warning('Wi-Fi connection row rejected row=$i type=${error.runtimeType}');
       }
     }
     return result;

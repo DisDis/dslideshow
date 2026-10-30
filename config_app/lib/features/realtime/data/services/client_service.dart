@@ -191,17 +191,24 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
   }
 
   @override
-  Future<WebSocketResult> send(WebSocketCommand cmd) async {
+  Future<WebSocketResult> send(
+    WebSocketCommand cmd, {
+    Duration? timeout,
+  }) async {
     _ensureActive();
+    if (timeout != null && timeout <= Duration.zero) {
+      throw ArgumentError.value(timeout, 'timeout', 'Must be positive');
+    }
     final connection = _connection;
     if (connection == null) throw StateError('WebSocket is not connected');
-    return _send(connection, cmd);
+    return _send(connection, cmd, timeout: timeout);
   }
 
   Future<WebSocketResult> _send(
     _Connection connection,
-    WebSocketCommand cmd,
-  ) async {
+    WebSocketCommand cmd, {
+    Duration? timeout,
+  }) async {
     await connection.ready.future;
     _ensureCurrent(connection);
     if (connection.pending.containsKey(cmd.id)) {
@@ -209,12 +216,13 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
     }
     final request = _PendingRequest();
     connection.pending[cmd.id] = request;
-    request.timer = Timer(requestTimeout, () {
+    final deadline = timeout ?? requestTimeout;
+    request.timer = Timer(deadline, () {
       if (connection.pending.remove(cmd.id) != request) return;
       _requestTimeouts++;
       _log.warning('RPC timed out id=${cmd.id}');
       request.result.completeError(
-        TimeoutException('RPC request timed out', requestTimeout),
+        TimeoutException('RPC request timed out', deadline),
       );
     });
     try {

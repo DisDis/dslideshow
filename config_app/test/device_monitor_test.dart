@@ -722,7 +722,7 @@ class _Client implements RealtimeService {
   }
 
   @override
-  Future<WebSocketResult> send(WebSocketCommand command) {
+  Future<WebSocketResult> send(WebSocketCommand command, {Duration? timeout}) {
     final envelope = command as WSSendRpcCommand;
     final rpc = serializers.deserialize(envelope.commandData) as RpcCommand;
     commands.add(rpc);

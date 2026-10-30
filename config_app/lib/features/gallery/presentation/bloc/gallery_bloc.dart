@@ -31,19 +31,12 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     GallerySession? session,
   }) : _client = client,
        session = session ?? GallerySession.forClient(client),
-       repository =
-           repository ??
-           session?.repository ??
-           GallerySession.forClient(client).repository,
+       repository = repository ?? session?.repository ?? GallerySession.forClient(client).repository,
        super(initialState) {
     on<GalleryLoadEvent>(_onLoad);
   }
   WebClient getWebClient() {
-    return WebClient(
-      host: _client.connectUri.host,
-      port: _client.connectUri.port,
-      code: _client.authCode,
-    );
+    return WebClient(host: _client.connectUri.host, port: _client.connectUri.port, code: _client.authCode);
   }
 
   FutureOr<void> _onLoad(GalleryLoadEvent event, emit) async {
@@ -52,10 +45,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
       return;
     }
     final generation = ++_generation;
-    final clock = Stopwatch()..start();
-    final previous = state is LoadedGalleryState
-        ? state as LoadedGalleryState
-        : null;
+    final previous = state is LoadedGalleryState ? state as LoadedGalleryState : null;
     _log.info(
       'event=catalogLoadStarted generation=$generation scan=${event.scan} previousItems=${previous?.items.length ?? 0}',
     );
@@ -67,26 +57,18 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     try {
       final result = await repository.load(refresh: event.scan);
       if (_closing || emit.isDone || generation != _generation) {
-        _log.fine(
-          () =>
-              'event=catalogLoadDiscarded generation=$generation closing=$_closing elapsedMs=${clock.elapsedMilliseconds}',
-        );
+        _log.fine(() => 'event=catalogLoadDiscarded generation=$generation closing=$_closing');
         return;
       }
-      _log.info(
-        'event=catalogLoadCompleted generation=$generation items=${result.items.length} elapsedMs=${clock.elapsedMilliseconds}',
-      );
+      _log.info('event=catalogLoadCompleted generation=$generation items=${result.items.length}');
       emit(LoadedGalleryState(items: result.items));
     } catch (error) {
       if (_closing || emit.isDone || generation != _generation) {
-        _log.fine(
-          () =>
-              'event=catalogLoadCancelled generation=$generation closing=$_closing elapsedMs=${clock.elapsedMilliseconds}',
-        );
+        _log.fine(() => 'event=catalogLoadCancelled generation=$generation closing=$_closing');
         return;
       }
       _log.warning(
-        'event=catalogLoadFailed generation=$generation status=${error is GalleryImageHttpException ? error.statusCode : 'none'} type=${error.runtimeType} retainedItems=${previous?.items.length ?? 0} elapsedMs=${clock.elapsedMilliseconds}',
+        'event=catalogLoadFailed generation=$generation status=${error is GalleryImageHttpException ? error.statusCode : 'none'} type=${error.runtimeType} retainedItems=${previous?.items.length ?? 0}',
       );
       if (previous != null) {
         emit(LoadedGalleryState(items: previous.items, refreshFailed: true));
@@ -111,8 +93,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
   void resolveRevisionMismatch() {
     if (_revisionRecovery != null || _closing) return;
     _log.fine(() => 'event=catalogRevisionRecoveryStarted');
-    _revisionRecovery = refresh(scan: false)
-        .whenComplete(() => _revisionRecovery = null);
+    _revisionRecovery = refresh(scan: false).whenComplete(() => _revisionRecovery = null);
   }
 
   @override
@@ -120,9 +101,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     final previous = _closeFuture;
     if (previous != null) return previous;
     _closing = true;
-    _log.fine(
-      () => 'event=closed pendingRefreshes=${_refreshCompletions.length}',
-    );
+    _log.fine(() => 'event=closed pendingRefreshes=${_refreshCompletions.length}');
     ++_generation;
     repository.cancel();
     for (final completion in _refreshCompletions.toList()) {

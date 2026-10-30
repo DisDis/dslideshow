@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_file_operations.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_media_tools.dart';
@@ -18,8 +17,7 @@ import 'support/gallery_tool_runner.dart';
 import 'support/gallery_metadata_reader.dart';
 import 'helpers/capture_logs.dart';
 
-Matcher fails(GalleryErrorCode code) =>
-    throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', code));
+Matcher fails(GalleryErrorCode code) => throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', code));
 
 void main() {
   late Directory root;
@@ -32,10 +30,7 @@ void main() {
   setUp(() async {
     root = await Directory.systemTemp.createTemp('gallery-media-tools-');
     media = await Directory('${root.path}/images').create();
-    catalog = GalleryCatalogService(
-      originals: media,
-      stateDirectory: Directory('${root.path}/images.gallery'),
-    );
+    catalog = GalleryCatalogService(originals: media, stateDirectory: Directory('${root.path}/images.gallery'));
     operations = GalleryFileOperations(catalog: catalog);
     subprocesses = ProcessGalleryToolRunner();
     commands = [];
@@ -64,11 +59,7 @@ void main() {
         maxOutputBytes: maxOutputBytes,
       );
     });
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      runner: runner,
-      operations: operations,
-    );
+    tools = GalleryMediaTools(catalog: catalog, runner: runner, operations: operations);
   });
   tearDown(() async {
     await tools.close();
@@ -88,18 +79,15 @@ void main() {
     )).entries.firstWhere((e) => e.name == filename);
   }
 
-  Future<GalleryMetadata> rotate(
-    GalleryEntry source,
-    String id, {
-    GalleryRotation rotation = GalleryRotation.right,
-  }) => tools.rotate(
-    GalleryRotateRequest(
-      operationId: id,
-      mediaId: source.mediaId,
-      sourceRevision: source.sourceRevision!,
-      rotation: rotation,
-    ),
-  );
+  Future<GalleryMetadata> rotate(GalleryEntry source, String id, {GalleryRotation rotation = GalleryRotation.right}) =>
+      tools.rotate(
+        GalleryRotateRequest(
+          operationId: id,
+          mediaId: source.mediaId,
+          sourceRevision: source.sourceRevision!,
+          rotation: rotation,
+        ),
+      );
 
   Future<void> useCodecOutput(List<int> encoded) async {
     final runner = CallbackGalleryToolRunner((
@@ -112,8 +100,7 @@ void main() {
       maxOutputBytes = 0,
     }) async {
       if (executable == 'jpegtran') {
-        await File(arguments[arguments.indexOf('-outfile') + 1])
-            .writeAsBytes(encoded);
+        await File(arguments[arguments.indexOf('-outfile') + 1]).writeAsBytes(encoded);
         return const GalleryToolResult(exitCode: 0, stdout: '', stderr: '');
       }
       return subprocesses.run(
@@ -128,11 +115,7 @@ void main() {
     });
     addTearDown(runner.close);
     await tools.close();
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      operations: operations,
-      runner: runner,
-    );
+    tools = GalleryMediaTools(catalog: catalog, operations: operations, runner: runner);
   }
 
   test('metadata cache shares an injected read by revision', () async {
@@ -144,19 +127,9 @@ void main() {
     });
     addTearDown(reader.close);
     await tools.close();
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      metadataReader: reader,
-      operations: operations,
-    );
-    final first = await tools.metadata(
-      source.mediaId,
-      revision: source.sourceRevision!,
-    );
-    final cached = await tools.metadata(
-      source.mediaId,
-      revision: source.sourceRevision!,
-    );
+    tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
+    final first = await tools.metadata(source.mediaId, revision: source.sourceRevision!);
+    final cached = await tools.metadata(source.mediaId, revision: source.sourceRevision!);
     expect(cached, same(first));
     expect(calls, 1);
     await tools.close();
@@ -173,19 +146,9 @@ void main() {
     });
     addTearDown(reader.close);
     await tools.close();
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      metadataReader: reader,
-      operations: operations,
-    );
-    final pending = tools.metadata(
-      source.mediaId,
-      revision: source.sourceRevision!,
-    );
-    final failed = expectLater(
-      pending,
-      fails(GalleryErrorCode.revisionMismatch),
-    );
+    tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
+    final pending = tools.metadata(source.mediaId, revision: source.sourceRevision!);
+    final failed = expectLater(pending, fails(GalleryErrorCode.revisionMismatch));
     await entered.future;
     await File('${media.path}/one.jpg').writeAsString('replacement');
     release.complete();
@@ -201,24 +164,12 @@ void main() {
       return _details(source);
     });
     final runner = CallbackGalleryToolRunner(
-      (
-        executable,
-        arguments, {
-        timeout,
-        cancellation,
-        environment,
-        discardStdout = false,
-        maxOutputBytes = 0,
-      }) async => throw StateError('No command expected'),
+      (executable, arguments, {timeout, cancellation, environment, discardStdout = false, maxOutputBytes = 0}) async =>
+          throw StateError('No command expected'),
     );
     addTearDown(reader.close);
     await tools.close();
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      metadataReader: reader,
-      runner: runner,
-      operations: operations,
-    );
+    tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, runner: runner, operations: operations);
     final failed = expectLater(
       tools.metadata(source.mediaId, revision: source.sourceRevision!),
       fails(GalleryErrorCode.unavailable),
@@ -247,22 +198,14 @@ void main() {
       pixels.exif.exifIfd['ExifImageLength'] = 16;
       pixels.exif.thumbnailIfd.orientation = 1;
       pixels.exif.thumbnailData = image.encodeJpg(_quadrants(8, 8));
-      final bytes = _jpegWithIcc(
-        image.encodeJpg(pixels, quality: 100),
-        _iccFixture(),
-      );
+      final bytes = _jpegWithIcc(image.encodeJpg(pixels, quality: 100), _iccFixture());
       final source = await entry('orientation-$orientation.jpg', bytes);
       final current = await catalog.resolve(source.mediaId);
       final originalBytes = await File(current.absolutePath).readAsBytes();
       final original = image.decodeJpg(originalBytes)!;
-      final expected = image.copyRotate(
-        image.bakeOrientation(original),
-        angle: 90,
-      );
+      final expected = image.copyRotate(image.bakeOrientation(original), angle: 90);
       final details = await rotate(current.entry, 'rotate-$orientation');
-      final actual = image.decodeJpg(
-        await File(current.absolutePath).readAsBytes(),
-      )!;
+      final actual = image.decodeJpg(await File(current.absolutePath).readAsBytes())!;
       _expectPixels(image.bakeOrientation(actual), expected, tolerance: 4);
       expect(details.orientation, orientation);
       expect([details.width, details.height], [16, 32]);
@@ -270,67 +213,37 @@ void main() {
       expect(details.lens, 'Fixture lens');
       expect(details.iso, '200');
       expect(details.sourceRevision, isNot(current.entry.sourceRevision));
-      expect(
-        actual.iccProfile!.decompressed(),
-        original.iccProfile!.decompressed(),
-      );
+      expect(actual.iccProfile!.decompressed(), original.iccProfile!.decompressed());
       final transformed = await File(current.absolutePath).readAsBytes();
-      await expectLater(
-        rotate(current.entry, 'rotate-$orientation'),
-        fails(GalleryErrorCode.revisionMismatch),
-      );
+      await expectLater(rotate(current.entry, 'rotate-$orientation'), fails(GalleryErrorCode.revisionMismatch));
       expect(await File(current.absolutePath).readAsBytes(), transformed);
       final next = await catalog.resolve(source.mediaId);
-      await rotate(
-        next.entry,
-        'return-$orientation',
-        rotation: GalleryRotation.left,
-      );
+      await rotate(next.entry, 'return-$orientation', rotation: GalleryRotation.left);
       final restored = await File(next.absolutePath).readAsBytes();
-      _expectPixels(
-        image.bakeOrientation(image.decodeJpg(restored)!),
-        image.bakeOrientation(original),
-        tolerance: 4,
-      );
+      _expectPixels(image.bakeOrientation(image.decodeJpg(restored)!), image.bakeOrientation(original), tolerance: 4);
     }
   }, timeout: const Timeout(Duration(seconds: 90)));
 
-  test(
-    'a codec result with another image format cannot replace the original',
-    () async {
-      final bytes = image.encodeJpg(_quadrants(32, 16));
-      final source = await entry('format.jpg', bytes);
-      await useCodecOutput(image.encodePng(_quadrants(16, 32)));
-      await expectLater(
-        rotate(source, 'wrong-format'),
-        fails(GalleryErrorCode.processingFailed),
-      );
-      expect(await File('${media.path}/format.jpg').readAsBytes(), bytes);
-      expect(
-        (await media.list().toList()).map((entry) => pathName(entry.path)),
-        ['format.jpg'],
-      );
-    },
-  );
+  test('a codec result with another image format cannot replace the original', () async {
+    final bytes = image.encodeJpg(_quadrants(32, 16));
+    final source = await entry('format.jpg', bytes);
+    await useCodecOutput(image.encodePng(_quadrants(16, 32)));
+    await expectLater(rotate(source, 'wrong-format'), fails(GalleryErrorCode.processingFailed));
+    expect(await File('${media.path}/format.jpg').readAsBytes(), bytes);
+    expect((await media.list().toList()).map((entry) => pathName(entry.path)), ['format.jpg']);
+  });
 
   test(
     'omitting normal JPEG Orientation is an EXIF warning without changing display geometry',
     () => captureLogs((records) async {
       final pixels = _quadrants(32, 16)..exif.imageIfd.orientation = 1;
-      final source = await entry(
-        'normal-orientation.jpg',
-        image.encodeJpg(pixels),
-      );
+      final source = await entry('normal-orientation.jpg', image.encodeJpg(pixels));
       await useCodecOutput(image.encodeJpg(_quadrants(16, 32)));
       final result = await rotate(source, 'omitted-normal-orientation');
       expect(result.orientation, isNull);
       expect([result.width, result.height], [16, 32]);
       expect(
-        records.where(
-          (record) =>
-              record.level == Level.WARNING &&
-              record.message.startsWith('Rotation EXIF changed'),
-        ),
+        records.where((record) => record.level == Level.WARNING && record.message.startsWith('Rotation EXIF changed')),
         hasLength(1),
       );
     }),
@@ -340,10 +253,7 @@ void main() {
     final bytes = image.encodeJpg(_quadrants(35, 23), quality: 100);
     final source = await entry('odd.jpg', bytes);
     await captureLogs((records) async {
-      await expectLater(
-        rotate(source, 'odd'),
-        fails(GalleryErrorCode.unsupported),
-      );
+      await expectLater(rotate(source, 'odd'), fails(GalleryErrorCode.unsupported));
       final diagnostics = records
           .where(
             (record) =>
@@ -355,52 +265,24 @@ void main() {
       final messages = diagnostics.map((record) => record.message).join('\n');
       expect(messages, contains('tool=jpegtran'));
       expect(
-        diagnostics.any(
-          (record) =>
-              record.level == Level.WARNING &&
-              record.message.contains('code=unsupported'),
-        ),
+        diagnostics.any((record) => record.level == Level.WARNING && record.message.contains('code=unsupported')),
         isTrue,
       );
       expect(messages, isNot(contains(root.path)));
       expect(messages, isNot(contains('odd.jpg')));
-      expect(
-        diagnostics.every(
-          (record) => record.error == null && record.stackTrace == null,
-        ),
-        isTrue,
-      );
+      expect(diagnostics.every((record) => record.error == null && record.stackTrace == null), isTrue);
     });
     expect(await File('${media.path}/odd.jpg').readAsBytes(), bytes);
-    expect(
-      (await catalog.resolve(source.mediaId)).entry.sourceRevision,
-      source.sourceRevision,
-    );
-    expect((await media.list().toList()).map((e) => pathName(e.path)), [
-      'odd.jpg',
-    ]);
+    expect((await catalog.resolve(source.mediaId)).entry.sourceRevision, source.sourceRevision);
+    expect((await media.list().toList()).map((e) => pathName(e.path)), ['odd.jpg']);
   });
 
   test('real PNG left rotation preserves every 16-bit RGBA sample and metadata', () async {
-    final pixels = image.Image(
-      width: 13,
-      height: 7,
-      format: image.Format.uint16,
-      numChannels: 4,
-    );
+    final pixels = image.Image(width: 13, height: 7, format: image.Format.uint16, numChannels: 4);
     for (final pixel in pixels) {
-      pixel.setRgba(
-        1000 + pixel.x * 100,
-        10000 + pixel.y * 200,
-        60000 - pixel.x * 120,
-        30000 + pixel.y * 1000,
-      );
+      pixel.setRgba(1000 + pixel.x * 100, 10000 + pixel.y * 200, 60000 - pixel.x * 120, 30000 + pixel.y * 1000);
     }
-    pixels.iccProfile = image.IccProfile(
-      'Fixture',
-      image.IccProfileCompression.none,
-      _iccFixture(),
-    );
+    pixels.iccProfile = image.IccProfile('Fixture', image.IccProfileCompression.none, _iccFixture());
     pixels.exif.imageIfd.orientation = 7;
     pixels.exif.imageIfd['ImageWidth'] = 999;
     pixels.exif.imageIfd['ImageLength'] = 888;
@@ -419,11 +301,7 @@ void main() {
     // result is the raw image flipped horizontally.
     final expected = image.flipHorizontal(image.Image.from(original));
     final details = await captureLogs((records) async {
-      final result = await rotate(
-        current.entry,
-        'png-left',
-        rotation: GalleryRotation.left,
-      );
+      final result = await rotate(current.entry, 'png-left', rotation: GalleryRotation.left);
       final diagnostics = records
           .where(
             (record) =>
@@ -434,26 +312,16 @@ void main() {
           .toList();
       final messages = diagnostics.map((record) => record.message).join('\n');
       expect(messages, contains('Rotation started'));
-      final correlation =
-          'id-${sha256.convert(utf8.encode('png-left')).toString().substring(0, 12)}';
-      expect(messages, contains('operation=$correlation'));
+      expect(messages, isNot(contains('operation=')));
       expect(messages, contains('direction=left'));
       expect(messages, contains('tool=dartImage'));
       expect(messages, contains('Rotation finished'));
       expect(
-        diagnostics.any(
-          (record) =>
-              record.loggerName == 'GalleryMediaTools' &&
-              record.level == Level.INFO,
-        ),
+        diagnostics.any((record) => record.loggerName == 'GalleryMediaTools' && record.level == Level.INFO),
         isTrue,
       );
       expect(
-        diagnostics.any(
-          (record) =>
-              record.loggerName == 'GalleryPngRotation' &&
-              record.level == Level.FINE,
-        ),
+        diagnostics.any((record) => record.loggerName == 'GalleryPngRotation' && record.level == Level.FINE),
         isTrue,
       );
       for (final sensitive in [
@@ -466,37 +334,21 @@ void main() {
       ]) {
         expect(messages, isNot(contains(sensitive)));
       }
-      expect(
-        diagnostics.every(
-          (record) => record.error == null && record.stackTrace == null,
-        ),
-        isTrue,
-      );
+      expect(diagnostics.every((record) => record.error == null && record.stackTrace == null), isTrue);
       return result;
     });
-    final actual = image.decodePng(
-      await File(current.absolutePath).readAsBytes(),
-    )!;
+    final actual = image.decodePng(await File(current.absolutePath).readAsBytes())!;
     _expectPixels(actual, expected, tolerance: 0, everyPixel: true);
     expect(actual.format, image.Format.uint16);
     expect(actual.numChannels, 4);
     expect(details.bitDepth, 16);
     expect(details.hasAlpha, true);
     expect(details.dateTaken, '2024:03:04 05:06:07+03:00');
-    expect(
-      actual.iccProfile!.decompressed(),
-      original.iccProfile!.decompressed(),
-    );
+    expect(actual.iccProfile!.decompressed(), original.iccProfile!.decompressed());
     expect(details.orientation, 1);
-    expect(
-      commands,
-      everyElement('chmod'),
-      reason: 'PNG metadata and pixels are processed entirely in Dart',
-    );
+    expect(commands, everyElement('chmod'), reason: 'PNG metadata and pixels are processed entirely in Dart');
     final normalizedExif = image.ExifData.fromInputBuffer(
-      image.InputBuffer(
-        _pngExif(await File(current.absolutePath).readAsBytes()),
-      ),
+      image.InputBuffer(_pngExif(await File(current.absolutePath).readAsBytes())),
     );
     expect(normalizedExif.imageIfd.orientation, 1);
     expect(normalizedExif.imageIfd['ImageWidth']!.toInt(), 13);
@@ -507,10 +359,7 @@ void main() {
     expect(normalizedExif.directories.containsKey('ifd1'), isFalse);
     // A repeated request is validated against the current file, without a journal.
     await tools.close();
-    expect(
-      await Directory('${catalog.stateDirectory.path}/rotations').exists(),
-      isFalse,
-    );
+    expect(await Directory('${catalog.stateDirectory.path}/rotations').exists(), isFalse);
     final transformed = await File(current.absolutePath).readAsBytes();
     tools = GalleryMediaTools(catalog: catalog, operations: operations);
     await expectLater(
@@ -520,36 +369,24 @@ void main() {
     expect(await File(current.absolutePath).readAsBytes(), transformed);
   });
 
-  test(
-    'palette PNG is rejected instead of silently converting color depth',
-    () async {
-      final palette = image.Image(width: 8, height: 8, withPalette: true);
-      final bytes = image.encodePng(palette);
-      final source = await entry('palette.png', bytes);
-      await expectLater(
-        rotate(source, 'palette'),
-        fails(GalleryErrorCode.unsupported),
-      );
-      expect(await File('${media.path}/palette.png').readAsBytes(), bytes);
-    },
-  );
+  test('palette PNG is rejected instead of silently converting color depth', () async {
+    final palette = image.Image(width: 8, height: 8, withPalette: true);
+    final bytes = image.encodePng(palette);
+    final source = await entry('palette.png', bytes);
+    await expectLater(rotate(source, 'palette'), fails(GalleryErrorCode.unsupported));
+    expect(await File('${media.path}/palette.png').readAsBytes(), bytes);
+  });
 
   test('APNG in a png filename is rejected instead of keeping just its first frame', () async {
     final animation = _quadrants(8, 8)..addFrame(_quadrants(8, 8));
     final bytes = image.encodePng(animation);
     final source = await entry('animated.png', bytes);
-    await expectLater(
-      rotate(source, 'animated'),
-      fails(GalleryErrorCode.unsupported),
-    );
+    await expectLater(rotate(source, 'animated'), fails(GalleryErrorCode.unsupported));
     expect(await File('${media.path}/animated.png').readAsBytes(), bytes);
   });
 
   test('rotation preserves restrictive Unix file permissions', () async {
-    final source = await entry(
-      'private.png',
-      image.encodePng(_quadrants(8, 4)),
-    );
+    final source = await entry('private.png', image.encodePng(_quadrants(8, 4)));
     final file = File('${media.path}/private.png');
     expect((await Process.run('chmod', ['0600', '--', file.path])).exitCode, 0);
     final current = await catalog.resolve(source.mediaId);
@@ -586,50 +423,28 @@ void main() {
       return result;
     });
     await tools.close();
-    tools = GalleryMediaTools(
-      catalog: catalog,
-      runner: fake,
-      operations: operations,
-    );
+    tools = GalleryMediaTools(catalog: catalog, runner: fake, operations: operations);
     // The final revision precheck must reject the externally replaced source.
-    await expectLater(
-      rotate(source, 'race'),
-      fails(GalleryErrorCode.revisionMismatch),
-    );
+    await expectLater(rotate(source, 'race'), fails(GalleryErrorCode.revisionMismatch));
     expect(await File('${media.path}/race.jpg').readAsBytes(), replacement);
     expect((await media.list().toList()).length, 1);
   });
 
-  test(
-    'metadata and rotation reject a file reached through a symlink parent',
-    () async {
-      await Directory('${media.path}/real').create();
-      await Link('${media.path}/alias').create('${media.path}/real');
-      await File('${media.path}/real/photo.jpg').writeAsBytes([1, 2, 3]);
-      final snapshot = await catalog.refresh(
-        const GalleryRefreshRequest(
-          operationId: 'symlink-parent-scan',
-          mode: GalleryRefreshMode.scan,
-        ),
-      );
-      final aliased = snapshot.entries.firstWhere(
-        (item) => item.path == 'alias/photo.jpg',
-      );
-      await expectLater(
-        tools.metadata(aliased.mediaId, revision: aliased.sourceRevision!),
-        fails(GalleryErrorCode.forbidden),
-      );
-      await expectLater(
-        rotate(aliased, 'symlink-parent'),
-        fails(GalleryErrorCode.forbidden),
-      );
-      expect(await File('${media.path}/real/photo.jpg').readAsBytes(), [
-        1,
-        2,
-        3,
-      ]);
-    },
-  );
+  test('metadata and rotation reject a file reached through a symlink parent', () async {
+    await Directory('${media.path}/real').create();
+    await Link('${media.path}/alias').create('${media.path}/real');
+    await File('${media.path}/real/photo.jpg').writeAsBytes([1, 2, 3]);
+    final snapshot = await catalog.refresh(
+      const GalleryRefreshRequest(operationId: 'symlink-parent-scan', mode: GalleryRefreshMode.scan),
+    );
+    final aliased = snapshot.entries.firstWhere((item) => item.path == 'alias/photo.jpg');
+    await expectLater(
+      tools.metadata(aliased.mediaId, revision: aliased.sourceRevision!),
+      fails(GalleryErrorCode.forbidden),
+    );
+    await expectLater(rotate(aliased, 'symlink-parent'), fails(GalleryErrorCode.forbidden));
+    expect(await File('${media.path}/real/photo.jpg').readAsBytes(), [1, 2, 3]);
+  });
 
   test(
     'changed JPEG EXIF is retained with a safe warning instead of restoring old tags',
@@ -660,43 +475,28 @@ void main() {
           final needle = ascii.encode('Original');
           var replaced = false;
           for (var i = 0; i <= bytes.length - needle.length; i++) {
-            if (List.generate(
-              needle.length,
-              (n) => bytes[i + n] == needle[n],
-            ).every((same) => same)) {
+            if (List.generate(needle.length, (n) => bytes[i + n] == needle[n]).every((same) => same)) {
               bytes.setRange(i, i + needle.length, ascii.encode('Rendered'));
               replaced = true;
               break;
             }
           }
-          expect(
-            replaced,
-            isTrue,
-            reason: 'The codec fixture must change its EXIF Make',
-          );
+          expect(replaced, isTrue, reason: 'The codec fixture must change its EXIF Make');
           await output.writeAsBytes(bytes);
         }
         return result;
       });
       addTearDown(alteredCodec.close);
       await tools.close();
-      tools = GalleryMediaTools(
-        catalog: catalog,
-        operations: operations,
-        runner: alteredCodec,
-      );
+      tools = GalleryMediaTools(catalog: catalog, operations: operations, runner: alteredCodec);
       final result = await rotate(source, 'changed-exif');
       expect([result.width, result.height], [16, 32]);
       expect(result.camera, 'Rendered');
-      final written = image.decodeJpg(
-        await File('${media.path}/changed-exif.jpg').readAsBytes(),
-      )!;
+      final written = image.decodeJpg(await File('${media.path}/changed-exif.jpg').readAsBytes())!;
       expect([written.width, written.height], [16, 32]);
-      final warning = records.singleWhere(
-        (record) => record.message.startsWith('Rotation EXIF changed'),
-      );
+      final warning = records.singleWhere((record) => record.message.startsWith('Rotation EXIF changed'));
       expect(warning.level, Level.WARNING);
-      expect(warning.message, contains('operation=id-'));
+      expect(warning.message, isNot(contains('operation=')));
       for (final private in [root.path, 'Original', 'Rendered']) {
         expect(warning.message, isNot(contains(private)));
       }
@@ -711,21 +511,12 @@ String pathName(String value) => value.split(Platform.pathSeparator).last;
 image.Image _quadrants(int width, int height) {
   final pixels = image.Image(width: width, height: height);
   for (final pixel in pixels) {
-    pixel.setRgb(
-      pixel.x < width ~/ 2 ? 220 : 20,
-      pixel.y < height ~/ 2 ? 200 : 20,
-      pixel.x < width ~/ 2 ? 20 : 220,
-    );
+    pixel.setRgb(pixel.x < width ~/ 2 ? 220 : 20, pixel.y < height ~/ 2 ? 200 : 20, pixel.x < width ~/ 2 ? 20 : 220);
   }
   return pixels;
 }
 
-void _expectPixels(
-  image.Image actual,
-  image.Image expected, {
-  required int tolerance,
-  bool everyPixel = false,
-}) {
+void _expectPixels(image.Image actual, image.Image expected, {required int tolerance, bool everyPixel = false}) {
   expect([actual.width, actual.height], [expected.width, expected.height]);
   final coordinates = everyPixel
       ? [
@@ -742,11 +533,7 @@ void _expectPixels(
     final a = actual.getPixel(coordinate.$1, coordinate.$2);
     final b = expected.getPixel(coordinate.$1, coordinate.$2);
     for (final pair in [(a.r, b.r), (a.g, b.g), (a.b, b.b), (a.a, b.a)]) {
-      expect(
-        (pair.$1 - pair.$2).abs(),
-        lessThanOrEqualTo(tolerance),
-        reason: 'pixel $coordinate',
-      );
+      expect((pair.$1 - pair.$2).abs(), lessThanOrEqualTo(tolerance), reason: 'pixel $coordinate');
     }
   }
 }
@@ -792,35 +579,20 @@ List<int> _jpegWithIcc(List<int> jpeg, List<int> profile) {
   // image encoder does not write those bytes, so build this fixture directly.
   final payload = [...ascii.encode('ICC_PROFILE\u0000'), 1, 1, ...profile];
   final length = payload.length + 2;
-  return [
-    ...jpeg.take(2),
-    0xff,
-    0xe2,
-    length >> 8,
-    length & 0xff,
-    ...payload,
-    ...jpeg.skip(2),
-  ];
+  return [...jpeg.take(2), 0xff, 0xe2, length >> 8, length & 0xff, ...payload, ...jpeg.skip(2)];
 }
 
 Uint8List _pngWithExif(image.Image pixels) {
   final encoded = image.encodePng(pixels);
   final exif = image.OutputBuffer();
   pixels.exif.write(exif);
-  return Uint8List.fromList([
-    ...encoded.take(33),
-    ..._pngChunk('eXIf', exif.getBytes()),
-    ...encoded.skip(33),
-  ]);
+  return Uint8List.fromList([...encoded.take(33), ..._pngChunk('eXIf', exif.getBytes()), ...encoded.skip(33)]);
 }
 
 List<int> _pngExif(List<int> encoded) {
   for (var offset = 8; offset < encoded.length;) {
     final length =
-        encoded[offset] * 0x1000000 +
-        encoded[offset + 1] * 0x10000 +
-        encoded[offset + 2] * 256 +
-        encoded[offset + 3];
+        encoded[offset] * 0x1000000 + encoded[offset + 1] * 0x10000 + encoded[offset + 2] * 256 + encoded[offset + 3];
     if (ascii.decode(encoded.sublist(offset + 4, offset + 8)) == 'eXIf')
       return encoded.sublist(offset + 8, offset + 8 + length);
     offset += length + 12;
@@ -840,7 +612,6 @@ List<int> _pngChunk(String type, List<int> payload) {
       crc = (crc & 1) == 0 ? crc >> 1 : (crc >> 1) ^ 0xedb88320;
     }
   }
-  ByteData.sublistView(result)
-      .setUint32(payload.length + 8, (crc ^ 0xffffffff) & 0xffffffff);
+  ByteData.sublistView(result).setUint32(payload.length + 8, (crc ^ 0xffffffff) & 0xffffffff);
   return result;
 }

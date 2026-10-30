@@ -11,10 +11,7 @@ import 'package:logging/logging.dart';
 
 import 'thumbnail_worker.dart';
 
-typedef ThumbnailProcessStarter = Future<Process> Function(
-  String executable,
-  List<String> arguments,
-);
+typedef ThumbnailProcessStarter = Future<Process> Function(String executable, List<String> arguments);
 
 Future<Process> _startProcess(String executable, List<String> arguments) =>
     Process.start(executable, arguments, environment: {'LC_ALL': 'C'});
@@ -59,9 +56,7 @@ class FfmpegThumbnailWorker implements ThumbnailWorker {
           'quality=${request.jpegQuality} frames=${request.frameSelectionFrames} '
           'timeoutMs=${timeout.inMilliseconds}',
     );
-    final remove = cancellation.listen(
-      () => job.stop(ThumbnailFailureKind.cancelled),
-    );
+    final remove = cancellation.listen(() => job.stop(ThumbnailFailureKind.cancelled));
     final timer = Timer(timeout, () => job.stop(ThumbnailFailureKind.timeout));
     try {
       job.check();
@@ -70,10 +65,7 @@ class FfmpegThumbnailWorker implements ThumbnailWorker {
         final stat = await source.stat();
         job.check();
         if (stat.type != FileSystemEntityType.file) {
-          _log.warning(
-            () =>
-                'Source is not a regular file ${job.context} type=${stat.type}',
-          );
+          _log.warning(() => 'Source is not a regular file ${job.context} type=${stat.type}');
           throw const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
         }
         if (stat.size > request.maxSourceBytes) {
@@ -87,9 +79,7 @@ class FfmpegThumbnailWorker implements ThumbnailWorker {
       }
 
       await checkSource();
-      final color = (request.backgroundColor & 0xffffff)
-          .toRadixString(16)
-          .padLeft(6, '0');
+      final color = (request.backgroundColor & 0xffffff).toRadixString(16).padLeft(6, '0');
       // Scale before thumbnail: its frame batch must not retain full originals.
       // Draw onto RGB: drawbox replace=1 on RGBA crashes FFmpeg 5.1.
       // The second branch supplies an opaque background for alpha compositing.
@@ -141,25 +131,19 @@ class FfmpegThumbnailWorker implements ThumbnailWorker {
         'pipe:1',
       ], maxOutput: request.maxOutputBytes);
       await checkSource();
-      if (bytes.isEmpty)
-        throw const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
-      final digest = (await md5.bind(_yieldingChunks(bytes, job)).first)
-          .toString();
+      if (bytes.isEmpty) throw const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
+      final digest = (await md5.bind(_yieldingChunks(bytes, job)).first).toString();
       job.check();
       _log.fine(
         () =>
             'Render completed ${job.context} '
-            'bytes=${bytes.length} elapsedMs=${job.clock.elapsedMilliseconds}',
+            'bytes=${bytes.length}',
       );
       return ThumbnailWorkerResult(bytes: bytes, digest: digest);
     } on ThumbnailFailure catch (error) {
       _log.log(
-        error.kind == ThumbnailFailureKind.cancelled
-            ? Level.FINE
-            : Level.WARNING,
-        () =>
-            'Render failed ${job.context} reason=${error.kind.name} '
-            'elapsedMs=${job.clock.elapsedMilliseconds}',
+        error.kind == ThumbnailFailureKind.cancelled ? Level.FINE : Level.WARNING,
+        () => 'Render failed ${job.context} reason=${error.kind.name} ',
       );
       rethrow;
     } on Object catch (error, stack) {
@@ -177,11 +161,7 @@ Stream<List<int>> _yieldingChunks(Uint8List bytes, _FfmpegJob job) async* {
   for (var offset = 0; offset < bytes.length; offset += 64 * 1024) {
     await Future<void>.delayed(Duration.zero);
     job.check();
-    yield Uint8List.sublistView(
-      bytes,
-      offset,
-      math.min(bytes.length, offset + 64 * 1024),
-    );
+    yield Uint8List.sublistView(bytes, offset, math.min(bytes.length, offset + 64 * 1024));
   }
 }
 
@@ -192,15 +172,13 @@ class _FfmpegJob {
   final ThumbnailProcessStarter start;
   final Duration killGrace;
   final ThumbnailWorkRequest request;
-  final Stopwatch clock = Stopwatch()..start();
   ThumbnailFailure? failure;
   Process? process;
   bool _exited = false;
   Future<void>? termination;
   _FfmpegJob(this.start, this.killGrace, this.request);
 
-  String get context =>
-      'source=${jsonEncode(request.path)} size=${request.size}';
+  String get context => 'source=${jsonEncode(request.path)} size=${request.size}';
 
   void check() {
     if (failure != null) throw failure!;
@@ -227,11 +205,7 @@ class _FfmpegJob {
     });
   }
 
-  Future<Uint8List> command(
-    String executable,
-    List<String> arguments, {
-    required int maxOutput,
-  }) async {
+  Future<Uint8List> command(String executable, List<String> arguments, {required int maxOutput}) async {
     check();
     final output = BytesBuilder(copy: false);
     final errors = BytesBuilder(copy: false);
@@ -248,8 +222,7 @@ class _FfmpegJob {
         process = await start(executable, arguments);
       } on ProcessException catch (error, stack) {
         FfmpegThumbnailWorker._log.warning(
-          () =>
-              'Cannot start FFmpeg $context executable=${jsonEncode(executable)}',
+          () => 'Cannot start FFmpeg $context executable=${jsonEncode(executable)}',
           error,
           stack,
         );
@@ -257,16 +230,11 @@ class _FfmpegJob {
         check();
       }
       final child = process!;
-      FfmpegThumbnailWorker._log.fine(
-        () => 'FFmpeg started $context pid=${child.pid}',
-      );
+      FfmpegThumbnailWorker._log.fine(() => 'FFmpeg started $context pid=${child.pid}');
       child.stdin.done.ignore();
       outDone = collect(child.stdout, output, maxOutput);
       errDone = collect(child.stderr, errors, 64 * 1024);
-      stdinDone = child.stdin.close().then<void>(
-        (_) {},
-        onError: (Object _) {},
-      );
+      stdinDone = child.stdin.close().then<void>((_) {}, onError: (Object _) {});
       if (failure != null) stop(failure!.kind);
       exitCode = await child.exitCode;
       _exited = true;
@@ -278,8 +246,7 @@ class _FfmpegJob {
         stop(ThumbnailFailureKind.sourceTooLarge);
         check();
       }
-      if (exitCode != 0)
-        throw const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
+      if (exitCode != 0) throw const ThumbnailFailure(ThumbnailFailureKind.decodeFailed);
       return output.takeBytes();
     } catch (_) {
       stop(ThumbnailFailureKind.decodeFailed);
@@ -301,24 +268,19 @@ class _FfmpegJob {
       if (failure != null) {
         stderrText ??= utf8.decode(errors.takeBytes(), allowMalformed: true);
         final truncated = stderrText.length > _maxLoggedStderr;
-        final diagnostic = truncated
-            ? stderrText.substring(0, _maxLoggedStderr)
-            : stderrText;
+        final diagnostic = truncated ? stderrText.substring(0, _maxLoggedStderr) : stderrText;
         FfmpegThumbnailWorker._log.log(
-          failure!.kind == ThumbnailFailureKind.cancelled
-              ? Level.FINE
-              : Level.WARNING,
+          failure!.kind == ThumbnailFailureKind.cancelled ? Level.FINE : Level.WARNING,
           () =>
               'FFmpeg failed $context executable=${jsonEncode(executable)} '
               'pid=${child?.pid} exit=$exitCode reason=${failure!.kind.name} '
-              'elapsedMs=${clock.elapsedMilliseconds} '
               'stderr=${jsonEncode(diagnostic)}${truncated ? ' [truncated]' : ''}',
         );
       } else {
         FfmpegThumbnailWorker._log.fine(
           () =>
               'FFmpeg exited $context '
-              'pid=${child?.pid} exit=$exitCode elapsedMs=${clock.elapsedMilliseconds}',
+              'pid=${child?.pid} exit=$exitCode',
         );
       }
       process = null;
@@ -326,11 +288,7 @@ class _FfmpegJob {
     }
   }
 
-  Future<void> collect(
-    Stream<List<int>> stream,
-    BytesBuilder builder,
-    int limit,
-  ) async {
+  Future<void> collect(Stream<List<int>> stream, BytesBuilder builder, int limit) async {
     try {
       await for (final chunk in stream) {
         if (builder.length + chunk.length > limit) {
