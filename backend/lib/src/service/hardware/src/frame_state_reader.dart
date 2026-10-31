@@ -50,6 +50,7 @@ class FrameStateReader {
         ScreenPhase.disposed => FrameScreenPhase.unknown,
       },
       backendVersion: ApplicationInfo.backendVersion,
+      storageStatus: _applicationStateService.state.storageStatus,
       frontend: frontend,
     );
   }

@@ -39,7 +39,7 @@ abstract class CloudStorage extends DiskStorage {
     try {
       await super.init();
     } catch (_) {
-      updateStatus(StorageStatusEnum.off);
+      updateStatus(StorageStatusEnum.error);
       rethrow;
     }
   }

@@ -335,7 +335,7 @@ void main() {
       expect(diagnostic.error.toString(), contains(originals.path));
       expect(diagnostic.stackTrace.toString(), stack.toString());
       expect(diagnostic.stackTrace.toString(), contains('yandex_drive_storage.dart'));
-      expect(storage!.status, StorageStatusEnum.off);
+      expect(storage!.status, StorageStatusEnum.error);
     }
   });
 
@@ -387,7 +387,7 @@ void main() {
     expect(current.runtime.totalItems, 4);
     expect(current.runtime.progress, 1);
     expect(current.runtime.error, DriveFailure.checksum);
-    expect(current.status, StorageStatusEnum.off);
+    expect(current.status, StorageStatusEnum.error);
     expect(await originals.list(recursive: true).where((entry) => entry is File).toList(), isEmpty);
   });
 
@@ -399,6 +399,7 @@ void main() {
     await current.sync();
     expect(current.runtime.failed, 1);
     expect(current.runtime.downloaded, 1);
+    expect(current.status, StorageStatusEnum.error);
     expect(await File(path.join(originals.path, 'yandex.drive.456/Trip/a.jpg')).exists(), isTrue);
     expect(logs.where((entry) => entry.loggerName == 'YandexDriveStorage' && entry.level == Level.INFO).length, 2);
     expect(
@@ -406,8 +407,48 @@ void main() {
       isTrue,
     );
     expect(logs.map((entry) => entry.message).join(' '), isNot(contains('token-')));
+    final diagnostic = logs.singleWhere((entry) => entry.message.startsWith('Account synchronization failed'));
+    expect(diagnostic.error, isA<CloudStorageException>());
+    expect(diagnostic.error.toString(), contains('authorizationDenied'));
+    expect(diagnostic.stackTrace.toString(), contains('yandex_drive_storage_test.dart'));
+    api.firstAccountFails = false;
+    await current.sync();
+    expect(current.status, StorageStatusEnum.done);
+    expect(current.runtime.failed, 0);
     await subscription.cancel();
   });
+
+  test('operation error takes precedence over an unavailable account', () async {
+    api.firstAccountFails = true;
+    connections.disconnect('456');
+    final current = await create();
+    await current.sync();
+    expect(current.runtime.failed, 1);
+    expect(current.status, StorageStatusEnum.error);
+    api.firstAccountFails = false;
+    await current.sync();
+    expect(current.runtime.failed, 0);
+    expect(current.status, StorageStatusEnum.off);
+  });
+
+  for (final accounts in <List<YandexDriveAccountConfig>>[
+    [],
+    [const YandexDriveAccountConfig(accountId: '123')],
+    [
+      const YandexDriveAccountConfig(accountId: '123', paths: ['disk:/Camera'], enabled: false),
+    ],
+    [
+      const YandexDriveAccountConfig(accountId: '789', paths: ['disk:/Camera']),
+    ],
+  ]) {
+    test('unconfigured or unavailable sources report off: $accounts', () async {
+      final current = await create(accounts: accounts);
+      await current.sync();
+      expect(current.runtime.failed, 0);
+      expect(current.status, StorageStatusEnum.off);
+      expect(api.resourceRequests, isEmpty);
+    });
+  }
 
   for (final stop in _StopImport.values) {
     test('$stop waits for pending metadata and starts no file or next page after its response', () async {
@@ -458,6 +499,9 @@ void main() {
       expect(api.tokenCalls, 0);
       expect(current.runtime.running, isFalse);
       expect(current.runtime.failed, 0);
+      if (stop != _StopImport.release) {
+        expect(current.status, stop == _StopImport.disconnect ? StorageStatusEnum.off : StorageStatusEnum.done);
+      }
       expect(current.runtime.downloaded, 0);
       expect(current.runtime.lastSync, isNull);
       expect(logs.where((entry) => entry.loggerName == 'YandexDriveStorage' && entry.level >= Level.WARNING), isEmpty);

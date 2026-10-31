@@ -13,6 +13,7 @@ import 'package:config_app/features/uikit/presentation/widgets/navigation_bar/co
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,6 +27,7 @@ FrameState _frame({
   FramePage page = FramePage.slideshow,
   bool frontendAvailable = true,
   FramePresence presence = FramePresence.present,
+  StorageStatusEnum storageStatus = StorageStatusEnum.off,
 }) => FrameState(
   sampledAt: DateTime.utc(2040, 1, 2, 3, 4, 5),
   presence: presence,
@@ -34,6 +36,7 @@ FrameState _frame({
   isScreenOn: !locked,
   screenPhase: locked ? FrameScreenPhase.off : FrameScreenPhase.on,
   backendVersion: 'remote-backend-42',
+  storageStatus: storageStatus,
   frontend: frontendAvailable
       ? FrameFrontendState(
           isPaused: paused,
@@ -52,12 +55,7 @@ FrameState _frame({
 );
 
 const _metrics = SystemInfo(
-  cpuInfo: CpuInfo(
-    cores: 4,
-    hardware: 'BCM2712',
-    model: 'Remote Pi',
-    revision: 'remote-revision',
-  ),
+  cpuInfo: CpuInfo(cores: 4, hardware: 'BCM2712', model: 'Remote Pi', revision: 'remote-revision'),
   networkInfo: NetworkInfo(
     lastUpdate: 1700000000000,
     hasInternet: true,
@@ -101,22 +99,14 @@ class _ConnectedClient extends _UnusedClient {
   @override
   Stream<void> get onDisconnect => disconnectEvents.stream;
   @override
-  Future<WebSocketResult> send(
-    WebSocketCommand command, {
-    Duration? timeout,
-  }) async {
-    final request = serializers.deserialize(
-      (command as WSSendRpcCommand).commandData,
-    );
+  Future<WebSocketResult> send(WebSocketCommand command, {Duration? timeout}) async {
+    final request = serializers.deserialize((command as WSSendRpcCommand).commandData);
     final RpcResult result;
     if (request is GetSystemInfoCommand) {
       metricsReads++;
       result = GetSystemInfoCommandResult(id: request.id, systemInfo: _metrics);
     } else {
-      result = GetFrameStateResult(
-        id: (request as GetFrameStateCommand).id,
-        state: _frame(),
-      );
+      result = GetFrameStateResult(id: (request as GetFrameStateCommand).id, state: _frame());
     }
     return WSRpcResult.byCommand(result, command);
   }
@@ -141,9 +131,7 @@ class _Repository extends DeviceRepository {
     if (fail) throw const DeviceFailure(DeviceFailureKind.command);
     if (pending != null) return pending!.future;
     state = _frame(
-      paused: control == FrameControl.pause
-          ? enabled
-          : state.frontend!.isPaused,
+      paused: control == FrameControl.pause ? enabled : state.frontend!.isPaused,
       menu: control == FrameControl.menu ? enabled : state.frontend!.isMenu,
       locked: control == FrameControl.screen ? !enabled : state.isScreenLocked,
     );
@@ -175,9 +163,32 @@ void main() {
     await repository.disconnect.close();
   }
 
-  testWidgets('both destinations route from the shared navigation using RPC', (
-    tester,
-  ) async {
+  for (final section in DeviceSection.values) {
+    testWidgets('storage status updates in $section even without frontend', (tester) async {
+      final repository = _Repository(_frame(frontendAvailable: false));
+      final monitor = DeviceMonitor(repository, telemetry: section == DeviceSection.telemetry);
+      await tester.pumpWidget(_app(monitor, section, locale: const Locale('en')));
+      await tester.pumpAndSettle();
+      const labels = {
+        StorageStatusEnum.off: 'Unavailable or not configured',
+        StorageStatusEnum.download: 'Scanning or synchronizing',
+        StorageStatusEnum.done: 'Ready',
+        StorageStatusEnum.error: 'Storage operation failed',
+      };
+      for (final entry in labels.entries) {
+        repository.state = _frame(frontendAvailable: false, storageStatus: entry.key);
+        await monitor.refresh();
+        await tester.pumpAndSettle();
+        final label = find.text(entry.value);
+        await tester.ensureVisible(label);
+        expect(find.text('Storage'), findsOneWidget);
+        expect(label, findsOneWidget);
+      }
+      await close(tester, repository);
+    });
+  }
+
+  testWidgets('both destinations route from the shared navigation using RPC', (tester) async {
     tester.view.physicalSize = const Size(1280, 960);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -185,9 +196,7 @@ void main() {
     await GetIt.instance.reset();
     final client = _ConnectedClient();
     GetIt.instance.registerSingleton<RealtimeService>(client);
-    GetIt.instance.registerSingleton<PermissionService>(
-      PermissionService()..loadData([Permission.NONE.id]),
-    );
+    GetIt.instance.registerSingleton<PermissionService>(PermissionService()..loadData([Permission.NONE.id]));
     final router = GoRouter(
       routes: [
         GoRoute(path: '/', builder: (context, state) => const HomePage()),
@@ -214,14 +223,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(router.routeInformationProvider.value.uri.path, '/telemetry');
     expect(client.metricsReads, 1);
-    expect(
-      tester
-          .widget<ListTile>(
-            find.byKey(const ValueKey(AppDestination.telemetry)),
-          )
-          .selected,
-      isTrue,
-    );
+    expect(tester.widget<ListTile>(find.byKey(const ValueKey(AppDestination.telemetry))).selected, isTrue);
     await tester.tap(find.byKey(const ValueKey(AppDestination.control)));
     await tester.pumpAndSettle();
     expect(router.routeInformationProvider.value.uri.path, '/device_control');
@@ -232,9 +234,7 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
-  testWidgets('three controls send absolute intents and update labels', (
-    tester,
-  ) async {
+  testWidgets('three controls send absolute intents and update labels', (tester) async {
     final repository = _Repository(_frame());
     final monitor = DeviceMonitor(repository, telemetry: false);
     await tester.pumpWidget(_app(monitor, DeviceSection.controls));
@@ -245,11 +245,7 @@ void main() {
       await tester.tap(button);
       await tester.pumpAndSettle();
     }
-    expect(repository.commands, [
-      (FrameControl.pause, true),
-      (FrameControl.menu, true),
-      (FrameControl.screen, false),
-    ]);
+    expect(repository.commands, [(FrameControl.pause, true), (FrameControl.menu, true), (FrameControl.screen, false)]);
     expect(find.text('Продолжить'), findsOneWidget);
     expect(find.text('Закрыть меню'), findsOneWidget);
     expect(find.text('Включить экран'), findsOneWidget);
@@ -257,9 +253,7 @@ void main() {
     await close(tester, repository);
   });
 
-  testWidgets('in-flight command disables actions and errors preserve state', (
-    tester,
-  ) async {
+  testWidgets('in-flight command disables actions and errors preserve state', (tester) async {
     final repository = _Repository(_frame())..pending = Completer<FrameState>();
     final monitor = DeviceMonitor(repository, telemetry: false);
     await tester.pumpWidget(_app(monitor, DeviceSection.controls));
@@ -267,28 +261,17 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey('device-pause')));
     await tester.tap(find.byKey(const ValueKey('device-pause')));
     await tester.pump();
-    final menu = tester.widget<FilledButton>(
-      find.byKey(const ValueKey('device-menu')),
-    );
+    final menu = tester.widget<FilledButton>(find.byKey(const ValueKey('device-menu')));
     expect(menu.onPressed, isNull);
-    repository.pending!.completeError(
-      const DeviceFailure(DeviceFailureKind.command),
-    );
+    repository.pending!.completeError(const DeviceFailure(DeviceFailureKind.command));
     await tester.pumpAndSettle();
-    expect(
-      find.text(
-        'Не удалось подтвердить команду. Обновите состояние перед повтором.',
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('Не удалось подтвердить команду. Обновите состояние перед повтором.'), findsOneWidget);
     expect(monitor.frame!.frontend!.isPaused, isFalse);
     expect(monitor.canControl, isFalse);
     await close(tester, repository);
   });
 
-  testWidgets('unknown screen power offers an explicit wake command', (
-    tester,
-  ) async {
+  testWidgets('unknown screen power offers an explicit wake command', (tester) async {
     final known = _frame();
     final repository = _Repository(
       FrameState(
@@ -317,99 +300,53 @@ void main() {
       final monitor = DeviceMonitor(repository, telemetry: false);
       await tester.pumpWidget(_app(monitor, DeviceSection.controls));
       await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<FilledButton>(find.byKey(const ValueKey('device-pause')))
-            .onPressed,
-        isNull,
-      );
-      expect(
-        tester
-            .widget<FilledButton>(find.byKey(const ValueKey('device-menu')))
-            .onPressed,
-        isNull,
-      );
-      expect(
-        tester
-            .widget<FilledButton>(find.byKey(const ValueKey('device-screen')))
-            .onPressed,
-        isNotNull,
-      );
+      expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-pause'))).onPressed, isNull);
+      expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-menu'))).onPressed, isNull);
+      expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-screen'))).onPressed, isNotNull);
       await close(tester, repository);
     });
   }
 
-  testWidgets(
-    'unavailable frontend disables all actions and presence can be unknown',
-    (tester) async {
-      final repository = _Repository(
-        _frame(frontendAvailable: false, presence: FramePresence.unknown),
-      );
-      final monitor = DeviceMonitor(repository, telemetry: false);
-      await tester.pumpWidget(_app(monitor, DeviceSection.controls));
-      await tester.pumpAndSettle();
-      expect(find.text('Неизвестно'), findsOneWidget);
-      for (final key in ['device-pause', 'device-menu', 'device-screen']) {
-        expect(
-          tester.widget<FilledButton>(find.byKey(ValueKey(key))).onPressed,
-          isNull,
-        );
-      }
-      await close(tester, repository);
-    },
-  );
+  testWidgets('unavailable frontend disables all actions and presence can be unknown', (tester) async {
+    final repository = _Repository(_frame(frontendAvailable: false, presence: FramePresence.unknown));
+    final monitor = DeviceMonitor(repository, telemetry: false);
+    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    await tester.pumpAndSettle();
+    expect(find.text('Неизвестно'), findsOneWidget);
+    for (final key in ['device-pause', 'device-menu', 'device-screen']) {
+      expect(tester.widget<FilledButton>(find.byKey(ValueKey(key))).onPressed, isNull);
+    }
+    await close(tester, repository);
+  });
 
   const locale = Locale('en');
   for (final dark in [false, true]) {
-    testWidgets('remote telemetry, narrow layout, $locale dark=$dark', (
-      tester,
-    ) async {
+    testWidgets('remote telemetry, narrow layout, $locale dark=$dark', (tester) async {
       tester.view.physicalSize = const Size(390, 900);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final repository = _Repository(_frame());
       final monitor = DeviceMonitor(repository, telemetry: true);
-      await tester.pumpWidget(
-        _app(
-          monitor,
-          DeviceSection.telemetry,
-          locale: locale,
-          dark: dark,
-          scale: 1.5,
-        ),
-      );
+      await tester.pumpWidget(_app(monitor, DeviceSection.telemetry, locale: locale, dark: dark, scale: 1.5));
       await tester.pumpAndSettle();
       expect(find.textContaining('2040'), findsWidgets);
       final scrollable = find
-          .descendant(
-            of: find.byKey(const ValueKey('device-content')),
-            matching: find.byType(Scrollable),
-          )
+          .descendant(of: find.byKey(const ValueKey('device-content')), matching: find.byType(Scrollable))
           .first;
-      await tester.scrollUntilVisible(
-        find.text('remote-frontend-24'),
-        500,
-        scrollable: scrollable,
-      );
+      await tester.scrollUntilVisible(find.text('remote-frontend-24'), 500, scrollable: scrollable);
       expect(find.text('remote-backend-42'), findsOneWidget);
       expect(find.textContaining('2\u00a0560'), findsNothing);
       final expectedSize = '2,560 × 1,600 px';
       expect(find.text(expectedSize), findsOneWidget);
-      await tester.scrollUntilVisible(
-        find.text('0 RPM'),
-        500,
-        scrollable: scrollable,
-      );
+      await tester.scrollUntilVisible(find.text('0 RPM'), 500, scrollable: scrollable);
       expect(find.text('0 RPM'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await close(tester, repository);
     });
   }
 
-  testWidgets('disconnect keeps last data and disables commands', (
-    tester,
-  ) async {
+  testWidgets('disconnect keeps last data and disables commands', (tester) async {
     final repository = _Repository(_frame());
     final monitor = DeviceMonitor(repository, telemetry: false);
     await tester.pumpWidget(_app(monitor, DeviceSection.controls));
@@ -418,12 +355,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Последние полученные данные устарели.'), findsOneWidget);
     expect(find.text('Человек рядом'), findsOneWidget);
-    expect(
-      tester
-          .widget<FilledButton>(find.byKey(const ValueKey('device-pause')))
-          .onPressed,
-      isNull,
-    );
+    expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-pause'))).onPressed, isNull);
     await close(tester, repository);
   });
 }

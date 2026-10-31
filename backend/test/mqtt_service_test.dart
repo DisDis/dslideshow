@@ -171,7 +171,12 @@ void main() {
         client.publications
             .where((p) => p.topic == 'homeassistant/sensor/dslideshow_storageStatus/state')
             .map((p) => (p.payload, p.qos)),
-        [('download', MqttQos.atMostOnce), ('off', MqttQos.atMostOnce), ('done', MqttQos.atMostOnce)],
+        [
+          ('download', MqttQos.atMostOnce),
+          ('off', MqttQos.atMostOnce),
+          ('done', MqttQos.atMostOnce),
+          ('error', MqttQos.atMostOnce),
+        ],
       );
       expect(
         records.any(

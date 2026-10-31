@@ -25,6 +25,8 @@ class _Screen implements ScreenService {
 
 class _Application implements ApplicationStateService {
   @override
+  ApplicationState state = const ApplicationState();
+  @override
   bool? observedPresence;
   @override
   DateTime? presenceObservedAt;
@@ -88,6 +90,7 @@ void main() {
     fixture.screen.isScreenOffLock = true;
     fixture.screen.confirmedPower = null;
     fixture.screen.phase = ScreenPhase.failed;
+    fixture.application.state = const ApplicationState(storageStatus: StorageStatusEnum.error);
     pending.complete(GetFrameFrontendStateResult(id: 0, state: fixture.remote.state));
     final state = await response;
     expect(state.presence, FramePresence.absent);
@@ -95,6 +98,7 @@ void main() {
     expect(state.isScreenLocked, isTrue);
     expect(state.isScreenOn, isNull);
     expect(state.screenPhase, FrameScreenPhase.failed);
+    expect(state.storageStatus, StorageStatusEnum.error);
     expect(state.sampledAt.isUtc, isTrue);
     expect(state.backendVersion, ApplicationInfo.backendVersion);
     expect(state.frontend, same(fixture.remote.state));
@@ -122,11 +126,13 @@ void main() {
       frontendVersion: 'updated.frontend',
     );
     fixture.application.observedPresence = true;
+    fixture.application.state = const ApplicationState(storageStatus: StorageStatusEnum.download);
     final second = await fixture.reader.read();
     expect(first.frontend!.isPaused, isFalse);
     expect(first.presence, FramePresence.unknown);
     expect(second.frontend, same(fixture.remote.state));
     expect(second.presence, FramePresence.present);
+    expect(second.storageStatus, StorageStatusEnum.download);
     expect(fixture.remote.commands, hasLength(2));
   });
 
@@ -136,10 +142,12 @@ void main() {
       final fixture = _Fixture();
       final error = StateError('private frontend URL');
       fixture.remote.failure = error;
+      fixture.application.state = const ApplicationState(storageStatus: StorageStatusEnum.error);
       final failed = await fixture.reader.read();
       expect(failed.frontend, isNull);
       expect(failed.isScreenOn, isTrue);
       expect(failed.backendVersion, ApplicationInfo.backendVersion);
+      expect(failed.storageStatus, StorageStatusEnum.error);
       fixture.remote.failure = null;
       final recovered = await fixture.reader.read();
       expect(recovered.frontend, same(fixture.remote.state));

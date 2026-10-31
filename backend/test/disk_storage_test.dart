@@ -11,6 +11,8 @@ import 'package:dslideshow_common/storage_status.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:test/test.dart';
 
+import 'helpers/capture_logs.dart';
+
 class FirstRandom implements Random {
   @override
   int nextInt(int max) => 0;
@@ -35,11 +37,7 @@ class MemoryAppStorage implements AppStorage {
 
 class ControlledGPhotoStorage extends GPhotoStorage {
   ControlledGPhotoStorage(TestDirectory folder)
-    : super(
-        GPhotoStorageConfig.fromJson({}),
-        MemoryAppStorage(),
-        folder: folder,
-      );
+    : super(GPhotoStorageConfig.fromJson({}), MemoryAppStorage(), folder: folder);
 
   int syncCalls = 0;
   Future<Null> Function()? onSync;
@@ -75,10 +73,7 @@ class TestDirectory implements Directory {
   }
 
   @override
-  Stream<FileSystemEntity> list({
-    bool recursive = false,
-    bool followLinks = true,
-  }) {
+  Stream<FileSystemEntity> list({bool recursive = false, bool followLinks = true}) {
     expect(recursive, isTrue);
     expect(followLinks, isTrue);
     listCalls++;
@@ -86,28 +81,20 @@ class TestDirectory implements Directory {
   }
 
   @override
-  Stream<FileSystemEvent> watch({
-    int events = FileSystemEvent.all,
-    bool recursive = false,
-  }) {
+  Stream<FileSystemEvent> watch({int events = FileSystemEvent.all, bool recursive = false}) {
     watchCalls++;
     expect(recursive, isFalse);
     return this.events.stream;
   }
 
-  void changed([String name = 'ready.jpg']) =>
-      events.add(FileSystemModifyEvent('$path/$name', false, true));
+  void changed([String name = 'ready.jpg']) => events.add(FileSystemModifyEvent('$path/$name', false, true));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 DiskStorage createStorage(TestDirectory directory, {Random? random}) =>
-    DiskStorage(
-      DiskStorageConfig(),
-      folder: directory,
-      random: random ?? FirstRandom(),
-    );
+    DiskStorage(DiskStorageConfig(), folder: directory, random: random ?? FirstRandom());
 
 String? itemName(Uri? uri) => uri?.pathSegments.last;
 
@@ -139,36 +126,45 @@ void fakeStorageTest(
 }
 
 void main() {
-  test('local storage reports scan, access failure and recovery through its shared status', () async {
-    final folder = TestDirectory(['photo.jpg']);
-    final storage = createStorage(folder);
-    final states = <StorageStatusEnum>[];
-    final subscription = storage.onStatusChanged.listen(states.add);
-    addTearDown(() async {
-      await subscription.cancel();
-      await storage.release();
-      await folder.events.close();
-    });
-    expect(storage.status, StorageStatusEnum.done);
-    await storage.sync();
-    await Future<void>.delayed(Duration.zero);
-    expect(states, [StorageStatusEnum.download, StorageStatusEnum.done]);
-    folder.listing = () => Stream.error(FileSystemException('private-path'));
-    await storage.sync();
-    await Future<void>.delayed(Duration.zero);
-    expect(storage.status, StorageStatusEnum.off);
-    folder.listing = null;
-    await storage.sync();
-    await Future<void>.delayed(Duration.zero);
-    expect(states, [
-      StorageStatusEnum.download,
-      StorageStatusEnum.done,
-      StorageStatusEnum.download,
-      StorageStatusEnum.off,
-      StorageStatusEnum.download,
-      StorageStatusEnum.done,
-    ]);
-  });
+  test(
+    'local storage reports scan, access failure and recovery through its shared status',
+    () => captureLogs((records) async {
+      final folder = TestDirectory(['photo.jpg']);
+      final storage = createStorage(folder);
+      final states = <StorageStatusEnum>[];
+      final subscription = storage.onStatusChanged.listen(states.add);
+      addTearDown(() async {
+        await subscription.cancel();
+        await storage.release();
+        await folder.events.close();
+      });
+      expect(storage.status, StorageStatusEnum.done);
+      await storage.sync();
+      await Future<void>.delayed(Duration.zero);
+      expect(states, [StorageStatusEnum.download, StorageStatusEnum.done]);
+      final failure = FileSystemException('Scan failed', '/media/private-path');
+      final stack = StackTrace.fromString('original directory listing stack\n#0 Directory.list');
+      folder.listing = () => Stream.error(failure, stack);
+      await storage.sync();
+      await Future<void>.delayed(Duration.zero);
+      expect(storage.status, StorageStatusEnum.error);
+      final diagnostic = records.singleWhere((record) => record.message.startsWith('Could not build file cache'));
+      expect(diagnostic.error, same(failure));
+      expect(diagnostic.error.toString(), contains('/media/private-path'));
+      expect(diagnostic.stackTrace, same(stack));
+      folder.listing = null;
+      await storage.sync();
+      await Future<void>.delayed(Duration.zero);
+      expect(states, [
+        StorageStatusEnum.download,
+        StorageStatusEnum.done,
+        StorageStatusEnum.download,
+        StorageStatusEnum.error,
+        StorageStatusEnum.download,
+        StorageStatusEnum.done,
+      ]);
+    }),
+  );
 
   test('each unchanged cycle visits every URI exactly once', () async {
     final names = List.generate(40, (i) => '$i.jpg');
@@ -192,28 +188,24 @@ void main() {
     expect(directory.listCalls, 3);
   });
 
-  test(
-    'init reserves current and next; one file repeats across cycles',
-    () async {
-      final directory = TestDirectory(['only.jpg']);
-      final storage = createStorage(directory);
-      addTearDown(() async {
-        await storage.release();
-        await directory.events.close();
-      });
-      await storage.init();
-      expect((await storage.getCurrent())?.uri, File('/media/only.jpg').uri);
-      expect((await storage.getNext())?.uri, File('/media/only.jpg').uri);
-      for (var i = 0; i < 3; i++) {
-        expect((await storage.next())?.uri, File('/media/only.jpg').uri);
-        expect(await storage.getCurrent(), await storage.getNext());
-      }
-    },
-  );
+  test('init reserves current and next; one file repeats across cycles', () async {
+    final directory = TestDirectory(['only.jpg']);
+    final storage = createStorage(directory);
+    addTearDown(() async {
+      await storage.release();
+      await directory.events.close();
+    });
+    await storage.init();
+    expect((await storage.getCurrent())?.uri, File('/media/only.jpg').uri);
+    expect((await storage.getNext())?.uri, File('/media/only.jpg').uri);
+    for (var i = 0; i < 3; i++) {
+      expect((await storage.next())?.uri, File('/media/only.jpg').uri);
+      expect(await storage.getCurrent(), await storage.getNext());
+    }
+  });
 
   test('empty and non-file entries produce the existing empty item', () async {
-    final directory = TestDirectory([])
-      ..entries = [Directory('/media/nested'), Link('/media/broken')];
+    final directory = TestDirectory([])..entries = [Directory('/media/nested'), Link('/media/broken')];
     final storage = createStorage(directory);
     addTearDown(() async {
       await storage.release();
@@ -225,76 +217,60 @@ void main() {
     expect((await storage.next())?.uri, isNull);
   });
 
-  test(
-    'only reserved upload temporary names are excluded, without stat',
-    () async {
-      const temporary = '.upload-0123456789abcdef0123456789abcdef.part';
-      final directory = TestDirectory([
-        'photo.jpg',
-        'nested/clip.mp4',
-        temporary,
-        'user.part',
-      ]);
-      final storage = createStorage(directory);
-      addTearDown(() async {
-        await storage.release();
-        await directory.events.close();
-      });
-      final uris = <Uri?>[];
-      for (var i = 0; i < 3; i++) {
-        uris.add((await storage.next())?.uri);
-      }
-      expect(uris.toSet(), {
-        File('/media/photo.jpg').uri,
-        File('/media/nested/clip.mp4').uri,
-        File('/media/user.part').uri,
-      });
-    },
-  );
+  test('only reserved upload temporary names are excluded, without stat', () async {
+    const temporary = '.upload-0123456789abcdef0123456789abcdef.part';
+    final directory = TestDirectory(['photo.jpg', 'nested/clip.mp4', temporary, 'user.part']);
+    final storage = createStorage(directory);
+    addTearDown(() async {
+      await storage.release();
+      await directory.events.close();
+    });
+    final uris = <Uri?>[];
+    for (var i = 0; i < 3; i++) {
+      uris.add((await storage.next())?.uri);
+    }
+    expect(uris.toSet(), {
+      File('/media/photo.jpg').uri,
+      File('/media/nested/clip.mp4').uri,
+      File('/media/user.part').uri,
+    });
+  });
 
-  test(
-    'real recursive listing preserves nested files and working symlinks',
-    () async {
-      final root = await Directory.systemTemp.createTemp('disk-storage-');
-      final rootPath = root.path;
-      final nested = await Directory('$rootPath/nested').create();
-      final nestedPath = nested.path;
-      final file = await File('$nestedPath/photo.jpg')
-          .writeAsString('original');
-      final link = await Link('$rootPath/alias.jpg').create(file.path);
-      final storage = DiskStorage(
-        DiskStorageConfig(),
-        folder: root,
-        random: Random(4),
-      );
-      addTearDown(() async {
-        await storage.release();
-        await root.delete(recursive: true);
-      });
-      final first = (await storage.next())?.uri;
-      final second = (await storage.next())?.uri;
-      expect({first, second}, {file.uri, link.uri});
-    },
-  );
+  test('real recursive listing preserves nested files and working symlinks', () async {
+    final root = await Directory.systemTemp.createTemp('disk-storage-');
+    final rootPath = root.path;
+    final nested = await Directory('$rootPath/nested').create();
+    final nestedPath = nested.path;
+    final file = await File('$nestedPath/photo.jpg').writeAsString('original');
+    final link = await Link('$rootPath/alias.jpg').create(file.path);
+    final storage = DiskStorage(DiskStorageConfig(), folder: root, random: Random(4));
+    addTearDown(() async {
+      await storage.release();
+      await root.delete(recursive: true);
+    });
+    final first = (await storage.next())?.uri;
+    final second = (await storage.next())?.uri;
+    expect({first, second}, {file.uri, link.uri});
+  });
 
-  fakeStorageTest(
-    'unchanged refresh preserves the remaining order and pair',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      folder.setNames(['d.jpg', 'c.jpg', 'b.jpg', 'a.jpg']);
-      folder.changed();
-      time.elapse(const Duration(minutes: 1));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-      storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
-      storage.getNext().then((item) => expect(itemName(item?.uri), 'd.jpg'));
-      final remaining = <String?>[];
-      storage.next().then((item) => remaining.add(itemName(item?.uri)));
-      storage.next().then((item) => remaining.add(itemName(item?.uri)));
-      time.flushMicrotasks();
-      expect(remaining, ['c.jpg', 'b.jpg']);
-    },
-  );
+  fakeStorageTest('unchanged refresh preserves the remaining order and pair', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    folder.setNames(['d.jpg', 'c.jpg', 'b.jpg', 'a.jpg']);
+    folder.changed();
+    time.elapse(const Duration(minutes: 1));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+    storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
+    storage.getNext().then((item) => expect(itemName(item?.uri), 'd.jpg'));
+    final remaining = <String?>[];
+    storage.next().then((item) => remaining.add(itemName(item?.uri)));
+    storage.next().then((item) => remaining.add(itemName(item?.uri)));
+    time.flushMicrotasks();
+    expect(remaining, ['c.jpg', 'b.jpg']);
+  });
 
   fakeStorageTest(
     'refresh removes deleted URI and adds new URI without repeats',
@@ -343,157 +319,136 @@ void main() {
     },
   );
 
-  fakeStorageTest(
-    'changes during scan discard stale result and coalesce retry',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      final scan = StreamController<FileSystemEntity>();
-      folder.listing = () => scan.stream;
-      folder.changed();
-      time.elapse(const Duration(minutes: 1));
-      expect(folder.listCalls, 2);
-      scan.add(File('/media/stale.jpg'));
-      time.flushMicrotasks();
-      folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'fresh.jpg']);
-      folder.listing = null;
-      folder.changed('fresh.jpg');
-      folder.changed('other.jpg');
-      scan.close();
-      time.flushMicrotasks();
-      expect(folder.listCalls, 3);
-      final remaining = <String?>[];
-      for (var i = 0; i < 3; i++) {
-        storage.next().then((item) => remaining.add(itemName(item?.uri)));
-      }
-      time.flushMicrotasks();
-      expect(remaining.toSet(), {'b.jpg', 'c.jpg', 'fresh.jpg'});
-    },
-  );
-
-  fakeStorageTest(
-    'temporary write storms do not invalidate a scan',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      const temporary = '.upload-0123456789abcdef0123456789abcdef.part';
-      folder.setNames([
-        'a.jpg',
-        'b.jpg',
-        'c.jpg',
-        'd.jpg',
-        'new.jpg',
-        temporary,
-      ]);
-      folder.listing = () => Stream.fromIterable(folder.entries).map((entity) {
-        folder.changed(temporary);
-        return entity;
-      });
-      folder.changed();
-      time.elapse(const Duration(minutes: 1));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-      storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
-      time.flushMicrotasks();
-      time.elapse(const Duration(minutes: 2));
-      expect(folder.listCalls, 2);
-    },
-  );
-
-  fakeStorageTest(
-    'rename from temporary to ready file invalidates index',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      const temporary = '/media/.upload-0123456789abcdef0123456789abcdef.part';
-      folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'ready.jpg']);
-      folder.events.add(
-        FileSystemMoveEvent(temporary, false, '/media/ready.jpg'),
-      );
-      time.elapse(const Duration(minutes: 1));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-      storage.next().then((item) => expect(itemName(item?.uri), 'ready.jpg'));
-      time.flushMicrotasks();
-    },
-  );
-
-  fakeStorageTest(
-    'continuous changes do not block next indefinitely',
-    ['only.jpg'],
-    (time, folder, storage) {
-      final before = folder.listCalls;
-      folder.listing = () =>
-          Stream.fromIterable([File('/media/stale.jpg')]).map((entity) {
-            folder.changed();
-            return entity;
-          });
-      var completed = false;
-      storage.next().then((item) {
-        expect(itemName(item?.uri), 'only.jpg');
-        completed = true;
-      });
-      time.flushMicrotasks();
-      expect(completed, isTrue);
-      expect(folder.listCalls, before + 2);
-      expect(time.pendingTimers.length, 1);
-    },
-  );
-
-  fakeStorageTest(
-    'error discards partial scan and preserves last good cycle',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      final scan = StreamController<FileSystemEntity>();
-      folder.listing = () => scan.stream;
-      folder.changed();
-      time.elapse(const Duration(minutes: 1));
-      scan.add(File('/media/partial.jpg'));
-      scan.addError(const FileSystemException('unreadable subdirectory'));
-      scan.close();
-      time.flushMicrotasks();
-      final remaining = <String?>[];
+  fakeStorageTest('changes during scan discard stale result and coalesce retry', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    final scan = StreamController<FileSystemEntity>();
+    folder.listing = () => scan.stream;
+    folder.changed();
+    time.elapse(const Duration(minutes: 1));
+    expect(folder.listCalls, 2);
+    scan.add(File('/media/stale.jpg'));
+    time.flushMicrotasks();
+    folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'fresh.jpg']);
+    folder.listing = null;
+    folder.changed('fresh.jpg');
+    folder.changed('other.jpg');
+    scan.close();
+    time.flushMicrotasks();
+    expect(folder.listCalls, 3);
+    final remaining = <String?>[];
+    for (var i = 0; i < 3; i++) {
       storage.next().then((item) => remaining.add(itemName(item?.uri)));
-      storage.next().then((item) => remaining.add(itemName(item?.uri)));
-      time.flushMicrotasks();
-      expect(remaining, ['c.jpg', 'b.jpg']);
-    },
-  );
+    }
+    time.flushMicrotasks();
+    expect(remaining.toSet(), {'b.jpg', 'c.jpg', 'fresh.jpg'});
+  });
 
-  test(
-    'first scan error reaches caller and subsequent scan can recover',
-    () async {
-      final folder = TestDirectory(['recovered.jpg']);
-      final storage = createStorage(folder);
-      addTearDown(() async {
-        await storage.release();
-        await folder.events.close();
-      });
-      folder.listing = () => Stream.error(const FileSystemException('denied'));
-      await expectLater(storage.next(), throwsA(isA<FileSystemException>()));
-      expect(await storage.getCurrent(), isNull);
-      expect(await storage.getNext(), isNull);
-      folder.listing = null;
-      expect(itemName((await storage.next())?.uri), 'recovered.jpg');
-    },
-  );
+  fakeStorageTest('temporary write storms do not invalidate a scan', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    const temporary = '.upload-0123456789abcdef0123456789abcdef.part';
+    folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'new.jpg', temporary]);
+    folder.listing = () => Stream.fromIterable(folder.entries).map((entity) {
+      folder.changed(temporary);
+      return entity;
+    });
+    folder.changed();
+    time.elapse(const Duration(minutes: 1));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+    storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
+    time.flushMicrotasks();
+    time.elapse(const Duration(minutes: 2));
+    expect(folder.listCalls, 2);
+  });
 
-  test(
-    'a successfully published empty index remains usable after scan error',
-    () async {
-      final folder = TestDirectory([]);
-      final storage = createStorage(folder);
-      addTearDown(() async {
-        await storage.release();
-        await folder.events.close();
-      });
-      expect((await storage.next())?.uri, isNull);
-      folder.listing = () => Stream.error(const FileSystemException('denied'));
-      expect((await storage.next())?.uri, isNull);
-    },
-  );
+  fakeStorageTest('rename from temporary to ready file invalidates index', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    const temporary = '/media/.upload-0123456789abcdef0123456789abcdef.part';
+    folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'ready.jpg']);
+    folder.events.add(FileSystemMoveEvent(temporary, false, '/media/ready.jpg'));
+    time.elapse(const Duration(minutes: 1));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+    storage.next().then((item) => expect(itemName(item?.uri), 'ready.jpg'));
+    time.flushMicrotasks();
+  });
+
+  fakeStorageTest('continuous changes do not block next indefinitely', ['only.jpg'], (time, folder, storage) {
+    final before = folder.listCalls;
+    folder.listing = () => Stream.fromIterable([File('/media/stale.jpg')]).map((entity) {
+      folder.changed();
+      return entity;
+    });
+    var completed = false;
+    storage.next().then((item) {
+      expect(itemName(item?.uri), 'only.jpg');
+      completed = true;
+    });
+    time.flushMicrotasks();
+    expect(completed, isTrue);
+    expect(folder.listCalls, before + 2);
+    expect(time.pendingTimers.length, 1);
+  });
+
+  fakeStorageTest('error discards partial scan and preserves last good cycle', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    final scan = StreamController<FileSystemEntity>();
+    folder.listing = () => scan.stream;
+    folder.changed();
+    time.elapse(const Duration(minutes: 1));
+    scan.add(File('/media/partial.jpg'));
+    scan.addError(const FileSystemException('unreadable subdirectory'));
+    scan.close();
+    time.flushMicrotasks();
+    final remaining = <String?>[];
+    storage.next().then((item) => remaining.add(itemName(item?.uri)));
+    storage.next().then((item) => remaining.add(itemName(item?.uri)));
+    time.flushMicrotasks();
+    expect(remaining, ['c.jpg', 'b.jpg']);
+  });
+
+  test('first scan error reaches caller and subsequent scan can recover', () async {
+    final folder = TestDirectory(['recovered.jpg']);
+    final storage = createStorage(folder);
+    addTearDown(() async {
+      await storage.release();
+      await folder.events.close();
+    });
+    folder.listing = () => Stream.error(const FileSystemException('denied'));
+    await expectLater(storage.next(), throwsA(isA<FileSystemException>()));
+    expect(await storage.getCurrent(), isNull);
+    expect(await storage.getNext(), isNull);
+    folder.listing = null;
+    expect(itemName((await storage.next())?.uri), 'recovered.jpg');
+  });
+
+  test('a successfully published empty index remains usable after scan error', () async {
+    final folder = TestDirectory([]);
+    final storage = createStorage(folder);
+    addTearDown(() async {
+      await storage.release();
+      await folder.events.close();
+    });
+    expect((await storage.next())?.uri, isNull);
+    folder.listing = () => Stream.error(const FileSystemException('denied'));
+    expect((await storage.next())?.uri, isNull);
+  });
 
   test('background retries own initial scan errors', () {
     fakeAsync((time) {
-      final folder = TestDirectory([])
-        ..listing = () => Stream.error(const FileSystemException('denied'));
+      final folder = TestDirectory([])..listing = () => Stream.error(const FileSystemException('denied'));
       final storage = createStorage(folder);
       var failures = 0;
       storage.next().then<void>(
@@ -516,144 +471,134 @@ void main() {
     });
   });
 
-  fakeStorageTest(
-    'cycle boundary discovers nested changes without watcher events',
-    ['nested/a.jpg', 'nested/b.jpg'],
-    (time, folder, storage) {
-      folder.setNames(['nested/a.jpg', 'nested/b.jpg', 'nested/new.jpg']);
-      storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-    },
-  );
+  fakeStorageTest('cycle boundary discovers nested changes without watcher events', ['nested/a.jpg', 'nested/b.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    folder.setNames(['nested/a.jpg', 'nested/b.jpg', 'nested/new.jpg']);
+    storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+  });
 
-  test(
-    'release during initial scan cancels initialization without publication',
-    () {
-      fakeAsync((time) {
-        final scan = StreamController<FileSystemEntity>(onCancel: () async {});
-        final folder = TestDirectory([])..listing = () => scan.stream;
-        final storage = createStorage(folder);
-        var initialized = false;
-        storage.init().then((_) => initialized = true);
-        time.flushMicrotasks();
-        scan.add(File('/media/late.jpg'));
-        time.flushMicrotasks();
-        var released = false;
-        storage.release().then((_) => released = true);
-        time.flushMicrotasks();
-        expect(released, isTrue);
-        expect(initialized, isTrue);
-        expect(scan.hasListener, isFalse);
-        storage.getCurrent().then((item) => expect(item, isNull));
-        storage.getNext().then((item) => expect(item, isNull));
-        time.flushMicrotasks();
-        scan.close();
-        folder.events.close();
-        time.flushMicrotasks();
-      });
-    },
-  );
-
-  fakeStorageTest(
-    'watcher errors are owned and a later scan recovers',
-    ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'],
-    (time, folder, storage) {
-      folder.events.addError(const FileSystemException('watcher overflow'));
-      folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'new.jpg']);
-      time.elapse(const Duration(minutes: 1));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-      storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
-      time.flushMicrotasks();
-    },
-  );
-
-  fakeStorageTest(
-    'concurrent next calls keep old pair until scan is ready',
-    ['a.jpg', 'b.jpg'],
-    (time, folder, storage) {
-      final scan = StreamController<FileSystemEntity>();
-      folder.listing = () {
-        folder.listing = null;
-        return scan.stream;
-      };
-      final issued = <String?>[];
-      storage.next().then((item) => issued.add(itemName(item?.uri)));
-      storage.next().then((item) => issued.add(itemName(item?.uri)));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-      storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
-      storage.getNext().then((item) => expect(itemName(item?.uri), 'b.jpg'));
-      time.flushMicrotasks();
-      expect(issued, isEmpty);
-      for (final name in ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']) {
-        scan.add(File('/media/$name'));
-      }
-      folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']);
-      scan.close();
-      time.flushMicrotasks();
-      expect(issued, ['d.jpg', 'c.jpg']);
-      storage.getCurrent().then((item) => expect(itemName(item?.uri), 'd.jpg'));
-      storage.getNext().then((item) => expect(itemName(item?.uri), 'c.jpg'));
-      time.flushMicrotasks();
-      expect(folder.listCalls, 2);
-    },
-  );
-
-  fakeStorageTest(
-    'release cancels pending scan, queued next and timer',
-    ['a.jpg', 'b.jpg'],
-    (time, folder, storage) {
-      var scanCancelled = 0;
-      final scan = StreamController<FileSystemEntity>(
-        onCancel: () async {
-          scanCancelled++;
-        },
-      );
-      folder.listing = () => scan.stream;
-      var completed = 0;
-      storage.next().then((item) {
-        expect(item?.uri, isNull);
-        completed++;
-      });
-      storage.next().then((item) {
-        expect(item?.uri, isNull);
-        completed++;
-      });
+  test('release during initial scan cancels initialization without publication', () {
+    fakeAsync((time) {
+      final scan = StreamController<FileSystemEntity>(onCancel: () async {});
+      final folder = TestDirectory([])..listing = () => scan.stream;
+      final storage = createStorage(folder);
+      var initialized = false;
+      storage.init().then((_) => initialized = true);
       time.flushMicrotasks();
       scan.add(File('/media/late.jpg'));
-      folder.changed();
       time.flushMicrotasks();
-      final firstRelease = storage.release();
-      expect(identical(firstRelease, storage.release()), isTrue);
       var released = false;
-      firstRelease.then((_) => released = true);
+      storage.release().then((_) => released = true);
       time.flushMicrotasks();
       expect(released, isTrue);
-      expect(completed, 2);
-      expect(scanCancelled, 1);
-      expect(folder.watchCancellations, 1);
-      scan.add(File('/media/even-later.jpg'));
+      expect(initialized, isTrue);
+      expect(scan.hasListener, isFalse);
+      storage.getCurrent().then((item) => expect(item, isNull));
+      storage.getNext().then((item) => expect(item, isNull));
+      time.flushMicrotasks();
       scan.close();
+      folder.events.close();
       time.flushMicrotasks();
-      storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
-      storage.getNext().then((item) => expect(itemName(item?.uri), 'b.jpg'));
-      time.flushMicrotasks();
-      final calls = folder.listCalls;
-      time.elapse(const Duration(minutes: 2));
-      expect(folder.listCalls, calls);
-      expect(time.pendingTimers, isEmpty);
-    },
-  );
+    });
+  });
+
+  fakeStorageTest('watcher errors are owned and a later scan recovers', ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    folder.events.addError(const FileSystemException('watcher overflow'));
+    folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'new.jpg']);
+    time.elapse(const Duration(minutes: 1));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+    storage.next().then((item) => expect(itemName(item?.uri), 'new.jpg'));
+    time.flushMicrotasks();
+  });
+
+  fakeStorageTest('concurrent next calls keep old pair until scan is ready', ['a.jpg', 'b.jpg'], (
+    time,
+    folder,
+    storage,
+  ) {
+    final scan = StreamController<FileSystemEntity>();
+    folder.listing = () {
+      folder.listing = null;
+      return scan.stream;
+    };
+    final issued = <String?>[];
+    storage.next().then((item) => issued.add(itemName(item?.uri)));
+    storage.next().then((item) => issued.add(itemName(item?.uri)));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+    storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
+    storage.getNext().then((item) => expect(itemName(item?.uri), 'b.jpg'));
+    time.flushMicrotasks();
+    expect(issued, isEmpty);
+    for (final name in ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']) {
+      scan.add(File('/media/$name'));
+    }
+    folder.setNames(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']);
+    scan.close();
+    time.flushMicrotasks();
+    expect(issued, ['d.jpg', 'c.jpg']);
+    storage.getCurrent().then((item) => expect(itemName(item?.uri), 'd.jpg'));
+    storage.getNext().then((item) => expect(itemName(item?.uri), 'c.jpg'));
+    time.flushMicrotasks();
+    expect(folder.listCalls, 2);
+  });
+
+  fakeStorageTest('release cancels pending scan, queued next and timer', ['a.jpg', 'b.jpg'], (time, folder, storage) {
+    var scanCancelled = 0;
+    final scan = StreamController<FileSystemEntity>(
+      onCancel: () async {
+        scanCancelled++;
+      },
+    );
+    folder.listing = () => scan.stream;
+    var completed = 0;
+    storage.next().then((item) {
+      expect(item?.uri, isNull);
+      completed++;
+    });
+    storage.next().then((item) {
+      expect(item?.uri, isNull);
+      completed++;
+    });
+    time.flushMicrotasks();
+    scan.add(File('/media/late.jpg'));
+    folder.changed();
+    time.flushMicrotasks();
+    final firstRelease = storage.release();
+    expect(identical(firstRelease, storage.release()), isTrue);
+    var released = false;
+    firstRelease.then((_) => released = true);
+    time.flushMicrotasks();
+    expect(released, isTrue);
+    expect(completed, 2);
+    expect(scanCancelled, 1);
+    expect(folder.watchCancellations, 1);
+    scan.add(File('/media/even-later.jpg'));
+    scan.close();
+    time.flushMicrotasks();
+    storage.getCurrent().then((item) => expect(itemName(item?.uri), 'a.jpg'));
+    storage.getNext().then((item) => expect(itemName(item?.uri), 'b.jpg'));
+    time.flushMicrotasks();
+    final calls = folder.listCalls;
+    time.elapse(const Duration(minutes: 2));
+    expect(folder.listCalls, calls);
+    expect(time.pendingTimers, isEmpty);
+  });
 
   test('scan yields to event loop after bounded number of all entities', () {
     fakeAsync((time) {
       final folder = TestDirectory([])
-        ..entries = [
-          for (var i = 0; i < 600; i++) Directory('/media/folder-$i'),
-          File('/media/photo.jpg'),
-        ];
+        ..entries = [for (var i = 0; i < 600; i++) Directory('/media/folder-$i'), File('/media/photo.jpg')];
       final storage = createStorage(folder);
       var completed = false;
       storage.next().then((_) => completed = true);
@@ -683,40 +628,36 @@ void main() {
     await folder.events.close();
   });
 
-  test(
-    'GPhoto release during initialization does not create a late sync timer',
-    () {
-      fakeAsync((time) {
-        final scan = StreamController<FileSystemEntity>(onCancel: () async {});
-        final folder = TestDirectory([])..listing = () => scan.stream;
-        final storage = ControlledGPhotoStorage(folder);
-        var initialized = false;
-        storage.init().then((_) => initialized = true);
-        time.flushMicrotasks();
-        expect(initialized, isFalse);
-        expect(storage.syncCalls, 1);
-        var released = false;
-        storage.release().then((_) => released = true);
-        time.flushMicrotasks();
-        expect(released, isTrue);
-        expect(initialized, isTrue);
-        expect(scan.hasListener, isFalse);
-        expect(time.pendingTimers, isEmpty);
-        time.elapse(const Duration(hours: 2));
-        expect(storage.syncCalls, 1);
-        scan.close();
-        folder.events.close();
-        time.flushMicrotasks();
-      });
-    },
-  );
+  test('GPhoto release during initialization does not create a late sync timer', () {
+    fakeAsync((time) {
+      final scan = StreamController<FileSystemEntity>(onCancel: () async {});
+      final folder = TestDirectory([])..listing = () => scan.stream;
+      final storage = ControlledGPhotoStorage(folder);
+      var initialized = false;
+      storage.init().then((_) => initialized = true);
+      time.flushMicrotasks();
+      expect(initialized, isFalse);
+      expect(storage.syncCalls, 1);
+      var released = false;
+      storage.release().then((_) => released = true);
+      time.flushMicrotasks();
+      expect(released, isTrue);
+      expect(initialized, isTrue);
+      expect(scan.hasListener, isFalse);
+      expect(time.pendingTimers, isEmpty);
+      time.elapse(const Duration(hours: 2));
+      expect(storage.syncCalls, 1);
+      scan.close();
+      folder.events.close();
+      time.flushMicrotasks();
+    });
+  });
 
   test('GPhoto owns errors from its initial background sync', () {
     fakeAsync((time) {
       final folder = TestDirectory([]);
       final storage = ControlledGPhotoStorage(folder)
-        ..onSync = () =>
-            Future<Null>.error(StateError('Controlled sync failure'));
+        ..onSync = () => Future<Null>.error(StateError('Controlled sync failure'));
       var initialized = false;
       storage.init().then((_) => initialized = true);
       time.flushMicrotasks();

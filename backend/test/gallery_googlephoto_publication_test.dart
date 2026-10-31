@@ -127,6 +127,9 @@ void main() {
     expect((await media.list().toList()).length, 1);
   });
   test('HTTP error resets sync state and permits a successful retry', () async {
+    final records = <LogRecord>[];
+    final logs = Logger.root.onRecord.where((record) => record.loggerName == 'GPhotoStorage').listen(records.add);
+    addTearDown(logs.cancel);
     var requests = 0;
     server.listen((request) async {
       requests++;
@@ -138,11 +141,26 @@ void main() {
       await request.response.close();
     });
     await expectLater(storage.sync(), throwsA(anything));
-    expect(storage.status, StorageStatusEnum.off);
+    expect(storage.status, StorageStatusEnum.error);
+    final diagnostic = records.singleWhere((record) => record.message.startsWith('Synchronization failed'));
+    expect(diagnostic.error.toString(), contains('network'));
+    expect(diagnostic.stackTrace.toString(), contains('gphoto_storage.dart'));
     await storage.sync();
     expect(storage.status, StorageStatusEnum.done);
     expect(requests, 2);
     expect(await File('${media.path}/one_2560x1600.jpeg').readAsBytes(), [1, 2, 3]);
+  });
+  test('storage without selected albums reports off without requesting media', () async {
+    await storage.release();
+    storage = GPhotoStorage(
+      GPhotoStorageConfig.fromJson({'albumNames': <String>[]}),
+      _Storage(),
+      folder: media,
+      googlePhotoService: _Photos('http://127.0.0.1:${server.port}/photo'),
+    );
+    await storage.sync();
+    expect(storage.status, StorageStatusEnum.off);
+    expect(await media.list().toList(), isEmpty);
   });
   test('release waits for the active file to publish and starts no further downloads', () async {
     await storage.release();
@@ -158,7 +176,9 @@ void main() {
     final subscription = Logger.root.onRecord.listen(logs.add);
     addTearDown(subscription.cancel);
     var ended = false;
-    final listener = storage.onStatusChanged.where((status) => status == StorageStatusEnum.done).listen((_) => ended = true);
+    final listener = storage.onStatusChanged
+        .where((status) => status == StorageStatusEnum.done)
+        .listen((_) => ended = true);
     addTearDown(listener.cancel);
     final first = Completer<void>();
     final finish = Completer<void>();
@@ -218,7 +238,9 @@ void main() {
     );
     final initialLastSync = storage.lastSync;
     var ended = false;
-    final listener = storage.onStatusChanged.where((status) => status == StorageStatusEnum.done).listen((_) => ended = true);
+    final listener = storage.onStatusChanged
+        .where((status) => status == StorageStatusEnum.done)
+        .listen((_) => ended = true);
     addTearDown(listener.cancel);
     // Own errors immediately: the regression used to complete after release
     // with a StateError from adding to the closed notification controller.

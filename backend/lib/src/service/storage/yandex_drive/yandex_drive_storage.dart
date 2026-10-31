@@ -62,7 +62,7 @@ class YandexDriveStorage extends CloudStorage {
       _scheduleNext();
       _log.info('Storage initialized accounts=${config.accounts.where((account) => account.enabled).length}');
     } catch (error, stack) {
-      if (!_closed) updateStatus(StorageStatusEnum.off);
+      if (!_closed) updateStatus(StorageStatusEnum.error);
       _log.warning('Storage initialization failed type=${error.runtimeType}', error, stack);
       rethrow;
     }
@@ -229,15 +229,24 @@ class YandexDriveStorage extends CloudStorage {
         appStorage.save();
         _runtime = _runtime.copyWith(lastSync: completed);
       }
-    } catch (error) {
-      _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: YandexDriveService.failureCode(error));
+    } catch (error, stack) {
+      final reason = YandexDriveService.failureCode(error);
+      _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: reason);
+      _log.warning('Synchronization failed reason=${reason.name}', error, stack);
     } finally {
       _runtime = _runtime.copyWith(running: false);
       if (!_closed) {
+        final configured = config.accounts.any((account) => account.enabled && account.paths.isNotEmpty);
         final unavailable =
-            _runtime.failed > 0 ||
+            !configured ||
             config.accounts.any((account) => account.enabled && !_connections.isConnected(account.accountId));
-        updateStatus(unavailable ? StorageStatusEnum.off : StorageStatusEnum.done);
+        updateStatus(
+          _runtime.failed > 0
+              ? StorageStatusEnum.error
+              : unavailable
+              ? StorageStatusEnum.off
+              : StorageStatusEnum.done,
+        );
       }
       _log.log(
         _runtime.failed > 0 ? Level.WARNING : Level.INFO,

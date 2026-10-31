@@ -1230,6 +1230,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get device_screen_phase => 'Состояние экрана';
 
   @override
+  String get device_storage_status => 'Хранилище';
+
+  @override
+  String get device_storage_downloading => 'Сканирование или синхронизация';
+
+  @override
+  String get device_storage_unavailable => 'Недоступно или не настроено';
+
+  @override
+  String get device_storage_ready => 'Готово';
+
+  @override
+  String get device_storage_error => 'Ошибка операции с хранилищем';
+
+  @override
   String get device_screen_waiting => 'Ожидание автоматического сна';
 
   @override

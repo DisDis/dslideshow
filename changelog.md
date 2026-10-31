@@ -1,5 +1,9 @@
 # Unreleased
 
+* Show active storage status in frame telemetry and controls. Distinguish
+  unavailable sources from operation errors, preserve errors after partial cloud
+  synchronization failures and show a persistent red error icon on the frame.
+
 # 18.0.0+1 — 2026-10-31
 
 * Preserve original exception messages and full stack traces in application

@@ -190,7 +190,7 @@ class DiskStorage extends Storage {
         }
       } catch (error, stack) {
         if (_released) return;
-        if (type == StorageType.local) updateStatus(StorageStatusEnum.off);
+        if (type == StorageType.local) updateStatus(StorageStatusEnum.error);
         _log.warning('Could not build file cache; keeping previous index', error, stack);
         _dirty = true;
         _scheduleRefresh();

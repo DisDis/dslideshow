@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:test/test.dart';
 
-T roundTrip<T>(Object object) => serializers.deserialize(
-  jsonDecode(jsonEncode(serializers.serialize(object))),
-) as T;
+T roundTrip<T>(Object object) => serializers.deserialize(jsonDecode(jsonEncode(serializers.serialize(object)))) as T;
 
 void main() {
   const frontend = FrameFrontendState(
@@ -31,32 +30,24 @@ void main() {
       isScreenLocked: true,
       isScreenOn: null,
       screenPhase: FrameScreenPhase.failed,
+      storageStatus: StorageStatusEnum.error,
       backendVersion: 'test.backend',
       frontend: frontend,
     );
-    final decoded = roundTrip<GetFrameStateResult>(
-      GetFrameStateResult(id: 17, state: state),
-    );
+    final decoded = roundTrip<GetFrameStateResult>(GetFrameStateResult(id: 17, state: state));
     expect(decoded.id, 17);
     expect(decoded.state.toJson(), state.toJson());
     expect(decoded.state.sampledAt.isUtc, isTrue);
     expect(decoded.state.presenceObservedAt!.isUtc, isTrue);
     expect(decoded.state.frontend!.display!.physicalWidth, 2560);
     expect(decoded.state.frontend!.display!.pixelRatio, 2);
+    expect(roundTrip<GetFrameStateCommand>(const GetFrameStateCommand(id: 18)).type, GetFrameStateCommand.TYPE);
     expect(
-      roundTrip<GetFrameStateCommand>(const GetFrameStateCommand(id: 18)).type,
-      GetFrameStateCommand.TYPE,
-    );
-    expect(
-      roundTrip<GetFrameFrontendStateCommand>(
-        const GetFrameFrontendStateCommand(id: 19),
-      ).type,
+      roundTrip<GetFrameFrontendStateCommand>(const GetFrameFrontendStateCommand(id: 19)).type,
       GetFrameFrontendStateCommand.TYPE,
     );
     expect(
-      roundTrip<GetFrameFrontendStateResult>(
-        const GetFrameFrontendStateResult(id: 20, state: frontend),
-      ).state.toJson(),
+      roundTrip<GetFrameFrontendStateResult>(const GetFrameFrontendStateResult(id: 20, state: frontend)).state.toJson(),
       frontend.toJson(),
     );
     for (final control in FrameControl.values) {
@@ -80,10 +71,12 @@ void main() {
       if (value != null) {
         state['presence'] = value;
         state['screenPhase'] = value;
+        state['storageStatus'] = value;
       }
       final decoded = FrameState.fromJson(state);
       expect(decoded.presence, FramePresence.unknown);
       expect(decoded.screenPhase, FrameScreenPhase.unknown);
+      expect(decoded.storageStatus, StorageStatusEnum.off);
       expect(decoded.frontend, isNull);
       final frontendJson = frontend.toJson()..remove('page');
       if (value != null) frontendJson['page'] = value;
@@ -91,19 +84,39 @@ void main() {
     }
   });
 
-  test(
-    'missing or unsupported control is rejected without choosing an action',
-    () {
-      for (final value in [null, 'future']) {
-        expect(
-          () => SetFrameControlCommand.fromJson({
-            'id': 22,
-            'enabled': false,
-            if (value != null) 'control': value,
-          }),
-          throwsArgumentError,
-        );
-      }
-    },
-  );
+  test('frame storage statuses survive JSON RPC transport and copyWith', () {
+    for (final status in StorageStatusEnum.values) {
+      final frame = FrameState(
+        sampledAt: DateTime.utc(2026, 10, 31),
+        isScreenLocked: false,
+        isScreenOn: true,
+        backendVersion: 'test',
+        storageStatus: status,
+      );
+      final decoded = roundTrip<GetFrameStateResult>(GetFrameStateResult(id: 23, state: frame)).state;
+      expect(decoded.storageStatus, status);
+      expect(decoded.toJson()['storageStatus'], status.name);
+      expect(decoded, frame);
+      expect(frame.copyWith(storageStatus: StorageStatusEnum.error).storageStatus, StorageStatusEnum.error);
+    }
+    expect(
+      FrameState.fromJson({
+        'sampledAt': '2026-10-31T12:00:00Z',
+        'isScreenLocked': false,
+        'isScreenOn': null,
+        'backendVersion': 'test',
+        'storageStatus': null,
+      }).storageStatus,
+      StorageStatusEnum.off,
+    );
+  });
+
+  test('missing or unsupported control is rejected without choosing an action', () {
+    for (final value in [null, 'future']) {
+      expect(
+        () => SetFrameControlCommand.fromJson({'id': 22, 'enabled': false, if (value != null) 'control': value}),
+        throwsArgumentError,
+      );
+    }
+  });
 }

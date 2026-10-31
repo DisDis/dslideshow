@@ -117,6 +117,23 @@ class FrameFixture {
 }
 
 void main() {
+  test('snapshot reads selected storage status before application publication debounce', () {
+    fakeAsync((time) {
+      final f = FrameFixture();
+      final published = <ApplicationState>[];
+      final subscription = f.application.onChangedState.listen(published.add);
+      final snapshots = <FrameState>[];
+      f.application.storage.updateStatus(StorageStatusEnum.error);
+      time.flushMicrotasks();
+      f.snapshot().then(snapshots.add);
+      time.flushMicrotasks();
+      expect(snapshots.single.storageStatus, StorageStatusEnum.error);
+      expect(published, isEmpty);
+      subscription.cancel();
+      f.dispose(time);
+    });
+  });
+
   test('boot presence is unknown while existing MQTT motion default is kept', () async {
     final f = FrameFixture()..tearDown();
     final state = await f.snapshot();

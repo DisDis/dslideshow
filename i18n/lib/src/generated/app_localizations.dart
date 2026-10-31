@@ -2414,6 +2414,36 @@ abstract class AppLocalizations {
   /// **'Screen transition'**
   String get device_screen_phase;
 
+  /// No description provided for @device_storage_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get device_storage_status;
+
+  /// No description provided for @device_storage_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning or synchronizing'**
+  String get device_storage_downloading;
+
+  /// No description provided for @device_storage_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable or not configured'**
+  String get device_storage_unavailable;
+
+  /// No description provided for @device_storage_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get device_storage_ready;
+
+  /// No description provided for @device_storage_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage operation failed'**
+  String get device_storage_error;
+
   /// No description provided for @device_screen_waiting.
   ///
   /// In en, this message translates to:

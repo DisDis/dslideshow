@@ -1215,6 +1215,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get device_screen_phase => 'Screen transition';
 
   @override
+  String get device_storage_status => 'Storage';
+
+  @override
+  String get device_storage_downloading => 'Scanning or synchronizing';
+
+  @override
+  String get device_storage_unavailable => 'Unavailable or not configured';
+
+  @override
+  String get device_storage_ready => 'Ready';
+
+  @override
+  String get device_storage_error => 'Storage operation failed';
+
+  @override
   String get device_screen_waiting => 'Waiting for automatic sleep';
 
   @override

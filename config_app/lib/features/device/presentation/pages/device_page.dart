@@ -6,6 +6,7 @@ import 'package:config_app/features/theme/presentation/extensions/build_context_
 import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
 import 'package:config_app/injection_container.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -30,10 +31,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _monitor =
         widget.monitor ??
-        DeviceMonitor(
-          DeviceRepository(sl<RealtimeService>()),
-          telemetry: widget.section == DeviceSection.telemetry,
-        );
+        DeviceMonitor(DeviceRepository(sl<RealtimeService>()), telemetry: widget.section == DeviceSection.telemetry);
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     if (lifecycle != null && lifecycle != AppLifecycleState.resumed) {
       _monitor.setActive(false);
@@ -53,11 +51,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  String _number(num value, {int decimals = 1}) =>
-      NumberFormat.decimalPatternDigits(
-        locale: Localizations.localeOf(context).toLanguageTag(),
-        decimalDigits: decimals,
-      ).format(value);
+  String _number(num value, {int decimals = 1}) => NumberFormat.decimalPatternDigits(
+    locale: Localizations.localeOf(context).toLanguageTag(),
+    decimalDigits: decimals,
+  ).format(value);
 
   String _time(DateTime value) =>
       '${DateFormat.yMd(Localizations.localeOf(context).toLanguageTag()).add_Hms().format(value.toUtc())} UTC';
@@ -107,16 +104,12 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       final metrics = _monitor.metrics;
       return ConfigAppScaffold(
         appBar: AppBar(
-          title: Text(
-            telemetry ? l.device_telemetry_title : l.device_controls_title,
-          ),
+          title: Text(telemetry ? l.device_telemetry_title : l.device_controls_title),
           actions: [
             IconButton(
               key: const ValueKey('device-refresh'),
               tooltip: l.device_refresh,
-              onPressed: _monitor.loading || _monitor.busy
-                  ? null
-                  : _monitor.refresh,
+              onPressed: _monitor.loading || _monitor.busy ? null : _monitor.refresh,
               icon: const Icon(Icons.refresh),
             ),
           ],
@@ -137,8 +130,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                   },
                   isError: true,
                 ),
-              if (_monitor.stale && frame != null)
-                _Notice(text: l.device_stale),
+              if (_monitor.stale && frame != null) _Notice(text: l.device_stale),
               if (frame != null) ...[
                 Text(
                   '${l.device_sample_time}: ${_time(frame.sampledAt)}',
@@ -146,21 +138,13 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                 ),
                 const SizedBox(height: 16),
                 if (telemetry)
-                  _Grid(
-                    children: [
-                      _presenceCard(frame),
-                      _statusCard(frame),
-                      _displayCard(frame),
-                    ],
-                  )
+                  _Grid(children: [_presenceCard(frame), _statusCard(frame), _displayCard(frame)])
                 else
                   _controls(frame),
               ],
               if (telemetry) ...[
-                if (_monitor.metricsFailure != null)
-                  _Notice(text: l.device_metrics_failed, isError: true),
-                if (_monitor.metricsStale && metrics != null)
-                  _Notice(text: l.device_stale),
+                if (_monitor.metricsFailure != null) _Notice(text: l.device_metrics_failed, isError: true),
+                if (_monitor.metricsStale && metrics != null) _Notice(text: l.device_stale),
                 if (metrics != null) ...[
                   const SizedBox(height: 16),
                   Text(
@@ -196,8 +180,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
           key: const ValueKey('device-presence'),
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        if (frame.presenceObservedAt != null)
-          _Detail(l.device_presence_time, _time(frame.presenceObservedAt!)),
+        if (frame.presenceObservedAt != null) _Detail(l.device_presence_time, _time(frame.presenceObservedAt!)),
       ],
     );
   }
@@ -209,18 +192,13 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       title: l.device_controls_title,
       icon: Icons.settings_remote_outlined,
       children: [
+        _StorageStatusDetail(frame.storageStatus),
         if (frontend == null)
           Text(l.device_frontend_unavailable)
         else ...[
           _Detail(l.device_current_page, _page(frontend.page)),
-          _Detail(
-            l.device_playback,
-            frontend.isPaused ? l.device_paused : l.device_playing,
-          ),
-          _Detail(
-            l.device_menu,
-            frontend.isMenu ? l.device_menu_open : l.device_menu_closed,
-          ),
+          _Detail(l.device_playback, frontend.isPaused ? l.device_paused : l.device_playing),
+          _Detail(l.device_menu, frontend.isMenu ? l.device_menu_open : l.device_menu_closed),
         ],
         _Detail(
           l.device_screen,
@@ -231,14 +209,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
               : l.device_screen_off,
         ),
         _Detail(l.device_screen_phase, _phase(frame.screenPhase)),
-        _Detail(
-          l.device_screen_lock,
-          frame.isScreenLocked ? l.enabled_label : l.disabled_label,
-        ),
-        Text(
-          l.device_screen_power_help,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        _Detail(l.device_screen_lock, frame.isScreenLocked ? l.enabled_label : l.disabled_label),
+        Text(l.device_screen_power_help, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
@@ -262,38 +234,19 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
           children: [
             FilledButton.icon(
               key: const ValueKey('device-pause'),
-              onPressed: slideshow
-                  ? () => _monitor.setControl(
-                      FrameControl.pause,
-                      !frontend.isPaused,
-                    )
-                  : null,
-              icon: _pendingIcon(
-                FrameControl.pause,
-                frontend?.isPaused == true ? Icons.play_arrow : Icons.pause,
-              ),
-              label: Text(
-                frontend?.isPaused == true ? l.preview_resume : l.preview_pause,
-              ),
+              onPressed: slideshow ? () => _monitor.setControl(FrameControl.pause, !frontend.isPaused) : null,
+              icon: _pendingIcon(FrameControl.pause, frontend?.isPaused == true ? Icons.play_arrow : Icons.pause),
+              label: Text(frontend?.isPaused == true ? l.preview_resume : l.preview_pause),
             ),
             FilledButton.tonalIcon(
               key: const ValueKey('device-menu'),
-              onPressed: slideshow
-                  ? () =>
-                        _monitor.setControl(FrameControl.menu, !frontend.isMenu)
-                  : null,
+              onPressed: slideshow ? () => _monitor.setControl(FrameControl.menu, !frontend.isMenu) : null,
               icon: _pendingIcon(FrameControl.menu, Icons.menu),
-              label: Text(
-                frontend?.isMenu == true
-                    ? l.device_close_menu
-                    : l.device_open_menu,
-              ),
+              label: Text(frontend?.isMenu == true ? l.device_close_menu : l.device_open_menu),
             ),
             FilledButton.tonalIcon(
               key: const ValueKey('device-screen'),
-              onPressed: available
-                  ? () => _monitor.setControl(FrameControl.screen, turnOn)
-                  : null,
+              onPressed: available ? () => _monitor.setControl(FrameControl.screen, turnOn) : null,
               icon: _pendingIcon(FrameControl.screen, Icons.power_settings_new),
               label: Text(turnOn ? l.device_turn_on : l.device_turn_off),
             ),
@@ -305,12 +258,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _pendingIcon(FrameControl control, IconData icon) =>
-      _monitor.pendingControl == control
-      ? const SizedBox.square(
-          dimension: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        )
+  Widget _pendingIcon(FrameControl control, IconData icon) => _monitor.pendingControl == control
+      ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
       : Icon(icon);
 
   Widget _displayCard(FrameState frame) {
@@ -322,31 +271,19 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       icon: Icons.monitor,
       children: [
         _Detail(l.device_backend_version, frame.backendVersion),
-        _Detail(
-          l.device_frontend_version,
-          frontend?.frontendVersion ?? l.device_no_data,
-        ),
+        _Detail(l.device_frontend_version, frontend?.frontendVersion ?? l.device_no_data),
         if (display == null)
           _Detail(l.device_screen, l.device_no_data)
         else ...[
           _Detail(
             l.device_physical_size,
-            l.device_pixels(
-              _number(display.physicalWidth, decimals: 0),
-              _number(display.physicalHeight, decimals: 0),
-            ),
+            l.device_pixels(_number(display.physicalWidth, decimals: 0), _number(display.physicalHeight, decimals: 0)),
           ),
           _Detail(
             l.device_logical_size,
-            l.device_logical_pixels(
-              _number(display.logicalWidth),
-              _number(display.logicalHeight),
-            ),
+            l.device_logical_pixels(_number(display.logicalWidth), _number(display.logicalHeight)),
           ),
-          _Detail(
-            l.device_pixel_ratio,
-            _number(display.pixelRatio, decimals: 2),
-          ),
+          _Detail(l.device_pixel_ratio, _number(display.pixelRatio, decimals: 2)),
         ],
       ],
     );
@@ -366,10 +303,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             _Detail(l.device_cpu_model, model.cpuInfo.model),
             _Detail(l.device_cpu_hardware, model.cpuInfo.hardware),
             _Detail(l.device_cpu_revision, model.cpuInfo.revision),
-            _Detail(
-              l.device_cpu_cores,
-              _number(model.cpuInfo.cores, decimals: 0),
-            ),
+            _Detail(l.device_cpu_cores, _number(model.cpuInfo.cores, decimals: 0)),
             _Detail(
               l.device_cpu_load,
               '${_number(update.cpuLoad1, decimals: 2)} / ${_number(update.cpuLoad5, decimals: 2)} / ${_number(update.cpuLoad15, decimals: 2)}',
@@ -379,10 +313,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         _MetricCard(
           title: l.device_os,
           icon: Icons.computer,
-          children: [
-            _Detail(l.device_os, model.osInfo.name),
-            _Detail(l.device_uptime, update.uptime.trim()),
-          ],
+          children: [_Detail(l.device_os, model.osInfo.name), _Detail(l.device_uptime, update.uptime.trim())],
         ),
         _MetricCard(
           title: l.device_memory,
@@ -398,35 +329,21 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
           title: l.device_disk,
           icon: Icons.storage,
           children: [
-            _Detail(
-              l.device_disk_usage,
-              memory(update.diskUsed, update.diskUsed + update.diskAvailable),
-            ),
+            _Detail(l.device_disk_usage, memory(update.diskUsed, update.diskUsed + update.diskAvailable)),
             _Detail(
               l.device_disk_percent,
-              NumberFormat.percentPattern(
-                Localizations.localeOf(context).toLanguageTag(),
-              ).format(update.diskUsedPercent / 100),
+              NumberFormat.percentPattern(Localizations.localeOf(context).toLanguageTag())
+                  .format(update.diskUsedPercent / 100),
             ),
-            _Usage(
-              used: update.diskUsed,
-              total: update.diskUsed + update.diskAvailable,
-            ),
+            _Usage(used: update.diskUsed, total: update.diskUsed + update.diskAvailable),
           ],
         ),
         _MetricCard(
           title: l.device_network,
           icon: Icons.lan_outlined,
           children: [
-            _Detail(
-              l.device_internet,
-              model.networkInfo.hasInternet
-                  ? l.device_online
-                  : l.device_offline,
-            ),
-            for (final interface
-                in model.networkInfo.interfaces ??
-                    <NetworkInterfaceInfo>[]) ...[
+            _Detail(l.device_internet, model.networkInfo.hasInternet ? l.device_online : l.device_offline),
+            for (final interface in model.networkInfo.interfaces ?? <NetworkInterfaceInfo>[]) ...[
               const Divider(),
               _Detail(
                 interface.name,
@@ -439,12 +356,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             ],
             _Detail(
               l.device_network_time,
-              _time(
-                DateTime.fromMillisecondsSinceEpoch(
-                  model.networkInfo.lastUpdate,
-                  isUtc: true,
-                ),
-              ),
+              _time(DateTime.fromMillisecondsSinceEpoch(model.networkInfo.lastUpdate, isUtc: true)),
             ),
           ],
         ),
@@ -453,8 +365,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
           icon: Icons.sensors,
           children: [
             if (update.sensors.isEmpty) Text(l.device_no_data),
-            for (final sensor in update.sensors)
-              _Detail(sensor.name, sensor.value),
+            for (final sensor in update.sensors) _Detail(sensor.name, sensor.value),
           ],
         ),
       ],
@@ -474,20 +385,14 @@ class _Grid extends StatelessWidget {
       return Wrap(
         spacing: 16,
         runSpacing: 16,
-        children: [
-          for (final child in children) SizedBox(width: width, child: child),
-        ],
+        children: [for (final child in children) SizedBox(width: width, child: child)],
       );
     },
   );
 }
 
 class _MetricCard extends StatelessWidget {
-  const _MetricCard({
-    required this.title,
-    required this.icon,
-    required this.children,
-  });
+  const _MetricCard({required this.title, required this.icon, required this.children});
   final String title;
   final IconData icon;
   final List<Widget> children;
@@ -505,12 +410,7 @@ class _MetricCard extends StatelessWidget {
             children: [
               Icon(icon, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
+              Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
             ],
           ),
           const SizedBox(height: 16),
@@ -519,6 +419,23 @@ class _MetricCard extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _StorageStatusDetail extends StatelessWidget {
+  const _StorageStatusDetail(this.status);
+
+  final StorageStatusEnum status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.localizations;
+    return _Detail(l.device_storage_status, switch (status) {
+      StorageStatusEnum.download => l.device_storage_downloading,
+      StorageStatusEnum.off => l.device_storage_unavailable,
+      StorageStatusEnum.done => l.device_storage_ready,
+      StorageStatusEnum.error => l.device_storage_error,
+    });
+  }
 }
 
 class _Detail extends StatelessWidget {
@@ -534,9 +451,7 @@ class _Detail extends StatelessWidget {
       children: [
         Text(label, style: Theme.of(context).textTheme.labelMedium),
         const SizedBox(height: 2),
-        SelectableText(
-          value.isEmpty ? context.localizations.device_no_data : value,
-        ),
+        SelectableText(value.isEmpty ? context.localizations.device_no_data : value),
       ],
     ),
   );
@@ -569,9 +484,7 @@ class _Notice extends StatelessWidget {
       children: [
         Icon(
           isError ? Icons.error_outline : Icons.info_outline,
-          color: isError
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.onSurfaceVariant,
+          color: isError ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 12),
         Expanded(child: Text(text)),

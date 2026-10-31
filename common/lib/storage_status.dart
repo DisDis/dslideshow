@@ -1,2 +1,2 @@
 /// Availability and synchronization state of the active media storage.
-enum StorageStatusEnum { download, off, done }
+enum StorageStatusEnum { download, off, done, error }

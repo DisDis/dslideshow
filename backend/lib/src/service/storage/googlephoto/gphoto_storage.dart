@@ -84,6 +84,11 @@ class GPhotoStorage extends CloudStorage {
       _log.info('synchronization in progress');
       return;
     }
+    if (_config.albumNames.isEmpty) {
+      updateStatus(StorageStatusEnum.off);
+      _log.info('Synchronization skipped reason=notConfigured');
+      return;
+    }
     var delta = new DateTime.now().difference(lastSync);
     if (delta < _config.syncPeriod) {
       _log.info('Synchronization skipped reason=notDue');
@@ -140,7 +145,7 @@ class GPhotoStorage extends CloudStorage {
       return;
     } catch (error, stack) {
       if (!_released) {
-        updateStatus(StorageStatusEnum.off);
+        updateStatus(StorageStatusEnum.error);
         _log.warning('Synchronization failed type=${error.runtimeType}', error, stack);
       }
       rethrow;

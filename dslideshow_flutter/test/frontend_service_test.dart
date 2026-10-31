@@ -69,9 +69,21 @@ void main() {
     await tester.pump();
     expect(find.byKey(const Key('cloud_off')), findsOneWidget);
     expect(downloading, findsNothing);
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 74, status: StorageStatusEnum.error));
+    await tester.pump();
+    final failed = find.byKey(const Key('storage_error'));
+    expect(failed, findsOneWidget);
+    final icon = tester.widget<Icon>(find.descendant(of: failed, matching: find.byType(Icon)));
+    expect(icon.icon, Icons.error_outline);
+    expect(icon.color, Colors.red);
+    for (var cycle = 0; cycle < 6; cycle++) {
+      await tester.pump(const Duration(seconds: 2));
+    }
+    expect(tester.widget<Opacity>(find.descendant(of: failed, matching: find.byType(Opacity))).opacity, 1);
     await h.rpc.executeCommand(const StorageStatusCommand(id: 72, status: StorageStatusEnum.done));
     await tester.pump();
     expect(find.byKey(const Key('cloud_done')), findsOneWidget);
+    expect(failed, findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
@@ -82,7 +94,7 @@ void main() {
     final records = <LogRecord>[];
     final subscription = Logger.root.onRecord.listen(records.add);
     addTearDown(subscription.cancel);
-    for (final status in [StorageStatusEnum.download, StorageStatusEnum.off, StorageStatusEnum.done]) {
+    for (final status in StorageStatusEnum.values) {
       final result = await h.rpc.executeCommand(StorageStatusCommand(id: 71, status: status));
       expect(result, isA<EmptyResult>());
       await tester.pump();
@@ -90,7 +102,7 @@ void main() {
       expect(h.status.state.storageStatus, status);
     }
     final laterBloc = SlideshowStatusBloc(frontendService: h.frontend, config: SlideShowConfig.fromJson({}));
-    expect(laterBloc.state.storageStatus, StorageStatusEnum.done);
+    expect(laterBloc.state.storageStatus, StorageStatusEnum.error);
     await tester.runAsync(laterBloc.close);
     await h.rpc.executeCommand(const StorageStatusCommand(id: 73, status: StorageStatusEnum.download));
     await tester.pump();
@@ -99,7 +111,7 @@ void main() {
       records.any(
         (record) =>
             record.loggerName == 'FrontendService' &&
-            record.message == 'Storage status received status=off' &&
+            record.message == 'Storage status received status=error' &&
             record.level == Level.INFO,
       ),
       isTrue,
