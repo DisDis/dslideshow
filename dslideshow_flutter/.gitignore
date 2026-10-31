@@ -73,6 +73,7 @@ config.json
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /images/
+/images.gallery/
 /gen_snapshot_linux_x64
 /gen_snapshot_linux_x64_profile
 /gen_snapshot_linux_x64_release

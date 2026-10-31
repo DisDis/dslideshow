@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dslideshow_common/storage_status.dart';
+
 import 'package:dslideshow_backend/app_storage.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
@@ -102,7 +104,7 @@ void main() {
       await request.response.close();
     });
     var ended = false;
-    final listener = storage.onEndSync.listen((_) {
+    final listener = storage.onStatusChanged.where((status) => status == StorageStatusEnum.done).listen((_) {
       ended = true;
     });
     addTearDown(listener.cancel);
@@ -111,6 +113,7 @@ void main() {
       completed = true;
     });
     await first.future;
+    expect(storage.status, StorageStatusEnum.download);
     await Future<void>.delayed(const Duration(milliseconds: 20));
     expect(completed, false);
     expect(ended, false);
@@ -119,6 +122,7 @@ void main() {
     await syncing;
     await Future<void>.delayed(Duration.zero);
     expect(ended, true);
+    expect(storage.status, StorageStatusEnum.done);
     expect(await File('${media.path}/one_2560x1600.jpeg').readAsBytes(), [1, 2, 3, 4, 5, 6]);
     expect((await media.list().toList()).length, 1);
   });
@@ -134,7 +138,9 @@ void main() {
       await request.response.close();
     });
     await expectLater(storage.sync(), throwsA(anything));
+    expect(storage.status, StorageStatusEnum.off);
     await storage.sync();
+    expect(storage.status, StorageStatusEnum.done);
     expect(requests, 2);
     expect(await File('${media.path}/one_2560x1600.jpeg').readAsBytes(), [1, 2, 3]);
   });
@@ -152,7 +158,7 @@ void main() {
     final subscription = Logger.root.onRecord.listen(logs.add);
     addTearDown(subscription.cancel);
     var ended = false;
-    final listener = storage.onEndSync.listen((_) => ended = true);
+    final listener = storage.onStatusChanged.where((status) => status == StorageStatusEnum.done).listen((_) => ended = true);
     addTearDown(listener.cancel);
     final first = Completer<void>();
     final finish = Completer<void>();
@@ -212,7 +218,7 @@ void main() {
     );
     final initialLastSync = storage.lastSync;
     var ended = false;
-    final listener = storage.onEndSync.listen((_) => ended = true);
+    final listener = storage.onStatusChanged.where((status) => status == StorageStatusEnum.done).listen((_) => ended = true);
     addTearDown(listener.cancel);
     // Own errors immediately: the regression used to complete after release
     // with a StateError from adding to the closed notification controller.

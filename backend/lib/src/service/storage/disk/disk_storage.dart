@@ -67,12 +67,6 @@ class DiskStorage extends Storage {
     return File(path.join(hidden.path, relativePath)).exists();
   }
 
-  final StreamController<DateTime> _scStub = StreamController.broadcast();
-  @override
-  Stream<DateTime> get onStartSync => _scStub.stream;
-  @override
-  Stream<DateTime> get onEndSync => _scStub.stream;
-
   MediaItem? _current;
   MediaItem? _next;
 
@@ -145,6 +139,7 @@ class DiskStorage extends Storage {
   }
 
   Future<void> _scan() async {
+    if (type == StorageType.local) updateStatus(StorageStatusEnum.download);
     _scanAttempted = true;
     // Coalesce events during a scan into one following attempt. Continuous
     // changes must not keep a waiting next() blocked indefinitely.
@@ -195,6 +190,7 @@ class DiskStorage extends Storage {
         }
       } catch (error, stack) {
         if (_released) return;
+        if (type == StorageType.local) updateStatus(StorageStatusEnum.off);
         _log.warning('Could not build file cache; keeping previous index', error, stack);
         _dirty = true;
         _scheduleRefresh();
@@ -216,11 +212,13 @@ class DiskStorage extends Storage {
       _timerFolderUpdate = null;
       _startWatching();
       _log.fine('File cache has ${index.length} file(s)');
+      if (type == StorageType.local) updateStatus(StorageStatusEnum.done);
       return;
     }
     if (!_released) {
       _dirty = true;
       _scheduleRefresh();
+      if (type == StorageType.local) updateStatus(StorageStatusEnum.done);
     }
   }
 
@@ -246,7 +244,10 @@ class DiskStorage extends Storage {
   }
 
   @override
-  Future<Null> sync() async => null;
+  Future<Null> sync() async {
+    await _rebuild();
+    return null;
+  }
 
   @override
   final StorageType type = StorageType.local;
@@ -333,8 +334,6 @@ class DiskStorage extends Storage {
     _index = <Uri>{};
     _remaining = 0;
     _seen.clear();
-    // A consumer can pause a sync-notification subscription indefinitely.
-    // Closing the stub must not make shutdown wait for that consumer.
-    unawaited(_scStub.close());
+    closeStatusNotifications();
   }
 }

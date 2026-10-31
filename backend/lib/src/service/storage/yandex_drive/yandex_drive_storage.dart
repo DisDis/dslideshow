@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dslideshow_common/file_settings.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
@@ -36,16 +37,10 @@ class YandexDriveStorage extends CloudStorage {
   final AppStorage appStorage;
   final DateTime Function() _now;
   late DriveRuntime _runtime;
-  final _started = StreamController<DateTime>.broadcast();
-  final _ended = StreamController<DateTime>.broadcast();
   Timer? _timer;
   Future<void>? _sync;
   bool _closed = false;
 
-  @override
-  Stream<DateTime> get onStartSync => _started.stream;
-  @override
-  Stream<DateTime> get onEndSync => _ended.stream;
   @override
   DateTime get lastSync => _runtime.lastSync ?? DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
   DriveRuntime get runtime => _runtime;
@@ -58,13 +53,19 @@ class YandexDriveStorage extends CloudStorage {
   @override
   Future<void> init() async {
     if (_closed) return;
-    await folder.create(recursive: true);
-    if (_closed) return;
-    await super.init();
-    if (_closed) return;
-    _runtime = _runtime.copyWith(active: true);
-    _scheduleNext();
-    _log.info('Storage initialized accounts=${config.accounts.where((account) => account.enabled).length}');
+    try {
+      await folder.create(recursive: true);
+      if (_closed) return;
+      await super.init();
+      if (_closed) return;
+      _runtime = _runtime.copyWith(active: true);
+      _scheduleNext();
+      _log.info('Storage initialized accounts=${config.accounts.where((account) => account.enabled).length}');
+    } catch (error) {
+      if (!_closed) updateStatus(StorageStatusEnum.off);
+      _log.warning('Storage initialization failed type=${error.runtimeType}');
+      rethrow;
+    }
   }
 
   void _scheduleNext({Duration? delay}) {
@@ -179,7 +180,6 @@ class YandexDriveStorage extends CloudStorage {
   }
 
   Future<void> _performSync() async {
-    final started = _now().toUtc();
     _runtime = _runtime.copyWith(
       running: true,
       totalItems: null,
@@ -189,7 +189,7 @@ class YandexDriveStorage extends CloudStorage {
       failed: 0,
       error: null,
     );
-    _started.add(started);
+    updateStatus(StorageStatusEnum.download);
     var stopped = false;
     _log.info('Synchronization started accounts=${config.accounts.where((account) => account.enabled).length}');
     try {
@@ -231,7 +231,12 @@ class YandexDriveStorage extends CloudStorage {
       _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: YandexDriveService.failureCode(error));
     } finally {
       _runtime = _runtime.copyWith(running: false);
-      if (!_closed) _ended.add(_now().toUtc());
+      if (!_closed) {
+        final unavailable =
+            _runtime.failed > 0 ||
+            config.accounts.any((account) => account.enabled && !_connections.isConnected(account.accountId));
+        updateStatus(unavailable ? StorageStatusEnum.off : StorageStatusEnum.done);
+      }
       _log.log(
         _runtime.failed > 0 ? Level.WARNING : Level.INFO,
         'Synchronization ${stopped || _closed ? 'stopped' : 'completed'} '
@@ -343,8 +348,6 @@ class YandexDriveStorage extends CloudStorage {
     _runtime = _runtime.copyWith(active: false);
     _timer?.cancel();
     await Future.wait<void>([super.release(), _connections.close(pendingTransfer: _sync)]);
-    unawaited(_started.close());
-    unawaited(_ended.close());
     _log.info('Storage released');
   }
 }

@@ -4,8 +4,10 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/frame_state_reader.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_type.dart' as media;
 import 'package:dslideshow_backend/src/service/storage/storage_provider_registry.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
@@ -41,10 +43,23 @@ class FakeRemote implements RemoteService {
   final commands = <RpcCommand>[];
   final screenCommands = <ScreenTurnCommand>[];
   final pending = <Completer<RpcResult>>[];
+  final storageCommands = <StorageStatusCommand>[];
+  final storagePending = <Completer<RpcResult>>[];
+  final _pendingStorageCommands = <StorageStatusCommand>[];
   bool hold = false;
+  bool holdStorage = false;
   @override
   Future<RpcResult> send<T extends RpcCommand>(T command) async {
     commands.add(command);
+    if (command is StorageStatusCommand) {
+      storageCommands.add(command);
+      if (holdStorage) {
+        final completion = Completer<RpcResult>();
+        storagePending.add(completion);
+        _pendingStorageCommands.add(command);
+        return completion.future;
+      }
+    }
     if (command is ScreenTurnCommand) {
       screenCommands.add(command);
       if (hold) {
@@ -57,6 +72,8 @@ class FakeRemote implements RemoteService {
   }
 
   void acknowledge(int index) => pending[index].complete(EmptyResult.respond(screenCommands[index]));
+  void acknowledgeStorage(int index) =>
+      storagePending[index].complete(EmptyResult.respond(_pendingStorageCommands[index]));
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -79,13 +96,16 @@ class FakeMqtt implements MqttService {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class FakeStorage implements Storage {
+class FakeStorage extends Storage {
   bool released = false;
+  @override
+  media.StorageType get type => media.StorageType.local;
   @override
   Future<void> init() async {}
   @override
   Future<void> release() async {
     released = true;
+    closeStatusNotifications();
   }
 
   @override
@@ -132,20 +152,23 @@ class HardwareFixture {
   late final ApplicationStateService application;
   late final HardwareService hardware;
   Future<void>? _closing;
-  HardwareFixture({WiFiService? wifi, StorageProviderRegistry? storageProviders}) {
+  final bool _usesDefaultStorage;
+  HardwareFixture({WiFiService? wifi, StorageProviderRegistry? storageProviders})
+    : _usesDefaultStorage = storageProviders == null {
     final config = AppConfig.fromJson({
       'hardware': {'screenPowerOnTimerSec': 1},
     });
     screen = ScreenService(config.hardware, power: power);
-    application = ApplicationStateService(screenService: screen, gpioService: gpio);
+    final providers =
+        storageProviders ??
+        createStorageProviderRegistry(
+          selectedType: StorageType.DiskStorage,
+          factories: {StorageType.DiskStorage: () => storage},
+        );
+    application = ApplicationStateService(screenService: screen, gpioService: gpio, storage: providers.selected);
     hardware = HardwareService(
       frontendService: remote,
-      storageProviders:
-          storageProviders ??
-          createStorageProviderRegistry(
-            selectedType: StorageType.DiskStorage,
-            factories: {StorageType.DiskStorage: () => storage},
-          ),
+      storageProviders: providers,
       gpioService: gpio,
       screenService: screen,
       systemInfoService: systemInfo,
@@ -154,13 +177,18 @@ class HardwareFixture {
       wifiService: wifi ?? UnusedWiFi(),
       powerOffService: UnusedPowerOff(),
       applicationStateService: application,
+      frameStateReader: FrameStateReader(
+        frontendService: remote,
+        screenService: screen,
+        applicationStateService: application,
+      ),
     );
   }
   Future<void> close() => _closing ??= hardware.dispose();
 
-  void dispose(FakeAsync time) {
+  void dispose(FakeAsync time, {Future<void>? additionalCleanup}) {
     var done = false;
-    close().then((_) => done = true);
+    Future.wait([close(), if (additionalCleanup != null) additionalCleanup]).then((_) => done = true);
     time.flushMicrotasks();
     // StreamSubscription.cancel may return a shared future created outside the
     // fake zone. Let its real microtasks finish, then drain virtual callbacks.
@@ -174,7 +202,7 @@ class HardwareFixture {
       expect(mqtt.screen.isClosed, isTrue);
       expect(mqtt.menu.isClosed, isTrue);
       expect(gpio.released, isTrue);
-      expect(storage.released, isTrue);
+      if (_usesDefaultStorage) expect(storage.released, isTrue);
       expect(systemInfo.released, isTrue);
       expect(gpio.motion.hasListener, isFalse);
       expect(mqtt.screen.hasListener, isFalse);

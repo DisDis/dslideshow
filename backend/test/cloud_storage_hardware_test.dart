@@ -8,12 +8,14 @@ import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage_type.dart' as media;
 import 'package:dslideshow_common/rpc.dart';
+import 'package:fake_async/fake_async.dart';
+import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 import 'support/hardware_fixture.dart';
 import 'support/storage_provider_registry_fixture.dart';
 
-class _PlaybackStorage implements Storage {
+class _PlaybackStorage extends Storage {
   _PlaybackStorage(String name) : current = MediaItem(name, Uri.file('/images/$name.jpg'));
 
   final MediaItem current;
@@ -41,6 +43,7 @@ class _PlaybackStorage implements Storage {
   Future<void> release() async {
     releases++;
     await releaseGate?.future;
+    closeStatusNotifications();
   }
 
   @override
@@ -68,6 +71,60 @@ class _CloudStorage extends _PlaybackStorage implements CloudStorage {
 }
 
 void main() {
+  test('selected storage status transitions reach frontend RPC while inactive providers remain silent', () {
+    final records = <LogRecord>[];
+    final previousLevel = Logger.root.level;
+    Logger.root.level = Level.ALL;
+    final logs = Logger.root.onRecord.listen(records.add);
+    addTearDown(() async {
+      await logs.cancel();
+      Logger.root.level = previousLevel;
+    });
+    fakeAsync((time) {
+      final disk = _PlaybackStorage('disk')..updateStatus(StorageStatusEnum.off);
+      final cloud = _CloudStorage();
+      final registry = createStorageProviderRegistry(
+        selectedType: config.StorageType.DiskStorage,
+        factories: {config.StorageType.DiskStorage: () => disk, config.StorageType.YandexDriveStorage: () => cloud},
+      );
+      final fixture = HardwareFixture(storageProviders: registry);
+      time.flushMicrotasks();
+      expect(fixture.application.state.storageStatus, StorageStatusEnum.off);
+      disk.updateStatus(StorageStatusEnum.download);
+      disk.updateStatus(StorageStatusEnum.download);
+      disk.updateStatus(StorageStatusEnum.off);
+      disk.updateStatus(StorageStatusEnum.done);
+      registry.provider(config.StorageType.YandexDriveStorage);
+      cloud.updateStatus(StorageStatusEnum.off);
+      time.flushMicrotasks();
+      expect(fixture.remote.commands.whereType<StorageStatusCommand>().map((command) => command.status), [
+        StorageStatusEnum.off,
+        StorageStatusEnum.download,
+        StorageStatusEnum.off,
+        StorageStatusEnum.done,
+      ]);
+      expect(fixture.application.state.storageStatus, StorageStatusEnum.done);
+      fixture.dispose(time);
+    });
+    expect(
+      records.any(
+        (record) =>
+            record.loggerName == 'Storage' && record.level == Level.INFO && record.message.contains('status=download'),
+      ),
+      isTrue,
+    );
+    expect(
+      records.any(
+        (record) =>
+            record.loggerName == 'HardwareService' &&
+            record.level == Level.FINE &&
+            record.message == 'Storage status delivered status=off',
+      ),
+      isTrue,
+    );
+    expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+  });
+
   test('generic drive web wire routes to an inactive provider while playback stays on selected storage', () async {
     final disk = _PlaybackStorage('disk');
     final cloud = _CloudStorage();

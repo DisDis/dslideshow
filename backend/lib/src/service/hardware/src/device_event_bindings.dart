@@ -9,7 +9,7 @@ import 'screen_service.dart';
 
 /// Owns device-event subscriptions within the existing backend isolate.
 ///
-/// The caller owns the services, frontend RPCs and screen-notification queue.
+/// The caller owns the services and frontend RPCs.
 /// Disposing the bindings only detaches the subscriptions.
 class DeviceEventBindings {
   DeviceEventBindings({
@@ -27,9 +27,7 @@ class DeviceEventBindings {
         onButtonEvent(event);
       }),
     );
-    _subscriptions.add(
-      screenService.onStateChangePreparation.listen(onScreenPreparation),
-    );
+    _subscriptions.add(screenService.onStateChangePreparation.listen(onScreenPreparation));
     _subscriptions.add(
       gpioService.onMotion.listen((event) {
         logger.info('Motion = $event');
@@ -67,8 +65,6 @@ class DeviceEventBindings {
   Future<void> dispose() => _disposeFuture ??= _dispose();
 
   Future<void> _dispose() async {
-    await Future.wait(
-      _subscriptions.map((subscription) => subscription.cancel()),
-    );
+    await Future.wait(_subscriptions.map((subscription) => subscription.cancel()));
   }
 }

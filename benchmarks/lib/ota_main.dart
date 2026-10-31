@@ -42,6 +42,11 @@ enum OtaScenario {
 
 /// Only the external RPC dependency is replaced. No installer is present.
 class OtaHarnessFrontend implements FrontendService {
+  @override
+  StorageStatusEnum get storageStatus => StorageStatusEnum.off;
+  @override
+  Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
+
   final info = StreamController<OTAInfo>.broadcast();
   final output = StreamController<String>.broadcast();
   final ready = StreamController<bool>.broadcast();

@@ -18,6 +18,7 @@ part 'serializers.g.dart';
   GetMediaItemCommand,
   GetMediaItemCommandResult,
   StorageNextCommand,
+  StorageStatusCommand,
   DriveCommand,
   DriveResult,
   ScreenTurnCommand,

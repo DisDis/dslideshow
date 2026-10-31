@@ -3,6 +3,7 @@
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/file_settings.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
@@ -32,6 +33,16 @@ abstract class CloudStorage extends DiskStorage {
   /// Account authorization and source browsing are available before [init].
   /// Commands that control synchronization require an active provider.
   Future<RpcResult> executeDriveCommand(DriveCommand command);
+
+  @override
+  Future<void> init() async {
+    try {
+      await super.init();
+    } catch (_) {
+      updateStatus(StorageStatusEnum.off);
+      rethrow;
+    }
+  }
 
   /// Stages a download, verifies its contents, and publishes it locally.
   ///

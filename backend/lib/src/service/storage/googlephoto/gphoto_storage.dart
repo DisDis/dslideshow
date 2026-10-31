@@ -10,6 +10,7 @@ import 'package:dslideshow_backend/src/service/storage/cloud_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/cloud_storage_transfer.dart';
 import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:logging/logging.dart';
 
 import 'gphoto_storage_config.dart';
@@ -36,13 +37,6 @@ class GPhotoStorage extends CloudStorage {
   Timer? _syncTimer;
   StreamSubscription<dynamic>? _credentialsSubscription;
   final Set<Future<void>> _downloads = {};
-
-  final StreamController<DateTime> _scStartSync = new StreamController.broadcast();
-  final StreamController<DateTime> _scEndSync = new StreamController.broadcast();
-  @override
-  Stream<DateTime> get onStartSync => _scStartSync.stream;
-  @override
-  Stream<DateTime> get onEndSync => _scEndSync.stream;
 
   final AppStorage _appStorage;
   GPhotoStorage(this._config, this._appStorage, {super.folder, GooglePhotoService? googlePhotoService, super.hidden})
@@ -96,9 +90,9 @@ class GPhotoStorage extends CloudStorage {
       return;
     }
     _syncInProcess = true;
+    updateStatus(StorageStatusEnum.download);
 
     final syncDate = new DateTime.now();
-    _scStartSync.add(syncDate);
 
     try {
       for (String albumName in _config.albumNames) {
@@ -139,11 +133,17 @@ class GPhotoStorage extends CloudStorage {
       }
 
       if (_released) return;
-      _scEndSync.add(syncDate);
       lastSync = syncDate;
       _appStorage.setValue<String>(GPhotoStorage_lastSync, lastSync.toIso8601String());
       _log.info('Synchronization completed');
+      updateStatus(StorageStatusEnum.done);
       return;
+    } catch (error) {
+      if (!_released) {
+        updateStatus(StorageStatusEnum.off);
+        _log.warning('Synchronization failed type=${error.runtimeType}');
+      }
+      rethrow;
     } finally {
       _syncInProcess = false;
     }
@@ -208,9 +208,6 @@ class GPhotoStorage extends CloudStorage {
     _credentialsSubscription = null;
     if (credentials != null) unawaited(credentials.cancel());
     await storageReleased;
-    // Notification consumers may pause indefinitely; they do not own shutdown.
-    unawaited(_scStartSync.close());
-    unawaited(_scEndSync.close());
     _log.info('Release completed');
   }
 }

@@ -12,9 +12,3 @@ sealed class SlideshowStatusState with _$SlideshowStatusState {
     @Default(false) bool isPaused,
   }) = SlideshowStatusInitial;
 }
-
-enum StorageStatusEnum {
-  download,
-  off,
-  done;
-}

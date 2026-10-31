@@ -21,6 +21,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/log.dart';
 
 import 'src/service/hardware/src/gpio_service.dart';
+import 'src/service/hardware/src/frame_state_reader.dart';
 import 'src/service/hardware/src/gpio_service_instance_stub.dart'
     if (dart.library.io) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_hw.dart'
     if (dart.library.js) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_web.dart';
@@ -97,8 +98,20 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       return SystemInfoService(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(screenService: injector(), gpioService: injector());
+      return ApplicationStateService(
+        screenService: injector(),
+        gpioService: injector(),
+        storage: storageProviders.selected,
+      );
     });
+
+    injector.registerSingleton<FrameStateReader>(
+      FrameStateReader(
+        frontendService: _remoteFrontendService,
+        screenService: injector(),
+        applicationStateService: injector(),
+      ),
+    );
 
     injector.registerLazySingleton<HardwareService>(() {
       return HardwareService(
@@ -112,6 +125,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
         wifiService: injector(),
         powerOffService: injector(),
         applicationStateService: injector(),
+        frameStateReader: injector(),
       );
     });
     Logger.root.level = config.log.levelHwFrame;

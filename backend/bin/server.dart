@@ -42,6 +42,7 @@ void main(List<String> args) async {
       return ApplicationStateService(
         screenService: injector(),
         gpioService: injector(),
+        storage: injector<Storage>(),
       );
     });
     injector.registerLazySingleton<MqttService>(() {

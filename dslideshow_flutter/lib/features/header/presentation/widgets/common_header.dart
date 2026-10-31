@@ -44,6 +44,7 @@ class CommonHeaderWidget extends StatelessWidget {
                 else if (state.storageStatus == StorageStatusEnum.download)
                   const BlinkAnimation(
                     key: Key('cloud_download'),
+                    hideAfterBlink: false,
                     child: Icon(
                       Icons.cloud_download,
                       size: iconSize,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/frame_state_reader.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:fake_async/fake_async.dart';
@@ -63,13 +64,14 @@ class FrameFixture {
       'hardware': {'screenPowerOnTimerSec': 10},
     });
     screen = ScreenService(config.hardware, power: power);
-    application = ApplicationStateService(screenService: screen, gpioService: gpio);
+    final providers = createStorageProviderRegistry(
+      selectedType: StorageType.DiskStorage,
+      factories: {StorageType.DiskStorage: () => FakeStorage()},
+    );
+    application = ApplicationStateService(screenService: screen, gpioService: gpio, storage: providers.selected);
     hardware = HardwareService(
       frontendService: remote,
-      storageProviders: createStorageProviderRegistry(
-        selectedType: StorageType.DiskStorage,
-        factories: {StorageType.DiskStorage: () => FakeStorage()},
-      ),
+      storageProviders: providers,
       gpioService: gpio,
       screenService: screen,
       systemInfoService: FakeSystemInfo(),
@@ -78,6 +80,11 @@ class FrameFixture {
       wifiService: UnusedWiFi(),
       powerOffService: UnusedPowerOff(),
       applicationStateService: application,
+      frameStateReader: FrameStateReader(
+        frontendService: remote,
+        screenService: screen,
+        applicationStateService: application,
+      ),
     );
   }
 
@@ -161,32 +168,20 @@ void main() {
     expect(state.backendVersion, ApplicationInfo.backendVersion);
   });
 
-  test('hung frontend is bounded, coalesced and can recover after late reply', () {
+  test('snapshot waits for the reliable frontend RPC without a local deadline', () {
     fakeAsync((time) {
       final f = FrameFixture();
       final pending = Completer<RpcResult>();
       f.remote.pendingState = pending;
       final snapshots = <FrameState>[];
-      for (var i = 0; i < 10; i++) {
-        f.snapshot().then(snapshots.add);
-      }
-      time.elapse(const Duration(seconds: 3));
-      expect(snapshots, hasLength(10));
-      expect(snapshots.every((state) => state.frontend == null), isTrue);
-      for (var i = 0; i < 10; i++) {
-        f.snapshot().then(snapshots.add);
-      }
-      time.flushMicrotasks();
-      expect(snapshots, hasLength(20));
+      f.snapshot().then(snapshots.add);
+      time.elapse(const Duration(seconds: 30));
+      expect(snapshots, isEmpty);
       expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(1));
       expect(time.pendingTimers, isEmpty);
       pending.complete(GetFrameFrontendStateResult(id: 0, state: f.remote.state));
       time.flushMicrotasks();
-      f.remote.pendingState = null;
-      f.snapshot().then(snapshots.add);
-      time.flushMicrotasks();
-      expect(snapshots.last.frontend, isNotNull);
-      expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(2));
+      expect(snapshots.single.frontend, f.remote.state);
       expect(time.pendingTimers, isEmpty);
       f.dispose(time);
     });
@@ -214,7 +209,7 @@ void main() {
     expect(response, isA<ErrorResult>());
     expect(response.id, 32);
     expect((response as ErrorResult).error, contains('rejected control'));
-    expect(f.remote.commands, hasLength(1));
+    expect(f.remote.commands.whereType<SetFrameControlCommand>(), hasLength(1));
   });
 
   test('control snapshot does not reuse a poll started before acceptance', () {
@@ -251,51 +246,14 @@ void main() {
     final responses = [
       for (final id in [51, 52, 53]) f.hardware.executeCommand(GetFrameStateCommand(id: id)),
     ];
-    expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(1));
+    expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(3));
     pending.complete(GetFrameFrontendStateResult(id: 0, state: f.remote.state));
     final results = await Future.wait(responses);
     expect(results.map((result) => result.id), [51, 52, 53]);
     expect(results.every((result) => result is GetFrameStateResult), isTrue);
   });
 
-  test('late pre-control poll does not clear a newer pending snapshot', () {
-    fakeAsync((time) {
-      final f = FrameFixture();
-      final oldState = f.remote.state;
-      final oldPoll = Completer<RpcResult>();
-      f.remote.pendingState = oldPoll;
-      final polled = <FrameState>[];
-      f.snapshot().then(polled.add);
-      time.flushMicrotasks();
-      final freshPoll = Completer<RpcResult>();
-      f.remote.pendingState = freshPoll;
-      final controlled = <RpcResult>[];
-      f.hardware
-          .executeCommand(const SetFrameControlCommand(id: 54, control: FrameControl.pause, enabled: true))
-          .then(controlled.add);
-      time.flushMicrotasks();
-      expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(2));
-      expect(controlled, isEmpty);
-
-      oldPoll.complete(GetFrameFrontendStateResult(id: 0, state: oldState));
-      time.flushMicrotasks();
-      expect(polled.single.frontend!.isPaused, isFalse);
-      f.snapshot().then(polled.add);
-      time.flushMicrotasks();
-      expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(2));
-      expect(polled, hasLength(1));
-
-      freshPoll.complete(GetFrameFrontendStateResult(id: 0, state: f.remote.state));
-      time.flushMicrotasks();
-      expect((controlled.single as GetFrameStateResult).state.frontend!.isPaused, isTrue);
-      expect(controlled.single.id, 54);
-      expect(polled.last.frontend!.isPaused, isTrue);
-      expect(time.pendingTimers, isEmpty);
-      f.dispose(time);
-    });
-  });
-
-  test('dispose cancels a state read after control acknowledgement', () {
+  test('dispose rejects a state read after its frontend RPC returns', () {
     fakeAsync((time) {
       final f = FrameFixture();
       final pending = Completer<RpcResult>();
@@ -309,16 +267,17 @@ void main() {
       expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), hasLength(1));
       expect(responses, isEmpty);
       f.dispose(time);
-      expect(responses.single, isA<ErrorResult>());
-      expect(responses.single.id, 55);
-      expect((responses.single as ErrorResult).error, contains('Hardware service disposed'));
+      expect(responses, isEmpty);
       expect(time.pendingTimers, isEmpty);
       pending.completeError(StateError('Late disconnect'));
       time.flushMicrotasks();
+      expect(responses.single, isA<ErrorResult>());
+      expect(responses.single.id, 55);
+      expect((responses.single as ErrorResult).error, contains('Hardware service disposed'));
     });
   });
 
-  test('dispose cancels a pending control timer and keeps the original RPC id', () {
+  test('dispose prevents a new snapshot after a pending control RPC returns', () {
     fakeAsync((time) {
       final f = FrameFixture();
       f.remote.pendingControl = Completer<RpcResult>();
@@ -328,15 +287,18 @@ void main() {
           .then(responses.add);
       time.flushMicrotasks();
       f.dispose(time);
+      expect(responses, isEmpty);
+      expect(time.pendingTimers, isEmpty);
+      f.remote.pendingControl!.complete(const EmptyResult(id: 41));
+      time.flushMicrotasks();
       expect(responses.single, isA<ErrorResult>());
       expect(responses.single.id, 41);
-      expect(time.pendingTimers, isEmpty);
-      f.remote.pendingControl!.completeError(StateError('late disconnect'));
-      time.flushMicrotasks();
+      expect((responses.single as ErrorResult).error, contains('Hardware service disposed'));
+      expect(f.remote.commands.whereType<GetFrameFrontendStateCommand>(), isEmpty);
     });
   });
 
-  test('control timeout returns an error and ignores late acknowledgement', () {
+  test('control waits for the reliable frontend RPC without a local deadline', () {
     fakeAsync((time) {
       final f = FrameFixture();
       f.remote.pendingControl = Completer<RpcResult>();
@@ -344,27 +306,38 @@ void main() {
       f.hardware
           .executeCommand(const SetFrameControlCommand(id: 33, control: FrameControl.menu, enabled: true))
           .then(responses.add);
-      time.elapse(const Duration(seconds: 3));
-      expect(responses.single, isA<ErrorResult>());
-      expect(responses.single.id, 33);
+      time.elapse(const Duration(seconds: 30));
+      expect(responses, isEmpty);
+      expect(time.pendingTimers, isEmpty);
+      f.remote.state = const FrameFrontendState(
+        isPaused: false,
+        isMenu: true,
+        page: FramePage.slideshow,
+        frontendVersion: 'running.frontend',
+      );
       f.remote.pendingControl!.complete(const EmptyResult(id: 33));
       time.flushMicrotasks();
-      expect(f.remote.commands, hasLength(1));
+      expect(responses.single, isA<GetFrameStateResult>());
+      expect(responses.single.id, 33);
+      expect((responses.single as GetFrameStateResult).state.frontend!.isMenu, isTrue);
+      expect(f.remote.commands.whereType<SetFrameControlCommand>(), hasLength(1));
       expect(time.pendingTimers, isEmpty);
       f.dispose(time);
     });
   });
 
-  test('dispose releases pending RPC wait and timers without waiting for frontend', () async {
+  test('disposed hardware rejects a late snapshot and new requests', () async {
     final f = FrameFixture()..tearDown();
     f.remote.pendingState = Completer<RpcResult>();
     final response = f.hardware.executeCommand(const GetFrameStateCommand(id: 34));
     await f.close();
+    f.remote.pendingState!.complete(GetFrameFrontendStateResult(id: 0, state: f.remote.state));
     final result = await response;
     expect(result, isA<ErrorResult>());
     expect(result.id, 34);
-    f.remote.pendingState!.completeError(StateError('late disconnect'));
-    await Future<void>.delayed(Duration.zero);
+    expect((result as ErrorResult).error, contains('Hardware service disposed'));
+    final sent = f.remote.commands.length;
     expect(await f.hardware.executeCommand(const GetFrameStateCommand(id: 35)), isA<ErrorResult>());
+    expect(f.remote.commands, hasLength(sent));
   });
 }

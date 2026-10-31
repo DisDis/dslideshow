@@ -37,6 +37,8 @@ class _$serializersRpcSerializers implements Serializers {
       return ["GetMediaItemCommandResult", object.toJson()];
     if (object is StorageNextCommand)
       return ["StorageNextCommand", object.toJson()];
+    if (object is StorageStatusCommand)
+      return ["StorageStatusCommand", object.toJson()];
     if (object is DriveCommand) return ["DriveCommand", object.toJson()];
     if (object is DriveResult) return ["DriveResult", object.toJson()];
     if (object is ScreenTurnCommand)
@@ -146,6 +148,8 @@ class _$serializersRpcSerializers implements Serializers {
         return GetMediaItemCommandResult.fromJson(object);
       case "StorageNextCommand":
         return StorageNextCommand.fromJson(object);
+      case "StorageStatusCommand":
+        return StorageStatusCommand.fromJson(object);
       case "DriveCommand":
         return DriveCommand.fromJson(object);
       case "DriveResult":

@@ -7,6 +7,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:test/test.dart';
 
@@ -138,6 +139,37 @@ void fakeStorageTest(
 }
 
 void main() {
+  test('local storage reports scan, access failure and recovery through its shared status', () async {
+    final folder = TestDirectory(['photo.jpg']);
+    final storage = createStorage(folder);
+    final states = <StorageStatusEnum>[];
+    final subscription = storage.onStatusChanged.listen(states.add);
+    addTearDown(() async {
+      await subscription.cancel();
+      await storage.release();
+      await folder.events.close();
+    });
+    expect(storage.status, StorageStatusEnum.done);
+    await storage.sync();
+    await Future<void>.delayed(Duration.zero);
+    expect(states, [StorageStatusEnum.download, StorageStatusEnum.done]);
+    folder.listing = () => Stream.error(FileSystemException('private-path'));
+    await storage.sync();
+    await Future<void>.delayed(Duration.zero);
+    expect(storage.status, StorageStatusEnum.off);
+    folder.listing = null;
+    await storage.sync();
+    await Future<void>.delayed(Duration.zero);
+    expect(states, [
+      StorageStatusEnum.download,
+      StorageStatusEnum.done,
+      StorageStatusEnum.download,
+      StorageStatusEnum.off,
+      StorageStatusEnum.download,
+      StorageStatusEnum.done,
+    ]);
+  });
+
   test('each unchanged cycle visits every URI exactly once', () async {
     final names = List.generate(40, (i) => '$i.jpg');
     final directory = TestDirectory(names);
@@ -643,7 +675,7 @@ void main() {
   test('a paused notification consumer does not block release', () async {
     final folder = TestDirectory(['photo.jpg']);
     final storage = createStorage(folder);
-    final subscription = storage.onStartSync.listen((_) {})..pause();
+    final subscription = storage.onStatusChanged.listen((_) {})..pause();
     await storage.next();
     await storage.release();
     expect(folder.watchCancellations, 1);

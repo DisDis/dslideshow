@@ -7,6 +7,7 @@ import 'dart:isolate';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/application_state.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
@@ -31,6 +32,47 @@ class _Target implements RpcService {
 }
 
 void main() {
+  test('application JSON preserves all MQTT state fields and handles absent or unknown storage status', () {
+    for (final status in StorageStatusEnum.values) {
+      final value = ApplicationState(
+        hasInternet: false,
+        isScreenOn: false,
+        storageStatus: status,
+        isMenu: true,
+        isPaused: true,
+        isMotion: false,
+      );
+      expect(ApplicationState.fromJson(jsonDecode(jsonEncode(value.toJson())) as Map<String, dynamic>), value);
+      expect(value.toJson(), {
+        'hasInternet': false,
+        'isScreenOn': false,
+        'storageStatus': status.name,
+        'isMenu': true,
+        'isPaused': true,
+        'isMotion': false,
+      });
+    }
+    expect(ApplicationState.fromJson({'storageStatus': 'unknown'}).storageStatus, StorageStatusEnum.off);
+    expect(ApplicationState.fromJson({}), const ApplicationState());
+  });
+
+  test('storage status RPC round trips separately and rejects a missing status', () {
+    for (final status in StorageStatusEnum.values) {
+      final command = StorageStatusCommand(id: 71, status: status);
+      expect(serializers.deserialize(serializers.serialize(command)!), command);
+      expect(command.toJson(), {'id': 71, 'status': status.name, 'type': StorageStatusCommand.TYPE});
+    }
+    expect(StorageStatusCommand.fromJson({'id': 72, 'status': 'unknown'}).status, StorageStatusEnum.off);
+    expect(() => StorageStatusCommand.fromJson({'id': 72}), throwsArgumentError);
+    expect(
+      () => serializers.deserialize([
+        'ApplicationStateChangedCommand',
+        {'id': 73, 'state': <String, dynamic>{}},
+      ]),
+      throwsArgumentError,
+    );
+  });
+
   test('runtime JSON preserves evolving item totals, including unknown and empty estimates', () {
     const value = DriveRuntime(active: true, running: true, totalItems: 12, processedItems: 3, failed: 1);
     expect(DriveRuntime.fromJson(value.toJson()), value);

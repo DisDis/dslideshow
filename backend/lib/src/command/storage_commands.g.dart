@@ -6,6 +6,32 @@ part of 'storage_commands.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_StorageStatusCommand _$StorageStatusCommandFromJson(
+  Map<String, dynamic> json,
+) => _StorageStatusCommand(
+  id: (json['id'] as num).toInt(),
+  status: $enumDecode(
+    _$StorageStatusEnumEnumMap,
+    json['status'],
+    unknownValue: StorageStatusEnum.off,
+  ),
+  type: json['type'] as String? ?? StorageStatusCommand.TYPE,
+);
+
+Map<String, dynamic> _$StorageStatusCommandToJson(
+  _StorageStatusCommand instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'status': _$StorageStatusEnumEnumMap[instance.status]!,
+  'type': instance.type,
+};
+
+const _$StorageStatusEnumEnumMap = {
+  StorageStatusEnum.download: 'download',
+  StorageStatusEnum.off: 'off',
+  StorageStatusEnum.done: 'done',
+};
+
 _GetMediaItemCommand _$GetMediaItemCommandFromJson(Map<String, dynamic> json) =>
     _GetMediaItemCommand(
       isCurrent: json['isCurrent'] as bool,

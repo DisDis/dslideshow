@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'dart:ui' show Size;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
+import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
+import 'package:dslideshow_flutter/features/header/presentation/widgets/common_header.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
 
@@ -24,6 +27,86 @@ void frontendTest(String name, Future<void> Function(WidgetTester, FrontendHarne
 }
 
 void main() {
+  frontendTest('storage status stream emits only changes without echoing frontend controls', (tester, h) async {
+    final statuses = <StorageStatusEnum>[];
+    final changes = h.frontend.onStorageStatusChanged.listen(statuses.add);
+    addTearDown(changes.cancel);
+    expect(h.frontend.storageStatus, StorageStatusEnum.off);
+    await h.status.executeActionAndWait(SlideshowAction.pause, true);
+    await h.status.executeActionAndWait(SlideshowAction.showMenu, true);
+    final controlsBefore = h.backend.requests.whereType<UpdateFrontendStateCommand>().length;
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 51, status: StorageStatusEnum.download));
+    await tester.pump();
+    expect(h.frontend.storageStatus, StorageStatusEnum.download);
+    expect(statuses, [StorageStatusEnum.download]);
+    expect(h.status.state.storageStatus, StorageStatusEnum.download);
+    expect(h.status.state.isPaused, isTrue);
+    expect(h.status.state.isMenu, isTrue);
+    expect(h.backend.requests.whereType<UpdateFrontendStateCommand>(), hasLength(controlsBefore));
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 52, status: StorageStatusEnum.download));
+    await tester.pump();
+    expect(statuses, hasLength(1));
+    expect(h.backend.requests.whereType<UpdateFrontendStateCommand>(), hasLength(controlsBefore));
+  });
+
+  frontendTest('storage synchronization icon remains visible until an actual status transition', (tester, h) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: BlocProvider.value(value: h.status, child: const CommonHeaderWidget()),
+        ),
+      ),
+    );
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 70, status: StorageStatusEnum.download));
+    await tester.pump();
+    for (var cycle = 0; cycle < 6; cycle++) {
+      await tester.pump(const Duration(seconds: 2));
+    }
+    final downloading = find.byKey(const Key('cloud_download'));
+    expect(downloading, findsOneWidget);
+    expect(tester.widget<Opacity>(find.descendant(of: downloading, matching: find.byType(Opacity))).opacity, 1);
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 71, status: StorageStatusEnum.off));
+    await tester.pump();
+    expect(find.byKey(const Key('cloud_off')), findsOneWidget);
+    expect(downloading, findsNothing);
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 72, status: StorageStatusEnum.done));
+    await tester.pump();
+    expect(find.byKey(const Key('cloud_done')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  frontendTest('storage RPC updates the live status and seeds a Bloc created after the notification', (
+    tester,
+    h,
+  ) async {
+    final records = <LogRecord>[];
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(subscription.cancel);
+    for (final status in [StorageStatusEnum.download, StorageStatusEnum.off, StorageStatusEnum.done]) {
+      final result = await h.rpc.executeCommand(StorageStatusCommand(id: 71, status: status));
+      expect(result, isA<EmptyResult>());
+      await tester.pump();
+      expect(h.frontend.storageStatus, status);
+      expect(h.status.state.storageStatus, status);
+    }
+    final laterBloc = SlideshowStatusBloc(frontendService: h.frontend, config: SlideShowConfig.fromJson({}));
+    expect(laterBloc.state.storageStatus, StorageStatusEnum.done);
+    await tester.runAsync(laterBloc.close);
+    await h.rpc.executeCommand(const StorageStatusCommand(id: 73, status: StorageStatusEnum.download));
+    await tester.pump();
+    expect(h.status.state.storageStatus, StorageStatusEnum.download);
+    expect(
+      records.any(
+        (record) =>
+            record.loggerName == 'FrontendService' &&
+            record.message == 'Storage status received status=off' &&
+            record.level == Level.INFO,
+      ),
+      isTrue,
+    );
+    expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+  });
+
   frontendTest('storage facade keeps concurrent current and next responses separate and propagates failure', (
     tester,
     h,
@@ -88,13 +171,17 @@ void main() {
   frontendTest('disposal cancels timer and pending local waits, consuming late external failures', (tester, h) async {
     final events = <SystemInfo>[];
     var done = false;
+    var storageDone = false;
+    final storageEvents = <StorageStatusEnum>[];
     h.frontend.onSystemInfoUpdate.listen(events.add, onDone: () => done = true);
+    h.frontend.onStorageStatusChanged.listen(storageEvents.add, onDone: () => storageDone = true);
     final read = h.frontend.getStorageCurrentItem();
     final closedRead = expectLater(read, throwsStateError);
     final pending = List<RpcCommand>.of(h.backend.requests);
     await tester.runAsync(h.close);
     await closedRead;
     expect(done, isTrue);
+    expect(storageDone, isTrue);
     for (final request in pending) {
       h.backend.fail(request, StateError('late private response'));
     }
@@ -114,6 +201,7 @@ void main() {
     for (final command in [
       const GetFrameFrontendStateCommand(id: 43),
       const SetFrameControlCommand(id: 44, control: FrameControl.menu, enabled: true),
+      const StorageStatusCommand(id: 45, status: StorageStatusEnum.download),
     ]) {
       final result = await h.rpc.executeCommand(command);
       expect(
@@ -123,6 +211,8 @@ void main() {
             .having((result) => result.error, 'shutdown reason', contains('Frontend service is closed')),
       );
     }
+    expect(storageEvents, isEmpty);
+    expect(h.frontend.storageStatus, StorageStatusEnum.off);
   });
 
   frontendTest('incoming RPC delivers button, screen, action and OTA events through the real facade', (

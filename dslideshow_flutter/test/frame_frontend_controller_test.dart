@@ -12,6 +12,10 @@ import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class RecordingFrontend implements FrontendService {
+  @override
+  StorageStatusEnum get storageStatus => StorageStatusEnum.off;
+  @override
+  Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
   final actions = StreamController<ActionWithParam>.broadcast();
   final updates = <({bool? paused, bool? menu})>[];
   final locks = <bool>[];

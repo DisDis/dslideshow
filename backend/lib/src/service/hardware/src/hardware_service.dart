@@ -31,6 +31,7 @@ class HardwareService implements RpcService {
   final MqttService _mqttService;
   final WiFiService _wifiService;
   final ApplicationStateService _applicationStateService;
+  final FrameStateReader _frameStateReader;
 
   HardwareService({
     required RemoteService frontendService,
@@ -43,6 +44,7 @@ class HardwareService implements RpcService {
     required WiFiService wifiService,
     required PowerOffService powerOffService,
     required ApplicationStateService applicationStateService,
+    required FrameStateReader frameStateReader,
   }) : _frontendService = frontendService,
        _storageProviders = storageProviders,
        _gpioService = gpioService,
@@ -52,27 +54,18 @@ class HardwareService implements RpcService {
        _mqttService = mqttService,
        _wifiService = wifiService,
        _powerOffService = powerOffService,
-       _applicationStateService = applicationStateService {
-    _frameStateReader = FrameStateReader(
-      frontendService: _frontendService,
-      screenService: _screenService,
-      applicationStateService: _applicationStateService,
-      waitForFrontend: _waitFrontend,
-      ensureActive: _ensureActive,
-      logger: _log,
-    );
+       _applicationStateService = applicationStateService,
+       _frameStateReader = frameStateReader {
     _init();
   }
 
   final List<Future> _initFutures = <Future>[];
   late final DeviceEventBindings _eventBindings;
-  late final FrameStateReader _frameStateReader;
   bool _disposed = false;
-  Future<void> _screenNotifications = Future.value();
-  Completer<void>? _notificationWait;
-  static const _frontendTimeout = Duration(seconds: 3);
-  final _frontendWaits = <Completer<dynamic>>{};
+  StreamSubscription<StorageStatusEnum>? _storageStatusSubscription;
   void _init() {
+    _storageStatusSubscription = _storage.onStatusChanged.listen(_notifyStorageStatus);
+    unawaited(_notifyStorageStatus(_storage.status));
     _initFutures.add(_storageProviders.init());
     if (Platform.isLinux) {
       _initFutures.add(_gpioService.init());
@@ -91,43 +84,43 @@ class HardwareService implements RpcService {
     _initFutures.add(_systemInfoService.init());
   }
 
-  void screenConfigure(bool enabled) {
-    _screenNotifications = _screenNotifications.then((_) async {
-      if (_disposed) return;
-      try {
-        final completion = Completer<void>();
-        _notificationWait = completion;
-        unawaited(
-          _frontendService
-              .send(ScreenTurnCommand(enabled: enabled, id: RpcCommand.generateId()))
-              .then<void>(
-                (_) {
-                  if (!completion.isCompleted) completion.complete();
-                },
-                onError: (Object error, StackTrace stack) {
-                  if (!completion.isCompleted) completion.completeError(error, stack);
-                },
-              ),
-        );
-        await completion.future;
-      } catch (error, stack) {
-        _log.warning('Screen notification failed', error, stack);
-      } finally {
-        _notificationWait = null;
-      }
-    });
+  Future<void> _notifyStorageStatus(StorageStatusEnum status) async {
+    if (_disposed) return;
+    try {
+      _log.fine('Storage status delivery started status=${status.name}');
+      final result = await _frontendService.send(StorageStatusCommand(id: RpcCommand.generateId(), status: status));
+      if (result is RpcErrorResult) throw RpcErrorResultException(result);
+      if (result is! EmptyResult) throw StateError('Unexpected storage status response');
+      _log.fine('Storage status delivered status=${status.name}');
+    } catch (error) {
+      _log.log(
+        _disposed ? Level.FINE : Level.WARNING,
+        'Storage status delivery ${_disposed ? 'cancelled' : 'failed'} status=${status.name} type=${error.runtimeType}',
+      );
+    }
+  }
+
+  Future<void> screenConfigure(bool enabled) async {
+    if (_disposed) return;
+    try {
+      _log.fine('Screen notification started enabled=$enabled');
+      final result = await _frontendService.send(ScreenTurnCommand(enabled: enabled, id: RpcCommand.generateId()));
+      if (result is RpcErrorResult) throw RpcErrorResultException(result);
+      if (result is! EmptyResult) throw StateError('Unexpected screen notification response');
+      _log.fine('Screen notification delivered enabled=$enabled');
+    } catch (error) {
+      _log.log(
+        _disposed ? Level.FINE : Level.WARNING,
+        'Screen notification ${_disposed ? 'cancelled' : 'failed'} enabled=$enabled type=${error.runtimeType}',
+      );
+    }
   }
 
   Future<void> dispose() async {
     _disposed = true;
-    for (final wait in _frontendWaits.toList()) {
-      if (!wait.isCompleted) {
-        wait.completeError(StateError('Hardware service disposed'));
-      }
-    }
-    final notification = _notificationWait;
-    if (notification != null && !notification.isCompleted) notification.complete();
+    final storageStatusCancelled = _storageStatusSubscription?.cancel();
     await _eventBindings.dispose();
+    await storageStatusCancelled;
     await _applicationStateService.dispose();
     await _screenService.dispose();
     await _gpioService.release();
@@ -137,7 +130,6 @@ class HardwareService implements RpcService {
       _wifiService.close(),
       _mqttService.close(),
     ]);
-    await _screenNotifications;
   }
 
   void testEcho(String text) async {
@@ -237,56 +229,42 @@ class HardwareService implements RpcService {
     }
   }
 
-  Future<T> _waitFrontend<T>(Future<T> request) {
-    final completion = Completer<T>();
-    _frontendWaits.add(completion);
-    final timer = Timer(_frontendTimeout, () {
-      if (!completion.isCompleted) {
-        completion.completeError(TimeoutException('Frontend did not respond'));
-      }
-    });
-    request.then<void>(
-      (value) {
-        if (!completion.isCompleted) completion.complete(value);
-      },
-      onError: (Object error, StackTrace stack) {
-        if (!completion.isCompleted) completion.completeError(error, stack);
-      },
-    );
-    return completion.future.whenComplete(() {
-      timer.cancel();
-      _frontendWaits.remove(completion);
-    });
-  }
-
   void _ensureActive() {
     if (_disposed) throw StateError('Hardware service disposed');
   }
 
   Future<RpcResult> _executeGetFrameStateCommand(GetFrameStateCommand command) async {
     try {
-      return GetFrameStateResult(id: command.id, state: await _frameStateReader.read());
-    } catch (error, stack) {
-      _log.warning('Could not collect frame state', error, stack);
+      final state = await _frameStateReader.read();
+      _ensureActive();
+      return GetFrameStateResult(id: command.id, state: state);
+    } catch (error) {
+      _log.log(
+        _disposed ? Level.FINE : Level.WARNING,
+        'Frame state request ${_disposed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+      );
       return _generateErrorResult(error, command);
     }
   }
 
   Future<RpcResult> _executeSetFrameControlCommand(SetFrameControlCommand command) async {
     try {
-      final result = await _waitFrontend(_frontendService.send(command));
-      if (result is RpcErrorResult) {
-        return await _generateErrorResult(StateError(result.error), command);
-      }
-      if (result is! EmptyResult) {
-        throw StateError('Unexpected frontend control response');
-      }
-      // A poll started before the acknowledgement may describe the old intent.
-      // Read again after acceptance instead of returning that in-flight sample.
-      _frameStateReader.invalidateFrontendRequest();
-      return GetFrameStateResult(id: command.id, state: await _frameStateReader.read());
-    } catch (error, stack) {
-      _log.warning('Frame control failed', error, stack);
+      _log.fine(
+        'Frame control started requestId=${command.id} control=${command.control.name} enabled=${command.enabled}',
+      );
+      final result = await _frontendService.send(command);
+      _ensureActive();
+      if (result is RpcErrorResult) throw StateError(result.error);
+      if (result is! EmptyResult) throw StateError('Unexpected frontend control response');
+      _log.fine('Frame control applied requestId=${command.id} control=${command.control.name}');
+      final state = await _frameStateReader.read();
+      _ensureActive();
+      return GetFrameStateResult(id: command.id, state: state);
+    } catch (error) {
+      _log.log(
+        _disposed ? Level.FINE : Level.WARNING,
+        'Frame control ${_disposed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+      );
       return _generateErrorResult(error, command);
     }
   }

@@ -6,10 +6,10 @@ import 'package:dslideshow_backend/src/service/hardware/src/frame_state_reader.d
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
-import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 import 'frame_state_test.dart' show FrameRemote;
+import 'helpers/capture_logs.dart';
 
 class _Screen implements ScreenService {
   @override
@@ -48,24 +48,12 @@ class _Fixture {
   final application = _Application();
   final remote = FrameRemote();
   late final FrameStateReader reader;
-  bool active = true;
-  int waitCalls = 0;
 
   _Fixture({RemoteService? frontend}) {
     reader = FrameStateReader(
       frontendService: frontend ?? remote,
       screenService: screen,
       applicationStateService: application,
-      // The facade owns deadlines and shutdown. These unit tests use an
-      // unbounded wait; frame_state_test covers the actual shared wait policy.
-      waitForFrontend: (request) {
-        waitCalls++;
-        return request;
-      },
-      ensureActive: () {
-        if (!active) throw StateError('Hardware service disposed');
-      },
-      logger: Logger('frame-reader-test'),
     );
   }
 }
@@ -100,9 +88,7 @@ void main() {
     fixture.screen.isScreenOffLock = true;
     fixture.screen.confirmedPower = null;
     fixture.screen.phase = ScreenPhase.failed;
-    pending.complete(
-      GetFrameFrontendStateResult(id: 0, state: fixture.remote.state),
-    );
+    pending.complete(GetFrameFrontendStateResult(id: 0, state: fixture.remote.state));
     final state = await response;
     expect(state.presence, FramePresence.absent);
     expect(state.presenceObservedAt, fixture.application.presenceObservedAt);
@@ -114,24 +100,16 @@ void main() {
     expect(state.frontend, same(fixture.remote.state));
   });
 
-  test('concurrent reads share one frontend request and owner wait', () async {
+  test('concurrent reads send independent frontend requests', () async {
     final fixture = _Fixture();
     final pending = Completer<RpcResult>();
     fixture.remote.pendingState = pending;
     final responses = List.generate(10, (_) => fixture.reader.read());
-    expect(fixture.remote.commands, hasLength(1));
-    expect(fixture.waitCalls, 1);
-    pending.complete(
-      GetFrameFrontendStateResult(id: 0, state: fixture.remote.state),
-    );
+    expect(fixture.remote.commands, hasLength(10));
+    pending.complete(GetFrameFrontendStateResult(id: 0, state: fixture.remote.state));
     final snapshots = await Future.wait(responses);
     expect(snapshots, hasLength(10));
-    expect(
-      snapshots.every(
-        (state) => identical(state.frontend, fixture.remote.state),
-      ),
-      isTrue,
-    );
+    expect(snapshots.every((state) => identical(state.frontend, fixture.remote.state)), isTrue);
   });
 
   test('completed snapshots are not cached between reads', () async {
@@ -150,14 +128,13 @@ void main() {
     expect(second.frontend, same(fixture.remote.state));
     expect(second.presence, FramePresence.present);
     expect(fixture.remote.commands, hasLength(2));
-    expect(fixture.waitCalls, 2);
   });
 
   test(
     'async frontend failure returns backend state and a later read recovers',
-    () async {
+    () => captureLogs((records) async {
       final fixture = _Fixture();
-      fixture.remote.failure = StateError('Frontend unavailable');
+      fixture.remote.failure = StateError('private frontend URL');
       final failed = await fixture.reader.read();
       expect(failed.frontend, isNull);
       expect(failed.isScreenOn, isTrue);
@@ -166,7 +143,10 @@ void main() {
       final recovered = await fixture.reader.read();
       expect(recovered.frontend, same(fixture.remote.state));
       expect(fixture.remote.commands, hasLength(2));
-    },
+      expect(records.any((record) => record.message == 'Frontend state unavailable type=StateError'), isTrue);
+      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(records.map((record) => record.message).join(), isNot(contains('private')));
+    }),
   );
 
   test('unexpected frontend response leaves frontend state unknown', () async {
@@ -180,39 +160,11 @@ void main() {
     expect(state.isScreenOn, isTrue);
   });
 
-  test('owner shutdown rejects reads before sending to frontend', () async {
-    final fixture = _Fixture()..active = false;
-    await expectLater(fixture.reader.read(), throwsStateError);
-    expect(fixture.remote.commands, isEmpty);
-    expect(fixture.waitCalls, 0);
-  });
-
-  test('owner shutdown while waiting prevents a late snapshot', () async {
-    final fixture = _Fixture();
-    final pending = Completer<RpcResult>();
-    fixture.remote.pendingState = pending;
-    final failed = expectLater(fixture.reader.read(), throwsStateError);
-    fixture.active = false;
-    pending.complete(
-      GetFrameFrontendStateResult(id: 0, state: fixture.remote.state),
-    );
-    await failed;
-    await expectLater(fixture.reader.read(), throwsStateError);
-    expect(fixture.remote.commands, hasLength(1));
-  });
-
-  test('synchronous frontend failure preserves the error path', () async {
+  test('synchronous frontend failure preserves available backend state', () async {
     final fixture = _Fixture(frontend: _SyncFailureRemote());
-    await expectLater(
-      fixture.reader.read(),
-      throwsA(
-        isA<StateError>().having(
-          (error) => error.message,
-          'message',
-          'Synchronous frontend failure',
-        ),
-      ),
-    );
-    expect(fixture.waitCalls, 0);
+    final state = await fixture.reader.read();
+    expect(state.frontend, isNull);
+    expect(state.isScreenOn, isTrue);
+    expect(state.backendVersion, ApplicationInfo.backendVersion);
   });
 }

@@ -3,12 +3,17 @@ import 'dart:async';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:dslideshow_flutter/features/header/presentation/widgets/buttons_hint/buttons_hint_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TestFrontend implements FrontendService {
+  @override
+  StorageStatusEnum get storageStatus => StorageStatusEnum.off;
+  @override
+  Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
   final buttons = StreamController<ButtonEvent>.broadcast();
   final screens = StreamController<bool>.broadcast();
   final actions = StreamController<ActionWithParam>.broadcast();

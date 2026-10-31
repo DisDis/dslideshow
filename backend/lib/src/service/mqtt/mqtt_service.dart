@@ -18,6 +18,7 @@ class MqttService {
   final String _prefixScreenTopic;
   final String _prefixMenuTopic;
   final String _prefixMotionTopic;
+  final String _prefixStorageStatusTopic;
   final ApplicationStateService applicationStateService;
 
   /// The completion of the initial connection attempt, including a safe failure.
@@ -37,28 +38,15 @@ class MqttService {
   final StreamController<bool> _scScreen = new StreamController.broadcast();
   Stream<bool> get onScreen => _scScreen.stream;
 
-  bool get isConnected =>
-      !_closed &&
-      _client.connectionStatus?.state == MqttConnectionState.connected;
+  bool get isConnected => !_closed && _client.connectionStatus?.state == MqttConnectionState.connected;
 
-  MqttService(
-    this._config, {
-    required this.applicationStateService,
-    MqttServerClient? client,
-  }) : _client =
-           client ??
-           MqttServerClient.withPort(
-             _config.server,
-             _config.clientId,
-             _config.serverPort,
-           ),
-       _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
-       _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
-       _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
-       _prefixMotionTopic = _config.getDiscoveryPrefix(
-         SensorType.binarySensor.value,
-         'motion',
-       ) {
+  MqttService(this._config, {required this.applicationStateService, MqttServerClient? client})
+    : _client = client ?? MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
+      _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
+      _prefixScreenTopic = _config.getDiscoveryPrefix('switch', 'screen'),
+      _prefixMenuTopic = _config.getDiscoveryPrefix('switch', 'menu'),
+      _prefixStorageStatusTopic = _config.getDiscoveryPrefix(SensorType.sensor.value, 'storageStatus'),
+      _prefixMotionTopic = _config.getDiscoveryPrefix(SensorType.binarySensor.value, 'motion') {
     ready = _config.enabled ? _init() : Future<void>.value();
   }
 
@@ -74,14 +62,10 @@ class MqttService {
 
     final discovery_topic = _config.getDiscoveryPrefix('info', "device");
     final connMess = MqttConnectMessage()
-        .withClientIdentifier(
-          _config.clientId,
-        ) // Must agree with the keep alive set above or not set
+        .withClientIdentifier(_config.clientId) // Must agree with the keep alive set above or not set
         // .withWillTopic(mqttConfig.discovery_prefix + mqttConfig.configuration_topic) // If you set this you must set a will message
         // .withWillMessage(configPayload)
-        .withWillTopic(
-          discovery_topic,
-        ) // If you set this you must set a will message
+        .withWillTopic(discovery_topic) // If you set this you must set a will message
         .withWillMessage(' ')
         .startClean() // Non persistent session for testing
         .withWillQos(MqttQos.atLeastOnce);
@@ -112,16 +96,11 @@ class MqttService {
       _log.info('event=connected');
       _updates = _client.updates?.listen(
         _onUpdate,
-        onError: (Object error) =>
-            _log.warning('event=updatesFailed type=${error.runtimeType}'),
+        onError: (Object error) => _log.warning('event=updatesFailed type=${error.runtimeType}'),
       );
-      _applicationChanges = applicationStateService.onChangedState.listen(
-        _onApplicationChangeState,
-      );
+      _applicationChanges = applicationStateService.onChangedState.listen(_onApplicationChangeState);
     } else {
-      _log.warning(
-        'event=connectRejected state=${_client.connectionStatus?.state.name}',
-      );
+      _log.warning('event=connectRejected state=${_client.connectionStatus?.state.name}');
       _client.disconnect();
     }
   }
@@ -142,9 +121,7 @@ class MqttService {
         rejected++;
         continue;
       }
-      final value = MqttPublishPayload.bytesToStringAsString(
-        payload.payload.message,
-      );
+      final value = MqttPublishPayload.bytesToStringAsString(payload.payload.message);
       if (value != 'ON' && value != 'OFF') {
         rejected++;
         continue;
@@ -164,14 +141,10 @@ class MqttService {
         accepted++;
       } catch (error) {
         rejected++;
-        _log.warning(
-          'event=commandFailed action=${action.name} type=${error.runtimeType}',
-        );
+        _log.warning('event=commandFailed action=${action.name} type=${error.runtimeType}');
       }
     }
-    _log.info(
-      'event=commands received=${msgs.length} accepted=$accepted rejected=$rejected ignored=$ignored',
-    );
+    _log.info('event=commands received=${msgs.length} accepted=$accepted rejected=$rejected ignored=$ignored');
   }
 
   _MqttAction? _actionForTopic(String topic) {
@@ -235,18 +208,9 @@ class MqttService {
     // existing subscription manager resubscribes on that path.
     if (_closed || _connectedBefore) return;
     try {
-      _client.subscribe(
-        "$_prefixPauseTopic/${_config.command_topic}",
-        MqttQos.atMostOnce,
-      );
-      _client.subscribe(
-        "$_prefixScreenTopic/${_config.command_topic}",
-        MqttQos.atMostOnce,
-      );
-      _client.subscribe(
-        "$_prefixMenuTopic/${_config.command_topic}",
-        MqttQos.atMostOnce,
-      );
+      _client.subscribe("$_prefixPauseTopic/${_config.command_topic}", MqttQos.atMostOnce);
+      _client.subscribe("$_prefixScreenTopic/${_config.command_topic}", MqttQos.atMostOnce);
+      _client.subscribe("$_prefixMenuTopic/${_config.command_topic}", MqttQos.atMostOnce);
       _connectedBefore = true;
       _publishAllConfig();
 
@@ -261,6 +225,7 @@ class MqttService {
     _publishSwitchConfig(_client, 'screen', 'Screen');
     _publishSwitchConfig(_client, 'menu', 'Menu');
     _publishSensorConfig(_client, 'motion', 'Motion', SensorType.binarySensor);
+    _publishSensorConfig(_client, 'storageStatus', 'Storage Status');
   }
 
   void _onAutoReconnected() {
@@ -277,34 +242,33 @@ class MqttService {
   void _onApplicationChangeState(ApplicationState newState) {
     if (_closed || !isConnected) return;
     try {
-      final state = applicationStateService.state;
+      final state = newState;
       _client.publishMessage(
         "$_prefixPauseTopic/${_config.state_topic}",
         MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()
-              ..addUTF8String(state.isPaused ? 'ON' : 'OFF'))
-            .payload!,
+        (MqttClientPayloadBuilder()..addUTF8String(state.isPaused ? 'ON' : 'OFF')).payload!,
       );
       _client.publishMessage(
         "$_prefixScreenTopic/${_config.state_topic}",
         MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()
-              ..addUTF8String(state.isScreenOn ? 'ON' : 'OFF'))
-            .payload!,
+        (MqttClientPayloadBuilder()..addUTF8String(state.isScreenOn ? 'ON' : 'OFF')).payload!,
       );
       _client.publishMessage(
         "$_prefixMenuTopic/${_config.state_topic}",
         MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF'))
-            .payload!,
+        (MqttClientPayloadBuilder()..addUTF8String(state.isMenu ? 'ON' : 'OFF')).payload!,
       );
       _client.publishMessage(
         "$_prefixMotionTopic/${_config.state_topic}",
         MqttQos.atMostOnce,
-        (MqttClientPayloadBuilder()
-              ..addUTF8String(state.isMotion ? 'ON' : 'OFF'))
-            .payload!,
+        (MqttClientPayloadBuilder()..addUTF8String(state.isMotion ? 'ON' : 'OFF')).payload!,
       );
+      _client.publishMessage(
+        "$_prefixStorageStatusTopic/${_config.state_topic}",
+        MqttQos.atMostOnce,
+        (MqttClientPayloadBuilder()..addUTF8String(state.storageStatus.name)).payload!,
+      );
+      _log.fine('event=statePublished storageStatus=${state.storageStatus.name}');
     } catch (error) {
       _log.warning('event=statePublishFailed type=${error.runtimeType}');
     }
@@ -330,11 +294,7 @@ class MqttService {
       } catch (error) {
         _log.warning('event=disconnectFailed type=${error.runtimeType}');
       } finally {
-        await Future.wait<void>([
-          _scPause.close(),
-          _scScreen.close(),
-          _scMenu.close(),
-        ]);
+        await Future.wait<void>([_scPause.close(), _scScreen.close(), _scMenu.close()]);
         _log.info('event=closed');
       }
     }

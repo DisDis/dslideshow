@@ -8,8 +8,11 @@ import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
+
+export 'package:dslideshow_common/storage_status.dart';
 
 part 'slideshow_status_bloc.freezed.dart';
 part 'slideshow_status_event.dart';
@@ -20,6 +23,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   final FrontendService frontendService;
   final SlideShowConfig config;
   StreamSubscription? _onActionSubscription;
+  StreamSubscription<StorageStatusEnum>? _storageStatusSubscription;
   int _screenLockGeneration = 0;
   SlideshowScreenLockEvent? _screenAction;
   final _waits = CancellableWaits();
@@ -28,8 +32,10 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   final _scPause = StreamController<bool>.broadcast();
   Stream<bool> get onPause => _scPause.stream;
 
-  SlideshowStatusBloc({required this.frontendService, required this.config}) : super(const SlideshowStatusState()) {
+  SlideshowStatusBloc({required this.frontendService, required this.config})
+    : super(SlideshowStatusState(storageStatus: frontendService.storageStatus)) {
     on<SlideshowChangeStorageStatusEvent>((event, emit) {
+      if (state.storageStatus != event.value) _log.fine('Storage status applied status=${event.value.name}');
       emit(state.copyWith(storageStatus: event.value));
     });
     on<SlideshowDebugEvent>((event, emit) {
@@ -84,6 +90,9 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
       }
     });
     _onActionSubscription = frontendService.onAction.listen((actionP) => executeAction(actionP.action, actionP.param));
+    _storageStatusSubscription = frontendService.onStorageStatusChanged.listen((status) {
+      if (!_waits.isClosed) add(SlideshowChangeStorageStatusEvent(status));
+    });
   }
 
   void executeAction(SlideshowAction action, [bool? value]) {
@@ -188,6 +197,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     _actionCompletions.clear();
     _screenAction = null;
     await _onActionSubscription?.cancel();
+    await _storageStatusSubscription?.cancel();
     await _scPause.close();
     await super.close();
   }

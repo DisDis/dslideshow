@@ -4,6 +4,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:dslideshow_flutter/src/service/cancellable_waits.dart';
 import 'package:logging/logging.dart';
 
@@ -18,6 +19,11 @@ class FrontendService implements RpcService {
   final _onButtonEvent = StreamController<ButtonEvent>.broadcast();
 
   final _onAction = StreamController<ActionWithParam<bool>>.broadcast();
+  final _onStorageStatusChanged = StreamController<StorageStatusEnum>.broadcast();
+  StorageStatusEnum _storageStatus = StorageStatusEnum.off;
+
+  StorageStatusEnum get storageStatus => _storageStatus;
+  Stream<StorageStatusEnum> get onStorageStatusChanged => _onStorageStatusChanged.stream;
 
   final _onOTAReady = StreamController<bool>.broadcast();
   final _onOTAInfo = StreamController<OTAInfo>.broadcast();
@@ -119,6 +125,14 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case StorageStatusCommand.TYPE:
+        final status = (command as StorageStatusCommand).status;
+        if (_storageStatus != status) {
+          _storageStatus = status;
+          _onStorageStatusChanged.add(status);
+          _log.info('Storage status received status=${status.name}');
+        }
+        return Future.value(EmptyResult.respond(command));
       case ExecuteSSActionCommand.TYPE:
         return _executeSSActionCommand(command as ExecuteSSActionCommand);
       case ButtonChangeStateCommand.TYPE:
@@ -194,6 +208,7 @@ class FrontendService implements RpcService {
       _onSystemInfoUpdate.close(),
       _onButtonEvent.close(),
       _onAction.close(),
+      _onStorageStatusChanged.close(),
       _onOTAReady.close(),
       _onOTAInfo.close(),
       _onOTAOutput.close(),

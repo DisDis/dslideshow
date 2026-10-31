@@ -5,9 +5,7 @@ part 'frontend_commands.freezed.dart';
 part 'frontend_commands.g.dart';
 
 @freezed
-sealed class UpdateFrontendStateCommand
-    with _$UpdateFrontendStateCommand
-    implements RpcCommand {
+sealed class UpdateFrontendStateCommand with _$UpdateFrontendStateCommand implements RpcCommand {
   static const String TYPE = 'updateFrontendState';
   const factory UpdateFrontendStateCommand({
     @Default(UpdateFrontendStateCommand.TYPE) String type,
@@ -16,6 +14,5 @@ sealed class UpdateFrontendStateCommand
     bool? isMenu,
   }) = _UpdateFrontendStateCommand;
 
-  factory UpdateFrontendStateCommand.fromJson(Map<String, dynamic> json) =>
-      _$UpdateFrontendStateCommandFromJson(json);
+  factory UpdateFrontendStateCommand.fromJson(Map<String, dynamic> json) => _$UpdateFrontendStateCommandFromJson(json);
 }

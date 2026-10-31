@@ -15,6 +15,7 @@ import 'package:dslideshow_backend/src/service/yandex_drive/yandex_drive_api.dar
 import 'package:dslideshow_backend/src/service/yandex_drive/yandex_drive_models.dart';
 import 'package:dslideshow_backend/src/service/yandex_drive/yandex_drive_service.dart';
 import 'package:dslideshow_common/gallery.dart';
+import 'package:dslideshow_common/storage_status.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
@@ -179,6 +180,7 @@ void main() {
     expect(current.runtime.totalItems, 4);
     expect(current.runtime.processedItems, 4);
     expect(current.runtime.progress, 1);
+    expect(current.status, StorageStatusEnum.done);
     expect(api.resourceCalls.where((value) => value == 'disk:/Camera/2026').length, 1);
     expect(await File(path.join(originals.path, 'yandex.drive.123/Camera/2026/b.mp4')).readAsBytes(), [4, 5, 6]);
     expect(await File(path.join(originals.path, 'yandex.drive.456/Trip/a.jpg')).readAsBytes(), [1, 2, 3]);
@@ -235,6 +237,7 @@ void main() {
     );
     final syncing = current.sync();
     await rootEntered.future;
+    expect(current.status, StorageStatusEnum.download);
     expect(current.runtime.totalItems, isNull);
     expect(current.runtime.progress, isNull);
     rootPage.complete(
@@ -365,6 +368,7 @@ void main() {
     expect(current.runtime.totalItems, 4);
     expect(current.runtime.progress, 1);
     expect(current.runtime.error, DriveFailure.checksum);
+    expect(current.status, StorageStatusEnum.off);
     expect(await originals.list(recursive: true).where((entry) => entry is File).toList(), isEmpty);
   });
 

@@ -246,7 +246,7 @@ packages:
       path: "../backend"
       relative: true
     source: path
-    version: "17.1.0+1"
+    version: "17.1.0+6"
   dslideshow_common:
     dependency: "direct main"
     description:

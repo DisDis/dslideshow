@@ -73,6 +73,11 @@ enum RendererScenario {
 
 /// Replaces only backend RPC/media selection; production Bloc and sessions run.
 class RendererFrontend implements FrontendService {
+  @override
+  StorageStatusEnum get storageStatus => StorageStatusEnum.off;
+  @override
+  Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
+
   final MediaCatalog catalog;
   final List<String> files;
   final void Function(Map<String, Object?>) event;
