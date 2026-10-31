@@ -13,10 +13,13 @@ import 'package:dslideshow_backend/src/service/ota/release_info.dart';
 import 'package:dslideshow_backend/src/service/upload/streaming_upload.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:path/path.dart' as path;
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
+
+import 'helpers/capture_logs.dart';
 
 const _boundary = 'ota-test-boundary';
 final _inputTag = RegExp(r'<input\b[^>]*>');
@@ -414,7 +417,7 @@ void main() {
     expect((await ota.handler(Request('GET', Uri.parse('http://localhost/ota_start')))).statusCode, 503);
   });
 
-  test('HTTP remains usable when the frontend never responds', () async {
+  test('HTTP remains usable while a frontend notification is in flight', () async {
     remote.blockedAll = Completer<RpcResult>();
     addTearDown(() => remote.blockedAll!.complete(const EmptyResult(id: 1)));
     final ota = service();
@@ -829,18 +832,52 @@ void main() {
     expect(ota.busy, isFalse);
   });
 
-  test('blocked frontend has a deadline and releases automatic OTA lock', () async {
-    remote.blockedReady = Completer<RpcResult>();
-    final ota = service(
-      networkTimeout: const Duration(milliseconds: 20),
-      latestRelease: () async => ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
-    );
-    await ota.checkLatestRelease();
-    expect(ota.info.status, OTAStatus.issue);
-    expect(ota.busy, isFalse);
-    expect(installer.files, isEmpty);
-    remote.blockedReady!.complete(const EmptyResult(id: 1));
-  });
+  test(
+    'automatic OTA awaits frontend RPC without a deadline and handles its actual error',
+    () => captureLogs((records) async {
+      late FakeAsync clock;
+      late OTAService ota;
+      try {
+        fakeAsync((time) {
+          clock = time;
+          remote.blockedReady = Completer<RpcResult>();
+          ota = service(
+            networkTimeout: const Duration(milliseconds: 20),
+            latestRelease: () async =>
+                ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
+          );
+          var finished = false;
+          ota.checkLatestRelease().then((_) => finished = true);
+          time.flushMicrotasks();
+          expect(remote.readyRequested, isTrue);
+          time.elapse(const Duration(seconds: 30));
+          expect(finished, isFalse);
+          expect(ota.busy, isTrue);
+          expect(installer.files, isEmpty);
+          ota.checkLatestRelease();
+          time.flushMicrotasks();
+          expect(remote.commands.whereType<OTAReadyCommand>(), hasLength(1));
+          remote.blockedReady!.completeError(StateError('private frontend endpoint'));
+          time.flushMicrotasks();
+          expect(finished, isTrue);
+          expect(ota.info.status, OTAStatus.issue);
+          expect(ota.info.errorText, contains('private frontend endpoint'));
+          expect(ota.busy, isFalse);
+        });
+      } finally {
+        var closed = false;
+        final closing = closeService(ota).then((_) => closed = true);
+        await _until(() {
+          clock.flushMicrotasks();
+          return closed;
+        });
+        await closing;
+      }
+      expect(records.any((record) => record.message == 'OTA frontend notification failed type=StateError'), isTrue);
+      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(records.map((record) => record.message).join(), isNot(contains('private')));
+    }),
+  );
 
   test('automatic download response headers have an explicit deadline', () async {
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -878,7 +915,7 @@ void main() {
     expect(directory.listSync(), isEmpty);
   });
 
-  test('stalled frontend keeps one RPC and bounded output, then delivers latest state', () async {
+  test('installer output and progress stay bounded while a notification is in flight', () async {
     remote.blockedAll = Completer<RpcResult>();
     installer.pending = Completer<int>();
     addTearDown(() {
@@ -900,25 +937,6 @@ void main() {
     final output = remote.commands.whereType<OTAOutputCommand>().map((command) => command.output).join();
     expect(utf8.encode(output).length, lessThanOrEqualTo(64 * 1024));
     expect(remote.infos.last.status, OTAStatus.issue);
-  });
-
-  test('repeated screen timeouts share the same unresolved RPC and recover', () async {
-    remote.blockedAll = Completer<RpcResult>();
-    addTearDown(() {
-      if (!remote.blockedAll!.isCompleted) remote.blockedAll!.complete(const EmptyResult(id: 1));
-    });
-    final ota = service(
-      networkTimeout: const Duration(milliseconds: 10),
-      latestRelease: () async => ReleaseInfo(version: Version(999, 0, 0), debUrl: 'http://127.0.0.1/automatic.deb'),
-    );
-    for (var index = 0; index < 3; index++) {
-      await ota.checkLatestRelease();
-      expect(ota.busy, isFalse);
-    }
-    expect(remote.commands.length, 1);
-    remote.blockedAll!.complete(const EmptyResult(id: 1));
-    await _until(() => remote.infos.isNotEmpty && remote.infos.last.status == OTAStatus.issue);
-    expect(installer.files, isEmpty);
   });
 
   test('installer exceptions and frontend errors are caught', () async {

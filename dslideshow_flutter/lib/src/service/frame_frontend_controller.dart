@@ -12,14 +12,8 @@ class FrameFrontendController {
   final SlideshowStatusBloc statusBloc;
   final RouteBloc routeBloc;
   final FrameDisplayInfoReader displayInfo;
-  final Duration commandTimeout;
 
-  FrameFrontendController({
-    required this.statusBloc,
-    required this.routeBloc,
-    required this.displayInfo,
-    this.commandTimeout = const Duration(seconds: 2),
-  });
+  FrameFrontendController({required this.statusBloc, required this.routeBloc, required this.displayInfo});
 
   void updateSystemInfo(SystemInfo info) {
     final status = statusBloc;
@@ -62,11 +56,7 @@ class FrameFrontendController {
       FrameControl.menu => SlideshowAction.showMenu,
       FrameControl.screen => SlideshowAction.toggleScreen,
     };
-    await status.executeActionAndWait(
-      action,
-      control == FrameControl.screen ? !enabled : enabled,
-      timeout: commandTimeout,
-    );
+    await status.executeActionAndWait(action, control == FrameControl.screen ? !enabled : enabled);
   }
 
   static FrameDisplayInfo? readDisplayInfo() {

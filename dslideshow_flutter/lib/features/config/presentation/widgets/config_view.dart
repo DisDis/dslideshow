@@ -22,9 +22,7 @@ class ConfigView extends StatelessWidget {
   Widget build(BuildContext context) => BlocBuilder<ConfigBloc, ConfigState>(
     builder: (context, state) {
       final l10n = AppLocalizations.of(context);
-      final address = state.phase == ConfigPhase.ready
-          ? state.address?.toString()
-          : null;
+      final address = state.phase == ConfigPhase.ready ? state.address?.toString() : null;
       return Scaffold(
         backgroundColor: ThemeColors.configBackgroundColor,
         body: Stack(
@@ -33,16 +31,12 @@ class ConfigView extends StatelessWidget {
             AccessLayout(
               hasAddress: address != null,
               panel: address != null
-                  ? AccessQrCode(
-                      address: address,
-                      label: l10n.configPageScanStep,
-                    )
+                  ? AccessQrCode(address: address, label: l10n.configPageScanStep)
                   : _StatusPanel(state: state),
               information: _Information(state: state, address: address),
             ),
             const CommonHeaderWidget(),
-            if (state.exit == ConfigExitStatus.active ||
-                state.exit == ConfigExitStatus.failed)
+            if (state.exit == ConfigExitStatus.active || state.exit == ConfigExitStatus.failed)
               PageButtonsHint(
                 frontend: context.read<ConfigBloc>().repository.frontend,
                 buttons: injector<AppConfig>().slideshow.buttons,
@@ -53,16 +47,12 @@ class ConfigView extends StatelessWidget {
                         : ButtonHintAction.back,
                   ),
                   if (_hasRetry(state))
-                    ButtonType.button3: ButtonHintBinding(
-                      action: _retryAction(state),
-                      enabled: state.canRetry,
-                    ),
+                    ButtonType.button3: ButtonHintBinding(action: _retryAction(state), enabled: state.canRetry),
                 },
               ),
             if (!isLinuxEmbedded)
               BlocBuilder<SlideshowStatusBloc, SlideshowStatusState>(
-                builder: (context, state) =>
-                    DebugWidget(injector(), injector()),
+                builder: (context, state) => DebugWidget(injector(), injector()),
               ),
           ],
         ),
@@ -78,14 +68,11 @@ String _statusText(BuildContext context, ConfigState state) {
     ConfigPhase.preparingAddress => l10n.configPageAddressPreparing,
     ConfigPhase.addressUnavailable => l10n.configPageNoAddress,
     ConfigPhase.closing =>
-      context.read<ConfigBloc>().repository.alwaysEnabled
-          ? l10n.configPageClosingAlways
-          : l10n.configPageClosing,
+      context.read<ConfigBloc>().repository.alwaysEnabled ? l10n.configPageClosingAlways : l10n.configPageClosing,
     ConfigPhase.closeFailure => l10n.configPageCloseError,
     ConfigPhase.failure => switch (state.failure) {
       ConfigFailureKind.server => l10n.configPageServerError,
       ConfigFailureKind.network => l10n.configPageNetworkError,
-      ConfigFailureKind.timeout => l10n.configPageTimeout,
       ConfigFailureKind.unknown || null => l10n.configPageUnknownError,
     },
     ConfigPhase.ready || ConfigPhase.exited => '',
@@ -98,30 +85,22 @@ class _StatusPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final working = switch (state.phase) {
-      ConfigPhase.preparing ||
-      ConfigPhase.preparingAddress ||
-      ConfigPhase.closing => true,
+      ConfigPhase.preparing || ConfigPhase.preparingAddress || ConfigPhase.closing => true,
       _ => false,
     };
-    final failure =
-        state.phase == ConfigPhase.failure ||
-        state.phase == ConfigPhase.closeFailure;
+    final failure = state.phase == ConfigPhase.failure || state.phase == ConfigPhase.closeFailure;
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (working)
-            const CircularProgressIndicator(
-              color: ThemeColors.configAccentColor,
-            )
+            const CircularProgressIndicator(color: ThemeColors.configAccentColor)
           else
             Icon(
               failure ? Icons.error_outline : Icons.wifi_off,
               size: 128,
-              color: failure
-                  ? ThemeColors.otaErrorTextColor
-                  : ThemeColors.configAccentColor,
+              color: failure ? ThemeColors.otaErrorTextColor : ThemeColors.configAccentColor,
             ),
           const SizedBox(height: 24),
           Text(
@@ -139,17 +118,12 @@ class _Information extends StatelessWidget {
   const _Information({required this.state, required this.address});
   final ConfigState state;
   final String? address;
-  static const _normal = TextStyle(
-    color: ThemeColors.configNormalTextColor,
-    fontSize: 24,
-  );
+  static const _normal = TextStyle(color: ThemeColors.configNormalTextColor, fontSize: 24);
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final active = state.exit == ConfigExitStatus.active;
-    final code = active && state.access == ConfigAccessStatus.ready
-        ? state.code
-        : null;
+    final code = active && state.access == ConfigAccessStatus.ready ? state.code : null;
     final hasRetry = _hasRetry(state);
     return Container(
       padding: const EdgeInsets.all(24),
@@ -164,11 +138,7 @@ class _Information extends StatelessWidget {
         children: [
           Text(
             l10n.configPageTitle,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Text(l10n.configPageIntro, style: _normal),
@@ -181,9 +151,7 @@ class _Information extends StatelessWidget {
               decoration: BoxDecoration(
                 color: ThemeColors.configAccessCodeBgColor,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: ThemeColors.configAccessCodeBorderColor,
-                ),
+                border: Border.all(color: ThemeColors.configAccessCodeBorderColor),
               ),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
@@ -204,10 +172,7 @@ class _Information extends StatelessWidget {
             _Instruction(icon: Icons.wifi, text: l10n.configPageNetworkStep),
             if (address != null) ...[
               const SizedBox(height: 16),
-              _Instruction(
-                icon: Icons.qr_code_scanner,
-                text: l10n.configPageScanStep,
-              ),
+              _Instruction(icon: Icons.qr_code_scanner, text: l10n.configPageScanStep),
               const SizedBox(height: 16),
               _Instruction(icon: Icons.password, text: l10n.configPageCodeStep),
             ],
@@ -216,13 +181,7 @@ class _Information extends StatelessWidget {
             const Divider(height: 40, color: Colors.white24),
             Text(l10n.configPageManual, style: _normal),
             const SizedBox(height: 8),
-            SelectableText(
-              address!,
-              style: const TextStyle(
-                color: ThemeColors.configAccentColor,
-                fontSize: 36,
-              ),
-            ),
+            SelectableText(address!, style: const TextStyle(color: ThemeColors.configAccentColor, fontSize: 36)),
           ],
           if (state.refreshing) ...[
             const SizedBox(height: 24),
@@ -230,9 +189,7 @@ class _Information extends StatelessWidget {
             const SizedBox(height: 8),
             Text(l10n.configPageChecking, style: _normal),
           ],
-          if ((state.phase == ConfigPhase.failure ||
-                  state.phase == ConfigPhase.closeFailure) &&
-              !state.canRetry)
+          if ((state.phase == ConfigPhase.failure || state.phase == ConfigPhase.closeFailure) && !state.canRetry)
             Padding(
               padding: const EdgeInsets.only(top: 24),
               child: Text(l10n.configPagePending, style: _normal),
@@ -250,47 +207,34 @@ class _Information extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: ThemeColors.configAccentColor,
                   foregroundColor: Colors.black,
-                  textStyle: Theme.of(context).textTheme.labelLarge
-                      ?.copyWith(fontSize: 24),
+                  textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 24),
                   minimumSize: const Size(64, 64),
                 ),
-                onPressed: state.canRetry
-                    ? () => context.read<ConfigBloc>().add(
-                        const ConfigEvent.retry(),
-                      )
-                    : null,
+                onPressed: state.canRetry ? () => context.read<ConfigBloc>().add(const ConfigEvent.retry()) : null,
                 icon: Icon(_retryAction(state).icon, size: 32),
                 label: Text(
-                  state.phase == ConfigPhase.ready ||
-                          state.phase == ConfigPhase.addressUnavailable
+                  state.phase == ConfigPhase.ready || state.phase == ConfigPhase.addressUnavailable
                       ? l10n.configPageCheck
                       : l10n.configPageRetry,
                 ),
               ),
             ),
-          if (state.phase != ConfigPhase.closing &&
-              state.phase != ConfigPhase.exited)
+          if (state.phase != ConfigPhase.closing && state.phase != ConfigPhase.exited)
             OutlinedButton.icon(
               key: const Key('config-return'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: ThemeColors.configAccentColor,
-                textStyle: Theme.of(context).textTheme.labelLarge
-                    ?.copyWith(fontSize: 24),
+                textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 24),
                 minimumSize: const Size(64, 64),
               ),
-              onPressed: () =>
-                  context.read<ConfigBloc>().add(const ConfigEvent.exit()),
+              onPressed: () => context.read<ConfigBloc>().add(const ConfigEvent.exit()),
               icon: Icon(
-                (state.phase == ConfigPhase.closeFailure
-                        ? ButtonHintAction.returnUnconfirmed
-                        : ButtonHintAction.back)
+                (state.phase == ConfigPhase.closeFailure ? ButtonHintAction.returnUnconfirmed : ButtonHintAction.back)
                     .icon,
                 size: 32,
               ),
               label: Text(
-                state.phase == ConfigPhase.closeFailure
-                    ? l10n.configPageReturnAnyway
-                    : l10n.configPageReturn,
+                state.phase == ConfigPhase.closeFailure ? l10n.configPageReturnAnyway : l10n.configPageReturn,
               ),
             ),
         ],
@@ -310,28 +254,18 @@ class _Instruction extends StatelessWidget {
       Icon(icon, color: ThemeColors.configAccentColor, size: 40),
       const SizedBox(width: 12),
       Expanded(
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: ThemeColors.configNormalTextColor,
-            fontSize: 24,
-          ),
-        ),
+        child: Text(text, style: const TextStyle(color: ThemeColors.configNormalTextColor, fontSize: 24)),
       ),
     ],
   );
 }
 
 ButtonHintAction _retryAction(ConfigState state) =>
-    state.phase == ConfigPhase.ready ||
-        state.phase == ConfigPhase.addressUnavailable
+    state.phase == ConfigPhase.ready || state.phase == ConfigPhase.addressUnavailable
     ? ButtonHintAction.checkConnection
     : ButtonHintAction.retry;
 
 bool _hasRetry(ConfigState state) => switch (state.phase) {
-  ConfigPhase.ready ||
-  ConfigPhase.addressUnavailable ||
-  ConfigPhase.failure ||
-  ConfigPhase.closeFailure => true,
+  ConfigPhase.ready || ConfigPhase.addressUnavailable || ConfigPhase.failure || ConfigPhase.closeFailure => true,
   _ => false,
 };

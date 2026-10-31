@@ -10,9 +10,7 @@ import 'package:dslideshow_flutter/features/config/presentation/bloc/config_stat
 import 'package:logging/logging.dart';
 
 class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
-  ConfigBloc({required this.repository, this.operationTimeout = const Duration(seconds: 15)})
-    : _session = repository.createSession(),
-      super(const ConfigState()) {
+  ConfigBloc({required this.repository}) : _session = repository.createSession(), super(const ConfigState()) {
     on<ConfigInitialize>((event, emit) {
       if (_disposed || _initialized || state.exit != ConfigExitStatus.active) {
         return;
@@ -22,7 +20,6 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
       _network(emit);
     });
     on<ConfigCompleted>(_completed);
-    on<ConfigTimedOut>(_timedOut);
     on<ConfigRetry>((event, emit) => _retry(emit));
     on<ConfigExit>((event, emit) => _exit(emit));
     on<ConfigNetworkUpdated>((event, emit) {
@@ -52,13 +49,9 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
 
   static final _log = Logger('ConfigBloc');
   final ConfigAccessRepository repository;
-  final Duration operationTimeout;
   final ConfigAccessSession _session;
   late final StreamSubscription<ButtonEvent> _buttons;
   late final StreamSubscription<SystemInfo> _networkUpdates;
-  final _ids = <ConfigOperation, int>{};
-  final _timers = <ConfigOperation, Timer>{};
-  int _nextId = 0;
   int _networkRevision = 0;
   int _requestRevision = 0;
   bool _initialized = false;
@@ -69,18 +62,12 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     if (!_disposed && !isClosed) add(event);
   }
 
-  int _begin(ConfigOperation operation, Emitter<ConfigState> emit) {
-    final id = ++_nextId;
-    _ids[operation] = id;
+  void _begin(ConfigOperation operation, Emitter<ConfigState> emit) {
     _log.info('Operation action=${operation.name} started');
     emit(state.copyWith(pending: {...state.pending, operation}));
-    _timers[operation]?.cancel();
-    _timers[operation] = Timer(operationTimeout, () => _add(ConfigEvent.timedOut(operation, id)));
-    return id;
   }
 
   ConfigFailureKind _failure(Object error, ConfigOperation operation) {
-    if (error is TimeoutException) return ConfigFailureKind.timeout;
     if (error is Error) return ConfigFailureKind.unknown;
     return operation == ConfigOperation.network ? ConfigFailureKind.network : ConfigFailureKind.server;
   }
@@ -88,11 +75,11 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
   void _start(Emitter<ConfigState> emit) {
     if (state.pending.contains(ConfigOperation.start)) return;
     emit(state.copyWith(access: ConfigAccessStatus.preparing, startFailure: null));
-    final id = _begin(ConfigOperation.start, emit);
+    _begin(ConfigOperation.start, emit);
     _session.start().then(
-      (code) => _add(ConfigEvent.completed(ConfigOperation.start, id, code: code)),
+      (code) => _add(ConfigEvent.completed(ConfigOperation.start, code: code)),
       onError: (Object error) =>
-          _add(ConfigEvent.completed(ConfigOperation.start, id, failure: _failure(error, ConfigOperation.start))),
+          _add(ConfigEvent.completed(ConfigOperation.start, failure: _failure(error, ConfigOperation.start))),
     );
   }
 
@@ -102,11 +89,11 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
       emit(state.copyWith(network: ConfigNetworkStatus.preparing, networkFailure: null, address: null));
     }
     _requestRevision = _networkRevision;
-    final id = _begin(ConfigOperation.network, emit);
+    _begin(ConfigOperation.network, emit);
     repository.frontend.getSystemInfo().then(
-      (info) => _add(ConfigEvent.completed(ConfigOperation.network, id, info: info)),
+      (info) => _add(ConfigEvent.completed(ConfigOperation.network, info: info)),
       onError: (Object error) =>
-          _add(ConfigEvent.completed(ConfigOperation.network, id, failure: _failure(error, ConfigOperation.network))),
+          _add(ConfigEvent.completed(ConfigOperation.network, failure: _failure(error, ConfigOperation.network))),
     );
   }
 
@@ -128,7 +115,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     }
     _log.info('Exit requested; cancelling page preparation');
     if (state.exit == ConfigExitStatus.failed) {
-      // Explicit second return acknowledges the unconfirmed server outcome.
+      // The user may leave after a failed stop instead of retrying it.
       emit(state.copyWith(exit: ConfigExitStatus.done));
     } else {
       _stop(emit);
@@ -137,17 +124,16 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
 
   void _stop(Emitter<ConfigState> emit) {
     emit(state.copyWith(exit: ConfigExitStatus.closing, address: null, code: null, stopFailure: null));
-    final id = _begin(ConfigOperation.stop, emit);
+    _begin(ConfigOperation.stop, emit);
     _session.release().then(
-      (_) => _add(ConfigEvent.completed(ConfigOperation.stop, id)),
+      (_) => _add(ConfigEvent.completed(ConfigOperation.stop)),
       onError: (Object error) =>
-          _add(ConfigEvent.completed(ConfigOperation.stop, id, failure: _failure(error, ConfigOperation.stop))),
+          _add(ConfigEvent.completed(ConfigOperation.stop, failure: _failure(error, ConfigOperation.stop))),
     );
   }
 
   void _completed(ConfigCompleted event, Emitter<ConfigState> emit) {
-    if (_disposed || _ids[event.operation] != event.id) return;
-    _timers.remove(event.operation)?.cancel();
+    if (_disposed || !state.pending.contains(event.operation)) return;
     _log.log(
       event.failure == null ? Level.INFO : Level.WARNING,
       'Operation action=${event.operation.name} ${event.failure == null ? 'completed' : 'failed reason=${event.failure!.name}'}',
@@ -166,7 +152,6 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     if (_disposed || state.exit != ConfigExitStatus.active) return;
     switch (event.operation) {
       case ConfigOperation.start:
-        if (state.startFailure == ConfigFailureKind.timeout) return;
         final failed = event.failure ?? (event.code?.trim().isNotEmpty == true ? null : ConfigFailureKind.unknown);
         emit(
           state.copyWith(
@@ -176,7 +161,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
           ),
         );
       case ConfigOperation.network:
-        if (_requestRevision != _networkRevision || state.networkFailure == ConfigFailureKind.timeout) {
+        if (_requestRevision != _networkRevision) {
           return;
         }
         if (event.failure != null) {
@@ -204,36 +189,10 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     }
   }
 
-  void _timedOut(ConfigTimedOut event, Emitter<ConfigState> emit) {
-    if (_disposed || _ids[event.operation] != event.id || !state.pending.contains(event.operation)) {
-      return;
-    }
-    if (event.operation == ConfigOperation.network && _requestRevision != _networkRevision) {
-      return;
-    }
-    if (state.exit != ConfigExitStatus.active && event.operation != ConfigOperation.stop) {
-      return;
-    }
-    _log.warning('Operation action=${event.operation.name} timeout; awaiting remote result');
-    switch (event.operation) {
-      case ConfigOperation.start:
-        emit(state.copyWith(access: ConfigAccessStatus.failed, code: null, startFailure: ConfigFailureKind.timeout));
-      case ConfigOperation.network:
-        emit(
-          state.copyWith(network: ConfigNetworkStatus.failed, address: null, networkFailure: ConfigFailureKind.timeout),
-        );
-      case ConfigOperation.stop:
-        emit(state.copyWith(exit: ConfigExitStatus.failed, stopFailure: ConfigFailureKind.timeout));
-    }
-  }
-
   @override
   Future<void> close() async {
     if (_disposed) return _closed.future;
     _disposed = true;
-    for (final timer in _timers.values) {
-      timer.cancel();
-    }
     final release = _session.release();
     _log.info('Page disposed; cancelling subscriptions and releasing access');
     unawaited(

@@ -4,11 +4,14 @@ import 'package:config_app/features/device/data/device_repository.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 import 'rpc_rates.dart';
 
 /// Own one monitor per visible device page and dispose it when leaving the page.
 class DeviceMonitor extends ChangeNotifier {
+  static const _rpcInterval = Duration(seconds: 5);
+  static final _log = Logger('DeviceMonitor');
   final DeviceRepository repository;
   final bool telemetry;
   final Duration stateInterval;
@@ -30,6 +33,7 @@ class DeviceMonitor extends ChangeNotifier {
 
   Timer? _stateTimer;
   Timer? _metricsTimer;
+  Timer? _rpcTimer;
   StreamSubscription? _disconnectSubscription;
   Future<void>? _stateFuture;
   Future<void>? _metricsFuture;
@@ -60,8 +64,7 @@ class DeviceMonitor extends ChangeNotifier {
 
   bool get busy => pendingControl != null;
 
-  bool get canControl =>
-      _canUpdate && frame != null && !stale && !_commandPending;
+  bool get canControl => _canUpdate && frame != null && !stale && !_commandPending;
 
   bool get _canUpdate => _started && _active && !_disconnected && !_disposed;
 
@@ -99,11 +102,7 @@ class DeviceMonitor extends ChangeNotifier {
     if (!telemetry) return state;
     // Explicit refresh waits for both results, while each polling lane owns its
     // own request so slow system metrics never delay state polling or actions.
-    return Future.wait([
-      state,
-      _refreshMetrics(queue: true),
-      _refreshRpc(queue: true),
-    ]).then((_) {});
+    return Future.wait([state, _refreshMetrics(queue: true), _refreshRpc(queue: true)]).then((_) {});
   }
 
   Future<void> _refreshRpc({bool queue = false}) {
@@ -200,10 +199,7 @@ class DeviceMonitor extends ChangeNotifier {
       final info = await repository.getSystemInfo();
       if (!_isCurrent(generation)) return;
       metrics = info;
-      metricsSampledAt = DateTime.fromMillisecondsSinceEpoch(
-        info.updateInfo.lastUpdate,
-        isUtc: true,
-      );
+      metricsSampledAt = DateTime.fromMillisecondsSinceEpoch(info.updateInfo.lastUpdate, isUtc: true);
       metricsStale = false;
       metricsFailure = null;
     } catch (error) {
@@ -255,11 +251,14 @@ class DeviceMonitor extends ChangeNotifier {
       error is DeviceFailure ? error : DeviceFailure(fallback);
 
   void _startTimers() {
+    _log.fine('Polling started telemetry=$telemetry rpcIntervalSeconds=${_rpcInterval.inSeconds}');
     _stateTimer = Timer.periodic(stateInterval, (_) {
       unawaited(_refreshState());
-      if (telemetry) _refreshRpc();
     });
     if (telemetry) {
+      _rpcTimer = Timer.periodic(_rpcInterval, (_) {
+        unawaited(_refreshRpc());
+      });
       _metricsTimer = Timer.periodic(metricsInterval, (_) {
         unawaited(_refreshMetrics());
       });
@@ -267,11 +266,14 @@ class DeviceMonitor extends ChangeNotifier {
   }
 
   void _invalidate() {
+    _log.fine('Polling stopped');
     ++_generation;
     _stateTimer?.cancel();
     _metricsTimer?.cancel();
+    _rpcTimer?.cancel();
     _stateTimer = null;
     _metricsTimer = null;
+    _rpcTimer = null;
     _stateQueued = false;
     _metricsQueued = false;
     _rpcQueued = false;

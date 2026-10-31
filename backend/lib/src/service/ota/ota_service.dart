@@ -449,7 +449,7 @@ class OTAService implements RpcService {
   }
 
   void _recordFailure(Object error, StackTrace stackTrace) {
-    _log.warning('OTA operation failed', error, stackTrace);
+    _log.warning('OTA operation failed type=${error.runtimeType}');
     _updateInfo(_info.copyWith(status: OTAStatus.issue, errorText: '$error', exitCode: null));
   }
 
@@ -504,13 +504,9 @@ class OTAService implements RpcService {
     if (screen.completed) {
       return screen.error == null ? Future<void>.value() : Future<void>.error(screen.error!);
     }
-    final waiter = _ScreenWaiter();
+    final waiter = Completer<void>();
     screen.waiters.add(waiter);
-    waiter.timeout = Timer(_networkTimeout, () {
-      screen.waiters.remove(waiter);
-      waiter.completion.completeError(TimeoutException('OTA frontend did not respond', _networkTimeout));
-    });
-    return waiter.completion.future;
+    return waiter.future;
   }
 
   void _completeScreen(_QueuedScreen? screen, [Object? error, StackTrace? stack]) {
@@ -518,17 +514,16 @@ class OTAService implements RpcService {
     screen.completed = true;
     screen.error = error;
     for (final waiter in screen.waiters) {
-      waiter.timeout?.cancel();
       if (error == null) {
-        waiter.completion.complete();
+        waiter.complete();
       } else {
-        waiter.completion.completeError(error, stack);
+        waiter.completeError(error, stack);
       }
     }
     screen.waiters.clear();
   }
 
-  /// A stalled RPC retains its single slot until the underlying future settles.
+  /// Applies flow control to installer output and progress notifications.
   /// Progress coalesces to the latest state; output has a fixed memory budget.
   void _drainNotifications() {
     if (_closed || _notificationInFlight) return;
@@ -556,7 +551,10 @@ class OTAService implements RpcService {
             _completeScreen(screen);
           },
           onError: (Object error, StackTrace stack) {
-            _log.warning('Unable to notify OTA frontend', error, stack);
+            _log.log(
+              _closed ? Level.FINE : Level.WARNING,
+              'OTA frontend notification ${_closed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+            );
             _completeScreen(screen, error, stack);
           },
         )
@@ -958,14 +956,9 @@ class _OTAOperation {
 
 class _QueuedScreen {
   final OTAReadyCommand command;
-  final Set<_ScreenWaiter> waiters = {};
+  final Set<Completer<void>> waiters = {};
   bool completed = false;
   Object? error;
 
   _QueuedScreen(this.command);
-}
-
-class _ScreenWaiter {
-  final Completer<void> completion = Completer<void>();
-  Timer? timeout;
 }

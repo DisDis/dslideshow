@@ -1,24 +1,18 @@
-import 'dart:async';
+import 'package:logging/logging.dart';
 
 import 'telemetry_snapshot.dart';
 
 /// One collector per isolate. Peers form a tree rooted at the backend:
 /// backend -> frontend -> OTA, and backend -> web. Reads use ordinary RPCs.
 class RpcTelemetry {
+  static final _log = Logger('RpcTelemetry');
   final RpcNode node;
   final String sessionId;
-  final Duration collectionTimeout;
   final Stopwatch _clock = Stopwatch()..start();
   final _connections = <RpcConnectionMetrics>[];
-  final _peers = <_TelemetryPeer>[];
-  Future<RpcTelemetrySnapshot>? _collection;
+  final _peers = <Future<RpcTelemetrySnapshot> Function()>[];
 
-  RpcTelemetry(this.node, {this.collectionTimeout = const Duration(seconds: 2)})
-    : sessionId = '${node.name}-${DateTime.now().microsecondsSinceEpoch}' {
-    if (collectionTimeout <= Duration.zero) {
-      throw ArgumentError.value(collectionTimeout, 'collectionTimeout');
-    }
-  }
+  RpcTelemetry(this.node) : sessionId = '${node.name}-${DateTime.now().microsecondsSinceEpoch}';
 
   RpcConnectionMetrics addConnection(RpcNode peer) {
     final metrics = RpcConnectionMetrics(peer);
@@ -27,7 +21,7 @@ class RpcTelemetry {
   }
 
   void addPeer(Future<RpcTelemetrySnapshot> Function() read) {
-    _peers.add(_TelemetryPeer(read));
+    _peers.add(read);
   }
 
   RpcNodeSnapshot localSnapshot() => RpcNodeSnapshot(
@@ -38,40 +32,17 @@ class RpcTelemetry {
     connections: _connections.map((item) => item.snapshot()).toList(),
   );
 
-  Future<RpcTelemetrySnapshot> collect() =>
-      _collection ??= _collect().whenComplete(() => _collection = null);
-
-  Future<RpcTelemetrySnapshot> _collect() async {
-    final peers = await Future.wait(
-      _peers.map((peer) => peer.collect(collectionTimeout)),
-    );
-    return RpcTelemetrySnapshot(
-      nodes: [localSnapshot(), for (final snapshot in peers) ...snapshot.nodes],
-    );
+  Future<RpcTelemetrySnapshot> collect() async {
+    final peers = await Future.wait(_peers.map(_collectPeer));
+    return RpcTelemetrySnapshot(nodes: [localSnapshot(), for (final snapshot in peers) ...snapshot.nodes]);
   }
-}
 
-class _TelemetryPeer {
-  final Future<RpcTelemetrySnapshot> Function() read;
-  Future<RpcTelemetrySnapshot>? _pending;
-  RpcTelemetrySnapshot _last = const RpcTelemetrySnapshot();
-  _TelemetryPeer(this.read);
-
-  Future<RpcTelemetrySnapshot> collect(Duration timeout) async {
-    // Retain the actual RPC until it finishes, even after a caller deadline.
-    // A full pool must not accumulate a new diagnostics request on every poll.
-    final pending = _pending ??= Future<RpcTelemetrySnapshot>.sync(read)
-        .then((snapshot) {
-          _last = snapshot;
-          return snapshot;
-        })
-        .whenComplete(() => _pending = null);
+  Future<RpcTelemetrySnapshot> _collectPeer(Future<RpcTelemetrySnapshot> Function() read) async {
     try {
-      return await pending.timeout(timeout);
-    } catch (_) {
-      return RpcTelemetrySnapshot(
-        nodes: _last.nodes.map((snapshot) => snapshot.asStale()).toList(),
-      );
+      return await read();
+    } catch (error) {
+      _log.fine('Peer telemetry unavailable type=${error.runtimeType}');
+      return const RpcTelemetrySnapshot();
     }
   }
 }
@@ -84,8 +55,7 @@ class _Durations {
     if (micros > maximum) maximum = micros;
   }
 
-  RpcDurationSnapshot snapshot() =>
-      RpcDurationSnapshot(count: count, totalMicros: total, maxMicros: maximum);
+  RpcDurationSnapshot snapshot() => RpcDurationSnapshot(count: count, totalMicros: total, maxMicros: maximum);
 }
 
 class RpcConnectionMetrics {
@@ -109,11 +79,7 @@ class RpcConnectionMetrics {
   }
 
   RpcRequestMeasurement enqueue(String? commandType) {
-    final request = RpcRequestMeasurement._(
-      this,
-      commandType,
-      _clock.elapsedMicroseconds,
-    );
+    final request = RpcRequestMeasurement._(this, commandType, _clock.elapsedMicroseconds);
     _submitted++;
     _queued.add(request);
     if (_waitingForSlot > _maxQueued) _maxQueued = _waitingForSlot;
@@ -134,8 +100,7 @@ class RpcConnectionMetrics {
     _handlerDuration.add(_clock.elapsedMicroseconds - started);
   }
 
-  RpcPendingSnapshot? _oldest(Iterable<RpcRequestMeasurement> requests) =>
-      requests.isEmpty
+  RpcPendingSnapshot? _oldest(Iterable<RpcRequestMeasurement> requests) => requests.isEmpty
       ? null
       : RpcPendingSnapshot(
           commandType: requests.first.commandType,
@@ -198,9 +163,7 @@ class RpcRequestMeasurement {
     _metrics._queued.remove(this);
     _metrics._inFlight.remove(this);
     if (_dispatched != null) {
-      _metrics._responseWait.add(
-        _metrics._clock.elapsedMicroseconds - _dispatched!,
-      );
+      _metrics._responseWait.add(_metrics._clock.elapsedMicroseconds - _dispatched!);
     }
   }
 }

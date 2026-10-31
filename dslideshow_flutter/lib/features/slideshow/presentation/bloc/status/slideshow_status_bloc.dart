@@ -118,11 +118,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   /// Applies explicit remote intent and waits until its event is handled.
   /// Screen intent waits for backend acceptance; native operations continue
   /// independently.
-  Future<void> executeActionAndWait(
-    SlideshowAction action,
-    bool value, {
-    Duration timeout = const Duration(seconds: 2),
-  }) {
+  Future<void> executeActionAndWait(SlideshowAction action, bool value) {
     if (_waits.isClosed || isClosed) {
       return Future<void>.error(StateError('Slideshow status is closed'));
     }
@@ -135,7 +131,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     final completion = Completer<void>();
     _actionCompletions[event] = completion;
     add(event);
-    return completion.future.timeout(timeout).whenComplete(() {
+    return completion.future.whenComplete(() {
       _actionCompletions.remove(event);
     });
   }
@@ -164,7 +160,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
       Future<void>.sync(() async {
         await frontendService.updateFrontendState(isPaused: isPaused, isMenu: isMenu);
       }).catchError((Object error, StackTrace stack) {
-        _log.warning('Unable to publish frontend state', error, stack);
+        _log.warning('Unable to publish frontend state type=${error.runtimeType}');
       }),
     );
   }

@@ -53,13 +53,6 @@ class RecordingFrontend implements FrontendService {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class StalledStatus extends SlideshowStatusBloc {
-  StalledStatus(FrontendService frontend) : super(frontendService: frontend, config: AppConfig.fromJson({}).slideshow);
-
-  @override
-  void add(SlideshowStatusEvent event) {}
-}
-
 class Fixture {
   final frontend = RecordingFrontend();
   final route = RouteBloc();
@@ -324,15 +317,20 @@ void main() {
     await f.close();
   });
 
-  test('an unhandled control has a bounded wait and releases on close', () async {
-    final frontend = RecordingFrontend();
-    final status = StalledStatus(frontend);
-    await expectLater(
-      status.executeActionAndWait(SlideshowAction.pause, true, timeout: const Duration(milliseconds: 1)),
-      throwsA(isA<TimeoutException>()),
-    );
-    await status.close();
-    await frontend.actions.close();
+  testWidgets('screen control waits for backend RPC without a local deadline', (tester) async {
+    final f = Fixture();
+    addTearDown(() => tester.runAsync(f.close));
+    f.frontend.lockResult = Completer<RpcResult>();
+    var accepted = false;
+    final command = f.controller.setControl(FrameControl.screen, false).then((_) => accepted = true);
+    await tester.pump(const Duration(seconds: 30));
+    expect(accepted, isFalse);
+    expect(f.frontend.locks, [true]);
+    expect(f.frontend.screenTurns, isEmpty);
+    f.frontend.lockResult!.complete(const EmptyResult(id: 1));
+    await tester.pump();
+    await command;
+    expect(f.frontend.screenTurns, [false]);
   });
 
   testWidgets('default display provider uses frame view geometry', (tester) async {

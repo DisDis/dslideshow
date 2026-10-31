@@ -34,7 +34,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   _log.info("Run. Spawned isolate started.");
   HardwareService? service;
   try {
-    final rpcTelemetry = RpcTelemetry(RpcNode.backend, collectionTimeout: const Duration(seconds: 3));
+    final rpcTelemetry = RpcTelemetry(RpcNode.backend);
     final _remoteFrontendService = RemoteServiceImpl(
       serializers: serializers,
       telemetry: rpcTelemetry,

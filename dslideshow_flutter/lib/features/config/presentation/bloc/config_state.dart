@@ -2,16 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'config_state.freezed.dart';
 
-enum ConfigPhase {
-  preparing,
-  preparingAddress,
-  ready,
-  addressUnavailable,
-  failure,
-  closing,
-  closeFailure,
-  exited,
-}
+enum ConfigPhase { preparing, preparingAddress, ready, addressUnavailable, failure, closing, closeFailure, exited }
 
 enum ConfigAccessStatus { preparing, ready, failed }
 
@@ -21,7 +12,7 @@ enum ConfigExitStatus { active, closing, failed, done }
 
 enum ConfigOperation { start, network, stop }
 
-enum ConfigFailureKind { server, network, timeout, unknown }
+enum ConfigFailureKind { server, network, unknown }
 
 @freezed
 abstract class ConfigState with _$ConfigState {
@@ -61,20 +52,15 @@ abstract class ConfigState with _$ConfigState {
 
   ConfigFailureKind? get failure => switch (phase) {
     ConfigPhase.closeFailure => stopFailure,
-    ConfigPhase.failure =>
-      access == ConfigAccessStatus.failed ? startFailure : networkFailure,
+    ConfigPhase.failure => access == ConfigAccessStatus.failed ? startFailure : networkFailure,
     _ => null,
   };
   bool get canRetry => switch (phase) {
     ConfigPhase.failure => !pending.contains(
-      access == ConfigAccessStatus.failed
-          ? ConfigOperation.start
-          : ConfigOperation.network,
+      access == ConfigAccessStatus.failed ? ConfigOperation.start : ConfigOperation.network,
     ),
     ConfigPhase.closeFailure => !pending.contains(ConfigOperation.stop),
-    ConfigPhase.ready || ConfigPhase.addressUnavailable => !pending.contains(
-      ConfigOperation.network,
-    ),
+    ConfigPhase.ready || ConfigPhase.addressUnavailable => !pending.contains(ConfigOperation.network),
     _ => false,
   };
   bool get refreshing =>

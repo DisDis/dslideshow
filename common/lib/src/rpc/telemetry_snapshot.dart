@@ -32,14 +32,6 @@ class RpcNodeSnapshot {
     this.stale = false,
     this.connections = const [],
   });
-  RpcNodeSnapshot asStale() => RpcNodeSnapshot(
-    node: node,
-    sessionId: sessionId,
-    sampledAt: sampledAt,
-    elapsedMicros: elapsedMicros,
-    stale: true,
-    connections: connections,
-  );
   factory RpcNodeSnapshot.fromJson(Map<String, dynamic> json) =>
       _$RpcNodeSnapshotFromJson(json);
   Map<String, dynamic> toJson() => _$RpcNodeSnapshotToJson(this);

@@ -9,16 +9,12 @@ sealed class ConfigEvent with _$ConfigEvent {
   const factory ConfigEvent.initialize() = ConfigInitialize;
   const factory ConfigEvent.retry() = ConfigRetry;
   const factory ConfigEvent.exit() = ConfigExit;
-  const factory ConfigEvent.networkUpdated(SystemInfo info) =
-      ConfigNetworkUpdated;
+  const factory ConfigEvent.networkUpdated(SystemInfo info) = ConfigNetworkUpdated;
   const factory ConfigEvent.button(ButtonEvent button) = ConfigButton;
   const factory ConfigEvent.completed(
-    ConfigOperation operation,
-    int id, {
+    ConfigOperation operation, {
     String? code,
     SystemInfo? info,
     ConfigFailureKind? failure,
   }) = ConfigCompleted;
-  const factory ConfigEvent.timedOut(ConfigOperation operation, int id) =
-      ConfigTimedOut;
 }
