@@ -25,6 +25,7 @@
 | Файловый индекс, случайный проход, SystemInfo и cleanup | [Backend](backend-performance.md) |
 | Общие ошибки Linux/GTK/GSettings | [Сборка и запуск Linux](linux-build-troubleshooting.md) |
 | Локальное покрытие, команды и границы VM-проверок | [Тестирование](testing.md) |
+| Исходные ошибки, стек-трейсы, уровни и консольный вывод | [Логирование](logging.md) |
 | Аппаратные запуски, supervisor и восстановление службы | [RaPi5](raspberry-pi-benchmarks.md) |
 | Версии, changelog, подготовка и проверка DEB | [Выпуск](releasing.md) |
 | Grinder, Dart CLI, процессные логи и локальные инструменты | [Tools](../tools/README.md) |

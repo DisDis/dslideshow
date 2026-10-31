@@ -127,6 +127,7 @@ void main() {
     expect(transport.closes, 1);
     final cleanupLog = records.singleWhere((record) => record.message.contains('event=sourceCleanupFailed'));
     expect(cleanupLog.level, Level.WARNING);
+    expect(cleanupLog.stackTrace, isNotNull);
     expect(cleanupLog.message, isNot(contains('operationId=')));
     expect(
       records.map((record) => '${record.message} ${record.error}').join(),
@@ -134,7 +135,7 @@ void main() {
     );
   });
 
-  test('init validates real response schema and never logs transport URL or body', () async {
+  test('init validates real response schema and logs original transport errors', () async {
     final records = <LogRecord>[];
     final level = Logger.root.level;
     Logger.root.level = Level.ALL;

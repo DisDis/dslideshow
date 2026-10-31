@@ -41,7 +41,7 @@ void main() {
     ('timeout', (pending) => pending.completeError(TimeoutException('private-password'))),
   ]) {
     test(
-      '$name failure keeps the source RPC id and safe diagnostics',
+      '$name failure keeps the source RPC id and original failure diagnostics',
       () => captureLogs((records) async {
         final runner = ControlledWiFiProcessRunner();
         final wifi = WiFiService(WiFiConfig.fromJson({}), commandRunner: runner);
@@ -62,11 +62,12 @@ void main() {
           (record) => record.loggerName == 'HardwareService' && record.message.startsWith('event=wifiFailed '),
         );
         expect(failures.single.message, contains('rpcId=7010'));
+        expect(failures.single.error, isNotNull);
+        expect(failures.single.stackTrace, isNotNull);
         for (final record in records.where(
           (record) => record.loggerName == 'WiFiService' || record.loggerName == 'HardwareService',
         )) {
-          expect('${record.message} ${record.error ?? ''}', isNot(contains('private-password')));
-          expect(record.error, isNull);
+          if (record.error != null) expect(record.stackTrace, isNotNull);
         }
       }),
     );

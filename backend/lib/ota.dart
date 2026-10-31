@@ -35,7 +35,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     _service = injector.get<OTAService>();
     await _remoteFrontendService.service.processing(_service, serializers);
   } catch (e, s) {
-    _log.severe('Fatal error: $e, $s', e, s);
+    _log.severe('OTA startup failed', e, s);
     _log.info("Spawned isolate finished with error.", e, s);
     // exit(1);
     Isolate.exit();

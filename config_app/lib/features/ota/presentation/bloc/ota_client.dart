@@ -44,8 +44,8 @@ class OTAClient {
       if (payload case {'version': {'frontend': final String version}}) {
         if (version.isNotEmpty) return version;
       }
-    } catch (_) {
-      // A malformed JSON exception can contain the server's entire payload.
+    } catch (error, stack) {
+      _log.warning('OTA response decoding failed', error, stack);
     }
     throw const OtaClientException(OtaFailure.invalidResponse);
   }

@@ -137,8 +137,8 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       _remoteFrontendService.service.processing(service, serializers),
     ]);
   } catch (e, s) {
-    _log.severe('Fatal error: $e, $s', e, s);
-    _log.info("Spawned isolate finished with error.", e, s);
+    _log.severe('Hardware startup failed', e, s);
+    _log.info("Spawned isolate finished with error.");
   } finally {
     await service?.dispose();
   }

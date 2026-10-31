@@ -54,8 +54,9 @@ void main() {
       expect(launch.message, contains('tool=external'));
       expect(launch.message, isNot(contains(root.path)));
       expect(launch.message, isNot(contains('absent')));
-      expect(launch.error, isNull);
-      expect(launch.stackTrace, isNull);
+      expect(launch.error, isA<ProcessException>());
+      expect(launch.error.toString(), contains(root.path));
+      expect(launch.stackTrace, isNotNull);
     });
     expect((await runner.run(_dart, ['--disable-dart-dev', _processFixture, 'ok'])).stdout, 'ok\n');
   });

@@ -320,6 +320,25 @@ void main() {
     expect(await File(path.join(originals.path, 'yandex.drive.123/Camera/a.jpg')).readAsBytes(), [1, 2, 3]);
   });
 
+  test('initialization failure logs the original filesystem error and preserves its stack', () async {
+    await originals.delete(recursive: true);
+    await File(originals.path).writeAsString('conflicting file');
+    final records = <LogRecord>[];
+    final logs = Logger.root.onRecord.where((record) => record.loggerName == 'YandexDriveStorage').listen(records.add);
+    addTearDown(logs.cancel);
+    try {
+      await create();
+      fail('A regular file cannot be used as the images directory');
+    } on FileSystemException catch (error, stack) {
+      final diagnostic = records.singleWhere((record) => record.message.startsWith('Storage initialization failed'));
+      expect(diagnostic.error, same(error));
+      expect(diagnostic.error.toString(), contains(originals.path));
+      expect(diagnostic.stackTrace.toString(), stack.toString());
+      expect(diagnostic.stackTrace.toString(), contains('yandex_drive_storage.dart'));
+      expect(storage!.status, StorageStatusEnum.off);
+    }
+  });
+
   test('hidden path suppresses download and moving it to trash permits import again', () async {
     final current = await create(
       accounts: [

@@ -78,7 +78,7 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
       }
     } catch (error, stack) {
       if (error is _WifiWaitCancelled || !_isCurrent(generation, emit)) {
-        _log.info('event=cancelled action=${action.name}', error, stack);
+        _log.info('event=cancelled action=${action.name}');
         return;
       }
       final kind = _acknowledgedGeneration == generation

@@ -106,7 +106,7 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
       }
     } catch (error, stack) {
       if (_closing || emit.isDone) {
-        _log.info('selection cancelled kind=${event.kind.name}', error, stack);
+        _log.info('selection cancelled kind=${event.kind.name}');
         return;
       }
       _log.warning('selection failed kind=${event.kind.name} type=${error.runtimeType}', error, stack);

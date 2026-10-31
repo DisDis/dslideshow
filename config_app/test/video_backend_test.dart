@@ -54,8 +54,8 @@ void main() {
       records.single.message,
       'Linux video backend unavailable: StateError',
     );
-    expect(records.single.error, isNull);
-    expect(records.single.stackTrace, isNull);
+    expect(records.single.error.toString(), contains('/private/path'));
+    expect(records.single.stackTrace.toString(), contains('video_backend_test.dart'));
   });
 
   test('registration preserves existing web and other platform backends', () {

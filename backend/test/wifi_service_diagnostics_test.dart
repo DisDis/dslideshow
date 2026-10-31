@@ -25,13 +25,12 @@ Future<LogRecord> _finished(String action) => Logger.root.onRecord
     // stack before the next command logs another event.
     .then((record) => Future<LogRecord>.microtask(() => record));
 
-void _expectSafe(List<LogRecord> records) {
+void _expectDiagnostics(List<LogRecord> records) {
   final service = records.where((record) => record.loggerName == 'WiFiService');
   for (final record in service) {
-    expect(record.error, isNull);
-    expect(record.stackTrace, isNull);
+    if (record.error != null) expect(record.stackTrace, isNotNull);
     for (final secret in [_password, _privateOutput, 'private-ssid', 'private-name']) {
-      expect(record.toString(), isNot(contains(secret)));
+      expect(record.message, isNot(contains(secret)));
     }
   }
 }
@@ -48,7 +47,7 @@ void _expectActionLogs(List<LogRecord> records, String action) {
 void main() {
   for (final launchFails in [true, false]) {
     test(
-      'add diagnostics sanitize ${launchFails ? 'launch exception' : 'nonzero exit'} and report failure',
+      'add diagnostics preserve the original failure for ${launchFails ? 'launch exception' : 'nonzero exit'} and report failure',
       () => captureLogs((records) async {
         final runner = ControlledWiFiProcessRunner();
         final service = WiFiService(WiFiConfig.fromJson({}), commandRunner: runner);
@@ -72,7 +71,10 @@ void main() {
         expect(failure.level, Level.WARNING);
         expect(failure.message, contains(launchFails ? 'reason=launch' : 'reason=exitCode'));
         expect(failure.message, contains(launchFails ? 'code=2' : 'code=10'));
-        _expectSafe(records);
+        expect(failure.error, isNotNull);
+        expect(failure.stackTrace, isNotNull);
+        if (launchFails) expect(failure.error.toString(), contains(_privateOutput));
+        _expectDiagnostics(records);
         _expectActionLogs(records, 'add');
       }),
     );
@@ -94,7 +96,7 @@ void main() {
         expect((await completed).level, Level.INFO);
         await operation;
       }
-      _expectSafe(records);
+      _expectDiagnostics(records);
       final serviceRecords = records.where((record) => record.loggerName == 'WiFiService');
       expect(serviceRecords.where((record) => record.message.startsWith('event=completed ')), hasLength(3));
     }),
@@ -120,7 +122,7 @@ void main() {
       );
       runner.pending.single.completeError(ProcessException('nmcli', [_password], _privateOutput, 2));
       await expectation;
-      _expectSafe(records);
+      _expectDiagnostics(records);
       _expectActionLogs(records, 'connections');
     }),
   );
@@ -149,7 +151,7 @@ void main() {
         ),
       );
       expect(await connections, [const WiFiConnectionInfo(name: 'Home', UUID: 'abcd', type: 'wifi', device: 'wlan0')]);
-      _expectSafe(records);
+      _expectDiagnostics(records);
     }),
   );
 }

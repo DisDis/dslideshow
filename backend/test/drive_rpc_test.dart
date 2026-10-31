@@ -153,7 +153,7 @@ void main() {
     }
   });
 
-  test('service execution failure keeps payload out of severe records', () async {
+  test('service execution failure preserves the original error and stack in severe records', () async {
     final logs = <LogRecord>[];
     final subscription = Logger.root.onRecord.listen(logs.add);
     final commands = ReceivePort();
@@ -180,7 +180,10 @@ void main() {
     commands.sendPort.send(null);
     await processing;
     expect(logs.any((entry) => entry.level == Level.SEVERE && entry.message.contains('type=StateError')), isTrue);
-    expect(logs.map((entry) => '${entry.message} ${entry.error ?? ''}').join(' '), isNot(contains('private-secret')));
+    final diagnostic = logs.singleWhere((entry) => entry.level == Level.SEVERE);
+    expect(diagnostic.error, isA<StateError>());
+    expect(diagnostic.error.toString(), contains('private-secret-in-transport-error'));
+    expect(diagnostic.stackTrace.toString(), contains('_Target.executeCommand'));
     results.close();
     unused.close();
     await subscription.cancel();

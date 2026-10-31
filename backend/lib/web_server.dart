@@ -39,7 +39,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     await _remoteBackendService.service.processing(_webServer, serializers);
   } catch (error, stack) {
     _log.severe('Web startup failed type=${error.runtimeType}', error, stack);
-    _log.info("Spawned isolate finished with error.", error, stack);
+    _log.info("Spawned isolate finished with error.");
   } finally {
     await webService?.close();
   }

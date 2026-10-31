@@ -86,6 +86,8 @@ void main() {
     expect(await process.exitCode.timeout(const Duration(seconds: 15)), isNonZero);
     final diagnostics = await errors;
     expect(diagnostics, contains('action=finish result=failed'));
+    expect(diagnostics, contains('Command analyze:common failed:'));
+    expect(diagnostics, contains('#0'));
     expect(diagnostics, contains('jobs=1 flutterTestConcurrency=4'));
     expect(diagnostics, contains('testReportDirectory=${p.join(root.path, 'profiles with spaces')}'));
     expect(diagnostics, contains('elapsedMs='));

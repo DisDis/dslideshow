@@ -147,13 +147,13 @@ void main() async {
         _log.info("FlutterpiVideoPlayer initing");
         FlutterpiVideoPlayer.registerWith();
       } catch (e, s) {
-        _log.severe('FlutterpiVideoPlayer: $e, $s', e, s);
+        _log.severe('FlutterpiVideoPlayer initialization failed', e, s);
       }
     }
 
     _runFlutter(frontendService);
   } catch (e, s) {
-    _log.severe('Fatal error: $e, $s', e, s);
+    _log.severe('Frontend startup failed', e, s);
     exit(1);
   }
 }
