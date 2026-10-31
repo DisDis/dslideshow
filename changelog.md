@@ -1,5 +1,13 @@
 # Unreleased
 
+# 18.0.0+1 — 2026-10-31
+
+* Preserve original exception messages and full stack traces in application
+  console and service logs, including cloud synchronization, gallery operations,
+  uploads, OTA and network failures. Log Yandex Disk HTTP failures with their
+  request context and response details. Diagnostic logs may contain paths,
+  URLs and credentials without masking.
+
 * Add Yandex Disk storage with multiple accounts, shared folder selection,
   browser/QR account connection, hourly synchronization by default and controls
   in the existing storage settings. Keep credentials outside exported settings.
