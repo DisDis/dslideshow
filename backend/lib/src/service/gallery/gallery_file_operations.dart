@@ -31,43 +31,59 @@ class _GalleryFileFailure extends GalleryCatalogFailure {
   final _GalleryPathRejection reason;
 }
 
+class _GalleryMirrorIndex {
+  final Directory directory;
+  final GalleryMediaSection section;
+  bool get hidden => section == GalleryMediaSection.hidden;
+  Map<String, GalleryEntry>? entriesById;
+  Map<String, GalleryEntry> entriesByPath = {};
+  int catalogBytes = 0;
+
+  _GalleryMirrorIndex(this.directory, this.section);
+}
+
 /// Serializes mutations and indexes a plain mirrored trash directory in memory.
 /// No request receipts, manifest, or per-file sidecars are stored in the trash.
 class GalleryFileOperations {
   static final _log = Logger('GalleryFileOperations');
   final GalleryCatalogService catalog;
   final Directory trashDirectory;
+  final Directory hiddenDirectory;
   final int maxPendingOperations;
   final int maxItemsPerOperation;
   final int maxCatalogEntries;
   final int maxCatalogBytes;
-  final Future<void> Function(GalleryOperationRequest)? beforeMutation;
   Future<void> _tail = Future.value();
   Future<void>? _closing;
-  Map<String, GalleryTrashEntry>? _entriesById;
-  Map<String, GalleryTrashEntry> _entriesByPath = {};
+  late final _trashIndex = _GalleryMirrorIndex(trashDirectory, GalleryMediaSection.trash);
+  late final _hiddenIndex = _GalleryMirrorIndex(hiddenDirectory, GalleryMediaSection.hidden);
   String? _canonicalOriginalRoot;
   int _pending = 0;
-  int _catalogBytes = 0;
   bool _closed = false;
 
   GalleryFileOperations({
     required this.catalog,
     Directory? trashDirectory,
+    Directory? hiddenDirectory,
     this.maxPendingOperations = 32,
     this.maxItemsPerOperation = 1000,
     this.maxCatalogEntries = 100000,
     this.maxCatalogBytes = 64 * 1024 * 1024,
-    this.beforeMutation,
-  }) : trashDirectory = trashDirectory ?? Directory(path.join(catalog.stateDirectory.absolute.path, 'trash')) {
+  }) : trashDirectory = trashDirectory ?? Directory(path.join(catalog.stateDirectory.absolute.path, 'trash')),
+       hiddenDirectory = hiddenDirectory ?? Directory(path.join(catalog.stateDirectory.absolute.path, 'hidden')) {
     if (maxPendingOperations < 1 || maxItemsPerOperation < 1 || maxCatalogEntries < 1 || maxCatalogBytes < 1) {
       throw ArgumentError('Invalid gallery operation limits');
     }
     final originals = path.normalize(catalog.originals.absolute.path);
     final trash = path.normalize(this.trashDirectory.absolute.path);
     final state = path.normalize(catalog.stateDirectory.absolute.path);
-    if (_overlaps(originals, trash) || _conflictsWithState(state, trash)) {
-      throw ArgumentError('Trash must be outside originals and other gallery state');
+    final hidden = path.normalize(this.hiddenDirectory.absolute.path);
+    if (_overlaps(originals, trash) ||
+        _overlaps(originals, hidden) ||
+        _overlaps(trash, hidden) ||
+        _conflictsWithState(state, trash) ||
+        _conflictsWithState(state, hidden, hidden: true)) {
+      throw ArgumentError('Managed directories must be outside originals and other gallery state');
     }
   }
 
@@ -86,26 +102,85 @@ class GalleryFileOperations {
 
   /// An explicit catalogue read discovers external additions/removals. A preview
   /// resolves its cached ID directly and checks only the referenced file.
-  Future<GalleryTrashCatalog> trashCatalog() => withMediaLock(() async {
-    if (_entriesById == null) {
-      await _initialize();
-    } else {
-      await _scanTrash();
+  Future<GalleryCatalog> mediaCatalog(GalleryMediaSection section) {
+    if (section == GalleryMediaSection.published) return catalog.catalog();
+    return withMediaLock(() async {
+      final index = _index(section);
+      if (index.entriesById == null) {
+        await _initialize(index);
+      } else {
+        await _scanMirror(index);
+      }
+      final entries = index.entriesById!.values.toList()
+        ..sort(
+          section == GalleryMediaSection.trash
+              ? (a, b) => b.fileChanged!.compareTo(a.fileChanged!)
+              : (a, b) => a.path.compareTo(b.path),
+        );
+      return GalleryCatalog(
+        section: section,
+        catalogRevision: sha256
+            .convert(utf8.encode(jsonEncode([for (final entry in entries) entry.ref.toJson()])))
+            .toString(),
+        capabilities: catalog.capabilities,
+        thumbnailPolicy: catalog.thumbnailPolicy,
+        entries: entries,
+      );
+    });
+  }
+
+  Future<GalleryCatalog> refreshMediaCatalog(GalleryMediaSection section, GalleryRefreshRequest request) {
+    if (section == GalleryMediaSection.published) return catalog.refresh(request);
+    if (request.mode != GalleryRefreshMode.scan) {
+      return Future.error(const GalleryCatalogFailure(GalleryErrorCode.unsupported));
     }
-    final entries = _entriesById!.values.toList()..sort((a, b) => b.trashedAt.compareTo(a.trashedAt));
-    return GalleryTrashCatalog(entries: entries);
+    return mediaCatalog(section);
+  }
+
+  /// Resolves one indexed reference and verifies its current file and revision.
+  Future<GallerySource> resolveMedia(GalleryMediaRef ref) => withMediaLock(() async {
+    if (ref.mediaId.isEmpty || ref.sourceRevision.isEmpty) {
+      throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
+    }
+    if (ref.section == GalleryMediaSection.published) {
+      final source = await catalog.resolve(ref.mediaId, revision: ref.sourceRevision);
+      if (source.entry.kind == GalleryEntryKind.directory) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
+      }
+      final File file;
+      try {
+        file = await _originalFile(source.entry.path);
+      } on _GalleryFileFailure catch (error) {
+        if (error.reason == _GalleryPathRejection.symlinkSegment) {
+          throw const GalleryCatalogFailure(GalleryErrorCode.forbidden);
+        }
+        rethrow;
+      }
+      return GallerySource(source.entry, file.path, source.fingerprint);
+    }
+    final index = _index(ref.section);
+    await _initialize(index);
+    final entry = await _currentEntry(ref.mediaId, ref.sourceRevision, index);
+    final file = await _mirrorFile(index, entry.path);
+    return GallerySource(entry, file.path, entry.sourceRevision);
   });
 
-  Future<File> resolveTrash(String trashId, {required String revision}) => withMediaLock(() async {
-    await _initialize();
-    final entry = await _currentEntry(trashId, revision);
-    return _trashFile(entry.originalPath);
-  });
+  Future<File> mediaFile(GalleryMediaRef ref) async => (await resolveMedia(ref)).file;
 
-  Future<GalleryTrashEntry> resolveTrashEntry(String trashId, {required String revision}) => withMediaLock(() async {
-    await _initialize();
-    return _currentEntry(trashId, revision);
-  });
+  Future<bool> isCurrent(GallerySource source) async {
+    try {
+      await resolveMedia(source.entry.ref);
+      return true;
+    } on GalleryCatalogFailure {
+      return false;
+    }
+  }
+
+  _GalleryMirrorIndex _index(GalleryMediaSection section) => switch (section) {
+    GalleryMediaSection.hidden => _hiddenIndex,
+    GalleryMediaSection.trash => _trashIndex,
+    GalleryMediaSection.published => throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest),
+  };
 
   Future<GalleryOperationResult> mutate(GalleryOperationRequest request) async {
     final closedAtStart = _closed;
@@ -120,19 +195,26 @@ class GalleryFileOperations {
         _validateRequest(request);
         await _initialize();
         if (await catalog.originals.exists()) await _originalRootPath();
-        // Operation IDs identify this command only. There is no persisted replay
-        // result: every new call must pass the current duplicate/version guard.
-        await beforeMutation?.call(request);
+        // Every command checks the current filesystem revisions independently of duplicate searches.
         final results = <GalleryOperationItemResult>[];
         for (var index = 0; index < request.items.length; index++) {
           final item = request.items[index];
           var rejection = _GalleryPathRejection.none;
           GalleryOperationItemResult itemResult;
           try {
+            final allowed = switch (request.action) {
+              GalleryMutation.trash => item.section != GalleryMediaSection.trash,
+              GalleryMutation.hide => item.section == GalleryMediaSection.published,
+              GalleryMutation.unhide => item.section == GalleryMediaSection.hidden,
+              GalleryMutation.restore || GalleryMutation.purge => item.section == GalleryMediaSection.trash,
+            };
+            if (!allowed) throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
             itemResult = switch (request.action) {
               GalleryMutation.trash => await _trash(item),
               GalleryMutation.restore => await _restore(item),
               GalleryMutation.purge => await _purge(item),
+              GalleryMutation.hide => await _moveToMirror(item, _hiddenIndex, GalleryMutation.hide),
+              GalleryMutation.unhide => await _restore(item, _hiddenIndex),
             };
           } on Object catch (error) {
             rejection = _rejection(error);
@@ -141,6 +223,7 @@ class GalleryFileOperations {
             }
             itemResult = GalleryOperationItemResult(
               mediaId: item.mediaId,
+              section: item.section,
               state: GalleryItemOperationState.failed,
               error: _errorCode(error),
             );
@@ -177,7 +260,7 @@ class GalleryFileOperations {
         'Gallery mutation completed action=${request.action.name} '
         'requested=${request.items.length} succeeded=${result.items.length - failed} '
         'failed=$failed codes=${codes.entries.map((e) => '${e.key.name}:${e.value}').join(',')} '
-        'reasons=${reasons.entries.map((e) => '${e.key.name}:${e.value}').join(',')} ',
+        'reasons=${reasons.entries.map((e) => '${e.key.name}:${e.value}').join(',')}',
       );
       return result;
     } on Object catch (error) {
@@ -199,47 +282,49 @@ class GalleryFileOperations {
         request.operationId.length > 100 ||
         request.items.isEmpty ||
         request.items.length > maxItemsPerOperation ||
-        request.items.map((item) => item.mediaId).toSet().length != request.items.length ||
+        request.items.map((item) => (item.section, item.mediaId)).toSet().length != request.items.length ||
         request.items.any((item) => item.mediaId.isEmpty || item.sourceRevision.isEmpty)) {
       throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.invalidCommand);
     }
   }
 
-  Future<void> _initialize() async {
-    if (_entriesById != null) return;
-    await _assertNoLinks(trashDirectory.absolute.path, allowMissing: true);
-    await trashDirectory.create(recursive: true);
-    await _assertNoLinks(trashDirectory.absolute.path);
+  Future<void> _initialize([_GalleryMirrorIndex? selected]) async {
+    final index = selected ?? _trashIndex;
+    if (index.entriesById != null) return;
+    await _assertNoLinks(index.directory.absolute.path, allowMissing: true);
+    await index.directory.create(recursive: true);
+    await _assertNoLinks(index.directory.absolute.path);
     if (await catalog.stateDirectory.exists() &&
         _conflictsWithState(
           path.normalize(await catalog.stateDirectory.resolveSymbolicLinks()),
-          path.normalize(await trashDirectory.resolveSymbolicLinks()),
+          path.normalize(await index.directory.resolveSymbolicLinks()),
+          hidden: index.hidden,
         )) {
       throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.rootOverlap);
     }
     if (await catalog.originals.exists()) await _originalRootPath();
-    await _scanTrash();
+    await _scanMirror(index);
   }
 
-  Future<void> _scanTrash() async {
-    await _assertNoLinks(trashDirectory.absolute.path);
-    final byId = <String, GalleryTrashEntry>{};
-    final byPath = <String, GalleryTrashEntry>{};
-    var bytes = _emptyCatalogBytes();
+  Future<void> _scanMirror(_GalleryMirrorIndex index) async {
+    await _assertNoLinks(index.directory.absolute.path);
+    final byId = <String, GalleryEntry>{};
+    final byPath = <String, GalleryEntry>{};
+    var bytes = _emptyCatalogBytes(index);
     if (bytes > maxCatalogBytes) {
       throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
     }
-    await for (final entity in trashDirectory.list(recursive: true, followLinks: false)) {
+    await for (final entity in index.directory.list(recursive: true, followLinks: false)) {
       if (entity is! File || !FileSettings.isSupportFile(path.extension(entity.path))) continue;
-      final relative = path.relative(entity.absolute.path, from: trashDirectory.absolute.path);
+      final relative = path.relative(entity.absolute.path, from: index.directory.absolute.path);
       try {
-        final file = await _trashFile(relative);
-        final entry = _entry(relative, await file.stat());
+        final file = await _mirrorFile(index, relative);
+        final entry = _entry(relative, await file.stat(), hidden: index.hidden);
         bytes += _entryBytes(entry) + (byId.isEmpty ? 0 : 1);
         if (byId.length >= maxCatalogEntries || bytes > maxCatalogBytes) {
           throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
         }
-        byId[entry.trashId] = entry;
+        byId[entry.mediaId] = entry;
         byPath[relative] = entry;
       } on FileSystemException catch (error) {
         if (error.osError?.errorCode != 2) rethrow;
@@ -247,86 +332,115 @@ class GalleryFileOperations {
         if (error.code != GalleryErrorCode.notFound) rethrow;
       }
     }
-    _entriesById = byId;
-    _entriesByPath = byPath;
-    _catalogBytes = bytes;
-    _log.fine('Gallery trash catalog scanned entries=${byId.length} ');
+    index.entriesById = byId;
+    index.entriesByPath = byPath;
+    index.catalogBytes = bytes;
+    _log.fine('Gallery ${index.hidden ? 'hidden' : 'trash'} catalog scanned entries=${byId.length} ');
   }
 
-  Future<GalleryTrashEntry> _currentEntry(String id, String revision) async {
-    final entry = _entriesById![id];
+  Future<GalleryEntry> _currentEntry(String id, String revision, [_GalleryMirrorIndex? selected]) async {
+    final index = selected ?? _trashIndex;
+    final entry = index.entriesById![id];
     if (entry == null) throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
     if (entry.sourceRevision != revision) {
       throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     }
-    final file = await _trashFile(entry.originalPath);
+    final file = await _mirrorFile(index, entry.path);
     if (_revision(await file.stat()) != revision) {
       throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     }
     return entry;
   }
 
-  Future<GalleryOperationItemResult> _trash(GalleryMediaRef item) async {
-    final source = await catalog.resolve(item.mediaId, revision: item.sourceRevision);
-    if (source.entry.kind == GalleryEntryKind.directory ||
-        !FileSettings.isSupportFile(path.extension(source.entry.path))) {
-      throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
+  Future<GalleryOperationItemResult> _trash(GalleryMediaRef item) =>
+      _moveToMirror(item, _trashIndex, GalleryMutation.trash);
+
+  Future<GalleryOperationItemResult> _moveToMirror(
+    GalleryMediaRef item,
+    _GalleryMirrorIndex target,
+    GalleryMutation action,
+  ) async {
+    await _initialize(target);
+    final fromHidden = item.section == GalleryMediaSection.hidden;
+    GallerySource? source;
+    GalleryEntry? hiddenEntry;
+    if (fromHidden) {
+      await _initialize(_hiddenIndex);
+      hiddenEntry = await _currentEntry(item.mediaId, item.sourceRevision, _hiddenIndex);
+    } else {
+      source = await catalog.resolve(item.mediaId, revision: item.sourceRevision);
+      if (source.entry.kind == GalleryEntryKind.directory ||
+          !FileSettings.isSupportFile(path.extension(source.entry.path))) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
+      }
     }
-    final original = await _originalFile(source.entry.path);
+    final relative = hiddenEntry?.path ?? source!.entry.path;
+    final original = fromHidden ? await _hiddenFile(relative) : await _originalFile(relative);
     final before = await original.stat();
-    final destination = await _trashFile(source.entry.path, allowMissing: true);
+    final destination = await _mirrorFile(target, relative, allowMissing: true);
     if (await FileSystemEntity.type(destination.path, followLinks: false) != FileSystemEntityType.notFound) {
       throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
     }
-    _admit(_entry(source.entry.path, before));
-    await _ensureParent(destination, trashDirectory.absolute.path);
-    if (!await catalog.isCurrent(source)) {
+    _admit(_entry(relative, before, hidden: target.hidden), target);
+    await _ensureParent(destination, target.directory.absolute.path);
+    if (fromHidden) {
+      await _currentEntry(item.mediaId, item.sourceRevision, _hiddenIndex);
+    } else if (!await catalog.isCurrent(source!)) {
       throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     }
-    await _originalFile(source.entry.path);
-    await _trashFile(source.entry.path, allowMissing: true);
+    if (fromHidden) {
+      await _hiddenFile(relative);
+    } else {
+      await _originalFile(relative);
+    }
+    await _mirrorFile(target, relative, allowMissing: true);
     _assertStat(original, before);
     if (await FileSystemEntity.type(destination.path, followLinks: false) != FileSystemEntityType.notFound) {
       throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
     }
     await original.rename(destination.path);
     catalog.markDirty();
-    GalleryTrashEntry? entry;
+    if (hiddenEntry != null) _removeEntry(hiddenEntry, _hiddenIndex);
+    GalleryEntry? entry;
     try {
-      entry = _entry(source.entry.path, await destination.stat());
-      _putEntry(entry);
+      entry = _entry(relative, await destination.stat(), hidden: target.hidden);
+      _putEntry(entry, target);
     } on Object catch (error) {
       // The atomic move committed. If its new stat cannot be observed, an
       // explicit trash refresh will discover the entry; do not claim failure
       // or manufacture a revision/Undo ID from its old filesystem metadata.
-      _auxiliaryFailure(_GalleryAuxiliaryPhase.trashIndexUpdateFailed, GalleryMutation.trash, error);
+      _auxiliaryFailure(_GalleryAuxiliaryPhase.trashIndexUpdateFailed, action, error);
     }
     return GalleryOperationItemResult(
       mediaId: item.mediaId,
       state: GalleryItemOperationState.succeeded,
-      trashId: entry?.trashId,
+      section: item.section,
+      destination: entry?.ref,
     );
   }
 
-  Future<GalleryOperationItemResult> _restore(GalleryMediaRef item) async {
-    final entry = await _currentEntry(item.mediaId, item.sourceRevision);
-    final source = await _trashFile(entry.originalPath);
-    var relative = entry.originalPath;
+  Future<GalleryOperationItemResult> _restore(GalleryMediaRef item, [_GalleryMirrorIndex? selected]) async {
+    final index = selected ?? _trashIndex;
+    await _initialize(index);
+    final entry = await _currentEntry(item.mediaId, item.sourceRevision, index);
+    final source = await _mirrorFile(index, entry.path);
+    var relative = entry.path;
     for (var attempt = 0; attempt <= 1000; attempt++) {
-      if (attempt > 0) relative = _restoredName(entry.originalPath, attempt);
+      if (attempt > 0) relative = _restoredName(entry.path, attempt);
       final target = await _originalFile(relative, allowMissing: true, allowDirectory: true);
       if (await FileSystemEntity.type(target.path, followLinks: false) != FileSystemEntityType.notFound) continue;
       await _ensureParent(target, await _originalRootPath());
-      await _currentEntry(item.mediaId, item.sourceRevision);
+      await _currentEntry(item.mediaId, item.sourceRevision, index);
       await _originalFile(relative, allowMissing: true, allowDirectory: true);
       if (await FileSystemEntity.type(target.path, followLinks: false) != FileSystemEntityType.notFound) {
         continue;
       }
       await source.rename(target.path);
       catalog.markDirty();
-      _removeEntry(entry);
+      _removeEntry(entry, index);
       return GalleryOperationItemResult(
         mediaId: item.mediaId,
+        section: item.section,
         state: GalleryItemOperationState.succeeded,
         restoredPath: relative,
       );
@@ -336,11 +450,15 @@ class GalleryFileOperations {
 
   Future<GalleryOperationItemResult> _purge(GalleryMediaRef item) async {
     final entry = await _currentEntry(item.mediaId, item.sourceRevision);
-    final file = await _trashFile(entry.originalPath);
+    final file = await _trashFile(entry.path);
     await _currentEntry(item.mediaId, item.sourceRevision);
     await file.delete();
     _removeEntry(entry);
-    return GalleryOperationItemResult(mediaId: item.mediaId, state: GalleryItemOperationState.succeeded);
+    return GalleryOperationItemResult(
+      mediaId: item.mediaId,
+      section: item.section,
+      state: GalleryItemOperationState.succeeded,
+    );
   }
 
   static void _auxiliaryFailure(_GalleryAuxiliaryPhase phase, GalleryMutation action, Object error) {
@@ -351,61 +469,89 @@ class GalleryFileOperations {
     );
   }
 
-  void _admit(GalleryTrashEntry entry) {
-    final old = _entriesByPath[entry.originalPath];
-    final count = _entriesById!.length + (old == null ? 1 : 0);
-    final bytes = _catalogBytes + _entryBytes(entry) - (old == null ? 0 : _entryBytes(old)) + 128;
+  void _admit(GalleryEntry entry, [_GalleryMirrorIndex? selected]) {
+    final index = selected ?? _trashIndex;
+    final old = index.entriesByPath[entry.path];
+    final count = index.entriesById!.length + (old == null ? 1 : 0);
+    final bytes = index.catalogBytes + _entryBytes(entry) - (old == null ? 0 : _entryBytes(old)) + 128;
     if (count > maxCatalogEntries || bytes > maxCatalogBytes) {
       throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
     }
   }
 
-  void _putEntry(GalleryTrashEntry entry) {
-    final old = _entriesByPath[entry.originalPath];
-    if (old != null) _removeEntry(old);
-    if (_entriesById!.isNotEmpty) _catalogBytes++;
-    _catalogBytes += _entryBytes(entry);
-    _entriesById![entry.trashId] = entry;
-    _entriesByPath[entry.originalPath] = entry;
+  void _putEntry(GalleryEntry entry, [_GalleryMirrorIndex? selected]) {
+    final index = selected ?? _trashIndex;
+    final old = index.entriesByPath[entry.path];
+    if (old != null) _removeEntry(old, index);
+    if (index.entriesById!.isNotEmpty) index.catalogBytes++;
+    index.catalogBytes += _entryBytes(entry);
+    index.entriesById![entry.mediaId] = entry;
+    index.entriesByPath[entry.path] = entry;
   }
 
-  void _removeEntry(GalleryTrashEntry entry) {
-    if (_entriesById!.remove(entry.trashId) == null) return;
-    _entriesByPath.remove(entry.originalPath);
-    _catalogBytes -= _entryBytes(entry) + (_entriesById!.isEmpty ? 0 : 1);
+  void _removeEntry(GalleryEntry entry, [_GalleryMirrorIndex? selected]) {
+    final index = selected ?? _trashIndex;
+    if (index.entriesById!.remove(entry.mediaId) == null) return;
+    index.entriesByPath.remove(entry.path);
+    index.catalogBytes -= _entryBytes(entry) + (index.entriesById!.isEmpty ? 0 : 1);
   }
 
-  static int _emptyCatalogBytes() => utf8.encode(jsonEncode(const GalleryTrashCatalog(entries: []).toJson())).length;
-  static int _entryBytes(GalleryTrashEntry entry) => utf8.encode(jsonEncode(entry.toJson())).length;
+  int _emptyCatalogBytes(_GalleryMirrorIndex index) =>
+      utf8
+          .encode(
+            jsonEncode(
+              GalleryCatalog(
+                section: index.section,
+                capabilities: catalog.capabilities,
+                thumbnailPolicy: catalog.thumbnailPolicy,
+                entries: const [],
+              ).toJson(),
+            ),
+          )
+          .length +
+      128;
+  static int _entryBytes(GalleryEntry entry) => utf8.encode(jsonEncode(entry.toJson())).length;
   static String _revision(FileStat stat) => sha256
       .convert(
         utf8.encode('${stat.size}:${stat.modified.microsecondsSinceEpoch}:${stat.changed.microsecondsSinceEpoch}'),
       )
       .toString();
-  static GalleryTrashEntry _entry(String relative, FileStat stat) {
+  static GalleryEntry hiddenEntry(String relative, FileStat stat) => _entry(relative, stat, hidden: true);
+
+  static GalleryEntry _entry(String relative, FileStat stat, {bool hidden = false}) {
     if (stat.type != FileSystemEntityType.file) {
       throw const GalleryCatalogFailure(GalleryErrorCode.notFound);
     }
     final revision = _revision(stat);
     final extension = path.extension(relative).toLowerCase();
-    return GalleryTrashEntry(
-      trashId: sha256.convert(utf8.encode(jsonEncode([relative, revision]))).toString(),
+    return GalleryEntry(
+      section: hidden ? GalleryMediaSection.hidden : GalleryMediaSection.trash,
+      mediaId: '${hidden ? 'hidden-' : ''}${sha256.convert(utf8.encode(jsonEncode([relative, revision])))}',
       name: path.basename(relative),
-      originalPath: relative,
+      path: relative,
       kind: extension == '.gif'
           ? GalleryEntryKind.animatedImage
           : FileSettings.isVideo(extension)
           ? GalleryEntryKind.video
           : GalleryEntryKind.image,
       sourceRevision: revision,
-      trashedAt: stat.changed.toUtc(),
+      thumbnailSupported: true,
+      fileChanged: stat.changed.toUtc(),
       sizeBytes: stat.size,
     );
   }
 
   Future<File> _trashFile(String relative, {bool allowMissing = false}) async {
+    return _mirrorFile(_trashIndex, relative, allowMissing: allowMissing);
+  }
+
+  Future<File> _hiddenFile(String relative, {bool allowMissing = false}) async {
+    return _mirrorFile(_hiddenIndex, relative, allowMissing: allowMissing);
+  }
+
+  Future<File> _mirrorFile(_GalleryMirrorIndex index, String relative, {bool allowMissing = false}) async {
     return _checkedFile(
-      trashDirectory.absolute.path,
+      index.directory.absolute.path,
       relative,
       allowMissing: allowMissing,
       allowDirectory: allowMissing,
@@ -488,9 +634,13 @@ class GalleryFileOperations {
       if (await FileSystemEntity.type(resolved, followLinks: false) != FileSystemEntityType.directory) {
         throw const _GalleryFileFailure(GalleryErrorCode.unsupported, _GalleryPathRejection.wrongEntryType);
       }
-      final trash = path.normalize(await trashDirectory.resolveSymbolicLinks());
-      if (_overlaps(trash, resolved)) {
-        throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.rootOverlap);
+      for (final directory in [trashDirectory, hiddenDirectory]) {
+        final mirror = path.normalize(
+          await directory.exists() ? await directory.resolveSymbolicLinks() : directory.absolute.path,
+        );
+        if (_overlaps(mirror, resolved)) {
+          throw const _GalleryFileFailure(GalleryErrorCode.invalidRequest, _GalleryPathRejection.rootOverlap);
+        }
       }
       _canonicalOriginalRoot = resolved;
       _log.fine(
@@ -503,8 +653,8 @@ class GalleryFileOperations {
 
   static bool _overlaps(String a, String b) => a == b || path.isWithin(a, b) || path.isWithin(b, a);
 
-  static bool _conflictsWithState(String state, String trash) =>
-      _overlaps(state, trash) && trash != path.join(state, 'trash');
+  static bool _conflictsWithState(String state, String mirror, {bool hidden = false}) =>
+      _overlaps(state, mirror) && mirror != path.join(state, hidden ? 'hidden' : 'trash');
 
   static Future<void> _assertNoLinks(String absolute, {bool allowMissing = false}) async {
     var current = path.rootPrefix(absolute);

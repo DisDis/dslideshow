@@ -59,7 +59,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       missing: current == null,
       managementAvailable: inputs.management != null,
       capabilities: Set.unmodifiable(inputs.capabilities),
-      trashEntry: inputs.trashEntry,
+      entry: inputs.entry,
       showInfo: !inputs.capabilities.contains(GalleryCapability.metadata),
     );
   }
@@ -96,8 +96,9 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     if (previous.itemUpdates != _configuration.itemUpdates) _subscribe();
     final contextChanged =
         previous.management != _configuration.management ||
-        previous.trashEntry?.trashId != _configuration.trashEntry?.trashId ||
-        previous.trashEntry?.sourceRevision != _configuration.trashEntry?.sourceRevision;
+        previous.mediaSection != _configuration.mediaSection ||
+        previous.entry?.mediaId != _configuration.entry?.mediaId ||
+        previous.entry?.sourceRevision != _configuration.entry?.sourceRevision;
     if (contextChanged) {
       if (state.confirmation != null) ++_confirmationId;
       _cancelMetadata();
@@ -107,7 +108,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       state.copyWith(
         capabilities: Set.unmodifiable(_configuration.capabilities),
         managementAvailable: _configuration.management != null,
-        trashEntry: _configuration.trashEntry,
+        entry: _configuration.entry,
         metadata: contextChanged ? null : state.metadata,
         metadataStatus: contextChanged ? GalleryViewerMetadataStatus.idle : state.metadataStatus,
         operation: contextChanged ? GalleryViewerOperation.idle : state.operation,
@@ -133,11 +134,13 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
   }
 
   bool _canAccept(GalleryItem item) =>
+      item.section != state.item.section ||
       item.mediaId != state.item.mediaId ||
       item.scope != state.item.scope ||
       !state.supersededRevisions.contains(item.revision);
 
-  Set<String> _superseded(GalleryItem item) => item.mediaId != state.item.mediaId || item.scope != state.item.scope
+  Set<String> _superseded(GalleryItem item) =>
+      item.section != state.item.section || item.mediaId != state.item.mediaId || item.scope != state.item.scope
       ? {}
       : {...state.supersededRevisions, if (item.revision != state.item.revision) state.item.revision};
 
@@ -197,16 +200,15 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     final generation = _metadataGeneration;
     final cancel = _metadataCancel = Completer<void>();
     final item = state.item;
-    final trash = state.trash;
     final repository = _configuration.management!;
     _log.fine(
       () =>
-          'event=metadataStarted generation=$generation source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} trash=$trash',
+          'event=metadataStarted generation=$generation source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} section=${item.section.name}',
     );
     emit(state.copyWith(metadataStatus: GalleryViewerMetadataStatus.loading, metadataError: null));
     unawaited(() async {
       try {
-        final data = await repository.metadata(item, cancel: cancel.future, trash: trash);
+        final data = await repository.metadata(item, cancel: cancel.future);
         _post(GalleryViewerEvent.metadataCompleted(generation: generation, data: data));
       } catch (error) {
         _post(GalleryViewerEvent.metadataCompleted(generation: generation, error: _code(error)));
@@ -228,11 +230,16 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
         'event=metadataFailed generation=${event.generation} code=${(event.error ?? GalleryErrorCode.revisionMismatch).name}',
       );
     }
+    final code = event.error ?? GalleryErrorCode.revisionMismatch;
+    final staleHidden =
+        !valid && state.hidden && (code == GalleryErrorCode.revisionMismatch || code == GalleryErrorCode.notFound);
     emit(
       state.copyWith(
         metadata: valid ? data : null,
         metadataStatus: valid ? GalleryViewerMetadataStatus.ready : GalleryViewerMetadataStatus.failed,
         metadataError: valid ? null : event.error ?? GalleryErrorCode.revisionMismatch,
+        effectId: staleHidden ? state.effectId + 1 : state.effectId,
+        effect: staleHidden ? GalleryViewerEffect.operationFailed(code, refreshCatalog: true) : state.effect,
       ),
     );
   }
@@ -243,6 +250,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     }
     final repository = _configuration.management!;
     final request = GalleryRotateRequest(
+      section: state.item.section,
       operationId: repository.newOperationId(),
       mediaId: state.item.mediaId,
       sourceRevision: state.item.revision,
@@ -310,9 +318,15 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
       final confirmation = GalleryMutationConfirmation(
         token: ++_confirmationId,
         action: event.action,
-        items: [GalleryMediaRef(mediaId: state.item.mediaId, sourceRevision: state.item.revision)],
+        items: [
+          GalleryMediaRef(
+            mediaId: state.item.mediaId,
+            sourceRevision: state.item.revision,
+            section: state.mediaSection,
+          ),
+        ],
         names: [state.item.title],
-        sizeBytes: event.action == GalleryMutation.purge ? state.trashEntry!.sizeBytes : null,
+        sizeBytes: event.action == GalleryMutation.purge ? state.entry?.sizeBytes : null,
       );
       _log.info('event=confirmationRequested token=${confirmation.token} action=${event.action.name} items=1');
       emit(
@@ -369,7 +383,9 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     final request = GalleryOperationRequest(
       operationId: repository.newOperationId(),
       action: action,
-      items: [GalleryMediaRef(mediaId: state.item.mediaId, sourceRevision: state.item.revision)],
+      items: [
+        GalleryMediaRef(section: state.item.section, mediaId: state.item.mediaId, sourceRevision: state.item.revision),
+      ],
     );
     _cancelMetadata();
     _cancelOperation();
@@ -385,6 +401,8 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
           GalleryMutation.trash => GalleryViewerOperation.trashing,
           GalleryMutation.restore => GalleryViewerOperation.restoring,
           GalleryMutation.purge => GalleryViewerOperation.purging,
+          GalleryMutation.hide => GalleryViewerOperation.hiding,
+          GalleryMutation.unhide => GalleryViewerOperation.unhiding,
         },
       ),
     );
@@ -430,7 +448,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
         effectId: state.effectId + 1,
         effect: GalleryViewerEffect.mutationApplied(
           action: request.action,
-          trashIds: [if (item.trashId != null) item.trashId!],
+          mediaIds: [if (item.destination?.mediaId != null) item.destination!.mediaId],
         ),
       ),
     );

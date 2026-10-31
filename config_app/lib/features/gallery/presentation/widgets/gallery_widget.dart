@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:config_app/features/gallery/domain/gallery_item.dart';
@@ -26,8 +27,7 @@ class GalleryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) =>
-        GalleryManagementBloc(catalogBloc: context.read<GalleryBloc>()),
+    create: (context) => GalleryManagementBloc(catalogBloc: context.read<GalleryBloc>()),
     child: const _GalleryManagementView(),
   );
 }
@@ -38,23 +38,26 @@ class _GalleryManagementView extends StatelessWidget {
   void _notice(BuildContext context, GalleryManagementState state) {
     final bloc = context.read<GalleryManagementBloc>();
     final l = context.localizations;
-    if (state.notice == GalleryManagementNotice.trashed) {
+    if (state.notice == GalleryManagementNotice.trashed || state.notice == GalleryManagementNotice.hidden) {
       showGalleryUndo(
         context,
         bloc.repository,
-        state.undoTrashIds,
+        state.undoMediaIds,
         bloc.refresh,
+        section: state.notice == GalleryManagementNotice.hidden
+            ? GalleryMediaSection.hidden
+            : GalleryMediaSection.trash,
       );
       return;
     }
     final message = switch (state.notice) {
       GalleryManagementNotice.restored => l.gallery_restored,
+      GalleryManagementNotice.unhidden => l.gallery_unhidden,
       GalleryManagementNotice.purged => l.gallery_purged,
       GalleryManagementNotice.partialFailure => l.gallery_failed_files,
       GalleryManagementNotice.failed => galleryErrorText(context, state.error),
       GalleryManagementNotice.unknownOutcome => l.gallery_mutation_unknown,
-      GalleryManagementNotice.confirmationChanged =>
-        l.gallery_confirmation_changed,
+      GalleryManagementNotice.confirmationChanged => l.gallery_confirmation_changed,
       _ => null,
     };
     if (message != null) {
@@ -67,65 +70,59 @@ class _GalleryManagementView extends StatelessWidget {
     bloc.add(GalleryManagementEvent.mutationRequested(action));
   }
 
-  Future<void> _confirm(
-    BuildContext context,
-    GalleryManagementState state,
-  ) async {
+  Future<void> _confirm(BuildContext context, GalleryManagementState state) async {
     final bloc = context.read<GalleryManagementBloc>();
     final confirmation = state.confirmation!;
     final confirmed = await confirmGalleryMutation(context, confirmation);
     if (context.mounted && !bloc.isClosed) {
-      bloc.add(
-        GalleryManagementEvent.mutationDecision(
-          confirmationId: confirmation.token,
-          confirmed: confirmed,
-        ),
-      );
+      bloc.add(GalleryManagementEvent.mutationDecision(confirmationId: confirmation.token, confirmed: confirmed));
     }
   }
 
   void _open(BuildContext context, GalleryItem item) {
     final bloc = context.read<GalleryManagementBloc>();
     final state = bloc.state;
-    final trashEntry = state.isTrash
-        ? state.snapshot.trashById[item.mediaId]
-        : null;
+    final entry = state.isStored ? state.snapshot.entriesById[item.mediaId] : null;
+    final mediaSection = state.isTrash
+        ? GalleryMediaSection.trash
+        : state.isHidden
+        ? GalleryMediaSection.hidden
+        : GalleryMediaSection.published;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => SingleItemViewerPage(
           item: item,
           session: bloc.catalogBloc.session,
           capabilities: state.capabilities,
-          trashEntry: trashEntry,
-          onRevisionMismatch: bloc.catalogBloc.resolveRevisionMismatch,
+          entry: entry,
+          onRevisionMismatch: state.isHidden
+              ? () => unawaited(bloc.refresh())
+              : bloc.catalogBloc.resolveRevisionMismatch,
           onChanged: bloc.refresh,
           onTrashed: (ids) {
             if (context.mounted) {
               showGalleryUndo(context, bloc.repository, ids, bloc.refresh);
             }
           },
-          itemUpdates: trashEntry == null
-              ? bloc.itemUpdates(item.mediaId)
-              : null,
-          currentItem: trashEntry == null
-              ? () => bloc.currentItem(item.mediaId)
-              : null,
+          onHidden: (ids) {
+            if (context.mounted) {
+              showGalleryUndo(context, bloc.repository, ids, bloc.refresh, section: GalleryMediaSection.hidden);
+            }
+          },
+          itemUpdates: state.isTrash ? null : bloc.itemUpdates(item.mediaId, mediaSection: mediaSection),
+          currentItem: state.isTrash ? null : () => bloc.currentItem(item.mediaId, mediaSection: mediaSection),
         ),
       ),
     );
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocListener<GalleryManagementBloc, GalleryManagementState>(
+  Widget build(BuildContext context) => BlocListener<GalleryManagementBloc, GalleryManagementState>(
     listenWhen: (previous, current) =>
-        current.confirmation != null &&
-        previous.confirmation?.token != current.confirmation?.token,
+        current.confirmation != null && previous.confirmation?.token != current.confirmation?.token,
     listener: _confirm,
     child: BlocConsumer<GalleryManagementBloc, GalleryManagementState>(
-      listenWhen: (previous, current) =>
-          previous.noticeSerial != current.noticeSerial,
+      listenWhen: (previous, current) => previous.noticeSerial != current.noticeSerial,
       listener: _notice,
       builder: (context, state) {
         final bloc = context.read<GalleryManagementBloc>();
@@ -134,9 +131,9 @@ class _GalleryManagementView extends StatelessWidget {
         if (state.section == GallerySection.duplicates) {
           body = GalleryDuplicatesPage(
             session: bloc.catalogBloc.session,
-            catalog: bloc.currentLibraryItems,
+            catalog: bloc.currentDuplicateItems,
             catalogUpdates: bloc.confirmedCatalogUpdates,
-            currentCatalog: () => bloc.currentLibraryItems,
+            currentCatalog: () => bloc.currentDuplicateItems,
             onRefresh: bloc.refresh,
           );
         } else if (state.initialLoading) {
@@ -147,10 +144,7 @@ class _GalleryManagementView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(l.gallery_load_failed),
-                TextButton(
-                  onPressed: bloc.refresh,
-                  child: Text(l.retry_button),
-                ),
+                TextButton(onPressed: bloc.refresh, child: Text(l.retry_button)),
               ],
             ),
           );
@@ -162,33 +156,19 @@ class _GalleryManagementView extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 4,
-                  child: state.refreshing && state.operationPlan == null
-                      ? const LinearProgressIndicator()
-                      : null,
+                  child: state.refreshing && state.operationPlan == null ? const LinearProgressIndicator() : null,
                 ),
                 if (state.refreshFailed)
                   MaterialBanner(
                     content: Text(l.gallery_refresh_failed),
-                    actions: [
-                      TextButton(
-                        onPressed: bloc.refresh,
-                        child: Text(l.retry_button),
-                      ),
-                    ],
+                    actions: [TextButton(onPressed: bloc.refresh, child: Text(l.retry_button))],
                   ),
-                if (state.isTrash)
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(l.gallery_trash_hint),
-                  ),
+                if (state.isTrash) Padding(padding: const EdgeInsets.all(12), child: Text(l.gallery_trash_hint)),
                 if (state.failures.isNotEmpty)
                   MaterialBanner(
                     content: Text(l.gallery_failed_files),
                     actions: [
-                      TextButton(
-                        onPressed: () => _details(context, state),
-                        child: Text(l.gallery_operation_details),
-                      ),
+                      TextButton(onPressed: () => _details(context, state), child: Text(l.gallery_operation_details)),
                     ],
                   ),
                 Expanded(
@@ -198,30 +178,26 @@ class _GalleryManagementView extends StatelessWidget {
                       key: PageStorageKey('gallery-${state.section.name}'),
                       physics: const AlwaysScrollableScrollPhysics(),
                       slivers: [
-                        if (state.items.isEmpty)
-                          SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: Center(child: Text(l.gallery_empty)),
+                        if (state.isHidden)
+                          SliverToBoxAdapter(
+                            child: Padding(padding: const EdgeInsets.all(12), child: Text(l.gallery_hidden_hint)),
                           ),
+                        if (state.items.isEmpty)
+                          SliverFillRemaining(hasScrollBody: false, child: Center(child: Text(l.gallery_empty))),
                         SliverPadding(
                           padding: const EdgeInsets.all(12),
                           sliver: MediaGallerySliverGrid(
                             items: state.items,
                             selectedIds: state.selectedIds,
-                            onToggleSelect: (id) => bloc.add(
-                              GalleryManagementEvent.selectionToggled(id),
-                            ),
+                            onToggleSelect: (id) => bloc.add(GalleryManagementEvent.selectionToggled(id)),
                             session: bloc.catalogBloc.session,
                             // Overlay keeps visible routes ticking below a popup
                             // and disables them only behind an opaque page.
                             // isCurrent would also release every image on dialog.
                             active: TickerMode.valuesOf(context).enabled,
-                            playbackActive:
-                                ModalRoute.isCurrentOf(context) ?? true,
-                            onRevisionMismatch: state.isTrash
-                                ? () => bloc.add(
-                                    const GalleryManagementEvent.trashRequested(),
-                                  )
+                            playbackActive: ModalRoute.isCurrentOf(context) ?? true,
+                            onRevisionMismatch: state.isStored
+                                ? () => bloc.add(const GalleryManagementEvent.trashRequested())
                                 : bloc.catalogBloc.resolveRevisionMismatch,
                             onOpen: (item) => _open(context, item),
                           ),
@@ -250,47 +226,35 @@ class _GalleryManagementView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (state.capabilities.contains(GalleryCapability.duplicates) ||
+                    state.capabilities.contains(GalleryCapability.hidden) ||
                     state.capabilities.contains(GalleryCapability.trash))
                   Card(
                     margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 4,
                         children: [
                           for (final section in [
-                            GallerySection.library,
-                            if (state.capabilities.contains(
-                              GalleryCapability.duplicates,
-                            ))
-                              GallerySection.duplicates,
-                            if (state.capabilities.contains(
-                              GalleryCapability.trash,
-                            ))
-                              GallerySection.trash,
+                            GallerySection.published,
+                            if (state.capabilities.contains(GalleryCapability.hidden)) GallerySection.hidden,
+                            if (state.capabilities.contains(GalleryCapability.duplicates)) GallerySection.duplicates,
+                            if (state.capabilities.contains(GalleryCapability.trash)) GallerySection.trash,
                           ])
                             ChoiceChip(
                               label: Text(switch (section) {
-                                GallerySection.library => l.gallery_library,
-                                GallerySection.duplicates =>
-                                  l.gallery_duplicates,
+                                GallerySection.published => l.gallery_library,
+                                GallerySection.hidden => l.gallery_hidden,
+                                GallerySection.duplicates => l.gallery_duplicates,
                                 GallerySection.trash => l.gallery_trash,
                               }),
                               selected: state.section == section,
-                              onSelected:
-                                  state.busy || state.confirmation != null
+                              onSelected: state.busy || state.confirmation != null
                                   ? null
                                   : (selected) {
                                       if (selected) {
-                                        bloc.add(
-                                          GalleryManagementEvent.sectionChanged(
-                                            section,
-                                          ),
-                                        );
+                                        bloc.add(GalleryManagementEvent.sectionChanged(section));
                                       }
                                     },
                             ),
@@ -340,15 +304,9 @@ class GalleryFailureDetailsDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l.gallery_failed_count(state.failures.length),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            Text(l.gallery_failed_count(state.failures.length), style: Theme.of(context).textTheme.titleSmall),
             if (shown < state.failures.length)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(l.gallery_first_files(shown)),
-              ),
+              Padding(padding: const EdgeInsets.only(top: 8), child: Text(l.gallery_first_files(shown))),
             for (final failure in state.failures.take(galleryDialogFileLimit))
               ListTile(
                 title: Text(
@@ -372,11 +330,7 @@ class GalleryFailureDetailsDialog extends StatelessWidget {
 }
 
 class _GallerySelectionBar extends StatelessWidget {
-  const _GallerySelectionBar({
-    super.key,
-    required this.state,
-    required this.onMutation,
-  });
+  const _GallerySelectionBar({super.key, required this.state, required this.onMutation});
   final GalleryManagementState state;
   final ValueChanged<GalleryMutation> onMutation;
 
@@ -385,10 +339,7 @@ class _GallerySelectionBar extends StatelessWidget {
     final l = context.localizations;
     final bloc = context.read<GalleryManagementBloc>();
     final disabled =
-        state.busy ||
-        state.needsMutationRefresh ||
-        state.selectedIds.isEmpty ||
-        state.confirmation != null;
+        state.busy || state.needsMutationRefresh || state.selectedIds.isEmpty || state.confirmation != null;
     final allDisabled =
         state.busy ||
         state.needsMutationRefresh ||
@@ -403,63 +354,54 @@ class _GallerySelectionBar extends StatelessWidget {
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text(
-            l.gallery_selected(state.selectedIds.length),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+          Text(l.gallery_selected(state.selectedIds.length), style: Theme.of(context).textTheme.titleSmall),
           if (state.isTrash) ...[
             TextButton.icon(
               key: const ValueKey('gallery-select-all-trash'),
-              onPressed:
-                  allDisabled || state.selectedIds.length == state.items.length
+              onPressed: allDisabled || state.selectedIds.length == state.items.length
                   ? null
-                  : () => bloc.add(
-                      const GalleryManagementEvent.trashSelectionAllRequested(),
-                    ),
+                  : () => bloc.add(const GalleryManagementEvent.trashSelectionAllRequested()),
               icon: const Icon(Icons.select_all),
               label: Text(l.gallery_select_all),
             ),
             IconButton(
               tooltip: l.gallery_restore,
               icon: const Icon(Icons.restore_from_trash),
-              onPressed: disabled
-                  ? null
-                  : () => onMutation(GalleryMutation.restore),
+              onPressed: disabled ? null : () => onMutation(GalleryMutation.restore),
             ),
             IconButton(
               tooltip: l.gallery_purge,
               icon: const Icon(Icons.delete_forever),
-              onPressed: disabled
-                  ? null
-                  : () => onMutation(GalleryMutation.purge),
+              onPressed: disabled ? null : () => onMutation(GalleryMutation.purge),
             ),
             TextButton.icon(
               key: const ValueKey('gallery-clear-trash'),
-              onPressed:
-                  allDisabled ||
-                      !state.capabilities.contains(GalleryCapability.mutations)
+              onPressed: allDisabled || !state.capabilities.contains(GalleryCapability.mutations)
                   ? null
-                  : () => bloc.add(
-                      const GalleryManagementEvent.clearTrashRequested(),
-                    ),
+                  : () => bloc.add(const GalleryManagementEvent.clearTrashRequested()),
               icon: const Icon(Icons.delete_sweep_outlined),
               label: Text(l.gallery_clear_trash),
             ),
-          ] else if (state.capabilities.contains(GalleryCapability.mutations))
+          ] else if (state.capabilities.contains(GalleryCapability.mutations)) ...[
+            if (state.capabilities.contains(GalleryCapability.hidden))
+              TextButton.icon(
+                key: const ValueKey('gallery-hide-selection'),
+                onPressed: disabled
+                    ? null
+                    : () => onMutation(state.isHidden ? GalleryMutation.unhide : GalleryMutation.hide),
+                icon: Icon(state.isHidden ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                label: Text(state.isHidden ? l.gallery_unhide : l.gallery_hide),
+              ),
             TextButton.icon(
-              onPressed: disabled
-                  ? null
-                  : () => onMutation(GalleryMutation.trash),
+              onPressed: disabled ? null : () => onMutation(GalleryMutation.trash),
               icon: const Icon(Icons.delete_outline),
               label: Text(l.gallery_move_to_trash),
             ),
+          ],
           IconButton(
             tooltip: l.clear_selection,
             icon: const Icon(Icons.close),
-            onPressed: disabled
-                ? null
-                : () =>
-                      bloc.add(const GalleryManagementEvent.selectionCleared()),
+            onPressed: disabled ? null : () => bloc.add(const GalleryManagementEvent.selectionCleared()),
           ),
         ],
       ),
@@ -479,17 +421,12 @@ class _GallerySelectionBar extends StatelessWidget {
                       ? Column(
                           children: [
                             LinearProgressIndicator(
-                              value: state.operationTotal == 0
-                                  ? 0
-                                  : state.processedItems / state.operationTotal,
+                              value: state.operationTotal == 0 ? 0 : state.processedItems / state.operationTotal,
                             ),
                             Expanded(
                               child: Center(
                                 child: Text(
-                                  l.gallery_mutation_progress(
-                                    state.processedItems,
-                                    state.operationTotal,
-                                  ),
+                                  l.gallery_mutation_progress(state.processedItems, state.operationTotal),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -544,16 +481,11 @@ class MediaGallerySliverGrid extends StatelessWidget {
     return SliverLayoutBuilder(
       builder: (context, constraints) {
         final layout = delegate.getLayout(constraints);
-        final start =
-            constraints.scrollOffset + math.max(0.0, constraints.overlap);
+        final start = constraints.scrollOffset + math.max(0.0, constraints.overlap);
         final end = constraints.scrollOffset + constraints.remainingPaintExtent;
         final first = layout.getMinChildIndexForScrollOffset(start);
-        final last = layout.getMaxChildIndexForScrollOffset(
-          math.max(start, end),
-        );
-        final columns = layout is SliverGridRegularTileLayout
-            ? layout.crossAxisCount
-            : 1;
+        final last = layout.getMaxChildIndexForScrollOffset(math.max(start, end));
+        final columns = layout is SliverGridRegularTileLayout ? layout.crossAxisCount : 1;
         final prefetchFirst = math.max(0, first - columns);
         final prefetchLast = math.min(items.length - 1, last + columns);
         return SliverGrid(
@@ -561,20 +493,15 @@ class MediaGallerySliverGrid extends StatelessWidget {
           delegate: SliverChildBuilderDelegate((context, index) {
             final item = items[index];
             final visible = index >= first && index <= last;
-            final demanded =
-                active && index >= prefetchFirst && index <= prefetchLast;
+            final demanded = active && index >= prefetchFirst && index <= prefetchLast;
             return _GalleryItemWidget(
               key: ValueKey(item.mediaId),
               item: item,
               isSelected: selectedIds.contains(item.selectionIdentity),
               session: session,
               active: demanded,
-              priority: visible
-                  ? GalleryImagePriority.visible
-                  : GalleryImagePriority.prefetch,
-              distance: visible
-                  ? 0
-                  : math.min((index - first).abs(), (index - last).abs()),
+              priority: visible ? GalleryImagePriority.visible : GalleryImagePriority.prefetch,
+              distance: visible ? 0 : math.min((index - first).abs(), (index - last).abs()),
               videoActive: active && visible && playbackActive,
               onRevisionMismatch: onRevisionMismatch,
               onTap: () {
@@ -598,9 +525,7 @@ class MediaGallerySliverGrid extends StatelessWidget {
                           }
                           return null;
                         }),
-                        currentItem: currentItem == null
-                            ? null
-                            : () => currentItem!(item.mediaId),
+                        currentItem: currentItem == null ? null : () => currentItem!(item.mediaId),
                       ),
                     ),
                   );
@@ -683,10 +608,7 @@ class _GalleryItemWidget extends StatelessWidget {
         onRevisionMismatch: onRevisionMismatch,
       );
     } else {
-      content = Icon(
-        Icons.insert_drive_file_outlined,
-        color: scheme.onSurfaceVariant,
-      );
+      content = Icon(Icons.insert_drive_file_outlined, color: scheme.onSurfaceVariant);
     }
     return Semantics(
       selected: isSelected,
@@ -704,13 +626,7 @@ class _GalleryItemWidget extends StatelessWidget {
                 ColoredBox(
                   key: const ValueKey('gallery-selection-tint'),
                   color: scheme.primary.withValues(alpha: .12),
-                  child: Center(
-                    child: Icon(
-                      Icons.check_circle,
-                      color: scheme.primary,
-                      size: 36,
-                    ),
-                  ),
+                  child: Center(child: Icon(Icons.check_circle, color: scheme.primary, size: 36)),
                 ),
               if (!item.isFolder)
                 Positioned(
@@ -719,21 +635,14 @@ class _GalleryItemWidget extends StatelessWidget {
                   left: 0,
                   child: Semantics(
                     label: item.title,
-                    child: Checkbox(
-                      value: isSelected,
-                      onChanged: (_) => onLongPress(),
-                    ),
+                    child: Checkbox(value: isSelected, onChanged: (_) => onLongPress()),
                   ),
                 ),
               if (item.isVideo)
                 Positioned(
                   top: 6,
                   right: 6,
-                  child: Icon(
-                    Icons.play_circle_fill,
-                    color: scheme.onPrimaryContainer,
-                    size: 24,
-                  ),
+                  child: Icon(Icons.play_circle_fill, color: scheme.onPrimaryContainer, size: 24),
                 ),
               // Paint the selection above the media. A decoration border on
               // the layout container adds padding; animating that padding
@@ -742,9 +651,7 @@ class _GalleryItemWidget extends StatelessWidget {
                 Positioned.fill(
                   key: const ValueKey('gallery-selection-border'),
                   child: IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: ShapeDecoration(shape: selectedShape),
-                    ),
+                    child: DecoratedBox(decoration: ShapeDecoration(shape: selectedShape)),
                   ),
                 ),
             ],

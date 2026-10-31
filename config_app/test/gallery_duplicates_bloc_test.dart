@@ -15,6 +15,7 @@ import 'support/gallery_management_harness.dart';
 
 const _members = [
   GalleryDuplicateMember(
+    section: GalleryMediaSection.published,
     mediaId: 'a',
     sourceRevision: '1',
     path: 'a.jpg',
@@ -22,6 +23,7 @@ const _members = [
     sizeBytes: 100,
   ),
   GalleryDuplicateMember(
+    section: GalleryMediaSection.published,
     mediaId: 'b',
     sourceRevision: '1',
     path: 'b.jpg',
@@ -29,6 +31,7 @@ const _members = [
     sizeBytes: 100,
   ),
   GalleryDuplicateMember(
+    section: GalleryMediaSection.published,
     mediaId: 'c',
     sourceRevision: '1',
     path: 'c.jpg',
@@ -39,35 +42,110 @@ const _members = [
 const _job = GalleryDuplicateJob(
   jobId: 'job',
   status: GalleryDuplicateStatus.completed,
-  groups: [
-    GalleryDuplicateGroup(
-      groupId: 'group',
-      mode: GalleryDuplicateMode.exact,
-      items: _members,
-    ),
-  ],
+  groups: [GalleryDuplicateGroup(groupId: 'group', mode: GalleryDuplicateMode.exact, items: _members)],
 );
 
-Future<void> _until(
-  GalleryDuplicatesBloc bloc,
-  bool Function(GalleryDuplicatesState) ready,
-) async {
+Future<void> _until(GalleryDuplicatesBloc bloc, bool Function(GalleryDuplicatesState) ready) async {
   if (ready(bloc.state)) return;
   await bloc.stream.firstWhere(ready).timeout(const Duration(seconds: 2));
 }
 
 GalleryManagementRepository _repository(http.Client client) =>
-    GalleryManagementRepository(
-      baseUri: Uri.parse('http://frame.local'),
-      code: 'code',
-      client: client,
-    );
+    GalleryManagementRepository(baseUri: Uri.parse('http://frame.local'), code: 'code', client: client);
 
 void main() {
+  test('hidden duplicate metadata and trash selection retain their section in a combined catalog', () async {
+    final members = [
+      _members.first.copyWith(path: 'album/photo.jpg'),
+      _members[1].copyWith(path: 'album/photo.jpg', section: GalleryMediaSection.hidden),
+    ];
+    final job = _job.copyWith(groups: [_job.groups.single.copyWith(items: members)]);
+    final mutations = <GalleryOperationRequest>[];
+    final metadataPaths = <String>[];
+    final repository = _repository(
+      MockClient((request) async {
+        if (request.url.pathSegments.contains('metadata')) {
+          metadataPaths.add(request.url.path);
+          return http.Response(
+            jsonEncode(
+              photoMetadata('b').copyWith(path: 'album/photo.jpg', section: GalleryMediaSection.hidden).toJson(),
+            ),
+            200,
+          );
+        }
+        if (request.method == 'GET') return duplicateResponse(request, job);
+        final mutation = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
+        mutations.add(mutation);
+        return http.Response(
+          jsonEncode(
+            GalleryOperationResult(
+              operationId: mutation.operationId,
+              items: const [
+                GalleryOperationItemResult(
+                  mediaId: 'b',
+                  section: GalleryMediaSection.hidden,
+                  state: GalleryItemOperationState.succeeded,
+                  destination: GalleryMediaRef(
+                    mediaId: 'trashed-b',
+                    sourceRevision: "destination-revision",
+                    section: GalleryMediaSection.trash,
+                  ),
+                ),
+              ],
+            ).toJson(),
+          ),
+          200,
+        );
+      }),
+    );
+    final hidden = repository.mediaItem(
+      GalleryEntry(
+        section: GalleryMediaSection.hidden,
+        mediaId: 'b',
+        name: 'photo.jpg',
+        path: 'album/photo.jpg',
+        kind: GalleryEntryKind.image,
+        sourceRevision: '1',
+        fileChanged: DateTime.utc(2026),
+        sizeBytes: 100,
+      ),
+      'shared-frame',
+    );
+    final metadata = GalleryComparisonMetadataBloc(repository: repository, item: hidden);
+    final bloc = GalleryDuplicatesBloc(
+      repository: repository,
+      catalog: [managedPhoto('a'), hidden],
+      onRefresh: () async {},
+    );
+    addTearDown(() async {
+      await metadata.close();
+      await bloc.close();
+      repository.close();
+    });
+    await metadata.stream.firstWhere((state) => state.metadata != null).timeout(const Duration(seconds: 2));
+    expect(metadataPaths, ['/cache/code/v2/hidden/metadata/b/1']);
+    expect(metadata.state.metadata!.path, 'album/photo.jpg');
+    await _until(bloc, (state) => state.group != null && !state.groupLoading);
+    expect(bloc.state.current(members[0]), isTrue);
+    expect(bloc.state.current(members[1]), isTrue);
+    bloc.add(const GalleryDuplicatesEvent.decide('group', 'b', GalleryDuplicateDecision.trash));
+    await _until(bloc, (state) => state.selectedCount == 1);
+    bloc.add(const GalleryDuplicatesEvent.review());
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.review);
+    final review = bloc.state.effect!;
+    expect(review.members.single.section, GalleryMediaSection.hidden);
+    bloc.add(GalleryDuplicatesEvent.apply(review.jobId!, review.members));
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.completed && !state.busy);
+    expect(mutations.single.action, GalleryMutation.trash);
+    expect(mutations.single.items.single.section, GalleryMediaSection.hidden);
+    expect(mutations.single.items.single.mediaId, 'b');
+  });
+
   test('server advances past resolved groups; member pages contain at most ten and preserve choices', () async {
     final members = List.generate(
       12,
       (index) => GalleryDuplicateMember(
+        section: GalleryMediaSection.published,
         mediaId: 'p$index',
         sourceRevision: '1',
         path: 'p$index.jpg',
@@ -75,11 +153,7 @@ void main() {
         sizeBytes: 100,
       ),
     );
-    final group = GalleryDuplicateGroup(
-      groupId: 'many',
-      mode: GalleryDuplicateMode.exact,
-      items: members,
-    );
+    final group = GalleryDuplicateGroup(groupId: 'many', mode: GalleryDuplicateMode.exact, items: members);
     final job = _job.copyWith(groups: [_job.groups.first, group]);
     final requests = <int>[];
     final repository = _repository(
@@ -110,41 +184,23 @@ void main() {
       await bloc.close();
       repository.close();
     });
-    await _until(
-      bloc,
-      (state) => state.group?.groupId == 'many' && !state.groupLoading,
-    );
+    await _until(bloc, (state) => state.group?.groupId == 'many' && !state.groupLoading);
     expect(bloc.state.groupIndex, 1);
-    expect(
-      bloc.state.visibleMembers.map((item) => item.mediaId),
-      List.generate(10, (index) => 'p$index'),
-    );
-    bloc.add(
-      const GalleryDuplicatesEvent.decide(
-        'many',
-        'p1',
-        GalleryDuplicateDecision.trash,
-      ),
-    );
+    expect(bloc.state.visibleMembers.map((item) => item.mediaId), List.generate(10, (index) => 'p$index'));
+    bloc.add(const GalleryDuplicatesEvent.decide('many', 'p1', GalleryDuplicateDecision.trash));
     await _until(bloc, (state) => state.decisions.containsKey('p1'));
     expect(bloc.state.selectedCount, 1);
     expect(bloc.state.selectedBytes, 100);
     bloc.add(const GalleryDuplicatesEvent.members(10));
     await _until(bloc, (state) => state.memberOffset == 10);
-    expect(bloc.state.visibleMembers.map((item) => item.mediaId), [
-      'p10',
-      'p11',
-    ]);
+    expect(bloc.state.visibleMembers.map((item) => item.mediaId), ['p10', 'p11']);
     expect(bloc.state.decisions['p1'], GalleryDuplicateDecision.trash);
     bloc.add(const GalleryDuplicatesEvent.skip());
     await _until(bloc, (state) => state.group == null && !state.groupLoading);
     expect(bloc.state.groupIndex, 2);
     expect(requests, [0, 2]);
     bloc.add(const GalleryDuplicatesEvent.review());
-    await _until(
-      bloc,
-      (state) => state.effect?.notice == GalleryDuplicatesNotice.review,
-    );
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.review);
     expect(bloc.state.effect!.members.single.mediaId, 'p1');
     bloc.add(const GalleryDuplicatesEvent.skip());
     await _until(bloc, (state) => state.group != null && !state.groupLoading);
@@ -162,25 +218,19 @@ void main() {
     final starts = <GalleryDuplicateStartRequest>[];
     final repository = _repository(
       MockClient((request) async {
-        if (request.method == 'POST' &&
-            request.url.pathSegments.last == 'stop') {
+        if (request.method == 'POST' && request.url.pathSegments.last == 'stop') {
           job = job.copyWith(
             status: GalleryDuplicateStatus.cancelled,
             groups: [
               _job.groups.first.copyWith(
                 items: [
-                  for (final member in _members)
-                    member.mediaId == 'b'
-                        ? member.copyWith(sourceRevision: '2')
-                        : member,
+                  for (final member in _members) member.mediaId == 'b' ? member.copyWith(sourceRevision: '2') : member,
                 ],
               ),
             ],
           );
         } else if (request.method == 'POST') {
-          final start = GalleryDuplicateStartRequest.fromJson(
-            jsonDecode(request.body) as Map<String, dynamic>,
-          );
+          final start = GalleryDuplicateStartRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
           starts.add(start);
           job = GalleryDuplicateJob(
             jobId: start.operationId,
@@ -204,33 +254,15 @@ void main() {
     });
     await _until(bloc, (s) => s.group != null && !s.groupLoading);
     for (final id in ['b', 'c']) {
-      bloc.add(
-        GalleryDuplicatesEvent.decide(
-          'group',
-          id,
-          GalleryDuplicateDecision.trash,
-        ),
-      );
-      await _until(
-        bloc,
-        (s) => s.decisions[id] == GalleryDuplicateDecision.trash,
-      );
+      bloc.add(GalleryDuplicatesEvent.decide('group', id, GalleryDuplicateDecision.trash));
+      await _until(bloc, (s) => s.decisions[id] == GalleryDuplicateDecision.trash);
     }
-    bloc.add(
-      const GalleryDuplicatesEvent.start(modes: {GalleryDuplicateMode.similar}),
-    );
+    bloc.add(const GalleryDuplicatesEvent.start(modes: {GalleryDuplicateMode.similar}));
     await _until(bloc, (s) => s.running && !s.busy);
-    snapshots.add([
-      managedPhoto('a'),
-      managedPhoto('b', revision: '2'),
-      managedPhoto('c'),
-    ]);
+    snapshots.add([managedPhoto('a'), managedPhoto('b', revision: '2'), managedPhoto('c')]);
     await _until(bloc, (s) => s.catalogById['b']?.revision == '2');
     bloc.add(const GalleryDuplicatesEvent.stop());
-    await _until(
-      bloc,
-      (s) => !s.running && !s.busy && s.group != null && !s.groupLoading,
-    );
+    await _until(bloc, (s) => !s.running && !s.busy && s.group != null && !s.groupLoading);
     expect(starts.single.modes, [GalleryDuplicateMode.similar]);
     expect(bloc.state.modes, {GalleryDuplicateMode.similar});
     expect(bloc.state.decisions, {'c': GalleryDuplicateDecision.trash});
@@ -243,6 +275,7 @@ void main() {
     final members = [
       for (final item in catalog.skip(49998))
         GalleryDuplicateMember(
+          section: item.section,
           mediaId: item.mediaId,
           sourceRevision: item.revision,
           path: item.title,
@@ -251,18 +284,10 @@ void main() {
         ),
     ];
     final job = _job.copyWith(
-      groups: [
-        GalleryDuplicateGroup(
-          groupId: 'large',
-          mode: GalleryDuplicateMode.exact,
-          items: members,
-        ),
-      ],
+      groups: [GalleryDuplicateGroup(groupId: 'large', mode: GalleryDuplicateMode.exact, items: members)],
     );
     final snapshots = StreamController<List<GalleryItem>>();
-    final repository = _repository(
-      MockClient((request) async => duplicateResponse(request, job)),
-    );
+    final repository = _repository(MockClient((request) async => duplicateResponse(request, job)));
     final bloc = GalleryDuplicatesBloc(
       repository: repository,
       catalog: catalog,
@@ -278,17 +303,8 @@ void main() {
     expect(bloc.state.catalogById.length, 50001);
     final snapshot = bloc.state.catalogSnapshot;
     for (final member in members.skip(1)) {
-      bloc.add(
-        GalleryDuplicatesEvent.decide(
-          'large',
-          member.mediaId,
-          GalleryDuplicateDecision.trash,
-        ),
-      );
-      await _until(
-        bloc,
-        (state) => state.decisions.containsKey(member.mediaId),
-      );
+      bloc.add(GalleryDuplicatesEvent.decide('large', member.mediaId, GalleryDuplicateDecision.trash));
+      await _until(bloc, (state) => state.decisions.containsKey(member.mediaId));
     }
     expect(
       identical(bloc.state.catalogSnapshot, snapshot),
@@ -302,17 +318,8 @@ void main() {
     expect(bloc.state.decisions, {'p49999': GalleryDuplicateDecision.trash});
     expect(bloc.state.current(members.last), false);
     expect(bloc.state.item(members.first), same(catalog[49998]));
-    bloc.add(
-      const GalleryDuplicatesEvent.decide(
-        'large',
-        'p49998',
-        GalleryDuplicateDecision.trash,
-      ),
-    );
-    await _until(
-      bloc,
-      (state) => state.effect?.notice == GalleryDuplicatesNotice.keepOne,
-    );
+    bloc.add(const GalleryDuplicatesEvent.decide('large', 'p49998', GalleryDuplicateDecision.trash));
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.keepOne);
     expect(bloc.state.decisions.containsKey('p49998'), false);
   });
 
@@ -320,9 +327,7 @@ void main() {
     final snapshots = StreamController<List<GalleryItem>>();
     final refresh = Completer<void>();
     var refreshes = 0;
-    final repository = _repository(
-      MockClient((request) async => duplicateResponse(request, _job)),
-    );
+    final repository = _repository(MockClient((request) async => duplicateResponse(request, _job)));
     final bloc = GalleryDuplicatesBloc(
       repository: repository,
       catalog: [managedPhoto('a'), managedPhoto('b'), managedPhoto('c')],
@@ -339,50 +344,19 @@ void main() {
       repository.close();
     });
     await _until(bloc, (state) => !state.loading);
-    bloc.add(
-      const GalleryDuplicatesEvent.decide(
-        'group',
-        'b',
-        GalleryDuplicateDecision.trash,
-      ),
-    );
-    await _until(
-      bloc,
-      (state) => state.decisions['b'] == GalleryDuplicateDecision.trash,
-    );
-    bloc.add(
-      const GalleryDuplicatesEvent.decide(
-        'group',
-        'c',
-        GalleryDuplicateDecision.trash,
-      ),
-    );
-    await _until(
-      bloc,
-      (state) => state.decisions['c'] == GalleryDuplicateDecision.trash,
-    );
-    bloc.add(
-      const GalleryDuplicatesEvent.decide(
-        'group',
-        'a',
-        GalleryDuplicateDecision.trash,
-      ),
-    );
-    await _until(
-      bloc,
-      (state) => state.effect?.notice == GalleryDuplicatesNotice.keepOne,
-    );
+    bloc.add(const GalleryDuplicatesEvent.decide('group', 'b', GalleryDuplicateDecision.trash));
+    await _until(bloc, (state) => state.decisions['b'] == GalleryDuplicateDecision.trash);
+    bloc.add(const GalleryDuplicatesEvent.decide('group', 'c', GalleryDuplicateDecision.trash));
+    await _until(bloc, (state) => state.decisions['c'] == GalleryDuplicateDecision.trash);
+    bloc.add(const GalleryDuplicatesEvent.decide('group', 'a', GalleryDuplicateDecision.trash));
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.keepOne);
     expect(bloc.state.decisions.containsKey('a'), false);
     bloc.add(GalleryDuplicatesEvent.invalidate(_members[1]));
     bloc.add(GalleryDuplicatesEvent.invalidate(_members[2]));
     await _until(bloc, (state) => state.invalidated.length == 2);
     expect(refreshes, 1);
     expect(bloc.state.decisions, isEmpty);
-    snapshots.add([
-      managedPhoto('a', revision: '2'),
-      managedPhoto('b'),
-      managedPhoto('c'),
-    ]);
+    snapshots.add([managedPhoto('a', revision: '2'), managedPhoto('b'), managedPhoto('c')]);
     await _until(bloc, (state) => state.catalog.first.revision == '2');
     expect(bloc.state.current(_members.first), false);
   });
@@ -395,9 +369,7 @@ void main() {
         if (request.method == 'GET') {
           return duplicateResponse(request, _job);
         }
-        final mutation = GalleryOperationRequest.fromJson(
-          jsonDecode(request.body) as Map<String, dynamic>,
-        );
+        final mutation = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
         calls.add(mutation);
         if (calls.length == 1) throw http.ClientException('Response lost');
         return http.Response(
@@ -406,11 +378,17 @@ void main() {
               operationId: mutation.operationId,
               items: const [
                 GalleryOperationItemResult(
+                  section: GalleryMediaSection.published,
                   mediaId: 'b',
                   state: GalleryItemOperationState.succeeded,
-                  trashId: 'trash-b',
+                  destination: GalleryMediaRef(
+                    mediaId: 'trash-b',
+                    sourceRevision: "destination-revision",
+                    section: GalleryMediaSection.trash,
+                  ),
                 ),
                 GalleryOperationItemResult(
+                  section: GalleryMediaSection.published,
                   mediaId: 'c',
                   state: GalleryItemOperationState.failed,
                   error: GalleryErrorCode.forbidden,
@@ -433,53 +411,26 @@ void main() {
     });
     await _until(bloc, (state) => !state.loading);
     for (final id in ['b', 'c']) {
-      bloc.add(
-        GalleryDuplicatesEvent.decide(
-          'group',
-          id,
-          GalleryDuplicateDecision.trash,
-        ),
-      );
-      await _until(
-        bloc,
-        (state) => state.decisions[id] == GalleryDuplicateDecision.trash,
-      );
+      bloc.add(GalleryDuplicatesEvent.decide('group', id, GalleryDuplicateDecision.trash));
+      await _until(bloc, (state) => state.decisions[id] == GalleryDuplicateDecision.trash);
     }
     bloc.add(const GalleryDuplicatesEvent.review());
-    await _until(
-      bloc,
-      (state) => state.effect?.notice == GalleryDuplicatesNotice.review,
-    );
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.review);
     final reviewed = bloc.state.effect!;
     bloc.add(GalleryDuplicatesEvent.apply(reviewed.jobId!, reviewed.members));
-    await _until(
-      bloc,
-      (state) =>
-          state.effect?.notice == GalleryDuplicatesNotice.actionFailed &&
-          !state.busy,
-    );
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.actionFailed && !state.busy);
     expect(refreshes, 1);
     bloc.add(GalleryDuplicatesEvent.apply(reviewed.jobId!, reviewed.members));
-    await _until(
-      bloc,
-      (state) =>
-          state.effect?.notice == GalleryDuplicatesNotice.completed &&
-          !state.busy,
-    );
+    await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.completed && !state.busy);
     expect(calls.map((request) => request.operationId).toSet(), hasLength(2));
     expect(refreshes, 2);
     expect(bloc.state.decisions, {'c': GalleryDuplicateDecision.trash});
-    expect(
-      bloc.state.effect!.result!.items.last.error,
-      GalleryErrorCode.forbidden,
-    );
+    expect(bloc.state.effect!.result!.items.last.error, GalleryErrorCode.forbidden);
   });
 
   test('close does not wait for an external refresh callback', () async {
     final entered = Completer<void>(), release = Completer<void>();
-    final repository = _repository(
-      MockClient((request) async => duplicateResponse(request, _job)),
-    );
+    final repository = _repository(MockClient((request) async => duplicateResponse(request, _job)));
     final bloc = GalleryDuplicatesBloc(
       repository: repository,
       catalog: [managedPhoto('a'), managedPhoto('b'), managedPhoto('c')],
@@ -497,22 +448,13 @@ void main() {
     release.complete();
   });
 
-  testWidgets('poll timer drives actual status and stops after close', (
-    tester,
-  ) async {
+  testWidgets('poll timer drives actual status and stops after close', (tester) async {
     var gets = 0;
     final repository = _repository(
       MockClient((_) async {
         gets++;
         return http.Response(
-          jsonEncode(
-            _job
-                .copyWith(
-                  status: GalleryDuplicateStatus.running,
-                  startedAt: DateTime(2026),
-                )
-                .toJson(),
-          ),
+          jsonEncode(_job.copyWith(status: GalleryDuplicateStatus.running, startedAt: DateTime(2026)).toJson()),
           200,
         );
       }),
@@ -529,61 +471,38 @@ void main() {
     expect(bloc.state.elapsedSeconds, 5);
     await tester.pump(const Duration(seconds: 1));
     expect(gets, 2);
-    await tester.runAsync(
-      () => bloc.close().timeout(const Duration(seconds: 2)),
-    );
+    await tester.runAsync(() => bloc.close().timeout(const Duration(seconds: 2)));
     await tester.pump(const Duration(seconds: 4));
     expect(gets, 2);
     repository.close();
   });
 
-  testWidgets(
-    'metadata owner cancels its request and ignores late completion on close',
-    (tester) async {
-      final transport = ControlledClient();
-      final repository = _repository(transport);
-      final bloc = GalleryComparisonMetadataBloc(
-        repository: repository,
-        item: managedPhoto('a'),
-      );
-      await tester.pump();
-      expect(transport.requests.length, 1);
-      await tester.runAsync(
-        () => bloc.close().timeout(const Duration(seconds: 2)),
-      );
-      expect(transport.requests.single.aborted, true);
-      expect(bloc.state.metadata, null);
-      repository.close();
-    },
-  );
+  testWidgets('metadata owner cancels its request and ignores late completion on close', (tester) async {
+    final transport = ControlledClient();
+    final repository = _repository(transport);
+    final bloc = GalleryComparisonMetadataBloc(repository: repository, item: managedPhoto('a'));
+    await tester.pump();
+    expect(transport.requests.length, 1);
+    await tester.runAsync(() => bloc.close().timeout(const Duration(seconds: 2)));
+    expect(transport.requests.single.aborted, true);
+    expect(bloc.state.metadata, null);
+    repository.close();
+  });
 
-  test(
-    'metadata 409 is a typed mismatch effect; no source data is accepted',
-    () async {
-      final repository = _repository(
-        MockClient(
-          (_) async => http.Response(
-            jsonEncode(
-              const GalleryErrorResponse(GalleryErrorCode.revisionMismatch)
-                  .toJson(),
-            ),
-            409,
-          ),
-        ),
-      );
-      final bloc = GalleryComparisonMetadataBloc(
-        repository: repository,
-        item: managedPhoto('a'),
-      );
-      addTearDown(() async {
-        await bloc.close();
-        repository.close();
-      });
-      await bloc.stream
-          .firstWhere((state) => state.revisionMismatch == 1)
-          .timeout(const Duration(seconds: 2));
-      expect(bloc.state.failed, true);
-      expect(bloc.state.metadata, null);
-    },
-  );
+  test('metadata 409 is a typed mismatch effect; no source data is accepted', () async {
+    final repository = _repository(
+      MockClient(
+        (_) async =>
+            http.Response(jsonEncode(const GalleryErrorResponse(GalleryErrorCode.revisionMismatch).toJson()), 409),
+      ),
+    );
+    final bloc = GalleryComparisonMetadataBloc(repository: repository, item: managedPhoto('a'));
+    addTearDown(() async {
+      await bloc.close();
+      repository.close();
+    });
+    await bloc.stream.firstWhere((state) => state.revisionMismatch == 1).timeout(const Duration(seconds: 2));
+    expect(bloc.state.failed, true);
+    expect(bloc.state.metadata, null);
+  });
 }

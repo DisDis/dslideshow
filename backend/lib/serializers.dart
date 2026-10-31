@@ -1,6 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_common/rpc.dart'
-    show ErrorResult, GetRpcTelemetryCommand, GetRpcTelemetryResult;
+import 'package:dslideshow_common/rpc.dart' show ErrorResult, GetRpcTelemetryCommand, GetRpcTelemetryResult;
 import 'package:dslideshow_common/serializers.dart';
 
 part 'serializers.g.dart';
@@ -19,6 +18,8 @@ part 'serializers.g.dart';
   GetMediaItemCommand,
   GetMediaItemCommandResult,
   StorageNextCommand,
+  DriveCommand,
+  DriveResult,
   ScreenTurnCommand,
   PowerOffCommand,
   UpdateFrontendStateCommand,

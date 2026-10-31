@@ -23,4 +23,5 @@ Map<String, dynamic> _$StoragesConfigToJson(StoragesConfig instance) =>
 const _$StorageTypeEnumMap = {
   StorageType.DiskStorage: 'DiskStorage',
   StorageType.GPhotoStorage: 'GPhotoStorage',
+  StorageType.YandexDriveStorage: 'YandexDriveStorage',
 };

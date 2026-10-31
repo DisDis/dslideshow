@@ -8,6 +8,9 @@ import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_provider_registry.dart';
+import 'package:dslideshow_backend/src/service/storage/yandex_drive/yandex_drive_storage.dart';
+import 'package:dslideshow_backend/src/service/yandex_drive/yandex_drive_service.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:get_it/get_it.dart';
@@ -30,10 +33,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
   _log.info("Run. Spawned isolate started.");
   HardwareService? service;
   try {
-    final rpcTelemetry = RpcTelemetry(
-      RpcNode.backend,
-      collectionTimeout: const Duration(seconds: 3),
-    );
+    final rpcTelemetry = RpcTelemetry(RpcNode.backend, collectionTimeout: const Duration(seconds: 3));
     final _remoteFrontendService = RemoteServiceImpl(
       serializers: serializers,
       telemetry: rpcTelemetry,
@@ -48,30 +48,29 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       peer: RpcNode.web,
       collectPeerTelemetry: true,
     );
-    await _remoteWebServer.spawn(
-      web_server.serviceMain,
-      debugName: "webServer",
-    );
+    await _remoteWebServer.spawn(web_server.serviceMain, debugName: "webServer");
 
     // Use this static instance
     final injector = GetIt.instance;
     getInjectorModule();
-    injector.registerLazySingleton<Storage>(() {
-      final _config = injector.get<AppConfig>();
-      switch (_config.storages.selected) {
-        case StorageType.GPhotoStorage:
-          final appStorage = injector.get<AppStorage>();
-          return GPhotoStorage(
-            _config.storages.getOrCreateEmpty(StorageType.GPhotoStorage),
-            appStorage,
-          );
-
-        case StorageType.DiskStorage:
-          return DiskStorage(
-            _config.storages.getOrCreateEmpty(StorageType.DiskStorage),
-          );
-      }
+    final appStorage = injector.get<AppStorage>();
+    final config = injector.get<AppConfig>();
+    injector.registerFactoryParam<Storage, StorageType, void>((type, _) {
+      return switch (type) {
+        StorageType.DiskStorage => DiskStorage(config.storages.getOrCreateEmpty(StorageType.DiskStorage)),
+        StorageType.GPhotoStorage => GPhotoStorage(
+          config.storages.getOrCreateEmpty(StorageType.GPhotoStorage),
+          appStorage,
+        ),
+        StorageType.YandexDriveStorage => YandexDriveStorage(
+          config.storages.getOrCreateEmpty(StorageType.YandexDriveStorage),
+          YandexDriveService(appStorage),
+          appStorage,
+        ),
+      };
     });
+    final storageProviders = StorageProviderRegistry();
+    injector.registerSingleton<StorageProviderRegistry>(storageProviders);
 
     injector.registerLazySingleton<PowerOffService>(() {
       final _config = injector.get<AppConfig>();
@@ -83,12 +82,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<ScreenService>(() {
       final _config = injector.get<AppConfig>();
-      return ScreenService(
-        _config.hardware,
-        preparationOffTime: Duration(
-          milliseconds: _config.slideshow.fadeTimeMs,
-        ),
-      );
+      return ScreenService(_config.hardware, preparationOffTime: Duration(milliseconds: _config.slideshow.fadeTimeMs));
     });
     injector.registerLazySingleton<WiFiService>(() {
       final _config = injector.get<AppConfig>();
@@ -103,29 +97,23 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       return SystemInfoService(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(
-        screenService: injector(),
-        gpioService: injector(),
-      );
+      return ApplicationStateService(screenService: injector(), gpioService: injector());
     });
 
     injector.registerLazySingleton<HardwareService>(() {
-      final _config = injector.get<AppConfig>();
       return HardwareService(
-        _config,
-        _remoteFrontendService,
-        injector(),
-        injector(),
-        injector(),
-        injector(),
-        _remoteWebServer,
-        injector(),
-        injector(),
-        injector(),
-        injector(),
+        frontendService: _remoteFrontendService,
+        storageProviders: storageProviders,
+        gpioService: injector(),
+        screenService: injector(),
+        systemInfoService: injector(),
+        webServer: _remoteWebServer,
+        mqttService: injector(),
+        wifiService: injector(),
+        powerOffService: injector(),
+        applicationStateService: injector(),
       );
     });
-    var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;
 
     service = injector.get<HardwareService>();

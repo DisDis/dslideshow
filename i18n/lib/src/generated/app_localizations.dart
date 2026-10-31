@@ -5231,7 +5231,7 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_search_scope.
   ///
   /// In en, this message translates to:
-  /// **'Search the local photo library. Trash is excluded. Nothing is deleted automatically.'**
+  /// **'Searches still images in the library and Hidden. Trash, videos and GIFs are excluded.'**
   String get gallery_search_scope;
 
   /// No description provided for @gallery_search_running.
@@ -6079,6 +6079,402 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not read the selected folder.'**
   String get upload_folder_scan_failed;
+
+  /// No description provided for @gallery_hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get gallery_hidden;
+
+  /// No description provided for @gallery_hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide from slideshow'**
+  String get gallery_hide;
+
+  /// No description provided for @gallery_unhide.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to slideshow'**
+  String get gallery_unhide;
+
+  /// No description provided for @gallery_hidden_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Files hidden from the slideshow'**
+  String get gallery_hidden_done;
+
+  /// No description provided for @gallery_unhidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Files returned to the slideshow'**
+  String get gallery_unhidden;
+
+  /// No description provided for @gallery_hide_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide selected files?'**
+  String get gallery_hide_title;
+
+  /// No description provided for @gallery_hide_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide {count} files from the slideshow? They remain on the frame and can be restored from Hidden.'**
+  String gallery_hide_confirm_body(int count);
+
+  /// No description provided for @gallery_hidden_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden files stay on the frame and are skipped during cloud synchronization.'**
+  String get gallery_hidden_hint;
+
+  /// No description provided for @gallery_hidden_file_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden file entry changed'**
+  String get gallery_hidden_file_changed;
+
+  /// No description provided for @gallery_in_slideshow.
+  ///
+  /// In en, this message translates to:
+  /// **'In slideshow'**
+  String get gallery_in_slideshow;
+
+  /// No description provided for @gallery_hidden_only_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'This selection removes the last copy in the slideshow from at least one group. Only hidden copies will remain.'**
+  String get gallery_hidden_only_warning;
+
+  /// No description provided for @yandex_drive_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex Disk'**
+  String get yandex_drive_label;
+
+  /// No description provided for @using_yandex_drive.
+  ///
+  /// In en, this message translates to:
+  /// **'Using Yandex Disk'**
+  String get using_yandex_drive;
+
+  /// No description provided for @yandex_application_setup.
+  ///
+  /// In en, this message translates to:
+  /// **'OAuth application'**
+  String get yandex_application_setup;
+
+  /// No description provided for @yandex_application_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure your Yandex OAuth application once. Credentials stay on the frame.'**
+  String get yandex_application_hint;
+
+  /// No description provided for @yandex_configure_application.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure application'**
+  String get yandex_configure_application;
+
+  /// No description provided for @yandex_secret_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'A client secret is saved. Leave blank to keep it.'**
+  String get yandex_secret_saved;
+
+  /// No description provided for @yandex_accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected accounts'**
+  String get yandex_accounts;
+
+  /// No description provided for @yandex_add_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Yandex'**
+  String get yandex_add_account;
+
+  /// No description provided for @yandex_not_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get yandex_not_connected;
+
+  /// No description provided for @yandex_not_configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected for synchronization'**
+  String get yandex_not_configured;
+
+  /// No description provided for @yandex_choose_folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folders'**
+  String get yandex_choose_folders;
+
+  /// No description provided for @yandex_folder_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders to synchronize'**
+  String get yandex_folder_selection;
+
+  /// No description provided for @yandex_recursive_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected folders include all subfolders.'**
+  String get yandex_recursive_hint;
+
+  /// No description provided for @yandex_select_current_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Select this folder'**
+  String get yandex_select_current_folder;
+
+  /// No description provided for @yandex_no_folders.
+  ///
+  /// In en, this message translates to:
+  /// **'No subfolders on this page'**
+  String get yandex_no_folders;
+
+  /// No description provided for @yandex_previous_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get yandex_previous_page;
+
+  /// No description provided for @yandex_next_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get yandex_next_page;
+
+  /// No description provided for @yandex_parent_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent folder'**
+  String get yandex_parent_folder;
+
+  /// No description provided for @yandex_disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect from frame'**
+  String get yandex_disconnect;
+
+  /// No description provided for @yandex_disconnect_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect this account?'**
+  String get yandex_disconnect_title;
+
+  /// No description provided for @yandex_disconnect_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Current downloads will stop. Downloaded media will remain on the frame.'**
+  String get yandex_disconnect_message;
+
+  /// No description provided for @yandex_sync_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronize this account'**
+  String get yandex_sync_enabled;
+
+  /// No description provided for @yandex_sync_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronize now'**
+  String get yandex_sync_now;
+
+  /// No description provided for @yandex_pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause synchronization'**
+  String get yandex_pause;
+
+  /// No description provided for @yandex_resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume synchronization'**
+  String get yandex_resume;
+
+  /// No description provided for @yandex_runtime_inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the settings and restart the frame to activate this storage.'**
+  String get yandex_runtime_inactive;
+
+  /// No description provided for @yandex_runtime_running.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization is running'**
+  String get yandex_runtime_running;
+
+  /// No description provided for @yandex_runtime_idle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the next synchronization'**
+  String get yandex_runtime_idle;
+
+  /// No description provided for @yandex_runtime_paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization is paused'**
+  String get yandex_runtime_paused;
+
+  /// No description provided for @yandex_runtime_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Current synchronization'**
+  String get yandex_runtime_title;
+
+  /// No description provided for @yandex_authorization_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Yandex account'**
+  String get yandex_authorization_title;
+
+  /// No description provided for @yandex_authorization_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Yandex on this phone or scan the QR code with another device. Enter the code if requested.'**
+  String get yandex_authorization_hint;
+
+  /// No description provided for @yandex_read_access_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex grants read access to the whole Disk. The frame downloads only the folders you choose.'**
+  String get yandex_read_access_hint;
+
+  /// No description provided for @yandex_open_authorization.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Yandex'**
+  String get yandex_open_authorization;
+
+  /// No description provided for @yandex_copy_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get yandex_copy_code;
+
+  /// No description provided for @yandex_authorization_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for confirmation in Yandex'**
+  String get yandex_authorization_pending;
+
+  /// No description provided for @yandex_authorization_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Account connected. Choose folders in the settings.'**
+  String get yandex_authorization_connected;
+
+  /// No description provided for @yandex_authorization_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection cancelled'**
+  String get yandex_authorization_cancelled;
+
+  /// No description provided for @yandex_authorization_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'The connection code has expired. Start again.'**
+  String get yandex_authorization_expired;
+
+  /// No description provided for @yandex_authorization_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The account could not be connected.'**
+  String get yandex_authorization_failed;
+
+  /// No description provided for @yandex_request_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame rejected the request. Refresh the state before trying again.'**
+  String get yandex_request_failed;
+
+  /// No description provided for @yandex_outcome_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost or request timed out. Check the current state before repeating the action.'**
+  String get yandex_outcome_unknown;
+
+  /// No description provided for @yandex_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load Yandex Disk state.'**
+  String get yandex_load_failed;
+
+  /// No description provided for @yandex_browser_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the browser. Copy the address and open it manually.'**
+  String get yandex_browser_failed;
+
+  /// No description provided for @yandex_connections_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No Yandex accounts are connected yet.'**
+  String get yandex_connections_empty;
+
+  /// No description provided for @yandex_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh state'**
+  String get yandex_refresh;
+
+  /// No description provided for @yandex_alias.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name on the frame'**
+  String get yandex_alias;
+
+  /// No description provided for @yandex_apply_folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Use selected folders'**
+  String get yandex_apply_folders;
+
+  /// No description provided for @yandex_folder_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected folders: {count}'**
+  String yandex_folder_count(int count);
+
+  /// No description provided for @yandex_sync_counts.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded: {downloaded}; skipped: {skipped}; failed: {failed}'**
+  String yandex_sync_counts(int downloaded, int skipped, int failed);
+
+  /// No description provided for @yandex_expires_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Code expires: {time}'**
+  String yandex_expires_at(String time);
+
+  /// No description provided for @yandex_reconnect_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'An account needs authorization again. Use Connect Yandex to restore access.'**
+  String get yandex_reconnect_hint;
+
+  /// No description provided for @yandex_last_sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last successful synchronization: {time}'**
+  String yandex_last_sync(String time);
+
+  /// No description provided for @yandex_runtime_failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization completed with errors. Check the account connection and available space.'**
+  String get yandex_runtime_failure;
+
+  /// No description provided for @yandex_authorization_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Access was declined in Yandex.'**
+  String get yandex_authorization_denied;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

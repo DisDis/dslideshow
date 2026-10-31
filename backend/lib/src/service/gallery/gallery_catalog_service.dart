@@ -23,6 +23,7 @@ class GallerySource {
   final String absolutePath;
   final String fingerprint;
   const GallerySource(this.entry, this.absolutePath, this.fingerprint);
+  File get file => File(absolutePath);
 }
 
 class _CatalogDigest implements Sink<Digest> {
@@ -67,6 +68,13 @@ class GalleryCatalogService {
   }) : thumbnailPolicy = thumbnailPolicy ?? const ThumbnailPolicy().catalogPolicy {
     if (maxPendingOperations < 1) throw ArgumentError.value(maxPendingOperations);
   }
+
+  List<GalleryCapability> get capabilities => [
+    GalleryCapability.thumbnails,
+    GalleryCapability.revisionedOriginals,
+    GalleryCapability.refresh,
+    ...additionalCapabilities,
+  ];
 
   void markDirty() {
     if (_closed) return;
@@ -261,11 +269,12 @@ class GalleryCatalogService {
             ? GalleryEntryKind.video
             : GalleryEntryKind.unsupported;
         final entry = GalleryEntry(
+          section: GalleryMediaSection.published,
           mediaId: _mediaId(relative),
           path: relative,
           name: path.basename(relative),
           kind: kind,
-          sourceRevision: kind == GalleryEntryKind.directory ? null : _sourceRevision(epoch, fingerprint),
+          sourceRevision: kind == GalleryEntryKind.directory ? '' : _sourceRevision(epoch, fingerprint),
           thumbnailSupported:
               kind == GalleryEntryKind.image ||
               kind == GalleryEntryKind.animatedImage ||
@@ -284,13 +293,9 @@ class GalleryCatalogService {
     final revision = _snapshotRevision(epoch, sources);
     final changed = _catalog?.catalogRevision != revision;
     _catalog = GalleryCatalog(
+      section: GalleryMediaSection.published,
       catalogRevision: revision,
-      capabilities: [
-        GalleryCapability.thumbnails,
-        GalleryCapability.revisionedOriginals,
-        GalleryCapability.refresh,
-        ...additionalCapabilities,
-      ],
+      capabilities: capabilities,
       thumbnailPolicy: thumbnailPolicy,
       entries: [for (final source in sources) source.entry],
     );

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
@@ -43,33 +42,7 @@ class WebClient {
     this.uploadTimeout = const Duration(minutes: 30),
   }) : _clientFactory = clientFactory ?? http.Client.new;
 
-  Uri _uri(List<String> segments) =>
-      Uri(scheme: scheme, host: host, port: port, pathSegments: segments);
-
-  Uri getMediaItemUri(String itemPath) =>
-      _uri(['cache', code, 'get', ...itemPath.split('/')]);
-
-  Future<List<String>> getMediaItems() async {
-    final client = _clientFactory();
-    try {
-      final response = await client.get(
-        _uri(['cache', code, 'list']),
-        headers: {'content-type': 'application/json; charset=utf-8'},
-      );
-      if (response.statusCode != 200) {
-        throw const FormatException('Media list request failed');
-      }
-      final data = json.decode(response.body);
-      if (data is! Map<String, dynamic> || data['items'] is! List) {
-        throw const FormatException('Invalid media list response');
-      }
-      return (data['items'] as List).map((item) => item.toString()).toList();
-    } catch (_) {
-      throw const FormatException('Media list request failed');
-    } finally {
-      client.close();
-    }
-  }
+  Uri _uri(List<String> segments) => Uri(scheme: scheme, host: host, port: port, pathSegments: segments);
 
   Future<void> uploadMediaStream({
     required String serverPath,
@@ -102,10 +75,7 @@ class WebClient {
       int? size;
       try {
         metadata = Future<int?>.sync(length);
-        size = await Future.any<int?>([
-          metadata,
-          aborted.future.then<int?>((_) => throw const MediaUploadCancelled()),
-        ]);
+        size = await Future.any<int?>([metadata, aborted.future.then<int?>((_) => throw const MediaUploadCancelled())]);
       } catch (_) {
         if (cancellation.isCancelled || timedOut) rethrow;
         throw const MediaUploadException(MediaUploadFailure.lengthUnknown);
@@ -118,20 +88,8 @@ class WebClient {
         throw const MediaUploadException(MediaUploadFailure.lengthUnknown);
       }
       body = _UploadBody(openRead, size, onProgress);
-      final request =
-          http.AbortableMultipartRequest(
-              'POST',
-              _uri(['upload', code, '']),
-              abortTrigger: aborted.future,
-            )
-            ..files.add(
-              http.MultipartFile(
-                'file',
-                body.stream,
-                size,
-                filename: serverPath,
-              ),
-            );
+      final request = http.AbortableMultipartRequest('POST', _uri(['upload', code, '']), abortTrigger: aborted.future)
+        ..files.add(http.MultipartFile('file', body.stream, size, filename: serverPath));
       client = _clientFactory();
       final response = await client.send(request);
       // The backend only acknowledges the upload; never retain response content.
@@ -224,9 +182,7 @@ class _UploadBody {
   void _fail() {
     sourceFailed = true;
     if (!_controller.isClosed) {
-      _controller.addError(
-        const MediaUploadException(MediaUploadFailure.sourceUnavailable),
-      );
+      _controller.addError(const MediaUploadException(MediaUploadFailure.sourceUnavailable));
       unawaited(_controller.close());
     }
   }

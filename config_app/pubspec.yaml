@@ -76,6 +76,8 @@ dependencies:
   dslideshow_i18n:
     path: ../i18n
   pub_semver: ^2.2.1
+  url_launcher: ^6.3.2
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   freezed: ^4.0.3

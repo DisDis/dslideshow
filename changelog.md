@@ -1,5 +1,21 @@
 # Unreleased
 
+* Add Yandex Disk storage with multiple accounts, shared folder selection,
+  browser/QR account connection, hourly synchronization by default and controls
+  in the existing storage settings. Keep credentials outside exported settings.
+* Hide media in `images.gallery/hidden` while preserving its relative path,
+  restore it to the slideshow and include hidden images in duplicate search.
+  Skip cloud downloads already present in the library or hidden folder,
+  including paths through symbolic links;
+  retain existing media when cloud files or selected folders are removed.
+  Publish cloud downloads locally without refreshing the open gallery automatically.
+  Finish the current cloud download before pausing, disconnecting its account
+  or releasing the storage; stop before starting another file.
+  Let active metadata requests finish and check synchronization state before
+  starting another request.
+  Cancel OAuth through its session status and ignore late responses while
+  letting accepted requests finish before closing the storage.
+
 * Discover photo frames on Android through the system network service discovery.
   Import selected folders and subfolders through Android's document picker without
   requiring access to the entire storage; stream active files and report picker errors.

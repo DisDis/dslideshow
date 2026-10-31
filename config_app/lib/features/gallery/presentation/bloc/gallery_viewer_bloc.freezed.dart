@@ -529,6 +529,8 @@ abstract mixin class $ViewerItemChangedCopyWith<$Res>
   ) = _$ViewerItemChangedCopyWithImpl;
   @useResult
   $Res call({GalleryItem? item, int subscriptionGeneration});
+
+  $GalleryItemCopyWith<$Res>? get item;
 }
 
 /// @nodoc
@@ -555,6 +557,20 @@ class _$ViewerItemChangedCopyWithImpl<$Res>
                   as int,
       ),
     );
+  }
+
+  /// Create a copy of GalleryViewerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryItemCopyWith<$Res>? get item {
+    if (_self.item == null) {
+      return null;
+    }
+
+    return $GalleryItemCopyWith<$Res>(_self.item!, (value) {
+      return _then(_self.copyWith(item: value));
+    });
   }
 }
 
@@ -1150,7 +1166,7 @@ mixin _$GalleryViewerConfiguration {
   GalleryItem get item;
   GalleryManagementRepository? get management;
   Set<GalleryCapability> get capabilities;
-  GalleryTrashEntry? get trashEntry;
+  GalleryEntry? get entry;
   Stream<GalleryItem?>? get itemUpdates;
   GalleryItem? Function()? get currentItem;
 
@@ -1178,8 +1194,8 @@ mixin _$GalleryViewerConfiguration {
               other.capabilities,
               _this.capabilities,
             ) &&
-            (identical(other.trashEntry, _this.trashEntry) ||
-                other.trashEntry == _this.trashEntry) &&
+            (identical(other.entry, _this.entry) ||
+                other.entry == _this.entry) &&
             (identical(other.itemUpdates, _this.itemUpdates) ||
                 other.itemUpdates == _this.itemUpdates) &&
             (identical(other.currentItem, _this.currentItem) ||
@@ -1194,7 +1210,7 @@ mixin _$GalleryViewerConfiguration {
       _this.item,
       _this.management,
       const DeepCollectionEquality().hash(_this.capabilities),
-      _this.trashEntry,
+      _this.entry,
       _this.itemUpdates,
       _this.currentItem,
     );
@@ -1203,7 +1219,7 @@ mixin _$GalleryViewerConfiguration {
   @override
   String toString() {
     final _this = this as GalleryViewerConfiguration;
-    return 'GalleryViewerConfiguration(item: ${_this.item}, management: ${_this.management}, capabilities: ${_this.capabilities}, trashEntry: ${_this.trashEntry}, itemUpdates: ${_this.itemUpdates}, currentItem: ${_this.currentItem})';
+    return 'GalleryViewerConfiguration(item: ${_this.item}, management: ${_this.management}, capabilities: ${_this.capabilities}, entry: ${_this.entry}, itemUpdates: ${_this.itemUpdates}, currentItem: ${_this.currentItem})';
   }
 }
 
@@ -1218,12 +1234,13 @@ abstract mixin class $GalleryViewerConfigurationCopyWith<$Res> {
     GalleryItem item,
     GalleryManagementRepository? management,
     Set<GalleryCapability> capabilities,
-    GalleryTrashEntry? trashEntry,
+    GalleryEntry? entry,
     Stream<GalleryItem?>? itemUpdates,
     GalleryItem? Function()? currentItem,
   });
 
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry;
+  $GalleryItemCopyWith<$Res> get item;
+  $GalleryEntryCopyWith<$Res>? get entry;
 }
 
 /// @nodoc
@@ -1242,7 +1259,7 @@ class _$GalleryViewerConfigurationCopyWithImpl<$Res>
     Object? item = null,
     Object? management = freezed,
     Object? capabilities = null,
-    Object? trashEntry = freezed,
+    Object? entry = freezed,
     Object? itemUpdates = freezed,
     Object? currentItem = freezed,
   }) {
@@ -1260,10 +1277,10 @@ class _$GalleryViewerConfigurationCopyWithImpl<$Res>
             ? _self.capabilities
             : capabilities // ignore: cast_nullable_to_non_nullable
                   as Set<GalleryCapability>,
-        trashEntry: freezed == trashEntry
-            ? _self.trashEntry
-            : trashEntry // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashEntry?,
+        entry: freezed == entry
+            ? _self.entry
+            : entry // ignore: cast_nullable_to_non_nullable
+                  as GalleryEntry?,
         itemUpdates: freezed == itemUpdates
             ? _self.itemUpdates
             : itemUpdates // ignore: cast_nullable_to_non_nullable
@@ -1280,13 +1297,23 @@ class _$GalleryViewerConfigurationCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry {
-    if (_self.trashEntry == null) {
+  $GalleryItemCopyWith<$Res> get item {
+    return $GalleryItemCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of GalleryViewerConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryEntryCopyWith<$Res>? get entry {
+    if (_self.entry == null) {
       return null;
     }
 
-    return $GalleryTrashEntryCopyWith<$Res>(_self.trashEntry!, (value) {
-      return _then(_self.copyWith(trashEntry: value));
+    return $GalleryEntryCopyWith<$Res>(_self.entry!, (value) {
+      return _then(_self.copyWith(entry: value));
     });
   }
 }
@@ -1388,7 +1415,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
       GalleryItem item,
       GalleryManagementRepository? management,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Stream<GalleryItem?>? itemUpdates,
       GalleryItem? Function()? currentItem,
     )?
@@ -1402,7 +1429,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
           _that.item,
           _that.management,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.itemUpdates,
           _that.currentItem,
         );
@@ -1430,7 +1457,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
       GalleryItem item,
       GalleryManagementRepository? management,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Stream<GalleryItem?>? itemUpdates,
       GalleryItem? Function()? currentItem,
     )
@@ -1443,7 +1470,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
           _that.item,
           _that.management,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.itemUpdates,
           _that.currentItem,
         );
@@ -1470,7 +1497,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
       GalleryItem item,
       GalleryManagementRepository? management,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Stream<GalleryItem?>? itemUpdates,
       GalleryItem? Function()? currentItem,
     )?
@@ -1483,7 +1510,7 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
           _that.item,
           _that.management,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.itemUpdates,
           _that.currentItem,
         );
@@ -1495,15 +1522,16 @@ extension GalleryViewerConfigurationPatterns on GalleryViewerConfiguration {
 
 /// @nodoc
 
-class _GalleryViewerConfiguration implements GalleryViewerConfiguration {
+class _GalleryViewerConfiguration extends GalleryViewerConfiguration {
   const _GalleryViewerConfiguration({
     required this.item,
     this.management,
     Set<GalleryCapability> capabilities = const {},
-    this.trashEntry,
+    this.entry,
     this.itemUpdates,
     this.currentItem,
-  }) : _capabilities = capabilities;
+  }) : _capabilities = capabilities,
+       super._();
 
   @override
   final GalleryItem item;
@@ -1519,7 +1547,7 @@ class _GalleryViewerConfiguration implements GalleryViewerConfiguration {
   }
 
   @override
-  final GalleryTrashEntry? trashEntry;
+  final GalleryEntry? entry;
   @override
   final Stream<GalleryItem?>? itemUpdates;
   @override
@@ -1549,8 +1577,7 @@ class _GalleryViewerConfiguration implements GalleryViewerConfiguration {
               other.capabilities,
               _capabilities,
             ) &&
-            (identical(other.trashEntry, trashEntry) ||
-                other.trashEntry == trashEntry) &&
+            (identical(other.entry, entry) || other.entry == entry) &&
             (identical(other.itemUpdates, itemUpdates) ||
                 other.itemUpdates == itemUpdates) &&
             (identical(other.currentItem, currentItem) ||
@@ -1564,7 +1591,7 @@ class _GalleryViewerConfiguration implements GalleryViewerConfiguration {
       item,
       management,
       const DeepCollectionEquality().hash(_capabilities),
-      trashEntry,
+      entry,
       itemUpdates,
       currentItem,
     );
@@ -1572,7 +1599,7 @@ class _GalleryViewerConfiguration implements GalleryViewerConfiguration {
 
   @override
   String toString() {
-    return 'GalleryViewerConfiguration(item: $item, management: $management, capabilities: $capabilities, trashEntry: $trashEntry, itemUpdates: $itemUpdates, currentItem: $currentItem)';
+    return 'GalleryViewerConfiguration(item: $item, management: $management, capabilities: $capabilities, entry: $entry, itemUpdates: $itemUpdates, currentItem: $currentItem)';
   }
 }
 
@@ -1589,13 +1616,15 @@ abstract mixin class _$GalleryViewerConfigurationCopyWith<$Res>
     GalleryItem item,
     GalleryManagementRepository? management,
     Set<GalleryCapability> capabilities,
-    GalleryTrashEntry? trashEntry,
+    GalleryEntry? entry,
     Stream<GalleryItem?>? itemUpdates,
     GalleryItem? Function()? currentItem,
   });
 
   @override
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry;
+  $GalleryItemCopyWith<$Res> get item;
+  @override
+  $GalleryEntryCopyWith<$Res>? get entry;
 }
 
 /// @nodoc
@@ -1614,7 +1643,7 @@ class __$GalleryViewerConfigurationCopyWithImpl<$Res>
     Object? item = null,
     Object? management = freezed,
     Object? capabilities = null,
-    Object? trashEntry = freezed,
+    Object? entry = freezed,
     Object? itemUpdates = freezed,
     Object? currentItem = freezed,
   }) {
@@ -1632,10 +1661,10 @@ class __$GalleryViewerConfigurationCopyWithImpl<$Res>
             ? _self._capabilities
             : capabilities // ignore: cast_nullable_to_non_nullable
                   as Set<GalleryCapability>,
-        trashEntry: freezed == trashEntry
-            ? _self.trashEntry
-            : trashEntry // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashEntry?,
+        entry: freezed == entry
+            ? _self.entry
+            : entry // ignore: cast_nullable_to_non_nullable
+                  as GalleryEntry?,
         itemUpdates: freezed == itemUpdates
             ? _self.itemUpdates
             : itemUpdates // ignore: cast_nullable_to_non_nullable
@@ -1652,13 +1681,23 @@ class __$GalleryViewerConfigurationCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry {
-    if (_self.trashEntry == null) {
+  $GalleryItemCopyWith<$Res> get item {
+    return $GalleryItemCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of GalleryViewerConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryEntryCopyWith<$Res>? get entry {
+    if (_self.entry == null) {
       return null;
     }
 
-    return $GalleryTrashEntryCopyWith<$Res>(_self.trashEntry!, (value) {
-      return _then(_self.copyWith(trashEntry: value));
+    return $GalleryEntryCopyWith<$Res>(_self.entry!, (value) {
+      return _then(_self.copyWith(entry: value));
     });
   }
 }
@@ -1822,7 +1861,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
     TResult Function(GalleryErrorCode code, bool refreshCatalog)?
     operationFailed,
     TResult Function()? rotationApplied,
-    TResult Function(GalleryMutation action, List<String> trashIds)?
+    TResult Function(GalleryMutation action, List<String> mediaIds)?
     mutationApplied,
     required TResult orElse(),
   }) {
@@ -1837,7 +1876,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
       case ViewerRotationApplied() when rotationApplied != null:
         return rotationApplied();
       case ViewerMutationApplied() when mutationApplied != null:
-        return mutationApplied(_that.action, _that.trashIds);
+        return mutationApplied(_that.action, _that.mediaIds);
       case _:
         return orElse();
     }
@@ -1864,7 +1903,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
     required TResult Function(GalleryErrorCode code, bool refreshCatalog)
     operationFailed,
     required TResult Function() rotationApplied,
-    required TResult Function(GalleryMutation action, List<String> trashIds)
+    required TResult Function(GalleryMutation action, List<String> mediaIds)
     mutationApplied,
   }) {
     final _that = this;
@@ -1878,7 +1917,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
       case ViewerRotationApplied():
         return rotationApplied();
       case ViewerMutationApplied():
-        return mutationApplied(_that.action, _that.trashIds);
+        return mutationApplied(_that.action, _that.mediaIds);
     }
   }
 
@@ -1902,7 +1941,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
     TResult? Function(GalleryErrorCode code, bool refreshCatalog)?
     operationFailed,
     TResult? Function()? rotationApplied,
-    TResult? Function(GalleryMutation action, List<String> trashIds)?
+    TResult? Function(GalleryMutation action, List<String> mediaIds)?
     mutationApplied,
   }) {
     final _that = this;
@@ -1916,7 +1955,7 @@ extension GalleryViewerEffectPatterns on GalleryViewerEffect {
       case ViewerRotationApplied() when rotationApplied != null:
         return rotationApplied();
       case ViewerMutationApplied() when mutationApplied != null:
-        return mutationApplied(_that.action, _that.trashIds);
+        return mutationApplied(_that.action, _that.mediaIds);
       case _:
         return null;
     }
@@ -2132,16 +2171,16 @@ class ViewerRotationApplied implements GalleryViewerEffect {
 class ViewerMutationApplied implements GalleryViewerEffect {
   const ViewerMutationApplied({
     required this.action,
-    List<String> trashIds = const [],
-  }) : _trashIds = trashIds;
+    List<String> mediaIds = const [],
+  }) : _mediaIds = mediaIds;
 
   final GalleryMutation action;
-  final List<String> _trashIds;
+  final List<String> _mediaIds;
   @JsonKey()
-  List<String> get trashIds {
-    if (_trashIds is EqualUnmodifiableListView) return _trashIds;
+  List<String> get mediaIds {
+    if (_mediaIds is EqualUnmodifiableListView) return _mediaIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_trashIds);
+    return EqualUnmodifiableListView(_mediaIds);
   }
 
   /// Create a copy of GalleryViewerEffect
@@ -2160,7 +2199,7 @@ class ViewerMutationApplied implements GalleryViewerEffect {
         (other.runtimeType == runtimeType &&
             other is ViewerMutationApplied &&
             (identical(other.action, action) || other.action == action) &&
-            const DeepCollectionEquality().equals(other.trashIds, _trashIds));
+            const DeepCollectionEquality().equals(other.mediaIds, _mediaIds));
   }
 
   @override
@@ -2168,13 +2207,13 @@ class ViewerMutationApplied implements GalleryViewerEffect {
     return Object.hash(
       runtimeType,
       action,
-      const DeepCollectionEquality().hash(_trashIds),
+      const DeepCollectionEquality().hash(_mediaIds),
     );
   }
 
   @override
   String toString() {
-    return 'GalleryViewerEffect.mutationApplied(action: $action, trashIds: $trashIds)';
+    return 'GalleryViewerEffect.mutationApplied(action: $action, mediaIds: $mediaIds)';
   }
 }
 
@@ -2186,7 +2225,7 @@ abstract mixin class $ViewerMutationAppliedCopyWith<$Res>
     $Res Function(ViewerMutationApplied) _then,
   ) = _$ViewerMutationAppliedCopyWithImpl;
   @useResult
-  $Res call({GalleryMutation action, List<String> trashIds});
+  $Res call({GalleryMutation action, List<String> mediaIds});
 }
 
 /// @nodoc
@@ -2200,16 +2239,16 @@ class _$ViewerMutationAppliedCopyWithImpl<$Res>
   /// Create a copy of GalleryViewerEffect
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? action = null, Object? trashIds = null}) {
+  $Res call({Object? action = null, Object? mediaIds = null}) {
     return _then(
       ViewerMutationApplied(
         action: null == action
             ? _self.action
             : action // ignore: cast_nullable_to_non_nullable
                   as GalleryMutation,
-        trashIds: null == trashIds
-            ? _self._trashIds
-            : trashIds // ignore: cast_nullable_to_non_nullable
+        mediaIds: null == mediaIds
+            ? _self._mediaIds
+            : mediaIds // ignore: cast_nullable_to_non_nullable
                   as List<String>,
       ),
     );
@@ -2223,7 +2262,7 @@ mixin _$GalleryViewerState {
   bool get showInfo;
   bool get managementAvailable;
   Set<GalleryCapability> get capabilities;
-  GalleryTrashEntry? get trashEntry;
+  GalleryEntry? get entry;
   Set<String> get supersededRevisions;
   GalleryViewerMetadataStatus get metadataStatus;
   GalleryMetadata? get metadata;
@@ -2262,8 +2301,8 @@ mixin _$GalleryViewerState {
               other.capabilities,
               _this.capabilities,
             ) &&
-            (identical(other.trashEntry, _this.trashEntry) ||
-                other.trashEntry == _this.trashEntry) &&
+            (identical(other.entry, _this.entry) ||
+                other.entry == _this.entry) &&
             const DeepCollectionEquality().equals(
               other.supersededRevisions,
               _this.supersededRevisions,
@@ -2298,7 +2337,7 @@ mixin _$GalleryViewerState {
       _this.showInfo,
       _this.managementAvailable,
       const DeepCollectionEquality().hash(_this.capabilities),
-      _this.trashEntry,
+      _this.entry,
       const DeepCollectionEquality().hash(_this.supersededRevisions),
       _this.metadataStatus,
       _this.metadata,
@@ -2315,7 +2354,7 @@ mixin _$GalleryViewerState {
   @override
   String toString() {
     final _this = this as GalleryViewerState;
-    return 'GalleryViewerState(item: ${_this.item}, missing: ${_this.missing}, showInfo: ${_this.showInfo}, managementAvailable: ${_this.managementAvailable}, capabilities: ${_this.capabilities}, trashEntry: ${_this.trashEntry}, supersededRevisions: ${_this.supersededRevisions}, metadataStatus: ${_this.metadataStatus}, metadata: ${_this.metadata}, metadataError: ${_this.metadataError}, operation: ${_this.operation}, mutationRequest: ${_this.mutationRequest}, operationError: ${_this.operationError}, confirmation: ${_this.confirmation}, effectId: ${_this.effectId}, effect: ${_this.effect})';
+    return 'GalleryViewerState(item: ${_this.item}, missing: ${_this.missing}, showInfo: ${_this.showInfo}, managementAvailable: ${_this.managementAvailable}, capabilities: ${_this.capabilities}, entry: ${_this.entry}, supersededRevisions: ${_this.supersededRevisions}, metadataStatus: ${_this.metadataStatus}, metadata: ${_this.metadata}, metadataError: ${_this.metadataError}, operation: ${_this.operation}, mutationRequest: ${_this.mutationRequest}, operationError: ${_this.operationError}, confirmation: ${_this.confirmation}, effectId: ${_this.effectId}, effect: ${_this.effect})';
   }
 }
 
@@ -2332,7 +2371,7 @@ abstract mixin class $GalleryViewerStateCopyWith<$Res> {
     bool showInfo,
     bool managementAvailable,
     Set<GalleryCapability> capabilities,
-    GalleryTrashEntry? trashEntry,
+    GalleryEntry? entry,
     Set<String> supersededRevisions,
     GalleryViewerMetadataStatus metadataStatus,
     GalleryMetadata? metadata,
@@ -2345,7 +2384,8 @@ abstract mixin class $GalleryViewerStateCopyWith<$Res> {
     GalleryViewerEffect? effect,
   });
 
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry;
+  $GalleryItemCopyWith<$Res> get item;
+  $GalleryEntryCopyWith<$Res>? get entry;
   $GalleryMetadataCopyWith<$Res>? get metadata;
   $GalleryOperationRequestCopyWith<$Res>? get mutationRequest;
   $GalleryMutationConfirmationCopyWith<$Res>? get confirmation;
@@ -2370,7 +2410,7 @@ class _$GalleryViewerStateCopyWithImpl<$Res>
     Object? showInfo = null,
     Object? managementAvailable = null,
     Object? capabilities = null,
-    Object? trashEntry = freezed,
+    Object? entry = freezed,
     Object? supersededRevisions = null,
     Object? metadataStatus = null,
     Object? metadata = freezed,
@@ -2404,10 +2444,10 @@ class _$GalleryViewerStateCopyWithImpl<$Res>
             ? _self.capabilities
             : capabilities // ignore: cast_nullable_to_non_nullable
                   as Set<GalleryCapability>,
-        trashEntry: freezed == trashEntry
-            ? _self.trashEntry
-            : trashEntry // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashEntry?,
+        entry: freezed == entry
+            ? _self.entry
+            : entry // ignore: cast_nullable_to_non_nullable
+                  as GalleryEntry?,
         supersededRevisions: null == supersededRevisions
             ? _self.supersededRevisions
             : supersededRevisions // ignore: cast_nullable_to_non_nullable
@@ -2456,13 +2496,23 @@ class _$GalleryViewerStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry {
-    if (_self.trashEntry == null) {
+  $GalleryItemCopyWith<$Res> get item {
+    return $GalleryItemCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of GalleryViewerState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryEntryCopyWith<$Res>? get entry {
+    if (_self.entry == null) {
       return null;
     }
 
-    return $GalleryTrashEntryCopyWith<$Res>(_self.trashEntry!, (value) {
-      return _then(_self.copyWith(trashEntry: value));
+    return $GalleryEntryCopyWith<$Res>(_self.entry!, (value) {
+      return _then(_self.copyWith(entry: value));
     });
   }
 
@@ -2626,7 +2676,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
       bool showInfo,
       bool managementAvailable,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Set<String> supersededRevisions,
       GalleryViewerMetadataStatus metadataStatus,
       GalleryMetadata? metadata,
@@ -2650,7 +2700,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
           _that.showInfo,
           _that.managementAvailable,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.supersededRevisions,
           _that.metadataStatus,
           _that.metadata,
@@ -2688,7 +2738,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
       bool showInfo,
       bool managementAvailable,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Set<String> supersededRevisions,
       GalleryViewerMetadataStatus metadataStatus,
       GalleryMetadata? metadata,
@@ -2711,7 +2761,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
           _that.showInfo,
           _that.managementAvailable,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.supersededRevisions,
           _that.metadataStatus,
           _that.metadata,
@@ -2748,7 +2798,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
       bool showInfo,
       bool managementAvailable,
       Set<GalleryCapability> capabilities,
-      GalleryTrashEntry? trashEntry,
+      GalleryEntry? entry,
       Set<String> supersededRevisions,
       GalleryViewerMetadataStatus metadataStatus,
       GalleryMetadata? metadata,
@@ -2771,7 +2821,7 @@ extension GalleryViewerStatePatterns on GalleryViewerState {
           _that.showInfo,
           _that.managementAvailable,
           _that.capabilities,
-          _that.trashEntry,
+          _that.entry,
           _that.supersededRevisions,
           _that.metadataStatus,
           _that.metadata,
@@ -2798,7 +2848,7 @@ class _GalleryViewerState extends GalleryViewerState {
     this.showInfo = false,
     this.managementAvailable = false,
     Set<GalleryCapability> capabilities = const {},
-    this.trashEntry,
+    this.entry,
     Set<String> supersededRevisions = const {},
     this.metadataStatus = GalleryViewerMetadataStatus.idle,
     this.metadata,
@@ -2834,7 +2884,7 @@ class _GalleryViewerState extends GalleryViewerState {
   }
 
   @override
-  final GalleryTrashEntry? trashEntry;
+  final GalleryEntry? entry;
   final Set<String> _supersededRevisions;
   @override
   @JsonKey()
@@ -2890,8 +2940,7 @@ class _GalleryViewerState extends GalleryViewerState {
               other.capabilities,
               _capabilities,
             ) &&
-            (identical(other.trashEntry, trashEntry) ||
-                other.trashEntry == trashEntry) &&
+            (identical(other.entry, entry) || other.entry == entry) &&
             const DeepCollectionEquality().equals(
               other.supersededRevisions,
               _supersededRevisions,
@@ -2924,7 +2973,7 @@ class _GalleryViewerState extends GalleryViewerState {
       showInfo,
       managementAvailable,
       const DeepCollectionEquality().hash(_capabilities),
-      trashEntry,
+      entry,
       const DeepCollectionEquality().hash(_supersededRevisions),
       metadataStatus,
       metadata,
@@ -2940,7 +2989,7 @@ class _GalleryViewerState extends GalleryViewerState {
 
   @override
   String toString() {
-    return 'GalleryViewerState(item: $item, missing: $missing, showInfo: $showInfo, managementAvailable: $managementAvailable, capabilities: $capabilities, trashEntry: $trashEntry, supersededRevisions: $supersededRevisions, metadataStatus: $metadataStatus, metadata: $metadata, metadataError: $metadataError, operation: $operation, mutationRequest: $mutationRequest, operationError: $operationError, confirmation: $confirmation, effectId: $effectId, effect: $effect)';
+    return 'GalleryViewerState(item: $item, missing: $missing, showInfo: $showInfo, managementAvailable: $managementAvailable, capabilities: $capabilities, entry: $entry, supersededRevisions: $supersededRevisions, metadataStatus: $metadataStatus, metadata: $metadata, metadataError: $metadataError, operation: $operation, mutationRequest: $mutationRequest, operationError: $operationError, confirmation: $confirmation, effectId: $effectId, effect: $effect)';
   }
 }
 
@@ -2959,7 +3008,7 @@ abstract mixin class _$GalleryViewerStateCopyWith<$Res>
     bool showInfo,
     bool managementAvailable,
     Set<GalleryCapability> capabilities,
-    GalleryTrashEntry? trashEntry,
+    GalleryEntry? entry,
     Set<String> supersededRevisions,
     GalleryViewerMetadataStatus metadataStatus,
     GalleryMetadata? metadata,
@@ -2973,7 +3022,9 @@ abstract mixin class _$GalleryViewerStateCopyWith<$Res>
   });
 
   @override
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry;
+  $GalleryItemCopyWith<$Res> get item;
+  @override
+  $GalleryEntryCopyWith<$Res>? get entry;
   @override
   $GalleryMetadataCopyWith<$Res>? get metadata;
   @override
@@ -3002,7 +3053,7 @@ class __$GalleryViewerStateCopyWithImpl<$Res>
     Object? showInfo = null,
     Object? managementAvailable = null,
     Object? capabilities = null,
-    Object? trashEntry = freezed,
+    Object? entry = freezed,
     Object? supersededRevisions = null,
     Object? metadataStatus = null,
     Object? metadata = freezed,
@@ -3036,10 +3087,10 @@ class __$GalleryViewerStateCopyWithImpl<$Res>
             ? _self._capabilities
             : capabilities // ignore: cast_nullable_to_non_nullable
                   as Set<GalleryCapability>,
-        trashEntry: freezed == trashEntry
-            ? _self.trashEntry
-            : trashEntry // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashEntry?,
+        entry: freezed == entry
+            ? _self.entry
+            : entry // ignore: cast_nullable_to_non_nullable
+                  as GalleryEntry?,
         supersededRevisions: null == supersededRevisions
             ? _self._supersededRevisions
             : supersededRevisions // ignore: cast_nullable_to_non_nullable
@@ -3088,13 +3139,23 @@ class __$GalleryViewerStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashEntryCopyWith<$Res>? get trashEntry {
-    if (_self.trashEntry == null) {
+  $GalleryItemCopyWith<$Res> get item {
+    return $GalleryItemCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of GalleryViewerState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryEntryCopyWith<$Res>? get entry {
+    if (_self.entry == null) {
       return null;
     }
 
-    return $GalleryTrashEntryCopyWith<$Res>(_self.trashEntry!, (value) {
-      return _then(_self.copyWith(trashEntry: value));
+    return $GalleryEntryCopyWith<$Res>(_self.entry!, (value) {
+      return _then(_self.copyWith(entry: value));
     });
   }
 

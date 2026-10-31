@@ -5,15 +5,15 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_backend/src/service/gallery/thumbnail_service.dart';
+import 'package:dslideshow_common/gallery.dart';
 import 'package:image/image.dart' as image;
 import 'package:test/test.dart';
 
 import 'helpers/capture_logs.dart';
 import 'support/controlled_thumbnail_worker.dart';
 
-Matcher failure(ThumbnailFailureKind kind) => throwsA(
-  isA<ThumbnailFailure>().having((value) => value.kind, 'kind', kind),
-);
+Matcher failure(ThumbnailFailureKind kind) =>
+    throwsA(isA<ThumbnailFailure>().having((value) => value.kind, 'kind', kind));
 
 void main() {
   late Directory root;
@@ -22,12 +22,7 @@ void main() {
   final services = <ThumbnailService>[];
   final variant = ThumbnailVariantSpec(bucketId: 'small', size: 256);
   ThumbnailSource source([String id = 'one', String revision = 'v1']) =>
-      ThumbnailSource(
-        mediaId: id,
-        revision: revision,
-        path: '${root.path}/$id.jpg',
-        fingerprintToken: revision,
-      );
+      ThumbnailSource(mediaId: id, revision: revision, path: '${root.path}/$id.jpg', fingerprintToken: revision);
   ThumbnailService create({
     ThumbnailPolicy policy = const ThumbnailPolicy(),
     ThumbnailSourceValidator? isCurrent,
@@ -58,81 +53,81 @@ void main() {
     await root.delete(recursive: true);
   });
 
-  test(
-    'thumbnail cleanup preserves sibling trash inside gallery state',
-    () async {
-      cache = Directory('${root.path}/images.gallery/thumbnails');
-      await cache.create(recursive: true);
-      final temporary = await File('${cache.path}/.thumb-${'a' * 32}.part')
-          .writeAsString('interrupted thumbnail');
-      final retained = File(
-        '${root.path}/images.gallery/trash/album/photo.png',
-      );
-      await retained.parent.create(recursive: true);
-      final bytes = image.encodePng(image.Image(width: 4, height: 3));
-      await retained.writeAsBytes(bytes);
-      final service = create();
-      await service.initialize();
-      expect(await temporary.exists(), isFalse);
-      expect(await retained.readAsBytes(), bytes);
-      await service.close();
-      expect(await retained.readAsBytes(), bytes);
-    },
-  );
-
-  test(
-    'default disk cache retains 2048 derivatives and evicts overflow',
-    () async {
-      await cache.create();
-      final bytes = [1, 2, 3, 4];
-      final digest = md5.convert(bytes).toString();
-      for (var index = 0; index < 2049; index++) {
-        final key = index.toRadixString(16).padLeft(64, '0');
-        await File('${cache.path}/$key-$digest.jpg').writeAsBytes(bytes);
-      }
-      final service = create();
-      expect(service.policy.maxCacheBytes, 512 * 1024 * 1024);
-      await service.initialize();
-      expect(await cache.list().length, 2048);
-      expect(worker.requests, isEmpty);
-    },
-  );
-
-  test(
-    'cold result is atomic, has content ETag, warm hit does not decode',
-    () async {
-      final service = create();
-      final first = service.acquire(source(), variant);
-      await worker.waitForCalls(1);
-      expect(await cache.list().toList(), isEmpty);
-      worker.complete(0);
-      final lease = await first;
-      expect(await File(lease.artifact.path).readAsBytes(), [1, 2, 3, 4]);
-      expect(lease.artifact.etag, '"${md5.convert([1, 2, 3, 4])}"');
-      expect(lease.artifact.mimeType, 'image/jpeg');
-      final second = await service.acquire(source(), variant);
-      expect(second.artifact.path, lease.artifact.path);
-      expect(worker.requests.length, 1);
-      expect(
-        (await cache.list().toList()).any(
-          (file) => file.path.endsWith('.part'),
-        ),
-        isFalse,
-      );
+  test('thumbnail cache separates sections even when ID, revision and path match', () async {
+    final service = create();
+    final sources = [for (final section in GalleryMediaSection.values) source().copyWith(section: section)];
+    final paths = <String>{};
+    for (var index = 0; index < sources.length; index++) {
+      final pending = service.acquire(sources[index], variant);
+      await worker.waitForCalls(index + 1);
+      worker.complete(index);
+      final lease = await pending;
+      paths.add(lease.artifact.path);
       await lease.release();
+    }
+    expect(paths, hasLength(3));
+    for (final source in sources) {
+      final lease = await service.acquire(source, variant);
       await lease.release();
-      await second.release();
-    },
-  );
+    }
+    expect(worker.requests, hasLength(3));
+  });
+
+  test('thumbnail cleanup preserves sibling trash inside gallery state', () async {
+    cache = Directory('${root.path}/images.gallery/thumbnails');
+    await cache.create(recursive: true);
+    final temporary = await File('${cache.path}/.thumb-${'a' * 32}.part').writeAsString('interrupted thumbnail');
+    final retained = File('${root.path}/images.gallery/trash/album/photo.png');
+    await retained.parent.create(recursive: true);
+    final bytes = image.encodePng(image.Image(width: 4, height: 3));
+    await retained.writeAsBytes(bytes);
+    final service = create();
+    await service.initialize();
+    expect(await temporary.exists(), isFalse);
+    expect(await retained.readAsBytes(), bytes);
+    await service.close();
+    expect(await retained.readAsBytes(), bytes);
+  });
+
+  test('default disk cache retains 2048 derivatives and evicts overflow', () async {
+    await cache.create();
+    final bytes = [1, 2, 3, 4];
+    final digest = md5.convert(bytes).toString();
+    for (var index = 0; index < 2049; index++) {
+      final key = index.toRadixString(16).padLeft(64, '0');
+      await File('${cache.path}/$key-$digest.jpg').writeAsBytes(bytes);
+    }
+    final service = create();
+    expect(service.policy.maxCacheBytes, 512 * 1024 * 1024);
+    await service.initialize();
+    expect(await cache.list().length, 2048);
+    expect(worker.requests, isEmpty);
+  });
+
+  test('cold result is atomic, has content ETag, warm hit does not decode', () async {
+    final service = create();
+    final first = service.acquire(source(), variant);
+    await worker.waitForCalls(1);
+    expect(await cache.list().toList(), isEmpty);
+    worker.complete(0);
+    final lease = await first;
+    expect(await File(lease.artifact.path).readAsBytes(), [1, 2, 3, 4]);
+    expect(lease.artifact.etag, '"${md5.convert([1, 2, 3, 4])}"');
+    expect(lease.artifact.mimeType, 'image/jpeg');
+    final second = await service.acquire(source(), variant);
+    expect(second.artifact.path, lease.artifact.path);
+    expect(worker.requests.length, 1);
+    expect((await cache.list().toList()).any((file) => file.path.endsWith('.part')), isFalse);
+    await lease.release();
+    await lease.release();
+    await second.release();
+  });
 
   test('single flight preserves the other waiter when one cancels', () async {
     final service = create();
     final token = ThumbnailCancellationToken();
     final first = service.acquire(source(), variant, cancellation: token);
-    final rejected = expectLater(
-      first,
-      failure(ThumbnailFailureKind.cancelled),
-    );
+    final rejected = expectLater(first, failure(ThumbnailFailureKind.cancelled));
     final second = service.acquire(source(), variant);
     await worker.waitForCalls(1);
     token.cancel();
@@ -149,13 +144,9 @@ void main() {
     () => captureLogs((records) async {
       await File(cache.path).writeAsString('not a directory');
       final service = create();
-      await expectLater(
-        service.acquire(source(), variant),
-        throwsA(isA<FileSystemException>()),
-      );
+      await expectLater(service.acquire(source(), variant), throwsA(isA<FileSystemException>()));
       final diagnostic = records.singleWhere(
-        (record) =>
-            record.message.startsWith('Thumbnail cache initialization failed'),
+        (record) => record.message.startsWith('Thumbnail cache initialization failed'),
       );
       expect(diagnostic.message, contains(cache.path));
       expect(diagnostic.error, isA<FileSystemException>());
@@ -168,22 +159,13 @@ void main() {
     () => captureLogs((records) async {
       final service = create();
       final pending = service.acquire(source(), variant);
-      final rejected = expectLater(
-        pending,
-        failure(ThumbnailFailureKind.diskFull),
-      );
+      final rejected = expectLater(pending, failure(ThumbnailFailureKind.diskFull));
       await worker.waitForCalls(1);
       worker.requests.single.completeError(
-        FileSystemException(
-          'No space left',
-          cache.path,
-          const OSError('No space left', 28),
-        ),
+        FileSystemException('No space left', cache.path, const OSError('No space left', 28)),
       );
       await rejected;
-      final diagnostic = records.singleWhere(
-        (record) => record.message.startsWith('Thumbnail generation failed'),
-      );
+      final diagnostic = records.singleWhere((record) => record.message.startsWith('Thumbnail generation failed'));
       expect(diagnostic.message, contains('reason=diskFull'));
       expect(diagnostic.error, isA<FileSystemException>());
       expect(diagnostic.stackTrace, isNotNull);
@@ -213,97 +195,69 @@ void main() {
     await warm.release();
   });
 
-  test(
-    'queue and global waiters are bounded, one worker stays active',
-    () async {
-      final service = create(
-        policy: const ThumbnailPolicy(maxWorkers: 1, maxQueued: 1),
-      );
-      final first = service.acquire(source('a'), variant);
-      await worker.waitForCalls(1);
-      final second = service.acquire(source('b'), variant);
-      await Future<void>.delayed(Duration.zero);
-      // A distinct third request cannot create unbounded queued work.
-      await expectLater(
-        service.acquire(source('c'), variant),
-        failure(ThumbnailFailureKind.queueFull),
-      );
-      worker.complete(0);
-      final firstLease = await first;
-      await worker.waitForCalls(2);
-      worker.complete(1);
-      final secondLease = await second;
-      expect(worker.peak, 1);
-      await firstLease.release();
-      await secondLease.release();
-    },
-  );
+  test('queue and global waiters are bounded, one worker stays active', () async {
+    final service = create(policy: const ThumbnailPolicy(maxWorkers: 1, maxQueued: 1));
+    final first = service.acquire(source('a'), variant);
+    await worker.waitForCalls(1);
+    final second = service.acquire(source('b'), variant);
+    await Future<void>.delayed(Duration.zero);
+    // A distinct third request cannot create unbounded queued work.
+    await expectLater(service.acquire(source('c'), variant), failure(ThumbnailFailureKind.queueFull));
+    worker.complete(0);
+    final firstLease = await first;
+    await worker.waitForCalls(2);
+    worker.complete(1);
+    final secondLease = await second;
+    expect(worker.peak, 1);
+    await firstLease.release();
+    await secondLease.release();
+  });
 
-  test(
-    'default runs four distinct jobs and bounds eight queued jobs',
-    () async {
-      final service = create();
-      expect(service.policy.maxWorkers, 4);
-      expect(service.policy.maxQueued, 8);
-      expect(service.policy.maxWaiters, 32);
-      final pending = List.generate(
-        12,
-        (index) => service.acquire(source('item-$index'), variant),
-      );
-      await worker.waitForCalls(4);
-      await expectLater(
-        service.acquire(source('overflow'), variant),
-        failure(ThumbnailFailureKind.queueFull),
-      );
-      expect(worker.requests.length, 4);
-      worker.complete(0);
-      await worker.waitForCalls(5);
-      for (var index = 1; index < 12; index++) {
-        await worker.waitForCalls(index + 1);
-        worker.complete(index);
-      }
-      for (final result in pending) {
-        await (await result).release();
-      }
-      expect(worker.peak, 4);
-      expect(worker.active, 0);
-    },
-  );
+  test('default runs four distinct jobs and bounds eight queued jobs', () async {
+    final service = create();
+    expect(service.policy.maxWorkers, 4);
+    expect(service.policy.maxQueued, 8);
+    expect(service.policy.maxWaiters, 32);
+    final pending = List.generate(12, (index) => service.acquire(source('item-$index'), variant));
+    await worker.waitForCalls(4);
+    await expectLater(service.acquire(source('overflow'), variant), failure(ThumbnailFailureKind.queueFull));
+    expect(worker.requests.length, 4);
+    worker.complete(0);
+    await worker.waitForCalls(5);
+    for (var index = 1; index < 12; index++) {
+      await worker.waitForCalls(index + 1);
+      worker.complete(index);
+    }
+    for (final result in pending) {
+      await (await result).release();
+    }
+    expect(worker.peak, 4);
+    expect(worker.active, 0);
+  });
 
-  test(
-    'last cancellation removes queued work and permits future acquire',
-    () async {
-      final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
-      final first = service.acquire(source('a'), variant);
-      await worker.waitForCalls(1);
-      final token = ThumbnailCancellationToken();
-      final second = service.acquire(source('b'), variant, cancellation: token);
-      final rejected = expectLater(
-        second,
-        failure(ThumbnailFailureKind.cancelled),
-      );
-      token.cancel();
-      await rejected;
-      worker.complete(0);
-      final lease = await first;
-      await lease.release();
-      final retry = service.acquire(source('b'), variant);
-      await worker.waitForCalls(2);
-      worker.complete(1);
-      await (await retry).release();
-      expect(worker.requests.length, 2);
-    },
-  );
+  test('last cancellation removes queued work and permits future acquire', () async {
+    final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
+    final first = service.acquire(source('a'), variant);
+    await worker.waitForCalls(1);
+    final token = ThumbnailCancellationToken();
+    final second = service.acquire(source('b'), variant, cancellation: token);
+    final rejected = expectLater(second, failure(ThumbnailFailureKind.cancelled));
+    token.cancel();
+    await rejected;
+    worker.complete(0);
+    final lease = await first;
+    await lease.release();
+    final retry = service.acquire(source('b'), variant);
+    await worker.waitForCalls(2);
+    worker.complete(1);
+    await (await retry).release();
+    expect(worker.requests.length, 2);
+  });
 
   test('waiter deadline cancels active work and clears queued jobs', () async {
-    final service = create(
-      policy: const ThumbnailPolicy(waiterTimeout: Duration(milliseconds: 40)),
-    );
+    final service = create(policy: const ThumbnailPolicy(waiterTimeout: Duration(milliseconds: 40)));
     final first = service.acquire(source('a'), variant);
-    final firstError = expectLater(
-      first,
-      failure(ThumbnailFailureKind.timeout),
-    );
+    final firstError = expectLater(first, failure(ThumbnailFailureKind.timeout));
     await worker.waitForCalls(1);
     await firstError;
     await service.close();
@@ -311,58 +265,39 @@ void main() {
     expect(await cache.list().toList(), isEmpty);
   });
 
-  test(
-    'changed revision during decode does not publish, hit rechecks source',
-    () async {
-      var current = true;
-      final service = create(isCurrent: (_) async => current);
-      final first = service.acquire(source(), variant);
-      final rejected = expectLater(
-        first,
-        failure(ThumbnailFailureKind.staleSource),
-      );
-      await worker.waitForCalls(1);
-      current = false;
-      worker.complete(0);
-      await rejected;
-      expect(await cache.list().toList(), isEmpty);
-      current = true;
-      final second = service.acquire(source('one', 'v2'), variant);
-      await worker.waitForCalls(2);
-      worker.complete(1);
-      await (await second).release();
-      current = false;
-      await expectLater(
-        service.acquire(source('one', 'v2'), variant),
-        failure(ThumbnailFailureKind.staleSource),
-      );
-      expect(worker.requests.length, 2);
-    },
-  );
+  test('changed revision during decode does not publish, hit rechecks source', () async {
+    var current = true;
+    final service = create(isCurrent: (_) async => current);
+    final first = service.acquire(source(), variant);
+    final rejected = expectLater(first, failure(ThumbnailFailureKind.staleSource));
+    await worker.waitForCalls(1);
+    current = false;
+    worker.complete(0);
+    await rejected;
+    expect(await cache.list().toList(), isEmpty);
+    current = true;
+    final second = service.acquire(source('one', 'v2'), variant);
+    await worker.waitForCalls(2);
+    worker.complete(1);
+    await (await second).release();
+    current = false;
+    await expectLater(service.acquire(source('one', 'v2'), variant), failure(ThumbnailFailureKind.staleSource));
+    expect(worker.requests.length, 2);
+  });
 
   test('negative cache expires, explicit retry bypasses it', () async {
     var elapsed = Duration.zero;
     final service = create(elapsed: () => elapsed);
     final first = service.acquire(source(), variant);
-    final rejected = expectLater(
-      first,
-      failure(ThumbnailFailureKind.decodeFailed),
-    );
+    final rejected = expectLater(first, failure(ThumbnailFailureKind.decodeFailed));
     await worker.waitForCalls(1);
-    worker.requests[0].completeError(
-      const ThumbnailFailure(ThumbnailFailureKind.decodeFailed),
-    );
+    worker.requests[0].completeError(const ThumbnailFailure(ThumbnailFailureKind.decodeFailed));
     await rejected;
-    await expectLater(
-      service.acquire(source(), variant),
-      failure(ThumbnailFailureKind.decodeFailed),
-    );
+    await expectLater(service.acquire(source(), variant), failure(ThumbnailFailureKind.decodeFailed));
     expect(worker.requests.length, 1);
     final retry = service.acquire(source(), variant, retry: true);
     await worker.waitForCalls(2);
-    worker.requests[1].completeError(
-      const ThumbnailFailure(ThumbnailFailureKind.decodeFailed),
-    );
+    worker.requests[1].completeError(const ThumbnailFailure(ThumbnailFailureKind.decodeFailed));
     await expectLater(retry, failure(ThumbnailFailureKind.decodeFailed));
     elapsed = const Duration(seconds: 4);
     final expired = service.acquire(source(), variant);
@@ -372,22 +307,13 @@ void main() {
   });
 
   test('LRU honours byte/object budget and pins active responses', () async {
-    final service = create(
-      policy: const ThumbnailPolicy(
-        maxCacheBytes: 8,
-        maxOutputBytes: 8,
-        maxCacheObjects: 1,
-      ),
-    );
+    final service = create(policy: const ThumbnailPolicy(maxCacheBytes: 8, maxOutputBytes: 8, maxCacheObjects: 1));
     final first = service.acquire(source('a'), variant);
     await worker.waitForCalls(1);
     worker.complete(0);
     final lease = await first;
     final second = service.acquire(source('b'), variant);
-    final rejected = expectLater(
-      second,
-      failure(ThumbnailFailureKind.queueFull),
-    );
+    final rejected = expectLater(second, failure(ThumbnailFailureKind.queueFull));
     await worker.waitForCalls(2);
     worker.complete(1);
     await rejected;
@@ -402,66 +328,51 @@ void main() {
     await newLease.release();
   });
 
-  test(
-    'restart checks hashes and removes only own stale partial files',
-    () async {
-      final service = create();
-      final pending = service.acquire(source(), variant);
-      await worker.waitForCalls(1);
-      worker.complete(0);
-      final lease = await pending;
-      final artifact = lease.artifact;
-      await lease.release();
-      await service.close();
-      final temporary = File('${cache.path}/.thumb-${'a' * 32}.part');
-      final legacy = File('${cache.path}/${'a' * 64}-${'b' * 64}.png');
-      final foreign = File('${cache.path}/keep.txt');
-      await temporary.writeAsString('unfinished');
-      await legacy.writeAsString('old derivative');
-      await foreign.writeAsString('keep');
-      final warm = create();
-      final reused = await warm.acquire(source(), variant);
-      expect(worker.requests.length, 1);
-      await reused.release();
-      expect(await temporary.exists(), isFalse);
-      expect(await legacy.exists(), isFalse);
-      expect(await foreign.exists(), isTrue);
-      await warm.close();
-      await File(artifact.path).writeAsBytes([8, 8, 8, 8]);
-      final restarted = create();
-      final regenerated = restarted.acquire(source(), variant);
-      await worker.waitForCalls(2);
-      worker.complete(1);
-      await (await regenerated).release();
-    },
-  );
+  test('restart checks hashes and removes only own stale partial files', () async {
+    final service = create();
+    final pending = service.acquire(source(), variant);
+    await worker.waitForCalls(1);
+    worker.complete(0);
+    final lease = await pending;
+    final artifact = lease.artifact;
+    await lease.release();
+    await service.close();
+    final temporary = File('${cache.path}/.thumb-${'a' * 32}.part');
+    final legacy = File('${cache.path}/${'a' * 64}-${'b' * 64}.png');
+    final foreign = File('${cache.path}/keep.txt');
+    await temporary.writeAsString('unfinished');
+    await legacy.writeAsString('old derivative');
+    await foreign.writeAsString('keep');
+    final warm = create();
+    final reused = await warm.acquire(source(), variant);
+    expect(worker.requests.length, 1);
+    await reused.release();
+    expect(await temporary.exists(), isFalse);
+    expect(await legacy.exists(), isFalse);
+    expect(await foreign.exists(), isTrue);
+    await warm.close();
+    await File(artifact.path).writeAsBytes([8, 8, 8, 8]);
+    final restarted = create();
+    final regenerated = restarted.acquire(source(), variant);
+    await worker.waitForCalls(2);
+    worker.complete(1);
+    await (await regenerated).release();
+  });
 
-  test(
-    'close cancels running and queued work and forbids late publish',
-    () async {
-      final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
-      final first = service.acquire(source('a'), variant);
-      final firstError = expectLater(
-        first,
-        failure(ThumbnailFailureKind.closed),
-      );
-      await worker.waitForCalls(1);
-      final second = service.acquire(source('b'), variant);
-      final secondError = expectLater(
-        second,
-        failure(ThumbnailFailureKind.closed),
-      );
-      await service.close();
-      await firstError;
-      await secondError;
-      expect(worker.active, 0);
-      expect(await cache.list().toList(), isEmpty);
-      await expectLater(
-        service.acquire(source(), variant),
-        failure(ThumbnailFailureKind.closed),
-      );
-    },
-  );
+  test('close cancels running and queued work and forbids late publish', () async {
+    final service = create(policy: const ThumbnailPolicy(maxWorkers: 1));
+    final first = service.acquire(source('a'), variant);
+    final firstError = expectLater(first, failure(ThumbnailFailureKind.closed));
+    await worker.waitForCalls(1);
+    final second = service.acquire(source('b'), variant);
+    final secondError = expectLater(second, failure(ThumbnailFailureKind.closed));
+    await service.close();
+    await firstError;
+    await secondError;
+    expect(worker.active, 0);
+    expect(await cache.list().toList(), isEmpty);
+    await expectLater(service.acquire(source(), variant), failure(ThumbnailFailureKind.closed));
+  });
 
   test('cache cannot be configured inside originals', () {
     expect(
@@ -474,107 +385,61 @@ void main() {
     );
   });
 
-  test(
-    'pending validations are bounded and cancellation does not publish late',
-    () async {
-      final validation = Completer<bool>();
-      final service = create(
-        policy: const ThumbnailPolicy(maxWaiters: 1),
-        isCurrent: (_) => validation.future,
-      );
-      final token = ThumbnailCancellationToken();
-      final pending = service.acquire(source(), variant, cancellation: token);
-      final cancelled = expectLater(
-        pending,
-        failure(ThumbnailFailureKind.cancelled),
-      );
-      await expectLater(
-        service.acquire(source('other'), variant),
-        failure(ThumbnailFailureKind.queueFull),
-      );
-      token.cancel();
-      await cancelled;
-      await expectLater(
-        service.acquire(source('other'), variant),
-        failure(ThumbnailFailureKind.queueFull),
-      );
-      validation.complete(true);
-      await Future<void>.delayed(Duration.zero);
-      expect(worker.requests, isEmpty);
-      await service.close();
-    },
-  );
+  test('pending validations are bounded and cancellation does not publish late', () async {
+    final validation = Completer<bool>();
+    final service = create(policy: const ThumbnailPolicy(maxWaiters: 1), isCurrent: (_) => validation.future);
+    final token = ThumbnailCancellationToken();
+    final pending = service.acquire(source(), variant, cancellation: token);
+    final cancelled = expectLater(pending, failure(ThumbnailFailureKind.cancelled));
+    await expectLater(service.acquire(source('other'), variant), failure(ThumbnailFailureKind.queueFull));
+    token.cancel();
+    await cancelled;
+    await expectLater(service.acquire(source('other'), variant), failure(ThumbnailFailureKind.queueFull));
+    validation.complete(true);
+    await Future<void>.delayed(Duration.zero);
+    expect(worker.requests, isEmpty);
+    await service.close();
+  });
 
-  test(
-    'a cache filesystem failure is reported and never alters a source',
-    () async {
-      final file = File(cache.path);
-      await file.writeAsString('occupied');
-      final service = create();
+  test('a cache filesystem failure is reported and never alters a source', () async {
+    final file = File(cache.path);
+    await file.writeAsString('occupied');
+    final service = create();
+    await expectLater(service.acquire(source(), variant), throwsA(isA<FileSystemException>()));
+    expect(await file.readAsString(), 'occupied');
+    expect(worker.requests, isEmpty);
+  });
+
+  test('real decoder enforces source byte and pixel limits before output', () async {
+    final input = File('${root.path}/limits.png');
+    await input.writeAsBytes(image.encodePng(image.Image(width: 16, height: 16)));
+    for (final policy in [const ThumbnailPolicy(maxSourceBytes: 8), const ThumbnailPolicy(maxSourcePixels: 128)]) {
+      final real = ThumbnailService(cacheDirectory: cache, isCurrent: (_) async => true, policy: policy);
+      services.add(real);
       await expectLater(
-        service.acquire(source(), variant),
-        throwsA(isA<FileSystemException>()),
+        real.acquire(
+          ThumbnailSource(mediaId: 'limited', revision: '1', path: input.path, fingerprintToken: '1'),
+          variant,
+        ),
+        failure(ThumbnailFailureKind.sourceTooLarge),
       );
-      expect(await file.readAsString(), 'occupied');
-      expect(worker.requests, isEmpty);
-    },
-  );
+      await real.close();
+      expect(await cache.list().toList(), isEmpty);
+    }
+  });
 
-  test(
-    'real decoder enforces source byte and pixel limits before output',
-    () async {
-      final input = File('${root.path}/limits.png');
-      await input.writeAsBytes(
-        image.encodePng(image.Image(width: 16, height: 16)),
-      );
-      for (final policy in [
-        const ThumbnailPolicy(maxSourceBytes: 8),
-        const ThumbnailPolicy(maxSourcePixels: 128),
-      ]) {
-        final real = ThumbnailService(
-          cacheDirectory: cache,
-          isCurrent: (_) async => true,
-          policy: policy,
-        );
-        services.add(real);
-        await expectLater(
-          real.acquire(
-            ThumbnailSource(
-              mediaId: 'limited',
-              revision: '1',
-              path: input.path,
-              fingerprintToken: '1',
-            ),
-            variant,
-          ),
-          failure(ThumbnailFailureKind.sourceTooLarge),
-        );
-        await real.close();
-        expect(await cache.list().toList(), isEmpty);
-      }
-    },
-  );
-
-  test(
-    'disk-full failure is typed and releases the job for a later retry',
-    () async {
-      final service = create();
-      final pending = service.acquire(source(), variant);
-      final rejected = expectLater(
-        pending,
-        failure(ThumbnailFailureKind.diskFull),
-      );
-      await worker.waitForCalls(1);
-      worker.requests[0].completeError(
-        const FileSystemException('no space', '', OSError('no space', 28)),
-      );
-      await rejected;
-      final retry = service.acquire(source(), variant);
-      await worker.waitForCalls(2);
-      worker.complete(1);
-      await (await retry).release();
-    },
-  );
+  test('disk-full failure is typed and releases the job for a later retry', () async {
+    final service = create();
+    final pending = service.acquire(source(), variant);
+    final rejected = expectLater(pending, failure(ThumbnailFailureKind.diskFull));
+    await worker.waitForCalls(1);
+    worker.requests[0].completeError(const FileSystemException('no space', '', OSError('no space', 28)));
+    await rejected;
+    final retry = service.acquire(source(), variant);
+    await worker.waitForCalls(2);
+    worker.complete(1);
+    await (await retry).release();
+  });
 
   test('real GIF derivative is a single representative JPEG', () async {
     final first = image.Image(width: 8, height: 8);
@@ -583,29 +448,17 @@ void main() {
     image.fill(second, color: image.ColorRgb8(0, 0, 255));
     first.addFrame(second);
     for (var index = 0; index < 4; index++) {
-      first.addFrame(
-        image.Image(width: 8, height: 8)..clear(image.ColorRgb8(0, index, 240)),
-      );
+      first.addFrame(image.Image(width: 8, height: 8)..clear(image.ColorRgb8(0, index, 240)));
     }
     final gif = File('${root.path}/animation.gif');
     await gif.writeAsBytes(image.encodeGif(first));
-    final real = ThumbnailService(
-      cacheDirectory: cache,
-      isCurrent: (_) async => true,
-    );
+    final real = ThumbnailService(cacheDirectory: cache, isCurrent: (_) async => true);
     services.add(real);
     final lease = await real.acquire(
-      ThumbnailSource(
-        mediaId: 'animation',
-        revision: '1',
-        path: gif.path,
-        fingerprintToken: '1',
-      ),
+      ThumbnailSource(mediaId: 'animation', revision: '1', path: gif.path, fingerprintToken: '1'),
       variant,
     );
-    final decoded = image.decodeImage(
-      await File(lease.artifact.path).readAsBytes(),
-    )!;
+    final decoded = image.decodeImage(await File(lease.artifact.path).readAsBytes())!;
     expect(decoded.numFrames, 1);
     expect(decoded.getPixel(3, 3).b, greaterThan(200));
     expect(decoded.getPixel(3, 3).r, lessThan(30));
@@ -620,23 +473,13 @@ void main() {
     }
     final png = File('${root.path}/alpha.png');
     await png.writeAsBytes(image.encodePng(pixels));
-    final real = ThumbnailService(
-      cacheDirectory: cache,
-      isCurrent: (_) async => true,
-    );
+    final real = ThumbnailService(cacheDirectory: cache, isCurrent: (_) async => true);
     services.add(real);
     final lease = await real.acquire(
-      ThumbnailSource(
-        mediaId: 'alpha',
-        revision: '1',
-        path: png.path,
-        fingerprintToken: '1',
-      ),
+      ThumbnailSource(mediaId: 'alpha', revision: '1', path: png.path, fingerprintToken: '1'),
       variant,
     );
-    final decoded = image.decodeJpg(
-      await File(lease.artifact.path).readAsBytes(),
-    )!;
+    final decoded = image.decodeJpg(await File(lease.artifact.path).readAsBytes())!;
     expect(decoded.width, 2);
     expect(decoded.height, 2);
     expect(decoded.hasAlpha, isFalse);
@@ -652,17 +495,10 @@ void main() {
     final jpg = File('${root.path}/orientation.jpg');
     await jpg.writeAsBytes(image.encodeJpg(jpeg));
     final oriented = await real.acquire(
-      ThumbnailSource(
-        mediaId: 'exif',
-        revision: '1',
-        path: jpg.path,
-        fingerprintToken: '1',
-      ),
+      ThumbnailSource(mediaId: 'exif', revision: '1', path: jpg.path, fingerprintToken: '1'),
       variant,
     );
-    final result = image.decodeJpg(
-      await File(oriented.artifact.path).readAsBytes(),
-    )!;
+    final result = image.decodeJpg(await File(oriented.artifact.path).readAsBytes())!;
     expect(result.width, 20);
     expect(result.height, 20);
     expect(result.getPixel(5, 4).r, greaterThan(result.getPixel(5, 4).b));
@@ -671,42 +507,29 @@ void main() {
     await oriented.release();
   });
 
-  test(
-    'real worker timeout terminates CPU work before releasing the call',
-    () async {
-      final large = image.Image(width: 1024, height: 1024);
-      final file = File('${root.path}/large.png');
-      await file.writeAsBytes(image.encodePng(large));
-      final real = ThumbnailService(
-        cacheDirectory: cache,
-        isCurrent: (_) async => true,
-        policy: const ThumbnailPolicy(workerTimeout: Duration(microseconds: 1)),
-      );
-      services.add(real);
-      await expectLater(
-        real.acquire(
-          ThumbnailSource(
-            mediaId: 'large',
-            revision: '1',
-            path: file.path,
-            fingerprintToken: '1',
-          ),
-          variant,
-        ),
-        failure(ThumbnailFailureKind.timeout),
-      );
-      await real.close();
-      expect(await cache.list().toList(), isEmpty);
-      final descriptors = Directory('/proc/self/fd')
-          .listSync(followLinks: false)
-          .where((entry) {
-            try {
-              return Link(entry.path).targetSync() == file.path;
-            } on FileSystemException {
-              return false;
-            }
-          });
-      expect(descriptors, isEmpty);
-    },
-  );
+  test('real worker timeout terminates CPU work before releasing the call', () async {
+    final large = image.Image(width: 1024, height: 1024);
+    final file = File('${root.path}/large.png');
+    await file.writeAsBytes(image.encodePng(large));
+    final real = ThumbnailService(
+      cacheDirectory: cache,
+      isCurrent: (_) async => true,
+      policy: const ThumbnailPolicy(workerTimeout: Duration(microseconds: 1)),
+    );
+    services.add(real);
+    await expectLater(
+      real.acquire(ThumbnailSource(mediaId: 'large', revision: '1', path: file.path, fingerprintToken: '1'), variant),
+      failure(ThumbnailFailureKind.timeout),
+    );
+    await real.close();
+    expect(await cache.list().toList(), isEmpty);
+    final descriptors = Directory('/proc/self/fd').listSync(followLinks: false).where((entry) {
+      try {
+        return Link(entry.path).targetSync() == file.path;
+      } on FileSystemException {
+        return false;
+      }
+    });
+    expect(descriptors, isEmpty);
+  });
 }

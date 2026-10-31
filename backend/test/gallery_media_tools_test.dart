@@ -82,9 +82,10 @@ void main() {
   Future<GalleryMetadata> rotate(GalleryEntry source, String id, {GalleryRotation rotation = GalleryRotation.right}) =>
       tools.rotate(
         GalleryRotateRequest(
+          section: source.section,
           operationId: id,
           mediaId: source.mediaId,
-          sourceRevision: source.sourceRevision!,
+          sourceRevision: source.sourceRevision,
           rotation: rotation,
         ),
       );
@@ -128,8 +129,12 @@ void main() {
     addTearDown(reader.close);
     await tools.close();
     tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
-    final first = await tools.metadata(source.mediaId, revision: source.sourceRevision!);
-    final cached = await tools.metadata(source.mediaId, revision: source.sourceRevision!);
+    final first = await tools.metadata(
+      GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+    );
+    final cached = await tools.metadata(
+      GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+    );
     expect(cached, same(first));
     expect(calls, 1);
     await tools.close();
@@ -147,7 +152,9 @@ void main() {
     addTearDown(reader.close);
     await tools.close();
     tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
-    final pending = tools.metadata(source.mediaId, revision: source.sourceRevision!);
+    final pending = tools.metadata(
+      GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+    );
     final failed = expectLater(pending, fails(GalleryErrorCode.revisionMismatch));
     await entered.future;
     await File('${media.path}/one.jpg').writeAsString('replacement');
@@ -171,7 +178,9 @@ void main() {
     await tools.close();
     tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, runner: runner, operations: operations);
     final failed = expectLater(
-      tools.metadata(source.mediaId, revision: source.sourceRevision!),
+      tools.metadata(
+        GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+      ),
       fails(GalleryErrorCode.unavailable),
     );
     await entered.future;
@@ -439,7 +448,9 @@ void main() {
     );
     final aliased = snapshot.entries.firstWhere((item) => item.path == 'alias/photo.jpg');
     await expectLater(
-      tools.metadata(aliased.mediaId, revision: aliased.sourceRevision!),
+      tools.metadata(
+        GalleryMediaRef(section: aliased.section, mediaId: aliased.mediaId, sourceRevision: aliased.sourceRevision),
+      ),
       fails(GalleryErrorCode.forbidden),
     );
     await expectLater(rotate(aliased, 'symlink-parent'), fails(GalleryErrorCode.forbidden));
@@ -566,8 +577,9 @@ Uint8List _iccFixture() {
 }
 
 GalleryMetadata _details(GallerySource source) => GalleryMetadata(
+  section: source.entry.section,
   mediaId: source.entry.mediaId,
-  sourceRevision: source.entry.sourceRevision!,
+  sourceRevision: source.entry.sourceRevision,
   name: source.entry.name,
   path: source.entry.path,
   kind: source.entry.kind,

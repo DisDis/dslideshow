@@ -67,17 +67,20 @@ void main() {
       http.Response(jsonEncode(data), 200, headers: {'content-type': 'application/json'});
 
   test('selection ignores directories and section changes clear selection while loading trash', () async {
-    final trash = GalleryTrashEntry(
-      trashId: 'trash-a',
+    final trash = GalleryEntry(
+      section: GalleryMediaSection.trash,
+      mediaId: 'trash-a',
       name: 'a.jpg',
-      originalPath: 'album/a.jpg',
+      path: 'album/a.jpg',
       kind: GalleryEntryKind.image,
       sourceRevision: 'trash-revision',
-      trashedAt: DateTime.utc(2026),
+      fileChanged: DateTime.utc(2026),
       sizeBytes: 1024,
     );
     initialize(
-      MockClient((request) async => response(GalleryTrashCatalog(entries: [trash]).toJson())),
+      MockClient(
+        (request) async => response(GalleryCatalog(section: GalleryMediaSection.trash, entries: [trash]).toJson()),
+      ),
       repository: ManagedCatalogRepository([
         GalleryItem(
           uri: Uri.parse('http://frame.local/folder'),
@@ -104,11 +107,11 @@ void main() {
       'trash-a',
       'trash-revision',
     ]);
-    expect(loaded.selectedTrashBytes, 0);
+    expect(loaded.selectedMediaBytes, 0);
     await select(['trash-a']);
-    expect(management.state.selectedTrashBytes, 1024);
-    management.add(const GalleryManagementEvent.sectionChanged(GallerySection.library));
-    await waitFor((state) => state.section == GallerySection.library);
+    expect(management.state.selectedMediaBytes, 1024);
+    management.add(const GalleryManagementEvent.sectionChanged(GallerySection.published));
+    await waitFor((state) => state.section == GallerySection.published);
     expect(management.state.selectedIds, isEmpty);
     expect(management.state.items.map((item) => item.mediaId), ['directory', 'a']);
   });
@@ -124,8 +127,18 @@ void main() {
           GalleryOperationResult(
             operationId: command.operationId,
             items: const [
-              GalleryOperationItemResult(mediaId: 'a', state: GalleryItemOperationState.succeeded, trashId: 'trash-a'),
               GalleryOperationItemResult(
+                section: GalleryMediaSection.published,
+                mediaId: 'a',
+                state: GalleryItemOperationState.succeeded,
+                destination: GalleryMediaRef(
+                  mediaId: 'trash-a',
+                  sourceRevision: "destination-revision",
+                  section: GalleryMediaSection.trash,
+                ),
+              ),
+              GalleryOperationItemResult(
+                section: GalleryMediaSection.published,
                 mediaId: 'b',
                 state: GalleryItemOperationState.failed,
                 error: GalleryErrorCode.forbidden,
@@ -142,7 +155,7 @@ void main() {
     expect(requests.single.items.map((item) => item.mediaId), ['a', 'b']);
     expect(completed.selectedIds, {managedPhoto('b').selectionIdentity});
     expect(completed.failures.single.error, GalleryErrorCode.forbidden);
-    expect(completed.undoTrashIds, ['trash-a']);
+    expect(completed.undoMediaIds, ['trash-a']);
     expect(completed.notice, GalleryManagementNotice.trashed);
     expect(completed.pendingOperation, isNull);
     final serial = completed.noticeSerial;
@@ -168,7 +181,16 @@ void main() {
           GalleryOperationResult(
             operationId: command.operationId,
             items: const [
-              GalleryOperationItemResult(mediaId: 'b', state: GalleryItemOperationState.succeeded, trashId: 'trash-b'),
+              GalleryOperationItemResult(
+                section: GalleryMediaSection.published,
+                mediaId: 'b',
+                state: GalleryItemOperationState.succeeded,
+                destination: GalleryMediaRef(
+                  mediaId: 'trash-b',
+                  sourceRevision: "destination-revision",
+                  section: GalleryMediaSection.trash,
+                ),
+              ),
             ],
           ).toJson(),
         );
@@ -213,6 +235,7 @@ void main() {
             operationId: command.operationId,
             items: const [
               GalleryOperationItemResult(
+                section: GalleryMediaSection.published,
                 mediaId: 'a',
                 state: GalleryItemOperationState.failed,
                 error: GalleryErrorCode.forbidden,
@@ -264,15 +287,27 @@ void main() {
           items: [
             if (requests.length == 1)
               const GalleryOperationItemResult(
+                section: GalleryMediaSection.published,
                 mediaId: 'a',
                 state: GalleryItemOperationState.succeeded,
-                trashId: 'trash-a',
+                destination: GalleryMediaRef(
+                  mediaId: 'trash-a',
+                  sourceRevision: "destination-revision",
+                  section: GalleryMediaSection.trash,
+                ),
               ),
             GalleryOperationItemResult(
+              section: GalleryMediaSection.published,
               mediaId: 'b',
               state: requests.length == 1 ? GalleryItemOperationState.failed : GalleryItemOperationState.succeeded,
               error: requests.length == 1 ? GalleryErrorCode.forbidden : null,
-              trashId: requests.length == 1 ? null : 'trash-b',
+              destination: requests.length == 1
+                  ? null
+                  : GalleryMediaRef(
+                      mediaId: 'trash-b',
+                      sourceRevision: "destination-revision",
+                      section: GalleryMediaSection.trash,
+                    ),
             ),
           ],
         ).toJson(),
@@ -333,17 +368,17 @@ void main() {
     await management.close();
     expect(client.requests.first.aborted, isTrue);
     expect(client.closed, isFalse);
-    final trash = session.management.trash();
+    final trash = session.management.catalog(GalleryMediaSection.trash);
     expect(client.requests, hasLength(2));
     client.requests.last.respond();
-    client.requests.last.complete(utf8.encode('{"entries":[]}'));
+    client.requests.last.complete(utf8.encode("{\"entries\":[],\"section\":\"trash\"}"));
     expect((await trash).entries, isEmpty);
     await management.refresh();
     expect(management.isClosed, isTrue);
   });
 
   test('close releases pending refresh completion and ignores later catalog delivery', () async {
-    initialize(MockClient((_) async => response({'entries': []})));
+    initialize(MockClient((_) async => response({'section': 'published', 'entries': []})));
     final gate = catalog.refreshGate = Completer<GalleryCatalogResult>();
     final refreshing = catalogBloc.stream.firstWhere((state) => state is LoadedGalleryState && state.refreshing);
     final refresh = management.refresh();
@@ -388,11 +423,17 @@ void main() {
               operationId: command.operationId,
               items: [
                 GalleryOperationItemResult(
+                  section: first.section,
                   mediaId: first.mediaId,
                   state: GalleryItemOperationState.succeeded,
-                  trashId: 'trash-first',
+                  destination: GalleryMediaRef(
+                    mediaId: 'trash-first',
+                    sourceRevision: "destination-revision",
+                    section: GalleryMediaSection.trash,
+                  ),
                 ),
                 GalleryOperationItemResult(
+                  section: last.section,
                   mediaId: last.mediaId,
                   state: GalleryItemOperationState.failed,
                   error: GalleryErrorCode.forbidden,
@@ -431,7 +472,7 @@ void main() {
       expect(result.items, hasLength(50000));
       expect(result.selectedItems.single.mediaId, last.mediaId);
       expect(result.failures.single.mediaId, last.mediaId);
-      expect(result.undoTrashIds, ['trash-first']);
+      expect(result.undoMediaIds, ['trash-first']);
       expect(management.currentItem(first.mediaId), isNull);
 
       catalog.items = [

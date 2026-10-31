@@ -11,14 +11,14 @@ class MetadataPanel extends StatelessWidget {
     super.key,
     required this.item,
     this.metadata,
-    this.trashEntry,
+    this.entry,
     this.loading = false,
     this.failed = false,
     this.onRetry,
   });
   final GalleryItem item;
   final GalleryMetadata? metadata;
-  final GalleryTrashEntry? trashEntry;
+  final GalleryEntry? entry;
   final bool loading;
   final bool failed;
   final VoidCallback? onRetry;
@@ -28,15 +28,10 @@ class MetadataPanel extends StatelessWidget {
     final l = context.localizations;
     final theme = Theme.of(context);
     final data = metadata;
-    final trash = trashEntry;
-    final sizeBytes = data?.sizeBytes ?? trash?.sizeBytes;
+    final source = entry;
+    final sizeBytes = data?.sizeBytes ?? source?.sizeBytes;
     final fields = <(String, String?)>[
-      (
-        l.gallery_resolution,
-        data?.width != null && data?.height != null
-            ? '${data!.width} × ${data.height}'
-            : null,
-      ),
+      (l.gallery_resolution, data?.width != null && data?.height != null ? '${data!.width} × ${data.height}' : null),
       (l.gallery_date_taken, data?.dateTaken),
       (l.gallery_file_modified, data?.fileModified?.toLocal().toString()),
       (l.gallery_format, data?.format),
@@ -59,7 +54,10 @@ class MetadataPanel extends StatelessWidget {
             ? l.gallery_yes
             : l.gallery_no,
       ),
-      (l.gallery_trash_file_changed, trash?.trashedAt.toLocal().toString()),
+      (
+        item.section == GalleryMediaSection.hidden ? l.gallery_hidden_file_changed : l.gallery_trash_file_changed,
+        source?.fileChanged?.toLocal().toString(),
+      ),
     ];
     return Card(
       key: const ValueKey('viewer-metadata-card'),
@@ -73,9 +71,7 @@ class MetadataPanel extends StatelessWidget {
               children: [
                 Icon(Icons.info_outline, color: theme.colorScheme.primary),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(l.media_info, style: theme.textTheme.titleMedium),
-                ),
+                Expanded(child: Text(l.media_info, style: theme.textTheme.titleMedium)),
               ],
             ),
           ),
@@ -89,55 +85,34 @@ class MetadataPanel extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   GalleryFilePath(
-                    relativePath: data?.path ?? trash?.originalPath,
-                    name: data?.name ?? trash?.name ?? item.title,
+                    relativePath: data?.path ?? source?.path,
+                    name: data?.name ?? source?.name ?? item.title,
                     style: GalleryFilePathStyle.breadcrumbs,
                   ),
-                  if (loading)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: LinearProgressIndicator(),
-                    ),
+                  if (loading) const Padding(padding: EdgeInsets.only(top: 16), child: LinearProgressIndicator()),
                   if (failed)
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: theme.colorScheme.error,
-                          ),
+                          Icon(Icons.error_outline, color: theme.colorScheme.error),
                           const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              l.gallery_metadata_failed,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: onRetry,
-                            child: Text(l.retry_button),
-                          ),
+                          Expanded(child: Text(l.gallery_metadata_failed, style: theme.textTheme.bodyMedium)),
+                          TextButton(onPressed: onRetry, child: Text(l.retry_button)),
                         ],
                       ),
                     ),
                   if (sizeBytes != null)
                     _MetadataField(
                       label: l.gallery_file_size,
-                      value: GalleryFileSize(
-                        bytes: sizeBytes,
-                        selectable: true,
-                      ),
+                      value: GalleryFileSize(bytes: sizeBytes, selectable: true),
                     ),
                   for (final (label, value) in fields)
                     if (value != null)
                       _MetadataField(
                         label: label,
-                        value: SelectableText(
-                          value,
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                        value: SelectableText(value, style: theme.textTheme.bodyMedium),
                       ),
                   if (data?.latitude != null && data?.longitude != null)
                     Padding(
@@ -145,11 +120,7 @@ class MetadataPanel extends StatelessWidget {
                       child: ExpansionTile(
                         tilePadding: EdgeInsets.zero,
                         title: Text(l.gallery_location),
-                        children: [
-                          SelectableText(
-                            '${data!.latitude}, ${data.longitude}',
-                          ),
-                        ],
+                        children: [SelectableText('${data!.latitude}, ${data.longitude}')],
                       ),
                     ),
                 ],
@@ -176,12 +147,7 @@ class _MetadataField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            child: Text(label, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           ),
           const SizedBox(width: 16),
           Expanded(child: value),

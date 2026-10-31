@@ -161,6 +161,14 @@ JavaScript. Необязательный скрипт страницы прош�
 К тестам переходите после устранения ошибок компиляции; команды анализаторов
 приведены в конце этого раздела.
 
+Новый файл `*_test.dart` добавляйте в одну основную группу каталога
+[`tools/lib/src/testing/groups.dart`](../tools/lib/src/testing/groups.dart).
+Полноту каталога проверяет `(cd tools && dart test test/testing/groups_test.dart)`.
+Отдельный прогон backend не проверяет этот каталог: в `deb_factory/run_tests.sh`
+его проверяет задание `tests:tools`. Отказ любого задания отменяет соседние;
+для поиска причины смотрите первый `result=failed`, а не последующие
+`cancelled` или `did not complete`.
+
 Из корня репозитория:
 
 ```bash

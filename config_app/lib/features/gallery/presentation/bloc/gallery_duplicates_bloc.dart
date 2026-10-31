@@ -71,7 +71,9 @@ abstract class GalleryDuplicatesState with _$GalleryDuplicatesState {
 
   bool get running => job?.status == GalleryDuplicateStatus.running || job?.status == GalleryDuplicateStatus.stopping;
   bool current(GalleryDuplicateMember member) =>
-      !invalidated.contains(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision)) &&
+      !invalidated.contains(
+        GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
+      ) &&
       catalogById[member.mediaId]?.revision == member.sourceRevision;
   GalleryItem? item(GalleryDuplicateMember member) => current(member) ? catalogById[member.mediaId] : null;
   GalleryDuplicateGroup? get group => visibleGroup;
@@ -383,7 +385,7 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
           _withDecisions(state, decisions).copyWith(
             invalidated: {
               ...state.invalidated,
-              GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision),
+              GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
             },
           ),
         );
@@ -423,12 +425,14 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
           return;
         }
         final refs = members
-            .map((item) => GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.sourceRevision))
+            .map(
+              (item) =>
+                  GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.sourceRevision, section: item.section),
+            )
             .toList();
         final request = GalleryOperationRequest(
           operationId: repository.newOperationId(),
           action: GalleryMutation.trash,
-          duplicateJobId: jobId,
           items: refs,
         );
         _log.info('event=mutationStarted jobId=${GalleryLog.id(jobId)} action=trash items=${refs.length}');
@@ -512,7 +516,9 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
         for (final member in job.groups[page.index].items) {
           if (!available.contains(member.mediaId)) {
             decisions.remove(member.mediaId);
-            invalidated.add(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision));
+            invalidated.add(
+              GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
+            );
           }
         }
       }
@@ -543,10 +549,12 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
     final allowed = {
       for (final group in state.job?.groups ?? const <GalleryDuplicateGroup>[])
         for (final member in group.items)
-          GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision),
+          GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
     };
     if (members.any(
-      (member) => !allowed.contains(GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision)),
+      (member) => !allowed.contains(
+        GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
+      ),
     )) {
       return false;
     }

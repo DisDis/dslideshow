@@ -4,10 +4,13 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:dslideshow_common/gallery.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
-import 'package:dslideshow_common/gallery.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
@@ -18,16 +21,21 @@ import 'ffmpeg_thumbnail_worker.dart';
 export 'ffmpeg_thumbnail_worker.dart';
 export 'thumbnail_worker.dart';
 
-class ThumbnailSource {
+part 'thumbnail_service.freezed.dart';
+
+@freezed
+class ThumbnailSource with _$ThumbnailSource {
   final String mediaId;
   final String revision;
   final String path;
   final String fingerprintToken;
+  final GalleryMediaSection section;
   const ThumbnailSource({
     required this.mediaId,
     required this.revision,
     required this.path,
     required this.fingerprintToken,
+    this.section = GalleryMediaSection.published,
   });
 }
 
@@ -252,6 +260,7 @@ class ThumbnailService {
           utf8.encode(
             jsonEncode([
               source.mediaId,
+              source.section.name,
               source.revision,
               source.fingerprintToken,
               variant.bucketId,

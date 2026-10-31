@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
+import 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart' show SlideshowAction;
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_provider_registry.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -22,7 +23,8 @@ class HardwareService implements RpcService {
   final RemoteService _frontendService;
   final RemoteService _webServer;
   final PowerOffService _powerOffService;
-  final Storage _storage;
+  final StorageProviderRegistry _storageProviders;
+  Storage get _storage => _storageProviders.selected;
 
   final GPIOService _gpioService;
   final ScreenService _screenService;
@@ -30,19 +32,27 @@ class HardwareService implements RpcService {
   final WiFiService _wifiService;
   final ApplicationStateService _applicationStateService;
 
-  HardwareService(
-    AppConfig config,
-    this._frontendService,
-    this._storage,
-    this._gpioService,
-    this._screenService,
-    this._systemInfoService,
-    this._webServer,
-    this._mqttService,
-    this._wifiService,
-    this._powerOffService,
-    this._applicationStateService,
-  ) {
+  HardwareService({
+    required RemoteService frontendService,
+    required StorageProviderRegistry storageProviders,
+    required GPIOService gpioService,
+    required ScreenService screenService,
+    required SystemInfoService systemInfoService,
+    required RemoteService webServer,
+    required MqttService mqttService,
+    required WiFiService wifiService,
+    required PowerOffService powerOffService,
+    required ApplicationStateService applicationStateService,
+  }) : _frontendService = frontendService,
+       _storageProviders = storageProviders,
+       _gpioService = gpioService,
+       _screenService = screenService,
+       _systemInfoService = systemInfoService,
+       _webServer = webServer,
+       _mqttService = mqttService,
+       _wifiService = wifiService,
+       _powerOffService = powerOffService,
+       _applicationStateService = applicationStateService {
     _frameStateReader = FrameStateReader(
       frontendService: _frontendService,
       screenService: _screenService,
@@ -63,7 +73,7 @@ class HardwareService implements RpcService {
   static const _frontendTimeout = Duration(seconds: 3);
   final _frontendWaits = <Completer<dynamic>>{};
   void _init() {
-    _initFutures.add(_storage.init());
+    _initFutures.add(_storageProviders.init());
     if (Platform.isLinux) {
       _initFutures.add(_gpioService.init());
     } else {
@@ -121,7 +131,12 @@ class HardwareService implements RpcService {
     await _applicationStateService.dispose();
     await _screenService.dispose();
     await _gpioService.release();
-    await Future.wait([_storage.release(), _systemInfoService.release(), _wifiService.close(), _mqttService.close()]);
+    await Future.wait([
+      _storageProviders.release(),
+      _systemInfoService.release(),
+      _wifiService.close(),
+      _mqttService.close(),
+    ]);
     await _screenNotifications;
   }
 
@@ -140,6 +155,7 @@ class HardwareService implements RpcService {
   }
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
+    if (command is DriveCommand) return _storageProviders.executeDriveCommand(command);
     switch (command.type) {
       case AreYouReadyCommand.TYPE:
         return _executeAreYouReadyCommand(command as AreYouReadyCommand);

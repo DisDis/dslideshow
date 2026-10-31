@@ -21,6 +21,7 @@ class FakeAvahi extends DBusObject {
   Completer<void>? resolveGate;
   int activeResolves = 0;
   int maxActiveResolves = 0;
+  void Function()? onResolveStarted;
   String hostname = 'test-frame';
   int responsePort = 9091;
   String responseAddress = '192.0.2.9';
@@ -72,6 +73,7 @@ class FakeAvahi extends DBusObject {
         resolutions.add(call.values[2].asString());
         activeResolves++;
         if (activeResolves > maxActiveResolves) maxActiveResolves = activeResolves;
+        onResolveStarted?.call();
         await resolveGate?.future;
         activeResolves--;
         if (failResolve) return DBusMethodErrorResponse.failed('private-resolve-payload');

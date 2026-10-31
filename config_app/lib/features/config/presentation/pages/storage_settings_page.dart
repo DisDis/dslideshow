@@ -3,46 +3,52 @@ import 'package:config_app/features/config/presentation/wigdgets/draft_editor_fo
 import 'package:config_app/features/config/presentation/wigdgets/settings_section.dart';
 import 'package:config_app/features/theme/presentation/extensions/build_context_ext.dart';
 import 'package:config_app/features/uikit/presentation/widgets/config_app_scaffold.dart';
+import 'package:config_app/features/config/data/repository/yandex_drive_repository.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StorageSettingsPage extends StatefulWidget {
+import 'yandex_drive_settings.dart';
+
+class StorageSettingsCubit extends Cubit<StorageType> {
+  StorageSettingsCubit(this.config) : super(config.selected);
   final StoragesConfig config;
-  final RegisterUnsavedDraft? registerDraft;
-  const StorageSettingsPage({
-    super.key,
-    required this.config,
-    this.registerDraft,
-  });
 
-  @override
-  State<StorageSettingsPage> createState() => _StorageSettingsPageState();
+  void select(StorageType value) {
+    config.selected = value;
+    config.getOrCreateEmpty(value);
+    emit(value);
+  }
 }
 
-class _StorageSettingsPageState extends State<StorageSettingsPage> {
-  late StorageType _currentType = widget.config.selected;
+class StorageSettingsPage extends StatelessWidget {
+  final StoragesConfig config;
+  final RegisterUnsavedDraft? registerDraft;
+  final YandexDriveRepository? yandexRepository;
+  const StorageSettingsPage({super.key, required this.config, this.registerDraft, this.yandexRepository});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) => StorageSettingsCubit(config),
+    child: BlocBuilder<StorageSettingsCubit, StorageType>(
+      builder: (context, currentType) => _build(context, currentType),
+    ),
+  );
+
+  Widget _build(BuildContext context, StorageType currentType) {
     final l = context.localizations;
     return Scaffold(
       appBar: AppBar(title: Text(l.storage_settings_title)),
       body: SettingsContent(
         maxWidth: 760,
         child: DraftEditorForm(
-          registerDraft: widget.registerDraft,
+          registerDraft: registerDraft,
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 8,
-                ),
-                child: Text(
-                  l.config_editor_draft_hint,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Text(l.config_editor_draft_hint, style: Theme.of(context).textTheme.bodySmall),
               ),
               SettingsSection(
                 title: l.active_storage_label,
@@ -50,24 +56,21 @@ class _StorageSettingsPageState extends State<StorageSettingsPage> {
                 children: [
                   SettingsDropdown<StorageType>(
                     label: l.provider_label,
-                    value: _currentType,
+                    value: currentType,
                     items: StorageType.values,
                     itemLabelBuilder: (type) => switch (type) {
                       StorageType.DiskStorage => l.local_disk_label,
                       StorageType.GPhotoStorage => l.google_photos_label,
+                      StorageType.YandexDriveStorage => l.yandex_drive_label,
                     },
                     onChanged: (value) {
                       if (value == null) return;
-                      setState(() {
-                        _currentType = value;
-                        widget.config.selected = value;
-                        widget.config.getOrCreateEmpty(value);
-                      });
+                      context.read<StorageSettingsCubit>().select(value);
                     },
                   ),
                 ],
               ),
-              _buildSpecificStorageForm(),
+              _buildSpecificStorageForm(context, currentType),
             ],
           ),
         ),
@@ -75,18 +78,24 @@ class _StorageSettingsPageState extends State<StorageSettingsPage> {
     );
   }
 
-  Widget _buildSpecificStorageForm() {
-    final config = widget.config.getOrCreateEmpty(_currentType);
-    return switch (config) {
-      GPhotoStorageConfig() => _GPhotoForm(config: config),
+  Widget _buildSpecificStorageForm(BuildContext context, StorageType currentType) {
+    final storageConfig = config.getOrCreateEmpty(currentType);
+    return switch (storageConfig) {
+      YandexDriveStorageConfig() =>
+        yandexRepository == null
+            ? Padding(padding: const EdgeInsets.all(20), child: Text(context.localizations.yandex_load_failed))
+            : YandexDriveSettings(
+                config: storageConfig,
+                repository: yandexRepository!,
+                onChanged: (value) => config.storages[StorageType.YandexDriveStorage] = value,
+              ),
+      GPhotoStorageConfig() => _GPhotoForm(config: storageConfig),
       DiskStorageConfig() => SettingsSection(
         title: context.localizations.local_disk_label,
         icon: Icons.folder_outlined,
         children: [
           ListTile(
-            title: Text(
-              context.localizations.no_configuration_needed_for_local_disk,
-            ),
+            title: Text(context.localizations.no_configuration_needed_for_local_disk),
             leading: const Icon(Icons.info_outline),
           ),
         ],
@@ -106,12 +115,7 @@ class _GPhotoForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.localizations;
-    Widget number(
-      String label,
-      int value,
-      ValueChanged<int> apply, {
-      String? unit,
-    }) => SettingsTextField(
+    Widget number(String label, int value, ValueChanged<int> apply, {String? unit}) => SettingsTextField(
       label: label,
       initialValue: value.toString(),
       suffixText: unit,
@@ -160,12 +164,7 @@ class _GPhotoForm extends StatelessWidget {
               (value) => config.syncPeriod = Duration(minutes: value),
               unit: l.minutes_unit,
             ),
-            number(
-              l.image_width_label,
-              config.imageWidth,
-              (value) => config.imageWidth = value,
-              unit: l.pixels_unit,
-            ),
+            number(l.image_width_label, config.imageWidth, (value) => config.imageWidth = value, unit: l.pixels_unit),
             number(
               l.image_height_label,
               config.imageHeight,

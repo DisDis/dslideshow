@@ -6,6 +6,7 @@ import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_provider_registry.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -13,6 +14,7 @@ import 'package:fake_async/fake_async.dart';
 import 'package:test/test.dart';
 
 import 'controlled_screen_power.dart';
+import 'storage_provider_registry_fixture.dart';
 
 class FakeGPIO implements GPIOService {
   final motion = StreamController<bool>.broadcast();
@@ -130,24 +132,28 @@ class HardwareFixture {
   late final ApplicationStateService application;
   late final HardwareService hardware;
   Future<void>? _closing;
-  HardwareFixture({WiFiService? wifi}) {
+  HardwareFixture({WiFiService? wifi, StorageProviderRegistry? storageProviders}) {
     final config = AppConfig.fromJson({
       'hardware': {'screenPowerOnTimerSec': 1},
     });
     screen = ScreenService(config.hardware, power: power);
     application = ApplicationStateService(screenService: screen, gpioService: gpio);
     hardware = HardwareService(
-      config,
-      remote,
-      storage,
-      gpio,
-      screen,
-      systemInfo,
-      remote,
-      mqtt,
-      wifi ?? UnusedWiFi(),
-      UnusedPowerOff(),
-      application,
+      frontendService: remote,
+      storageProviders:
+          storageProviders ??
+          createStorageProviderRegistry(
+            selectedType: StorageType.DiskStorage,
+            factories: {StorageType.DiskStorage: () => storage},
+          ),
+      gpioService: gpio,
+      screenService: screen,
+      systemInfoService: systemInfo,
+      webServer: remote,
+      mqttService: mqtt,
+      wifiService: wifi ?? UnusedWiFi(),
+      powerOffService: UnusedPowerOff(),
+      applicationStateService: application,
     );
   }
   Future<void> close() => _closing ??= hardware.dispose();

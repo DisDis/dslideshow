@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
-import 'dart:isolate';
 
 import 'package:crypto/crypto.dart';
 import 'package:dslideshow_common/gallery.dart';
@@ -40,7 +39,7 @@ import 'package:dslideshow_backend/environment.dart';
 // Preserve the existing import path for WebSocket session consumers.
 export 'web_socket_user.dart' show WebSocketUser, WebSocketUserStatus;
 
-enum _GalleryRequestKind { catalog, refresh, original, thumbnail, legacyCatalog }
+enum _GalleryRequestKind { thumbnail }
 
 class WebService {
   static final _thumbnailPolicyPattern = RegExp(r'^[1-9][0-9]*(?:-[a-f0-9]{64})?$');
@@ -55,8 +54,6 @@ class WebService {
   late final ThumbnailService _thumbnails;
   late final MediaFileResponder _mediaFiles;
   late final GalleryManagementRoutes _galleryManagement;
-  String? _encodedCatalogRevision;
-  Future<String>? _encodedCatalog;
 
   final _uploads = <UploadCancellationToken, Completer<void>>{};
   bool _closed = false;
@@ -172,11 +169,19 @@ class WebService {
         GalleryCapability.mutations,
         GalleryCapability.rotation,
         GalleryCapability.trash,
+        GalleryCapability.hidden,
         GalleryCapability.duplicates,
       ],
     );
     _mediaFiles = MediaFileResponder(
       maxStreams: maxConcurrentMediaStreams ?? _appConfig.gallery.maxConcurrentMediaStreams,
+    );
+    _galleryManagement = GalleryManagementRoutes(
+      catalog: _galleryCatalog,
+      accessCode: () => _code,
+      files: _mediaFiles,
+      runner: galleryToolRunner,
+      duplicateExecutable: duplicateExecutable,
     );
     _thumbnails = ThumbnailService(
       cacheDirectory: io.Directory(path.join(_galleryDirectory.path, 'thumbnails')),
@@ -185,7 +190,9 @@ class WebService {
       worker: thumbnailWorker,
       isCurrent: (source) async {
         try {
-          final current = await _galleryCatalog.resolve(source.mediaId, revision: source.revision);
+          final current = await _galleryManagement.operations.resolveMedia(
+            GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.revision),
+          );
           return current.absolutePath == source.path && current.fingerprint == source.fingerprintToken;
         } on GalleryCatalogFailure catch (error) {
           if (error.code == GalleryErrorCode.notFound || error.code == GalleryErrorCode.revisionMismatch) return false;
@@ -195,13 +202,6 @@ class WebService {
           throw const ThumbnailFailure(ThumbnailFailureKind.closed);
         }
       },
-    );
-    _galleryManagement = GalleryManagementRoutes(
-      catalog: _galleryCatalog,
-      accessCode: () => _code,
-      files: _mediaFiles,
-      runner: galleryToolRunner,
-      duplicateExecutable: duplicateExecutable,
     );
     _log.info(
       () =>
@@ -220,14 +220,10 @@ class WebService {
       '/cache/<code>/<tail|.*>',
       (Request request, String code, String tail) => Response(code == _code ? 204 : 403, headers: galleryCorsHeaders),
     );
-    _router.get('/cache/<code>/v2/catalog', _getCatalog);
-    _router.post('/cache/<code>/v2/catalog/refresh', _refreshCatalog);
     _galleryManagement.register(_router);
-    _router.get('/cache/<code>/v2/thumbnail/<id>/<revision>/<policy>/<bucket>', _getThumbnail);
+    _router.get('/cache/<code>/v2/<section>/thumbnail/<id>/<revision>/<policy>/<bucket>', _getThumbnail);
     _router.get(WebServerRoutes.info, _getInfo);
     _router.get(WebServerRoutes.webSocket, _webSocketHandler);
-    _router.get(WebServerRoutes.getMedialItemsList, _getItemsList);
-    _router.get(WebServerRoutes.getMediaItem, _getItem);
     _router.post(WebServerRoutes.uploadMedia, _postUploadMedia);
     _router.get(WebServerRoutes.uploadMedia, _getUploadForm);
 
@@ -466,96 +462,10 @@ class WebService {
     await _mediaFiles.close();
   }
 
-  Future<Response> _getItemsList(Request request, String code) async {
-    const kind = _GalleryRequestKind.legacyCatalog;
-    Response reject(GalleryErrorCode code) => _galleryResponse(kind, _galleryError(code), reason: code);
-    if (code != _code) return reject(GalleryErrorCode.forbidden);
-    if (_closed) return reject(GalleryErrorCode.unavailable);
-    final items = <String>[];
-    if (await _cacheFolder.exists()) {
-      await for (final item in _cacheFolder.list(recursive: true)) {
-        if (_closed) return reject(GalleryErrorCode.unavailable);
-        if (!isGalleryStagingPath(item.path)) items.add(path.relative(item.path, from: _cacheFolder.path));
-      }
-    }
-    return _galleryResponse(
-      kind,
-      Response.ok(
-        jsonEncode({'items': items}),
-        headers: {
-          ...galleryCorsHeaders,
-          'content-type': 'application/json; charset=utf-8',
-          'cache-control': 'private, no-cache',
-        },
-      ),
-    );
-  }
-
-  Future<Response> _catalogResponse(GalleryCatalog catalog) async {
-    if (_encodedCatalogRevision != catalog.catalogRevision) {
-      _encodedCatalogRevision = catalog.catalogRevision;
-      _encodedCatalog = Isolate.run(() => jsonEncode(catalog.toJson()));
-    }
-    final body = await _encodedCatalog!;
-    return Response.ok(
-      body,
-      headers: {
-        ...galleryCorsHeaders,
-        'content-type': 'application/json; charset=utf-8',
-        'cache-control': 'private, no-cache',
-      },
-    );
-  }
-
-  Future<Response> _getCatalog(Request request, String code) async {
-    const kind = _GalleryRequestKind.catalog;
-    if (code != _code)
-      return _galleryResponse(kind, _galleryError(GalleryErrorCode.forbidden), reason: GalleryErrorCode.forbidden);
-    try {
-      final catalog = await _galleryCatalog.catalog();
-      return _galleryResponse(kind, await _catalogResponse(catalog));
-    } on GalleryCatalogFailure catch (error) {
-      return _galleryResponse(kind, _galleryError(error.code), reason: error.code);
-    } on Object catch (error) {
-      return _galleryResponse(
-        kind,
-        _galleryError(GalleryErrorCode.unavailable),
-        reason: GalleryErrorCode.unavailable,
-        error: error,
-      );
-    }
-  }
-
-  Future<Response> _refreshCatalog(Request request, String code) async {
-    const kind = _GalleryRequestKind.refresh;
-    Response reject(GalleryErrorCode code, {Object? error}) =>
-        _galleryResponse(kind, _galleryError(code), reason: code, error: error);
-    if (code != _code) return reject(GalleryErrorCode.forbidden);
-    try {
-      final bytes = <int>[];
-      await for (final chunk in request.read().timeout(const Duration(seconds: 5))) {
-        if (bytes.length + chunk.length > 4096) return reject(GalleryErrorCode.invalidRequest);
-        bytes.addAll(chunk);
-      }
-      final refresh = GalleryRefreshRequest.fromJson(jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>);
-      final catalog = await _galleryCatalog.refresh(refresh);
-      return _galleryResponse(kind, await _catalogResponse(catalog));
-    } on GalleryCatalogFailure catch (error) {
-      return reject(error.code);
-    } on FormatException {
-      return reject(GalleryErrorCode.invalidRequest);
-    } on TypeError {
-      return reject(GalleryErrorCode.invalidRequest);
-    } on ArgumentError {
-      return reject(GalleryErrorCode.invalidRequest);
-    } on Object catch (error) {
-      return reject(GalleryErrorCode.unavailable, error: error);
-    }
-  }
-
   Future<Response> _getThumbnail(
     Request request,
     String code,
+    String section,
     String id,
     String revision,
     String policy,
@@ -577,11 +487,14 @@ class WebService {
       return reject(GalleryErrorCode.invalidRequest);
     }
     try {
-      final source = await _galleryCatalog.resolve(id, revision: revision);
+      final source = await _galleryManagement.operations.resolveMedia(
+        GalleryMediaRef(section: GalleryMediaSection.values.byName(section), mediaId: id, sourceRevision: revision),
+      );
       if (!source.entry.thumbnailSupported) return reject(GalleryErrorCode.unsupported);
       final lease = await _thumbnails.acquire(
         ThumbnailSource(
           mediaId: id,
+          section: source.entry.section,
           revision: revision,
           path: source.absolutePath,
           fingerprintToken: source.fingerprint,
@@ -594,12 +507,14 @@ class WebService {
         etag: lease.artifact.etag,
         contentType: lease.artifact.mimeType,
         cacheControl: 'private, max-age=604800, immutable',
-        isCurrent: () => _galleryCatalog.isCurrent(source),
+        isCurrent: () => _galleryManagement.operations.isCurrent(source),
         onRelease: lease.release,
       );
       return _galleryResponse(kind, response);
     } on GalleryCatalogFailure catch (error) {
       return reject(error.code);
+    } on ArgumentError {
+      return reject(GalleryErrorCode.invalidRequest);
     } on ThumbnailFailure catch (error) {
       return reject(switch (error.kind) {
         ThumbnailFailureKind.queueFull => GalleryErrorCode.busy,
@@ -630,34 +545,4 @@ class WebService {
       if (code == GalleryErrorCode.busy || code == GalleryErrorCode.unavailable) 'retry-after': '1',
     },
   );
-
-  Future<Response> _getItem(Request request, String code, String itemPath) async {
-    const kind = _GalleryRequestKind.original;
-    Response reject(GalleryErrorCode code) => _galleryResponse(kind, _galleryError(code), reason: code);
-    if (code != _code) return reject(GalleryErrorCode.forbidden);
-    if (_closed) return reject(GalleryErrorCode.unavailable);
-    itemPath = Uri.decodeFull(itemPath);
-    final absolute = path.absolute(path.join(_cacheFolder.path, itemPath));
-    if (!absolute.startsWith(_cacheFolder.path)) return reject(GalleryErrorCode.notFound);
-    try {
-      GallerySource? source;
-      final revision = request.url.queryParameters['rev'];
-      if (revision != null) {
-        source = await _galleryCatalog.resolvePath(
-          path.relative(absolute, from: _cacheFolder.absolute.path),
-          revision: revision,
-        );
-      }
-      return _galleryResponse(
-        kind,
-        await _mediaFiles.serve(
-          request,
-          io.File(absolute),
-          isCurrent: source == null ? null : () => _galleryCatalog.isCurrent(source!),
-        ),
-      );
-    } on GalleryCatalogFailure catch (error) {
-      return reject(error.code);
-    }
-  }
 }

@@ -922,7 +922,7 @@ mixin _$GalleryManagementSnapshot {
   List<GalleryItem> get items;
   Map<String, GalleryItem> get bySelectionIdentity;
   Map<String, GalleryItem> get byMediaId;
-  Map<String, GalleryTrashEntry> get trashById;
+  Map<String, GalleryEntry> get entriesById;
 
   /// Create a copy of GalleryManagementSnapshot
   /// with the given fields replaced by the non-null parameter values.
@@ -950,8 +950,8 @@ mixin _$GalleryManagementSnapshot {
               _this.byMediaId,
             ) &&
             const DeepCollectionEquality().equals(
-              other.trashById,
-              _this.trashById,
+              other.entriesById,
+              _this.entriesById,
             ));
   }
 
@@ -963,14 +963,14 @@ mixin _$GalleryManagementSnapshot {
       const DeepCollectionEquality().hash(_this.items),
       const DeepCollectionEquality().hash(_this.bySelectionIdentity),
       const DeepCollectionEquality().hash(_this.byMediaId),
-      const DeepCollectionEquality().hash(_this.trashById),
+      const DeepCollectionEquality().hash(_this.entriesById),
     );
   }
 
   @override
   String toString() {
     final _this = this as GalleryManagementSnapshot;
-    return 'GalleryManagementSnapshot(items: ${_this.items}, bySelectionIdentity: ${_this.bySelectionIdentity}, byMediaId: ${_this.byMediaId}, trashById: ${_this.trashById})';
+    return 'GalleryManagementSnapshot(items: ${_this.items}, bySelectionIdentity: ${_this.bySelectionIdentity}, byMediaId: ${_this.byMediaId}, entriesById: ${_this.entriesById})';
   }
 }
 
@@ -985,7 +985,7 @@ abstract mixin class $GalleryManagementSnapshotCopyWith<$Res> {
     List<GalleryItem> items,
     Map<String, GalleryItem> bySelectionIdentity,
     Map<String, GalleryItem> byMediaId,
-    Map<String, GalleryTrashEntry> trashById,
+    Map<String, GalleryEntry> entriesById,
   });
 }
 
@@ -1005,7 +1005,7 @@ class _$GalleryManagementSnapshotCopyWithImpl<$Res>
     Object? items = null,
     Object? bySelectionIdentity = null,
     Object? byMediaId = null,
-    Object? trashById = null,
+    Object? entriesById = null,
   }) {
     return _then(
       GalleryManagementSnapshot(
@@ -1021,10 +1021,10 @@ class _$GalleryManagementSnapshotCopyWithImpl<$Res>
             ? _self.byMediaId
             : byMediaId // ignore: cast_nullable_to_non_nullable
                   as Map<String, GalleryItem>,
-        trashById: null == trashById
-            ? _self.trashById
-            : trashById // ignore: cast_nullable_to_non_nullable
-                  as Map<String, GalleryTrashEntry>,
+        entriesById: null == entriesById
+            ? _self.entriesById
+            : entriesById // ignore: cast_nullable_to_non_nullable
+                  as Map<String, GalleryEntry>,
       ),
     );
   }
@@ -1127,7 +1127,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
       List<GalleryItem> items,
       Map<String, GalleryItem> bySelectionIdentity,
       Map<String, GalleryItem> byMediaId,
-      Map<String, GalleryTrashEntry> trashById,
+      Map<String, GalleryEntry> entriesById,
     )?
     $default, {
     required TResult orElse(),
@@ -1139,7 +1139,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
           _that.items,
           _that.bySelectionIdentity,
           _that.byMediaId,
-          _that.trashById,
+          _that.entriesById,
         );
       case _:
         return orElse();
@@ -1165,7 +1165,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
       List<GalleryItem> items,
       Map<String, GalleryItem> bySelectionIdentity,
       Map<String, GalleryItem> byMediaId,
-      Map<String, GalleryTrashEntry> trashById,
+      Map<String, GalleryEntry> entriesById,
     )
     $default,
   ) {
@@ -1176,7 +1176,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
           _that.items,
           _that.bySelectionIdentity,
           _that.byMediaId,
-          _that.trashById,
+          _that.entriesById,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -1201,7 +1201,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
       List<GalleryItem> items,
       Map<String, GalleryItem> bySelectionIdentity,
       Map<String, GalleryItem> byMediaId,
-      Map<String, GalleryTrashEntry> trashById,
+      Map<String, GalleryEntry> entriesById,
     )?
     $default,
   ) {
@@ -1212,7 +1212,7 @@ extension GalleryManagementSnapshotPatterns on GalleryManagementSnapshot {
           _that.items,
           _that.bySelectionIdentity,
           _that.byMediaId,
-          _that.trashById,
+          _that.entriesById,
         );
       case _:
         return null;
@@ -1227,11 +1227,11 @@ class _GalleryManagementSnapshot implements GalleryManagementSnapshot {
     List<GalleryItem> items = const [],
     Map<String, GalleryItem> bySelectionIdentity = const {},
     Map<String, GalleryItem> byMediaId = const {},
-    Map<String, GalleryTrashEntry> trashById = const {},
+    Map<String, GalleryEntry> entriesById = const {},
   }) : _items = items,
        _bySelectionIdentity = bySelectionIdentity,
        _byMediaId = byMediaId,
-       _trashById = trashById;
+       _entriesById = entriesById;
 
   final List<GalleryItem> _items;
   @override
@@ -1261,13 +1261,13 @@ class _GalleryManagementSnapshot implements GalleryManagementSnapshot {
     return EqualUnmodifiableMapView(_byMediaId);
   }
 
-  final Map<String, GalleryTrashEntry> _trashById;
+  final Map<String, GalleryEntry> _entriesById;
   @override
   @JsonKey()
-  Map<String, GalleryTrashEntry> get trashById {
-    if (_trashById is EqualUnmodifiableMapView) return _trashById;
+  Map<String, GalleryEntry> get entriesById {
+    if (_entriesById is EqualUnmodifiableMapView) return _entriesById;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_trashById);
+    return EqualUnmodifiableMapView(_entriesById);
   }
 
   /// Create a copy of GalleryManagementSnapshot
@@ -1296,7 +1296,10 @@ class _GalleryManagementSnapshot implements GalleryManagementSnapshot {
               other.byMediaId,
               _byMediaId,
             ) &&
-            const DeepCollectionEquality().equals(other.trashById, _trashById));
+            const DeepCollectionEquality().equals(
+              other.entriesById,
+              _entriesById,
+            ));
   }
 
   @override
@@ -1306,13 +1309,13 @@ class _GalleryManagementSnapshot implements GalleryManagementSnapshot {
       const DeepCollectionEquality().hash(_items),
       const DeepCollectionEquality().hash(_bySelectionIdentity),
       const DeepCollectionEquality().hash(_byMediaId),
-      const DeepCollectionEquality().hash(_trashById),
+      const DeepCollectionEquality().hash(_entriesById),
     );
   }
 
   @override
   String toString() {
-    return 'GalleryManagementSnapshot(items: $items, bySelectionIdentity: $bySelectionIdentity, byMediaId: $byMediaId, trashById: $trashById)';
+    return 'GalleryManagementSnapshot(items: $items, bySelectionIdentity: $bySelectionIdentity, byMediaId: $byMediaId, entriesById: $entriesById)';
   }
 }
 
@@ -1329,7 +1332,7 @@ abstract mixin class _$GalleryManagementSnapshotCopyWith<$Res>
     List<GalleryItem> items,
     Map<String, GalleryItem> bySelectionIdentity,
     Map<String, GalleryItem> byMediaId,
-    Map<String, GalleryTrashEntry> trashById,
+    Map<String, GalleryEntry> entriesById,
   });
 }
 
@@ -1349,7 +1352,7 @@ class __$GalleryManagementSnapshotCopyWithImpl<$Res>
     Object? items = null,
     Object? bySelectionIdentity = null,
     Object? byMediaId = null,
-    Object? trashById = null,
+    Object? entriesById = null,
   }) {
     return _then(
       _GalleryManagementSnapshot(
@@ -1365,10 +1368,10 @@ class __$GalleryManagementSnapshotCopyWithImpl<$Res>
             ? _self._byMediaId
             : byMediaId // ignore: cast_nullable_to_non_nullable
                   as Map<String, GalleryItem>,
-        trashById: null == trashById
-            ? _self._trashById
-            : trashById // ignore: cast_nullable_to_non_nullable
-                  as Map<String, GalleryTrashEntry>,
+        entriesById: null == entriesById
+            ? _self._entriesById
+            : entriesById // ignore: cast_nullable_to_non_nullable
+                  as Map<String, GalleryEntry>,
       ),
     );
   }
@@ -1838,7 +1841,10 @@ mixin _$GalleryManagementState {
   GalleryManagementLoadStatus get catalogStatus;
   bool get catalogRefreshing;
   bool get catalogRefreshFailed;
-  GalleryTrashCatalog? get trash;
+  GalleryCatalog? get trash;
+  GalleryCatalog? get hidden;
+  bool get hiddenLoading;
+  bool get hiddenFailed;
   bool get trashLoading;
   bool get trashFailed;
   bool get busy;
@@ -1894,6 +1900,12 @@ mixin _$GalleryManagementState {
                 other.catalogRefreshFailed == _this.catalogRefreshFailed) &&
             (identical(other.trash, _this.trash) ||
                 other.trash == _this.trash) &&
+            (identical(other.hidden, _this.hidden) ||
+                other.hidden == _this.hidden) &&
+            (identical(other.hiddenLoading, _this.hiddenLoading) ||
+                other.hiddenLoading == _this.hiddenLoading) &&
+            (identical(other.hiddenFailed, _this.hiddenFailed) ||
+                other.hiddenFailed == _this.hiddenFailed) &&
             (identical(other.trashLoading, _this.trashLoading) ||
                 other.trashLoading == _this.trashLoading) &&
             (identical(other.trashFailed, _this.trashFailed) ||
@@ -1940,6 +1952,9 @@ mixin _$GalleryManagementState {
       _this.catalogRefreshing,
       _this.catalogRefreshFailed,
       _this.trash,
+      _this.hidden,
+      _this.hiddenLoading,
+      _this.hiddenFailed,
       _this.trashLoading,
       _this.trashFailed,
       _this.busy,
@@ -1961,7 +1976,7 @@ mixin _$GalleryManagementState {
   @override
   String toString() {
     final _this = this as GalleryManagementState;
-    return 'GalleryManagementState(section: ${_this.section}, snapshot: ${_this.snapshot}, selectedIds: ${_this.selectedIds}, capabilities: ${_this.capabilities}, catalogStatus: ${_this.catalogStatus}, catalogRefreshing: ${_this.catalogRefreshing}, catalogRefreshFailed: ${_this.catalogRefreshFailed}, trash: ${_this.trash}, trashLoading: ${_this.trashLoading}, trashFailed: ${_this.trashFailed}, busy: ${_this.busy}, confirmation: ${_this.confirmation}, pendingOperation: ${_this.pendingOperation}, operationPlan: ${_this.operationPlan}, completedBatches: ${_this.completedBatches}, processedItems: ${_this.processedItems}, succeededItems: ${_this.succeededItems}, lastResult: ${_this.lastResult}, failures: ${_this.failures}, failureSnapshot: ${_this.failureSnapshot}, notice: ${_this.notice}, noticeSerial: ${_this.noticeSerial}, error: ${_this.error})';
+    return 'GalleryManagementState(section: ${_this.section}, snapshot: ${_this.snapshot}, selectedIds: ${_this.selectedIds}, capabilities: ${_this.capabilities}, catalogStatus: ${_this.catalogStatus}, catalogRefreshing: ${_this.catalogRefreshing}, catalogRefreshFailed: ${_this.catalogRefreshFailed}, trash: ${_this.trash}, hidden: ${_this.hidden}, hiddenLoading: ${_this.hiddenLoading}, hiddenFailed: ${_this.hiddenFailed}, trashLoading: ${_this.trashLoading}, trashFailed: ${_this.trashFailed}, busy: ${_this.busy}, confirmation: ${_this.confirmation}, pendingOperation: ${_this.pendingOperation}, operationPlan: ${_this.operationPlan}, completedBatches: ${_this.completedBatches}, processedItems: ${_this.processedItems}, succeededItems: ${_this.succeededItems}, lastResult: ${_this.lastResult}, failures: ${_this.failures}, failureSnapshot: ${_this.failureSnapshot}, notice: ${_this.notice}, noticeSerial: ${_this.noticeSerial}, error: ${_this.error})';
   }
 }
 
@@ -1980,7 +1995,10 @@ abstract mixin class $GalleryManagementStateCopyWith<$Res> {
     GalleryManagementLoadStatus catalogStatus,
     bool catalogRefreshing,
     bool catalogRefreshFailed,
-    GalleryTrashCatalog? trash,
+    GalleryCatalog? trash,
+    GalleryCatalog? hidden,
+    bool hiddenLoading,
+    bool hiddenFailed,
     bool trashLoading,
     bool trashFailed,
     bool busy,
@@ -1999,7 +2017,8 @@ abstract mixin class $GalleryManagementStateCopyWith<$Res> {
   });
 
   $GalleryManagementSnapshotCopyWith<$Res> get snapshot;
-  $GalleryTrashCatalogCopyWith<$Res>? get trash;
+  $GalleryCatalogCopyWith<$Res>? get trash;
+  $GalleryCatalogCopyWith<$Res>? get hidden;
   $GalleryMutationConfirmationCopyWith<$Res>? get confirmation;
   $GalleryOperationRequestCopyWith<$Res>? get pendingOperation;
   $GalleryManagementOperationPlanCopyWith<$Res>? get operationPlan;
@@ -2028,6 +2047,9 @@ class _$GalleryManagementStateCopyWithImpl<$Res>
     Object? catalogRefreshing = null,
     Object? catalogRefreshFailed = null,
     Object? trash = freezed,
+    Object? hidden = freezed,
+    Object? hiddenLoading = null,
+    Object? hiddenFailed = null,
     Object? trashLoading = null,
     Object? trashFailed = null,
     Object? busy = null,
@@ -2077,7 +2099,19 @@ class _$GalleryManagementStateCopyWithImpl<$Res>
         trash: freezed == trash
             ? _self.trash
             : trash // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashCatalog?,
+                  as GalleryCatalog?,
+        hidden: freezed == hidden
+            ? _self.hidden
+            : hidden // ignore: cast_nullable_to_non_nullable
+                  as GalleryCatalog?,
+        hiddenLoading: null == hiddenLoading
+            ? _self.hiddenLoading
+            : hiddenLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hiddenFailed: null == hiddenFailed
+            ? _self.hiddenFailed
+            : hiddenFailed // ignore: cast_nullable_to_non_nullable
+                  as bool,
         trashLoading: null == trashLoading
             ? _self.trashLoading
             : trashLoading // ignore: cast_nullable_to_non_nullable
@@ -2156,13 +2190,27 @@ class _$GalleryManagementStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashCatalogCopyWith<$Res>? get trash {
+  $GalleryCatalogCopyWith<$Res>? get trash {
     if (_self.trash == null) {
       return null;
     }
 
-    return $GalleryTrashCatalogCopyWith<$Res>(_self.trash!, (value) {
+    return $GalleryCatalogCopyWith<$Res>(_self.trash!, (value) {
       return _then(_self.copyWith(trash: value));
+    });
+  }
+
+  /// Create a copy of GalleryManagementState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryCatalogCopyWith<$Res>? get hidden {
+    if (_self.hidden == null) {
+      return null;
+    }
+
+    return $GalleryCatalogCopyWith<$Res>(_self.hidden!, (value) {
+      return _then(_self.copyWith(hidden: value));
     });
   }
 
@@ -2346,7 +2394,10 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
       GalleryManagementLoadStatus catalogStatus,
       bool catalogRefreshing,
       bool catalogRefreshFailed,
-      GalleryTrashCatalog? trash,
+      GalleryCatalog? trash,
+      GalleryCatalog? hidden,
+      bool hiddenLoading,
+      bool hiddenFailed,
       bool trashLoading,
       bool trashFailed,
       bool busy,
@@ -2378,6 +2429,9 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
           _that.catalogRefreshing,
           _that.catalogRefreshFailed,
           _that.trash,
+          _that.hidden,
+          _that.hiddenLoading,
+          _that.hiddenFailed,
           _that.trashLoading,
           _that.trashFailed,
           _that.busy,
@@ -2422,7 +2476,10 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
       GalleryManagementLoadStatus catalogStatus,
       bool catalogRefreshing,
       bool catalogRefreshFailed,
-      GalleryTrashCatalog? trash,
+      GalleryCatalog? trash,
+      GalleryCatalog? hidden,
+      bool hiddenLoading,
+      bool hiddenFailed,
       bool trashLoading,
       bool trashFailed,
       bool busy,
@@ -2453,6 +2510,9 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
           _that.catalogRefreshing,
           _that.catalogRefreshFailed,
           _that.trash,
+          _that.hidden,
+          _that.hiddenLoading,
+          _that.hiddenFailed,
           _that.trashLoading,
           _that.trashFailed,
           _that.busy,
@@ -2496,7 +2556,10 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
       GalleryManagementLoadStatus catalogStatus,
       bool catalogRefreshing,
       bool catalogRefreshFailed,
-      GalleryTrashCatalog? trash,
+      GalleryCatalog? trash,
+      GalleryCatalog? hidden,
+      bool hiddenLoading,
+      bool hiddenFailed,
       bool trashLoading,
       bool trashFailed,
       bool busy,
@@ -2527,6 +2590,9 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
           _that.catalogRefreshing,
           _that.catalogRefreshFailed,
           _that.trash,
+          _that.hidden,
+          _that.hiddenLoading,
+          _that.hiddenFailed,
           _that.trashLoading,
           _that.trashFailed,
           _that.busy,
@@ -2553,7 +2619,7 @@ extension GalleryManagementStatePatterns on GalleryManagementState {
 
 class _GalleryManagementState extends GalleryManagementState {
   const _GalleryManagementState({
-    this.section = GallerySection.library,
+    this.section = GallerySection.published,
     this.snapshot = const GalleryManagementSnapshot(),
     Set<String> selectedIds = const {},
     Set<GalleryCapability> capabilities = const {},
@@ -2561,6 +2627,9 @@ class _GalleryManagementState extends GalleryManagementState {
     this.catalogRefreshing = false,
     this.catalogRefreshFailed = false,
     this.trash,
+    this.hidden,
+    this.hiddenLoading = false,
+    this.hiddenFailed = false,
     this.trashLoading = false,
     this.trashFailed = false,
     this.busy = false,
@@ -2615,7 +2684,15 @@ class _GalleryManagementState extends GalleryManagementState {
   @JsonKey()
   final bool catalogRefreshFailed;
   @override
-  final GalleryTrashCatalog? trash;
+  final GalleryCatalog? trash;
+  @override
+  final GalleryCatalog? hidden;
+  @override
+  @JsonKey()
+  final bool hiddenLoading;
+  @override
+  @JsonKey()
+  final bool hiddenFailed;
   @override
   @JsonKey()
   final bool trashLoading;
@@ -2696,6 +2773,11 @@ class _GalleryManagementState extends GalleryManagementState {
             (identical(other.catalogRefreshFailed, catalogRefreshFailed) ||
                 other.catalogRefreshFailed == catalogRefreshFailed) &&
             (identical(other.trash, trash) || other.trash == trash) &&
+            (identical(other.hidden, hidden) || other.hidden == hidden) &&
+            (identical(other.hiddenLoading, hiddenLoading) ||
+                other.hiddenLoading == hiddenLoading) &&
+            (identical(other.hiddenFailed, hiddenFailed) ||
+                other.hiddenFailed == hiddenFailed) &&
             (identical(other.trashLoading, trashLoading) ||
                 other.trashLoading == trashLoading) &&
             (identical(other.trashFailed, trashFailed) ||
@@ -2736,6 +2818,9 @@ class _GalleryManagementState extends GalleryManagementState {
       catalogRefreshing,
       catalogRefreshFailed,
       trash,
+      hidden,
+      hiddenLoading,
+      hiddenFailed,
       trashLoading,
       trashFailed,
       busy,
@@ -2756,7 +2841,7 @@ class _GalleryManagementState extends GalleryManagementState {
 
   @override
   String toString() {
-    return 'GalleryManagementState(section: $section, snapshot: $snapshot, selectedIds: $selectedIds, capabilities: $capabilities, catalogStatus: $catalogStatus, catalogRefreshing: $catalogRefreshing, catalogRefreshFailed: $catalogRefreshFailed, trash: $trash, trashLoading: $trashLoading, trashFailed: $trashFailed, busy: $busy, confirmation: $confirmation, pendingOperation: $pendingOperation, operationPlan: $operationPlan, completedBatches: $completedBatches, processedItems: $processedItems, succeededItems: $succeededItems, lastResult: $lastResult, failures: $failures, failureSnapshot: $failureSnapshot, notice: $notice, noticeSerial: $noticeSerial, error: $error)';
+    return 'GalleryManagementState(section: $section, snapshot: $snapshot, selectedIds: $selectedIds, capabilities: $capabilities, catalogStatus: $catalogStatus, catalogRefreshing: $catalogRefreshing, catalogRefreshFailed: $catalogRefreshFailed, trash: $trash, hidden: $hidden, hiddenLoading: $hiddenLoading, hiddenFailed: $hiddenFailed, trashLoading: $trashLoading, trashFailed: $trashFailed, busy: $busy, confirmation: $confirmation, pendingOperation: $pendingOperation, operationPlan: $operationPlan, completedBatches: $completedBatches, processedItems: $processedItems, succeededItems: $succeededItems, lastResult: $lastResult, failures: $failures, failureSnapshot: $failureSnapshot, notice: $notice, noticeSerial: $noticeSerial, error: $error)';
   }
 }
 
@@ -2777,7 +2862,10 @@ abstract mixin class _$GalleryManagementStateCopyWith<$Res>
     GalleryManagementLoadStatus catalogStatus,
     bool catalogRefreshing,
     bool catalogRefreshFailed,
-    GalleryTrashCatalog? trash,
+    GalleryCatalog? trash,
+    GalleryCatalog? hidden,
+    bool hiddenLoading,
+    bool hiddenFailed,
     bool trashLoading,
     bool trashFailed,
     bool busy,
@@ -2798,7 +2886,9 @@ abstract mixin class _$GalleryManagementStateCopyWith<$Res>
   @override
   $GalleryManagementSnapshotCopyWith<$Res> get snapshot;
   @override
-  $GalleryTrashCatalogCopyWith<$Res>? get trash;
+  $GalleryCatalogCopyWith<$Res>? get trash;
+  @override
+  $GalleryCatalogCopyWith<$Res>? get hidden;
   @override
   $GalleryMutationConfirmationCopyWith<$Res>? get confirmation;
   @override
@@ -2832,6 +2922,9 @@ class __$GalleryManagementStateCopyWithImpl<$Res>
     Object? catalogRefreshing = null,
     Object? catalogRefreshFailed = null,
     Object? trash = freezed,
+    Object? hidden = freezed,
+    Object? hiddenLoading = null,
+    Object? hiddenFailed = null,
     Object? trashLoading = null,
     Object? trashFailed = null,
     Object? busy = null,
@@ -2881,7 +2974,19 @@ class __$GalleryManagementStateCopyWithImpl<$Res>
         trash: freezed == trash
             ? _self.trash
             : trash // ignore: cast_nullable_to_non_nullable
-                  as GalleryTrashCatalog?,
+                  as GalleryCatalog?,
+        hidden: freezed == hidden
+            ? _self.hidden
+            : hidden // ignore: cast_nullable_to_non_nullable
+                  as GalleryCatalog?,
+        hiddenLoading: null == hiddenLoading
+            ? _self.hiddenLoading
+            : hiddenLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hiddenFailed: null == hiddenFailed
+            ? _self.hiddenFailed
+            : hiddenFailed // ignore: cast_nullable_to_non_nullable
+                  as bool,
         trashLoading: null == trashLoading
             ? _self.trashLoading
             : trashLoading // ignore: cast_nullable_to_non_nullable
@@ -2960,13 +3065,27 @@ class __$GalleryManagementStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $GalleryTrashCatalogCopyWith<$Res>? get trash {
+  $GalleryCatalogCopyWith<$Res>? get trash {
     if (_self.trash == null) {
       return null;
     }
 
-    return $GalleryTrashCatalogCopyWith<$Res>(_self.trash!, (value) {
+    return $GalleryCatalogCopyWith<$Res>(_self.trash!, (value) {
       return _then(_self.copyWith(trash: value));
+    });
+  }
+
+  /// Create a copy of GalleryManagementState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryCatalogCopyWith<$Res>? get hidden {
+    if (_self.hidden == null) {
+      return null;
+    }
+
+    return $GalleryCatalogCopyWith<$Res>(_self.hidden!, (value) {
+      return _then(_self.copyWith(hidden: value));
     });
   }
 

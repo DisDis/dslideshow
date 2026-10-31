@@ -87,6 +87,7 @@ abstract mixin class $GalleryComparisonMetadataStateCopyWith<$Res> {
     int revisionMismatch,
   });
 
+  $GalleryItemCopyWith<$Res>? get item;
   $GalleryMetadataCopyWith<$Res>? get metadata;
 }
 
@@ -138,6 +139,20 @@ class _$GalleryComparisonMetadataStateCopyWithImpl<$Res>
                   as int,
       ),
     );
+  }
+
+  /// Create a copy of GalleryComparisonMetadataState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryItemCopyWith<$Res>? get item {
+    if (_self.item == null) {
+      return null;
+    }
+
+    return $GalleryItemCopyWith<$Res>(_self.item!, (value) {
+      return _then(_self.copyWith(item: value));
+    });
   }
 
   /// Create a copy of GalleryComparisonMetadataState
@@ -451,6 +466,8 @@ abstract mixin class _$GalleryComparisonMetadataStateCopyWith<$Res>
   });
 
   @override
+  $GalleryItemCopyWith<$Res>? get item;
+  @override
   $GalleryMetadataCopyWith<$Res>? get metadata;
 }
 
@@ -502,6 +519,20 @@ class __$GalleryComparisonMetadataStateCopyWithImpl<$Res>
                   as int,
       ),
     );
+  }
+
+  /// Create a copy of GalleryComparisonMetadataState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryItemCopyWith<$Res>? get item {
+    if (_self.item == null) {
+      return null;
+    }
+
+    return $GalleryItemCopyWith<$Res>(_self.item!, (value) {
+      return _then(_self.copyWith(item: value));
+    });
   }
 
   /// Create a copy of GalleryComparisonMetadataState

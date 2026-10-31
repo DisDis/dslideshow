@@ -46,9 +46,9 @@ void main() {
   }
 
   GalleryMediaRef ref(GalleryEntry entry) =>
-      GalleryMediaRef(mediaId: entry.mediaId, sourceRevision: entry.sourceRevision!);
-  GalleryMediaRef trashRef(GalleryTrashEntry entry) =>
-      GalleryMediaRef(mediaId: entry.trashId, sourceRevision: entry.sourceRevision);
+      GalleryMediaRef(section: entry.section, mediaId: entry.mediaId, sourceRevision: entry.sourceRevision);
+  GalleryMediaRef trashRef(GalleryEntry entry) =>
+      GalleryMediaRef(section: entry.section, mediaId: entry.mediaId, sourceRevision: entry.sourceRevision);
   GalleryOperationRequest request(String id, GalleryMutation action, List<GalleryMediaRef> items) =>
       GalleryOperationRequest(operationId: id, action: action, items: items);
   Future<void> restart() async {
@@ -56,10 +56,11 @@ void main() {
     operations = GalleryFileOperations(catalog: catalog);
   }
 
-  Future<GalleryTrashEntry> movePhoto(GalleryEntry entry, String id) async {
+  Future<GalleryEntry> movePhoto(GalleryEntry entry, String id) async {
     final result = await operations.mutate(request(id, GalleryMutation.trash, [ref(entry)]));
     expect(result.items.single.state, GalleryItemOperationState.succeeded);
-    return (await operations.trashCatalog()).entries.singleWhere((value) => value.originalPath == entry.path);
+    return (await operations.mediaCatalog(GalleryMediaSection.trash)).entries
+        .singleWhere((value) => value.path == entry.path);
   }
 
   Matcher failure(GalleryErrorCode code) =>
@@ -83,11 +84,17 @@ void main() {
     expect(await File(path.join(originals.path, b.path)).exists(), isFalse);
     expect(await trashFiles(), {a.path, b.path});
     expect(await File(path.join(trash.path, a.path)).readAsString(), 'original photo');
-    final entries = (await operations.trashCatalog()).entries;
-    final aTrash = entries.singleWhere((entry) => entry.originalPath == a.path);
+    final entries = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries;
+    final aTrash = entries.singleWhere((entry) => entry.path == a.path);
     expect(aTrash.name, a.name);
     expect(aTrash.sizeBytes, 14);
-    final resolved = await operations.resolveTrash(aTrash.trashId, revision: aTrash.sourceRevision);
+    final resolved = await operations.mediaFile(
+      GalleryMediaRef(
+        section: GalleryMediaSection.trash,
+        mediaId: aTrash.mediaId,
+        sourceRevision: aTrash.sourceRevision,
+      ),
+    );
     expect(resolved.absolute.path, path.join(trash.absolute.path, a.path));
     expect(path.isWithin(catalog.stateDirectory.path, resolved.path), isTrue);
     expect(path.isWithin(originals.path, resolved.path), isFalse);
@@ -95,7 +102,9 @@ void main() {
     expect(await File(path.join(trash.path, 'manifest.json')).exists(), isFalse);
     expect(await Directory(path.join(trash.path, 'files')).exists(), isFalse);
     await expectLater(
-      operations.resolveTrash(aTrash.trashId, revision: 'old'),
+      operations.mediaFile(
+        GalleryMediaRef(section: GalleryMediaSection.trash, mediaId: aTrash.mediaId, sourceRevision: 'old'),
+      ),
       failure(GalleryErrorCode.revisionMismatch),
     );
   });
@@ -107,13 +116,13 @@ void main() {
     expect(restored.items.single.state, GalleryItemOperationState.succeeded);
     expect(restored.items.single.restoredPath, 'album/sub/photo.jpg');
     expect(await File(path.join(originals.path, 'album/sub/photo.jpg')).readAsString(), 'retained');
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
     final current = (await catalog.catalog()).entries.singleWhere((entry) => entry.path == 'album/sub/photo.jpg');
     final second = await movePhoto(current, 'move-again');
     final unrelated = await File(path.join(trash.path, 'album/sub/keep.txt')).writeAsString('external');
     final purged = await operations.mutate(request('purge', GalleryMutation.purge, [trashRef(second)]));
     expect(purged.items.single.state, GalleryItemOperationState.succeeded);
-    expect(await File(path.join(trash.path, second.originalPath)).exists(), isFalse);
+    expect(await File(path.join(trash.path, second.path)).exists(), isFalse);
     expect(await unrelated.readAsString(), 'external');
     expect(await File(path.join(trash.path, 'manifest.json')).exists(), isFalse);
   });
@@ -125,8 +134,8 @@ void main() {
     expect(result.items.single.state, GalleryItemOperationState.failed);
     expect(result.items.single.error, GalleryErrorCode.conflict);
     expect(await File(path.join(originals.path, replacement.path)).readAsString(), 'new user file');
-    expect(await File(path.join(trash.path, first.originalPath)).readAsString(), 'saved original');
-    expect((await operations.trashCatalog()).entries.single.trashId, first.trashId);
+    expect(await File(path.join(trash.path, first.path)).readAsString(), 'saved original');
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single.mediaId, first.mediaId);
   });
 
   test('an existing trash directory is a conflict and keeps its contents', () async {
@@ -139,7 +148,7 @@ void main() {
     expect(await File(path.join(originals.path, original.path)).readAsString(), 'retained original');
     expect(await occupied.exists(), isTrue);
     expect(await retained.readAsString(), 'retained directory contents');
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
   });
 
   test('restore chooses a safe name and preserves conflicting files and directories', () async {
@@ -151,7 +160,7 @@ void main() {
     expect(result.items.single.restoredPath, 'album/a (restored 2).jpg');
     expect(await File(path.join(originals.path, 'album/a.jpg')).readAsString(), 'new user file');
     expect(await File(path.join(originals.path, 'album/a (restored 2).jpg')).readAsString(), 'saved original');
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
   });
 
   test('restart derives trash from disk and repeated operation IDs never replay old successes', () async {
@@ -163,7 +172,7 @@ void main() {
     expect(replay.operationId, move.operationId);
     expect(replay.items.single.state, GalleryItemOperationState.failed);
     expect(replay.items.single.error, GalleryErrorCode.notFound);
-    final entry = (await operations.trashCatalog()).entries.single;
+    final entry = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
     final purge = request('same-id', GalleryMutation.purge, [trashRef(entry)]);
     expect((await operations.mutate(purge)).items.single.state, GalleryItemOperationState.succeeded);
     await restart();
@@ -178,15 +187,17 @@ void main() {
     final file = File(path.join(trash.path, 'manual/photo.jpg'));
     await file.parent.create(recursive: true);
     await file.writeAsString('old bytes');
-    final old = (await operations.trashCatalog()).entries.single;
-    expect(old.originalPath, 'manual/photo.jpg');
+    final old = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
+    expect(old.path, 'manual/photo.jpg');
     await file.writeAsString('replacement bytes');
     await expectLater(
-      operations.resolveTrash(old.trashId, revision: old.sourceRevision),
+      operations.mediaFile(
+        GalleryMediaRef(section: GalleryMediaSection.trash, mediaId: old.mediaId, sourceRevision: old.sourceRevision),
+      ),
       failure(GalleryErrorCode.revisionMismatch),
     );
-    final refreshed = (await operations.trashCatalog()).entries.single;
-    expect(refreshed.trashId, isNot(old.trashId));
+    final refreshed = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
+    expect(refreshed.mediaId, isNot(old.mediaId));
     expect(refreshed.sourceRevision, isNot(old.sourceRevision));
     expect(refreshed.sizeBytes, 17);
     final staleUndo = await operations.mutate(request('old-undo', GalleryMutation.restore, [trashRef(old)]));
@@ -194,7 +205,7 @@ void main() {
     expect(staleUndo.items.single.error, GalleryErrorCode.notFound);
     expect(await file.readAsString(), 'replacement bytes');
     await file.delete();
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
   });
 
   test('reusing a restored path gives a new trash ID so old Undo cannot restore its replacement', () async {
@@ -202,14 +213,14 @@ void main() {
     await operations.mutate(request('restore-first', GalleryMutation.restore, [trashRef(first)]));
     final newer = await photo('album/photo.jpg', 'different replacement');
     final second = await movePhoto(newer, 'second');
-    expect(second.originalPath, first.originalPath);
-    expect(second.trashId, isNot(first.trashId));
+    expect(second.path, first.path);
+    expect(second.mediaId, isNot(first.mediaId));
     expect(second.sourceRevision, isNot(first.sourceRevision));
     final oldUndo = await operations.mutate(request('old-undo', GalleryMutation.restore, [trashRef(first)]));
     expect(oldUndo.items.single.state, GalleryItemOperationState.failed);
     expect(oldUndo.items.single.error, GalleryErrorCode.notFound);
-    expect(await File(path.join(trash.path, second.originalPath)).readAsString(), 'different replacement');
-    expect(await File(path.join(originals.path, second.originalPath)).exists(), isFalse);
+    expect(await File(path.join(trash.path, second.path)).readAsString(), 'different replacement');
+    expect(await File(path.join(originals.path, second.path)).exists(), isFalse);
   });
 
   test('stale and missing refs fail in request order while valid selected media move', () async {
@@ -219,7 +230,7 @@ void main() {
     final result = await operations.mutate(
       request('partial', GalleryMutation.trash, [
         ref(stale),
-        const GalleryMediaRef(mediaId: 'missing', sourceRevision: 'x'),
+        const GalleryMediaRef(section: GalleryMediaSection.published, mediaId: 'missing', sourceRevision: 'x'),
         ref(good),
       ]),
     );
@@ -232,7 +243,7 @@ void main() {
     expect(result.items[0].error, GalleryErrorCode.revisionMismatch);
     expect(result.items[1].error, GalleryErrorCode.notFound);
     expect(await File(path.join(originals.path, 'stale.jpg')).readAsString(), 'newer source');
-    expect((await operations.trashCatalog()).entries.single.originalPath, good.path);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single.path, good.path);
   });
 
   test('a failed rename retains its source and later selected files still move', () async {
@@ -269,7 +280,11 @@ void main() {
     final result = await operations.mutate(
       request('bad-targets', GalleryMutation.trash, [
         for (final entry in targets)
-          GalleryMediaRef(mediaId: entry.mediaId, sourceRevision: entry.sourceRevision ?? 'directory'),
+          GalleryMediaRef(
+            section: entry.section,
+            mediaId: entry.mediaId,
+            sourceRevision: entry.sourceRevision.isEmpty ? 'directory' : entry.sourceRevision,
+          ),
       ]),
     );
     expect(result.items.map((item) => item.state), everyElement(GalleryItemOperationState.failed));
@@ -282,26 +297,32 @@ void main() {
     final first = await movePhoto(await photo('album/first.jpg', 'first'), 'move-first');
     final entry = await movePhoto(await photo('album/a.jpg', 'saved'), 'move');
     final last = await movePhoto(await photo('album/last.jpg', 'last'), 'move-last');
-    final source = File(path.join(trash.path, entry.originalPath));
+    final source = File(path.join(trash.path, entry.path));
     final outside = await File(path.join(root.path, 'outside.jpg')).writeAsString('outside');
     await source.delete();
     final replacement = await Link(source.path).create(outside.path);
     await expectLater(
-      operations.resolveTrash(entry.trashId, revision: entry.sourceRevision),
+      operations.mediaFile(
+        GalleryMediaRef(
+          section: GalleryMediaSection.trash,
+          mediaId: entry.mediaId,
+          sourceRevision: entry.sourceRevision,
+        ),
+      ),
       failure(GalleryErrorCode.invalidRequest),
     );
     final purged = await operations.mutate(
       request('purge-link', GalleryMutation.purge, [trashRef(first), trashRef(entry), trashRef(last)]),
     );
-    expect(purged.items.map((value) => value.mediaId), [first.trashId, entry.trashId, last.trashId]);
+    expect(purged.items.map((value) => value.mediaId), [first.mediaId, entry.mediaId, last.mediaId]);
     expect(purged.items.map((value) => value.state), [
       GalleryItemOperationState.succeeded,
       GalleryItemOperationState.failed,
       GalleryItemOperationState.succeeded,
     ]);
     expect(purged.items[1].error, GalleryErrorCode.invalidRequest);
-    expect(await File(path.join(trash.path, first.originalPath)).exists(), isFalse);
-    expect(await File(path.join(trash.path, last.originalPath)).exists(), isFalse);
+    expect(await File(path.join(trash.path, first.path)).exists(), isFalse);
+    expect(await File(path.join(trash.path, last.path)).exists(), isFalse);
     expect(await outside.readAsString(), 'outside');
     expect(await replacement.exists(), isTrue);
   });
@@ -323,10 +344,10 @@ void main() {
       return result;
     });
     expect(result.items.single.state, GalleryItemOperationState.succeeded);
-    expect(await File(path.join(trash.path, saved.originalPath)).exists(), isFalse);
+    expect(await File(path.join(trash.path, saved.path)).exists(), isFalse);
     expect(await File(path.join(originals.path, 'keep.jpg')).readAsString(), 'retained original');
     expect(await epoch.readAsBytes(), epochBefore);
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
   });
 
   test(
@@ -338,11 +359,11 @@ void main() {
         request('restore-with-memory-invalidation', GalleryMutation.restore, [trashRef(saved)]),
       );
       expect(result.items.single.state, GalleryItemOperationState.succeeded);
-      expect(result.items.single.restoredPath, saved.originalPath);
-      final entry = (await catalog.catalog()).entries.singleWhere((entry) => entry.path == saved.originalPath);
+      expect(result.items.single.restoredPath, saved.path);
+      final entry = (await catalog.catalog()).entries.singleWhere((entry) => entry.path == saved.path);
       final source = await catalog.resolve(entry.mediaId, revision: entry.sourceRevision);
       expect(await File(source.absolutePath).readAsString(), 'retained original');
-      expect(await File(path.join(trash.path, saved.originalPath)).exists(), isFalse);
+      expect(await File(path.join(trash.path, saved.path)).exists(), isFalse);
       final hints = records.where((record) => record.message == 'Gallery catalog marked dirty');
       expect(hints, isNotEmpty);
       expect(hints.every((record) => record.level == Level.FINE && record.error == null), isTrue);
@@ -391,7 +412,7 @@ void main() {
       operations.mutate(
         request('too-many', GalleryMutation.trash, [
           ref(original),
-          const GalleryMediaRef(mediaId: 'other', sourceRevision: '1'),
+          const GalleryMediaRef(section: GalleryMediaSection.published, mediaId: 'other', sourceRevision: '1'),
         ]),
       ),
       failure(GalleryErrorCode.invalidRequest),
@@ -402,10 +423,10 @@ void main() {
       await release.future;
     });
     await entered.future;
-    await expectLater(operations.trashCatalog(), failure(GalleryErrorCode.busy));
+    await expectLater(operations.mediaCatalog(GalleryMediaSection.trash), failure(GalleryErrorCode.busy));
     var closed = false;
     final closing = operations.close().then((_) => closed = true);
-    await expectLater(operations.trashCatalog(), failure(GalleryErrorCode.unavailable));
+    await expectLater(operations.mediaCatalog(GalleryMediaSection.trash), failure(GalleryErrorCode.unavailable));
     expect(closed, isFalse);
     release.complete();
     await held;
@@ -425,7 +446,10 @@ void main() {
         maxCatalogEntries: limitByEntries ? 1 : 100,
         maxCatalogBytes: limitByEntries ? 64 * 1024 : 100,
       );
-      await expectLater(operations.trashCatalog(), failure(GalleryErrorCode.outputLimitExceeded));
+      await expectLater(
+        operations.mediaCatalog(GalleryMediaSection.trash),
+        failure(GalleryErrorCode.outputLimitExceeded),
+      );
       expect(await trashFiles(), {'album/a.jpg', 'album/b.jpg'});
       expect(await File(path.join(trash.path, 'album/a.jpg')).readAsString(), 'a');
       expect(await File(path.join(trash.path, 'album/b.jpg')).readAsString(), 'b');
@@ -447,7 +471,7 @@ void main() {
       await Directory(path.join(trash.path, 'album')).create(recursive: true);
       await File(path.join(trash.path, 'album/a.jpg')).writeAsString('a');
       await File(path.join(trash.path, 'album/b.jpg')).writeAsString('b');
-      final entry = (await operations.trashCatalog()).entries.first;
+      final entry = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.first;
       final scansBefore = records
           .where(
             (record) =>
@@ -456,9 +480,24 @@ void main() {
           )
           .length;
       expect(scansBefore, 1);
-      expect(await operations.resolveTrashEntry(entry.trashId, revision: entry.sourceRevision), entry);
       expect(
-        await (await operations.resolveTrash(entry.trashId, revision: entry.sourceRevision)).readAsString(),
+        (await operations.resolveMedia(
+          GalleryMediaRef(
+            section: GalleryMediaSection.trash,
+            mediaId: entry.mediaId,
+            sourceRevision: entry.sourceRevision,
+          ),
+        )).entry,
+        entry,
+      );
+      expect(
+        await (await operations.mediaFile(
+          GalleryMediaRef(
+            section: GalleryMediaSection.trash,
+            mediaId: entry.mediaId,
+            sourceRevision: entry.sourceRevision,
+          ),
+        )).readAsString(),
         entry.name == 'a.jpg' ? 'a' : 'b',
       );
       expect(
@@ -475,7 +514,7 @@ void main() {
         records.where((record) => record.loggerName == 'GalleryFileOperations' && record.level == Level.INFO),
         isEmpty,
       );
-      await operations.trashCatalog();
+      await operations.mediaCatalog(GalleryMediaSection.trash);
       expect(
         records
             .where(
@@ -489,22 +528,12 @@ void main() {
     }),
   );
 
-  test('the command guard runs inside the mutation lock on every call, including reused IDs', () async {
+  test('reusing a command ID still checks the current filesystem revision', () async {
     final original = await photo('one.jpg', 'one');
-    await operations.close();
-    var calls = 0, reject = false;
-    operations = GalleryFileOperations(
-      catalog: catalog,
-      beforeMutation: (_) async {
-        calls++;
-        if (reject) throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
-      },
-    );
     final move = request('same-id', GalleryMutation.trash, [ref(original)]);
     expect((await operations.mutate(move)).items.single.state, GalleryItemOperationState.succeeded);
-    reject = true;
-    await expectLater(operations.mutate(move), failure(GalleryErrorCode.conflict));
-    expect(calls, 2);
+    final repeated = await operations.mutate(move);
+    expect(repeated.items.single.error, GalleryErrorCode.notFound);
     expect(await File(path.join(trash.path, original.path)).readAsString(), 'one');
   });
 
@@ -518,7 +547,7 @@ void main() {
     expect(result.items.single.state, GalleryItemOperationState.failed);
     expect(result.items.single.error, GalleryErrorCode.unsupported);
     expect(await File(path.join(originals.path, original.path)).readAsString(), 'retained');
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
     expect(
       await Directory(path.join(alternate.path, 'trash')).list(recursive: true).where((entry) => entry is File).isEmpty,
       isTrue,
@@ -531,13 +560,19 @@ void main() {
     final mirrored = File(path.join(trash.path, relative));
     await mirrored.parent.create(recursive: true);
     await mirrored.writeAsString('ordinary nested photo');
-    final first = (await operations.trashCatalog()).entries.single;
-    expect(first.originalPath, relative);
+    final first = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
+    expect(first.path, relative);
     await restart();
-    final entry = (await operations.trashCatalog()).entries.single;
+    final entry = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
     expect(entry, first);
     expect(
-      await (await operations.resolveTrash(entry.trashId, revision: entry.sourceRevision)).readAsString(),
+      await (await operations.mediaFile(
+        GalleryMediaRef(
+          section: GalleryMediaSection.trash,
+          mediaId: entry.mediaId,
+          sourceRevision: entry.sourceRevision,
+        ),
+      )).readAsString(),
       'ordinary nested photo',
     );
     final restored = await operations.mutate(request('restore-hex-folder', GalleryMutation.restore, [trashRef(entry)]));
@@ -546,7 +581,7 @@ void main() {
     expect(await File(path.join(originals.path, relative)).readAsString(), 'ordinary nested photo');
     expect(await mirrored.exists(), isFalse);
     expect(await mirrored.parent.exists(), isTrue);
-    expect((await operations.trashCatalog()).entries, isEmpty);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
     expect(await File(path.join(trash.path, 'manifest.json')).exists(), isFalse);
     expect(await trashFiles(), isEmpty);
   });
@@ -564,7 +599,7 @@ void main() {
 
   test('trash root symlinks and substitutions are rechecked after initialization', () async {
     final original = await photo('one.jpg', 'retained');
-    await operations.trashCatalog();
+    await operations.mediaCatalog(GalleryMediaSection.trash);
     final outside = await Directory(path.join(root.path, 'outside')).create();
     await trash.delete();
     final replacement = await Link(trash.path).create(outside.path);
@@ -586,9 +621,15 @@ void main() {
       final file = await File(path.join(actual.path, 'photo.jpg')).writeAsString('original bytes');
       final entry = (await catalog.catalog()).entries.single;
       await operations.mutate(request('alias-trash', GalleryMutation.trash, [ref(entry)]));
-      final saved = (await operations.trashCatalog()).entries.single;
+      final saved = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
       expect(
-        (await operations.resolveTrash(saved.trashId, revision: saved.sourceRevision)).path,
+        (await operations.mediaFile(
+          GalleryMediaRef(
+            section: GalleryMediaSection.trash,
+            mediaId: saved.mediaId,
+            sourceRevision: saved.sourceRevision,
+          ),
+        )).path,
         path.join(trash.path, 'photo.jpg'),
       );
       await operations.mutate(request('alias-restore', GalleryMutation.restore, [trashRef(saved)]));
@@ -599,7 +640,7 @@ void main() {
         (await operations.mutate(request('alias-purge', GalleryMutation.purge, [trashRef(second)]))).items.single.state,
         GalleryItemOperationState.succeeded,
       );
-      expect((await operations.trashCatalog()).entries, isEmpty);
+      expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries, isEmpty);
       expect(await Directory(path.join('${actual.path}.gallery', 'trash')).exists(), isFalse);
       final outside = await File(path.join(root.path, 'PRIVATE_OUTSIDE.jpg')).writeAsString('outside');
       final child = await Link(path.join(actual.path, 'PRIVATE_CHILD.jpg')).create(outside.path);
@@ -621,7 +662,7 @@ void main() {
     final a = await File(path.join(first.path, 'same.jpg')).writeAsString('first bytes');
     final b = await File(path.join(second.path, 'same.jpg')).writeAsString('second bytes');
     final alias = await Link(originals.path).create(first.path);
-    await operations.trashCatalog();
+    await operations.mediaCatalog(GalleryMediaSection.trash);
     await alias.delete();
     await alias.create(second.path);
     final entry = (await catalog.refresh(
@@ -673,10 +714,14 @@ void main() {
       await operations.mutate(
         request('log-partial', GalleryMutation.trash, [
           ref(original),
-          const GalleryMediaRef(mediaId: 'PRIVATE_MISSING.jpg', sourceRevision: 'PRIVATE_REVISION'),
+          const GalleryMediaRef(
+            section: GalleryMediaSection.published,
+            mediaId: 'PRIVATE_MISSING.jpg',
+            sourceRevision: 'PRIVATE_REVISION',
+          ),
         ]),
       );
-      final entry = (await operations.trashCatalog()).entries.single;
+      final entry = (await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single;
       const unsafeId = 'http://frame/cache/AUTH_SECRET/PRIVATE_FILE.jpg';
       await operations.mutate(request(unsafeId, GalleryMutation.restore, [trashRef(entry)]));
       final current = (await catalog.catalog()).entries.single;
@@ -686,13 +731,9 @@ void main() {
       expect((await operations.mutate(purge)).items.single.error, GalleryErrorCode.notFound);
       final cancelledSource = await photo('PRIVATE_CANCELLED.jpg', 'retained');
       await operations.close();
-      operations = GalleryFileOperations(
-        catalog: catalog,
-        beforeMutation: (_) async => throw const GalleryCatalogFailure(GalleryErrorCode.cancelled),
-      );
       await expectLater(
         operations.mutate(request('cancelled-private-id', GalleryMutation.trash, [ref(cancelledSource)])),
-        failure(GalleryErrorCode.cancelled),
+        failure(GalleryErrorCode.unavailable),
       );
       expect(await File(path.join(originals.path, cancelledSource.path)).readAsString(), 'retained');
       final diagnostics = records.where((record) => record.loggerName == 'GalleryFileOperations').toList();
@@ -741,20 +782,15 @@ void main() {
     () => captureLogs((records) async {
       final source = await photo('PRIVATE_DRAINING.jpg', 'retained');
       await operations.close();
-      final entered = Completer<void>(), gate = Completer<void>();
-      operations = GalleryFileOperations(
-        catalog: catalog,
-        beforeMutation: (_) async {
-          entered.complete();
-          await gate.future;
-          throw FileSystemException('PRIVATE_ERROR_AUTH_SECRET', source.path);
-        },
-      );
+      final blocked = await File(path.join(root.path, 'blocked')).writeAsString('not a directory');
+      operations = GalleryFileOperations(catalog: catalog, trashDirectory: Directory(path.join(blocked.path, 'trash')));
+      final gate = Completer<void>();
+      final preceding = operations.withMediaLock(() => gate.future);
       final pending = operations.mutate(request('draining-error', GalleryMutation.trash, [ref(source)]));
       final failed = expectLater(pending, throwsA(isA<FileSystemException>()));
-      await entered.future;
       final closing = operations.close();
       gate.complete();
+      await preceding;
       await failed;
       await closing;
       final diagnostic = records.singleWhere(

@@ -32,14 +32,17 @@ sealed class GalleryUndoEvent with _$GalleryUndoEvent {
 /// missing entries cannot prove whether an earlier unknown restore succeeded.
 class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
   static final _log = Logger('GalleryUndoBloc');
-  GalleryUndoBloc({required this.repository, required List<String> trashIds})
-    : _trashIds = Set.unmodifiable(trashIds),
+  GalleryUndoBloc({required this.repository, required List<String> mediaIds, this.section = GalleryMediaSection.trash})
+    : _mediaIds = Set.unmodifiable(mediaIds),
       super(const GalleryUndoState()) {
+    if (section == GalleryMediaSection.published) throw ArgumentError.value(section, 'section');
     on<GalleryUndoRestoreRequested>(_restore);
   }
 
   final GalleryManagementRepository repository;
-  final Set<String> _trashIds;
+  final GalleryMediaSection section;
+  bool get hidden => section == GalleryMediaSection.hidden;
+  final Set<String> _mediaIds;
   Future<GalleryOperationResult>? _restoring;
   Future<void>? _closingFuture;
   bool _closing = false;
@@ -64,19 +67,23 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
   Future<void> _restore(GalleryUndoRestoreRequested event, Emitter<GalleryUndoState> emit) async {
     final requestId = repository.newOperationId();
     final retry = state.phase == GalleryUndoPhase.failed;
-    _log.info('event=restoreStarted action=restore items=${_trashIds.length} retry=$retry');
+    final action = hidden ? GalleryMutation.unhide : GalleryMutation.restore;
+    _log.info('event=restoreStarted action=${action.name} items=${_mediaIds.length} retry=$retry');
     emit(state.copyWith(phase: GalleryUndoPhase.restoring, error: null));
     try {
-      final catalog = await repository.trash();
+      final catalog = await repository.catalog(section);
       final present = {
         for (final entry in catalog.entries)
-          if (_trashIds.contains(entry.trashId)) entry.trashId: entry,
+          if (_mediaIds.contains(entry.mediaId)) entry.mediaId: entry,
       };
       final request = GalleryOperationRequest(
         operationId: requestId,
-        action: GalleryMutation.restore,
+        action: action,
         items: present.values
-            .map((entry) => GalleryMediaRef(mediaId: entry.trashId, sourceRevision: entry.sourceRevision))
+            .map(
+              (entry) =>
+                  GalleryMediaRef(mediaId: entry.mediaId, sourceRevision: entry.sourceRevision, section: entry.section),
+            )
             .toList(),
       );
       emit(state.copyWith(request: request));
@@ -84,16 +91,16 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
           ? GalleryOperationResult(operationId: requestId, items: const [])
           : await repository.operate(request);
       final result = response;
-      final missing = _trashIds.length - present.length;
+      final missing = _mediaIds.length - present.length;
       final failed = result.items.where((item) => item.state == GalleryItemOperationState.failed).length;
       final message =
-          'event=${failed == 0 ? 'restoreCompleted' : 'restorePartial'} action=restore items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed missing=$missing';
+          'event=${failed == 0 ? 'restoreCompleted' : 'restorePartial'} action=${action.name} items=${result.items.length} succeeded=${result.items.length - failed} failed=$failed missing=$missing';
       failed == 0 ? _log.info(message) : _log.warning(message);
       emit(state.copyWith(phase: GalleryUndoPhase.succeeded, result: result, missingCount: missing));
       event.completion.complete(result);
     } catch (error, stack) {
       _log.warning(
-        'event=restoreFailed action=restore code=${error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name} type=${error.runtimeType}',
+        'event=restoreFailed action=${hidden ? GalleryMutation.unhide.name : GalleryMutation.restore.name} code=${error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name} type=${error.runtimeType}',
       );
       emit(
         state.copyWith(

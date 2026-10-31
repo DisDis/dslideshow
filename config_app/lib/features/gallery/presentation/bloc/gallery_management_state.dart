@@ -1,12 +1,14 @@
 part of 'gallery_management_bloc.dart';
 
-enum GallerySection { library, duplicates, trash }
+enum GallerySection { published, hidden, duplicates, trash }
 
 enum GalleryManagementLoadStatus { loading, ready, failed }
 
 enum GalleryManagementNotice {
   none,
   trashed,
+  hidden,
+  unhidden,
   restored,
   purged,
   partialFailure,
@@ -23,15 +25,14 @@ abstract class GalleryManagementSnapshot with _$GalleryManagementSnapshot {
     @Default([]) List<GalleryItem> items,
     @Default({}) Map<String, GalleryItem> bySelectionIdentity,
     @Default({}) Map<String, GalleryItem> byMediaId,
-    @Default({}) Map<String, GalleryTrashEntry> trashById,
+    @Default({}) Map<String, GalleryEntry> entriesById,
   }) = _GalleryManagementSnapshot;
 }
 
 /// A confirmed active snapshot. Batch identifiers correlate transient requests;
 /// progress changes never rebuild this large indexed snapshot or refs list.
 @freezed
-abstract class GalleryManagementOperationPlan
-    with _$GalleryManagementOperationPlan {
+abstract class GalleryManagementOperationPlan with _$GalleryManagementOperationPlan {
   const factory GalleryManagementOperationPlan({
     required GalleryMutation action,
     required GalleryManagementSnapshot snapshot,
@@ -44,15 +45,17 @@ abstract class GalleryManagementOperationPlan
 abstract class GalleryManagementState with _$GalleryManagementState {
   const GalleryManagementState._();
   const factory GalleryManagementState({
-    @Default(GallerySection.library) GallerySection section,
+    @Default(GallerySection.published) GallerySection section,
     @Default(GalleryManagementSnapshot()) GalleryManagementSnapshot snapshot,
     @Default({}) Set<String> selectedIds,
     @Default({}) Set<GalleryCapability> capabilities,
-    @Default(GalleryManagementLoadStatus.loading)
-    GalleryManagementLoadStatus catalogStatus,
+    @Default(GalleryManagementLoadStatus.loading) GalleryManagementLoadStatus catalogStatus,
     @Default(false) bool catalogRefreshing,
     @Default(false) bool catalogRefreshFailed,
-    GalleryTrashCatalog? trash,
+    GalleryCatalog? trash,
+    GalleryCatalog? hidden,
+    @Default(false) bool hiddenLoading,
+    @Default(false) bool hiddenFailed,
     @Default(false) bool trashLoading,
     @Default(false) bool trashFailed,
     @Default(false) bool busy,
@@ -76,30 +79,39 @@ abstract class GalleryManagementState with _$GalleryManagementState {
       if (snapshot.bySelectionIdentity[identity] case final GalleryItem item)
         if (!item.isFolder) item,
   ];
-  int get selectedTrashBytes => selectedItems.fold<int>(
-    0,
-    (sum, item) => sum + (snapshot.trashById[item.mediaId]?.sizeBytes ?? 0),
-  );
+  int get selectedMediaBytes =>
+      selectedItems.fold<int>(0, (sum, item) => sum + (snapshot.entriesById[item.mediaId]?.sizeBytes ?? 0));
   bool get isTrash => section == GallerySection.trash;
+  bool get isHidden => section == GallerySection.hidden;
+  bool get isStored => isTrash || isHidden;
   int get operationTotal => operationPlan?.items.length ?? processedItems;
-  bool get initialLoading => isTrash
+  bool get initialLoading => isHidden
+      ? hiddenLoading && hidden == null
+      : isTrash
       ? trashLoading && trash == null
       : catalogStatus == GalleryManagementLoadStatus.loading;
-  bool get initialFailed => isTrash
+  bool get initialFailed => isHidden
+      ? hiddenFailed && hidden == null
+      : isTrash
       ? trashFailed && trash == null
       : catalogStatus == GalleryManagementLoadStatus.failed;
-  bool get refreshing => busy || (isTrash ? trashLoading : catalogRefreshing);
-  bool get refreshFailed => isTrash ? trashFailed : catalogRefreshFailed;
-  bool get needsMutationRefresh =>
-      notice == GalleryManagementNotice.unknownOutcome && refreshFailed;
-  List<String> get undoTrashIds =>
+  bool get refreshing =>
+      busy ||
+      (isHidden
+          ? hiddenLoading
+          : isTrash
+          ? trashLoading
+          : catalogRefreshing);
+  bool get refreshFailed => isHidden
+      ? hiddenFailed
+      : isTrash
+      ? trashFailed
+      : catalogRefreshFailed;
+  bool get needsMutationRefresh => notice == GalleryManagementNotice.unknownOutcome && refreshFailed;
+  List<String> get undoMediaIds =>
       lastResult?.items
-          .where(
-            (item) =>
-                item.state == GalleryItemOperationState.succeeded &&
-                item.trashId != null,
-          )
-          .map((item) => item.trashId!)
+          .where((item) => item.state == GalleryItemOperationState.succeeded && item.destination?.mediaId != null)
+          .map((item) => item.destination!.mediaId)
           .toList(growable: false) ??
       const [];
 }

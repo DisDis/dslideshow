@@ -2658,7 +2658,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_search_scope =>
-      'Search the local photo library. Trash is excluded. Nothing is deleted automatically.';
+      'Searches still images in the library and Hidden. Trash, videos and GIFs are excluded.';
 
   @override
   String get gallery_search_running => 'Searching…';
@@ -3127,4 +3127,217 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upload_folder_scan_failed => 'Could not read the selected folder.';
+
+  @override
+  String get gallery_hidden => 'Hidden';
+
+  @override
+  String get gallery_hide => 'Hide from slideshow';
+
+  @override
+  String get gallery_unhide => 'Return to slideshow';
+
+  @override
+  String get gallery_hidden_done => 'Files hidden from the slideshow';
+
+  @override
+  String get gallery_unhidden => 'Files returned to the slideshow';
+
+  @override
+  String get gallery_hide_title => 'Hide selected files?';
+
+  @override
+  String gallery_hide_confirm_body(int count) {
+    return 'Hide $count files from the slideshow? They remain on the frame and can be restored from Hidden.';
+  }
+
+  @override
+  String get gallery_hidden_hint => 'Hidden files stay on the frame and are skipped during cloud synchronization.';
+
+  @override
+  String get gallery_hidden_file_changed => 'Hidden file entry changed';
+
+  @override
+  String get gallery_in_slideshow => 'In slideshow';
+
+  @override
+  String get gallery_hidden_only_warning =>
+      'This selection removes the last copy in the slideshow from at least one group. Only hidden copies will remain.';
+
+  @override
+  String get yandex_drive_label => 'Yandex Disk';
+
+  @override
+  String get using_yandex_drive => 'Using Yandex Disk';
+
+  @override
+  String get yandex_application_setup => 'OAuth application';
+
+  @override
+  String get yandex_application_hint => 'Configure your Yandex OAuth application once. Credentials stay on the frame.';
+
+  @override
+  String get yandex_configure_application => 'Configure application';
+
+  @override
+  String get yandex_secret_saved => 'A client secret is saved. Leave blank to keep it.';
+
+  @override
+  String get yandex_accounts => 'Connected accounts';
+
+  @override
+  String get yandex_add_account => 'Connect Yandex';
+
+  @override
+  String get yandex_not_connected => 'Not connected';
+
+  @override
+  String get yandex_not_configured => 'Not selected for synchronization';
+
+  @override
+  String get yandex_choose_folders => 'Choose folders';
+
+  @override
+  String get yandex_folder_selection => 'Folders to synchronize';
+
+  @override
+  String get yandex_recursive_hint => 'Selected folders include all subfolders.';
+
+  @override
+  String get yandex_select_current_folder => 'Select this folder';
+
+  @override
+  String get yandex_no_folders => 'No subfolders on this page';
+
+  @override
+  String get yandex_previous_page => 'Previous page';
+
+  @override
+  String get yandex_next_page => 'Next page';
+
+  @override
+  String get yandex_parent_folder => 'Parent folder';
+
+  @override
+  String get yandex_disconnect => 'Disconnect from frame';
+
+  @override
+  String get yandex_disconnect_title => 'Disconnect this account?';
+
+  @override
+  String get yandex_disconnect_message => 'Current downloads will stop. Downloaded media will remain on the frame.';
+
+  @override
+  String get yandex_sync_enabled => 'Synchronize this account';
+
+  @override
+  String get yandex_sync_now => 'Synchronize now';
+
+  @override
+  String get yandex_pause => 'Pause synchronization';
+
+  @override
+  String get yandex_resume => 'Resume synchronization';
+
+  @override
+  String get yandex_runtime_inactive => 'Save the settings and restart the frame to activate this storage.';
+
+  @override
+  String get yandex_runtime_running => 'Synchronization is running';
+
+  @override
+  String get yandex_runtime_idle => 'Waiting for the next synchronization';
+
+  @override
+  String get yandex_runtime_paused => 'Synchronization is paused';
+
+  @override
+  String get yandex_runtime_title => 'Current synchronization';
+
+  @override
+  String get yandex_authorization_title => 'Connect your Yandex account';
+
+  @override
+  String get yandex_authorization_hint =>
+      'Open Yandex on this phone or scan the QR code with another device. Enter the code if requested.';
+
+  @override
+  String get yandex_read_access_hint =>
+      'Yandex grants read access to the whole Disk. The frame downloads only the folders you choose.';
+
+  @override
+  String get yandex_open_authorization => 'Open Yandex';
+
+  @override
+  String get yandex_copy_code => 'Copy code';
+
+  @override
+  String get yandex_authorization_pending => 'Waiting for confirmation in Yandex';
+
+  @override
+  String get yandex_authorization_connected => 'Account connected. Choose folders in the settings.';
+
+  @override
+  String get yandex_authorization_cancelled => 'Connection cancelled';
+
+  @override
+  String get yandex_authorization_expired => 'The connection code has expired. Start again.';
+
+  @override
+  String get yandex_authorization_failed => 'The account could not be connected.';
+
+  @override
+  String get yandex_request_failed => 'The frame rejected the request. Refresh the state before trying again.';
+
+  @override
+  String get yandex_outcome_unknown =>
+      'Connection lost or request timed out. Check the current state before repeating the action.';
+
+  @override
+  String get yandex_load_failed => 'Could not load Yandex Disk state.';
+
+  @override
+  String get yandex_browser_failed => 'Could not open the browser. Copy the address and open it manually.';
+
+  @override
+  String get yandex_connections_empty => 'No Yandex accounts are connected yet.';
+
+  @override
+  String get yandex_refresh => 'Refresh state';
+
+  @override
+  String get yandex_alias => 'Account name on the frame';
+
+  @override
+  String get yandex_apply_folders => 'Use selected folders';
+
+  @override
+  String yandex_folder_count(int count) {
+    return 'Selected folders: $count';
+  }
+
+  @override
+  String yandex_sync_counts(int downloaded, int skipped, int failed) {
+    return 'Downloaded: $downloaded; skipped: $skipped; failed: $failed';
+  }
+
+  @override
+  String yandex_expires_at(String time) {
+    return 'Code expires: $time';
+  }
+
+  @override
+  String get yandex_reconnect_hint => 'An account needs authorization again. Use Connect Yandex to restore access.';
+
+  @override
+  String yandex_last_sync(String time) {
+    return 'Last successful synchronization: $time';
+  }
+
+  @override
+  String get yandex_runtime_failure =>
+      'Synchronization completed with errors. Check the account connection and available space.';
+
+  @override
+  String get yandex_authorization_denied => 'Access was declined in Yandex.';
 }

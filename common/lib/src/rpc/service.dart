@@ -45,24 +45,26 @@ class Service {
           final commandList = commandRaw as List;
           final resultOPort = resultOPorts[commandList[0]];
           final command = commandList[1];
-          _log.fine(() => "i:${commandList[0]}, c:$command");
           if (command is String) {
-            RpcCommand cmd = serializers.deserialize(
-              json.decode(command) as Object,
-            ) as RpcCommand;
+            RpcCommand cmd = serializers.deserialize(json.decode(command) as Object) as RpcCommand;
+            _log.fine(() => 'i:${commandList[0]}, command=${cmd.runtimeType}, id=${cmd.id}');
             var result = await _execute(service, cmd);
             failed = result is RpcErrorResult;
             var str = json.encode(serializers.serialize(result));
             resultOPort.send(str);
           } else {
             RpcCommand cmd = serializers.deserialize(command) as RpcCommand;
+            _log.fine(() => 'i:${commandList[0]}, command=${cmd.runtimeType}, id=${cmd.id}');
             var result = await _execute(service, cmd);
             failed = result is RpcErrorResult;
             resultOPort.send(serializers.serialize(result));
           }
-        } catch (e, s) {
+        } catch (e) {
           failed = true;
-          _log.severe('executeCommand', e, s);
+          // Transport and decoding errors may embed credentials or signed URLs.
+          // The wire error/throwing contract stays unchanged; diagnostic output
+          // contains the safe exception category rather than its payload.
+          _log.severe('executeCommand type=${e.runtimeType}');
           rethrow;
         } finally {
           if (started != null) metrics!.handlerFinished(started, error: failed);
@@ -74,10 +76,7 @@ class Service {
 
   Future<RpcResult> _execute(RpcService service, RpcCommand command) async {
     if (command is GetRpcTelemetryCommand && telemetry != null) {
-      return GetRpcTelemetryResult(
-        id: command.id,
-        snapshot: await telemetry!.collect(),
-      );
+      return GetRpcTelemetryResult(id: command.id, snapshot: await telemetry!.collect());
     }
     return service.executeCommand(command);
   }

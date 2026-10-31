@@ -6,7 +6,6 @@ import 'package:dslideshow_common/gallery.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
-
 import '../../domain/gallery_item.dart';
 import '../../../../src/gallery/gallery_management_repository.dart';
 import 'gallery_bloc.dart';
@@ -32,9 +31,8 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     if (catalog is LoadedGalleryState) {
       _catalogSnapshots[catalog] = _librarySnapshot;
     }
-    confirmedCatalogUpdates = catalogBloc.stream
-        .where((state) => state is LoadedGalleryState && !state.refreshing && !state.refreshFailed)
-        .map((state) => _indexCatalog(state as LoadedGalleryState).items);
+    _updateCombinedCatalog();
+    confirmedCatalogUpdates = _combinedCatalogUpdates.stream;
     on<GalleryManagementEvent>(_handle);
     _catalogSubscription = catalogBloc.stream.listen((catalog) {
       if (!_closing) add(GalleryManagementEvent.catalogChanged(catalog));
@@ -47,6 +45,9 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
   late final Stream<List<GalleryItem>> confirmedCatalogUpdates;
   GalleryManagementSnapshot _librarySnapshot = const GalleryManagementSnapshot();
   GalleryManagementSnapshot _trashSnapshot = const GalleryManagementSnapshot();
+  GalleryManagementSnapshot _hiddenSnapshot = const GalleryManagementSnapshot();
+  List<GalleryItem> _combinedItems = const [];
+  final _combinedCatalogUpdates = StreamController<List<GalleryItem>>.broadcast();
   final _catalogSnapshots = Expando<GalleryManagementSnapshot>();
   final _cancel = Completer<void>();
   final _refreshCompletions = <Completer<void>>{};
@@ -64,21 +65,34 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
   }
 
   List<GalleryItem> get currentLibraryItems => _currentLibrarySnapshot.items;
-  GalleryItem? currentItem(String id) => _currentLibrarySnapshot.byMediaId[id];
-  Stream<GalleryItem?> itemUpdates(String id) => catalogBloc.stream
-      .where((state) => state is LoadedGalleryState && !state.refreshing && !state.refreshFailed)
-      .map((state) => _indexCatalog(state as LoadedGalleryState).byMediaId[id]);
+  List<GalleryItem> get currentDuplicateItems => _combinedItems;
+
+  void _updateCombinedCatalog() {
+    _combinedItems = List.unmodifiable([..._librarySnapshot.items, ..._hiddenSnapshot.items]);
+    _combinedCatalogUpdates.add(_combinedItems);
+  }
+
+  GalleryItem? currentItem(String id, {GalleryMediaSection mediaSection = GalleryMediaSection.published}) =>
+      mediaSection == GalleryMediaSection.hidden
+      ? _hiddenSnapshot.byMediaId[id]
+      : _currentLibrarySnapshot.byMediaId[id];
+  Stream<GalleryItem?> itemUpdates(String id, {GalleryMediaSection mediaSection = GalleryMediaSection.published}) =>
+      mediaSection == GalleryMediaSection.hidden
+      ? confirmedCatalogUpdates.map((_) => _hiddenSnapshot.byMediaId[id])
+      : catalogBloc.stream
+            .where((state) => state is LoadedGalleryState && !state.refreshing && !state.refreshFailed)
+            .map((state) => _indexCatalog(state as LoadedGalleryState).byMediaId[id]);
 
   GalleryManagementSnapshot _indexCatalog(LoadedGalleryState catalog) =>
       _catalogSnapshots[catalog] ??= _snapshot(catalog.items);
 
-  static GalleryManagementSnapshot _snapshot(List<GalleryItem> items, {GalleryTrashCatalog? trash}) {
+  static GalleryManagementSnapshot _snapshot(List<GalleryItem> items, {GalleryCatalog? catalog}) {
     final frozenItems = List<GalleryItem>.unmodifiable(items);
     return GalleryManagementSnapshot(
       items: frozenItems,
       bySelectionIdentity: {for (final item in frozenItems) item.selectionIdentity: item},
       byMediaId: {for (final item in frozenItems) item.mediaId: item},
-      trashById: {for (final entry in trash?.entries ?? const <GalleryTrashEntry>[]) entry.trashId: entry},
+      entriesById: {for (final entry in catalog?.entries ?? const <GalleryEntry>[]) entry.mediaId: entry},
     );
   }
 
@@ -141,8 +155,9 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
       case GalleryManagementCatalogChanged(:final catalog):
         if (catalog is LoadedGalleryState && !catalog.refreshing && !catalog.refreshFailed) {
           _librarySnapshot = _indexCatalog(catalog);
+          _updateCombinedCatalog();
         }
-        final snapshot = state.isTrash ? state.snapshot : _librarySnapshot;
+        final snapshot = state.isStored ? state.snapshot : _librarySnapshot;
         final selection = state.selectedIds.where(snapshot.bySelectionIdentity.containsKey).toSet();
         if (selection.length != state.selectedIds.length) ++_confirmationEpoch;
         emit(
@@ -164,6 +179,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
           return;
         }
         if (section == GallerySection.duplicates && !state.capabilities.contains(GalleryCapability.duplicates) ||
+            section == GallerySection.hidden && !state.capabilities.contains(GalleryCapability.hidden) ||
             section == GallerySection.trash && !state.capabilities.contains(GalleryCapability.trash)) {
           return;
         }
@@ -173,7 +189,11 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         );
         ++_trashGeneration;
         ++_confirmationEpoch;
-        final snapshot = section == GallerySection.trash ? _trashSnapshot : _librarySnapshot;
+        final snapshot = section == GallerySection.trash
+            ? _trashSnapshot
+            : section == GallerySection.hidden
+            ? _hiddenSnapshot
+            : _librarySnapshot;
         emit(
           state.copyWith(
             section: section,
@@ -182,9 +202,13 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
             failures: [],
             failureSnapshot: null,
             trashLoading: false,
+            hiddenLoading: false,
           ),
         );
         if (section == GallerySection.trash) await _loadTrash(emit);
+        if (section == GallerySection.hidden || section == GallerySection.duplicates) {
+          if (state.capabilities.contains(GalleryCapability.hidden)) await _loadHidden(emit);
+        }
       case GalleryManagementSelectionToggled(:final selectionIdentity):
         if (state.busy ||
             state.section == GallerySection.duplicates ||
@@ -213,10 +237,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         }
         _requestConfirmation(GalleryMutation.purge, emit, scope: GalleryMutationScope.allTrash);
       case GalleryManagementTrashRequested():
-        if (state.isTrash && !state.busy) await _loadTrash(emit);
+        if (state.isStored && !state.busy) {
+          state.isHidden ? await _loadHidden(emit) : await _loadTrash(emit);
+        }
       case GalleryManagementMutationRequested(:final action):
         if (state.confirmation != null) return;
-        if (action == GalleryMutation.restore) {
+        if (action == GalleryMutation.restore || action == GalleryMutation.unhide) {
           await _mutate(action, emit);
         } else {
           _requestConfirmation(action, emit);
@@ -255,6 +281,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
           if (!_closing && !emit.isDone && state.isTrash) {
             await _loadTrash(emit);
           }
+          if (!_closing &&
+              !emit.isDone &&
+              (state.isHidden || state.section == GallerySection.duplicates) &&
+              state.capabilities.contains(GalleryCapability.hidden)) {
+            await _loadHidden(emit);
+          }
         } on _ManagementClosed {
           /* The shared catalog operation may finish later. */
         } finally {
@@ -263,9 +295,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     }
   }
 
-  List<GalleryItem> _trashItems(GalleryTrashCatalog? catalog) =>
+  List<GalleryItem> _trashItems(GalleryCatalog? catalog) =>
       catalog?.entries
-          .map((entry) => repository.trashItem(entry, catalogBloc.repository.authScope))
+          .map(
+            (entry) =>
+                repository.mediaItem(entry, catalogBloc.repository.authScope, thumbnailPolicy: catalog.thumbnailPolicy),
+          )
           .toList(growable: false) ??
       const [];
 
@@ -274,13 +309,13 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     _log.info('event=trashLoadStarted generation=$generation');
     emit(state.copyWith(trashLoading: true, trashFailed: false));
     try {
-      final catalog = await _whileOpen(repository.trash(cancel: _cancel.future));
+      final catalog = await _whileOpen(repository.catalog(GalleryMediaSection.trash, cancel: _cancel.future));
       if (_closing || emit.isDone || generation != _trashGeneration) {
         _log.fine(() => 'event=trashLoadDiscarded generation=$generation');
         return;
       }
       _log.info('event=trashLoadCompleted generation=$generation entries=${catalog.entries.length}');
-      _trashSnapshot = _snapshot(_trashItems(catalog), trash: catalog);
+      _trashSnapshot = _snapshot(_trashItems(catalog), catalog: catalog);
       final snapshot = state.isTrash ? _trashSnapshot : state.snapshot;
       final selection = state.selectedIds.where(snapshot.bySelectionIdentity.containsKey).toSet();
       if (selection.length != state.selectedIds.length) ++_confirmationEpoch;
@@ -306,14 +341,58 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     }
   }
 
+  Future<void> _loadHidden(Emitter<GalleryManagementState> emit) async {
+    final generation = ++_trashGeneration;
+    _log.info('event=hiddenLoadStarted');
+    emit(state.copyWith(hiddenLoading: true, hiddenFailed: false));
+    try {
+      final catalog = await _whileOpen(repository.catalog(GalleryMediaSection.hidden, cancel: _cancel.future));
+      if (_closing || emit.isDone || generation != _trashGeneration) {
+        _log.fine('event=hiddenLoadDiscarded');
+        return;
+      }
+      _hiddenSnapshot = _snapshot([
+        for (final entry in catalog.entries)
+          repository.mediaItem(entry, catalogBloc.repository.authScope, thumbnailPolicy: catalog.thumbnailPolicy),
+      ], catalog: catalog);
+      _updateCombinedCatalog();
+      final snapshot = state.isHidden ? _hiddenSnapshot : state.snapshot;
+      emit(
+        state.copyWith(
+          hidden: catalog,
+          hiddenLoading: false,
+          hiddenFailed: false,
+          snapshot: snapshot,
+          selectedIds: state.selectedIds.where(snapshot.bySelectionIdentity.containsKey).toSet(),
+        ),
+      );
+      _log.info('event=hiddenLoadCompleted entries=${catalog.entries.length}');
+    } catch (error) {
+      if (_closing || error is _ManagementClosed) {
+        _log.fine('event=hiddenLoadCancelled');
+      } else {
+        final code = error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name;
+        _log.warning('event=hiddenLoadFailed code=$code type=${error.runtimeType}');
+      }
+      if (!_closing && !emit.isDone && generation == _trashGeneration) {
+        emit(state.copyWith(hiddenLoading: false, hiddenFailed: true));
+      }
+    }
+  }
+
   bool _canMutate(GalleryMutation action) =>
       !state.busy &&
       !state.needsMutationRefresh &&
       state.section != GallerySection.duplicates &&
       state.capabilities.contains(GalleryCapability.mutations) &&
       (state.isTrash
-          ? action != GalleryMutation.trash && state.capabilities.contains(GalleryCapability.trash)
-          : action == GalleryMutation.trash);
+          ? {GalleryMutation.restore, GalleryMutation.purge}.contains(action) &&
+                state.capabilities.contains(GalleryCapability.trash)
+          : state.isHidden
+          ? {GalleryMutation.unhide, GalleryMutation.trash}.contains(action) &&
+                state.capabilities.contains(GalleryCapability.hidden)
+          : action == GalleryMutation.trash ||
+                action == GalleryMutation.hide && state.capabilities.contains(GalleryCapability.hidden));
 
   void _requestConfirmation(
     GalleryMutation action,
@@ -327,10 +406,13 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     final confirmation = GalleryMutationConfirmation(
       token: ++_confirmationEpoch,
       action: action,
-      items: [for (final item in selected) GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.revision)],
+      items: [
+        for (final item in selected)
+          GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.revision, section: item.section),
+      ],
       names: [for (final item in selected.take(galleryConfirmationNameLimit)) item.title],
       sizeBytes: action == GalleryMutation.purge
-          ? selected.fold<int>(0, (sum, item) => sum + (state.snapshot.trashById[item.mediaId]?.sizeBytes ?? 0))
+          ? selected.fold<int>(0, (sum, item) => sum + (state.snapshot.entriesById[item.mediaId]?.sizeBytes ?? 0))
           : null,
       scope: scope,
     );
@@ -346,7 +428,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         state.selectedItems.length != confirmation.items.length) {
       return false;
     }
-    final snapshot = state.isTrash ? state.snapshot : _currentLibrarySnapshot;
+    final snapshot = state.isStored ? state.snapshot : _currentLibrarySnapshot;
     return confirmation.items.every((ref) {
       final item = snapshot.byMediaId[ref.mediaId];
       return item != null &&
@@ -363,10 +445,13 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     if (!_canMutate(action)) return;
     final refs =
         confirmation?.items ??
-        [for (final item in state.selectedItems) GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.revision)];
+        [
+          for (final item in state.selectedItems)
+            GalleryMediaRef(mediaId: item.mediaId, sourceRevision: item.revision, section: item.section),
+        ];
     if (refs.isEmpty) return;
     try {
-      final canBatch = state.isTrash && action != GalleryMutation.trash;
+      final canBatch = state.isStored || action == GalleryMutation.hide;
       final batchItems = action == GalleryMutation.restore ? 50 : _mutationBatchItems;
       if (!canBatch && refs.length > _mutationBatchItems) {
         throw const GalleryManagementException(GalleryErrorCode.invalidRequest);
@@ -492,8 +577,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
           error: null,
           notice: plan.action == GalleryMutation.trash && state.succeededItems > 0
               ? GalleryManagementNotice.trashed
+              : plan.action == GalleryMutation.hide && state.succeededItems > 0
+              ? GalleryManagementNotice.hidden
               : failures.isNotEmpty
               ? GalleryManagementNotice.partialFailure
+              : plan.action == GalleryMutation.unhide
+              ? GalleryManagementNotice.unhidden
               : plan.action == GalleryMutation.restore
               ? GalleryManagementNotice.restored
               : GalleryManagementNotice.purged,
@@ -530,6 +619,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
     try {
       await _whileOpen(catalogBloc.refresh());
       if (!_closing && !emit.isDone && state.isTrash) await _loadTrash(emit);
+      if (!_closing &&
+          !emit.isDone &&
+          (state.isHidden || state.section == GallerySection.duplicates) &&
+          state.capabilities.contains(GalleryCapability.hidden)) {
+        await _loadHidden(emit);
+      }
     } on _ManagementClosed {
       // Screen closure does not change an acknowledged server result.
     } catch (_) {
@@ -559,6 +654,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
       _completeRefresh(completion);
     }
     await _catalogSubscription.cancel();
+    await _combinedCatalogUpdates.close();
     await super.close();
   }();
 }

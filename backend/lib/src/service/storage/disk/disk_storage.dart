@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dslideshow_backend/environment.dart';
+import 'package:dslideshow_backend/src/service/gallery/gallery_files.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -22,12 +23,49 @@ class DiskStorage extends Storage {
   static final _uploadTemporaryName = RegExp(r'^\.upload-[0-9a-f]{32}\.part$');
 
   final Directory _folder;
+
+  /// The mirrored root for media excluded from playback and cloud reimport.
+  final Directory hidden;
   final Random _rnd;
   Directory get folder => _folder;
 
-  DiskStorage(DiskStorageConfig config, {Directory? folder, Random? random})
-    : _folder = folder ?? Directory(path.join(externalStorage.path, CACHE_FOLDER_NAME)),
+  /// Creates storage without scanning or creating filesystem entries.
+  ///
+  /// [hidden] overrides the default `hidden` child of [galleryStateDirectory]
+  /// for the configured [folder]. The default retains the configured root's
+  /// alias and normalizes its absolute path without resolving symbolic links.
+  DiskStorage(DiskStorageConfig config, {Directory? folder, Directory? hidden, Random? random})
+    : this._(folder ?? Directory(path.join(externalStorage.path, CACHE_FOLDER_NAME)), hidden: hidden, random: random);
+
+  DiskStorage._(Directory folder, {Directory? hidden, Random? random})
+    : _folder = folder,
+      hidden = hidden ?? Directory(path.join(galleryStateDirectory(Directory(folder.path)).path, 'hidden')),
       _rnd = random ?? Random();
+
+  /// Checks for a regular file at [relativePath] in [folder] or [hidden].
+  ///
+  /// Follows symbolic links and returns `false` for missing or non-file paths
+  /// without creating directories. Throws [FormatException] for unsafe
+  /// relative paths.
+  Future<bool> mediaExists(String relativePath) async {
+    if (relativePath.isEmpty ||
+        path.isAbsolute(relativePath) ||
+        path.posix.isAbsolute(relativePath) ||
+        relativePath.contains('\\') ||
+        relativePath.contains('\u0000')) {
+      throw const FormatException('Invalid relative media path');
+    }
+    final segments = path.posix.split(relativePath);
+    if (segments.any((segment) => segment.isEmpty || segment == '.' || segment == '..') ||
+        path.posix.joinAll(segments) != relativePath) {
+      throw const FormatException('Invalid relative media path');
+    }
+    // Metadata lookups must not block the hardware isolate.
+    // ignore: avoid_slow_async_io
+    if (await File(path.join(folder.path, relativePath)).exists()) return true;
+    // ignore: avoid_slow_async_io
+    return File(path.join(hidden.path, relativePath)).exists();
+  }
 
   final StreamController<DateTime> _scStub = StreamController.broadcast();
   @override

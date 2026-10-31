@@ -18,80 +18,59 @@ import 'gallery_image_loader_test.dart' show ControlledClient;
 import 'support/gallery_management_harness.dart';
 
 void main() {
-  testWidgets(
-    'delete confirmation wraps full filenames in distinct blocks on EN 320px with enlarged text',
-    (tester) async {
-      tester.view.physicalSize = const Size(320, 720);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      const names = [
-        '52738815683237679255273881568323767925 (Copy 2).jpg',
-        '52738815683237679255273881568323767925_dub.jpg',
-      ];
-      bool? confirmed;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: TextScaler.linear(1.5)),
-            child: child!,
-          ),
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => TextButton(
-                key: const ValueKey('open-confirmation'),
-                onPressed: () async {
-                  confirmed = await confirmGalleryPurge(
-                    context,
-                    2,
-                    280000,
-                    names: names,
-                  );
-                },
-                child: const Text('Delete permanently'),
-              ),
+  testWidgets('delete confirmation wraps full filenames in distinct blocks on EN 320px with enlarged text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    const names = [
+      '52738815683237679255273881568323767925 (Copy 2).jpg',
+      '52738815683237679255273881568323767925_dub.jpg',
+    ];
+    bool? confirmed;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.dark(),
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)),
+          child: child!,
+        ),
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              key: const ValueKey('open-confirmation'),
+              onPressed: () async {
+                confirmed = await confirmGalleryPurge(context, 2, 280000, names: names);
+              },
+              child: const Text('Delete permanently'),
             ),
           ),
         ),
-      );
-      await tester.tap(find.byKey(const ValueKey('open-confirmation')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 250));
-      final dialog = find.byType(AlertDialog);
-      for (final name in names) {
-        final text = find.descendant(of: dialog, matching: find.text(name));
-        expect(text, findsOneWidget);
-        expect(
-          tester.renderObject<RenderParagraph>(text).didExceedMaxLines,
-          isFalse,
-        );
-        expect(
-          tester.getRect(text).left,
-          greaterThanOrEqualTo(tester.getRect(dialog).left),
-        );
-        expect(
-          tester.getRect(text).right,
-          lessThanOrEqualTo(tester.getRect(dialog).right),
-        );
-      }
-      await tester.tap(
-        find.descendant(
-          of: dialog,
-          matching: find.widgetWithText(TextButton, 'Cancel'),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 250));
-      expect(confirmed, isFalse);
-      expect(tester.takeException(), isNull);
-      await tester.pumpWidget(const SizedBox.shrink());
-    },
-  );
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey('open-confirmation')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    final dialog = find.byType(AlertDialog);
+    for (final name in names) {
+      final text = find.descendant(of: dialog, matching: find.text(name));
+      expect(text, findsOneWidget);
+      expect(tester.renderObject<RenderParagraph>(text).didExceedMaxLines, isFalse);
+      expect(tester.getRect(text).left, greaterThanOrEqualTo(tester.getRect(dialog).left));
+      expect(tester.getRect(text).right, lessThanOrEqualTo(tester.getRect(dialog).right));
+    }
+    await tester.tap(find.descendant(of: dialog, matching: find.widgetWithText(TextButton, 'Cancel')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(confirmed, isFalse);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
 
   testWidgets(
     'duplicate review summarizes selection and requires confirmation and retains the visible list behind the dialog',
@@ -100,9 +79,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      final catalog = ManagedCatalogRepository([
-        for (var index = 0; index < 20; index++) managedPhoto('$index'),
-      ]);
+      final catalog = ManagedCatalogRepository([for (var index = 0; index < 20; index++) managedPhoto('$index')]);
       final job = GalleryDuplicateJob(
         jobId: 'job',
         status: GalleryDuplicateStatus.completed,
@@ -114,6 +91,7 @@ void main() {
             items: [
               for (var index = 0; index < 20; index++)
                 GalleryDuplicateMember(
+                  section: GalleryMediaSection.published,
                   mediaId: '$index',
                   sourceRevision: '1',
                   path: 'album/$index.jpg',
@@ -130,9 +108,7 @@ void main() {
         catalog,
         MockClient((request) async {
           if (request.url.pathSegments.last == 'operations') {
-            final command = GalleryOperationRequest.fromJson(
-              jsonDecode(request.body) as Map<String, dynamic>,
-            );
+            final command = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
             operations.add(command);
             return http.Response(
               jsonEncode(
@@ -141,9 +117,14 @@ void main() {
                   items: [
                     for (final item in command.items)
                       GalleryOperationItemResult(
+                        section: item.section,
                         mediaId: item.mediaId,
                         state: GalleryItemOperationState.succeeded,
-                        trashId: 'trash-${item.mediaId}',
+                        destination: GalleryMediaRef(
+                          mediaId: 'trash-${item.mediaId}',
+                          sourceRevision: "destination-revision",
+                          section: GalleryMediaSection.trash,
+                        ),
                       ),
                   ],
                 ).toJson(),
@@ -152,10 +133,7 @@ void main() {
             );
           }
           if (request.url.pathSegments.contains('metadata')) {
-            return http.Response(
-              jsonEncode(photoMetadata(request.url.pathSegments[4]).toJson()),
-              200,
-            );
+            return http.Response(jsonEncode(photoMetadata(request.url.pathSegments[5]).toJson()), 200);
           }
           return duplicateResponse(request, job);
         }),
@@ -167,11 +145,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            body: GalleryDuplicatesPage(
-              session: session,
-              catalog: catalog.items,
-              onRefresh: () async {},
-            ),
+            body: GalleryDuplicatesPage(session: session, catalog: catalog.items, onRefresh: () async {}),
           ),
         ),
       );
@@ -179,9 +153,7 @@ void main() {
       await tester.pump();
       expect(images.requests, isNotEmpty);
       expect(find.text('Files 1–10 of 20'), findsOneWidget);
-      final bloc = tester
-          .element(find.byType(GalleryImage).first)
-          .read<GalleryDuplicatesBloc>();
+      final bloc = tester.element(find.byType(GalleryImage).first).read<GalleryDuplicatesBloc>();
       expect(bloc.state.visibleMembers, hasLength(10));
       await tester.tap(find.byTooltip('Next page'));
       await tester.pump();
@@ -195,17 +167,9 @@ void main() {
           .toList();
       final requestCount = images.requests.length;
       final activeCount = session.loader.activeCount;
-      final activeRequests = images.requests
-          .where((request) => !request.aborted && !request.done)
-          .toList();
+      final activeRequests = images.requests.where((request) => !request.aborted && !request.done).toList();
       for (var index = 2; index <= 12; index++) {
-        bloc.add(
-          GalleryDuplicatesEvent.decide(
-            'group',
-            '$index',
-            GalleryDuplicateDecision.trash,
-          ),
-        );
+        bloc.add(GalleryDuplicatesEvent.decide('group', '$index', GalleryDuplicateDecision.trash));
       }
       await tester.pump();
       expect(bloc.state.decisions, hasLength(11));
@@ -217,78 +181,31 @@ void main() {
       final dialog = find.byType(AlertDialog);
       expect(operations, isEmpty);
       expect(dialog, findsOneWidget);
-      expect(
-        find.descendant(of: dialog, matching: find.text('11 selected')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: dialog,
-          matching: find.text('Additional files to move to Trash: 1.'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: dialog, matching: find.text('2.jpg')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: dialog, matching: find.text('11.jpg')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: dialog, matching: find.text('12.jpg')),
-        findsNothing,
-      );
-      expect(
-        find.descendant(of: dialog, matching: find.text('album/2.jpg')),
-        findsNothing,
-      );
+      expect(find.descendant(of: dialog, matching: find.text('11 selected')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('Additional files to move to Trash: 1.')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('2.jpg')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('11.jpg')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('12.jpg')), findsNothing);
+      expect(find.descendant(of: dialog, matching: find.text('album/2.jpg')), findsNothing);
       final firstFile = find.descendant(
         of: dialog,
-        matching: find.byWidgetPredicate(
-          (w) => w is GalleryConfirmationFile && w.name == '2.jpg',
-        ),
+        matching: find.byWidgetPredicate((w) => w is GalleryConfirmationFile && w.name == '2.jpg'),
       );
       final secondFile = find.descendant(
         of: dialog,
-        matching: find.byWidgetPredicate(
-          (w) => w is GalleryConfirmationFile && w.name == '3.jpg',
-        ),
+        matching: find.byWidgetPredicate((w) => w is GalleryConfirmationFile && w.name == '3.jpg'),
       );
+      expect(find.descendant(of: firstFile, matching: find.text('1')), findsOneWidget);
+      expect(find.descendant(of: secondFile, matching: find.text('2')), findsOneWidget);
       expect(
-        find.descendant(of: firstFile, matching: find.text('1')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: secondFile, matching: find.text('2')),
-        findsOneWidget,
-      );
-      expect(
-        tester
-            .getRect(
-              find.descendant(of: firstFile, matching: find.byType(Container)),
-            )
-            .bottom,
-        lessThan(
-          tester
-              .getRect(
-                find.descendant(
-                  of: secondFile,
-                  matching: find.byType(Container),
-                ),
-              )
-              .top,
-        ),
+        tester.getRect(find.descendant(of: firstFile, matching: find.byType(Container))).bottom,
+        lessThan(tester.getRect(find.descendant(of: secondFile, matching: find.byType(Container))).top),
       );
       expect(session.loader.activeCount, activeCount);
       expect(images.requests, hasLength(requestCount));
       expect(activeRequests.every((request) => !request.aborted), isTrue);
       expect(
-        tester
-            .widgetList<GalleryImage>(find.byType(GalleryImage))
-            .map((widget) => widget.request.key)
-            .toSet(),
+        tester.widgetList<GalleryImage>(find.byType(GalleryImage)).map((widget) => widget.request.key).toSet(),
         containsAll(imageKeys),
       );
       await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
@@ -301,10 +218,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
       await tester.tap(
-        find.descendant(
-          of: find.byType(AlertDialog),
-          matching: find.widgetWithText(FilledButton, 'Move to trash'),
-        ),
+        find.descendant(of: find.byType(AlertDialog), matching: find.widgetWithText(FilledButton, 'Move to trash')),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
@@ -316,7 +230,6 @@ void main() {
       expect(operations.single.items.map((item) => item.mediaId).toSet(), {
         for (var index = 2; index <= 12; index++) '$index',
       });
-      expect(operations.single.duplicateJobId, 'job');
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
       await tester.runAsync(session.close);

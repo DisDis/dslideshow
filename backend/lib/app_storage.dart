@@ -78,7 +78,12 @@ class AppStorage {
     _storage[key] = value;
     if (_saveTimer == null) {
       _saveTimer = new Timer(new Duration(seconds: 10), () {
-        save();
+        try {
+          save();
+        } catch (_) {
+          // save() already logged a safe failure and retained every value.
+          // Background work has no caller; a later edit or explicit save can retry.
+        }
       });
     }
   }

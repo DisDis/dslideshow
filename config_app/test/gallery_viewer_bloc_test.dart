@@ -41,9 +41,7 @@ Future<GalleryViewerState> _event(
   GalleryViewerEvent event,
   bool Function(GalleryViewerState) predicate,
 ) {
-  final next = bloc.stream
-      .firstWhere(predicate)
-      .timeout(const Duration(seconds: 3));
+  final next = bloc.stream.firstWhere(predicate).timeout(const Duration(seconds: 3));
   bloc.add(event);
   return next;
 }
@@ -53,9 +51,7 @@ Future<GalleryViewerState> _confirmedMutation(
   GalleryMutation action,
   bool Function(GalleryViewerState) predicate,
 ) async {
-  final next = bloc.stream
-      .firstWhere(predicate)
-      .timeout(const Duration(seconds: 3));
+  final next = bloc.stream.firstWhere(predicate).timeout(const Duration(seconds: 3));
   bloc.add(GalleryViewerEvent.mutationRequested(action));
   await confirmViewerMutation(bloc, action);
   return next;
@@ -65,75 +61,61 @@ void main() {
   test('initial media uses the current snapshot even when its broadcast was missed', () async {
     final original = managedPhoto('a');
     final current = managedPhoto('a', revision: '2');
-    final bloc = _viewer(
-      GalleryViewerConfiguration(item: original, currentItem: () => current),
-    );
+    final bloc = _viewer(GalleryViewerConfiguration(item: original, currentItem: () => current));
     expect(bloc.state.item.revision, '2');
     expect(bloc.state.missing, false);
-    final missing = _viewer(
-      GalleryViewerConfiguration(item: original, currentItem: () => null),
-    );
+    final missing = _viewer(GalleryViewerConfiguration(item: original, currentItem: () => null));
     expect(missing.state.missing, true);
     expect(missing.state.canReadMetadata, false);
   });
 
-  test(
-    'metadata is lazy, hiding cancels it and an explicit retry clears failure',
-    () async {
-      final client = ControlledClient();
-      final repository = _repository(client);
-      final bloc = _viewer(
-        GalleryViewerConfiguration(
-          item: managedPhoto('a'),
-          management: repository,
-          capabilities: _capabilities,
-        ),
-      );
-      expect(client.requests, isEmpty);
-      await _event(
-        bloc,
-        const GalleryViewerEvent.infoToggled(),
-        (s) => s.metadataLoading,
-      );
-      expect(client.requests, hasLength(1));
-      final pending = client.requests.single;
-      final aborted = expectLater(
-        pending.headers.future,
-        throwsA(isA<http.RequestAbortedException>()),
-      );
-      await _event(
-        bloc,
-        const GalleryViewerEvent.infoToggled(),
-        (s) => !s.showInfo,
-      );
-      await aborted;
-      expect(pending.aborted, true);
-      await _event(
-        bloc,
-        const GalleryViewerEvent.infoToggled(),
-        (s) => s.metadataLoading,
-      );
-      final failed = bloc.stream.firstWhere((s) => s.metadataFailed);
-      client.requests.last.respond(status: 503);
-      client.requests.last.complete(utf8.encode('{"code":"unavailable"}'));
-      expect((await failed).metadataError, GalleryErrorCode.unavailable);
-      await _event(
-        bloc,
-        const GalleryViewerEvent.metadataRequested(),
-        (s) => s.metadataLoading,
-      );
-      final ready = bloc.stream.firstWhere(
-        (s) => s.metadataStatus == GalleryViewerMetadataStatus.ready,
-      );
-      client.requests.last.respond();
-      client.requests.last.complete(
-        utf8.encode(jsonEncode(photoMetadata('a').toJson())),
-      );
-      expect((await ready).metadata!.camera, 'Test camera');
-      expect(bloc.state.metadataError, isNull);
-      expect(client.requests, hasLength(3));
-    },
-  );
+  test('reconfiguring the section resets superseded revisions for a matching media ID', () async {
+    final first = managedPhoto('same');
+    final bloc = _viewer(GalleryViewerConfiguration(item: first));
+    final updated = await _event(
+      bloc,
+      GalleryViewerEvent.configured(GalleryViewerConfiguration(item: first.copyWith(revision: '2'))),
+      (state) => state.item.revision == '2',
+    );
+    expect(updated.supersededRevisions, contains('1'));
+    final hidden = await _event(
+      bloc,
+      GalleryViewerEvent.configured(
+        GalleryViewerConfiguration(item: first.copyWith(section: GalleryMediaSection.hidden)),
+      ),
+      (state) => state.hidden,
+    );
+    expect(hidden.item.revision, '1');
+    expect(hidden.supersededRevisions, isEmpty);
+  });
+
+  test('metadata is lazy, hiding cancels it and an explicit retry clears failure', () async {
+    final client = ControlledClient();
+    final repository = _repository(client);
+    final bloc = _viewer(
+      GalleryViewerConfiguration(item: managedPhoto('a'), management: repository, capabilities: _capabilities),
+    );
+    expect(client.requests, isEmpty);
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => s.metadataLoading);
+    expect(client.requests, hasLength(1));
+    final pending = client.requests.single;
+    final aborted = expectLater(pending.headers.future, throwsA(isA<http.RequestAbortedException>()));
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => !s.showInfo);
+    await aborted;
+    expect(pending.aborted, true);
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => s.metadataLoading);
+    final failed = bloc.stream.firstWhere((s) => s.metadataFailed);
+    client.requests.last.respond(status: 503);
+    client.requests.last.complete(utf8.encode('{"code":"unavailable"}'));
+    expect((await failed).metadataError, GalleryErrorCode.unavailable);
+    await _event(bloc, const GalleryViewerEvent.metadataRequested(), (s) => s.metadataLoading);
+    final ready = bloc.stream.firstWhere((s) => s.metadataStatus == GalleryViewerMetadataStatus.ready);
+    client.requests.last.respond();
+    client.requests.last.complete(utf8.encode(jsonEncode(photoMetadata('a').toJson())));
+    expect((await ready).metadata!.camera, 'Test camera');
+    expect(bloc.state.metadataError, isNull);
+    expect(client.requests, hasLength(3));
+  });
 
   test('switching media cancels old metadata and its late error cannot fail the new file', () async {
     final updates = StreamController<GalleryItem?>.broadcast(sync: true);
@@ -147,19 +129,10 @@ void main() {
         itemUpdates: updates.stream,
       ),
     );
-    await _event(
-      bloc,
-      const GalleryViewerEvent.infoToggled(),
-      (s) => s.metadataLoading,
-    );
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => s.metadataLoading);
     final old = client.requests.single;
-    final aborted = expectLater(
-      old.headers.future,
-      throwsA(isA<http.RequestAbortedException>()),
-    );
-    final changed = bloc.stream.firstWhere(
-      (s) => s.item.mediaId == 'b' && s.metadataLoading,
-    );
+    final aborted = expectLater(old.headers.future, throwsA(isA<http.RequestAbortedException>()));
+    final changed = bloc.stream.firstWhere((s) => s.item.mediaId == 'b' && s.metadataLoading);
     updates.add(managedPhoto('b'));
     await changed;
     await aborted;
@@ -167,9 +140,7 @@ void main() {
     expect(client.requests.last.request.url.pathSegments, contains('b'));
     final ready = bloc.stream.firstWhere((s) => s.metadata?.mediaId == 'b');
     client.requests.last.respond();
-    client.requests.last.complete(
-      utf8.encode(jsonEncode(photoMetadata('b').toJson())),
-    );
+    client.requests.last.complete(utf8.encode(jsonEncode(photoMetadata('b').toJson())));
     await ready;
     expect(bloc.state.metadataFailed, false);
     expect(bloc.state.item.mediaId, 'b');
@@ -181,12 +152,7 @@ void main() {
     final repository = _repository(
       MockClient(
         (_) async => http.Response(
-          jsonEncode(
-            photoMetadata(
-              'a',
-              revision: '2',
-            ).copyWith(width: 4000, height: 6000).toJson(),
-          ),
+          jsonEncode(photoMetadata('a', revision: '2').copyWith(width: 4000, height: 6000).toJson()),
           200,
         ),
       ),
@@ -205,23 +171,15 @@ void main() {
       (s) => s.effect is ViewerRotationApplied,
     );
     expect(rotated.item.revision, '2');
-    expect(rotated.item.uri.queryParameters['rev'], '2');
+    expect(rotated.item.uri.pathSegments, containsAllInOrder(['published', 'original', 'a', '2']));
     expect(rotated.supersededRevisions, contains('1'));
     expect(rotated.metadata!.height, 6000);
     // GalleryBloc publishes the old item for both refreshing and failed refresh.
     updates.add(managedPhoto('a'));
-    await _event(
-      bloc,
-      const GalleryViewerEvent.infoToggled(),
-      (s) => s.showInfo,
-    );
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => s.showInfo);
     expect(bloc.state.item.revision, '2');
     updates.add(managedPhoto('a'));
-    await _event(
-      bloc,
-      const GalleryViewerEvent.infoToggled(),
-      (s) => !s.showInfo,
-    );
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => !s.showInfo);
     expect(bloc.state.metadata!.width, 4000);
     expect(bloc.state.item.revision, '2');
     expect(bloc.state.busy, false);
@@ -235,10 +193,7 @@ void main() {
       MockClient((request) async {
         bodies.add(jsonDecode(request.body) as Map<String, dynamic>);
         if (bodies.length == 1) throw http.ClientException('connection lost');
-        return http.Response(
-          jsonEncode(photoMetadata('a', revision: '3').toJson()),
-          200,
-        );
+        return http.Response(jsonEncode(photoMetadata('a', revision: '3').toJson()), 200);
       }),
     );
     final bloc = _viewer(
@@ -256,9 +211,7 @@ void main() {
     );
     expect((failed.effect as ViewerOperationFailed).refreshCatalog, isTrue);
     expect(bodies.single['sourceRevision'], '1');
-    final refreshed = bloc.stream.firstWhere(
-      (state) => state.item.revision == '2',
-    );
+    final refreshed = bloc.stream.firstWhere((state) => state.item.revision == '2');
     updates.add(managedPhoto('a', revision: '2'));
     await refreshed;
     final rotated = await _event(
@@ -275,23 +228,12 @@ void main() {
     final client = ControlledClient();
     final repository = _repository(client);
     final bloc = _viewer(
-      GalleryViewerConfiguration(
-        item: managedPhoto('a'),
-        management: repository,
-        capabilities: _capabilities,
-      ),
+      GalleryViewerConfiguration(item: managedPhoto('a'), management: repository, capabilities: _capabilities),
     );
-    await _event(
-      bloc,
-      const GalleryViewerEvent.rotationRequested(GalleryRotation.left),
-      (s) => s.busy,
-    );
+    await _event(bloc, const GalleryViewerEvent.rotationRequested(GalleryRotation.left), (s) => s.busy);
     final rotation = client.requests.single;
-    final cancelled = expectLater(
-      rotation.headers.future,
-      throwsA(isA<http.RequestAbortedException>()),
-    );
-    final otherOwner = repository.trash();
+    final cancelled = expectLater(rotation.headers.future, throwsA(isA<http.RequestAbortedException>()));
+    final otherOwner = repository.catalog(GalleryMediaSection.trash);
     expect(client.requests, hasLength(2));
     await bloc.close();
     await cancelled;
@@ -299,75 +241,63 @@ void main() {
     expect(client.requests.last.aborted, false);
     expect(client.closed, false);
     client.requests.last.respond();
-    client.requests.last.complete(utf8.encode('{"entries":[]}'));
+    client.requests.last.complete(utf8.encode("{\"entries\":[],\"section\":\"trash\"}"));
     expect((await otherOwner).entries, isEmpty);
   });
 
-  test(
-    'failed mutations request a catalog refresh and a fresh confirmed request',
-    () async {
-      final bodies = <Map<String, dynamic>>[];
-      final repository = _repository(
-        MockClient((request) async {
-          final data = jsonDecode(request.body) as Map<String, dynamic>;
-          bodies.add(data);
-          if (bodies.length == 1) throw http.ClientException('Connection lost');
-          return http.Response(
-            jsonEncode(
-              GalleryOperationResult(
-                operationId: data['operationId'] as String,
-                items: [
-                  GalleryOperationItemResult(
-                    mediaId: 'a',
-                    state: bodies.length == 2
-                        ? GalleryItemOperationState.failed
-                        : GalleryItemOperationState.succeeded,
-                    error: bodies.length == 2 ? GalleryErrorCode.busy : null,
-                    trashId: bodies.length == 2 ? null : 'trashed-a',
-                  ),
-                ],
-              ).toJson(),
-            ),
-            200,
-          );
-        }),
-      );
-      final bloc = _viewer(
-        GalleryViewerConfiguration(
-          item: managedPhoto('a'),
-          management: repository,
-          capabilities: _capabilities,
-        ),
-      );
-      final unknown = await _confirmedMutation(
-        bloc,
-        GalleryMutation.trash,
-        (s) => s.effect is ViewerOperationFailed,
-      );
-      expect(unknown.mutationRequest, isNull);
-      expect((unknown.effect as ViewerOperationFailed).refreshCatalog, isTrue);
-      final id = unknown.effectId;
-      final failed = await _confirmedMutation(
-        bloc,
-        GalleryMutation.trash,
-        (s) => s.effectId > id && s.effect is ViewerOperationFailed,
-      );
-      expect(bodies[0]['operationId'], isNot(bodies[1]['operationId']));
-      expect(failed.mutationRequest, isNull);
-      expect(failed.operationError, GalleryErrorCode.busy);
-      final succeeded = await _confirmedMutation(
-        bloc,
-        GalleryMutation.trash,
-        (s) => s.effect is ViewerMutationApplied,
-      );
-      expect(bodies[2]['operationId'], isNot(bodies[1]['operationId']));
-      expect((succeeded.effect as ViewerMutationApplied).trashIds, [
-        'trashed-a',
-      ]);
-      expect(succeeded.missing, true);
-      expect(succeeded.busy, false);
-    },
-  );
+  test('failed mutations request a catalog refresh and a fresh confirmed request', () async {
+    final bodies = <Map<String, dynamic>>[];
+    final repository = _repository(
+      MockClient((request) async {
+        final data = jsonDecode(request.body) as Map<String, dynamic>;
+        bodies.add(data);
+        if (bodies.length == 1) throw http.ClientException('Connection lost');
+        return http.Response(
+          jsonEncode(
+            GalleryOperationResult(
+              operationId: data['operationId'] as String,
+              items: [
+                GalleryOperationItemResult(
+                  section: GalleryMediaSection.published,
+                  mediaId: 'a',
+                  state: bodies.length == 2 ? GalleryItemOperationState.failed : GalleryItemOperationState.succeeded,
+                  error: bodies.length == 2 ? GalleryErrorCode.busy : null,
+                  destination: bodies.length == 2
+                      ? null
+                      : GalleryMediaRef(
+                          mediaId: 'trashed-a',
+                          sourceRevision: "destination-revision",
+                          section: GalleryMediaSection.trash,
+                        ),
+                ),
+              ],
+            ).toJson(),
+          ),
+          200,
+        );
+      }),
+    );
+    final bloc = _viewer(
+      GalleryViewerConfiguration(item: managedPhoto('a'), management: repository, capabilities: _capabilities),
+    );
+    final unknown = await _confirmedMutation(bloc, GalleryMutation.trash, (s) => s.effect is ViewerOperationFailed);
+    expect(unknown.mutationRequest, isNull);
+    expect((unknown.effect as ViewerOperationFailed).refreshCatalog, isTrue);
+    final id = unknown.effectId;
+    final failed = await _confirmedMutation(
+      bloc,
+      GalleryMutation.trash,
+      (s) => s.effectId > id && s.effect is ViewerOperationFailed,
+    );
+    expect(bodies[0]['operationId'], isNot(bodies[1]['operationId']));
+    expect(failed.mutationRequest, isNull);
+    expect(failed.operationError, GalleryErrorCode.busy);
+    final succeeded = await _confirmedMutation(bloc, GalleryMutation.trash, (s) => s.effect is ViewerMutationApplied);
+    expect(bodies[2]['operationId'], isNot(bodies[1]['operationId']));
+    expect((succeeded.effect as ViewerMutationApplied).mediaIds, ['trashed-a']);
+    expect(succeeded.missing, true);
+    expect(succeeded.busy, false);
+  });
 
   test('capability guards and a tokenized purge confirmation protect file operations', () async {
     final requests = <http.Request>[];
@@ -382,6 +312,7 @@ void main() {
               items: const [
                 GalleryOperationItemResult(
                   mediaId: 'a',
+                  section: GalleryMediaSection.trash,
                   state: GalleryItemOperationState.succeeded,
                 ),
               ],
@@ -391,39 +322,24 @@ void main() {
         );
       }),
     );
-    final legacy = _viewer(
-      GalleryViewerConfiguration(
-        item: managedPhoto('a'),
-        management: repository,
-      ),
-    );
-    legacy.add(
-      const GalleryViewerEvent.rotationRequested(GalleryRotation.left),
-    );
-    legacy.add(
-      const GalleryViewerEvent.mutationRequested(GalleryMutation.trash),
-    );
-    await _event(
-      legacy,
-      const GalleryViewerEvent.infoToggled(),
-      (s) => !s.showInfo,
-    );
+    final legacy = _viewer(GalleryViewerConfiguration(item: managedPhoto('a'), management: repository));
+    legacy.add(const GalleryViewerEvent.rotationRequested(GalleryRotation.left));
+    legacy.add(const GalleryViewerEvent.mutationRequested(GalleryMutation.trash));
+    await _event(legacy, const GalleryViewerEvent.infoToggled(), (s) => !s.showInfo);
     expect(requests, isEmpty);
     final bloc = _viewer(
       GalleryViewerConfiguration(
-        item: managedPhoto('a'),
+        item: managedPhoto('a').copyWith(section: GalleryMediaSection.trash),
         management: repository,
-        capabilities: const {
-          GalleryCapability.mutations,
-          GalleryCapability.trash,
-        },
-        trashEntry: GalleryTrashEntry(
-          trashId: 'a',
+        capabilities: const {GalleryCapability.mutations, GalleryCapability.trash},
+        entry: GalleryEntry(
+          section: GalleryMediaSection.trash,
+          mediaId: 'a',
           name: 'a.jpg',
-          originalPath: 'a.jpg',
+          path: 'a.jpg',
           kind: GalleryEntryKind.image,
           sourceRevision: '1',
-          trashedAt: DateTime.utc(2026),
+          fileChanged: DateTime.utc(2026),
           sizeBytes: 1024,
         ),
       ),
@@ -437,10 +353,7 @@ void main() {
     expect(requests, isEmpty);
     await _event(
       bloc,
-      GalleryViewerEvent.mutationDecision(
-        confirmationId: firstId,
-        confirmed: false,
-      ),
+      GalleryViewerEvent.mutationDecision(confirmationId: firstId, confirmed: false),
       (s) => s.confirmation == null,
     );
     final secondPrompt = await _event(
@@ -448,30 +361,15 @@ void main() {
       const GalleryViewerEvent.mutationRequested(GalleryMutation.purge),
       (s) => s.confirmation != null,
     );
-    bloc.add(
-      GalleryViewerEvent.mutationDecision(
-        confirmationId: firstId,
-        confirmed: true,
-      ),
-    );
-    await _event(
-      bloc,
-      const GalleryViewerEvent.infoToggled(),
-      (s) => !s.showInfo,
-    );
+    bloc.add(GalleryViewerEvent.mutationDecision(confirmationId: firstId, confirmed: true));
+    await _event(bloc, const GalleryViewerEvent.infoToggled(), (s) => !s.showInfo);
     expect(requests, isEmpty);
     final complete = await _event(
       bloc,
-      GalleryViewerEvent.mutationDecision(
-        confirmationId: secondPrompt.confirmation!.token,
-        confirmed: true,
-      ),
+      GalleryViewerEvent.mutationDecision(confirmationId: secondPrompt.confirmation!.token, confirmed: true),
       (s) => s.effect is ViewerMutationApplied,
     );
-    expect(
-      (complete.effect as ViewerMutationApplied).action,
-      GalleryMutation.purge,
-    );
+    expect((complete.effect as ViewerMutationApplied).action, GalleryMutation.purge);
     expect(jsonDecode(requests.single.body)['action'], 'purge');
   });
 
@@ -480,19 +378,11 @@ void main() {
     final second = StreamController<GalleryItem?>.broadcast(sync: true);
     addTearDown(first.close);
     addTearDown(second.close);
-    final configuration = GalleryViewerConfiguration(
-      item: managedPhoto('a'),
-      itemUpdates: first.stream,
-    );
+    final configuration = GalleryViewerConfiguration(item: managedPhoto('a'), itemUpdates: first.stream);
     final bloc = _viewer(configuration);
     expect(first.hasListener, true);
     final changed = bloc.stream.firstWhere((s) => s.item.mediaId == 'b');
-    bloc.configure(
-      configuration.copyWith(
-        item: managedPhoto('b'),
-        itemUpdates: second.stream,
-      ),
-    );
+    bloc.configure(configuration.copyWith(item: managedPhoto('b'), itemUpdates: second.stream));
     await changed;
     expect(first.hasListener, false);
     expect(second.hasListener, true);

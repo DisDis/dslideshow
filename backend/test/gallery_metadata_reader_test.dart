@@ -14,8 +14,7 @@ import 'package:test/test.dart';
 
 import 'support/gallery_tool_runner.dart';
 
-Matcher _failure(GalleryErrorCode code) =>
-    throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', code));
+Matcher _failure(GalleryErrorCode code) => throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', code));
 
 void main() {
   late Directory root;
@@ -29,14 +28,11 @@ void main() {
     await root.delete(recursive: true);
   });
 
-  Future<GallerySource> fixture(
-    String name,
-    List<int> bytes, {
-    GalleryEntryKind kind = GalleryEntryKind.image,
-  }) async {
+  Future<GallerySource> fixture(String name, List<int> bytes, {GalleryEntryKind kind = GalleryEntryKind.image}) async {
     final file = await File('${root.path}/$name').writeAsBytes(bytes);
     return GallerySource(
       GalleryEntry(
+        section: GalleryMediaSection.published,
         mediaId: 'photo',
         sourceRevision: 'revision-1',
         name: name,
@@ -48,31 +44,21 @@ void main() {
     );
   }
 
-  test(
-    'EXIF digest compares parsed tags independently of pixel contents',
-    () async {
-      final pixels = image.Image(width: 32, height: 16)
-        ..exif.imageIfd['ImageDescription'] = 'Original description';
-      final first = await fixture('first.jpg', image.encodeJpg(pixels));
-      final before = await reader.exifDigest(File(first.absolutePath));
-      expect(before, isNotNull);
-      pixels.clear(image.ColorRgb8(10, 20, 30));
-      final sameTags = await fixture('pixels.jpg', image.encodeJpg(pixels));
-      expect(await reader.exifDigest(File(sameTags.absolutePath)), before);
-      pixels.exif.imageIfd['ImageDescription'] = 'Changed description';
-      final changed = await fixture('changed.jpg', image.encodeJpg(pixels));
-      expect(
-        await reader.exifDigest(File(changed.absolutePath)),
-        isNot(before),
-      );
-      final empty = await fixture(
-        'no-exif.jpg',
-        image.encodeJpg(image.Image(width: 8, height: 8)),
-      );
-      expect(await reader.exifDigest(File(empty.absolutePath)), isNull);
-      expect(await _openSources(root), isEmpty);
-    },
-  );
+  test('EXIF digest compares parsed tags independently of pixel contents', () async {
+    final pixels = image.Image(width: 32, height: 16)..exif.imageIfd['ImageDescription'] = 'Original description';
+    final first = await fixture('first.jpg', image.encodeJpg(pixels));
+    final before = await reader.exifDigest(File(first.absolutePath));
+    expect(before, isNotNull);
+    pixels.clear(image.ColorRgb8(10, 20, 30));
+    final sameTags = await fixture('pixels.jpg', image.encodeJpg(pixels));
+    expect(await reader.exifDigest(File(sameTags.absolutePath)), before);
+    pixels.exif.imageIfd['ImageDescription'] = 'Changed description';
+    final changed = await fixture('changed.jpg', image.encodeJpg(pixels));
+    expect(await reader.exifDigest(File(changed.absolutePath)), isNot(before));
+    final empty = await fixture('no-exif.jpg', image.encodeJpg(image.Image(width: 8, height: 8)));
+    expect(await reader.exifDigest(File(empty.absolutePath)), isNull);
+    expect(await _openSources(root), isEmpty);
+  });
 
   test('JPEG physical geometry, EXIF/GPS and timezone survive stale EXIF dimensions without a CLI', () async {
     final pixels = image.Image(width: 32, height: 16);
@@ -93,28 +79,13 @@ void main() {
       ..['ExposureTime'] = image.IfdValueRational(1, 250);
     pixels.exif.gpsIfd
       ..['GPSLatitudeRef'] = image.IfdValueAscii('S')
-      ..['GPSLatitude'] = image.IfdValueRational.list([
-        Rational(55, 1),
-        Rational(30, 1),
-        Rational(0, 1),
-      ])
+      ..['GPSLatitude'] = image.IfdValueRational.list([Rational(55, 1), Rational(30, 1), Rational(0, 1)])
       ..['GPSLongitudeRef'] = image.IfdValueAscii('E')
-      ..['GPSLongitude'] = image.IfdValueRational.list([
-        Rational(37, 1),
-        Rational(15, 1),
-        Rational(0, 1),
-      ]);
+      ..['GPSLongitude'] = image.IfdValueRational.list([Rational(37, 1), Rational(15, 1), Rational(0, 1)]);
     final source = await fixture('private.jpg', image.encodeJpg(pixels));
     final noCommands = CallbackGalleryToolRunner(
-      (
-        _,
-        _, {
-        timeout,
-        cancellation,
-        environment,
-        discardStdout = false,
-        maxOutputBytes = 0,
-      }) async => fail('Still metadata must not start a child process'),
+      (_, _, {timeout, cancellation, environment, discardStdout = false, maxOutputBytes = 0}) async =>
+          fail('Still metadata must not start a child process'),
     );
     await reader.close();
     reader = GalleryMetadataReader(runner: noCommands);
@@ -136,43 +107,30 @@ void main() {
     expect(noCommands.closeCount, 0);
   });
 
-  test(
-    'JPEG PNG GIF and WebP report container dimensions when EXIF is absent',
-    () async {
-      final pixels = image.Image(width: 23, height: 17);
-      final cases = <String, List<int>>{
-        'without.jpg': image.encodeJpg(pixels),
-        'without.png': image.encodePng(pixels),
-        'without.gif': image.encodeGif(pixels),
-        'without.webp': image.encodeWebP(pixels),
-      };
-      for (final entry in cases.entries) {
-        final source = await fixture(entry.key, entry.value);
-        final metadata = await reader.read(source);
-        expect([metadata.width, metadata.height], [23, 17], reason: entry.key);
-        expect(metadata.orientation, isNull);
-        expect(metadata.camera, isNull);
-        expect(metadata.dateTaken, isNull);
-        expect(metadata.colorProfile, isNull);
-        expect(await reader.profileDigest(File(source.absolutePath)), isNull);
-      }
-    },
-  );
+  test('JPEG PNG GIF and WebP report container dimensions when EXIF is absent', () async {
+    final pixels = image.Image(width: 23, height: 17);
+    final cases = <String, List<int>>{
+      'without.jpg': image.encodeJpg(pixels),
+      'without.png': image.encodePng(pixels),
+      'without.gif': image.encodeGif(pixels),
+      'without.webp': image.encodeWebP(pixels),
+    };
+    for (final entry in cases.entries) {
+      final source = await fixture(entry.key, entry.value);
+      final metadata = await reader.read(source);
+      expect([metadata.width, metadata.height], [23, 17], reason: entry.key);
+      expect(metadata.orientation, isNull);
+      expect(metadata.camera, isNull);
+      expect(metadata.dateTaken, isNull);
+      expect(metadata.colorProfile, isNull);
+      expect(await reader.profileDigest(File(source.absolutePath)), isNull);
+    }
+  });
 
   test('PNG eXIf after pixels and ICC have bounded Dart reads, 16-bit alpha and staged identity', () async {
     final profile = _icc();
-    final pixels =
-        image.Image(
-            width: 13,
-            height: 7,
-            format: image.Format.uint16,
-            numChannels: 4,
-          )
-          ..iccProfile = image.IccProfile(
-            'Fixture',
-            image.IccProfileCompression.none,
-            profile,
-          );
+    final pixels = image.Image(width: 13, height: 7, format: image.Format.uint16, numChannels: 4)
+      ..iccProfile = image.IccProfile('Fixture', image.IccProfileCompression.none, profile);
     final exifData = image.ExifData();
     exifData.imageIfd.orientation = 3;
     exifData.exifIfd['DateTimeOriginal'] = '2025:01:02 03:04:05';
@@ -180,20 +138,12 @@ void main() {
     exifData.write(output);
     final encoded = image.encodePng(pixels);
     final before = encoded.sublist(0, encoded.length - 12);
-    final bytes = [
-      ...before,
-      ..._pngChunk('eXIf', output.getBytes()),
-      ...encoded.sublist(encoded.length - 12),
-    ];
+    final bytes = [...before, ..._pngChunk('eXIf', output.getBytes()), ...encoded.sublist(encoded.length - 12)];
     final source = await fixture('alpha16.png', bytes);
     final metadata = await reader.read(source);
     expect([metadata.width, metadata.height], [13, 7]);
     expect(metadata.orientation, 3);
-    expect(
-      metadata.dateTaken,
-      '2025:01:02 03:04:05',
-      reason: 'No timezone may be invented',
-    );
+    expect(metadata.dateTaken, '2025:01:02 03:04:05', reason: 'No timezone may be invented');
     expect(metadata.bitDepth, 16);
     expect(metadata.hasAlpha, isTrue);
     expect(metadata.colorProfile, 'Fixture profile');
@@ -209,49 +159,30 @@ void main() {
     expect(await reader.profileDigest(staged), isNull);
   });
 
-  test(
-    'malformed EXIF and read budget failures close every source descriptor',
-    () async {
-      final pixels = image.Image(width: 32, height: 16);
-      pixels.exif.imageIfd.orientation = 6;
-      final encoded = image.encodeJpg(pixels);
-      final damaged = List<int>.of(encoded);
-      final exifStart = _find(damaged, [69, 120, 105, 102, 0, 0]);
-      expect(exifStart, greaterThan(0));
-      // The IFD offset now points outside its APP1 segment.
-      damaged.setRange(exifStart + 10, exifStart + 14, [127, 255, 255, 255]);
-      final source = await fixture('damaged.jpg', damaged);
-      for (var i = 0; i < 24; i++) {
-        await expectLater(
-          reader.read(source),
-          _failure(GalleryErrorCode.processingFailed),
-        );
-      }
-      await reader.close();
-      reader = GalleryMetadataReader(maxReadBytes: 8);
-      await expectLater(
-        reader.read(source),
-        _failure(GalleryErrorCode.outputLimitExceeded),
-      );
-      expect(await _openSources(root), isEmpty);
-    },
-  );
+  test('malformed EXIF and read budget failures close every source descriptor', () async {
+    final pixels = image.Image(width: 32, height: 16);
+    pixels.exif.imageIfd.orientation = 6;
+    final encoded = image.encodeJpg(pixels);
+    final damaged = List<int>.of(encoded);
+    final exifStart = _find(damaged, [69, 120, 105, 102, 0, 0]);
+    expect(exifStart, greaterThan(0));
+    // The IFD offset now points outside its APP1 segment.
+    damaged.setRange(exifStart + 10, exifStart + 14, [127, 255, 255, 255]);
+    final source = await fixture('damaged.jpg', damaged);
+    for (var i = 0; i < 24; i++) {
+      await expectLater(reader.read(source), _failure(GalleryErrorCode.processingFailed));
+    }
+    await reader.close();
+    reader = GalleryMetadataReader(maxReadBytes: 8);
+    await expectLater(reader.read(source), _failure(GalleryErrorCode.outputLimitExceeded));
+    expect(await _openSources(root), isEmpty);
+  });
 
   test('close awaits active worker cleanup and cancellation does not close an injected runner', () async {
-    final source = await fixture(
-      'pending.jpg',
-      image.encodeJpg(image.Image(width: 32, height: 16)),
-    );
+    final source = await fixture('pending.jpg', image.encodeJpg(image.Image(width: 32, height: 16)));
     final noCommands = CallbackGalleryToolRunner(
-      (
-        _,
-        _, {
-        timeout,
-        cancellation,
-        environment,
-        discardStdout = false,
-        maxOutputBytes = 0,
-      }) async => fail('No image command'),
+      (_, _, {timeout, cancellation, environment, discardStdout = false, maxOutputBytes = 0}) async =>
+          fail('No image command'),
     );
     await reader.close();
     reader = GalleryMetadataReader(runner: noCommands);
@@ -286,6 +217,7 @@ void main() {
     expect(encoded.exitCode, 0, reason: encoded.stderr as String);
     final source = GallerySource(
       GalleryEntry(
+        section: GalleryMediaSection.published,
         mediaId: 'video',
         sourceRevision: 'video-1',
         path: 'small.mp4',
@@ -306,20 +238,14 @@ void main() {
 
 int _find(List<int> data, List<int> pattern) {
   for (var i = 0; i <= data.length - pattern.length; i++) {
-    if (List.generate(
-      pattern.length,
-      (n) => data[i + n] == pattern[n],
-    ).every((value) => value))
-      return i;
+    if (List.generate(pattern.length, (n) => data[i + n] == pattern[n]).every((value) => value)) return i;
   }
   return -1;
 }
 
 Future<List<String>> _openSources(Directory root) async {
   final paths = <String>[];
-  await for (final entry in Directory(
-    '/proc/self/fd',
-  ).list(followLinks: false)) {
+  await for (final entry in Directory('/proc/self/fd').list(followLinks: false)) {
     try {
       final target = await Link(entry.path).target();
       if (target.startsWith(root.path)) paths.add(target);
@@ -357,9 +283,5 @@ List<int> _pngChunk(String type, List<int> payload) {
   }
   final size = ByteData(4)..setUint32(0, payload.length);
   final checksum = ByteData(4)..setUint32(0, crc ^ 0xffffffff);
-  return [
-    ...size.buffer.asUint8List(),
-    ...bytes,
-    ...checksum.buffer.asUint8List(),
-  ];
+  return [...size.buffer.asUint8List(), ...bytes, ...checksum.buffer.asUint8List()];
 }

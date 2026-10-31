@@ -184,6 +184,10 @@ void main() {
 
   test('pending resolves are bounded and closing cancels the owned transport', () async {
     avahi.resolveGate = Completer<void>();
+    final resolvesStarted = Completer<void>();
+    avahi.onResolveStarted = () {
+      if (avahi.activeResolves == 4 && !resolvesStarted.isCompleted) resolvesStarted.complete();
+    };
     final bus = TrackingBus(avahi.address);
     final session = AvahiFrameDiscoverySession(bus: bus);
     final subscription = session.updates.listen((_) {});
@@ -191,7 +195,9 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await avahi.announce('Frame $i');
     }
-    // A D-Bus round trip drains the already sent signals without wall-clock sleeps.
+    // Signals and method calls use separate connections. A control reply alone
+    // does not prove that the fake has received the four resolver calls.
+    await resolvesStarted.future.timeout(const Duration(seconds: 3));
     final barrier = DBusRemoteObject(bus, name: 'org.freedesktop.Avahi', path: DBusObjectPath('/'));
     await barrier.callMethod('org.freedesktop.Avahi.Server', 'GetHostName', []);
     expect(avahi.maxActiveResolves, 4);

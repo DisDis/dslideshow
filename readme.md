@@ -11,6 +11,7 @@ Features:
 * Over-the-air update (OTA)
 * Support MQTT
 * Web config
+* Yandex Disk storage with multiple accounts and selected folders; hide media from the slideshow and cloud reimport.
 
 # Demo version - v7
 [![Demo](https://img.youtube.com/vi/eRx7BAgu3N0/0.jpg)](https://youtu.be/eRx7BAgu3N0)

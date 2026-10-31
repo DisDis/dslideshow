@@ -79,15 +79,13 @@ class GalleryMetadataReader {
     }
   }
 
-  Future<GalleryMetadata> read(GallerySource source, {String? input}) =>
-      _track(() async {
-        final filePath = input ?? source.absolutePath;
-        if (source.entry.kind == GalleryEntryKind.video)
-          return _video(source, filePath);
-        final bytes = maxReadBytes, tags = maxTags, deadline = timeout;
-        // Capture values, never this reader/runner/cancellation ports, in the worker.
-        return _readInWorker(source, filePath, bytes, tags, deadline);
-      });
+  Future<GalleryMetadata> read(GallerySource source, {String? input}) => _track(() async {
+    final filePath = input ?? source.absolutePath;
+    if (source.entry.kind == GalleryEntryKind.video) return _video(source, filePath);
+    final bytes = maxReadBytes, tags = maxTags, deadline = timeout;
+    // Capture values, never this reader/runner/cancellation ports, in the worker.
+    return _readInWorker(source, filePath, bytes, tags, deadline);
+  });
 
   Future<String?> profileDigest(File file) => _track(() async {
     final name = file.path, bytes = maxReadBytes, deadline = timeout;
@@ -95,10 +93,7 @@ class GalleryMetadataReader {
   });
 
   Future<String?> exifDigest(File file) => _track(() async {
-    final name = file.path,
-        bytes = maxReadBytes,
-        tags = maxTags,
-        deadline = timeout;
+    final name = file.path, bytes = maxReadBytes, tags = maxTags, deadline = timeout;
     return _exifInWorker(name, bytes, tags, deadline);
   });
 
@@ -126,16 +121,15 @@ class GalleryMetadataReader {
     try {
       final decoded = jsonDecode(result.stdout) as Map<String, dynamic>;
       final streams = decoded['streams'] as List;
-      final stream = streams.isEmpty
-          ? <String, dynamic>{}
-          : streams.first as Map<String, dynamic>;
+      final stream = streams.isEmpty ? <String, dynamic>{} : streams.first as Map<String, dynamic>;
       final format = decoded['format'] as Map<String, dynamic>? ?? const {};
       final tags = format['tags'] as Map<String, dynamic>? ?? const {};
       final duration = double.tryParse('${format['duration']}');
       final depth = int.tryParse('${stream['bits_per_raw_sample']}');
       return GalleryMetadata(
+        section: source.entry.section,
         mediaId: source.entry.mediaId,
-        sourceRevision: source.entry.sourceRevision!,
+        sourceRevision: source.entry.sourceRevision,
         name: source.entry.name,
         path: source.entry.path,
         kind: source.entry.kind,
@@ -146,9 +140,7 @@ class GalleryMetadataReader {
         format: format['format_name'] as String?,
         codec: stream['codec_name'] as String?,
         dateTaken: tags['creation_time'] as String?,
-        durationSeconds: duration != null && duration.isFinite && duration >= 0
-            ? duration
-            : null,
+        durationSeconds: duration != null && duration.isFinite && duration >= 0 ? duration : null,
         bitDepth: depth != null && depth > 0 ? depth : null,
       );
     } on GalleryCatalogFailure {
@@ -180,42 +172,23 @@ typedef _Container = ({
 
 // Top-level launchers prevent Dart closure-context sharing from capturing the
 // calling service's cancellation completers or an injected process runner.
-Future<GalleryMetadata> _readInWorker(
-  GallerySource source,
-  String name,
-  int bytes,
-  int tags,
-  Duration timeout,
-) => Isolate.run(() => _readStill(source, name, bytes, tags, timeout));
+Future<GalleryMetadata> _readInWorker(GallerySource source, String name, int bytes, int tags, Duration timeout) =>
+    Isolate.run(() => _readStill(source, name, bytes, tags, timeout));
 
-Future<String?> _profileInWorker(String name, int bytes, Duration timeout) =>
-    Isolate.run(() {
-      final reader = _MetadataFile(name, bytes, timeout);
-      try {
-        final data = _container(reader);
-        return data.profile == null
-            ? null
-            : sha256.convert(data.profile!).toString();
-      } finally {
-        reader.close();
-      }
-    });
+Future<String?> _profileInWorker(String name, int bytes, Duration timeout) => Isolate.run(() {
+  final reader = _MetadataFile(name, bytes, timeout);
+  try {
+    final data = _container(reader);
+    return data.profile == null ? null : sha256.convert(data.profile!).toString();
+  } finally {
+    reader.close();
+  }
+});
 
-Future<String?> _exifInWorker(
-  String name,
-  int limit,
-  int maxTags,
-  Duration timeout,
-) => Isolate.run(() {
+Future<String?> _exifInWorker(String name, int limit, int maxTags, Duration timeout) => Isolate.run(() {
   final reader = _MetadataFile(name, limit, timeout);
   try {
-    final tags = _readExifTags(
-      reader,
-      _container(reader),
-      limit,
-      maxTags,
-      timeout,
-    );
+    final tags = _readExifTags(reader, _container(reader), limit, maxTags, timeout);
     if (tags.isEmpty) return null;
     final names = tags.keys.toList()..sort();
     final normalized = {
@@ -231,9 +204,7 @@ Future<String?> _exifInWorker(
         ],
     };
     reader.check();
-    final digest = sha256
-        .convert(utf8.encode(jsonEncode(normalized)))
-        .toString();
+    final digest = sha256.convert(utf8.encode(jsonEncode(normalized))).toString();
     reader.check();
     return digest;
   } finally {
@@ -251,12 +222,7 @@ Map<String, exif.IfdTag> _readExifTags(
   Map<String, exif.IfdTag> tags = const {};
   if (container.exifBytes != null) {
     // We own every descriptor; the package's public File API lacks finally.
-    final memory = _MetadataBytes(
-      container.exifBytes!,
-      limit,
-      reader.clock,
-      timeout,
-    );
+    final memory = _MetadataBytes(container.exifBytes!, limit, reader.clock, timeout);
     tags = exif_reader.readExifFromFileReader(memory, details: false).tags;
   } else if (container.kind == _ImageContainer.tiff ||
       container.kind == _ImageContainer.heic ||
@@ -268,13 +234,7 @@ Map<String, exif.IfdTag> _readExifTags(
   return tags;
 }
 
-GalleryMetadata _readStill(
-  GallerySource source,
-  String filePath,
-  int limit,
-  int maxTags,
-  Duration timeout,
-) {
+GalleryMetadata _readStill(GallerySource source, String filePath, int limit, int maxTags, Duration timeout) {
   final reader = _MetadataFile(filePath, limit, timeout);
   try {
     final stat = File(filePath).statSync();
@@ -284,20 +244,13 @@ GalleryMetadata _readStill(
     final date = values.text('DateTimeOriginal');
     final offset = values.text('OffsetTimeOriginal');
     final profile = container.profile;
-    final width =
-        container.width ??
-        (container.kind == _ImageContainer.tiff
-            ? values.integer('ImageWidth')
-            : null);
-    final height =
-        container.height ??
-        (container.kind == _ImageContainer.tiff
-            ? values.integer('ImageLength')
-            : null);
+    final width = container.width ?? (container.kind == _ImageContainer.tiff ? values.integer('ImageWidth') : null);
+    final height = container.height ?? (container.kind == _ImageContainer.tiff ? values.integer('ImageLength') : null);
     reader.check();
     return GalleryMetadata(
+      section: source.entry.section,
       mediaId: source.entry.mediaId,
-      sourceRevision: source.entry.sourceRevision!,
+      sourceRevision: source.entry.sourceRevision,
       name: source.entry.name,
       path: source.entry.path,
       kind: source.entry.kind,
@@ -320,10 +273,7 @@ GalleryMetadata _readStill(
           : _ExifValues.dateOffset.hasMatch(date)
           ? date
           : '$date${offset ?? ''}',
-      camera: [
-        values.text('Make'),
-        values.text('Model'),
-      ].whereType<String>().join(' ')._nonEmpty,
+      camera: [values.text('Make'), values.text('Model')].whereType<String>().join(' ')._nonEmpty,
       lens: values.text('LensModel'),
       iso: values.scalar('ISOSpeedRatings') ?? values.scalar('ISOSpeed'),
       exposure: values.text('ExposureTime'),
@@ -365,8 +315,7 @@ class _MetadataFile implements exif_io.FileReader {
   }
   _MetadataFile._(this._file, this.limit, this.timeout, this.length);
   void check() {
-    if (clock.elapsed > timeout)
-      throw const GalleryCatalogFailure(GalleryErrorCode.timeout);
+    if (clock.elapsed > timeout) throw const GalleryCatalogFailure(GalleryErrorCode.timeout);
   }
 
   @override
@@ -414,8 +363,7 @@ class _MetadataBytes implements exif_io.FileReader {
   int _position = 0, _read = 0;
   _MetadataBytes(this.bytes, this.limit, this.clock, this.timeout);
   void _check() {
-    if (clock.elapsed > timeout)
-      throw const GalleryCatalogFailure(GalleryErrorCode.timeout);
+    if (clock.elapsed > timeout) throw const GalleryCatalogFailure(GalleryErrorCode.timeout);
   }
 
   @override
@@ -453,11 +401,9 @@ _Container _container(_MetadataFile f) {
   f.setPositionSync(0);
   final header = f.readSync(16);
   f.setPositionSync(0);
-  if (header.length >= 2 && header[0] == 0xff && header[1] == 0xd8)
-    return _jpeg(f);
+  if (header.length >= 2 && header[0] == 0xff && header[1] == 0xd8) return _jpeg(f);
   if (_starts(header, [137, 80, 78, 71, 13, 10, 26, 10])) return _png(f);
-  if (_ascii(header, 0, 4) == 'RIFF' && _ascii(header, 8, 12) == 'WEBP')
-    return _webp(f);
+  if (_ascii(header, 0, 4) == 'RIFF' && _ascii(header, 8, 12) == 'WEBP') return _webp(f);
   if (_ascii(header, 0, 3) == 'GIF' && header.length >= 10)
     return _base(
       _ImageContainer.gif,
@@ -465,14 +411,9 @@ _Container _container(_MetadataFile f) {
       height: _u16(header, 8, Endian.little),
       depth: 8,
     );
-  if (_starts(header, [73, 73, 42, 0]) || _starts(header, [77, 77, 0, 42]))
-    return _base(_ImageContainer.tiff);
+  if (_starts(header, [73, 73, 42, 0]) || _starts(header, [77, 77, 0, 42])) return _base(_ImageContainer.tiff);
   if (_ascii(header, 4, 8) == 'ftyp') {
-    return _base(
-      _ascii(header, 8, 12) == 'avif'
-          ? _ImageContainer.avif
-          : _ImageContainer.heic,
-    );
+    return _base(_ascii(header, 8, 12) == 'avif' ? _ImageContainer.avif : _ImageContainer.heic);
   }
   return _base(_ImageContainer.unknown);
 }
@@ -485,15 +426,7 @@ _Container _base(
   bool? alpha,
   Uint8List? exifBytes,
   Uint8List? profile,
-}) => (
-  kind: kind,
-  width: width,
-  height: height,
-  depth: depth,
-  alpha: alpha,
-  exifBytes: exifBytes,
-  profile: profile,
-);
+}) => (kind: kind, width: width, height: height, depth: depth, alpha: alpha, exifBytes: exifBytes, profile: profile);
 
 _Container _jpeg(_MetadataFile f) {
   f.setPositionSync(2);
@@ -508,8 +441,7 @@ _Container _jpeg(_MetadataFile f) {
       marker = f.readByteSync();
     }
     if (marker == 0xda || marker == 0xd9) {
-      if (width == null || width <= 0 || height == null || height <= 0)
-        _failed();
+      if (width == null || width <= 0 || height == null || height <= 0) _failed();
       Uint8List? icc;
       if (profileCount != null) {
         final bytes = BytesBuilder(copy: false);
@@ -530,32 +462,23 @@ _Container _jpeg(_MetadataFile f) {
         profile: icc,
       );
     }
-    if (marker <= 0 || marker == 0xd8 || marker >= 0xd0 && marker <= 0xd7)
-      _failed();
+    if (marker <= 0 || marker == 0xd8 || marker >= 0xd0 && marker <= 0xd7) _failed();
     final size = _u16(f.exact(2), 0);
     final start = f.positionSync();
     if (size < 2 || start + size - 2 > f.length) _failed();
-    if (marker >= 0xc0 &&
-        marker <= 0xcf &&
-        marker != 0xc4 &&
-        marker != 0xc8 &&
-        marker != 0xcc) {
+    if (marker >= 0xc0 && marker <= 0xcf && marker != 0xc4 && marker != 0xc8 && marker != 0xcc) {
       final info = f.exact(6);
       depth = info[0];
       height = _u16(info, 1);
       width = _u16(info, 3);
     } else if (marker == 0xe1 && size >= 8) {
       final prefix = f.exact(6);
-      if (_starts(prefix, [69, 120, 105, 102, 0, 0]))
-        tags = Uint8List.fromList(f.exact(size - 8));
+      if (_starts(prefix, [69, 120, 105, 102, 0, 0])) tags = Uint8List.fromList(f.exact(size - 8));
     } else if (marker == 0xe2 && size >= 16) {
       final prefix = f.exact(14);
       if (_ascii(prefix, 0, 12) == 'ICC_PROFILE\u0000') {
         final count = prefix[13], index = prefix[12];
-        if (index < 1 ||
-            count < index ||
-            profileCount != null && profileCount != count ||
-            profile.containsKey(index))
+        if (index < 1 || count < index || profileCount != null && profileCount != count || profile.containsKey(index))
           _failed();
         profileCount = count;
         profile[index] = f.exact(size - 16);
@@ -588,20 +511,12 @@ _Container _png(_MetadataFile f) {
       case 'iCCP':
         final data = f.exact(length);
         final separator = data.indexOf(0);
-        if (separator < 1 ||
-            separator + 2 > data.length ||
-            data[separator + 1] != 0)
-          _failed();
+        if (separator < 1 || separator + 2 > data.length || data[separator + 1] != 0) _failed();
         profile = _inflate(data.sublist(separator + 2), f.limit);
       case 'tRNS':
         alpha = true;
       case 'IEND':
-        if (length != 0 ||
-            width == null ||
-            width <= 0 ||
-            height == null ||
-            height <= 0)
-          _failed();
+        if (length != 0 || width == null || width <= 0 || height == null || height <= 0) _failed();
         return _base(
           _ImageContainer.png,
           width: width,
@@ -649,9 +564,7 @@ _Container _webp(_MetadataFile f) {
         alpha ??= (info[4] & 16) != 0;
       case 'EXIF':
         final data = f.exact(length);
-        tags = Uint8List.fromList(
-          _starts(data, [69, 120, 105, 102, 0, 0]) ? data.sublist(6) : data,
-        );
+        tags = Uint8List.fromList(_starts(data, [69, 120, 105, 102, 0, 0]) ? data.sublist(6) : data);
       case 'ICCP':
         profile = Uint8List.fromList(f.exact(length));
     }
@@ -705,18 +618,12 @@ String? _profileDescription(Uint8List bytes) {
     if (_ascii(bytes, offset, offset + 4) == 'desc') {
       final size = _u32(bytes, offset + 8);
       if (size == 0 || size > length - 12) return null;
-      return latin1
-          .decode(bytes.sublist(offset + 12, offset + 12 + size))
-          .replaceAll('\u0000', '')
-          ._nonEmpty;
+      return latin1.decode(bytes.sublist(offset + 12, offset + 12 + size)).replaceAll('\u0000', '')._nonEmpty;
     }
     if (_ascii(bytes, offset, offset + 4) == 'mluc' && length >= 28) {
-      final size = _u32(bytes, offset + 20),
-          textOffset = _u32(bytes, offset + 24);
+      final size = _u32(bytes, offset + 20), textOffset = _u32(bytes, offset + 24);
       if (size.isOdd || textOffset + size > length) return null;
-      return String.fromCharCodes([
-        for (var i = 0; i < size; i += 2) _u16(bytes, offset + textOffset + i),
-      ])._nonEmpty;
+      return String.fromCharCodes([for (var i = 0; i < size; i += 2) _u16(bytes, offset + textOffset + i)])._nonEmpty;
     }
   }
   return null;
@@ -767,9 +674,7 @@ class _ExifValues {
     var value = parts[0] + parts[1] / 60 + parts[2] / 3600;
     // Use the original ASCII hemisphere rather than formatted tag labels.
     final references = _tag(ref)?.values.toList();
-    final reference = references != null && references.isNotEmpty
-        ? references.first
-        : null;
+    final reference = references != null && references.isNotEmpty ? references.first : null;
     if (reference == 83 || reference == 87) value = -value.abs();
     return value;
   }
@@ -786,25 +691,13 @@ bool _starts(List<int> bytes, List<int> prefix) {
 String _ascii(List<int> bytes, int start, int end) =>
     bytes.length < end ? '' : String.fromCharCodes(bytes.sublist(start, end));
 int _u16(List<int> b, int offset, [Endian endian = Endian.big]) =>
-    endian == Endian.big
-    ? b[offset] * 256 + b[offset + 1]
-    : b[offset] + b[offset + 1] * 256;
-int _u24(List<int> b, int offset) =>
-    b[offset] + b[offset + 1] * 256 + b[offset + 2] * 65536;
-int _u32(List<int> b, int offset, [Endian endian = Endian.big]) =>
-    endian == Endian.big
-    ? b[offset] * 0x1000000 +
-          b[offset + 1] * 0x10000 +
-          b[offset + 2] * 256 +
-          b[offset + 3]
-    : b[offset] +
-          b[offset + 1] * 256 +
-          b[offset + 2] * 0x10000 +
-          b[offset + 3] * 0x1000000;
-Never _failed() =>
-    throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
-Never _limit() =>
-    throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
+    endian == Endian.big ? b[offset] * 256 + b[offset + 1] : b[offset] + b[offset + 1] * 256;
+int _u24(List<int> b, int offset) => b[offset] + b[offset + 1] * 256 + b[offset + 2] * 65536;
+int _u32(List<int> b, int offset, [Endian endian = Endian.big]) => endian == Endian.big
+    ? b[offset] * 0x1000000 + b[offset + 1] * 0x10000 + b[offset + 2] * 256 + b[offset + 3]
+    : b[offset] + b[offset + 1] * 256 + b[offset + 2] * 0x10000 + b[offset + 3] * 0x1000000;
+Never _failed() => throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
+Never _limit() => throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
 
 extension on String {
   String? get _nonEmpty => isEmpty ? null : this;

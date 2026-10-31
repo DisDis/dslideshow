@@ -10,6 +10,7 @@ import 'package:test/test.dart';
 
 import 'support/hardware_fixture.dart' show FakeGPIO, FakeMqtt, FakeStorage, FakeSystemInfo, UnusedWiFi, UnusedPowerOff;
 import 'support/controlled_screen_power.dart' show ControlledPower;
+import 'support/storage_provider_registry_fixture.dart';
 
 class FrameRemote implements RemoteService {
   final commands = <RpcCommand>[];
@@ -64,17 +65,19 @@ class FrameFixture {
     screen = ScreenService(config.hardware, power: power);
     application = ApplicationStateService(screenService: screen, gpioService: gpio);
     hardware = HardwareService(
-      config,
-      remote,
-      FakeStorage(),
-      gpio,
-      screen,
-      FakeSystemInfo(),
-      remote,
-      mqtt,
-      UnusedWiFi(),
-      UnusedPowerOff(),
-      application,
+      frontendService: remote,
+      storageProviders: createStorageProviderRegistry(
+        selectedType: StorageType.DiskStorage,
+        factories: {StorageType.DiskStorage: () => FakeStorage()},
+      ),
+      gpioService: gpio,
+      screenService: screen,
+      systemInfoService: FakeSystemInfo(),
+      webServer: remote,
+      mqttService: mqtt,
+      wifiService: UnusedWiFi(),
+      powerOffService: UnusedPowerOff(),
+      applicationStateService: application,
     );
   }
 

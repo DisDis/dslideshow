@@ -6,12 +6,14 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:crypto/crypto.dart';
+import 'package:dslideshow_common/file_settings.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 import 'gallery_catalog_service.dart';
 import 'gallery_files.dart';
+import 'gallery_file_operations.dart';
 import 'gallery_tool_runner.dart';
 
 enum _CzkawkaCliGeneration { version8, version12 }
@@ -20,6 +22,7 @@ enum _CzkawkaExitClass { unavailable, success, findings, signal, error }
 
 typedef _CandidateSnapshot = ({
   String root,
+  String? hiddenRoot,
   bool rootAliased,
   int skipped,
   int unreadable,
@@ -34,6 +37,7 @@ class GalleryDuplicateService {
   static final _versionPattern = RegExp(r'^czkawka(?:_cli)?\s+([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})(?:\s|$)');
   static final _numericVersionPattern = RegExp(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$');
   final GalleryCatalogService catalog;
+  final Directory hiddenDirectory;
   final GalleryToolRunner _runner;
   final bool _ownsRunner;
   final Directory directory;
@@ -54,13 +58,15 @@ class GalleryDuplicateService {
 
   GalleryDuplicateService({
     required this.catalog,
+    Directory? hiddenDirectory,
     GalleryToolRunner? runner,
     Directory? directory,
     this.executable = 'czkawka_cli',
     this.processTimeout = const Duration(hours: 6),
     this.maxCandidates = 100000,
     this.threads = 1,
-  }) : directory = directory ?? Directory(path.join(catalog.stateDirectory.path, 'duplicates')),
+  }) : hiddenDirectory = hiddenDirectory ?? Directory(path.join(catalog.stateDirectory.path, 'hidden')),
+       directory = directory ?? Directory(path.join(catalog.stateDirectory.path, 'duplicates')),
        _runner = runner ?? ProcessGalleryToolRunner(),
        _ownsRunner = runner == null {
     if (maxCandidates < 1 || threads < 1 || processTimeout <= Duration.zero) {
@@ -240,6 +246,7 @@ class GalleryDuplicateService {
 
   Future<void> _run(String jobId, List<GalleryDuplicateMode> modes, Completer<void> cancel) async {
     Directory? temporary;
+    String? snapshotHiddenRoot;
     var diagnostics = const GalleryDuplicateDiagnostics(stage: GalleryDuplicateStage.snapshot);
     void publishDiagnostics() {
       _job = _job.copyWith(diagnostics: diagnostics);
@@ -248,6 +255,7 @@ class GalleryDuplicateService {
     Future<void> verifyRoot(String root) async {
       try {
         await _assertRoot(root, cancel);
+        if (snapshotHiddenRoot != null) await _assertHiddenRoot(snapshotHiddenRoot, cancel);
       } on GalleryCatalogFailure catch (error) {
         if (error.code != GalleryErrorCode.cancelled) {
           diagnostics = diagnostics.copyWith(failureReason: GalleryDuplicateFailureReason.storageUnavailable);
@@ -259,6 +267,7 @@ class GalleryDuplicateService {
     publishDiagnostics();
     try {
       final snapshot = await _snapshot(cancel);
+      snapshotHiddenRoot = snapshot.hiddenRoot;
       diagnostics = diagnostics.copyWith(
         candidateCount: snapshot.candidates.length,
         snapshotSkippedCount: snapshot.skipped,
@@ -332,6 +341,7 @@ class GalleryDuplicateService {
             mode == GalleryDuplicateMode.exact ? 'dup' : 'image',
             '--directories',
             snapshot.root,
+            if (snapshot.hiddenRoot != null) ...['--directories', snapshot.hiddenRoot!],
             '--compact-file-to-save',
             output.absolute.path,
             '--thread-number',
@@ -391,7 +401,7 @@ class GalleryDuplicateService {
             if (!path.isAbsolute(rawPath) ||
                 candidate == null ||
                 data['size'] != candidate.sizeBytes ||
-                !await _isCurrent(candidate, root: snapshot.root)) {
+                !await _isCurrent(candidate, root: snapshot.root, hiddenRoot: snapshot.hiddenRoot)) {
               skipped++;
               continue;
             }
@@ -401,7 +411,11 @@ class GalleryDuplicateService {
             );
           }
           if (members.length < 2) continue;
-          final sorted = members.values.toList()..sort((a, b) => a.path.compareTo(b.path));
+          final sorted = members.values.toList()
+            ..sort((a, b) {
+              final byPath = a.path.compareTo(b.path);
+              return byPath == 0 ? a.section.index.compareTo(b.section.index) : byPath;
+            });
           final digest = sha256.convert(
             utf8.encode('${mode.name}:${sorted.map((m) => '${m.mediaId}:${m.sourceRevision}').join(',')}'),
           );
@@ -425,7 +439,7 @@ class GalleryDuplicateService {
         final members = <GalleryDuplicateMember>[];
         for (final member in group.items) {
           _checkCancelled(cancel);
-          if (await _isCurrent(member, root: snapshot.root)) {
+          if (await _isCurrent(member, root: snapshot.root, hiddenRoot: snapshot.hiddenRoot)) {
             members.add(member);
           } else {
             skipped++;
@@ -626,7 +640,7 @@ class GalleryDuplicateService {
       _checkCancelled(cancel);
       if (entry.kind != GalleryEntryKind.image) continue;
       imageEntries++;
-      if (entry.sourceRevision == null) continue;
+      if (entry.sourceRevision.isEmpty) continue;
       if (snapshot.length >= maxCandidates) throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
       try {
         final source = await catalog.resolve(entry.mediaId, revision: entry.sourceRevision);
@@ -649,8 +663,9 @@ class GalleryDuplicateService {
         // Czkawka emits canonical paths even when --directories is an alias.
         // Relative paths and catalog identities remain unchanged for actions.
         snapshot[path.normalize(resolved)] = GalleryDuplicateMember(
+          section: entry.section,
           mediaId: entry.mediaId,
-          sourceRevision: entry.sourceRevision!,
+          sourceRevision: entry.sourceRevision,
           path: entry.path,
           name: entry.name,
           sizeBytes: await File(absolute).length(),
@@ -664,13 +679,71 @@ class GalleryDuplicateService {
         /* A candidate can disappear during enumeration. */
       }
     }
+    String? hiddenRoot;
+    if (await FileSystemEntity.type(hiddenDirectory.path, followLinks: false) != FileSystemEntityType.notFound) {
+      hiddenRoot = path.normalize(await hiddenDirectory.resolveSymbolicLinks());
+      await _assertHiddenRoot(hiddenRoot, cancel);
+      await for (final entity in hiddenDirectory.list(recursive: true, followLinks: false)) {
+        _checkCancelled(cancel);
+        if (entity is! File) continue;
+        final extension = path.extension(entity.path).toLowerCase();
+        if (!FileSettings.isSupportFile(extension) || FileSettings.isVideo(extension) || extension == '.gif') continue;
+        imageEntries++;
+        if (snapshot.length >= maxCandidates) throw const GalleryCatalogFailure(GalleryErrorCode.outputLimitExceeded);
+        try {
+          final relative = path.relative(entity.absolute.path, from: hiddenDirectory.absolute.path);
+          final resolved = path.normalize(await entity.resolveSymbolicLinks());
+          if (resolved != path.join(hiddenRoot, relative) || !path.isWithin(hiddenRoot, resolved)) continue;
+          if (await FileSystemEntity.type(entity.path, followLinks: false) != FileSystemEntityType.file) continue;
+          try {
+            final handle = await entity.open(mode: FileMode.read);
+            await handle.close();
+          } on FileSystemException catch (error) {
+            if (error.osError?.errorCode != 2 && error.osError?.errorCode != 20) unreadable++;
+            continue;
+          }
+          final entry = GalleryFileOperations.hiddenEntry(relative, await entity.stat());
+          snapshot[resolved] = GalleryDuplicateMember(
+            mediaId: entry.mediaId,
+            sourceRevision: entry.sourceRevision,
+            path: relative,
+            name: entry.name,
+            sizeBytes: entry.sizeBytes!,
+            section: GalleryMediaSection.hidden,
+          );
+        } on GalleryCatalogFailure catch (error) {
+          if (error.code != GalleryErrorCode.notFound) rethrow;
+        } on FileSystemException {
+          // Snapshot candidates may disappear while their directory is read.
+        }
+      }
+    }
     return (
       root: root,
+      hiddenRoot: hiddenRoot,
       rootAliased: root != path.normalize(catalog.originals.absolute.path),
       skipped: imageEntries - snapshot.length,
       unreadable: unreadable,
       candidates: snapshot,
     );
+  }
+
+  Future<void> _assertHiddenRoot(String root, Completer<void> cancel) async {
+    _checkCancelled(cancel);
+    try {
+      final absolute = path.normalize(hiddenDirectory.absolute.path);
+      final current = path.normalize(await hiddenDirectory.resolveSymbolicLinks());
+      if (current != root || current != absolute) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
+      }
+      if (await FileSystemEntity.type(root, followLinks: false) != FileSystemEntityType.directory) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
+      }
+      await hiddenDirectory.list(followLinks: false).take(1).drain<void>();
+    } on FileSystemException {
+      throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
+    }
+    _checkCancelled(cancel);
   }
 
   /// Included directories may disappear while the CLI starts. Czkawka can
@@ -694,8 +767,25 @@ class GalleryDuplicateService {
     _checkCancelled(cancel);
   }
 
-  Future<bool> _isCurrent(GalleryDuplicateMember member, {String? root}) async {
+  Future<bool> _isCurrent(GalleryDuplicateMember member, {String? root, String? hiddenRoot}) async {
     try {
+      if (member.section == GalleryMediaSection.hidden) {
+        final currentRoot = path.normalize(await hiddenDirectory.resolveSymbolicLinks());
+        if (currentRoot != path.normalize(hiddenDirectory.absolute.path) ||
+            (hiddenRoot != null && currentRoot != hiddenRoot) ||
+            path.isAbsolute(member.path) ||
+            path.normalize(member.path) != member.path ||
+            path.split(member.path).any((segment) => segment == '..' || segment == '.'))
+          return false;
+        final file = File(path.join(currentRoot, member.path));
+        final resolved = path.normalize(await file.resolveSymbolicLinks());
+        if (resolved != file.path ||
+            !path.isWithin(currentRoot, resolved) ||
+            await FileSystemEntity.type(file.path, followLinks: false) != FileSystemEntityType.file)
+          return false;
+        final current = GalleryFileOperations.hiddenEntry(member.path, await file.stat());
+        return current.mediaId == member.mediaId && current.sourceRevision == member.sourceRevision;
+      }
       final source = await catalog.resolve(member.mediaId, revision: member.sourceRevision);
       final currentRoot = path.normalize(await catalog.originals.resolveSymbolicLinks());
       if (root != null && root != currentRoot) return false;
@@ -751,42 +841,6 @@ class GalleryDuplicateService {
     if (!identical(job, _job)) throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
     _log.fine(() => 'Duplicate review finished skippedGroups=${job.groups.length - index}');
     return GalleryDuplicateGroupPage(jobId: jobId, index: job.groups.length);
-  }
-
-  /// Invoked under the file-operation lock, before any selected file is moved.
-  Future<void> validateTrash(GalleryOperationRequest request) async {
-    if (request.duplicateJobId == null) return;
-    await _initialize();
-    final job = _job;
-    final usable =
-        job.status == GalleryDuplicateStatus.completed ||
-        ((job.status == GalleryDuplicateStatus.cancelled || job.status == GalleryDuplicateStatus.failed) &&
-            job.groups.isNotEmpty);
-    if (request.action != GalleryMutation.trash || request.duplicateJobId != job.jobId || !usable) {
-      throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
-    }
-    final chosen = {for (final item in request.items) item.mediaId: item.sourceRevision};
-    final members = {
-      for (final group in job.groups)
-        for (final item in group.items) item.mediaId: item,
-    };
-    for (final selection in chosen.entries) {
-      final member = members[selection.key];
-      if (member == null || member.sourceRevision != selection.value || !await _isCurrent(member)) {
-        throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
-      }
-    }
-    for (final group in job.groups) {
-      if (!group.items.any((item) => chosen.containsKey(item.mediaId))) continue;
-      var remaining = false;
-      for (final member in group.items) {
-        if (!chosen.containsKey(member.mediaId) && await _isCurrent(member)) {
-          remaining = true;
-          break;
-        }
-      }
-      if (!remaining) throw const GalleryCatalogFailure(GalleryErrorCode.conflict);
-    }
   }
 
   static Future<Object?> _readJson(File file) async {

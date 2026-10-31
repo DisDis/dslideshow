@@ -81,12 +81,14 @@ class GalleryMediaTools {
     }
   }
 
-  Future<GalleryMetadata> metadata(String id, {required String revision}) {
+  Future<GalleryMetadata> metadata(GalleryMediaRef ref) {
     _checkActive();
+    final id = ref.mediaId;
+    final revision = ref.sourceRevision;
     if (id.isEmpty || revision.isEmpty) {
       return Future.error(const GalleryCatalogFailure(GalleryErrorCode.invalidRequest));
     }
-    final key = '$id:$revision';
+    final key = '${ref.section.name}:$id:$revision';
     final pending = _metadataReads[key];
     if (pending != null) {
       _log.fine(() => 'Metadata shared media=${_logId(id)} active=${_metadataReads.length}');
@@ -96,10 +98,10 @@ class GalleryMediaTools {
       return Future.error(const GalleryCatalogFailure(GalleryErrorCode.busy));
     }
     final read = _track(() async {
-      final source = await _resolve(id, revision);
+      final source = await _operations.resolveMedia(ref);
       _log.fine(
         () =>
-            'Metadata started media=${_logId(id)} reader=${source.entry.kind == GalleryEntryKind.video ? 'ffprobe' : 'dartExif'} active=${_metadataReads.length} maxConcurrent=$_maxConcurrentMetadata cached=${_cache.length} maxCached=$_maxCachedMetadata',
+            'Metadata started section=${ref.section.name} media=${_logId(id)} reader=${source.entry.kind == GalleryEntryKind.video ? 'ffprobe' : 'dartExif'} active=${_metadataReads.length} maxConcurrent=$_maxConcurrentMetadata cached=${_cache.length} maxCached=$_maxCachedMetadata',
       );
       final cached = _cache.remove(key);
       if (cached != null) {
@@ -108,7 +110,9 @@ class GalleryMediaTools {
         return cached;
       }
       final details = await _read(source);
-      await _ensureCurrent(source);
+      if (!await _operations.isCurrent(source)) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.revisionMismatch);
+      }
       _checkActive();
       _cache[key] = details;
       while (_cache.length > _maxCachedMetadata) {
@@ -159,31 +163,13 @@ class GalleryMediaTools {
     }
   }
 
-  /// The trash owner validates the entry/revision and confinement before and
-  /// after this call; no original catalogue identity is assigned to this file.
-  Future<GalleryMetadata> trashMetadata(GalleryTrashEntry entry, File file) => _track(
-    () => _read(
-      GallerySource(
-        GalleryEntry(
-          mediaId: entry.trashId,
-          path: entry.originalPath,
-          name: entry.name,
-          kind: entry.kind,
-          sourceRevision: entry.sourceRevision,
-        ),
-        file.path,
-        entry.sourceRevision,
-      ),
-    ),
-  );
-
   Future<GalleryMetadata> _read(GallerySource source, {String? input}) async {
     if (_activeMetadataReads >= _maxConcurrentMetadata) {
       throw const GalleryCatalogFailure(GalleryErrorCode.busy);
     }
     _activeMetadataReads++;
     try {
-      return await _metadataReader.read(source, input: input);
+      return (await _metadataReader.read(source, input: input)).copyWith(section: source.entry.section);
     } finally {
       _activeMetadataReads--;
     }
@@ -223,6 +209,9 @@ class GalleryMediaTools {
           request.mediaId.isEmpty ||
           request.sourceRevision.isEmpty) {
         throw const GalleryCatalogFailure(GalleryErrorCode.invalidRequest);
+      }
+      if (request.section != GalleryMediaSection.published) {
+        throw const GalleryCatalogFailure(GalleryErrorCode.unsupported);
       }
       final source = await _resolve(request.mediaId, request.sourceRevision);
       if (source.entry.kind != GalleryEntryKind.image) {
@@ -319,7 +308,7 @@ class GalleryMediaTools {
         catalog.markDirty();
         final updated = await catalog.resolve(request.mediaId);
         final details = after.copyWith(
-          sourceRevision: updated.entry.sourceRevision!,
+          sourceRevision: updated.entry.sourceRevision,
           fileModified: (await File(source.absolutePath).stat()).modified.toUtc(),
         );
         _cache.removeWhere((_, value) => value.mediaId == request.mediaId);

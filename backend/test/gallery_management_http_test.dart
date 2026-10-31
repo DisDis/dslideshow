@@ -81,15 +81,15 @@ void main() {
   Future<Map<String, dynamic>> decode(Response response) async =>
       jsonDecode(await response.readAsString()) as Map<String, dynamic>;
   Future<GalleryCatalog> catalog() async {
-    final response = await send('v2/catalog');
+    final response = await send('v2/published/catalog');
     expect(response.statusCode, 200);
     return GalleryCatalog.fromJson(await decode(response));
   }
 
-  Future<GalleryTrashCatalog> trash() async {
-    final response = await send('v2/trash');
+  Future<GalleryCatalog> trash() async {
+    final response = await send('v2/trash/catalog');
     expect(response.statusCode, 200);
-    return GalleryTrashCatalog.fromJson(await decode(response));
+    return GalleryCatalog.fromJson(await decode(response));
   }
 
   Future<GalleryEntry> write(String name, List<int> bytes) async {
@@ -97,7 +97,7 @@ void main() {
     await file.parent.create(recursive: true);
     await file.writeAsBytes(bytes);
     final refreshed = await post(
-      'v2/catalog/refresh',
+      'v2/published/catalog/refresh',
       GalleryRefreshRequest(operationId: 'fixture-write-${++writeSerial}', mode: GalleryRefreshMode.scan).toJson(),
     );
     expect(refreshed.statusCode, 200);
@@ -105,10 +105,13 @@ void main() {
     return (await catalog()).entries.firstWhere((e) => e.path == name);
   }
 
-  GalleryMediaRef ref(GalleryEntry entry) =>
-      GalleryMediaRef(mediaId: entry.mediaId, sourceRevision: entry.sourceRevision ?? 'directory');
-  GalleryMediaRef trashRef(GalleryTrashEntry entry) =>
-      GalleryMediaRef(mediaId: entry.trashId, sourceRevision: entry.sourceRevision);
+  GalleryMediaRef ref(GalleryEntry entry) => GalleryMediaRef(
+    section: entry.section,
+    mediaId: entry.mediaId,
+    sourceRevision: entry.sourceRevision.isEmpty ? 'directory' : entry.sourceRevision,
+  );
+  GalleryMediaRef trashRef(GalleryEntry entry) =>
+      GalleryMediaRef(section: entry.section, mediaId: entry.mediaId, sourceRevision: entry.sourceRevision);
   Future<GalleryOperationResult> mutate(String id, GalleryMutation action, List<GalleryMediaRef> items) async {
     final response = await post(
       'v2/operations',
@@ -120,11 +123,14 @@ void main() {
 
   test('management endpoints reject unauthorized requests before tools or files', () async {
     final routes = <(String, String)>[
-      ('GET', 'v2/metadata/photo/revision'),
+      ('GET', 'v2/published/metadata/photo/revision'),
       ('POST', 'v2/rotate'),
-      ('GET', 'v2/trash'),
+      ('GET', 'v2/trash/catalog'),
       ('GET', 'v2/trash/original/photo/revision'),
       ('GET', 'v2/trash/metadata/photo/revision'),
+      ('GET', 'v2/hidden/catalog'),
+      ('GET', 'v2/hidden/original/photo/revision'),
+      ('GET', 'v2/hidden/metadata/photo/revision'),
       ('POST', 'v2/operations'),
       ('GET', 'v2/duplicates'),
       ('GET', 'v2/duplicates/scan/groups/0'),
@@ -139,6 +145,139 @@ void main() {
     }
     expect(runner.calls, isEmpty);
     expect(await Directory(path.join('${originals.path}.gallery', 'trash')).exists(), false);
+  });
+
+  test('all sections share catalog, original, metadata and thumbnail HTTP contracts', () async {
+    final bytes = image.encodeJpg(image.Image(width: 24, height: 12));
+    var entry = await write('album/photo.jpg', bytes);
+    for (final section in GalleryMediaSection.values) {
+      final response = await send('v2/${section.name}/catalog');
+      expect(response.statusCode, 200);
+      final snapshot = GalleryCatalog.fromJson(await decode(response));
+      expect(snapshot.section, section);
+      expect(snapshot.entries.map((entry) => entry.section), everyElement(section));
+      entry = snapshot.entries.singleWhere((entry) => entry.kind == GalleryEntryKind.image);
+      final original = 'v2/${section.name}/original/${entry.mediaId}/${entry.sourceRevision}';
+      final full = await send(original);
+      expect(full.statusCode, 200);
+      final etag = full.headers['etag']!;
+      expect(await full.read().expand((chunk) => chunk).toList(), bytes);
+      final head = await send(original, method: 'HEAD');
+      expect(head.contentLength, bytes.length);
+      expect(await head.read().fold<int>(0, (sum, chunk) => sum + chunk.length), 0);
+      final range = await send(original, headers: {'range': 'bytes=2-4'});
+      expect(range.statusCode, 206);
+      expect(await range.read().expand((chunk) => chunk).toList(), bytes.sublist(2, 5));
+      final unchanged = await send(original, headers: {'if-none-match': etag});
+      expect(unchanged.statusCode, 304);
+      await unchanged.read().drain<void>();
+      final metadataResponse = await send('v2/${section.name}/metadata/${entry.mediaId}/${entry.sourceRevision}');
+      expect(metadataResponse.statusCode, 200);
+      final metadata = GalleryMetadata.fromJson(await decode(metadataResponse));
+      expect(
+        (metadata.section, metadata.mediaId, metadata.sourceRevision),
+        (section, entry.mediaId, entry.sourceRevision),
+      );
+      expect(metadata.width, 24);
+      final thumbnail = await send(
+        'v2/${section.name}/thumbnail/${entry.mediaId}/${entry.sourceRevision}/${snapshot.thumbnailPolicy!.identity}/256',
+      );
+      expect(thumbnail.statusCode, 200);
+      expect(thumbnail.headers['content-type'], 'image/jpeg');
+      expect(await thumbnail.read().fold<int>(0, (sum, chunk) => sum + chunk.length), greaterThan(0));
+      if (section != GalleryMediaSection.published) {
+        final rotated = await post(
+          'v2/rotate',
+          GalleryRotateRequest(
+            section: section,
+            operationId: 'rotate-${section.name}',
+            mediaId: entry.mediaId,
+            sourceRevision: entry.sourceRevision,
+            rotation: GalleryRotation.left,
+          ).toJson(),
+        );
+        expect(rotated.statusCode, 415);
+        await rotated.read().drain<void>();
+      }
+      if (section != GalleryMediaSection.trash) {
+        final action = section == GalleryMediaSection.published ? GalleryMutation.hide : GalleryMutation.trash;
+        final result = await mutate('move-${section.name}', action, [entry.ref]);
+        expect(result.items.single.section, section);
+        expect(
+          result.items.single.destination!.section,
+          section == GalleryMediaSection.published ? GalleryMediaSection.hidden : GalleryMediaSection.trash,
+        );
+        final missing = await send(original);
+        expect(missing.statusCode, 404);
+        await missing.read().drain<void>();
+      }
+    }
+  });
+
+  test('removed routes have no aliases and invalid sections cannot fall back to published', () async {
+    for (final route in [
+      'list',
+      'get/photo.jpg',
+      'v2/catalog',
+      'v2/catalog/refresh',
+      'v2/trash',
+      'v2/hidden',
+      'v2/metadata/id/revision',
+      'v2/thumbnail/id/revision/4/256',
+    ]) {
+      final response = await send(route, method: route.endsWith('/refresh') ? 'POST' : 'GET');
+      expect(response.statusCode, 404, reason: route);
+      await response.read().drain<void>();
+    }
+    for (final route in ['v2/library/catalog', 'v2/future/original/id/revision', 'v2/future/metadata/id/revision']) {
+      final response = await send(route);
+      expect(response.statusCode, 400);
+      await response.read().drain<void>();
+      final forbidden = await send(route, code: 'wrong');
+      expect(forbidden.statusCode, 403);
+      await forbidden.read().drain<void>();
+    }
+    for (final section in [null, 'library', 'future']) {
+      final item = {'mediaId': 'id', 'sourceRevision': 'revision', if (section != null) 'section': section};
+      final response = await post('v2/operations', {
+        'operationId': 'bad-section',
+        'action': 'trash',
+        'items': [item],
+      });
+      expect(response.statusCode, 400);
+      expect(GalleryErrorResponse.fromJson(await decode(response)).code, GalleryErrorCode.invalidRequest);
+    }
+    expect(runner.calls, isEmpty);
+  });
+
+  test('hidden HTTP catalog previews metadata and unhide preserve source paths', () async {
+    final bytes = image.encodeJpg(image.Image(width: 24, height: 12));
+    final original = await write('yandex.drive.42/Телефон/photo.jpg', bytes);
+    expect((await catalog()).capabilities, contains(GalleryCapability.hidden));
+    final moved = await mutate('hide-account-photo', GalleryMutation.hide, [ref(original)]);
+    expect(moved.items.single.state, GalleryItemOperationState.succeeded);
+    final response = await send('v2/hidden/catalog');
+    expect(response.statusCode, 200);
+    final hidden = GalleryCatalog.fromJson(await decode(response)).entries.single;
+    expect(hidden.path, original.path);
+    expect(hidden.mediaId, moved.items.single.destination?.mediaId);
+    final preview = await send('v2/hidden/original/${hidden.mediaId}/${hidden.sourceRevision}');
+    expect(preview.statusCode, 200);
+    expect(await preview.read().expand((chunk) => chunk).toList(), bytes);
+    final metadataResponse = await send('v2/hidden/metadata/${hidden.mediaId}/${hidden.sourceRevision}');
+    expect(metadataResponse.statusCode, 200);
+    final metadata = GalleryMetadata.fromJson(await decode(metadataResponse));
+    expect(metadata.mediaId, hidden.mediaId);
+    expect(metadata.path, original.path);
+    expect(metadata.width, 24);
+    final restored = await mutate('unhide-account-photo', GalleryMutation.unhide, [
+      trashRef(hidden).copyWith(section: GalleryMediaSection.hidden),
+    ]);
+    expect(restored.items.single.restoredPath, original.path);
+    expect(await File(path.join(originals.path, original.path)).readAsBytes(), bytes);
+    final missing = await send('v2/hidden/original/${hidden.mediaId}/${hidden.sourceRevision}');
+    expect(missing.statusCode, 404);
+    expect(GalleryCatalog.fromJson(await decode(await send('v2/hidden/catalog'))).entries, isEmpty);
   });
 
   test('catalog advertises management and metadata returns the source-version contract', () async {
@@ -163,7 +302,7 @@ void main() {
         GalleryCapability.duplicates,
       ]),
     );
-    final response = await send('v2/metadata/${entry.mediaId}/${entry.sourceRevision}');
+    final response = await send('v2/published/metadata/${entry.mediaId}/${entry.sourceRevision}');
     expect(response.statusCode, 200);
     expect(response.headers['cache-control'], 'no-store');
     final data = GalleryMetadata.fromJson(await decode(response));
@@ -175,7 +314,7 @@ void main() {
     expect(data.camera, 'Example Camera');
     expect(data.dateTaken, '2026:07:12 10:11:12');
     expect(data.longitude, isNull);
-    final stale = await send('v2/metadata/${entry.mediaId}/old');
+    final stale = await send('v2/published/metadata/${entry.mediaId}/old');
     expect(stale.statusCode, 409);
     expect(GalleryErrorResponse.fromJson(await decode(stale)).code, GalleryErrorCode.revisionMismatch);
   });
@@ -186,26 +325,26 @@ void main() {
     final moved = await mutate('move', GalleryMutation.trash, [ref(entry)]);
     expect(moved.items.single.state, GalleryItemOperationState.succeeded);
     final trashed = (await trash()).entries.single;
-    expect(trashed.originalPath, entry.path);
+    expect(trashed.path, entry.path);
     expect(trashed.sizeBytes, bytes.length);
     expect(await File(path.join(path.join('${originals.path}.gallery', 'trash'), entry.path)).readAsBytes(), bytes);
     expect(await File(path.join(path.join('${originals.path}.gallery', 'trash'), 'manifest.json')).exists(), isFalse);
-    final preview = await send('v2/trash/original/${trashed.trashId}/${trashed.sourceRevision}');
+    final preview = await send('v2/trash/original/${trashed.mediaId}/${trashed.sourceRevision}');
     expect(preview.statusCode, 200);
     expect(preview.headers['content-type'], startsWith('image/jpeg'));
     expect(await preview.read().expand((part) => part).toList(), bytes);
     final range = await send(
-      'v2/trash/original/${trashed.trashId}/${trashed.sourceRevision}',
+      'v2/trash/original/${trashed.mediaId}/${trashed.sourceRevision}',
       headers: {'range': 'bytes=1-3'},
     );
     expect(range.statusCode, 206);
     expect(await range.read().expand((part) => part).toList(), bytes.sublist(1, 4));
-    final stale = await send('v2/trash/original/${trashed.trashId}/old');
+    final stale = await send('v2/trash/original/${trashed.mediaId}/old');
     expect(stale.statusCode, 409);
     await stale.read().drain<void>();
-    final info = await send('v2/trash/metadata/${trashed.trashId}/${trashed.sourceRevision}');
+    final info = await send('v2/trash/metadata/${trashed.mediaId}/${trashed.sourceRevision}');
     expect(info.statusCode, 200);
-    expect(GalleryMetadata.fromJson(await decode(info)).mediaId, trashed.trashId);
+    expect(GalleryMetadata.fromJson(await decode(info)).mediaId, trashed.mediaId);
 
     final conflict = File(path.join(originals.path, entry.path));
     await conflict.writeAsString('another user file');
@@ -225,7 +364,7 @@ void main() {
     expect(repeated.items.single.state, GalleryItemOperationState.failed);
     expect(repeated.items.single.error, GalleryErrorCode.notFound);
     expect((await trash()).entries, isEmpty);
-    final gone = await send('v2/trash/original/${again.trashId}/${again.sourceRevision}');
+    final gone = await send('v2/trash/original/${again.mediaId}/${again.sourceRevision}');
     expect(gone.statusCode, 404);
     await gone.read().drain<void>();
     expect(await conflict.readAsString(), 'another user file');
@@ -237,8 +376,12 @@ void main() {
     final outside = await File(path.join(root.path, 'outside.jpg')).writeAsString('outside');
     final result = await mutate('invalid-targets', GalleryMutation.trash, [
       ref(directory),
-      GalleryMediaRef(mediaId: photo.mediaId, sourceRevision: 'old'),
-      const GalleryMediaRef(mediaId: '../outside.jpg', sourceRevision: 'revision'),
+      GalleryMediaRef(section: photo.section, mediaId: photo.mediaId, sourceRevision: 'old'),
+      const GalleryMediaRef(
+        section: GalleryMediaSection.published,
+        mediaId: '../outside.jpg',
+        sourceRevision: 'revision',
+      ),
     ]);
     expect(result.items.map((e) => e.state), everyElement(GalleryItemOperationState.failed));
     expect(result.items[1].error, GalleryErrorCode.revisionMismatch);
@@ -248,6 +391,7 @@ void main() {
     final rotate = await post(
       'v2/rotate',
       GalleryRotateRequest(
+        section: photo.section,
         operationId: 'rotate-stale',
         mediaId: photo.mediaId,
         sourceRevision: 'old',
@@ -316,7 +460,7 @@ void main() {
       ' ' * (256 * 1024 + 1),
       '{"operationId":"op","action":"future","items":[]}',
       '{"operationId":"op","action":"trash","items":[]}',
-      '{"operationId":"op","action":"trash","items":[{"mediaId":"id"}]}',
+      "{\"operationId\":\"op\",\"action\":\"trash\",\"items\":[{\"mediaId\":\"id\",\"section\":\"published\"}]}",
     ]) {
       final response = await send('v2/operations', method: 'POST', body: body);
       expect(response.statusCode, 400);
@@ -336,7 +480,7 @@ void main() {
     expect(runner.calls, isEmpty);
   });
 
-  test('dedup provenance reaches the mutation guard and protects the final copy', () async {
+  test('file mutations are independent of the stored duplicate snapshot', () async {
     final first = await write('a.jpg', [1, 2, 3, 4]);
     final second = await write('b.jpg', [1, 2, 3, 4]);
     tool = (executable, arguments, cancellation, environment) async {
@@ -382,34 +526,13 @@ void main() {
     final invalidIndex = await send('v2/duplicates/review/groups/not-an-index');
     expect(invalidIndex.statusCode, 400);
     await invalidIndex.read().drain<void>();
-    Future<Response> guarded(String id, List<GalleryMediaRef> items) => post(
-      'v2/operations',
-      GalleryOperationRequest(
-        operationId: id,
-        action: GalleryMutation.trash,
-        items: items,
-        duplicateJobId: 'review',
-      ).toJson(),
-    );
-    final all = await guarded('delete-all', [ref(first), ref(second)]);
-    expect(all.statusCode, 409);
-    expect(GalleryErrorResponse.fromJson(await decode(all)).code, GalleryErrorCode.conflict);
-    expect((await trash()).entries, isEmpty);
-    final selected = await guarded('delete-one', [ref(first)]);
-    expect(selected.statusCode, 200);
-    expect(
-      GalleryOperationResult.fromJson(await decode(selected)).items.single.state,
-      GalleryItemOperationState.succeeded,
-    );
-    final reviewedResponse = await send('v2/duplicates/review/groups/0');
-    final reviewed = GalleryDuplicateGroupPage.fromJson(await decode(reviewedResponse));
-    expect(reviewed.index, 1);
+    final moved = await mutate('move-both', GalleryMutation.trash, [ref(first), ref(second)]);
+    expect(moved.items.map((item) => item.state), everyElement(GalleryItemOperationState.succeeded));
+    expect((await trash()).entries, hasLength(2));
+    final stored = GalleryDuplicateJob.fromJson(await decode(await send('v2/duplicates')));
+    expect(stored.groups, job.groups);
+    final reviewed = GalleryDuplicateGroupPage.fromJson(await decode(await send('v2/duplicates/review/groups/0')));
     expect(reviewed.group, isNull);
-    final last = await guarded('delete-last', [ref(second)]);
-    expect(last.statusCode, 409);
-    expect(GalleryErrorResponse.fromJson(await decode(last)).code, GalleryErrorCode.conflict);
-    expect(await File(path.join(originals.path, second.path)).readAsBytes(), [1, 2, 3, 4]);
-    expect((await trash()).entries.single.originalPath, first.path);
   });
 
   test('trash preview resolves only its own entry and still rejects a symlink target', () async {
@@ -417,19 +540,19 @@ void main() {
     final second = await write('b.jpg', [4, 5, 6]);
     await mutate('move-pair', GalleryMutation.trash, [ref(first), ref(second)]);
     final entries = (await trash()).entries;
-    final wanted = entries.singleWhere((entry) => entry.originalPath == first.path);
-    final damaged = entries.singleWhere((entry) => entry.originalPath == second.path);
-    final damagedFile = File(path.join(path.join('${originals.path}.gallery', 'trash'), damaged.originalPath));
+    final wanted = entries.singleWhere((entry) => entry.path == first.path);
+    final damaged = entries.singleWhere((entry) => entry.path == second.path);
+    final damagedFile = File(path.join(path.join('${originals.path}.gallery', 'trash'), damaged.path));
     final saved = await damagedFile.rename(path.join(root.path, 'saved-original.jpg'));
     final outside = await File(path.join(root.path, 'outside.jpg')).writeAsString('outside original');
     await Link(damagedFile.path).create(outside.path);
-    final preview = await send('v2/trash/original/${wanted.trashId}/${wanted.sourceRevision}');
+    final preview = await send('v2/trash/original/${wanted.mediaId}/${wanted.sourceRevision}');
     expect(preview.statusCode, 200);
     expect(await preview.read().expand((chunk) => chunk).toList(), [1, 2, 3]);
-    final metadata = await send('v2/trash/metadata/${wanted.trashId}/${wanted.sourceRevision}');
+    final metadata = await send('v2/trash/metadata/${wanted.mediaId}/${wanted.sourceRevision}');
     expect(metadata.statusCode, 200);
-    expect(GalleryMetadata.fromJson(await decode(metadata)).mediaId, wanted.trashId);
-    final forbidden = await send('v2/trash/original/${damaged.trashId}/${damaged.sourceRevision}');
+    expect(GalleryMetadata.fromJson(await decode(metadata)).mediaId, wanted.mediaId);
+    final forbidden = await send('v2/trash/original/${damaged.mediaId}/${damaged.sourceRevision}');
     expect(forbidden.statusCode, 400);
     expect(GalleryErrorResponse.fromJson(await decode(forbidden)).code, GalleryErrorCode.invalidRequest);
     expect(await outside.readAsString(), 'outside original');
@@ -440,7 +563,10 @@ void main() {
     'route failures log typed HTTP context and keep exception payloads private',
     () => captureLogs((records) async {
       final entry = await write('PRIVATE_EXIF_GPS_NAME.mp4', [1, 2, 3]);
-      final unauthorized = await send('v2/metadata/${entry.mediaId}/${entry.sourceRevision}', code: 'AUTH_SECRET');
+      final unauthorized = await send(
+        'v2/published/metadata/${entry.mediaId}/${entry.sourceRevision}',
+        code: 'AUTH_SECRET',
+      );
       expect(unauthorized.statusCode, 403);
       await unauthorized.read().drain<void>();
       tool = (executable, _, _, _) async {
@@ -450,11 +576,11 @@ void main() {
           path.join(root.path, entry.path),
         );
       };
-      final failed = await send('v2/metadata/${entry.mediaId}/${entry.sourceRevision}');
+      final failed = await send('v2/published/metadata/${entry.mediaId}/${entry.sourceRevision}');
       expect(failed.statusCode, 503);
       await failed.read().drain<void>();
       tool = (_, _, _, _) async => throw const GalleryCatalogFailure(GalleryErrorCode.cancelled);
-      final cancelled = await send('v2/metadata/${entry.mediaId}/${entry.sourceRevision}');
+      final cancelled = await send('v2/published/metadata/${entry.mediaId}/${entry.sourceRevision}');
       expect(cancelled.statusCode, 409);
       await cancelled.read().drain<void>();
       final malformed = await send('v2/operations', method: 'POST', body: '{"AUTH_SECRET":PRIVATE_EXIF_GPS}');
@@ -525,13 +651,10 @@ void main() {
       expect(moved.items.single.state, GalleryItemOperationState.succeeded);
       expect(await source.exists(), false);
       final trashed = (await trash()).entries.single;
-      final preview = await send('v2/trash/original/${trashed.trashId}/${trashed.sourceRevision}');
+      final preview = await send('v2/trash/original/${trashed.mediaId}/${trashed.sourceRevision}');
       expect(preview.statusCode, 200);
       expect(await preview.read().expand((chunk) => chunk).toList(), [1, 2, 3, 4]);
-      expect(
-        await File(path.join(path.join('${originals.path}.gallery', 'trash'), trashed.originalPath)).exists(),
-        true,
-      );
+      expect(await File(path.join(path.join('${originals.path}.gallery', 'trash'), trashed.path)).exists(), true);
       final restored = await mutate('relative-alias-restore', GalleryMutation.restore, [trashRef(trashed)]);
       expect(restored.items.single.state, GalleryItemOperationState.succeeded);
       expect(await source.readAsBytes(), [1, 2, 3, 4]);

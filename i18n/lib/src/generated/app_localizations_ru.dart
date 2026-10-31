@@ -2686,7 +2686,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_similar_images => 'Похожие фотографии';
 
   @override
-  String get gallery_search_scope => 'Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.';
+  String get gallery_search_scope =>
+      'Поиск статичных изображений в медиатеке и скрытых. Корзина, видео и GIF не участвуют.';
 
   @override
   String get gallery_search_running => 'Выполняется поиск…';
@@ -3154,4 +3155,219 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get upload_folder_scan_failed => 'Не удалось прочитать выбранную папку.';
+
+  @override
+  String get gallery_hidden => 'Скрытые';
+
+  @override
+  String get gallery_hide => 'Скрыть из показа';
+
+  @override
+  String get gallery_unhide => 'Вернуть в показ';
+
+  @override
+  String get gallery_hidden_done => 'Файлы скрыты из показа';
+
+  @override
+  String get gallery_unhidden => 'Файлы возвращены в показ';
+
+  @override
+  String get gallery_hide_title => 'Скрыть выбранные файлы?';
+
+  @override
+  String gallery_hide_confirm_body(int count) {
+    return 'Скрыть $count файлов из показа? Они останутся на рамке, их можно вернуть из раздела «Скрытые».';
+  }
+
+  @override
+  String get gallery_hidden_hint => 'Скрытые файлы остаются на рамке и пропускаются при синхронизации с облаком.';
+
+  @override
+  String get gallery_hidden_file_changed => 'Изменение записи скрытого файла';
+
+  @override
+  String get gallery_in_slideshow => 'В показе';
+
+  @override
+  String get gallery_hidden_only_warning =>
+      'В одной из групп будет удалён последний экземпляр из показа. Останутся только скрытые копии.';
+
+  @override
+  String get yandex_drive_label => 'Яндекс Диск';
+
+  @override
+  String get using_yandex_drive => 'Используется Яндекс Диск';
+
+  @override
+  String get yandex_application_setup => 'OAuth-приложение';
+
+  @override
+  String get yandex_application_hint =>
+      'Настройте OAuth-приложение Яндекса один раз. Данные доступа хранятся на рамке.';
+
+  @override
+  String get yandex_configure_application => 'Настроить приложение';
+
+  @override
+  String get yandex_secret_saved => 'Секрет приложения сохранён. Оставьте поле пустым, чтобы сохранить его.';
+
+  @override
+  String get yandex_accounts => 'Подключённые аккаунты';
+
+  @override
+  String get yandex_add_account => 'Подключить Яндекс';
+
+  @override
+  String get yandex_not_connected => 'Не подключён';
+
+  @override
+  String get yandex_not_configured => 'Не выбран для синхронизации';
+
+  @override
+  String get yandex_choose_folders => 'Выбрать папки';
+
+  @override
+  String get yandex_folder_selection => 'Папки синхронизации';
+
+  @override
+  String get yandex_recursive_hint => 'Выбранные папки включают все подпапки.';
+
+  @override
+  String get yandex_select_current_folder => 'Выбрать эту папку';
+
+  @override
+  String get yandex_no_folders => 'На этой странице нет подпапок';
+
+  @override
+  String get yandex_previous_page => 'Предыдущая страница';
+
+  @override
+  String get yandex_next_page => 'Следующая страница';
+
+  @override
+  String get yandex_parent_folder => 'На уровень выше';
+
+  @override
+  String get yandex_disconnect => 'Отключить от рамки';
+
+  @override
+  String get yandex_disconnect_title => 'Отключить аккаунт?';
+
+  @override
+  String get yandex_disconnect_message => 'Текущие загрузки прекратятся. Скачанные файлы останутся на рамке.';
+
+  @override
+  String get yandex_sync_enabled => 'Синхронизировать этот аккаунт';
+
+  @override
+  String get yandex_sync_now => 'Синхронизировать сейчас';
+
+  @override
+  String get yandex_pause => 'Приостановить синхронизацию';
+
+  @override
+  String get yandex_resume => 'Продолжить синхронизацию';
+
+  @override
+  String get yandex_runtime_inactive => 'Сохраните настройки и перезапустите рамку, чтобы включить это хранилище.';
+
+  @override
+  String get yandex_runtime_running => 'Выполняется синхронизация';
+
+  @override
+  String get yandex_runtime_idle => 'Ожидание следующей синхронизации';
+
+  @override
+  String get yandex_runtime_paused => 'Синхронизация приостановлена';
+
+  @override
+  String get yandex_runtime_title => 'Текущая синхронизация';
+
+  @override
+  String get yandex_authorization_title => 'Подключение аккаунта Яндекса';
+
+  @override
+  String get yandex_authorization_hint =>
+      'Откройте Яндекс на этом телефоне или отсканируйте QR другим устройством. При необходимости введите код.';
+
+  @override
+  String get yandex_read_access_hint =>
+      'Яндекс разрешает чтение всего Диска. Рамка скачивает только выбранные вами папки.';
+
+  @override
+  String get yandex_open_authorization => 'Открыть Яндекс';
+
+  @override
+  String get yandex_copy_code => 'Скопировать код';
+
+  @override
+  String get yandex_authorization_pending => 'Ожидание подтверждения в Яндексе';
+
+  @override
+  String get yandex_authorization_connected => 'Аккаунт подключён. Выберите папки в настройках.';
+
+  @override
+  String get yandex_authorization_cancelled => 'Подключение отменено';
+
+  @override
+  String get yandex_authorization_expired => 'Срок действия кода истёк. Начните заново.';
+
+  @override
+  String get yandex_authorization_failed => 'Не удалось подключить аккаунт.';
+
+  @override
+  String get yandex_request_failed => 'Рамка отклонила запрос. Обновите состояние перед повтором.';
+
+  @override
+  String get yandex_outcome_unknown =>
+      'Соединение прервано или истекло время ожидания. Проверьте состояние перед повтором действия.';
+
+  @override
+  String get yandex_load_failed => 'Не удалось загрузить состояние Яндекс Диска.';
+
+  @override
+  String get yandex_browser_failed => 'Не удалось открыть браузер. Скопируйте адрес и откройте его вручную.';
+
+  @override
+  String get yandex_connections_empty => 'Аккаунты Яндекса пока не подключены.';
+
+  @override
+  String get yandex_refresh => 'Обновить состояние';
+
+  @override
+  String get yandex_alias => 'Название аккаунта на рамке';
+
+  @override
+  String get yandex_apply_folders => 'Использовать выбранные папки';
+
+  @override
+  String yandex_folder_count(int count) {
+    return 'Выбрано папок: $count';
+  }
+
+  @override
+  String yandex_sync_counts(int downloaded, int skipped, int failed) {
+    return 'Скачано: $downloaded; пропущено: $skipped; ошибок: $failed';
+  }
+
+  @override
+  String yandex_expires_at(String time) {
+    return 'Код действует до: $time';
+  }
+
+  @override
+  String get yandex_reconnect_hint =>
+      'Аккаунту требуется повторная авторизация. Нажмите «Подключить Яндекс», чтобы восстановить доступ.';
+
+  @override
+  String yandex_last_sync(String time) {
+    return 'Последняя успешная синхронизация: $time';
+  }
+
+  @override
+  String get yandex_runtime_failure =>
+      'Синхронизация завершилась с ошибками. Проверьте подключение аккаунта и свободное место.';
+
+  @override
+  String get yandex_authorization_denied => 'Доступ отклонён в Яндексе.';
 }

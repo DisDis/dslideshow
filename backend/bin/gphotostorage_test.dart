@@ -46,6 +46,8 @@ void main(List<String> args) async {
           return new DiskStorage(
             _config.storages.getOrCreateEmpty(StorageType.DiskStorage),
           );
+        case StorageType.YandexDriveStorage:
+          throw UnsupportedError('This manual probe supports Google Photos only');
       }
     });
     //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])

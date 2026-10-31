@@ -3,6 +3,7 @@ import 'effects_editor_page.dart';
 import 'dart:async';
 
 import 'package:config_app/features/config/data/repository/photoframe_repository.dart';
+import 'package:config_app/features/config/data/repository/yandex_drive_repository.dart';
 import 'package:config_app/features/config/domain/config_draft.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc.dart';
 import 'package:config_app/features/config/presentation/bloc/config_bloc_models.dart';
@@ -39,8 +40,7 @@ class ConfigScreenState extends State<ConfigScreen> {
   late final ConfigBloc _bloc;
   final _draft = ConfigDraft();
   final _localDrafts = <ValueGetter<bool>>{};
-  bool get _hasUnsavedChanges =>
-      _draft.hasChanges || _localDrafts.any((hasChanges) => hasChanges());
+  bool get _hasUnsavedChanges => _draft.hasChanges || _localDrafts.any((hasChanges) => hasChanges());
   late final BrowserExitGuard _browserExitGuard;
   AppConfig? get _editingConfig => _draft.value;
   Future<bool>? _exitConfirmation;
@@ -54,10 +54,8 @@ class ConfigScreenState extends State<ConfigScreen> {
   @override
   void initState() {
     super.initState();
-    _bloc = ConfigBloc(
-      initialState: const ConfigState.initial(),
-      client: widget.repository ?? sl(),
-    )..add(const ConfigEvent.load());
+    _bloc = ConfigBloc(initialState: const ConfigState.initial(), client: widget.repository ?? sl())
+      ..add(const ConfigEvent.load());
     _browserExitGuard = BrowserExitGuard(() => _busy || _hasUnsavedChanges);
   }
 
@@ -90,12 +88,7 @@ class ConfigScreenState extends State<ConfigScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(
-            text,
-            style: error
-                ? TextStyle(color: Theme.of(context).colorScheme.onError)
-                : null,
-          ),
+          content: Text(text, style: error ? TextStyle(color: Theme.of(context).colorScheme.onError) : null),
           backgroundColor: error ? Theme.of(context).colorScheme.error : null,
         ),
       );
@@ -118,14 +111,8 @@ class ConfigScreenState extends State<ConfigScreen> {
             ConfigDiscardAction.reset => l.config_reset_warning,
           }),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l.config_keep_editing),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l.config_discard_changes),
-            ),
+            TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l.config_keep_editing)),
+            FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l.config_discard_changes)),
           ],
         );
       },
@@ -138,8 +125,7 @@ class ConfigScreenState extends State<ConfigScreen> {
     }
   }
 
-  Future<bool> confirmExit() => _exitConfirmation ??= _confirmExit()
-      .whenComplete(() => _exitConfirmation = null);
+  Future<bool> confirmExit() => _exitConfirmation ??= _confirmExit().whenComplete(() => _exitConfirmation = null);
 
   Future<bool> _confirmExit() async {
     if (!mounted) return false;
@@ -174,10 +160,7 @@ class ConfigScreenState extends State<ConfigScreen> {
       _bloc.add(ConfigEvent.save(snapshot));
     } catch (error) {
       setState(() => _error = error.toString());
-      _message(
-        context.localizations.error_with_message(error.toString()),
-        error: true,
-      );
+      _message(context.localizations.error_with_message(error.toString()), error: true);
     }
   }
 
@@ -185,8 +168,7 @@ class ConfigScreenState extends State<ConfigScreen> {
     if (_busy || _reloadPending || _exitConfirmation != null) return;
     _reloadPending = true;
     try {
-      if (_hasUnsavedChanges &&
-          !await _confirmDiscard(ConfigDiscardAction.reload)) {
+      if (_hasUnsavedChanges && !await _confirmDiscard(ConfigDiscardAction.reload)) {
         return;
       }
       if (!mounted || _busy) return;
@@ -254,9 +236,7 @@ class ConfigScreenState extends State<ConfigScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: _editingConfig == null
-            ? null
-            : _buildSaveBar(context),
+        bottomNavigationBar: _editingConfig == null ? null : _buildSaveBar(context),
         body: _editingConfig == null
             ? _busy
                   ? const Center(child: CircularProgressIndicator())
@@ -268,8 +248,7 @@ class ConfigScreenState extends State<ConfigScreen> {
                           children: [
                             const Icon(Icons.error_outline, size: 48),
                             Text(l.config_load_failed),
-                            if (_error != null)
-                              Text(l.error_with_message(_error!)),
+                            if (_error != null) Text(l.error_with_message(_error!)),
                             FilledButton(
                               key: const ValueKey('config-retry'),
                               onPressed: _reload,
@@ -287,9 +266,7 @@ class ConfigScreenState extends State<ConfigScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         l.error_with_message(_error!),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
                       ),
                     ),
                   Expanded(
@@ -375,12 +352,7 @@ class ConfigScreenState extends State<ConfigScreen> {
                     key: const ValueKey('config-save'),
                     icon: const Icon(Icons.save_outlined),
                     label: Text(l.config_save_button),
-                    onPressed:
-                        !_busy &&
-                            _draft.hasChanges &&
-                            !_localDrafts.any((check) => check())
-                        ? _save
-                        : null,
+                    onPressed: !_busy && _draft.hasChanges && !_localDrafts.any((check) => check()) ? _save : null,
                   ),
                   TextButton(
                     key: const ValueKey('config-reset'),
@@ -415,23 +387,16 @@ class ConfigScreenState extends State<ConfigScreen> {
           children: [
             SettingsTileNavigation(
               title: context.localizations.effects_general,
-              subtitle: context.localizations.slideshow_summary(
-                _editingConfig!.slideshow.displayTimeMs / 1000,
-              ),
+              subtitle: context.localizations.slideshow_summary(_editingConfig!.slideshow.displayTimeMs / 1000),
               icon: Icons.photo_library,
               onTap: () => _navigateToSlideshowEditor(context),
             ),
             SettingsTileNavigation(
               title: context.localizations.effects_title,
-              subtitle:
-                  '${_editingConfig!.slideshow.effects.playable.length} / ${catalogEffectTypes.length}',
+              subtitle: '${_editingConfig!.slideshow.effects.playable.length} / ${catalogEffectTypes.length}',
               icon: Icons.auto_awesome,
-              onTap: () => _edit(
-                EffectsEditorPage(
-                  config: _editingConfig!.slideshow,
-                  registerDraft: _registerLocalDraft,
-                ),
-              ),
+              onTap: () =>
+                  _edit(EffectsEditorPage(config: _editingConfig!.slideshow, registerDraft: _registerLocalDraft)),
             ),
             SettingsTileNavigation(
               title: context.localizations.welcome_screen_title,
@@ -442,19 +407,15 @@ class ConfigScreenState extends State<ConfigScreen> {
             SettingsTileNavigation(
               title: context.localizations.special_screens_title,
               subtitle: context.localizations.special_enabled_summary(
-                _editingConfig!.slideshow.specialScreens
-                    .where((s) => s.enabled)
-                    .length,
+                _editingConfig!.slideshow.specialScreens.where((s) => s.enabled).length,
                 _editingConfig!.slideshow.specialScreens.length,
               ),
               icon: Icons.dashboard_customize,
               onTap: () async {
                 await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => SpecialScreensPage(
-                      config: _editingConfig!.slideshow,
-                      registerDraft: _registerLocalDraft,
-                    ),
+                    builder: (_) =>
+                        SpecialScreensPage(config: _editingConfig!.slideshow, registerDraft: _registerLocalDraft),
                   ),
                 );
                 if (mounted) setState(() {});
@@ -484,10 +445,7 @@ class ConfigScreenState extends State<ConfigScreen> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-              child: Text(
-                context.localizations.frame_language_hint,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              child: Text(context.localizations.frame_language_hint, style: Theme.of(context).textTheme.bodySmall),
             ),
           ],
         ),
@@ -499,10 +457,11 @@ class ConfigScreenState extends State<ConfigScreen> {
             SettingsTileNavigation(
               title: context.localizations.storage_configuration_title,
               // Показываем текущий выбор в подзаголовке
-              subtitle:
-                  _editingConfig!.storages.selected == StorageType.DiskStorage
-                  ? context.localizations.using_local_disk
-                  : context.localizations.using_google_photos,
+              subtitle: switch (_editingConfig!.storages.selected) {
+                StorageType.DiskStorage => context.localizations.using_local_disk,
+                StorageType.GPhotoStorage => context.localizations.using_google_photos,
+                StorageType.YandexDriveStorage => context.localizations.using_yandex_drive,
+              },
               icon: Icons.settings_system_daydream,
               onTap: () => _navigateToStorageSettings(context),
             ),
@@ -523,8 +482,7 @@ class ConfigScreenState extends State<ConfigScreen> {
             ),
             SettingsTileNavigation(
               title: context.localizations.mqtt_title,
-              subtitle:
-                  '${_editingConfig!.mqtt.server}:${_editingConfig!.mqtt.serverPort}',
+              subtitle: '${_editingConfig!.mqtt.server}:${_editingConfig!.mqtt.serverPort}',
               icon: Icons.cloud_sync,
               onTap: () => _navigateToMqttEditor(context),
             ),
@@ -541,9 +499,7 @@ class ConfigScreenState extends State<ConfigScreen> {
               isNumber: true,
               validator: (text) {
                 final value = int.tryParse(text ?? '');
-                return value != null && value >= 0
-                    ? null
-                    : context.localizations.invalid_nonnegative_integer;
+                return value != null && value >= 0 ? null : context.localizations.invalid_nonnegative_integer;
               },
               initialValue: _editingConfig!.hardware.smoothingGPIOMs.toString(),
               onChanged: (val) {
@@ -614,34 +570,19 @@ class ConfigScreenState extends State<ConfigScreen> {
     _refreshDraft();
   }
 
-  void _navigateToSlideshowEditor(BuildContext context) => _edit(
-    SlideshowEditorPage(
-      config: _editingConfig!.slideshow,
-      registerDraft: _registerLocalDraft,
-    ),
-  );
-  void _navigateToMqttEditor(BuildContext context) => _edit(
-    MqttEditorPage(
-      config: _editingConfig!.mqtt,
-      registerDraft: _registerLocalDraft,
-    ),
-  );
-  void _navigateToWebServerEditor(BuildContext context) => _edit(
-    WebServerEditorPage(
-      config: _editingConfig!.webServer,
-      registerDraft: _registerLocalDraft,
-    ),
-  );
-  void _navigateToWelcomeEditor(BuildContext context) => _edit(
-    WelcomeEditorPage(
-      config: _editingConfig!.welcome,
-      registerDraft: _registerLocalDraft,
-    ),
-  );
+  void _navigateToSlideshowEditor(BuildContext context) =>
+      _edit(SlideshowEditorPage(config: _editingConfig!.slideshow, registerDraft: _registerLocalDraft));
+  void _navigateToMqttEditor(BuildContext context) =>
+      _edit(MqttEditorPage(config: _editingConfig!.mqtt, registerDraft: _registerLocalDraft));
+  void _navigateToWebServerEditor(BuildContext context) =>
+      _edit(WebServerEditorPage(config: _editingConfig!.webServer, registerDraft: _registerLocalDraft));
+  void _navigateToWelcomeEditor(BuildContext context) =>
+      _edit(WelcomeEditorPage(config: _editingConfig!.welcome, registerDraft: _registerLocalDraft));
   void _navigateToStorageSettings(BuildContext context) => _edit(
     StorageSettingsPage(
       config: _editingConfig!.storages,
       registerDraft: _registerLocalDraft,
+      yandexRepository: sl<YandexDriveRepository>(),
     ),
   );
 }

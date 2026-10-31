@@ -366,6 +366,11 @@ EOF; это не отменяет соседние coverage suites при обы
 контракт файла; каждый test suite входит в одну группу. Файлы сохраняют прежние
 пути, assertions и fixtures. Неизвестный набор виден как `unclassified`.
 
+Кеш, выбор Storage и расписание синхронизации относятся к `slideshow-media`;
+API и OAuth Яндекса — к `network`, а его экран настройки — к `settings`.
+Публикация медиа, скрытая галерея и Android-источники загрузки входят в `gallery`,
+Android-поиск рамки — в `network`, безопасность Drive RPC — в `tooling-protocol`.
+
 Из корня репозитория:
 
 ```sh

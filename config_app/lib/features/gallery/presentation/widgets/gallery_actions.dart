@@ -12,16 +12,13 @@ import 'gallery_confirmation_file.dart';
 
 const galleryDialogFileLimit = galleryConfirmationNameLimit;
 
-SnackBar galleryNotification(String message, {SnackBarAction? action}) =>
-    SnackBar(
-      content: Text(message),
-      action: action,
-      showCloseIcon: true,
-      persist: false,
-      duration: action == null
-          ? const Duration(seconds: 4)
-          : const Duration(seconds: 8),
-    );
+SnackBar galleryNotification(String message, {SnackBarAction? action}) => SnackBar(
+  content: Text(message),
+  action: action,
+  showCloseIcon: true,
+  persist: false,
+  duration: action == null ? const Duration(seconds: 4) : const Duration(seconds: 8),
+);
 
 String galleryErrorText(BuildContext context, GalleryErrorCode? code) {
   final l = context.localizations;
@@ -37,24 +34,14 @@ String galleryErrorText(BuildContext context, GalleryErrorCode? code) {
   };
 }
 
-Future<bool> confirmGalleryPurge(
-  BuildContext context,
-  int count,
-  int bytes, {
-  List<String> names = const [],
-}) async {
+Future<bool> confirmGalleryPurge(BuildContext context, int count, int bytes, {List<String> names = const []}) async {
   final l = context.localizations;
   return _confirmGalleryFiles(
     context,
     title: l.gallery_purge_title,
     body: Tooltip(
       message: l.gallery_size_bytes(bytes),
-      child: Text(
-        l.gallery_purge_body(
-          count,
-          GalleryFileSize.formatMegabytes(context, bytes),
-        ),
-      ),
+      child: Text(l.gallery_purge_body(count, GalleryFileSize.formatMegabytes(context, bytes))),
     ),
     confirmLabel: l.gallery_purge,
     count: count,
@@ -63,10 +50,7 @@ Future<bool> confirmGalleryPurge(
   );
 }
 
-Future<bool> confirmGalleryMutation(
-  BuildContext context,
-  GalleryMutationConfirmation confirmation,
-) {
+Future<bool> confirmGalleryMutation(BuildContext context, GalleryMutationConfirmation confirmation) {
   final l = context.localizations;
   return switch (confirmation.action) {
     GalleryMutation.trash => _confirmGalleryFiles(
@@ -84,7 +68,16 @@ Future<bool> confirmGalleryMutation(
       confirmation.sizeBytes!,
       names: confirmation.names,
     ),
-    GalleryMutation.restore => Future.value(true),
+    GalleryMutation.hide => _confirmGalleryFiles(
+      context,
+      title: l.gallery_hide_title,
+      body: Text(l.gallery_hide_confirm_body(confirmation.items.length)),
+      confirmLabel: l.gallery_hide,
+      count: confirmation.items.length,
+      names: confirmation.names,
+      remainingText: l.gallery_more_files_trash,
+    ),
+    GalleryMutation.restore || GalleryMutation.unhide => Future.value(true),
   };
 }
 
@@ -111,15 +104,9 @@ Future<bool> _confirmGalleryFiles(
                 children: [
                   body,
                   for (var index = 0; index < shown.length; index++)
-                    GalleryConfirmationFile(
-                      number: index + 1,
-                      name: shown[index],
-                    ),
+                    GalleryConfirmationFile(number: index + 1, name: shown[index]),
                   if (shown.length < count)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(remainingText(count - shown.length)),
-                    ),
+                    Padding(padding: const EdgeInsets.only(top: 12), child: Text(remainingText(count - shown.length))),
                 ],
               ),
             ),
@@ -129,10 +116,7 @@ Future<bool> _confirmGalleryFiles(
               onPressed: () => Navigator.pop(context, false),
               child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(confirmLabel),
-            ),
+            FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(confirmLabel)),
           ],
         ),
       ) ??
@@ -142,16 +126,16 @@ Future<bool> _confirmGalleryFiles(
 void showGalleryUndo(
   BuildContext context,
   GalleryManagementRepository repository,
-  List<String> trashIds,
-  Future<void> Function() refresh,
-) {
+  List<String> mediaIds,
+  Future<void> Function() refresh, {
+  GalleryMediaSection section = GalleryMediaSection.trash,
+}) {
   final messenger = ScaffoldMessenger.of(context);
   final l = context.localizations;
-  final bloc = GalleryUndoBloc(repository: repository, trashIds: trashIds);
+  final hidden = section == GalleryMediaSection.hidden;
+  final bloc = GalleryUndoBloc(repository: repository, mediaIds: mediaIds, section: section);
 
-  void closeWhenDismissed(
-    ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller,
-  ) {
+  void closeWhenDismissed(ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller) {
     unawaited(
       controller.closed.then((reason) async {
         if (reason != SnackBarClosedReason.action) await bloc.close();
@@ -172,15 +156,15 @@ void showGalleryUndo(
       }
       unawaited(bloc.close());
       if (!messenger.mounted) return;
-      final failed = result.items.any(
-        (item) => item.state == GalleryItemOperationState.failed,
-      );
+      final failed = result.items.any((item) => item.state == GalleryItemOperationState.failed);
       messenger.showSnackBar(
         galleryNotification(
           failed
               ? l.gallery_failed_files
               : bloc.state.missingCount > 0
               ? l.gallery_undo_changed
+              : hidden
+              ? l.gallery_unhidden
               : l.gallery_restored,
         ),
       );
@@ -203,10 +187,8 @@ void showGalleryUndo(
   closeWhenDismissed(
     messenger.showSnackBar(
       galleryNotification(
-        l.gallery_trashed,
-        action: trashIds.isEmpty
-            ? null
-            : SnackBarAction(label: l.gallery_undo, onPressed: undo),
+        hidden ? l.gallery_hidden_done : l.gallery_trashed,
+        action: mediaIds.isEmpty ? null : SnackBarAction(label: l.gallery_undo, onPressed: undo),
       ),
     ),
   );

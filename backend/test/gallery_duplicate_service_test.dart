@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/src/service/gallery/gallery_catalog_service.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_duplicate_service.dart';
+import 'package:dslideshow_backend/src/service/gallery/gallery_file_operations.dart';
 import 'package:dslideshow_backend/src/service/gallery/gallery_tool_runner.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:logging/logging.dart';
@@ -83,8 +84,9 @@ void main() {
     final members = [
       for (final item in snapshot.entries)
         GalleryDuplicateMember(
+          section: item.section,
           mediaId: item.mediaId,
-          sourceRevision: item.sourceRevision!,
+          sourceRevision: item.sourceRevision,
           path: item.path,
           name: item.name,
           sizeBytes: 4,
@@ -131,6 +133,7 @@ void main() {
     'loaded results collapse equal member sets regardless of order/mode, preferring exact and retaining broader groups',
     () async {
       final member = GalleryDuplicateMember(
+        section: GalleryMediaSection.published,
         mediaId: 'a',
         sourceRevision: '1',
         path: 'a.jpg',
@@ -179,6 +182,7 @@ void main() {
     final members = List.generate(
       50001,
       (index) => GalleryDuplicateMember(
+        section: GalleryMediaSection.published,
         mediaId: 'media-$index',
         sourceRevision: 'revision-$index',
         path: '2026/10/family-albums/photo-$index.jpg',
@@ -585,30 +589,102 @@ void main() {
     expect(runner.closed, isFalse);
   });
 
-  test('dedup apply protects final keeper and rejects stale versions', () async {
-    await service.start(start('keepers'));
+  test('search includes hidden same-path media and remains a snapshot after file operations', () async {
+    await second.delete();
+    final hiddenDirectory = await Directory(path.join(catalog.stateDirectory.path, 'hidden')).create(recursive: true);
+    final hidden = await File(path.join(hiddenDirectory.path, path.basename(first.path))).writeAsBytes([1, 2, 3, 4]);
+    runner = GalleryToolStub((executable, args, cancel, env) async {
+      expect(args, contains(hiddenDirectory.absolute.path));
+      await output(args).writeAsString(
+        jsonEncode({
+          '4': [
+            [entry(first), entry(hidden)],
+          ],
+        }),
+      );
+      return ok;
+    });
+    await service.close();
+    service = GalleryDuplicateService(catalog: catalog, runner: runner);
+    await service.start(start('hidden-pair'));
+    final done = await _finished(service);
+    expect(done.status, GalleryDuplicateStatus.completed);
+    expect(done.diagnostics!.candidateCount, 2);
+    final members = done.groups.single.items;
+    expect(members.map((member) => member.section).toSet(), {
+      GalleryMediaSection.published,
+      GalleryMediaSection.hidden,
+    });
+    expect(members.map((member) => member.path).toSet(), {path.basename(first.path)});
+    expect(members.map((member) => member.mediaId).toSet(), hasLength(2));
+    await service.close();
+    service = GalleryDuplicateService(catalog: catalog, runner: runner);
+    expect((await service.group('hidden-pair', 0)).group!.items, members);
+    final operations = GalleryFileOperations(catalog: catalog);
+    addTearDown(operations.close);
+    GalleryOperationRequest request(List<GalleryDuplicateMember> selected) => GalleryOperationRequest(
+      operationId: 'hidden-dedup',
+      action: GalleryMutation.trash,
+      items: [
+        for (final member in selected)
+          GalleryMediaRef(mediaId: member.mediaId, sourceRevision: member.sourceRevision, section: member.section),
+      ],
+    );
+    final selected = members.singleWhere((member) => member.section == GalleryMediaSection.hidden);
+    final moved = await operations.mutate(request([selected]));
+    expect(moved.items.single.state, GalleryItemOperationState.succeeded);
+    expect(first.existsSync(), isTrue);
+    expect(hidden.existsSync(), isFalse);
+    expect((await operations.mediaCatalog(GalleryMediaSection.trash)).entries.single.path, path.basename(first.path));
+    expect((await service.group('hidden-pair', 0)).group, isNull);
+  });
+
+  test('hidden media changed during CLI is excluded from actionable results', () async {
+    await second.delete();
+    final hiddenDirectory = await Directory(path.join(catalog.stateDirectory.path, 'hidden')).create(recursive: true);
+    final hidden = await File(path.join(hiddenDirectory.path, 'hidden.jpg')).writeAsBytes([1, 2, 3, 4]);
+    runner = GalleryToolStub((executable, args, cancel, env) async {
+      await output(args).writeAsString(
+        jsonEncode({
+          '4': [
+            [entry(first), entry(hidden)],
+          ],
+        }),
+      );
+      await hidden.writeAsBytes([9, 8, 7, 6, 5]);
+      return ok;
+    });
+    await service.close();
+    service = GalleryDuplicateService(catalog: catalog, runner: runner);
+    await service.start(start('changed-hidden'));
+    final done = await _finished(service);
+    expect(done.status, GalleryDuplicateStatus.completed);
+    expect(done.groups, isEmpty);
+    expect(done.diagnostics!.candidateCount, 2);
+    expect(done.diagnostics!.rejectedResultCount, 1);
+  });
+
+  test('mutations use file revisions without changing the duplicate snapshot', () async {
+    await service.start(start('snapshot'));
     final done = await _finished(service);
     final members = done.groups.single.items;
-    GalleryOperationRequest request(List<GalleryDuplicateMember> selected) => GalleryOperationRequest(
-      operationId: 'move',
-      action: GalleryMutation.trash,
-      duplicateJobId: 'keepers',
-      items: selected.map((e) => GalleryMediaRef(mediaId: e.mediaId, sourceRevision: e.sourceRevision)).toList(),
-    );
-    await service.validateTrash(request([members.first]));
-    await expectLater(
-      service.validateTrash(request(members)),
-      throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', GalleryErrorCode.conflict)),
-    );
+    final operations = GalleryFileOperations(catalog: catalog);
+    addTearDown(operations.close);
     await second.writeAsBytes([9, 8, 7, 6, 5]);
-    await expectLater(
-      service.validateTrash(request([members.first])),
-      throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', GalleryErrorCode.conflict)),
+    final result = await operations.mutate(
+      GalleryOperationRequest(
+        operationId: 'move-snapshot',
+        action: GalleryMutation.trash,
+        items: [
+          for (final member in members)
+            GalleryMediaRef(section: member.section, mediaId: member.mediaId, sourceRevision: member.sourceRevision),
+        ],
+      ),
     );
-    await expectLater(
-      service.validateTrash(request([members.last])),
-      throwsA(isA<GalleryCatalogFailure>().having((e) => e.code, 'code', GalleryErrorCode.revisionMismatch)),
-    );
+    expect(result.items.first.state, GalleryItemOperationState.succeeded);
+    expect(result.items.last.error, GalleryErrorCode.revisionMismatch);
+    expect((await service.status()).groups, done.groups);
+    expect((await service.group('snapshot', 0)).group, isNull);
   });
 
   test('restart marks persisted running task interrupted; completed results survive restart', () async {

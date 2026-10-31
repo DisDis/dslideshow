@@ -8,20 +8,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-GalleryTrashEntry entry(String id) => GalleryTrashEntry(
-  trashId: id,
+GalleryEntry entry(String id) => GalleryEntry(
+  section: GalleryMediaSection.trash,
+  mediaId: id,
   name: '$id.jpg',
-  originalPath: '$id.jpg',
+  path: '$id.jpg',
   kind: GalleryEntryKind.image,
   sourceRevision: 'revision-$id',
-  trashedAt: DateTime.utc(2026, 10, 29),
+  fileChanged: DateTime.utc(2026, 10, 29),
   sizeBytes: 20,
 );
 
 http.Response restored(http.Request request) {
-  final operation = GalleryOperationRequest.fromJson(
-    jsonDecode(request.body) as Map<String, dynamic>,
-  );
+  final operation = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
   return http.Response(
     jsonEncode(
       GalleryOperationResult(
@@ -30,6 +29,7 @@ http.Response restored(http.Request request) {
             .map(
               (item) => GalleryOperationItemResult(
                 mediaId: item.mediaId,
+                section: item.section,
                 state: GalleryItemOperationState.succeeded,
                 restoredPath: '${item.mediaId}.jpg',
               ),
@@ -53,7 +53,7 @@ void main() {
         requests.add(request);
         if (request.method == 'GET') {
           return http.Response(
-            jsonEncode(GalleryTrashCatalog(entries: entries).toJson()),
+            jsonEncode(GalleryCatalog(section: GalleryMediaSection.trash, entries: entries).toJson()),
             200,
           );
         }
@@ -64,7 +64,7 @@ void main() {
         return restored(request);
       }),
     );
-    final bloc = GalleryUndoBloc(repository: repository, trashIds: ['a', 'b']);
+    final bloc = GalleryUndoBloc(repository: repository, mediaIds: ['a', 'b']);
     addTearDown(repository.close);
     addTearDown(bloc.close);
 
@@ -75,21 +75,19 @@ void main() {
     expect(result.items.single.mediaId, 'b');
     expect(bloc.state.missingCount, 1);
     expect(requests.where((request) => request.method == 'GET'), hasLength(2));
-    final posts = requests
-        .where((request) => request.method == 'POST')
-        .toList();
+    final posts = requests.where((request) => request.method == 'POST').toList();
     final original = jsonDecode(posts[0].body) as Map<String, dynamic>;
     final body = jsonDecode(posts[1].body) as Map<String, dynamic>;
     expect(body['operationId'], isNot(original['operationId']));
     expect(body['items'], [
-      {'mediaId': 'b', 'sourceRevision': 'revision-b'},
+      {'section': 'trash', 'mediaId': 'b', 'sourceRevision': 'revision-b'},
     ]);
     expect(body['action'], 'restore');
   });
 
   test('undo never posts an empty or replacement-path request after unknown files leave trash', () async {
     var reads = 0, posts = 0;
-    final replacement = entry('replacement').copyWith(originalPath: 'a.jpg');
+    final replacement = entry('replacement').copyWith(path: 'a.jpg');
     final repository = GalleryManagementRepository(
       baseUri: Uri.parse('http://frame.local'),
       code: 'code',
@@ -97,7 +95,8 @@ void main() {
         if (request.method == 'GET') {
           return http.Response(
             jsonEncode(
-              GalleryTrashCatalog(
+              GalleryCatalog(
+                section: GalleryMediaSection.trash,
                 entries: ++reads == 1 ? [entry('a')] : [replacement],
               ).toJson(),
             ),
@@ -108,7 +107,7 @@ void main() {
         throw http.ClientException('Unknown result');
       }),
     );
-    final bloc = GalleryUndoBloc(repository: repository, trashIds: ['a']);
+    final bloc = GalleryUndoBloc(repository: repository, mediaIds: ['a']);
     addTearDown(repository.close);
     addTearDown(bloc.close);
     await expectLater(bloc.restore(), throwsA(isA<http.ClientException>()));
@@ -120,53 +119,41 @@ void main() {
     expect(bloc.state.phase, GalleryUndoPhase.succeeded);
   });
 
-  test(
-    'repeated undo shares pending work and close waits for its outcome',
-    () async {
-      final received = Completer<http.Request>();
-      final response = Completer<http.Response>();
-      final repository = GalleryManagementRepository(
-        baseUri: Uri.parse('http://frame.local'),
-        code: 'code',
-        client: MockClient((request) async {
-          if (request.method == 'GET') {
-            return http.Response(
-              jsonEncode(GalleryTrashCatalog(entries: [entry('a')]).toJson()),
-              200,
-            );
-          }
-          received.complete(request);
-          return response.future;
-        }),
-      );
-      final bloc = GalleryUndoBloc(repository: repository, trashIds: ['a']);
-      addTearDown(repository.close);
-      addTearDown(bloc.close);
-      final operation = bloc.restore();
-      expect(identical(operation, bloc.restore()), isTrue);
-      final request = await received.future;
-      var closed = false;
-      final closing = bloc.close().then((_) => closed = true);
-      expect(closed, isFalse);
-      expect(bloc.state.phase, GalleryUndoPhase.restoring);
-      response.complete(restored(request));
-      expect(
-        (await operation).items.single.state,
-        GalleryItemOperationState.succeeded,
-      );
-      await closing;
-      expect(closed, isTrue);
-      expect(bloc.isClosed, isTrue);
-      await expectLater(
-        bloc.restore(),
-        throwsA(
-          isA<GalleryManagementException>().having(
-            (error) => error.code,
-            'code',
-            GalleryErrorCode.cancelled,
-          ),
-        ),
-      );
-    },
-  );
+  test('repeated undo shares pending work and close waits for its outcome', () async {
+    final received = Completer<http.Request>();
+    final response = Completer<http.Response>();
+    final repository = GalleryManagementRepository(
+      baseUri: Uri.parse('http://frame.local'),
+      code: 'code',
+      client: MockClient((request) async {
+        if (request.method == 'GET') {
+          return http.Response(
+            jsonEncode(GalleryCatalog(section: GalleryMediaSection.trash, entries: [entry('a')]).toJson()),
+            200,
+          );
+        }
+        received.complete(request);
+        return response.future;
+      }),
+    );
+    final bloc = GalleryUndoBloc(repository: repository, mediaIds: ['a']);
+    addTearDown(repository.close);
+    addTearDown(bloc.close);
+    final operation = bloc.restore();
+    expect(identical(operation, bloc.restore()), isTrue);
+    final request = await received.future;
+    var closed = false;
+    final closing = bloc.close().then((_) => closed = true);
+    expect(closed, isFalse);
+    expect(bloc.state.phase, GalleryUndoPhase.restoring);
+    response.complete(restored(request));
+    expect((await operation).items.single.state, GalleryItemOperationState.succeeded);
+    await closing;
+    expect(closed, isTrue);
+    expect(bloc.isClosed, isTrue);
+    await expectLater(
+      bloc.restore(),
+      throwsA(isA<GalleryManagementException>().having((error) => error.code, 'code', GalleryErrorCode.cancelled)),
+    );
+  });
 }

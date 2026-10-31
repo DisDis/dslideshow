@@ -5,6 +5,7 @@ import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:dslideshow_common/gallery.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:mime/mime.dart';
 import 'package:shelf/shelf.dart';
@@ -18,11 +19,11 @@ import '../service/gallery/gallery_tool_runner.dart';
 import 'media_file_responder.dart';
 
 enum _GalleryManagementRoute {
+  catalog,
+  refresh,
+  original,
   metadata,
   rotation,
-  trashCatalog,
-  trashOriginal,
-  trashMetadata,
   mutation,
   duplicateStatus,
   duplicateGroup,
@@ -40,6 +41,7 @@ class GalleryManagementRoutes {
   late final GalleryDuplicateService duplicates;
   final GalleryToolRunner _runner;
   final bool _ownsRunner;
+  final _encodedCatalogs = <GalleryMediaSection, (String, Future<String>)>{};
   bool _closed = false;
   Future<void>? _closing;
 
@@ -50,23 +52,29 @@ class GalleryManagementRoutes {
     GalleryToolRunner? runner,
     String duplicateExecutable = 'czkawka_cli',
     Directory? trashDirectory,
+    Directory? hiddenDirectory,
   }) : _runner = runner ?? ProcessGalleryToolRunner(),
        _ownsRunner = runner == null {
     operations = GalleryFileOperations(
       catalog: catalog,
       trashDirectory: trashDirectory,
-      beforeMutation: (request) => duplicates.validateTrash(request),
+      hiddenDirectory: hiddenDirectory,
     );
     tools = GalleryMediaTools(catalog: catalog, runner: _runner, operations: operations);
-    duplicates = GalleryDuplicateService(catalog: catalog, runner: _runner, executable: duplicateExecutable);
+    duplicates = GalleryDuplicateService(
+      catalog: catalog,
+      hiddenDirectory: operations.hiddenDirectory,
+      runner: _runner,
+      executable: duplicateExecutable,
+    );
   }
 
   void register(Router router) {
-    router.get('/cache/<code>/v2/metadata/<id>/<revision>', _metadata);
+    router.get('/cache/<code>/v2/<section>/catalog', _catalog);
+    router.post('/cache/<code>/v2/<section>/catalog/refresh', _refresh);
+    router.get('/cache/<code>/v2/<section>/original/<id>/<revision>', _original);
+    router.get('/cache/<code>/v2/<section>/metadata/<id>/<revision>', _metadata);
     router.post('/cache/<code>/v2/rotate', _rotate);
-    router.get('/cache/<code>/v2/trash', _trash);
-    router.get('/cache/<code>/v2/trash/original/<id>/<revision>', _trashOriginal);
-    router.get('/cache/<code>/v2/trash/metadata/<id>/<revision>', _trashMetadata);
     router.post('/cache/<code>/v2/operations', _operate);
     router.get('/cache/<code>/v2/duplicates', _duplicateStatus);
     router.get('/cache/<code>/v2/duplicates/<id>/groups/<index>', _duplicateGroup);
@@ -118,6 +126,8 @@ class GalleryManagementRoutes {
       return rejected(GalleryErrorCode.timeout, error);
     } on FormatException catch (error) {
       return rejected(GalleryErrorCode.invalidRequest, error);
+    } on BadKeyException catch (error) {
+      return rejected(GalleryErrorCode.invalidRequest, error);
     } on ArgumentError catch (error) {
       return rejected(GalleryErrorCode.invalidRequest, error);
     } on TypeError catch (error) {
@@ -145,51 +155,64 @@ class GalleryManagementRoutes {
     );
   }
 
-  Future<Response> _metadata(Request request, String code, String id, String revision) => _guard(
+  GalleryMediaSection _section(String value) => GalleryMediaSection.values.byName(value);
+
+  Future<Response> _catalog(Request request, String code, String section) => _guard(
+    code,
+    _GalleryManagementRoute.catalog,
+    () async => _catalogResponse(await operations.mediaCatalog(_section(section))),
+  );
+
+  Future<Response> _refresh(Request request, String code, String section) => _guard(
+    code,
+    _GalleryManagementRoute.refresh,
+    () async => _catalogResponse(
+      await operations.refreshMediaCatalog(_section(section), GalleryRefreshRequest.fromJson(await _body(request))),
+    ),
+  );
+
+  Future<Response> _catalogResponse(GalleryCatalog value) async {
+    var encoded = _encodedCatalogs[value.section];
+    if (encoded == null || encoded.$1 != value.catalogRevision) {
+      encoded = (value.catalogRevision, Isolate.run(() => jsonEncode(value.toJson())));
+      _encodedCatalogs[value.section] = encoded;
+    }
+    return Response.ok(
+      await encoded.$2,
+      headers: {
+        ...galleryCorsHeaders,
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'private, no-cache',
+      },
+    );
+  }
+
+  Future<Response> _original(Request request, String code, String section, String id, String revision) =>
+      _guard(code, _GalleryManagementRoute.original, () async {
+        final source = await operations.resolveMedia(
+          GalleryMediaRef(section: _section(section), mediaId: id, sourceRevision: revision),
+        );
+        return files.serve(
+          request,
+          source.file,
+          contentType: lookupMimeType(source.entry.name),
+          isCurrent: () => operations.isCurrent(source),
+        );
+      });
+
+  Future<Response> _metadata(Request request, String code, String section, String id, String revision) => _guard(
     code,
     _GalleryManagementRoute.metadata,
-    () async => _json((await tools.metadata(id, revision: revision)).toJson()),
+    () async => _json(
+      (await tools.metadata(GalleryMediaRef(section: _section(section), mediaId: id, sourceRevision: revision)))
+          .toJson(),
+    ),
   );
 
   Future<Response> _rotate(Request request, String code) => _guard(code, _GalleryManagementRoute.rotation, () async {
     final command = GalleryRotateRequest.fromJson(await _body(request));
     return _json((await tools.rotate(command)).toJson());
   });
-
-  Future<Response> _trash(Request request, String code) =>
-      _guard(code, _GalleryManagementRoute.trashCatalog, () async => _json((await operations.trashCatalog()).toJson()));
-
-  Future<GalleryTrashEntry> _trashEntry(String id, String revision) async {
-    return operations.resolveTrashEntry(id, revision: revision);
-  }
-
-  Future<Response> _trashOriginal(Request request, String code, String id, String revision) =>
-      _guard(code, _GalleryManagementRoute.trashOriginal, () async {
-        final entry = await _trashEntry(id, revision);
-        final file = await operations.resolveTrash(id, revision: revision);
-        return files.serve(
-          request,
-          file,
-          contentType: lookupMimeType(entry.name),
-          isCurrent: () async {
-            try {
-              await operations.resolveTrash(id, revision: revision);
-              return true;
-            } on GalleryCatalogFailure {
-              return false;
-            }
-          },
-        );
-      });
-
-  Future<Response> _trashMetadata(Request request, String code, String id, String revision) =>
-      _guard(code, _GalleryManagementRoute.trashMetadata, () async {
-        final entry = await _trashEntry(id, revision);
-        final file = await operations.resolveTrash(id, revision: revision);
-        final data = await tools.trashMetadata(entry, file);
-        await operations.resolveTrash(id, revision: revision);
-        return _json(data.toJson());
-      });
 
   Future<Response> _operate(Request request, String code) => _guard(code, _GalleryManagementRoute.mutation, () async {
     final command = GalleryOperationRequest.fromJson(await _body(request));
@@ -263,6 +286,7 @@ class GalleryManagementRoutes {
     _closed = true;
     await Future.wait([duplicates.close(), tools.close()]);
     await operations.close();
+    _encodedCatalogs.clear();
     if (_ownsRunner) await _runner.close();
   }
 }

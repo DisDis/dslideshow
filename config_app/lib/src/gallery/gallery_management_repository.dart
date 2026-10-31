@@ -24,7 +24,7 @@ class GalleryManagementRepository {
     http.Client? client,
     this.timeout = const Duration(seconds: 30),
     this.maxJsonBytes = 16 << 20,
-    this.maxTrashCatalogBytes = 64 << 20,
+    this.maxCatalogBytes = 64 << 20,
     this.maxDuplicateResultBytes = 64 << 20,
   }) : _client = client ?? http.Client();
 
@@ -33,7 +33,7 @@ class GalleryManagementRepository {
   final http.Client _client;
   final Duration timeout;
   final int maxJsonBytes;
-  final int maxTrashCatalogBytes;
+  final int maxCatalogBytes;
   final int maxDuplicateResultBytes;
   final _requests = <Completer<void>>{};
   final _metadata = <String, GalleryMetadata>{};
@@ -131,27 +131,28 @@ class GalleryManagementRepository {
     }
   }
 
-  Future<GalleryMetadata> metadata(GalleryItem item, {Future<void>? cancel, bool trash = false}) async {
-    final key = '${trash ? 'trash' : 'media'}:${item.mediaId}:${item.revision}';
+  Future<GalleryMetadata> metadata(GalleryItem item, {Future<void>? cancel}) async {
+    final sourceSection = item.section;
+    final key = '${sourceSection.name}:${item.mediaId}:${item.revision}';
     final cached = _metadata[key];
     if (cached != null) {
       _log.fine(
         () =>
-            'event=metadataCacheHit source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} trash=$trash cacheEntries=${_metadata.length}',
+            'event=metadataCacheHit source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} section=${sourceSection.name} cacheEntries=${_metadata.length}',
       );
       return cached;
     }
     _log.fine(
       () =>
-          'event=metadataCacheMiss source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} trash=$trash',
+          'event=metadataCacheMiss source=${GalleryLog.source(item.mediaId)} revision=${GalleryLog.source(item.revision)} section=${sourceSection.name}',
     );
     final slot = _acquireMetadata(cancel);
     if (slot != null) await slot;
     try {
       final result = GalleryMetadata.fromJson(
-        await _request('GET', [if (trash) 'trash', 'metadata', item.mediaId, item.revision], null, cancel),
+        await _request('GET', [sourceSection.name, 'metadata', item.mediaId, item.revision], null, cancel),
       );
-      if (result.mediaId != item.mediaId || result.sourceRevision != item.revision) {
+      if (result.section != sourceSection || result.mediaId != item.mediaId || result.sourceRevision != item.revision) {
         throw const FormatException('Stale gallery metadata');
       }
       if (_metadata.length >= 64) _metadata.remove(_metadata.keys.first);
@@ -199,16 +200,32 @@ class GalleryManagementRepository {
   Future<GalleryMetadata> rotate(GalleryRotateRequest request, {Future<void>? cancel}) async =>
       GalleryMetadata.fromJson(await _request('POST', ['rotate'], request.toJson(), cancel));
 
-  Future<GalleryTrashCatalog> trash({Future<void>? cancel}) async =>
-      GalleryTrashCatalog.fromJson(await _request('GET', ['trash'], null, cancel, maxTrashCatalogBytes));
+  Future<GalleryCatalog> catalog(GalleryMediaSection section, {Future<void>? cancel}) async {
+    final value = GalleryCatalog.fromJson(
+      await _request('GET', [section.name, 'catalog'], null, cancel, maxCatalogBytes),
+    );
+    final ids = <String>{};
+    if (value.schemaVersion != GalleryCatalog.supportedSchemaVersion ||
+        value.section != section ||
+        value.entries.any(
+          (entry) =>
+              entry.section != section ||
+              entry.mediaId.isEmpty ||
+              (entry.kind != GalleryEntryKind.directory && entry.sourceRevision.isEmpty) ||
+              !ids.add(entry.mediaId),
+        )) {
+      throw const FormatException('Invalid gallery catalog identity');
+    }
+    return value;
+  }
 
   Future<GalleryOperationResult> operate(GalleryOperationRequest request, {Future<void>? cancel}) async {
     final result = GalleryOperationResult.fromJson(await _request('POST', ['operations'], request.toJson(), cancel));
-    final expected = request.items.map((item) => item.mediaId).toSet();
+    final expected = request.items.map((item) => (item.section, item.mediaId)).toSet();
     if (result.operationId != request.operationId ||
         result.items.length != expected.length ||
-        result.items.map((item) => item.mediaId).toSet().length != expected.length ||
-        result.items.any((item) => !expected.contains(item.mediaId))) {
+        result.items.map((item) => (item.section, item.mediaId)).toSet().length != expected.length ||
+        result.items.any((item) => !expected.contains((item.section, item.mediaId)))) {
       throw const FormatException('Invalid gallery operation result');
     }
     return result;
@@ -231,22 +248,17 @@ class GalleryManagementRepository {
     await _request('POST', ['duplicates', jobId, 'stop'], null, cancel, maxDuplicateResultBytes),
   );
 
-  GalleryItem trashItem(GalleryTrashEntry entry, String scope) => GalleryItem(
-    uri: uri(['trash', 'original', entry.trashId, entry.sourceRevision]),
-    title: entry.name,
-    mediaId: entry.trashId,
-    revision: entry.sourceRevision,
-    scope: '$scope|trash',
-    kind: entry.kind,
-  );
+  GalleryItem mediaItem(GalleryEntry entry, String scope, {GalleryThumbnailPolicy? thumbnailPolicy}) =>
+      GalleryItem.fromEntry(entry, baseUri: baseUri, code: code, scope: scope, thumbnailPolicy: thumbnailPolicy);
 
   GalleryItem updatedItem(GalleryItem item, GalleryMetadata metadata) => GalleryItem(
-    uri: item.uri.replace(queryParameters: {...item.uri.queryParameters, 'rev': metadata.sourceRevision}),
+    uri: uri([metadata.section.name, 'original', metadata.mediaId, metadata.sourceRevision]),
     title: metadata.name,
     mediaId: metadata.mediaId,
     revision: metadata.sourceRevision,
     scope: item.scope,
     kind: metadata.kind,
+    section: metadata.section,
     thumbnailPolicy: item.thumbnailPolicy,
     thumbnailsEnabled: item.thumbnailsEnabled,
     thumbnailBaseUri: _thumbnailRevision(item.thumbnailBaseUri, metadata.sourceRevision),
@@ -263,10 +275,9 @@ class GalleryManagementRepository {
   }
 
   _ManagementEndpoint _endpoint(String method, List<String> segments) => switch ((method, segments)) {
-    ('GET', ['metadata', _, _]) => _ManagementEndpoint.metadata,
-    ('GET', ['trash', 'metadata', _, _]) => _ManagementEndpoint.trashMetadata,
+    ('GET', [_, 'metadata', _, _]) => _ManagementEndpoint.metadata,
     ('POST', ['rotate']) => _ManagementEndpoint.rotation,
-    ('GET', ['trash']) => _ManagementEndpoint.trash,
+    ('GET', [_, 'catalog']) => _ManagementEndpoint.catalog,
     ('POST', ['operations']) => _ManagementEndpoint.operations,
     ('GET', ['duplicates', _, 'groups', _]) => _ManagementEndpoint.duplicateGroup,
     ('GET', ['duplicates']) => _ManagementEndpoint.duplicateStatus,
@@ -295,9 +306,8 @@ class GalleryManagementException implements Exception {
 
 enum _ManagementEndpoint {
   metadata,
-  trashMetadata,
   rotation,
-  trash,
+  catalog,
   operations,
   duplicateStatus,
   duplicateGroup,

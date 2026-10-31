@@ -23,6 +23,7 @@ export 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 export 'package:dslideshow_backend/src/service/storage/storages_config.dart';
 export 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 export 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
+export 'package:dslideshow_backend/src/service/storage/yandex_drive/yandex_drive_storage_config.dart';
 export 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 export 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 
@@ -78,12 +79,9 @@ class AppConfig {
   @JsonKey(includeToJson: false, includeFromJson: false)
   String fullConfigFilename = '';
 
-  factory AppConfig.fromJson(Map<String, dynamic> json) =>
-      _$AppConfigFromJson(json);
+  factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
   factory AppConfig.fromFile([String? rootPath]) {
-    String fullConfigFilename = rootPath != null
-        ? path.join(rootPath, CONFIG_FILE)
-        : CONFIG_FILE;
+    String fullConfigFilename = rootPath != null ? path.join(rootPath, CONFIG_FILE) : CONFIG_FILE;
     _log.info("Loading '$fullConfigFilename'");
     var config = new File(fullConfigFilename);
     String configStr;
@@ -101,8 +99,7 @@ class AppConfig {
       } catch (e, st) {
         _log.severe(e.toString(), e, st);
       }
-      return AppConfig.fromJson(_config)
-        ..fullConfigFilename = fullConfigFilename;
+      return AppConfig.fromJson(_config)..fullConfigFilename = fullConfigFilename;
     } finally {
       _log.info("Config loaded");
     }
@@ -160,9 +157,8 @@ class AppConfig {
     return new WebServerConfig.fromJson(dataV);
   }
 
-  static GalleryConfig _parseGallery(dynamic data) => GalleryConfig.fromJson(
-    data is Map<String, dynamic> ? data : <String, dynamic>{},
-  );
+  static GalleryConfig _parseGallery(dynamic data) =>
+      GalleryConfig.fromJson(data is Map<String, dynamic> ? data : <String, dynamic>{});
 
   static MqttConfig _parseMQTT(dynamic data) {
     _log.info("- parsing 'mqtt'");
@@ -208,21 +204,12 @@ class LogConfig {
     if (value == null) {
       return Level.INFO;
     }
-    return Level.LEVELS.firstWhere(
-      (item) => item.toString() == value,
-      orElse: () => Level.INFO,
-    );
+    return Level.LEVELS.firstWhere((item) => item.toString() == value, orElse: () => Level.INFO);
   }
 
-  LogConfig({
-    required this.levelHwFrame,
-    required this.levelMain,
-    required this.levelOTA,
-    required this.levelWeb,
-  });
+  LogConfig({required this.levelHwFrame, required this.levelMain, required this.levelOTA, required this.levelWeb});
 
-  factory LogConfig.fromJson(Map<String, dynamic> json) =>
-      _$LogConfigFromJson(json);
+  factory LogConfig.fromJson(Map<String, dynamic> json) => _$LogConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogConfigToJson(this);
 }

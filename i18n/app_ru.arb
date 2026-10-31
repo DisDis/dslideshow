@@ -1329,7 +1329,19 @@
   "gallery_duplicate_review_done": "Все актуальные группы просмотрены.",
   "gallery_duplicate_review_again": "Просмотреть снова",
   "gallery_duplicate_members": "Файлы {first}–{last} из {total}",
-  "@gallery_duplicate_members": {"placeholders": {"first": {"type": "int"}, "last": {"type": "int"}, "total": {"type": "int"}}},
+  "@gallery_duplicate_members": {
+    "placeholders": {
+      "first": {
+        "type": "int"
+      },
+      "last": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_search_new": "Новый поиск",
   "gallery_search_dialog_title": "Новый поиск дубликатов",
   "gallery_search_choose_mode": "Что искать",
@@ -1344,21 +1356,39 @@
   "gallery_search_ready": "Найдите копии в своей медиатеке",
   "gallery_search_details": "О последнем поиске",
   "gallery_search_groups": "{count, plural, one{{count} группа} few{{count} группы} many{{count} групп} other{{count} группы}}",
-  "@gallery_search_groups": {"placeholders": {"count": {"type": "int"}}},
+  "@gallery_search_groups": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_group_files": "{count, plural, one{{count} файл} few{{count} файла} many{{count} файлов} other{{count} файла}}",
-  "@gallery_group_files": {"placeholders": {"count": {"type": "int"}}},
+  "@gallery_group_files": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_previous_group": "Предыдущая группа",
   "gallery_next_group": "Следующая группа",
   "gallery_candidate_help": "Как выбирается кандидат?",
   "gallery_clear_selection": "Снять выбор",
   "gallery_selection_volume": "Объём: {size}",
-  "@gallery_selection_volume": {"placeholders": {"size": {"type": "String"}}},
+  "@gallery_selection_volume": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "gallery_open_photo": "Открыть фото",
   "gallery_search_start": "Начать поиск",
   "gallery_search_stop": "Остановить",
   "gallery_exact_copies": "Точные копии",
   "gallery_similar_images": "Похожие фотографии",
-  "gallery_search_scope": "Поиск в локальной фототеке. Корзина исключена. Автоматического удаления нет.",
+  "gallery_search_scope": "Поиск статичных изображений в медиатеке и скрытых. Корзина, видео и GIF не участвуют.",
   "gallery_search_running": "Выполняется поиск…",
   "gallery_search_stopping": "Останавливаем…",
   "gallery_search_none": "Совпадения не найдены",
@@ -1414,8 +1444,12 @@
   "gallery_mutation_progress": "Обработано {processed} из {total}",
   "@gallery_mutation_progress": {
     "placeholders": {
-      "processed": {"type": "int"},
-      "total": {"type": "int"}
+      "processed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "gallery_mutation_unknown": "Результат операции неизвестен. Обновите список и проверьте оставшиеся файлы.",
@@ -1425,17 +1459,27 @@
   "gallery_trash_title": "Переместить в корзину?",
   "gallery_trash_confirm_body": "Файлов: {count}. Их можно восстановить из корзины.",
   "gallery_confirmation_changed": "Выбор или файлы изменились. Проверьте выбор и повторите действие.",
-  "@gallery_trash_confirm_body": {"placeholders": {"count": {"type": "int"}}},
+  "@gallery_trash_confirm_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_failed_count": "Файлов с ошибкой: {count}",
   "@gallery_failed_count": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "gallery_first_files": "Показаны первые {count} файлов.",
   "@gallery_first_files": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "gallery_elapsed": "Прошло времени: {time}",
@@ -1480,13 +1524,37 @@
   "gallery_yes": "Да",
   "gallery_no": "Нет",
   "gallery_more_files_trash": "Ещё файлов для перемещения в корзину: {count}.",
-  "@gallery_more_files_trash": {"placeholders": {"count": {"type": "int"}}},
+  "@gallery_more_files_trash": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_more_files_purge": "Ещё файлов для удаления: {count}.",
-  "@gallery_more_files_purge": {"placeholders": {"count": {"type": "int"}}},
+  "@gallery_more_files_purge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_size_megabytes": "{value} МБ",
-  "@gallery_size_megabytes": {"placeholders": {"value": {"type": "String"}}},
+  "@gallery_size_megabytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "gallery_size_bytes": "Точный размер: {bytes} байт",
-  "@gallery_size_bytes": {"placeholders": {"bytes": {"type": "int"}}},
+  "@gallery_size_bytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
   "gallery_file_location": "Расположение",
   "gallery_library_root": "Корень медиатеки",
   "gallery_show_full_path": "Полный путь",
@@ -1549,9 +1617,24 @@
   "frame_discovery_failure": "Не удалось обновить список. Попробуйте ещё раз.",
   "frame_discovery_partial": "Список может быть неполным.",
   "navigation_backend_version": "Backend {version}",
-  "@navigation_backend_version": {"placeholders": {"version": {"type": "String"}}},
+  "@navigation_backend_version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "navigation_backend_major_mismatch": "Мажорная версия backend ({actual}) не совпадает с версией, для которой собрана панель ({expected}).",
-  "@navigation_backend_major_mismatch": {"placeholders": {"actual": {"type": "String"}, "expected": {"type": "String"}}},
+  "@navigation_backend_major_mismatch": {
+    "placeholders": {
+      "actual": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
+    }
+  },
   "navigation_backend_version_unknown": "Не удалось определить версию backend.",
   "upload_source_unavailable": "Не удалось прочитать выбранный файл.",
   "upload_length_unknown": "Не удалось определить размер файла.",
@@ -1563,5 +1646,112 @@
         "type": "String"
       }
     }
-  }
+  },
+  "gallery_hidden": "Скрытые",
+  "gallery_hide": "Скрыть из показа",
+  "gallery_unhide": "Вернуть в показ",
+  "gallery_hidden_done": "Файлы скрыты из показа",
+  "gallery_unhidden": "Файлы возвращены в показ",
+  "gallery_hide_title": "Скрыть выбранные файлы?",
+  "gallery_hide_confirm_body": "Скрыть {count} файлов из показа? Они останутся на рамке, их можно вернуть из раздела «Скрытые».",
+  "@gallery_hide_confirm_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_hidden_hint": "Скрытые файлы остаются на рамке и пропускаются при синхронизации с облаком.",
+  "gallery_hidden_file_changed": "Изменение записи скрытого файла",
+  "gallery_in_slideshow": "В показе",
+  "gallery_hidden_only_warning": "В одной из групп будет удалён последний экземпляр из показа. Останутся только скрытые копии.",
+  "yandex_drive_label": "Яндекс Диск",
+  "using_yandex_drive": "Используется Яндекс Диск",
+  "yandex_application_setup": "OAuth-приложение",
+  "yandex_application_hint": "Настройте OAuth-приложение Яндекса один раз. Данные доступа хранятся на рамке.",
+  "yandex_configure_application": "Настроить приложение",
+  "yandex_secret_saved": "Секрет приложения сохранён. Оставьте поле пустым, чтобы сохранить его.",
+  "yandex_accounts": "Подключённые аккаунты",
+  "yandex_add_account": "Подключить Яндекс",
+  "yandex_not_connected": "Не подключён",
+  "yandex_not_configured": "Не выбран для синхронизации",
+  "yandex_choose_folders": "Выбрать папки",
+  "yandex_folder_selection": "Папки синхронизации",
+  "yandex_recursive_hint": "Выбранные папки включают все подпапки.",
+  "yandex_select_current_folder": "Выбрать эту папку",
+  "yandex_no_folders": "На этой странице нет подпапок",
+  "yandex_previous_page": "Предыдущая страница",
+  "yandex_next_page": "Следующая страница",
+  "yandex_parent_folder": "На уровень выше",
+  "yandex_disconnect": "Отключить от рамки",
+  "yandex_disconnect_title": "Отключить аккаунт?",
+  "yandex_disconnect_message": "Текущие загрузки прекратятся. Скачанные файлы останутся на рамке.",
+  "yandex_sync_enabled": "Синхронизировать этот аккаунт",
+  "yandex_sync_now": "Синхронизировать сейчас",
+  "yandex_pause": "Приостановить синхронизацию",
+  "yandex_resume": "Продолжить синхронизацию",
+  "yandex_runtime_inactive": "Сохраните настройки и перезапустите рамку, чтобы включить это хранилище.",
+  "yandex_runtime_running": "Выполняется синхронизация",
+  "yandex_runtime_idle": "Ожидание следующей синхронизации",
+  "yandex_runtime_paused": "Синхронизация приостановлена",
+  "yandex_runtime_title": "Текущая синхронизация",
+  "yandex_authorization_title": "Подключение аккаунта Яндекса",
+  "yandex_authorization_hint": "Откройте Яндекс на этом телефоне или отсканируйте QR другим устройством. При необходимости введите код.",
+  "yandex_read_access_hint": "Яндекс разрешает чтение всего Диска. Рамка скачивает только выбранные вами папки.",
+  "yandex_open_authorization": "Открыть Яндекс",
+  "yandex_copy_code": "Скопировать код",
+  "yandex_authorization_pending": "Ожидание подтверждения в Яндексе",
+  "yandex_authorization_connected": "Аккаунт подключён. Выберите папки в настройках.",
+  "yandex_authorization_cancelled": "Подключение отменено",
+  "yandex_authorization_expired": "Срок действия кода истёк. Начните заново.",
+  "yandex_authorization_failed": "Не удалось подключить аккаунт.",
+  "yandex_request_failed": "Рамка отклонила запрос. Обновите состояние перед повтором.",
+  "yandex_outcome_unknown": "Соединение прервано или истекло время ожидания. Проверьте состояние перед повтором действия.",
+  "yandex_load_failed": "Не удалось загрузить состояние Яндекс Диска.",
+  "yandex_browser_failed": "Не удалось открыть браузер. Скопируйте адрес и откройте его вручную.",
+  "yandex_connections_empty": "Аккаунты Яндекса пока не подключены.",
+  "yandex_refresh": "Обновить состояние",
+  "yandex_alias": "Название аккаунта на рамке",
+  "yandex_apply_folders": "Использовать выбранные папки",
+  "yandex_folder_count": "Выбрано папок: {count}",
+  "@yandex_folder_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yandex_sync_counts": "Скачано: {downloaded}; пропущено: {skipped}; ошибок: {failed}",
+  "@yandex_sync_counts": {
+    "placeholders": {
+      "downloaded": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "yandex_expires_at": "Код действует до: {time}",
+  "@yandex_expires_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "yandex_reconnect_hint": "Аккаунту требуется повторная авторизация. Нажмите «Подключить Яндекс», чтобы восстановить доступ.",
+  "yandex_last_sync": "Последняя успешная синхронизация: {time}",
+  "@yandex_last_sync": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "yandex_runtime_failure": "Синхронизация завершилась с ошибками. Проверьте подключение аккаунта и свободное место.",
+  "yandex_authorization_denied": "Доступ отклонён в Яндексе."
 }

@@ -4,13 +4,12 @@ import 'dart:typed_data';
 
 import 'package:dslideshow_common/gallery.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
 import '../../features/gallery/domain/gallery_item.dart';
 import 'media_image_loader.dart';
 
-enum GalleryProtocol { undecided, versioned, legacy }
+enum GalleryProtocol { undecided, versioned }
 
 class GalleryCatalogResult {
   const GalleryCatalogResult(this.items, this.protocol, this.catalogRevision);
@@ -41,7 +40,6 @@ class GalleryRepository {
   Set<GalleryCapability> _capabilities = const {};
   Completer<void>? _activeAbort;
   int _generation = 0;
-  int _legacyEpoch = 0;
   bool _closed = false;
 
   GalleryProtocol get protocol => _protocol;
@@ -49,10 +47,7 @@ class GalleryRepository {
   String get authScope => '${baseUri.origin}|$code';
 
   Uri _uri(List<String> segments, [Map<String, String>? query]) =>
-      baseUri.replace(
-        pathSegments: ['cache', code, ...segments],
-        queryParameters: query,
-      );
+      baseUri.replace(pathSegments: ['cache', code, ...segments], queryParameters: query);
 
   Future<GalleryCatalogResult> load({bool refresh = false}) async {
     if (_closed) throw StateError('Gallery repository closed');
@@ -63,160 +58,65 @@ class GalleryRepository {
       if (!abort.isCompleted) abort.complete();
     });
     try {
-      if (_protocol != GalleryProtocol.legacy) {
-        final scan =
-            refresh &&
-            _protocol == GalleryProtocol.versioned &&
-            _supportsRefresh;
-        final request = http.AbortableRequest(
-          scan ? 'POST' : 'GET',
-          _uri(['v2', 'catalog', if (scan) 'refresh']),
-          abortTrigger: abort.future,
-        );
-        if (scan) {
-          request.headers['content-type'] = 'application/json';
-          request.body = jsonEncode(
-            GalleryRefreshRequest(
-              operationId: const Uuid().v4(),
-              mode: GalleryRefreshMode.scan,
-            ).toJson(),
-          );
-        }
-        final response = await _client.send(request);
-        if (!_isCurrent(generation, abort)) {
-          await response.stream.listen((_) {}).cancel();
-          throw const GalleryImageCancelled();
-        }
-        if ((response.statusCode == 404 || response.statusCode == 405) &&
-            _protocol == GalleryProtocol.undecided) {
-          await response.stream.drain<void>();
-          _check(generation, abort);
-          _protocol = GalleryProtocol.legacy;
-        } else {
-          final data = await _jsonResponse(response);
-          _check(generation, abort);
-          final catalog = GalleryCatalog.fromJson(data);
-          if (catalog.schemaVersion != GalleryCatalog.supportedSchemaVersion) {
-            throw const FormatException('Unsupported gallery schema');
-          }
-          if (catalog.catalogRevision.isEmpty) {
-            throw const FormatException('Invalid gallery revision');
-          }
-          if (catalog.capabilities.contains(GalleryCapability.thumbnails) &&
-              (catalog.thumbnailPolicy == null ||
-                  catalog.thumbnailPolicy!.version < 1 ||
-                  (catalog.thumbnailPolicy!.revision.isNotEmpty &&
-                      !_policyRevisionPattern.hasMatch(
-                        catalog.thumbnailPolicy!.revision,
-                      )) ||
-                  !catalog.thumbnailPolicy!.sizes.any(
-                    (size) => size.pixels > 0,
-                  ))) {
-            throw const FormatException('Unsupported thumbnail policy');
-          }
-          final ids = <String>{};
-          for (final entry in catalog.entries) {
-            if (entry.mediaId.isEmpty ||
-                !ids.add(entry.mediaId) ||
-                (entry.kind != GalleryEntryKind.directory &&
-                    (entry.sourceRevision?.isEmpty ?? true))) {
-              throw const FormatException('Invalid gallery identity');
-            }
-          }
-          _protocol = GalleryProtocol.versioned;
-          _capabilities = Set.unmodifiable(catalog.capabilities);
-          _supportsRefresh = catalog.capabilities.contains(
-            GalleryCapability.refresh,
-          );
-          final scope = authScope;
-          final items = catalog.entries
-              .map((entry) {
-                final revision =
-                    entry.sourceRevision ?? catalog.catalogRevision;
-                final thumbnail =
-                    entry.thumbnailSupported &&
-                    catalog.capabilities.contains(
-                      GalleryCapability.thumbnails,
-                    ) &&
-                    catalog.thumbnailPolicy != null;
-                return GalleryItem(
-                  uri: _uri(
-                    ['get', ...entry.path.split('/')],
-                    entry.sourceRevision != null &&
-                            catalog.capabilities.contains(
-                              GalleryCapability.revisionedOriginals,
-                            )
-                        ? {'rev': revision}
-                        : null,
-                  ),
-                  title: entry.name,
-                  mediaId: entry.mediaId,
-                  revision: revision,
-                  scope: scope,
-                  kind: entry.kind,
-                  thumbnailPolicy: thumbnail ? catalog.thumbnailPolicy : null,
-                  thumbnailsEnabled: catalog.capabilities.contains(
-                    GalleryCapability.thumbnails,
-                  ),
-                  thumbnailBaseUri: thumbnail
-                      ? _uri([
-                          'v2',
-                          'thumbnail',
-                          entry.mediaId,
-                          revision,
-                          catalog.thumbnailPolicy!.identity,
-                        ])
-                      : null,
-                );
-              })
-              .toList(growable: false);
-          return GalleryCatalogResult(
-            List.unmodifiable(items),
-            _protocol,
-            catalog.catalogRevision,
-          );
-        }
-      }
-      if (refresh) _legacyEpoch++;
-      final response = await _client.send(
-        http.AbortableRequest(
-          'GET',
-          _uri(['list']),
-          abortTrigger: abort.future,
-        ),
+      final scan = refresh && _protocol == GalleryProtocol.versioned && _supportsRefresh;
+      final request = http.AbortableRequest(
+        scan ? 'POST' : 'GET',
+        _uri(['v2', 'published', 'catalog', if (scan) 'refresh']),
+        abortTrigger: abort.future,
       );
+      if (scan) {
+        request.headers['content-type'] = 'application/json';
+        request.body = jsonEncode(
+          GalleryRefreshRequest(operationId: const Uuid().v4(), mode: GalleryRefreshMode.scan).toJson(),
+        );
+      }
+      final response = await _client.send(request);
       if (!_isCurrent(generation, abort)) {
         await response.stream.listen((_) {}).cancel();
         throw const GalleryImageCancelled();
       }
-      final data = await _jsonResponse(response);
+      final catalog = GalleryCatalog.fromJson(await _jsonResponse(response));
       _check(generation, abort);
-      final paths = data['items'];
-      if (paths is! List || paths.any((entry) => entry is! String)) {
-        throw const FormatException('Invalid gallery list');
+      if (catalog.schemaVersion != GalleryCatalog.supportedSchemaVersion ||
+          catalog.section != GalleryMediaSection.published ||
+          catalog.catalogRevision.isEmpty) {
+        throw const FormatException('Invalid gallery catalog');
       }
-      // Query identity also bypasses the browser's old week-long legacy copy
-      // after explicit refresh; memory eviction alone would not do so.
-      final items = paths
-          .cast<String>()
-          .toSet()
-          .map(
-            (item) => GalleryItem(
-              uri: _uri(
-                ['get', ...item.split('/')],
-                {'galleryEpoch': '$_legacyEpoch'},
-              ),
-              title: path.basename(item),
-              mediaId: item,
-              scope: authScope,
-              revision: 'legacy:$_legacyEpoch',
-            ),
-          )
-          .toList(growable: false);
+      if (catalog.capabilities.contains(GalleryCapability.thumbnails) &&
+          (catalog.thumbnailPolicy == null ||
+              catalog.thumbnailPolicy!.version < 1 ||
+              (catalog.thumbnailPolicy!.revision.isNotEmpty &&
+                  !_policyRevisionPattern.hasMatch(catalog.thumbnailPolicy!.revision)) ||
+              !catalog.thumbnailPolicy!.sizes.any((size) => size.pixels > 0))) {
+        throw const FormatException('Unsupported thumbnail policy');
+      }
+      final ids = <String>{};
+      for (final entry in catalog.entries) {
+        if (entry.section != catalog.section ||
+            entry.mediaId.isEmpty ||
+            !ids.add(entry.mediaId) ||
+            (entry.kind != GalleryEntryKind.directory && entry.sourceRevision.isEmpty)) {
+          throw const FormatException('Invalid gallery identity');
+        }
+      }
+      _protocol = GalleryProtocol.versioned;
+      _capabilities = Set.unmodifiable(catalog.capabilities);
+      _supportsRefresh = catalog.capabilities.contains(GalleryCapability.refresh);
       return GalleryCatalogResult(
-        List.unmodifiable(items),
-        GalleryProtocol.legacy,
-        'legacy:$_legacyEpoch',
+        List.unmodifiable([
+          for (final entry in catalog.entries)
+            GalleryItem.fromEntry(
+              entry,
+              baseUri: baseUri,
+              code: code,
+              scope: authScope,
+              thumbnailPolicy: catalog.capabilities.contains(GalleryCapability.thumbnails)
+                  ? catalog.thumbnailPolicy
+                  : null,
+            ),
+        ]),
+        GalleryProtocol.versioned,
+        catalog.catalogRevision,
       );
     } finally {
       timer.cancel();
@@ -224,9 +124,7 @@ class GalleryRepository {
     }
   }
 
-  Future<Map<String, dynamic>> _jsonResponse(
-    http.StreamedResponse response,
-  ) async {
+  Future<Map<String, dynamic>> _jsonResponse(http.StreamedResponse response) async {
     if (response.statusCode != 200) {
       await response.stream.listen((_) {}).cancel();
       throw GalleryImageHttpException(response.statusCode);
@@ -253,8 +151,7 @@ class GalleryRepository {
     }
   }
 
-  bool _isCurrent(int generation, Completer<void> abort) =>
-      !_closed && generation == _generation && !abort.isCompleted;
+  bool _isCurrent(int generation, Completer<void> abort) => !_closed && generation == _generation && !abort.isCompleted;
 
   void cancel() {
     final abort = _activeAbort;

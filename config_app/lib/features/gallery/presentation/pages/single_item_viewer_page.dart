@@ -20,9 +20,10 @@ class SingleItemViewerPage extends StatelessWidget {
   final GalleryItem? Function()? currentItem;
   final Set<GalleryCapability> capabilities;
   final GalleryManagementRepository? management;
-  final GalleryTrashEntry? trashEntry;
+  final GalleryEntry? entry;
   final Future<void> Function()? onChanged;
   final void Function(List<String>)? onTrashed;
+  final void Function(List<String>)? onHidden;
 
   const SingleItemViewerPage({
     super.key,
@@ -33,9 +34,10 @@ class SingleItemViewerPage extends StatelessWidget {
     this.currentItem,
     this.capabilities = const {},
     this.management,
-    this.trashEntry,
+    this.entry,
     this.onChanged,
     this.onTrashed,
+    this.onHidden,
   });
 
   @override
@@ -44,7 +46,7 @@ class SingleItemViewerPage extends StatelessWidget {
       item: item,
       management: management ?? session?.management,
       capabilities: capabilities,
-      trashEntry: trashEntry,
+      entry: entry,
       itemUpdates: itemUpdates,
       currentItem: currentItem,
     );
@@ -65,18 +67,14 @@ class _ViewerControls extends StatefulWidget {
   State<_ViewerControls> createState() => _ViewerControlsState();
 }
 
-class _ViewerControlsState extends State<_ViewerControls>
-    with SingleTickerProviderStateMixin {
+class _ViewerControlsState extends State<_ViewerControls> with SingleTickerProviderStateMixin {
   bool _showControls = true;
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 300),
     value: 1,
   );
-  late final CurvedAnimation _opacity = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeInOut,
-  );
+  late final CurvedAnimation _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
   @override
   void didUpdateWidget(_ViewerControls oldWidget) {
@@ -109,19 +107,11 @@ class _ViewerControlsState extends State<_ViewerControls>
         final bloc = context.read<GalleryViewerBloc>();
         final confirmed = await confirmGalleryMutation(context, confirmation);
         if (mounted && !bloc.isClosed) {
-          bloc.add(
-            GalleryViewerEvent.mutationDecision(
-              confirmationId: confirmation.token,
-              confirmed: confirmed,
-            ),
-          );
+          bloc.add(GalleryViewerEvent.mutationDecision(confirmationId: confirmation.token, confirmed: confirmed));
         }
       case ViewerConfirmationChanged():
-        ScaffoldMessenger.of(context).showSnackBar(
-          galleryNotification(
-            context.localizations.gallery_confirmation_changed,
-          ),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(galleryNotification(context.localizations.gallery_confirmation_changed));
       case ViewerOperationFailed(:final code, :final refreshCatalog):
         if (refreshCatalog) {
           try {
@@ -129,17 +119,17 @@ class _ViewerControlsState extends State<_ViewerControls>
           } catch (_) {}
         }
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(galleryNotification(galleryErrorText(context, code)));
+        ScaffoldMessenger.of(context).showSnackBar(galleryNotification(galleryErrorText(context, code)));
       case ViewerRotationApplied():
         // Optional refresh errors cannot revoke a confirmed rotation.
         try {
           await widget.page.onChanged?.call();
         } catch (_) {}
-      case ViewerMutationApplied(:final action, :final trashIds):
+      case ViewerMutationApplied(:final action, :final mediaIds):
         if (action == GalleryMutation.trash) {
-          widget.page.onTrashed?.call(trashIds);
+          widget.page.onTrashed?.call(mediaIds);
         }
+        if (action == GalleryMutation.hide) widget.page.onHidden?.call(mediaIds);
         try {
           await widget.page.onChanged?.call();
         } catch (_) {}
@@ -150,9 +140,7 @@ class _ViewerControlsState extends State<_ViewerControls>
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocConsumer<GalleryViewerBloc, GalleryViewerState>(
+  Widget build(BuildContext context) => BlocConsumer<GalleryViewerBloc, GalleryViewerState>(
     listenWhen: (previous, current) => previous.effectId != current.effectId,
     listener: _listen,
     builder: (context, state) {
@@ -173,42 +161,28 @@ class _ViewerControlsState extends State<_ViewerControls>
                     key: const ValueKey('viewer-media-canvas'),
                     color: theme.colorScheme.surfaceContainerLowest,
                     child: Padding(
-                      padding: EdgeInsets.only(
-                        right: wideInfo && state.showInfo && _showControls
-                            ? 392
-                            : 0,
-                      ),
+                      padding: EdgeInsets.only(right: wideInfo && state.showInfo && _showControls ? 392 : 0),
                       child: Center(
                         child: state.missing
                             ? Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
-                                    Icons.hide_image_outlined,
-                                    size: 48,
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
+                                  Icon(Icons.hide_image_outlined, size: 48, color: theme.colorScheme.onSurfaceVariant),
                                   const SizedBox(height: 16),
                                   Text(
-                                    context
-                                        .localizations
-                                        .gallery_file_unavailable,
+                                    context.localizations.gallery_file_unavailable,
                                     textAlign: TextAlign.center,
                                     style: theme.textTheme.titleMedium,
                                   ),
                                 ],
                               )
                             : state.item.isVideo
-                            ? SingleVideoPlayer(
-                                uri: state.item.uri,
-                                onContentTap: _toggleControls,
-                              )
+                            ? SingleVideoPlayer(uri: state.item.uri, onContentTap: _toggleControls)
                             : SingleImageViewer(
                                 uri: state.item.uri,
                                 item: state.item,
                                 session: widget.page.session,
-                                onRevisionMismatch:
-                                    widget.page.onRevisionMismatch,
+                                onRevisionMismatch: widget.page.onRevisionMismatch,
                               ),
                       ),
                     ),
@@ -227,10 +201,7 @@ class _ViewerControlsState extends State<_ViewerControls>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _ViewerToolbar(
-                              state: state,
-                              onBack: () => Navigator.of(context).pop(),
-                            ),
+                            _ViewerToolbar(state: state, onBack: () => Navigator.of(context).pop()),
                             const Divider(height: 1),
                           ],
                         ),
@@ -256,22 +227,15 @@ class _ViewerControlsState extends State<_ViewerControls>
                             minimum: const EdgeInsets.all(16),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxHeight: wideInfo
-                                    ? double.infinity
-                                    : (constraints.maxHeight * .5).clamp(
-                                        0,
-                                        320,
-                                      ),
+                                maxHeight: wideInfo ? double.infinity : (constraints.maxHeight * .5).clamp(0, 320),
                               ),
                               child: MetadataPanel(
                                 item: state.item,
                                 metadata: state.metadata,
-                                trashEntry: state.trashEntry,
+                                entry: state.entry,
                                 loading: state.metadataLoading,
                                 failed: state.metadataFailed,
-                                onRetry: () => bloc.add(
-                                  const GalleryViewerEvent.metadataRequested(),
-                                ),
+                                onRetry: () => bloc.add(const GalleryViewerEvent.metadataRequested()),
                               ),
                             ),
                           ),
@@ -300,39 +264,37 @@ class _ViewerToolbar extends StatelessWidget {
     final blocked = state.busy || state.missing || state.confirmation != null;
     return AppBar(
       key: const ValueKey('viewer-toolbar'),
-      title: Text(
-        state.item.title,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      title: Text(state.item.title, maxLines: 1, overflow: TextOverflow.ellipsis),
       leading: IconButton(
         tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         icon: const Icon(Icons.arrow_back),
         onPressed: state.busy || state.confirmation != null ? null : onBack,
       ),
       actions: [
+        if (state.canMutate(GalleryMutation.hide) || state.canMutate(GalleryMutation.unhide))
+          IconButton(
+            tooltip: state.hidden ? l.gallery_unhide : l.gallery_hide,
+            icon: Icon(state.hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+            onPressed: blocked
+                ? null
+                : () => bloc.add(
+                    GalleryViewerEvent.mutationRequested(state.hidden ? GalleryMutation.unhide : GalleryMutation.hide),
+                  ),
+          ),
         if (state.canRotate) ...[
           IconButton(
             tooltip: l.gallery_rotate_left,
             icon: const Icon(Icons.rotate_left),
             onPressed: blocked
                 ? null
-                : () => bloc.add(
-                    const GalleryViewerEvent.rotationRequested(
-                      GalleryRotation.left,
-                    ),
-                  ),
+                : () => bloc.add(const GalleryViewerEvent.rotationRequested(GalleryRotation.left)),
           ),
           IconButton(
             tooltip: l.gallery_rotate_right,
             icon: const Icon(Icons.rotate_right),
             onPressed: blocked
                 ? null
-                : () => bloc.add(
-                    const GalleryViewerEvent.rotationRequested(
-                      GalleryRotation.right,
-                    ),
-                  ),
+                : () => bloc.add(const GalleryViewerEvent.rotationRequested(GalleryRotation.right)),
           ),
         ],
         if (state.trash) ...[
@@ -341,22 +303,14 @@ class _ViewerToolbar extends StatelessWidget {
             icon: const Icon(Icons.restore_from_trash),
             onPressed: blocked || !state.canMutate(GalleryMutation.restore)
                 ? null
-                : () => bloc.add(
-                    const GalleryViewerEvent.mutationRequested(
-                      GalleryMutation.restore,
-                    ),
-                  ),
+                : () => bloc.add(const GalleryViewerEvent.mutationRequested(GalleryMutation.restore)),
           ),
           IconButton(
             tooltip: l.gallery_purge,
             icon: const Icon(Icons.delete_forever),
             onPressed: blocked || !state.canMutate(GalleryMutation.purge)
                 ? null
-                : () => bloc.add(
-                    const GalleryViewerEvent.mutationRequested(
-                      GalleryMutation.purge,
-                    ),
-                  ),
+                : () => bloc.add(const GalleryViewerEvent.mutationRequested(GalleryMutation.purge)),
           ),
         ] else if (state.capabilities.contains(GalleryCapability.mutations))
           IconButton(
@@ -364,20 +318,12 @@ class _ViewerToolbar extends StatelessWidget {
             icon: const Icon(Icons.delete_outline),
             onPressed: blocked || !state.canMutate(GalleryMutation.trash)
                 ? null
-                : () => bloc.add(
-                    const GalleryViewerEvent.mutationRequested(
-                      GalleryMutation.trash,
-                    ),
-                  ),
+                : () => bloc.add(const GalleryViewerEvent.mutationRequested(GalleryMutation.trash)),
           ),
         if (state.busy)
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
+            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
           ),
         IconButton(
           tooltip: l.media_info,

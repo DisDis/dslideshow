@@ -3,14 +3,20 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'gallery_catalog.freezed.dart';
 part 'gallery_catalog.g.dart';
 
-enum GalleryEntryKind {
-  image,
-  animatedImage,
-  video,
-  directory,
-  unsupported,
-  unknown,
+enum GalleryMediaSection { published, hidden, trash }
+
+@freezed
+abstract class GalleryMediaRef with _$GalleryMediaRef {
+  const factory GalleryMediaRef({
+    required String mediaId,
+    required String sourceRevision,
+    @JsonKey(required: true, disallowNullValue: true) required GalleryMediaSection section,
+  }) = _GalleryMediaRef;
+
+  factory GalleryMediaRef.fromJson(Map<String, dynamic> json) => _$GalleryMediaRefFromJson(json);
 }
+
+enum GalleryEntryKind { image, animatedImage, video, directory, unsupported, unknown }
 
 enum GalleryCapability {
   thumbnails,
@@ -20,6 +26,7 @@ enum GalleryCapability {
   mutations,
   rotation,
   trash,
+  hidden,
   duplicates,
   unknown,
 }
@@ -64,43 +71,34 @@ class GalleryThumbnailPolicy {
   @JsonKey(unknownEnumValue: GalleryThumbnailSize.unknown)
   final List<GalleryThumbnailSize> sizes;
 
-  const GalleryThumbnailPolicy({
-    required this.version,
-    required this.sizes,
-    this.revision = '',
-  });
+  const GalleryThumbnailPolicy({required this.version, required this.sizes, this.revision = ''});
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get identity => revision.isEmpty ? '$version' : '$version-$revision';
 
-  factory GalleryThumbnailPolicy.fromJson(Map<String, dynamic> json) =>
-      _$GalleryThumbnailPolicyFromJson(json);
+  factory GalleryThumbnailPolicy.fromJson(Map<String, dynamic> json) => _$GalleryThumbnailPolicyFromJson(json);
   Map<String, dynamic> toJson() => _$GalleryThumbnailPolicyToJson(this);
 }
 
-@JsonSerializable()
-class GalleryEntry {
-  final String mediaId;
-  final String path;
-  final String name;
-  @JsonKey(unknownEnumValue: GalleryEntryKind.unknown)
-  final GalleryEntryKind kind;
-  final String? sourceRevision;
-  @JsonKey(defaultValue: false)
-  final bool thumbnailSupported;
+@freezed
+abstract class GalleryEntry with _$GalleryEntry {
+  const GalleryEntry._();
 
-  const GalleryEntry({
-    required this.mediaId,
-    required this.path,
-    required this.name,
-    required this.kind,
-    required this.sourceRevision,
-    this.thumbnailSupported = false,
-  });
+  const factory GalleryEntry({
+    required String mediaId,
+    required String path,
+    required String name,
+    @JsonKey(unknownEnumValue: GalleryEntryKind.unknown) required GalleryEntryKind kind,
+    @Default('') String sourceRevision,
+    @JsonKey(required: true, disallowNullValue: true) required GalleryMediaSection section,
+    @Default(false) bool thumbnailSupported,
+    @JsonKey(includeIfNull: false) int? sizeBytes,
+    @JsonKey(includeIfNull: false) DateTime? fileChanged,
+  }) = _GalleryEntry;
 
-  factory GalleryEntry.fromJson(Map<String, dynamic> json) =>
-      _$GalleryEntryFromJson(json);
-  Map<String, dynamic> toJson() => _$GalleryEntryToJson(this);
+  factory GalleryEntry.fromJson(Map<String, dynamic> json) => _$GalleryEntryFromJson(json);
+
+  GalleryMediaRef get ref => GalleryMediaRef(mediaId: mediaId, sourceRevision: sourceRevision, section: section);
 }
 
 @freezed
@@ -114,15 +112,14 @@ abstract class GalleryCatalog with _$GalleryCatalog {
   @JsonSerializable(explicitToJson: true)
   const factory GalleryCatalog({
     @Default(GalleryCatalog.supportedSchemaVersion) int schemaVersion,
-    required String catalogRevision,
-    @JsonKey(unknownEnumValue: GalleryCapability.unknown)
-    required List<GalleryCapability> capabilities,
-    required GalleryThumbnailPolicy? thumbnailPolicy,
+    @JsonKey(required: true, disallowNullValue: true) required GalleryMediaSection section,
+    @Default('') String catalogRevision,
+    @JsonKey(unknownEnumValue: GalleryCapability.unknown) @Default([]) List<GalleryCapability> capabilities,
+    GalleryThumbnailPolicy? thumbnailPolicy,
     required List<GalleryEntry> entries,
   }) = _GalleryCatalog;
 
-  factory GalleryCatalog.fromJson(Map<String, dynamic> json) =>
-      _$GalleryCatalogFromJson(json);
+  factory GalleryCatalog.fromJson(Map<String, dynamic> json) => _$GalleryCatalogFromJson(json);
 }
 
 @JsonSerializable()
@@ -132,8 +129,7 @@ class GalleryRefreshRequest {
 
   const GalleryRefreshRequest({required this.operationId, required this.mode});
 
-  factory GalleryRefreshRequest.fromJson(Map<String, dynamic> json) =>
-      _$GalleryRefreshRequestFromJson(json);
+  factory GalleryRefreshRequest.fromJson(Map<String, dynamic> json) => _$GalleryRefreshRequestFromJson(json);
   Map<String, dynamic> toJson() => _$GalleryRefreshRequestToJson(this);
 }
 
@@ -144,7 +140,6 @@ class GalleryErrorResponse {
 
   const GalleryErrorResponse(this.code);
 
-  factory GalleryErrorResponse.fromJson(Map<String, dynamic> json) =>
-      _$GalleryErrorResponseFromJson(json);
+  factory GalleryErrorResponse.fromJson(Map<String, dynamic> json) => _$GalleryErrorResponseFromJson(json);
   Map<String, dynamic> toJson() => _$GalleryErrorResponseToJson(this);
 }

@@ -6,18 +6,6 @@ part of 'media_management.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_GalleryMediaRef _$GalleryMediaRefFromJson(Map<String, dynamic> json) =>
-    _GalleryMediaRef(
-      mediaId: json['mediaId'] as String,
-      sourceRevision: json['sourceRevision'] as String,
-    );
-
-Map<String, dynamic> _$GalleryMediaRefToJson(_GalleryMediaRef instance) =>
-    <String, dynamic>{
-      'mediaId': instance.mediaId,
-      'sourceRevision': instance.sourceRevision,
-    };
-
 _GalleryOperationRequest _$GalleryOperationRequestFromJson(
   Map<String, dynamic> json,
 ) => _GalleryOperationRequest(
@@ -26,7 +14,6 @@ _GalleryOperationRequest _$GalleryOperationRequestFromJson(
   items: (json['items'] as List<dynamic>)
       .map((e) => GalleryMediaRef.fromJson(e as Map<String, dynamic>))
       .toList(),
-  duplicateJobId: json['duplicateJobId'] as String?,
 );
 
 Map<String, dynamic> _$GalleryOperationRequestToJson(
@@ -35,37 +22,55 @@ Map<String, dynamic> _$GalleryOperationRequestToJson(
   'operationId': instance.operationId,
   'action': _$GalleryMutationEnumMap[instance.action]!,
   'items': instance.items.map((e) => e.toJson()).toList(),
-  'duplicateJobId': instance.duplicateJobId,
 };
 
 const _$GalleryMutationEnumMap = {
   GalleryMutation.trash: 'trash',
   GalleryMutation.restore: 'restore',
   GalleryMutation.purge: 'purge',
+  GalleryMutation.hide: 'hide',
+  GalleryMutation.unhide: 'unhide',
 };
 
 _GalleryOperationItemResult _$GalleryOperationItemResultFromJson(
   Map<String, dynamic> json,
-) => _GalleryOperationItemResult(
-  mediaId: json['mediaId'] as String,
-  state: $enumDecode(_$GalleryItemOperationStateEnumMap, json['state']),
-  error: $enumDecodeNullable(
-    _$GalleryErrorCodeEnumMap,
-    json['error'],
-    unknownValue: GalleryErrorCode.unknown,
-  ),
-  trashId: json['trashId'] as String?,
-  restoredPath: json['restoredPath'] as String?,
-);
+) {
+  $checkKeys(
+    json,
+    requiredKeys: const ['section'],
+    disallowNullValues: const ['section'],
+  );
+  return _GalleryOperationItemResult(
+    mediaId: json['mediaId'] as String,
+    section: $enumDecode(_$GalleryMediaSectionEnumMap, json['section']),
+    state: $enumDecode(_$GalleryItemOperationStateEnumMap, json['state']),
+    error: $enumDecodeNullable(
+      _$GalleryErrorCodeEnumMap,
+      json['error'],
+      unknownValue: GalleryErrorCode.unknown,
+    ),
+    destination: json['destination'] == null
+        ? null
+        : GalleryMediaRef.fromJson(json['destination'] as Map<String, dynamic>),
+    restoredPath: json['restoredPath'] as String?,
+  );
+}
 
 Map<String, dynamic> _$GalleryOperationItemResultToJson(
   _GalleryOperationItemResult instance,
 ) => <String, dynamic>{
   'mediaId': instance.mediaId,
+  'section': _$GalleryMediaSectionEnumMap[instance.section]!,
   'state': _$GalleryItemOperationStateEnumMap[instance.state]!,
   'error': _$GalleryErrorCodeEnumMap[instance.error],
-  'trashId': instance.trashId,
+  'destination': instance.destination,
   'restoredPath': instance.restoredPath,
+};
+
+const _$GalleryMediaSectionEnumMap = {
+  GalleryMediaSection.published: 'published',
+  GalleryMediaSection.hidden: 'hidden',
+  GalleryMediaSection.trash: 'trash',
 };
 
 const _$GalleryItemOperationStateEnumMap = {
@@ -107,62 +112,22 @@ Map<String, dynamic> _$GalleryOperationResultToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
-_GalleryTrashEntry _$GalleryTrashEntryFromJson(Map<String, dynamic> json) =>
-    _GalleryTrashEntry(
-      trashId: json['trashId'] as String,
-      name: json['name'] as String,
-      originalPath: json['originalPath'] as String,
-      kind: $enumDecode(
-        _$GalleryEntryKindEnumMap,
-        json['kind'],
-        unknownValue: GalleryEntryKind.unknown,
-      ),
-      sourceRevision: json['sourceRevision'] as String,
-      trashedAt: DateTime.parse(json['trashedAt'] as String),
-      sizeBytes: (json['sizeBytes'] as num).toInt(),
-    );
-
-Map<String, dynamic> _$GalleryTrashEntryToJson(_GalleryTrashEntry instance) =>
-    <String, dynamic>{
-      'trashId': instance.trashId,
-      'name': instance.name,
-      'originalPath': instance.originalPath,
-      'kind': _$GalleryEntryKindEnumMap[instance.kind]!,
-      'sourceRevision': instance.sourceRevision,
-      'trashedAt': instance.trashedAt.toIso8601String(),
-      'sizeBytes': instance.sizeBytes,
-    };
-
-const _$GalleryEntryKindEnumMap = {
-  GalleryEntryKind.image: 'image',
-  GalleryEntryKind.animatedImage: 'animatedImage',
-  GalleryEntryKind.video: 'video',
-  GalleryEntryKind.directory: 'directory',
-  GalleryEntryKind.unsupported: 'unsupported',
-  GalleryEntryKind.unknown: 'unknown',
-};
-
-_GalleryTrashCatalog _$GalleryTrashCatalogFromJson(Map<String, dynamic> json) =>
-    _GalleryTrashCatalog(
-      entries: (json['entries'] as List<dynamic>)
-          .map((e) => GalleryTrashEntry.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$GalleryTrashCatalogToJson(
-  _GalleryTrashCatalog instance,
-) => <String, dynamic>{
-  'entries': instance.entries.map((e) => e.toJson()).toList(),
-};
-
 _GalleryRotateRequest _$GalleryRotateRequestFromJson(
   Map<String, dynamic> json,
-) => _GalleryRotateRequest(
-  operationId: json['operationId'] as String,
-  mediaId: json['mediaId'] as String,
-  sourceRevision: json['sourceRevision'] as String,
-  rotation: $enumDecode(_$GalleryRotationEnumMap, json['rotation']),
-);
+) {
+  $checkKeys(
+    json,
+    requiredKeys: const ['section'],
+    disallowNullValues: const ['section'],
+  );
+  return _GalleryRotateRequest(
+    operationId: json['operationId'] as String,
+    mediaId: json['mediaId'] as String,
+    sourceRevision: json['sourceRevision'] as String,
+    rotation: $enumDecode(_$GalleryRotationEnumMap, json['rotation']),
+    section: $enumDecode(_$GalleryMediaSectionEnumMap, json['section']),
+  );
+}
 
 Map<String, dynamic> _$GalleryRotateRequestToJson(
   _GalleryRotateRequest instance,
@@ -171,6 +136,7 @@ Map<String, dynamic> _$GalleryRotateRequestToJson(
   'mediaId': instance.mediaId,
   'sourceRevision': instance.sourceRevision,
   'rotation': _$GalleryRotationEnumMap[instance.rotation]!,
+  'section': _$GalleryMediaSectionEnumMap[instance.section]!,
 };
 
 const _$GalleryRotationEnumMap = {
@@ -178,40 +144,47 @@ const _$GalleryRotationEnumMap = {
   GalleryRotation.right: 'right',
 };
 
-_GalleryMetadata _$GalleryMetadataFromJson(Map<String, dynamic> json) =>
-    _GalleryMetadata(
-      mediaId: json['mediaId'] as String,
-      sourceRevision: json['sourceRevision'] as String,
-      name: json['name'] as String,
-      path: json['path'] as String,
-      kind: $enumDecode(
-        _$GalleryEntryKindEnumMap,
-        json['kind'],
-        unknownValue: GalleryEntryKind.unknown,
-      ),
-      sizeBytes: (json['sizeBytes'] as num).toInt(),
-      width: (json['width'] as num?)?.toInt(),
-      height: (json['height'] as num?)?.toInt(),
-      dateTaken: json['dateTaken'] as String?,
-      fileModified: json['fileModified'] == null
-          ? null
-          : DateTime.parse(json['fileModified'] as String),
-      format: json['format'] as String?,
-      camera: json['camera'] as String?,
-      lens: json['lens'] as String?,
-      iso: json['iso'] as String?,
-      exposure: json['exposure'] as String?,
-      aperture: json['aperture'] as String?,
-      focalLength: json['focalLength'] as String?,
-      orientation: (json['orientation'] as num?)?.toInt(),
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-      durationSeconds: (json['durationSeconds'] as num?)?.toDouble(),
-      codec: json['codec'] as String?,
-      colorProfile: json['colorProfile'] as String?,
-      bitDepth: (json['bitDepth'] as num?)?.toInt(),
-      hasAlpha: json['hasAlpha'] as bool?,
-    );
+_GalleryMetadata _$GalleryMetadataFromJson(Map<String, dynamic> json) {
+  $checkKeys(
+    json,
+    requiredKeys: const ['section'],
+    disallowNullValues: const ['section'],
+  );
+  return _GalleryMetadata(
+    mediaId: json['mediaId'] as String,
+    sourceRevision: json['sourceRevision'] as String,
+    name: json['name'] as String,
+    path: json['path'] as String,
+    kind: $enumDecode(
+      _$GalleryEntryKindEnumMap,
+      json['kind'],
+      unknownValue: GalleryEntryKind.unknown,
+    ),
+    sizeBytes: (json['sizeBytes'] as num).toInt(),
+    section: $enumDecode(_$GalleryMediaSectionEnumMap, json['section']),
+    width: (json['width'] as num?)?.toInt(),
+    height: (json['height'] as num?)?.toInt(),
+    dateTaken: json['dateTaken'] as String?,
+    fileModified: json['fileModified'] == null
+        ? null
+        : DateTime.parse(json['fileModified'] as String),
+    format: json['format'] as String?,
+    camera: json['camera'] as String?,
+    lens: json['lens'] as String?,
+    iso: json['iso'] as String?,
+    exposure: json['exposure'] as String?,
+    aperture: json['aperture'] as String?,
+    focalLength: json['focalLength'] as String?,
+    orientation: (json['orientation'] as num?)?.toInt(),
+    latitude: (json['latitude'] as num?)?.toDouble(),
+    longitude: (json['longitude'] as num?)?.toDouble(),
+    durationSeconds: (json['durationSeconds'] as num?)?.toDouble(),
+    codec: json['codec'] as String?,
+    colorProfile: json['colorProfile'] as String?,
+    bitDepth: (json['bitDepth'] as num?)?.toInt(),
+    hasAlpha: json['hasAlpha'] as bool?,
+  );
+}
 
 Map<String, dynamic> _$GalleryMetadataToJson(_GalleryMetadata instance) =>
     <String, dynamic>{
@@ -221,6 +194,7 @@ Map<String, dynamic> _$GalleryMetadataToJson(_GalleryMetadata instance) =>
       'path': instance.path,
       'kind': _$GalleryEntryKindEnumMap[instance.kind]!,
       'sizeBytes': instance.sizeBytes,
+      'section': _$GalleryMediaSectionEnumMap[instance.section]!,
       'width': instance.width,
       'height': instance.height,
       'dateTaken': instance.dateTaken,
@@ -241,6 +215,15 @@ Map<String, dynamic> _$GalleryMetadataToJson(_GalleryMetadata instance) =>
       'bitDepth': instance.bitDepth,
       'hasAlpha': instance.hasAlpha,
     };
+
+const _$GalleryEntryKindEnumMap = {
+  GalleryEntryKind.image: 'image',
+  GalleryEntryKind.animatedImage: 'animatedImage',
+  GalleryEntryKind.video: 'video',
+  GalleryEntryKind.directory: 'directory',
+  GalleryEntryKind.unsupported: 'unsupported',
+  GalleryEntryKind.unknown: 'unknown',
+};
 
 _GalleryDuplicateStartRequest _$GalleryDuplicateStartRequestFromJson(
   Map<String, dynamic> json,
@@ -267,15 +250,23 @@ const _$GalleryDuplicateModeEnumMap = {
 
 _GalleryDuplicateMember _$GalleryDuplicateMemberFromJson(
   Map<String, dynamic> json,
-) => _GalleryDuplicateMember(
-  mediaId: json['mediaId'] as String,
-  sourceRevision: json['sourceRevision'] as String,
-  path: json['path'] as String,
-  name: json['name'] as String,
-  sizeBytes: (json['sizeBytes'] as num).toInt(),
-  width: (json['width'] as num?)?.toInt(),
-  height: (json['height'] as num?)?.toInt(),
-);
+) {
+  $checkKeys(
+    json,
+    requiredKeys: const ['section'],
+    disallowNullValues: const ['section'],
+  );
+  return _GalleryDuplicateMember(
+    mediaId: json['mediaId'] as String,
+    sourceRevision: json['sourceRevision'] as String,
+    path: json['path'] as String,
+    name: json['name'] as String,
+    sizeBytes: (json['sizeBytes'] as num).toInt(),
+    width: (json['width'] as num?)?.toInt(),
+    height: (json['height'] as num?)?.toInt(),
+    section: $enumDecode(_$GalleryMediaSectionEnumMap, json['section']),
+  );
+}
 
 Map<String, dynamic> _$GalleryDuplicateMemberToJson(
   _GalleryDuplicateMember instance,
@@ -287,6 +278,7 @@ Map<String, dynamic> _$GalleryDuplicateMemberToJson(
   'sizeBytes': instance.sizeBytes,
   'width': instance.width,
   'height': instance.height,
+  'section': _$GalleryMediaSectionEnumMap[instance.section]!,
 };
 
 _GalleryDuplicateGroup _$GalleryDuplicateGroupFromJson(
