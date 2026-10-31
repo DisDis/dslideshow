@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/gallery_item.dart';
 import '../../../theme/presentation/extensions/build_context_ext.dart';
+import '../../../../src/gallery/gallery_date_time.dart';
 import '../../../../src/gallery/gallery_management_repository.dart';
 import '../bloc/gallery_comparison_metadata_bloc.dart';
 import '../bloc/gallery_group_comparison_bloc.dart';
@@ -67,6 +68,14 @@ class GalleryComparisonDetails extends StatelessWidget {
             GalleryResolutionRank.unknown => l.gallery_resolution_unknown,
           };
           final bytes = data?.sizeBytes ?? member.sizeBytes;
+          final taken = GalleryDateTime.parseDateTaken(data?.dateTaken);
+          TextStyle? dateStyle(GalleryComparisonDateSource source) =>
+              comparison?.recommendsDate(member.mediaId, source) == true
+              ? theme.textTheme.bodyMedium?.copyWith(
+                  color: galleryRecommendationColor(context),
+                  fontWeight: FontWeight.w600,
+                )
+              : null;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -95,10 +104,14 @@ class GalleryComparisonDetails extends StatelessWidget {
               ),
               if (comparison?.smallestFile(bytes) ?? false)
                 Text(l.gallery_file_smallest, style: theme.textTheme.bodySmall),
-              if (data?.dateTaken != null)
-                Text('${l.gallery_date_taken}: ${data!.dateTaken}')
-              else if (data?.fileModified != null)
-                Text('${l.gallery_file_modified}: ${data!.fileModified!.toLocal()}'),
+              Text(
+                '${l.gallery_date_taken}: ${GalleryDateTime.format(taken, l.localeName)}',
+                style: dateStyle(GalleryComparisonDateSource.dateTaken),
+              ),
+              Text(
+                '${l.gallery_file_modified}: ${GalleryDateTime.format(data?.fileModified, l.localeName)}',
+                style: dateStyle(GalleryComparisonDateSource.fileModified),
+              ),
               if (state.loading)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),

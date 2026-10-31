@@ -164,6 +164,8 @@ void main() {
         scrollable: find.byType(Scrollable).first,
         maxScrolls: 10,
       );
+      await Scrollable.ensureVisible(tester.element(find.byTooltip('Previous group')), alignment: .5);
+      await tester.pump();
       await tester.tap(find.byTooltip('Previous group'));
       await tester.pump();
       await tester.pump();

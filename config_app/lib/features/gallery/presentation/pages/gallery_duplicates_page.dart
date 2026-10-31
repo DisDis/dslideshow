@@ -762,10 +762,6 @@ class _CandidateCard extends StatelessWidget {
     final details = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          member.section == GalleryMediaSection.hidden ? l.gallery_hidden : l.gallery_in_slideshow,
-          style: Theme.of(context).textTheme.labelMedium,
-        ),
         GalleryComparisonDetails(
           key: ValueKey((member.mediaId, member.sourceRevision)),
           member: member,
@@ -878,9 +874,16 @@ class _CandidateCard extends StatelessWidget {
                         ],
                       )
                     : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [image, details]);
-                final name = Tooltip(
-                  message: member.name,
-                  child: Text(member.name, style: theme.textTheme.titleMedium, softWrap: true),
+                final identity = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Tooltip(
+                      message: member.name,
+                      child: Text(member.name, style: theme.textTheme.titleMedium, softWrap: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _CandidateSectionBadge(section: member.section),
+                  ],
                 );
                 final checkbox = SizedBox(
                   width: wide ? 200 : constraints.maxWidth,
@@ -898,13 +901,13 @@ class _CandidateCard extends StatelessWidget {
                     if (wide)
                       Row(
                         children: [
-                          Expanded(child: name),
+                          Expanded(child: identity),
                           const SizedBox(width: 12),
                           checkbox,
                         ],
                       )
                     else ...[
-                      name,
+                      identity,
                       checkbox,
                     ],
                     const SizedBox(height: 8),
@@ -913,6 +916,42 @@ class _CandidateCard extends StatelessWidget {
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CandidateSectionBadge extends StatelessWidget {
+  const _CandidateSectionBadge({required this.section});
+  final GalleryMediaSection section;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.localizations;
+    final theme = Theme.of(context);
+    final (label, icon) = switch (section) {
+      GalleryMediaSection.published => (l.gallery_library, Icons.photo_library_outlined),
+      GalleryMediaSection.hidden => (l.gallery_hidden, Icons.visibility_off_outlined),
+      GalleryMediaSection.trash => (l.gallery_trash, Icons.delete_outline),
+    };
+    final color = theme.colorScheme.onSurfaceVariant;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(l.gallery_candidate_section(label), style: theme.textTheme.labelLarge?.copyWith(color: color)),
           ),
         ],
       ),

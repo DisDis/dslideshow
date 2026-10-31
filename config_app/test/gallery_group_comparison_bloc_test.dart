@@ -1,7 +1,9 @@
 import 'package:config_app/features/gallery/presentation/bloc/gallery_group_comparison_bloc.dart';
+import 'package:config_app/src/gallery/gallery_date_time.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'support/gallery_management_harness.dart';
 
@@ -36,6 +38,35 @@ Future<void> _update(
 }
 
 void main() {
+  test('gallery dates parse EXIF and ISO offsets and reject missing or invalid timestamps', () {
+    expect(GalleryDateTime.parseDateTaken('2026:10:31 15:04:05'), DateTime(2026, 10, 31, 15, 4, 5));
+    expect(GalleryDateTime.parseDateTaken('2026:10:31 15:04:05+03:00'), DateTime.utc(2026, 10, 31, 12, 4, 5));
+    expect(
+      GalleryDateTime.parseDateTaken(' 2026-10-31T12:04:05.123456Z '),
+      DateTime.utc(2026, 10, 31, 12, 4, 5, 123, 456),
+    );
+    expect(GalleryDateTime.parseDateTaken('2024:02:29 00:00:00-0300'), DateTime.utc(2024, 2, 29, 3));
+    for (final value in [
+      null,
+      '',
+      'unknown',
+      '0000:00:00 00:00:00',
+      '2026:02:29 15:04:05',
+      '2026:10:31 24:04:05',
+      '2026-10-31T15:04:05+03:90',
+    ]) {
+      expect(GalleryDateTime.parseDateTaken(value), isNull, reason: value);
+    }
+  });
+
+  test('gallery dates use the current language, include seconds and omit subseconds', () async {
+    await initializeDateFormatting();
+    final date = DateTime(2026, 10, 31, 15, 4, 5, 123, 456);
+    expect(GalleryDateTime.format(date, 'en'), '10/31/2026 15:04:05');
+    expect(GalleryDateTime.format(date, 'ru'), '31.10.2026 15:04:05');
+    expect(GalleryDateTime.format(null, 'en'), '—');
+  });
+
   test('whole-group winner uses known resolutions and is corrected when missing dimensions arrive', () async {
     final bloc = _bloc([
       _member('minimum', 1000, 1000),
@@ -99,7 +130,7 @@ void main() {
     },
   );
 
-  test('exact copies always recommend the first instance; all other resolutions are yellow', () async {
+  test('exact copies without known dates recommend the first instance; other resolutions are yellow', () async {
     final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000)], exact: true);
     expect(bloc.state.exact, isTrue);
     expect(bloc.state.rank('a', GalleryImageResolution.read(6000, 4000)), GalleryResolutionRank.recommended);
@@ -108,6 +139,105 @@ void main() {
     expect(bloc.state.reason, GalleryRecommendationReason.firstExactCopy);
     expect(bloc.state.smallestFile(100), isFalse);
     await bloc.close();
+  });
+
+  test('exact copies use the earliest capture date or modification fallback even when dimensions stay equal', () async {
+    final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000), _member('c', 6000, 4000)], exact: true);
+    addTearDown(bloc.close);
+    await _update(
+      bloc,
+      photoMetadata('b').copyWith(fileModified: DateTime.utc(2020, 1, 1)),
+      (s) => s.recommendedMediaId == 'b',
+    );
+    expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
+    expect(bloc.state.recommendsDate('b', GalleryComparisonDateSource.fileModified), isTrue);
+    expect(bloc.state.recommendsDate('b', GalleryComparisonDateSource.dateTaken), isFalse);
+    await _update(
+      bloc,
+      photoMetadata('a').copyWith(dateTaken: '2021:01:01 00:00:00Z', fileModified: DateTime.utc(2010, 1, 1)),
+      (s) => s.knownDateCount == 2,
+    );
+    expect(bloc.state.recommendedMediaId, 'b', reason: 'A known capture date takes priority over that file\'s mtime.');
+    await _update(
+      bloc,
+      photoMetadata('c').copyWith(dateTaken: '2019-01-01T00:00:00Z'),
+      (s) => s.recommendedMediaId == 'c',
+    );
+    expect(bloc.state.reason, GalleryRecommendationReason.earliestDateTaken);
+    expect(bloc.state.recommendsDate('c', GalleryComparisonDateSource.dateTaken), isTrue);
+    await _update(
+      bloc,
+      photoMetadata('b').copyWith(dateTaken: '2018:01:01 00:00:00Z', fileModified: DateTime.utc(2020, 1, 1)),
+      (s) => s.recommendedMediaId == 'b',
+    );
+    await _update(
+      bloc,
+      photoMetadata('c').copyWith(dateTaken: 'invalid', fileModified: DateTime.utc(2017, 1, 1)),
+      (s) => s.recommendedMediaId == 'c',
+    );
+    expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
+    await _update(bloc, photoMetadata('c'), (s) => s.knownDateCount == 2);
+    expect(bloc.state.recommendedMediaId, 'b', reason: 'Removing a timestamp must remove its old index entry.');
+    bloc.add(photoMetadata('a', revision: 'stale').copyWith(dateTaken: '2000-01-01T00:00:00Z'));
+    bloc.add(photoMetadata('a').copyWith(section: GalleryMediaSection.hidden, dateTaken: '2000-01-01T00:00:00Z'));
+    await _update(
+      bloc,
+      photoMetadata('c').copyWith(fileModified: DateTime.utc(2025, 1, 1)),
+      (s) => s.knownDateCount == 3,
+    );
+    expect(bloc.state.recommendedMediaId, 'b');
+    expect(bloc.state.knownDateCount, 3);
+  });
+
+  test(
+    'equal comparison dates use group order across offsets and arrival order, including modification fallback',
+    () async {
+      final records = <LogRecord>[];
+      final oldLevel = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      final subscription = Logger.root.onRecord.listen(records.add);
+      addTearDown(() async {
+        await subscription.cancel();
+        Logger.root.level = oldLevel;
+      });
+      final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000)], exact: true);
+      addTearDown(bloc.close);
+      await _update(
+        bloc,
+        photoMetadata('b').copyWith(dateTaken: '2026:10:31 15:04:05+03:00'),
+        (s) => s.recommendedMediaId == 'b',
+      );
+      await _update(
+        bloc,
+        photoMetadata('a').copyWith(fileModified: DateTime.utc(2026, 10, 31, 12, 4, 5)),
+        (s) => s.recommendedMediaId == 'a',
+      );
+      expect(bloc.state.knownDateCount, 2);
+      expect(bloc.state.recommendedDate!.value, DateTime.utc(2026, 10, 31, 12, 4, 5));
+      expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
+      await _update(
+        bloc,
+        photoMetadata('a').copyWith(dateTaken: '2026-10-31T12:04:05Z'),
+        (s) => s.reason == GalleryRecommendationReason.earliestDateTaken,
+      );
+      final logs = records.where((r) => r.loggerName == 'GalleryGroupComparisonBloc').toList();
+      expect(
+        logs.any((r) => r.message.contains('knownDates=2') && r.message.contains('reason=earliestFileModified')),
+        isTrue,
+      );
+      expect(logs.any((r) => r.message.contains('reason=earliestDateTaken')), isTrue);
+      expect(logs.every((r) => r.level < Level.INFO), isTrue);
+    },
+  );
+
+  test('similar files keep resolution and group-order ranking regardless of their dates', () async {
+    final bloc = _bloc([_member('a', 2000, 1000), _member('b', 2000, 1000)]);
+    bloc.add(photoMetadata('b').copyWith(width: 2000, height: 1000, dateTaken: '2000-01-01T00:00:00Z'));
+    await bloc.close();
+    expect(bloc.state.recommendedMediaId, 'a');
+    expect(bloc.state.recommendedDate, isNull);
+    expect(bloc.state.knownDateCount, 0);
+    expect(bloc.state.reason, GalleryRecommendationReason.firstTied);
   });
 
   test(

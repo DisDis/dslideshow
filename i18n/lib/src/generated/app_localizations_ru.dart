@@ -2957,7 +2957,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_resolution_unknown => 'Разрешение неизвестно';
 
   @override
-  String get gallery_recommend_first_copy => 'Точные копии равноценны; предложен первый файл в списке.';
+  String get gallery_recommend_first_copy =>
+      'Точные копии равноценны; даты неизвестны, предложен первый файл в списке.';
+
+  @override
+  String get gallery_recommend_earliest_taken =>
+      'Причина: самая ранняя известная дата среди точных копий. У этого файла взята дата съёмки; у файлов без неё используется дата изменения.';
+
+  @override
+  String get gallery_recommend_earliest_modified =>
+      'Причина: самая ранняя известная дата среди точных копий. У этого файла нет даты съёмки, поэтому взята дата изменения.';
 
   @override
   String get gallery_recommend_first_tied => 'Причина: первый среди файлов с максимальным разрешением';
@@ -2995,7 +3004,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Часть разрешений неизвестна; рекомендация предварительная и может измениться.';
 
   @override
-  String get gallery_equivalent_copies => 'Точные копии равноценны; рекомендован первый файл в списке.';
+  String get gallery_equivalent_copies =>
+      'Точные копии: рекомендуется самая ранняя известная дата съёмки, а при её отсутствии — дата изменения. При равенстве или отсутствии дат используется порядок группы. Рекомендация может уточниться при загрузке сведений.';
 
   @override
   String get configPageTitle => 'Настройка фоторамки';
@@ -3187,6 +3197,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get gallery_in_slideshow => 'В показе';
+
+  @override
+  String gallery_candidate_section(String section) {
+    return 'Раздел: $section';
+  }
 
   @override
   String get gallery_hidden_only_warning =>

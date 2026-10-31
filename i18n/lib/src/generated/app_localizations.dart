@@ -5705,8 +5705,20 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_recommend_first_copy.
   ///
   /// In en, this message translates to:
-  /// **'Exact copies are equivalent; the first file is suggested.'**
+  /// **'Exact copies are equivalent; dates are unavailable, so the first file is suggested.'**
   String get gallery_recommend_first_copy;
+
+  /// No description provided for @gallery_recommend_earliest_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: earliest known date among exact copies. This file uses its date taken; files without a date taken use their modification date.'**
+  String get gallery_recommend_earliest_taken;
+
+  /// No description provided for @gallery_recommend_earliest_modified.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: earliest known date among exact copies. This file has no date taken, so its modification date is used.'**
+  String get gallery_recommend_earliest_modified;
 
   /// No description provided for @gallery_recommend_first_tied.
   ///
@@ -5777,7 +5789,7 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_equivalent_copies.
   ///
   /// In en, this message translates to:
-  /// **'Exact copies are equivalent; the first file is recommended.'**
+  /// **'Exact copies: the earliest known date is recommended, using the date taken or, if unavailable, the modification date. Ties and missing dates use the group order. The recommendation may change as details load.'**
   String get gallery_equivalent_copies;
 
   /// No description provided for @configPageTitle.
@@ -6139,6 +6151,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'In slideshow'**
   String get gallery_in_slideshow;
+
+  /// No description provided for @gallery_candidate_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Section: {section}'**
+  String gallery_candidate_section(String section);
 
   /// No description provided for @gallery_hidden_only_warning.
   ///

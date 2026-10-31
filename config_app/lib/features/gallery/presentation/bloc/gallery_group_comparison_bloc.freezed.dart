@@ -13,6 +13,325 @@ part of 'gallery_group_comparison_bloc.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$GalleryComparisonDate {
+  DateTime get value;
+  GalleryComparisonDateSource get source;
+
+  /// Create a copy of GalleryComparisonDate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GalleryComparisonDateCopyWith<GalleryComparisonDate> get copyWith =>
+      _$GalleryComparisonDateCopyWithImpl<GalleryComparisonDate>(
+        this as GalleryComparisonDate,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    final _this = this as GalleryComparisonDate;
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GalleryComparisonDate &&
+            (identical(other.value, _this.value) ||
+                other.value == _this.value) &&
+            (identical(other.source, _this.source) ||
+                other.source == _this.source));
+  }
+
+  @override
+  int get hashCode {
+    final _this = this as GalleryComparisonDate;
+    return Object.hash(runtimeType, _this.value, _this.source);
+  }
+
+  @override
+  String toString() {
+    final _this = this as GalleryComparisonDate;
+    return 'GalleryComparisonDate(value: ${_this.value}, source: ${_this.source})';
+  }
+}
+
+/// @nodoc
+abstract mixin class $GalleryComparisonDateCopyWith<$Res> {
+  factory $GalleryComparisonDateCopyWith(
+    GalleryComparisonDate value,
+    $Res Function(GalleryComparisonDate) _then,
+  ) = _$GalleryComparisonDateCopyWithImpl;
+  @useResult
+  $Res call({DateTime value, GalleryComparisonDateSource source});
+}
+
+/// @nodoc
+class _$GalleryComparisonDateCopyWithImpl<$Res>
+    implements $GalleryComparisonDateCopyWith<$Res> {
+  _$GalleryComparisonDateCopyWithImpl(this._self, this._then);
+
+  final GalleryComparisonDate _self;
+  final $Res Function(GalleryComparisonDate) _then;
+
+  /// Create a copy of GalleryComparisonDate
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? value = null, Object? source = null}) {
+    return _then(
+      GalleryComparisonDate(
+        value: null == value
+            ? _self.value
+            : value // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        source: null == source
+            ? _self.source
+            : source // ignore: cast_nullable_to_non_nullable
+                  as GalleryComparisonDateSource,
+      ),
+    );
+  }
+}
+
+/// Adds pattern-matching-related methods to [GalleryComparisonDate].
+extension GalleryComparisonDatePatterns on GalleryComparisonDate {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_GalleryComparisonDate value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_GalleryComparisonDate value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_GalleryComparisonDate value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(DateTime value, GalleryComparisonDateSource source)?
+    $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate() when $default != null:
+        return $default(_that.value, _that.source);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(DateTime value, GalleryComparisonDateSource source)
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate():
+        return $default(_that.value, _that.source);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(DateTime value, GalleryComparisonDateSource source)?
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryComparisonDate() when $default != null:
+        return $default(_that.value, _that.source);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class _GalleryComparisonDate implements GalleryComparisonDate {
+  const _GalleryComparisonDate({required this.value, required this.source});
+
+  @override
+  final DateTime value;
+  @override
+  final GalleryComparisonDateSource source;
+
+  /// Create a copy of GalleryComparisonDate
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$GalleryComparisonDateCopyWith<_GalleryComparisonDate> get copyWith =>
+      __$GalleryComparisonDateCopyWithImpl<_GalleryComparisonDate>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _GalleryComparisonDate &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.source, source) || other.source == source));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, value, source);
+  }
+
+  @override
+  String toString() {
+    return 'GalleryComparisonDate(value: $value, source: $source)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$GalleryComparisonDateCopyWith<$Res>
+    implements $GalleryComparisonDateCopyWith<$Res> {
+  factory _$GalleryComparisonDateCopyWith(
+    _GalleryComparisonDate value,
+    $Res Function(_GalleryComparisonDate) _then,
+  ) = __$GalleryComparisonDateCopyWithImpl;
+  @override
+  @useResult
+  $Res call({DateTime value, GalleryComparisonDateSource source});
+}
+
+/// @nodoc
+class __$GalleryComparisonDateCopyWithImpl<$Res>
+    implements _$GalleryComparisonDateCopyWith<$Res> {
+  __$GalleryComparisonDateCopyWithImpl(this._self, this._then);
+
+  final _GalleryComparisonDate _self;
+  final $Res Function(_GalleryComparisonDate) _then;
+
+  /// Create a copy of GalleryComparisonDate
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({Object? value = null, Object? source = null}) {
+    return _then(
+      _GalleryComparisonDate(
+        value: null == value
+            ? _self.value
+            : value // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        source: null == source
+            ? _self.source
+            : source // ignore: cast_nullable_to_non_nullable
+                  as GalleryComparisonDateSource,
+      ),
+    );
+  }
+}
+
+/// @nodoc
 mixin _$GalleryImageResolution {
   int get width;
   int get height;
@@ -340,6 +659,8 @@ mixin _$GalleryGroupComparisonState {
   int get minSizeBytes;
   int get maxSizeBytes;
   String? get recommendedMediaId;
+  int get knownDateCount;
+  GalleryComparisonDate? get recommendedDate;
 
   /// Create a copy of GalleryGroupComparisonState
   /// with the given fields replaced by the non-null parameter values.
@@ -375,7 +696,11 @@ mixin _$GalleryGroupComparisonState {
             (identical(other.maxSizeBytes, _this.maxSizeBytes) ||
                 other.maxSizeBytes == _this.maxSizeBytes) &&
             (identical(other.recommendedMediaId, _this.recommendedMediaId) ||
-                other.recommendedMediaId == _this.recommendedMediaId));
+                other.recommendedMediaId == _this.recommendedMediaId) &&
+            (identical(other.knownDateCount, _this.knownDateCount) ||
+                other.knownDateCount == _this.knownDateCount) &&
+            (identical(other.recommendedDate, _this.recommendedDate) ||
+                other.recommendedDate == _this.recommendedDate));
   }
 
   @override
@@ -392,13 +717,15 @@ mixin _$GalleryGroupComparisonState {
       _this.minSizeBytes,
       _this.maxSizeBytes,
       _this.recommendedMediaId,
+      _this.knownDateCount,
+      _this.recommendedDate,
     );
   }
 
   @override
   String toString() {
     final _this = this as GalleryGroupComparisonState;
-    return 'GalleryGroupComparisonState(exact: ${_this.exact}, totalCount: ${_this.totalCount}, knownCount: ${_this.knownCount}, minPixels: ${_this.minPixels}, maxPixels: ${_this.maxPixels}, maximumCount: ${_this.maximumCount}, minSizeBytes: ${_this.minSizeBytes}, maxSizeBytes: ${_this.maxSizeBytes}, recommendedMediaId: ${_this.recommendedMediaId})';
+    return 'GalleryGroupComparisonState(exact: ${_this.exact}, totalCount: ${_this.totalCount}, knownCount: ${_this.knownCount}, minPixels: ${_this.minPixels}, maxPixels: ${_this.maxPixels}, maximumCount: ${_this.maximumCount}, minSizeBytes: ${_this.minSizeBytes}, maxSizeBytes: ${_this.maxSizeBytes}, recommendedMediaId: ${_this.recommendedMediaId}, knownDateCount: ${_this.knownDateCount}, recommendedDate: ${_this.recommendedDate})';
   }
 }
 
@@ -419,7 +746,11 @@ abstract mixin class $GalleryGroupComparisonStateCopyWith<$Res> {
     int minSizeBytes,
     int maxSizeBytes,
     String? recommendedMediaId,
+    int knownDateCount,
+    GalleryComparisonDate? recommendedDate,
   });
+
+  $GalleryComparisonDateCopyWith<$Res>? get recommendedDate;
 }
 
 /// @nodoc
@@ -444,6 +775,8 @@ class _$GalleryGroupComparisonStateCopyWithImpl<$Res>
     Object? minSizeBytes = null,
     Object? maxSizeBytes = null,
     Object? recommendedMediaId = freezed,
+    Object? knownDateCount = null,
+    Object? recommendedDate = freezed,
   }) {
     return _then(
       GalleryGroupComparisonState(
@@ -483,8 +816,32 @@ class _$GalleryGroupComparisonStateCopyWithImpl<$Res>
             ? _self.recommendedMediaId
             : recommendedMediaId // ignore: cast_nullable_to_non_nullable
                   as String?,
+        knownDateCount: null == knownDateCount
+            ? _self.knownDateCount
+            : knownDateCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        recommendedDate: freezed == recommendedDate
+            ? _self.recommendedDate
+            : recommendedDate // ignore: cast_nullable_to_non_nullable
+                  as GalleryComparisonDate?,
       ),
     );
+  }
+
+  /// Create a copy of GalleryGroupComparisonState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryComparisonDateCopyWith<$Res>? get recommendedDate {
+    if (_self.recommendedDate == null) {
+      return null;
+    }
+
+    return $GalleryComparisonDateCopyWith<$Res>(_self.recommendedDate!, (
+      value,
+    ) {
+      return _then(_self.copyWith(recommendedDate: value));
+    });
   }
 }
 
@@ -591,6 +948,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
       int minSizeBytes,
       int maxSizeBytes,
       String? recommendedMediaId,
+      int knownDateCount,
+      GalleryComparisonDate? recommendedDate,
     )?
     $default, {
     required TResult orElse(),
@@ -608,6 +967,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
           _that.minSizeBytes,
           _that.maxSizeBytes,
           _that.recommendedMediaId,
+          _that.knownDateCount,
+          _that.recommendedDate,
         );
       case _:
         return orElse();
@@ -639,6 +1000,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
       int minSizeBytes,
       int maxSizeBytes,
       String? recommendedMediaId,
+      int knownDateCount,
+      GalleryComparisonDate? recommendedDate,
     )
     $default,
   ) {
@@ -655,6 +1018,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
           _that.minSizeBytes,
           _that.maxSizeBytes,
           _that.recommendedMediaId,
+          _that.knownDateCount,
+          _that.recommendedDate,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -685,6 +1050,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
       int minSizeBytes,
       int maxSizeBytes,
       String? recommendedMediaId,
+      int knownDateCount,
+      GalleryComparisonDate? recommendedDate,
     )?
     $default,
   ) {
@@ -701,6 +1068,8 @@ extension GalleryGroupComparisonStatePatterns on GalleryGroupComparisonState {
           _that.minSizeBytes,
           _that.maxSizeBytes,
           _that.recommendedMediaId,
+          _that.knownDateCount,
+          _that.recommendedDate,
         );
       case _:
         return null;
@@ -721,6 +1090,8 @@ class _GalleryGroupComparisonState extends GalleryGroupComparisonState {
     required this.minSizeBytes,
     required this.maxSizeBytes,
     required this.recommendedMediaId,
+    this.knownDateCount = 0,
+    this.recommendedDate,
   }) : super._();
 
   @override
@@ -741,6 +1112,11 @@ class _GalleryGroupComparisonState extends GalleryGroupComparisonState {
   final int maxSizeBytes;
   @override
   final String? recommendedMediaId;
+  @override
+  @JsonKey()
+  final int knownDateCount;
+  @override
+  final GalleryComparisonDate? recommendedDate;
 
   /// Create a copy of GalleryGroupComparisonState
   /// with the given fields replaced by the non-null parameter values.
@@ -775,7 +1151,11 @@ class _GalleryGroupComparisonState extends GalleryGroupComparisonState {
             (identical(other.maxSizeBytes, maxSizeBytes) ||
                 other.maxSizeBytes == maxSizeBytes) &&
             (identical(other.recommendedMediaId, recommendedMediaId) ||
-                other.recommendedMediaId == recommendedMediaId));
+                other.recommendedMediaId == recommendedMediaId) &&
+            (identical(other.knownDateCount, knownDateCount) ||
+                other.knownDateCount == knownDateCount) &&
+            (identical(other.recommendedDate, recommendedDate) ||
+                other.recommendedDate == recommendedDate));
   }
 
   @override
@@ -791,12 +1171,14 @@ class _GalleryGroupComparisonState extends GalleryGroupComparisonState {
       minSizeBytes,
       maxSizeBytes,
       recommendedMediaId,
+      knownDateCount,
+      recommendedDate,
     );
   }
 
   @override
   String toString() {
-    return 'GalleryGroupComparisonState(exact: $exact, totalCount: $totalCount, knownCount: $knownCount, minPixels: $minPixels, maxPixels: $maxPixels, maximumCount: $maximumCount, minSizeBytes: $minSizeBytes, maxSizeBytes: $maxSizeBytes, recommendedMediaId: $recommendedMediaId)';
+    return 'GalleryGroupComparisonState(exact: $exact, totalCount: $totalCount, knownCount: $knownCount, minPixels: $minPixels, maxPixels: $maxPixels, maximumCount: $maximumCount, minSizeBytes: $minSizeBytes, maxSizeBytes: $maxSizeBytes, recommendedMediaId: $recommendedMediaId, knownDateCount: $knownDateCount, recommendedDate: $recommendedDate)';
   }
 }
 
@@ -819,7 +1201,12 @@ abstract mixin class _$GalleryGroupComparisonStateCopyWith<$Res>
     int minSizeBytes,
     int maxSizeBytes,
     String? recommendedMediaId,
+    int knownDateCount,
+    GalleryComparisonDate? recommendedDate,
   });
+
+  @override
+  $GalleryComparisonDateCopyWith<$Res>? get recommendedDate;
 }
 
 /// @nodoc
@@ -844,6 +1231,8 @@ class __$GalleryGroupComparisonStateCopyWithImpl<$Res>
     Object? minSizeBytes = null,
     Object? maxSizeBytes = null,
     Object? recommendedMediaId = freezed,
+    Object? knownDateCount = null,
+    Object? recommendedDate = freezed,
   }) {
     return _then(
       _GalleryGroupComparisonState(
@@ -883,7 +1272,31 @@ class __$GalleryGroupComparisonStateCopyWithImpl<$Res>
             ? _self.recommendedMediaId
             : recommendedMediaId // ignore: cast_nullable_to_non_nullable
                   as String?,
+        knownDateCount: null == knownDateCount
+            ? _self.knownDateCount
+            : knownDateCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        recommendedDate: freezed == recommendedDate
+            ? _self.recommendedDate
+            : recommendedDate // ignore: cast_nullable_to_non_nullable
+                  as GalleryComparisonDate?,
       ),
     );
+  }
+
+  /// Create a copy of GalleryGroupComparisonState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryComparisonDateCopyWith<$Res>? get recommendedDate {
+    if (_self.recommendedDate == null) {
+      return null;
+    }
+
+    return $GalleryComparisonDateCopyWith<$Res>(_self.recommendedDate!, (
+      value,
+    ) {
+      return _then(_self.copyWith(recommendedDate: value));
+    });
   }
 }

@@ -424,7 +424,12 @@ void main() {
         if (request.url.pathSegments.contains('metadata')) {
           final id = request.url.pathSegments[5];
           reads.add(id);
-          final data = photoMetadata(id).copyWith(width: id == 'c' ? 1250 : 6000, height: id == 'c' ? 625 : 4000);
+          final data = photoMetadata(id).copyWith(
+            width: id == 'c' ? 1250 : 6000,
+            height: id == 'c' ? 625 : 4000,
+            dateTaken: id == 'a' ? '2026:10:31 15:04:05' : null,
+            fileModified: DateTime(2026, 10, 31, id == 'b' ? 14 : 16, 7, 8, 123),
+          );
           return http.Response(jsonEncode(data.toJson()), 200);
         }
         return duplicateResponse(request, _job);
@@ -438,6 +443,15 @@ void main() {
     expect(find.text('6000 × 4000'), findsNWidgets(2));
     expect(find.text('8000 × 6000'), findsNothing);
     expect(find.text('1250 × 625'), findsOneWidget);
+    expect(find.text('Date taken: 10/31/2026 15:04:05'), findsOneWidget);
+    expect(find.text('Date taken: —'), findsNWidgets(2));
+    expect(find.text('File modified: 10/31/2026 16:07:08'), findsNWidgets(2));
+    expect(tester.widget<Text>(find.text('File modified: 10/31/2026 14:07:08')).style!.color, Colors.green.shade800);
+    final fallbackCard = find.ancestor(
+      of: find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'b'),
+      matching: find.byType(Card),
+    );
+    expect(find.descendant(of: fallbackCard, matching: find.byType(GalleryRecommendationBadge)), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Next group'),
       200,

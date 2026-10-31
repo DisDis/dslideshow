@@ -1560,7 +1560,9 @@
   "gallery_show_full_path": "Full path",
   "gallery_hide_full_path": "Hide full path",
   "gallery_resolution_unknown": "Resolution unavailable",
-  "gallery_recommend_first_copy": "Exact copies are equivalent; the first file is suggested.",
+  "gallery_recommend_first_copy": "Exact copies are equivalent; dates are unavailable, so the first file is suggested.",
+  "gallery_recommend_earliest_taken": "Reason: earliest known date among exact copies. This file uses its date taken; files without a date taken use their modification date.",
+  "gallery_recommend_earliest_modified": "Reason: earliest known date among exact copies. This file has no date taken, so its modification date is used.",
   "gallery_recommend_first_tied": "Reason: first among files with the highest resolution",
   "gallery_recommend_known_resolution": "Provisional: highest known resolution",
   "gallery_recommend_first_unknown": "Resolution unavailable; the first file is suggested.",
@@ -1572,7 +1574,7 @@
   "gallery_recommend_resolution": "Reason: highest resolution in the group",
   "gallery_resolution_recommendation_hint": "Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.",
   "gallery_comparison_partial": "Some resolutions are unknown; the recommendation is provisional and may change.",
-  "gallery_equivalent_copies": "Exact copies are equivalent; the first file is recommended.",
+  "gallery_equivalent_copies": "Exact copies: the earliest known date is recommended, using the date taken or, if unavailable, the modification date. Ties and missing dates use the group order. The recommendation may change as details load.",
   "configPageTitle": "Set up your photo frame",
   "configPageIntro": "Open the settings panel on your phone or computer.",
   "configPageStarting": "Starting settings access…",
@@ -1664,6 +1666,14 @@
   "gallery_hidden_hint": "Hidden files stay on the frame and are skipped during cloud synchronization.",
   "gallery_hidden_file_changed": "Hidden file entry changed",
   "gallery_in_slideshow": "In slideshow",
+  "gallery_candidate_section": "Section: {section}",
+  "@gallery_candidate_section": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
   "gallery_hidden_only_warning": "This selection removes the last copy in the slideshow from at least one group. Only hidden copies will remain.",
   "yandex_drive_label": "Yandex Disk",
   "using_yandex_drive": "Using Yandex Disk",

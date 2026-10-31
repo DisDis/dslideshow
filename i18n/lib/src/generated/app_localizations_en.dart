@@ -2929,7 +2929,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_resolution_unknown => 'Resolution unavailable';
 
   @override
-  String get gallery_recommend_first_copy => 'Exact copies are equivalent; the first file is suggested.';
+  String get gallery_recommend_first_copy =>
+      'Exact copies are equivalent; dates are unavailable, so the first file is suggested.';
+
+  @override
+  String get gallery_recommend_earliest_taken =>
+      'Reason: earliest known date among exact copies. This file uses its date taken; files without a date taken use their modification date.';
+
+  @override
+  String get gallery_recommend_earliest_modified =>
+      'Reason: earliest known date among exact copies. This file has no date taken, so its modification date is used.';
 
   @override
   String get gallery_recommend_first_tied => 'Reason: first among files with the highest resolution';
@@ -2967,7 +2976,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Some resolutions are unknown; the recommendation is provisional and may change.';
 
   @override
-  String get gallery_equivalent_copies => 'Exact copies are equivalent; the first file is recommended.';
+  String get gallery_equivalent_copies =>
+      'Exact copies: the earliest known date is recommended, using the date taken or, if unavailable, the modification date. Ties and missing dates use the group order. The recommendation may change as details load.';
 
   @override
   String get configPageTitle => 'Set up your photo frame';
@@ -3159,6 +3169,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_in_slideshow => 'In slideshow';
+
+  @override
+  String gallery_candidate_section(String section) {
+    return 'Section: $section';
+  }
 
   @override
   String get gallery_hidden_only_warning =>
