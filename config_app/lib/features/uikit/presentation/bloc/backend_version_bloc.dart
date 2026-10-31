@@ -85,9 +85,9 @@ class BackendVersionBloc extends Cubit<BackendVersionState> {
           compatibility: compatibility,
         ),
       );
-    } catch (error) {
+    } catch (error, stack) {
       if (isClosed || !identical(session, _session)) return;
-      _log.warning('action=load result=failed type=${error.runtimeType}');
+      _log.warning('action=load result=failed type=${error.runtimeType}', error, stack);
       emit(const BackendVersionState(status: BackendVersionStatus.failure));
     }
   }

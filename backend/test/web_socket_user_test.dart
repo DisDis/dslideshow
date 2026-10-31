@@ -82,14 +82,11 @@ void main() {
         ),
         isTrue,
       );
+      final malformed = sessions.singleWhere((record) => record.error is FormatException);
+      expect(malformed.error.toString(), contains('private-malformed-json'));
+      expect(malformed.stackTrace, isNotNull);
       final text = sessions.map((record) => '${record.message} ${record.error ?? ''}').join('\n');
-      for (final secret in [
-        'private-user',
-        'private-secret',
-        'private-echo-payload',
-        'private-malformed-json',
-        '"code"',
-      ]) {
+      for (final secret in ['private-user', 'private-secret', 'private-echo-payload', '"code"']) {
         expect(text, isNot(contains(secret)));
       }
     }),

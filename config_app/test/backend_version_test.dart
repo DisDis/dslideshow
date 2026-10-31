@@ -77,7 +77,13 @@ void main() {
       expect(records.any((record) => record.message.contains('action=load result=started')), isTrue);
       expect(records.any((record) => record.message.contains('compatibility=${compatibility.name}')), isTrue);
       expect(records.any((record) => record.message.contains('private-')), isFalse);
-      expect(records.every((record) => record.error == null), isTrue);
+      expect(records.where((record) => record.error != null), isNotEmpty);
+      expect(
+        records
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
       await bloc.close();
       await authentication.close();
       await subscription.cancel();

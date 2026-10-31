@@ -122,7 +122,9 @@ void main() {
     expect(h.status.state.isMenu, isFalse);
     expect(records.any((record) => record.message.startsWith('command failed action=powerOff')), isTrue);
     expect(records.any((record) => record.message.startsWith('command completed action=powerOff')), isTrue);
-    expect(records.every((record) => record.error == null && !record.message.contains('private-code')), isTrue);
+    final failure = records.singleWhere((record) => record.error != null);
+    expect(failure.error.toString(), contains('private-code'));
+    expect(failure.stackTrace, isNotNull);
   });
 
   menuTest('restart awaits its own RPC and closes the menu only after acceptance', (tester) async {

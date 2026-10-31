@@ -104,9 +104,11 @@ class GalleryDuplicateService {
       );
     } on FileSystemException catch (error) {
       if (error.osError?.errorCode != 2) rethrow;
-    } on FormatException {
+    } on FormatException catch (error, stack) {
+      _log.warning('Search state decoding failed', error, stack);
       throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
-    } on TypeError {
+    } on TypeError catch (error, stack) {
+      _log.warning('Search state decoding failed', error, stack);
       throw const GalleryCatalogFailure(GalleryErrorCode.processingFailed);
     }
   }
@@ -183,7 +185,7 @@ class GalleryDuplicateService {
       final cancellation = _cancel!;
       _work = _run(request.operationId, modes, cancellation);
       return _job;
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.unavailable;
       final diagnostics = GalleryDuplicateDiagnostics(
         stage: GalleryDuplicateStage.persistence,
@@ -193,6 +195,8 @@ class GalleryDuplicateService {
         () =>
             'Search start failed '
             'code=${code.name} ${_diagnosticLog(diagnostics)}',
+        error,
+        stack,
       );
       _job = _job.copyWith(
         status: GalleryDuplicateStatus.failed,
@@ -740,7 +744,8 @@ class GalleryDuplicateService {
         throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
       }
       await hiddenDirectory.list(followLinks: false).take(1).drain<void>();
-    } on FileSystemException {
+    } on FileSystemException catch (error, stack) {
+      _log.fine('Search root access failed', error, stack);
       throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
     }
     _checkCancelled(cancel);
@@ -761,7 +766,8 @@ class GalleryDuplicateService {
       }
       // Read at most the first directory entry, including the valid empty case.
       await Directory(root).list(followLinks: false).take(1).drain<void>();
-    } on FileSystemException {
+    } on FileSystemException catch (error, stack) {
+      _log.fine('Search root access failed', error, stack);
       throw const GalleryCatalogFailure(GalleryErrorCode.unavailable);
     }
     _checkCancelled(cancel);

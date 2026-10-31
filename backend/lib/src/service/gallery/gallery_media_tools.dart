@@ -71,7 +71,8 @@ class GalleryMediaTools {
     _active.add(done.future);
     try {
       return await work();
-    } on FileSystemException catch (error) {
+    } on FileSystemException catch (error, stack) {
+      _log.warning('Media file access failed', error, stack);
       throw GalleryCatalogFailure(
         error.osError?.errorCode == 13 ? GalleryErrorCode.forbidden : GalleryErrorCode.unavailable,
       );
@@ -130,12 +131,14 @@ class GalleryMediaTools {
               ' cached=${_cache.length}',
         );
       },
-      onError: (Object error) {
+      onError: (Object error, StackTrace stack) {
         _metadataReads.remove(key);
         final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.processingFailed;
         _log.log(
           code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
           () => 'Metadata failed media=${_logId(id)} code=${code.name} ',
+          error,
+          stack,
         );
       },
     );
@@ -189,13 +192,15 @@ class GalleryMediaTools {
             'format=${_ImageFormat.parse(result.format).name}',
       );
       return result;
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       final code = error is GalleryCatalogFailure ? error.code : GalleryErrorCode.processingFailed;
       _log.log(
         code == GalleryErrorCode.cancelled ? Level.INFO : Level.WARNING,
         () =>
             'Rotation failed direction=${request.rotation.name} '
             'code=${code.name}',
+        error,
+        stack,
       );
       rethrow;
     }

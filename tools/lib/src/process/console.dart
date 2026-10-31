@@ -115,7 +115,10 @@ class BuildConsole {
       final remaining = message.substring(run.end);
       message = remaining.isEmpty ? run.group(1)! : '$remaining ${run.group(1)}';
     }
-    filter.consume('${record.level.name} ${record.loggerName} $message', text.write);
+    final diagnostic = StringBuffer('${record.level.name} ${record.loggerName} $message');
+    if (record.error != null) diagnostic.write('\n${record.error}');
+    if (record.stackTrace != null) diagnostic.write('\n${record.stackTrace}');
+    filter.consume(diagnostic.toString(), text.write);
     filter.finish(text.write);
     var code = 36;
     final result = _result.firstMatch(record.message)?.group(1);

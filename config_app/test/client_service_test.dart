@@ -26,11 +26,7 @@ void main() {
     return client;
   }
 
-  Future<void> connect(
-    WidgetTester tester,
-    ClientServiceImpl client,
-    _ControlledChannel channel,
-  ) async {
+  Future<void> connect(WidgetTester tester, ClientServiceImpl client, _ControlledChannel channel) async {
     final connected = client.connect(_uri, 'access-code');
     await tester.pump();
     final auth = channel.sent.single as WSAuthCommand;
@@ -40,9 +36,7 @@ void main() {
   }
 
   group('ClientService connection', () {
-    testWidgets('authenticates after handshake and responds to server hello', (
-      tester,
-    ) async {
+    testWidgets('authenticates after handshake and responds to server hello', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       final connected = client.connect(_uri, 'access-code');
@@ -64,9 +58,7 @@ void main() {
       expect(channel.sent.last, const WSResultOk(id: 20000));
     });
 
-    testWidgets('does not send authentication before channel is ready', (
-      tester,
-    ) async {
+    testWidgets('does not send authentication before channel is ready', (tester) async {
       final channel = _ControlledChannel(initiallyReady: false);
       final client = clientFor(channel);
       final connected = client.connect(_uri, 'access-code');
@@ -100,10 +92,7 @@ void main() {
 
     testWidgets('limits the handshake wait', (tester) async {
       final channel = _ControlledChannel(initiallyReady: false);
-      final client = clientFor(
-        channel,
-        connectionTimeout: const Duration(seconds: 2),
-      );
+      final client = clientFor(channel, connectionTimeout: const Duration(seconds: 2));
       final connected = client.connect(_uri, 'access-code');
       final failed = expectLater(connected, throwsA(isA<TimeoutException>()));
       await tester.pump();
@@ -118,24 +107,15 @@ void main() {
       expect(channel.sent, isEmpty);
     });
 
-    testWidgets('returns a future error when channel creation throws', (
-      tester,
-    ) async {
-      final client = ClientServiceImpl(
-        channelFactory: (_) => throw StateError('connection failed'),
-      );
+    testWidgets('returns a future error when channel creation throws', (tester) async {
+      final client = ClientServiceImpl(channelFactory: (_) => throw StateError('connection failed'));
       addTearDown(client.dispose);
-      await expectLater(
-        client.connect(_uri, 'access-code'),
-        throwsA(isA<StateError>()),
-      );
+      await expectLater(client.connect(_uri, 'access-code'), throwsA(isA<StateError>()));
       expect(client.channel, isNull);
       expect(client.isAuth, isFalse);
     });
 
-    testWidgets('reconnect ignores callbacks already queued by old channel', (
-      tester,
-    ) async {
+    testWidgets('reconnect ignores callbacks already queued by old channel', (tester) async {
       final oldChannel = _ControlledChannel();
       final newChannel = _ControlledChannel();
       final channels = [oldChannel, newChannel].iterator;
@@ -151,9 +131,7 @@ void main() {
 
       oldChannel.events.finishAfterCancellation();
       oldChannel.events.errorAfterCancellation(StateError('stale error'));
-      oldChannel.events.dataAfterCancellation(
-        jsonEncode(serializers.serialize(const WSHelloCommand(id: 21000))),
-      );
+      oldChannel.events.dataAfterCancellation(jsonEncode(serializers.serialize(const WSHelloCommand(id: 21000))));
       await tester.pump();
 
       expect(client.channel, same(newChannel));
@@ -163,9 +141,7 @@ void main() {
       expect(oldChannel.events.cancelCount, 1);
     });
 
-    testWidgets('old handshake completion does not authenticate new channel', (
-      tester,
-    ) async {
+    testWidgets('old handshake completion does not authenticate new channel', (tester) async {
       final oldChannel = _ControlledChannel(initiallyReady: false);
       final newChannel = _ControlledChannel();
       final channels = [oldChannel, newChannel].iterator;
@@ -177,10 +153,7 @@ void main() {
       );
       addTearDown(client.dispose);
       final firstConnection = client.connect(_uri, 'old-code');
-      final firstFailed = expectLater(
-        firstConnection,
-        throwsA(isA<StateError>()),
-      );
+      final firstFailed = expectLater(firstConnection, throwsA(isA<StateError>()));
       await tester.pump();
       await connect(tester, client, newChannel);
       oldChannel.completeReady();
@@ -195,16 +168,11 @@ void main() {
   });
 
   group('ClientService requests', () {
-    testWidgets('a Wi-Fi deadline does not change the default RPC deadline', (
-      tester,
-    ) async {
+    testWidgets('a Wi-Fi deadline does not change the default RPC deadline', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
-      final wifi = client.send(
-        const WSConfigDownloadCommand(id: 21990),
-        timeout: const Duration(seconds: 65),
-      );
+      final wifi = client.send(const WSConfigDownloadCommand(id: 21990), timeout: const Duration(seconds: 65));
       var wifiCompleted = false;
       wifi.then((_) => wifiCompleted = true);
       final regular = client.send(const WSConfigDownloadCommand(id: 21991));
@@ -221,54 +189,41 @@ void main() {
       expect(client.requestTimeouts, 1);
     });
 
-    testWidgets(
-      'an individual deadline expires once and ignores a late reply',
-      (tester) async {
-        final channel = _ControlledChannel();
-        final client = clientFor(channel);
-        await connect(tester, client, channel);
-        final pending = client.send(
-          const WSConfigDownloadCommand(id: 21992),
-          timeout: const Duration(seconds: 65),
-        );
-        final timedOut = expectLater(pending, throwsA(isA<TimeoutException>()));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 64999));
-        expect(client.requestTimeouts, 0);
-        await tester.pump(const Duration(milliseconds: 1));
-        await timedOut;
-        expect(client.requestTimeouts, 1);
-        final next = client.send(const WSConfigDownloadCommand(id: 21993));
-        await tester.pump();
-        channel.receive(const WSResultOk(id: 21992));
-        channel.receive(const WSResultOk(id: 21993));
-        await tester.pump();
-        expect(await next, const WSResultOk(id: 21993));
-        expect(client.requestTimeouts, 1);
-      },
-    );
+    testWidgets('an individual deadline expires once and ignores a late reply', (tester) async {
+      final channel = _ControlledChannel();
+      final client = clientFor(channel);
+      await connect(tester, client, channel);
+      final pending = client.send(const WSConfigDownloadCommand(id: 21992), timeout: const Duration(seconds: 65));
+      final timedOut = expectLater(pending, throwsA(isA<TimeoutException>()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 64999));
+      expect(client.requestTimeouts, 0);
+      await tester.pump(const Duration(milliseconds: 1));
+      await timedOut;
+      expect(client.requestTimeouts, 1);
+      final next = client.send(const WSConfigDownloadCommand(id: 21993));
+      await tester.pump();
+      channel.receive(const WSResultOk(id: 21992));
+      channel.receive(const WSResultOk(id: 21993));
+      await tester.pump();
+      expect(await next, const WSResultOk(id: 21993));
+      expect(client.requestTimeouts, 1);
+    });
 
-    testWidgets('rejects an invalid individual deadline without sending', (
-      tester,
-    ) async {
+    testWidgets('rejects an invalid individual deadline without sending', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
       final before = channel.sent.length;
       await expectLater(
-        client.send(
-          const WSConfigDownloadCommand(id: 21994),
-          timeout: Duration.zero,
-        ),
+        client.send(const WSConfigDownloadCommand(id: 21994), timeout: Duration.zero),
         throwsArgumentError,
       );
       expect(channel.sent, hasLength(before));
       expect(client.requestTimeouts, 0);
     });
 
-    testWidgets('registers requests before synchronously delivered response', (
-      tester,
-    ) async {
+    testWidgets('registers requests before synchronously delivered response', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
@@ -284,34 +239,22 @@ void main() {
       );
     });
 
-    testWidgets('returns server errors to the matching request', (
-      tester,
-    ) async {
+    testWidgets('returns server errors to the matching request', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
       final result = client.send(const WSConfigDownloadCommand(id: 22001));
-      final failed = expectLater(
-        result,
-        throwsA(const WSErrorResult(error: 'permission denied', id: 22001)),
-      );
+      final failed = expectLater(result, throwsA(const WSErrorResult(error: 'permission denied', id: 22001)));
       await tester.pump();
-      channel.receive(
-        const WSErrorResult(error: 'permission denied', id: 22001),
-      );
+      channel.receive(const WSErrorResult(error: 'permission denied', id: 22001));
       await tester.pump();
       await failed;
       expect(client.channel, same(channel));
     });
 
-    testWidgets('times out one request and ignores its late response', (
-      tester,
-    ) async {
+    testWidgets('times out one request and ignores its late response', (tester) async {
       final channel = _ControlledChannel();
-      final client = clientFor(
-        channel,
-        requestTimeout: const Duration(seconds: 2),
-      );
+      final client = clientFor(channel, requestTimeout: const Duration(seconds: 2));
       await connect(tester, client, channel);
       final expired = client.send(const WSConfigDownloadCommand(id: 22002));
       expect(client.requestTimeouts, 0);
@@ -328,29 +271,17 @@ void main() {
       channel.receive(const WSResultOk(id: 22003));
       await tester.pump();
       expect(await next, const WSResultOk(id: 22003));
-      expect(
-        client.requestTimeouts,
-        1,
-        reason: 'late and successful replies do not increment timeouts',
-      );
+      expect(client.requestTimeouts, 1, reason: 'late and successful replies do not increment timeouts');
       expect(client.channel, same(channel));
       expect(channel.sink.closeCount, 0);
     });
 
-    testWidgets('disconnect fails all pending requests and cancels listener', (
-      tester,
-    ) async {
+    testWidgets('disconnect fails all pending requests and cancels listener', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
-      final first = expectLater(
-        client.send(const WSConfigDownloadCommand(id: 22004)),
-        throwsA(_disconnected),
-      );
-      final second = expectLater(
-        client.send(const WSConfigDownloadCommand(id: 22005)),
-        throwsA(_disconnected),
-      );
+      final first = expectLater(client.send(const WSConfigDownloadCommand(id: 22004)), throwsA(_disconnected));
+      final second = expectLater(client.send(const WSConfigDownloadCommand(id: 22005)), throwsA(_disconnected));
       var disconnects = 0;
       final subscription = client.onDisconnect.listen((_) => disconnects++);
       addTearDown(subscription.cancel);
@@ -369,66 +300,51 @@ void main() {
     });
 
     for (final failWithError in [false, true]) {
-      testWidgets(
-        'remote ${failWithError ? 'error' : 'close'} fails pending requests',
-        (tester) async {
-          final channel = _ControlledChannel();
-          final client = clientFor(channel);
-          await connect(tester, client, channel);
-          final failed = expectLater(
-            client.send(const WSConfigDownloadCommand(id: 22006)),
-            throwsA(_disconnected),
-          );
-          await tester.pump();
-          if (failWithError) {
-            channel.events.fail(StateError('connection lost'));
-          } else {
-            channel.events.finish();
-          }
-          await tester.pump();
-          await failed;
-          expect(client.channel, isNull);
-          expect(client.isAuth, isFalse);
-        },
-      );
+      testWidgets('remote ${failWithError ? 'error' : 'close'} fails pending requests', (tester) async {
+        final channel = _ControlledChannel();
+        final client = clientFor(channel);
+        await connect(tester, client, channel);
+        final failed = expectLater(client.send(const WSConfigDownloadCommand(id: 22006)), throwsA(_disconnected));
+        await tester.pump();
+        if (failWithError) {
+          channel.events.fail(StateError('connection lost'));
+        } else {
+          channel.events.finish();
+        }
+        await tester.pump();
+        await failed;
+        expect(client.channel, isNull);
+        expect(client.isAuth, isFalse);
+      });
     }
 
     for (final synchronous in [false, true]) {
-      testWidgets(
-        'disconnect handles ${synchronous ? 'synchronous' : 'asynchronous'} sink close failure',
-        (tester) async {
-          final channel = _ControlledChannel();
-          final client = clientFor(channel);
-          await connect(tester, client, channel);
-          channel.sink.closeFailure = StateError('close failed');
-          channel.sink.throwOnClose = synchronous;
-          final failed = expectLater(
-            client.send(const WSConfigDownloadCommand(id: 22007)),
-            throwsA(_disconnected),
-          );
-          await tester.pump();
+      testWidgets('disconnect handles ${synchronous ? 'synchronous' : 'asynchronous'} sink close failure', (
+        tester,
+      ) async {
+        final channel = _ControlledChannel();
+        final client = clientFor(channel);
+        await connect(tester, client, channel);
+        channel.sink.closeFailure = StateError('close failed');
+        channel.sink.throwOnClose = synchronous;
+        final failed = expectLater(client.send(const WSConfigDownloadCommand(id: 22007)), throwsA(_disconnected));
+        await tester.pump();
 
-          client.disconnect();
-          await tester.pump();
-          await failed;
-          expect(client.channel, isNull);
-          expect(channel.events.cancelCount, 1);
-        },
-      );
+        client.disconnect();
+        await tester.pump();
+        await failed;
+        expect(client.channel, isNull);
+        expect(channel.events.cancelCount, 1);
+      });
     }
 
-    testWidgets('send failure completes request and releases its timeout', (
-      tester,
-    ) async {
+    testWidgets('send failure completes request and releases its timeout', (tester) async {
       final channel = _ControlledChannel();
       final client = clientFor(channel);
       await connect(tester, client, channel);
       channel.sink.onSend = (_) => throw StateError('write failed');
 
-      await expectLater(
-        client.send(const WSConfigDownloadCommand(id: 22008)),
-        throwsA(isA<StateError>()),
-      );
+      await expectLater(client.send(const WSConfigDownloadCommand(id: 22008)), throwsA(isA<StateError>()));
       await tester.pump(const Duration(seconds: 16));
     });
   });
@@ -443,10 +359,7 @@ void main() {
     };
     await client.connect(_uri, 'access-code');
     final notificationsClosed = client.onDisconnect.drain<void>();
-    final requestFailed = expectLater(
-      client.send(const WSConfigDownloadCommand(id: 23000)),
-      throwsA(_disconnected),
-    );
+    final requestFailed = expectLater(client.send(const WSConfigDownloadCommand(id: 23000)), throwsA(_disconnected));
     await Future<void>.value();
 
     await client.dispose();
@@ -459,18 +372,13 @@ void main() {
     await expectLater(client.connect(_uri, 'code'), throwsA(anything));
   });
 
-  testWidgets('dispose cancels an unfinished handshake and its timer', (
-    tester,
-  ) async {
+  testWidgets('dispose cancels an unfinished handshake and its timer', (tester) async {
     final channel = _ControlledChannel(initiallyReady: false);
     // This test disposes explicitly inside the fake clock. Awaiting its cached
     // disposal future again from a real-clock teardown would require that
     // already-finished fake zone to process another microtask.
     final client = ClientServiceImpl(channelFactory: (_) => channel);
-    final connectionFailed = expectLater(
-      client.connect(_uri, 'access-code'),
-      throwsA(isA<StateError>()),
-    );
+    final connectionFailed = expectLater(client.connect(_uri, 'access-code'), throwsA(isA<StateError>()));
     await tester.pump();
 
     final disposed = client.dispose();
@@ -492,17 +400,12 @@ void main() {
     expect(channel.sink.closeCount, 1);
   });
 
-  testWidgets('cleans up when stream subscription throws synchronously', (
-    tester,
-  ) async {
+  testWidgets('cleans up when stream subscription throws synchronously', (tester) async {
     final channel = _ControlledChannel();
     channel.events.listenFailure = StateError('listen failed');
     final client = clientFor(channel);
 
-    await expectLater(
-      client.connect(_uri, 'access-code'),
-      throwsA(isA<StateError>()),
-    );
+    await expectLater(client.connect(_uri, 'access-code'), throwsA(isA<StateError>()));
     await tester.pump();
     expect(client.channel, isNull);
     expect(channel.sent, isEmpty);
@@ -510,37 +413,31 @@ void main() {
   });
 
   for (final isResponse in [false, true]) {
-    testWidgets(
-      '${isResponse ? 'response' : 'one-way command'} write failure disconnects current channel',
-      (tester) async {
-        final channel = _ControlledChannel();
-        final client = clientFor(channel);
-        await connect(tester, client, channel);
-        final pendingFailed = expectLater(
-          client.send(const WSConfigDownloadCommand(id: 23001)),
-          throwsA(_disconnected),
-        );
-        await tester.pump();
-        channel.sink.onSend = (_) => throw StateError('write failed');
+    testWidgets('${isResponse ? 'response' : 'one-way command'} write failure disconnects current channel', (
+      tester,
+    ) async {
+      final channel = _ControlledChannel();
+      final client = clientFor(channel);
+      await connect(tester, client, channel);
+      final pendingFailed = expectLater(client.send(const WSConfigDownloadCommand(id: 23001)), throwsA(_disconnected));
+      await tester.pump();
+      channel.sink.onSend = (_) => throw StateError('write failed');
 
-        expect(
-          () => isResponse
-              ? client.response(const WSResultOk(id: 23002))
-              : client.sendOneWay(const WSEchoCommand(msg: 'hello', id: 23002)),
-          throwsA(isA<StateError>()),
-        );
-        await tester.pump();
-        await pendingFailed;
-        expect(client.channel, isNull);
-        expect(channel.events.cancelCount, 1);
-        expect(channel.sink.closeCount, 1);
-      },
-    );
+      expect(
+        () => isResponse
+            ? client.response(const WSResultOk(id: 23002))
+            : client.sendOneWay(const WSEchoCommand(msg: 'hello', id: 23002)),
+        throwsA(isA<StateError>()),
+      );
+      await tester.pump();
+      await pendingFailed;
+      expect(client.channel, isNull);
+      expect(channel.events.cancelCount, 1);
+      expect(channel.sink.closeCount, 1);
+    });
   }
 
-  testWidgets('logs omit auth, config, result and malformed message contents', (
-    tester,
-  ) async {
+  testWidgets('logs omit auth, config, result and malformed message contents', (tester) async {
     final records = <LogRecord>[];
     final originalLevel = Logger.root.level;
     Logger.root.level = Level.ALL;
@@ -557,22 +454,13 @@ void main() {
     await tester.pump();
     await connected;
 
-    final upload = client.send(
-      const WSConfigUploadCommand(content: 'unique-upload-secret', id: 24000),
-    );
+    final upload = client.send(const WSConfigUploadCommand(content: 'unique-upload-secret', id: 24000));
     await tester.pump();
     channel.receive(const WSResultOk(id: 24000));
     final download = client.send(const WSConfigDownloadCommand(id: 24001));
     await tester.pump();
-    channel.receive(
-      const WSConfigDownloadResult(
-        content: 'unique-download-secret',
-        id: 24001,
-      ),
-    );
-    client.response(
-      const WSErrorResult(error: 'unique-response-secret', id: 24002),
-    );
+    channel.receive(const WSConfigDownloadResult(content: 'unique-download-secret', id: 24001));
+    client.response(const WSErrorResult(error: 'unique-response-secret', id: 24002));
     channel.events.add('{"secret":"unique-malformed-secret"');
     await tester.pump();
     await upload;
@@ -581,24 +469,22 @@ void main() {
     final invalidChannel = _ControlledChannel();
     final invalidClient = clientFor(invalidChannel);
     await connect(tester, invalidClient, invalidChannel);
-    invalidChannel.events.add(
-      jsonEncode({'secret': 'unique-invalid-type-secret'}),
-    );
+    invalidChannel.events.add(jsonEncode({'secret': 'unique-invalid-type-secret'}));
     await tester.pump();
 
     final renderedLogs = records
         .where((record) => record.loggerName == 'ClientService')
-        .map(
-          (record) => '${record.message} ${record.error} ${record.stackTrace}',
-        )
+        .map((record) => '${record.message} ${record.error} ${record.stackTrace}')
         .join('\n');
+    final malformed = records.singleWhere((record) => record.error is FormatException);
+    expect(malformed.error.toString(), contains('unique-malformed-secret'));
+    expect(malformed.stackTrace, isNotNull);
     expect(records, isNotEmpty);
     for (final secret in [
       'unique-auth-secret',
       'unique-upload-secret',
       'unique-download-secret',
       'unique-response-secret',
-      'unique-malformed-secret',
       'unique-invalid-type-secret',
     ]) {
       expect(renderedLogs, isNot(contains(secret)), reason: secret);
@@ -606,11 +492,7 @@ void main() {
   });
 }
 
-final _disconnected = isA<WSErrorResult>().having(
-  (error) => error.error,
-  'error',
-  'disconnect',
-);
+final _disconnected = isA<WSErrorResult>().having((error) => error.error, 'error', 'disconnect');
 
 class _ControlledChannel implements WebSocketChannel {
   _ControlledChannel({bool initiallyReady = true}) {
@@ -627,8 +509,7 @@ class _ControlledChannel implements WebSocketChannel {
 
   void completeReady() => _ready.complete();
   void failReady(Object error) => _ready.completeError(error);
-  void receive(WebSocketResult message) =>
-      events.add(jsonEncode(serializers.serialize(message)));
+  void receive(WebSocketResult message) => events.add(jsonEncode(serializers.serialize(message)));
 
   @override
   Stream<dynamic> get stream => events;
@@ -655,8 +536,7 @@ class _ControlledSink implements WebSocketSink {
 
   @override
   void add(dynamic event) {
-    final message =
-        serializers.deserialize(jsonDecode(event as String)) as WebSocketResult;
+    final message = serializers.deserialize(jsonDecode(event as String)) as WebSocketResult;
     sent.add(message);
     onSend?.call(message);
   }
@@ -695,12 +575,9 @@ class _ControlledStream extends Stream<dynamic> {
   void add(dynamic data) => _subscription?.data(data);
   void fail(Object error) => _subscription?.error(error);
   void finish() => _subscription?.finish();
-  void dataAfterCancellation(dynamic data) =>
-      _subscription?.data(data, ignoreCancellation: true);
-  void errorAfterCancellation(Object error) =>
-      _subscription?.error(error, ignoreCancellation: true);
-  void finishAfterCancellation() =>
-      _subscription?.finish(ignoreCancellation: true);
+  void dataAfterCancellation(dynamic data) => _subscription?.data(data, ignoreCancellation: true);
+  void errorAfterCancellation(Object error) => _subscription?.error(error, ignoreCancellation: true);
+  void finishAfterCancellation() => _subscription?.finish(ignoreCancellation: true);
 
   @override
   StreamSubscription<dynamic> listen(
@@ -766,9 +643,7 @@ class _ControlledSubscription implements StreamSubscription<dynamic> {
   Future<E> asFuture<E>([E? futureValue]) {
     final done = Completer<E>();
     onDone(() => done.complete(futureValue));
-    onError(
-      (Object error, StackTrace trace) => done.completeError(error, trace),
-    );
+    onError((Object error, StackTrace trace) => done.completeError(error, trace));
     return done.future;
   }
 }

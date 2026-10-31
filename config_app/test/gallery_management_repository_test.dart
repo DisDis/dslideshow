@@ -160,7 +160,10 @@ void main() {
     expect(cancellation.level, Level.FINE);
     expect(cancellation.message, contains('reason=consumer'));
     expect(transport.active, 0);
-    expect(diagnostics.every((record) => record.error == null && record.stackTrace == null), isTrue);
+    expect(timeout.error, isA<TimeoutException>());
+    expect(timeout.stackTrace, isNotNull);
+    expect(cancellation.error, isA<http.RequestAbortedException>());
+    expect(cancellation.stackTrace, isNotNull);
     expect(diagnostics.map((record) => record.message).join('\n'), isNot(contains('PRIVATE-AUTH')));
 
     final firstRecords = records.length;

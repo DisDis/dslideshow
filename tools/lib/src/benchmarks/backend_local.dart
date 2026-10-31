@@ -581,13 +581,15 @@ Future<int> _operation(
   } on FormatException catch (error) {
     stderr.writeln('${error.message}\n${parser.usage}');
     return 64;
-  } on ProcessJobFailure catch (error) {
+  } on ProcessJobFailure catch (error, stack) {
     _log.warning(
       'operation=${owner.runId} action=$action result=${owner.cancellationCode == null ? 'failed' : 'cancelled'} code=${error.exitCode}',
+      error,
+      stack,
     );
     return error.exitCode;
-  } on Exception catch (error) {
-    _log.warning('operation=${owner.runId} action=$action result=failed type=${error.runtimeType}');
+  } on Exception catch (error, stack) {
+    _log.warning('operation=${owner.runId} action=$action result=failed type=${error.runtimeType}', error, stack);
     stderr.writeln('Backend benchmark failed: ${error.runtimeType}');
     return 1;
   } finally {

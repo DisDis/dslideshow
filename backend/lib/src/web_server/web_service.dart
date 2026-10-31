@@ -66,6 +66,7 @@ class WebService {
     Response response, {
     GalleryErrorCode? reason,
     Object? error,
+    StackTrace? stack,
     String? mediaId,
   }) {
     final cancelled =
@@ -78,6 +79,8 @@ class WebService {
           '${reason == null ? '' : ' reason=${reason.name}'}'
           '${mediaId == null ? '' : ' media=id-${sha256.convert(utf8.encode(mediaId)).toString().substring(0, 12)}'}'
           '${error == null ? '' : ' type=${error.runtimeType}'}',
+      error,
+      stack,
     );
     return response;
   }
@@ -108,8 +111,8 @@ class WebService {
         }
         if (_closed) throw StateError('Web service is closed');
         _log.info('Web control target=$target completed');
-      } catch (error) {
-        _log.warning('Web control target=$target failed type=${error.runtimeType}');
+      } catch (error, stack) {
+        _log.warning('Web control target=$target failed type=${error.runtimeType}', error, stack);
         rethrow;
       }
     });
@@ -419,16 +422,16 @@ class WebService {
     );
     try {
       await _framePublisher.publish(server.port);
-    } catch (error) {
-      _log.warning('Advertisement publish failed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Advertisement publish failed type=${error.runtimeType}', error, stack);
     }
   }
 
   Future<void> _stopWebServer() async {
     try {
       await _framePublisher.unpublish();
-    } catch (error) {
-      _log.warning('Advertisement removal failed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Advertisement removal failed type=${error.runtimeType}', error, stack);
     }
     for (final cancellation in _uploads.keys.toList()) {
       cancellation.cancel();
@@ -452,8 +455,8 @@ class WebService {
     await _stopWebServer();
     try {
       await _framePublisher.close();
-    } catch (error) {
-      _log.warning('Advertisement cleanup failed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Advertisement cleanup failed type=${error.runtimeType}', error, stack);
     }
     await Future.wait(pending);
     await _galleryManagement.close();
@@ -472,8 +475,8 @@ class WebService {
     String bucket,
   ) async {
     const kind = _GalleryRequestKind.thumbnail;
-    Response reject(GalleryErrorCode reason, {Object? error}) =>
-        _galleryResponse(kind, _galleryError(reason), reason: reason, error: error, mediaId: id);
+    Response reject(GalleryErrorCode reason, {Object? error, StackTrace? stack}) =>
+        _galleryResponse(kind, _galleryError(reason), reason: reason, error: error, stack: stack, mediaId: id);
 
     if (code != _code) return reject(GalleryErrorCode.forbidden);
     final size = int.tryParse(bucket);
@@ -515,15 +518,19 @@ class WebService {
       return reject(error.code);
     } on ArgumentError {
       return reject(GalleryErrorCode.invalidRequest);
-    } on ThumbnailFailure catch (error) {
-      return reject(switch (error.kind) {
-        ThumbnailFailureKind.queueFull => GalleryErrorCode.busy,
-        ThumbnailFailureKind.staleSource => GalleryErrorCode.revisionMismatch,
-        ThumbnailFailureKind.unsupported || ThumbnailFailureKind.sourceTooLarge => GalleryErrorCode.unsupported,
-        _ => GalleryErrorCode.unavailable,
-      }, error: error);
-    } on Object catch (error) {
-      return reject(GalleryErrorCode.unavailable, error: error);
+    } on ThumbnailFailure catch (error, stack) {
+      return reject(
+        switch (error.kind) {
+          ThumbnailFailureKind.queueFull => GalleryErrorCode.busy,
+          ThumbnailFailureKind.staleSource => GalleryErrorCode.revisionMismatch,
+          ThumbnailFailureKind.unsupported || ThumbnailFailureKind.sourceTooLarge => GalleryErrorCode.unsupported,
+          _ => GalleryErrorCode.unavailable,
+        },
+        error: error,
+        stack: stack,
+      );
+    } on Object catch (error, stack) {
+      return reject(GalleryErrorCode.unavailable, error: error, stack: stack);
     }
   }
 

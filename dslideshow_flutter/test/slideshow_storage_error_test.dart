@@ -102,7 +102,9 @@ void main() {
       final failed = own.singleWhere((record) => record.message.startsWith('event=loadFailed '));
       expect(failed.level, Level.WARNING);
       expect(failed.message, contains('type=RpcErrorResultException'));
-      expect(own.map((record) => '${record.message} ${record.error}').join('\n'), isNot(contains(privateFailure)));
+      expect(failed.error, same(failure));
+      expect(failed.error.toString(), contains(privateFailure));
+      expect(failed.stackTrace, isNotNull);
       // A new explicit event uses the ordinary loading path, with no saved failed step.
       f.bloc.add(const SlideshowLoadNextEvent());
       await tester.pump();

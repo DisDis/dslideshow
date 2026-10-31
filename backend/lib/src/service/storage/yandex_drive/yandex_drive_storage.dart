@@ -61,9 +61,9 @@ class YandexDriveStorage extends CloudStorage {
       _runtime = _runtime.copyWith(active: true);
       _scheduleNext();
       _log.info('Storage initialized accounts=${config.accounts.where((account) => account.enabled).length}');
-    } catch (error) {
+    } catch (error, stack) {
       if (!_closed) updateStatus(StorageStatusEnum.off);
-      _log.warning('Storage initialization failed type=${error.runtimeType}');
+      _log.warning('Storage initialization failed type=${error.runtimeType}', error, stack);
       rethrow;
     }
   }
@@ -169,11 +169,13 @@ class YandexDriveStorage extends CloudStorage {
           throw const CloudStorageException(DriveFailure.invalidRequest);
       }
       return DriveResult(id: command.id, state: state(), authorization: authorization, folderPage: folderPage);
-    } catch (error) {
+    } catch (error, stack) {
       final failure = YandexDriveService.failureCode(error);
       _log.log(
         failure == DriveFailure.cancelled ? Level.FINE : Level.WARNING,
         'Drive action failed action=${command.action.name} reason=${failure.name}',
+        error,
+        stack,
       );
       return DriveResult(id: command.id, state: state(), error: failure);
     }
@@ -211,14 +213,14 @@ class YandexDriveStorage extends CloudStorage {
             }
           }
           if (stopped) break;
-        } catch (error) {
+        } catch (error, stack) {
           if (!_canContinue(account.accountId)) {
             stopped = true;
             break;
           }
           final reason = YandexDriveService.failureCode(error);
           _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: reason);
-          _log.warning('Account synchronization failed reason=${reason.name}');
+          _log.warning('Account synchronization failed reason=${reason.name}', error, stack);
         }
       }
       if (!_closed && !stopped && _runtime.failed == 0) {
@@ -322,9 +324,9 @@ class YandexDriveStorage extends CloudStorage {
                 download.close();
               }
             }
-          } catch (error) {
+          } catch (error, stack) {
             _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: YandexDriveService.failureCode(error));
-            _log.fine('Media import failed reason=${YandexDriveService.failureCode(error).name}');
+            _log.fine('Media import failed reason=${YandexDriveService.failureCode(error).name}', error, stack);
           }
           _recordProcessedItem();
           if (!_canContinue(accountId)) return false;

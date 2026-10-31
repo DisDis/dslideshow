@@ -138,10 +138,10 @@ class GPhotoStorage extends CloudStorage {
       _log.info('Synchronization completed');
       updateStatus(StorageStatusEnum.done);
       return;
-    } catch (error) {
+    } catch (error, stack) {
       if (!_released) {
         updateStatus(StorageStatusEnum.off);
-        _log.warning('Synchronization failed type=${error.runtimeType}');
+        _log.warning('Synchronization failed type=${error.runtimeType}', error, stack);
       }
       rethrow;
     } finally {
@@ -182,7 +182,7 @@ class GPhotoStorage extends CloudStorage {
     if (_released) return;
     unawaited(
       Future<Null>.sync(sync).catchError((Object error, StackTrace stack) {
-        _log.warning('Background synchronization failed type=${error.runtimeType}');
+        _log.warning('Background synchronization failed type=${error.runtimeType}', error, stack);
         return null;
       }),
     );

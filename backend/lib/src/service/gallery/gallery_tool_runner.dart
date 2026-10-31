@@ -101,12 +101,14 @@ class ProcessGalleryToolRunner implements GalleryToolRunner {
             'outputBytes=${command._collectedBytes}',
       );
       return result;
-    } on GalleryCatalogFailure catch (error) {
+    } on GalleryCatalogFailure catch (error, stack) {
       _log.log(
         error.code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
         () =>
             'Tool failed tool=${command.tool} code=${error.code.name} '
             'outputBytes=${command._collectedBytes}',
+        error,
+        stack,
       );
       rethrow;
     } on Object {
@@ -216,7 +218,7 @@ class _GalleryCommand {
       _check();
       try {
         _process = await start(executable, arguments, environment: environment);
-      } on ProcessException catch (error) {
+      } on ProcessException catch (error, stack) {
         final reason = switch (error.errorCode) {
           2 => _ToolLaunchReason.missingExecutable,
           13 => _ToolLaunchReason.permissionDenied,
@@ -226,6 +228,8 @@ class _GalleryCommand {
         ProcessGalleryToolRunner._log.log(
           _failure == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
           () => 'Tool launch failed tool=$tool reason=${reason.name} osError=${error.errorCode}',
+          error,
+          stack,
         );
         _failure ??= GalleryErrorCode.unavailable;
         _check();

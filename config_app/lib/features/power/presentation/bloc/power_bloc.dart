@@ -13,8 +13,7 @@ import 'package:logging/logging.dart';
 class PowerBloc extends Bloc<PowerEvent, PowerState> {
   static final Logger _log = Logger('PowerBloc');
   final RealtimeService _client;
-  PowerBloc({required PowerState initialState, required this._client})
-    : super(initialState) {
+  PowerBloc({required PowerState initialState, required this._client}) : super(initialState) {
     on<RestartAppPowerEvent>(_restartApp);
     on<PowerOffPowerEvent>(_powerOff);
     on<LoadPowerEvent>(_loadData);
@@ -23,9 +22,8 @@ class PowerBloc extends Bloc<PowerEvent, PowerState> {
   Future<void> _loadData(LoadPowerEvent event, Emitter<PowerState> emit) async {
     emit(const UninitializedPowerState());
     try {
-      final result = await _client.send(
-        WSConfigDownloadCommand(id: WebSocketCommand.generateId()),
-      ) as WSConfigDownloadResult;
+      final result =
+          await _client.send(WSConfigDownloadCommand(id: WebSocketCommand.generateId())) as WSConfigDownloadResult;
       if (emit.isDone) {
         return;
       }
@@ -33,34 +31,26 @@ class PowerBloc extends Bloc<PowerEvent, PowerState> {
       final config = AppConfig.fromJson(jsonMsg);
       _log.info('Configuration received');
       emit(InitializedPowerState(config));
-    } catch (error) {
-      _log.warning('Loading power configuration failed (${error.runtimeType})');
+    } catch (error, stack) {
+      _log.warning('Loading power configuration failed (${error.runtimeType})', error, stack);
       emit(ErrorPowerState(error.toString()));
     }
   }
 
   void _restartApp(RestartAppPowerEvent event, Emitter<PowerState> emit) {
     try {
-      _client.sendOneWay(
-        WSSendRpcCommand.byCommand(
-          RestartAppCommand(id: RpcCommand.generateId()),
-        ),
-      );
-    } catch (error) {
-      _log.warning('Restart request failed (${error.runtimeType})');
+      _client.sendOneWay(WSSendRpcCommand.byCommand(RestartAppCommand(id: RpcCommand.generateId())));
+    } catch (error, stack) {
+      _log.warning('Restart request failed (${error.runtimeType})', error, stack);
       emit(ErrorPowerState(error.toString()));
     }
   }
 
   void _powerOff(PowerOffPowerEvent event, Emitter<PowerState> emit) {
     try {
-      _client.sendOneWay(
-        WSSendRpcCommand.byCommand(
-          PowerOffCommand(id: RpcCommand.generateId()),
-        ),
-      );
-    } catch (error) {
-      _log.warning('Power-off request failed (${error.runtimeType})');
+      _client.sendOneWay(WSSendRpcCommand.byCommand(PowerOffCommand(id: RpcCommand.generateId())));
+    } catch (error, stack) {
+      _log.warning('Power-off request failed (${error.runtimeType})', error, stack);
       emit(ErrorPowerState(error.toString()));
     }
   }

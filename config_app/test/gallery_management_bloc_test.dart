@@ -354,7 +354,13 @@ void main() {
     for (final secret in [auth, privatePath, rawExif, uri, '12.3456', 'a.jpg', 'b.jpg']) {
       expect(messages, isNot(contains(secret)), reason: 'Sensitive values must not be logged: $secret');
     }
-    expect(logs.every((record) => record.error == null && record.stackTrace == null), isTrue);
+    expect(logs.where((record) => record.error != null), isNotEmpty);
+    expect(
+      logs
+          .where((record) => record.error != null)
+          .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+      isTrue,
+    );
   });
 
   test('close cancels an in-flight mutation without closing shared Undo transport', () async {

@@ -29,38 +29,27 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
        );
 
   ButtonsHintBloc.contextual({required FrontendService frontendService})
-    : this._(
-        frontendService: frontendService,
-        mode: ButtonsHintMode.contextual,
-      );
+    : this._(frontendService: frontendService, mode: ButtonsHintMode.contextual);
 
-  ButtonsHintBloc._({
-    required this.frontendService,
-    required this.mode,
-    this._statusBloc,
-    this._appConfig,
-  }) : super(
-         ButtonsHintState.display(
-           isShow: mode == ButtonsHintMode.contextual,
-           normalColor: ThemeColors.buttonsHintColor,
-           pushColor: ThemeColors.buttonsHintPressedColor,
-           button0Icon: Icons.arrow_back,
-           button0isPush: false,
-           button1Icon: Icons.arrow_circle_down,
-           button1isPush: false,
-           button2Icon: Icons.arrow_circle_up,
-           button2isPush: false,
-           button3Icon: Icons.check_circle_outline_outlined,
-           button3isPush: false,
-         ),
-       ) {
+  ButtonsHintBloc._({required this.frontendService, required this.mode, this._statusBloc, this._appConfig})
+    : super(
+        ButtonsHintState.display(
+          isShow: mode == ButtonsHintMode.contextual,
+          normalColor: ThemeColors.buttonsHintColor,
+          pushColor: ThemeColors.buttonsHintPressedColor,
+          button0Icon: Icons.arrow_back,
+          button0isPush: false,
+          button1Icon: Icons.arrow_circle_down,
+          button1isPush: false,
+          button2Icon: Icons.arrow_circle_up,
+          button2isPush: false,
+          button3Icon: Icons.check_circle_outline_outlined,
+          button3isPush: false,
+        ),
+      ) {
     on<ButtonsHintShowEvent>((event, emit) {
       if (!_closing) {
-        emit(
-          state.copyWith(
-            isShow: mode == ButtonsHintMode.contextual || event.isShow,
-          ),
-        );
+        emit(state.copyWith(isShow: mode == ButtonsHintMode.contextual || event.isShow));
       }
     });
     on<ButtonsHintUpdateButtonsEvent>((event, emit) {
@@ -72,24 +61,16 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
           isShow: true,
           button0Icon: menu
               ? Icons.arrow_back
-              : getIconDataBySlideshowAction(
-                  _appConfig!.slideshow.buttons.button0.action,
-                ),
+              : getIconDataBySlideshowAction(_appConfig!.slideshow.buttons.button0.action),
           button1Icon: menu
               ? Icons.arrow_circle_down
-              : getIconDataBySlideshowAction(
-                  _appConfig!.slideshow.buttons.button1.action,
-                ),
+              : getIconDataBySlideshowAction(_appConfig!.slideshow.buttons.button1.action),
           button2Icon: menu
               ? Icons.arrow_circle_up
-              : getIconDataBySlideshowAction(
-                  _appConfig!.slideshow.buttons.button2.action,
-                ),
+              : getIconDataBySlideshowAction(_appConfig!.slideshow.buttons.button2.action),
           button3Icon: menu
               ? Icons.check_circle_outline_outlined
-              : getIconDataBySlideshowAction(
-                  _appConfig!.slideshow.buttons.button3.action,
-                ),
+              : getIconDataBySlideshowAction(_appConfig!.slideshow.buttons.button3.action),
         ),
       );
       _resetHideTimer();
@@ -101,16 +82,11 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
     _buttons = frontendService.onButtonEvent.listen(
       (event) {
         if (!_closing) {
-          add(
-            ButtonsHintEvent.buttonChanged(
-              button: event.button,
-              type: event.event,
-            ),
-          );
+          add(ButtonsHintEvent.buttonChanged(button: event.button, type: event.event));
         }
       },
-      onError: (Object error) =>
-          _log.warning('Button hint stream failed type=${error.runtimeType}'),
+      onError: (Object error, StackTrace stack) =>
+          _log.warning('Button hint stream failed type=${error.runtimeType}', error, stack),
     );
     if (mode == ButtonsHintMode.slideshow) {
       _status = _statusBloc!.stream.listen((status) {
@@ -146,15 +122,10 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
     });
   }
 
-  void _buttonChanged(
-    ButtonsHintButtonChanged event,
-    Emitter<ButtonsHintState> emit,
-  ) {
+  void _buttonChanged(ButtonsHintButtonChanged event, Emitter<ButtonsHintState> emit) {
     if (_closing) return;
     _pressTimers.remove(event.button)?.cancel();
-    _log.fine(
-      'Button hint button=${event.button.name} type=${event.type.name}',
-    );
+    _log.fine('Button hint button=${event.button.name} type=${event.type.name}');
     _setPressed(event.button, true, emit);
     _resetHideTimer();
     if (event.type == ButtonEventType.released) {
@@ -164,39 +135,22 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
     }
   }
 
-  void _setPressed(
-    ButtonType button,
-    bool pressed,
-    Emitter<ButtonsHintState> emit,
-  ) {
+  void _setPressed(ButtonType button, bool pressed, Emitter<ButtonsHintState> emit) {
     emit(switch (button) {
-      ButtonType.button0 => state.copyWith(
-        isShow: true,
-        button0isPush: pressed,
-      ),
-      ButtonType.button1 => state.copyWith(
-        isShow: true,
-        button1isPush: pressed,
-      ),
-      ButtonType.button2 => state.copyWith(
-        isShow: true,
-        button2isPush: pressed,
-      ),
-      ButtonType.button3 => state.copyWith(
-        isShow: true,
-        button3isPush: pressed,
-      ),
+      ButtonType.button0 => state.copyWith(isShow: true, button0isPush: pressed),
+      ButtonType.button1 => state.copyWith(isShow: true, button1isPush: pressed),
+      ButtonType.button2 => state.copyWith(isShow: true, button2isPush: pressed),
+      ButtonType.button3 => state.copyWith(isShow: true, button3isPush: pressed),
     });
   }
 
-  IconData getIconDataBySlideshowAction(SlideshowAction action) =>
-      switch (action) {
-        SlideshowAction.none => Icons.cancel,
-        SlideshowAction.pause => Icons.pause,
-        SlideshowAction.showInfo => Icons.info,
-        SlideshowAction.showMenu => Icons.menu,
-        SlideshowAction.toggleScreen => Icons.power_off,
-      };
+  IconData getIconDataBySlideshowAction(SlideshowAction action) => switch (action) {
+    SlideshowAction.none => Icons.cancel,
+    SlideshowAction.pause => Icons.pause,
+    SlideshowAction.showInfo => Icons.info,
+    SlideshowAction.showMenu => Icons.menu,
+    SlideshowAction.toggleScreen => Icons.power_off,
+  };
 
   @override
   Future<void> close() async {
@@ -208,10 +162,7 @@ class ButtonsHintBloc extends Bloc<ButtonsHintEvent, ButtonsHintState> {
     }
     _log.info('Button hints closing mode=${mode.name}; timers cancelled');
     try {
-      await Future.wait([
-        _buttons.cancel(),
-        if (_status != null) _status!.cancel(),
-      ]);
+      await Future.wait([_buttons.cancel(), if (_status != null) _status!.cancel()]);
     } finally {
       try {
         await super.close();

@@ -122,7 +122,7 @@ void main() {
     }
   });
 
-  test('background Google failure logs type without a signed media URL', () async {
+  test('background Google failure preserves its signed URL and original stack', () async {
     final root = await Directory.systemTemp.createTemp('google-safe-log-');
     final originals = await Directory(path.join(root.path, 'images')).create();
     final appStorage = AppStorage(root.path);
@@ -146,7 +146,7 @@ void main() {
       expect(logs.any((entry) => entry.message.contains('type=HttpException')), isTrue);
       expect(
         logs.map((entry) => '${entry.message} ${entry.error ?? ''}').join(' '),
-        isNot(contains('private-download-token')),
+        contains('private-download-token'),
       );
     } finally {
       await storage.release();

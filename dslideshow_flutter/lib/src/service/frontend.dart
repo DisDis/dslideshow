@@ -62,8 +62,8 @@ class FrontendService implements RpcService {
     }
     try {
       return await _executeCommand(command);
-    } catch (error) {
-      return _generateErrorResult(error, command);
+    } catch (error, stack) {
+      return _generateErrorResult(error, command, stack);
     } finally {
       _log.fine('command result requestId=${command.id} type=${command.type}');
     }
@@ -81,11 +81,13 @@ class FrontendService implements RpcService {
       }
       if (result is RpcErrorResult) throw RpcErrorResultException(result);
       return result;
-    } catch (error) {
+    } catch (error, stack) {
       if (!_waits.isClosed) {
         _log.fine(
           'RPC failed requestId=${command.id}'
           ' type=${command.type} errorType=${error.runtimeType}',
+          error,
+          stack,
         );
       }
       rethrow;
@@ -165,8 +167,8 @@ class FrontendService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    _log.warning('command failed requestId=${command.id} type=${command.type} errorType=${e.runtimeType}');
+  RpcErrorResult _generateErrorResult(Object e, RpcCommand command, [StackTrace? stack]) {
+    _log.warning('command failed requestId=${command.id} type=${command.type} errorType=${e.runtimeType}', e, stack);
     return ErrorResult(id: command.id, error: "$e");
   }
 
@@ -184,11 +186,13 @@ class FrontendService implements RpcService {
       if (_waits.isClosed) return;
       _onSystemInfoUpdate.add(result);
       _log.fine('systemInfo completed');
-    } catch (error) {
+    } catch (error, stack) {
       if (!_waits.isClosed) {
         _log.warning(
           'systemInfo failed'
           ' errorType=${error.runtimeType}',
+          error,
+          stack,
         );
       }
     } finally {

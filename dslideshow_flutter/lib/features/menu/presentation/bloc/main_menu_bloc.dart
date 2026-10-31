@@ -104,11 +104,13 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
       }
       slideshowStatusBloc.add(SlideshowMenuEvent(false));
       _log.info('command completed action=${command.name}');
-    } catch (error) {
+    } catch (error, stack) {
       if (!_waits.isClosed) {
         _log.warning(
           'command failed'
           ' action=${command.name} errorType=${error.runtimeType}',
+          error,
+          stack,
         );
       }
     } finally {

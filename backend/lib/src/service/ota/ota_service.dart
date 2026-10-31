@@ -247,8 +247,8 @@ class OTAService implements RpcService {
       }
 
       return ReleaseInfo(version: version, debUrl: debUrl);
-    } catch (e) {
-      _log.warning('Ошибка парсинга версии $cleanVersion: $e');
+    } catch (e, stack) {
+      _log.warning('Ошибка парсинга версии $cleanVersion: $e', e, stack);
       return null;
     }
   }
@@ -449,7 +449,7 @@ class OTAService implements RpcService {
   }
 
   void _recordFailure(Object error, StackTrace stackTrace) {
-    _log.warning('OTA operation failed type=${error.runtimeType}');
+    _log.warning('OTA operation failed type=${error.runtimeType}', error, stackTrace);
     _updateInfo(_info.copyWith(status: OTAStatus.issue, errorText: '$error', exitCode: null));
   }
 
@@ -554,6 +554,8 @@ class OTAService implements RpcService {
             _log.log(
               _closed ? Level.FINE : Level.WARNING,
               'OTA frontend notification ${_closed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+              error,
+              stack,
             );
             _completeScreen(screen, error, stack);
           },

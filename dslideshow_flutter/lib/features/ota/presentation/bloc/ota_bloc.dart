@@ -120,8 +120,8 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
         _observeConfirmedInfo(info);
         emit(_stateForInfo(info));
       }
-    } catch (error) {
-      _log.warning('event=infoFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=infoFailed type=${error.runtimeType}', error, stack);
       if (_canInitialize(version, emit) && infoVersion == _infoVersion) {
         emit(OtaState.failure(info: state.info.copyWith(status: OTAStatus.issue, errorText: null, exitCode: null)));
       }
@@ -134,8 +134,8 @@ class OtaBloc extends Bloc<OtaEvent, OtaState> {
       final systemInfo = await frontendService.getSystemInfo();
       final interface = systemInfo.networkInfo.getCurrentInterface();
       address = 'http://${interface.ip4}:8282/ota_start';
-    } catch (error) {
-      _log.info('event=addressFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.info('event=addressFailed type=${error.runtimeType}', error, stack);
     }
     if (!_canInitialize(version, emit)) return;
     _isPreparingAddress = false;

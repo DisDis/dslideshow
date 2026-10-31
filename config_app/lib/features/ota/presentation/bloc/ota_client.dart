@@ -104,9 +104,9 @@ class OTAClient {
       rethrow;
     } on http.RequestAbortedException {
       throw const OtaClientException(OtaFailure.cancelled);
-    } catch (error) {
+    } catch (error, stack) {
       if (_closed) throw const OtaClientException(OtaFailure.cancelled);
-      _log.warning('event=requestFailed type=${error.runtimeType}');
+      _log.warning('event=requestFailed type=${error.runtimeType}', error, stack);
       throw const OtaClientException(OtaFailure.requestFailed);
     } finally {
       if (_clients.remove(client)) client.close();
@@ -160,8 +160,8 @@ class _OtaUploadSource {
     _cancelled = true;
     try {
       await _subscription?.cancel();
-    } catch (error) {
-      OTAClient._log.warning('event=sourceCleanupFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      OTAClient._log.warning('event=sourceCleanupFailed type=${error.runtimeType}', error, stack);
     } finally {
       // Closing an unconsumed controller need not delay releasing its source.
       unawaited(_controller.close());

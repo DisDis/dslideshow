@@ -279,7 +279,12 @@ void main() {
       );
       expect(messages, isNot(contains(root.path)));
       expect(messages, isNot(contains('odd.jpg')));
-      expect(diagnostics.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(
+        diagnostics
+            .where((record) => record.level >= Level.WARNING)
+            .every((record) => record.error != null && record.stackTrace != null),
+        isTrue,
+      );
     });
     expect(await File('${media.path}/odd.jpg').readAsBytes(), bytes);
     expect((await catalog.resolve(source.mediaId)).entry.sourceRevision, source.sourceRevision);
@@ -343,7 +348,12 @@ void main() {
       ]) {
         expect(messages, isNot(contains(sensitive)));
       }
-      expect(diagnostics.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(
+        diagnostics
+            .where((record) => record.level >= Level.WARNING)
+            .every((record) => record.error != null && record.stackTrace != null),
+        isTrue,
+      );
       return result;
     });
     final actual = image.decodePng(await File(current.absolutePath).readAsBytes())!;

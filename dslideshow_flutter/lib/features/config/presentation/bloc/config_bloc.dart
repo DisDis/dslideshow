@@ -39,12 +39,17 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     });
     _buttons = repository.frontend.onButtonEvent.listen(
       (event) => _add(ConfigEvent.button(event)),
-      onError: (Object error) => _log.warning('Button stream failed type=${error.runtimeType}'),
+      onError: (Object error, StackTrace stack) =>
+          _log.warning('Button stream failed type=${error.runtimeType}', error, stack),
     );
-    _networkUpdates = repository.frontend.onSystemInfoUpdate.listen((info) {
-      _networkRevision++;
-      _add(ConfigEvent.networkUpdated(info));
-    }, onError: (Object error) => _log.warning('Network stream failed type=${error.runtimeType}'));
+    _networkUpdates = repository.frontend.onSystemInfoUpdate.listen(
+      (info) {
+        _networkRevision++;
+        _add(ConfigEvent.networkUpdated(info));
+      },
+      onError: (Object error, StackTrace stack) =>
+          _log.warning('Network stream failed type=${error.runtimeType}', error, stack),
+    );
   }
 
   static final _log = Logger('ConfigBloc');
@@ -200,8 +205,8 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
         (_) {
           _log.info('Page access cleanup completed');
         },
-        onError: (Object error) {
-          _log.warning('Page access cleanup unconfirmed type=${error.runtimeType}');
+        onError: (Object error, StackTrace stack) {
+          _log.warning('Page access cleanup unconfirmed type=${error.runtimeType}', error, stack);
         },
       ),
     );

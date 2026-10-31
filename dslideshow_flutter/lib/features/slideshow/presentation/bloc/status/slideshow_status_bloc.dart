@@ -85,7 +85,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
         // independently and its actual phase is reported by the backend.
         _completeAction(event);
       } catch (error, stack) {
-        _log.warning('Unable to apply screen control type=${error.runtimeType}');
+        _log.warning('Unable to apply screen control type=${error.runtimeType}', error, stack);
         _completeAction(event, error: error, stack: stack);
       }
     });
@@ -160,7 +160,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
       Future<void>.sync(() async {
         await frontendService.updateFrontendState(isPaused: isPaused, isMenu: isMenu);
       }).catchError((Object error, StackTrace stack) {
-        _log.warning('Unable to publish frontend state type=${error.runtimeType}');
+        _log.warning('Unable to publish frontend state type=${error.runtimeType}', error, stack);
       }),
     );
   }

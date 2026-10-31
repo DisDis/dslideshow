@@ -49,15 +49,15 @@ Future<File> buildAndroidApk(
     final output = await source.copy(p.join(source.parent.path, 'config_app_$version.apk'));
     _log.info('action=finish result=passed version=$version artifact=${p.basename(output.path)}');
     return output;
-  } on ProcessJobFailure catch (error) {
+  } on ProcessJobFailure catch (error, stack) {
     if (error.code == 130 || error.code == 143) {
-      _log.info('action=finish result=cancelled code=${error.code}');
+      _log.info('action=finish result=cancelled code=${error.code}', error, stack);
     } else {
-      _log.severe('action=finish result=failed code=${error.code}');
+      _log.severe('action=finish result=failed code=${error.code}', error, stack);
     }
     rethrow;
-  } on Object catch (error) {
-    _log.severe('action=finish result=failed type=${error.runtimeType}');
+  } on Object catch (error, stack) {
+    _log.severe('action=finish result=failed type=${error.runtimeType}', error, stack);
     rethrow;
   }
 }

@@ -62,7 +62,13 @@ void main() {
     final wifiRecords = records.where((record) => record.loggerName == 'WifiTabBloc');
     expect(wifiRecords, isNotEmpty);
     expect(wifiRecords.map((record) => record.message).join(), isNot(contains('private-server-response')));
-    expect(wifiRecords.every((record) => record.error == null), isTrue);
+    expect(wifiRecords.where((record) => record.error != null), isNotEmpty);
+    expect(
+      wifiRecords
+          .where((record) => record.error != null)
+          .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+      isTrue,
+    );
     expect(
       wifiRecords.map((record) => record.message),
       containsAll([contains('event=started action=rescan'), contains('event=outcomeUnknown action=rescan')]),

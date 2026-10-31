@@ -25,8 +25,8 @@ class YandexDriveService {
           if (YandexDrivePaths.validAccountId(credential.accountId) && credential.accessToken.isNotEmpty) {
             _credentials[credential.accountId] = credential;
           }
-        } catch (_) {
-          _log.warning('Connection load rejected reason=invalidRecord');
+        } catch (error, stack) {
+          _log.warning('Connection load rejected reason=invalidRecord', error, stack);
         }
       }
     }
@@ -88,10 +88,10 @@ class YandexDriveService {
             : '',
       );
       _storage.save();
-    } catch (_) {
+    } catch (error, stack) {
       _storage.setValue(_clientIdKey, oldId);
       _storage.setValue(_clientSecretKey, oldSecret);
-      _log.warning('Application configuration failed reason=storage');
+      _log.warning('Application configuration failed reason=storage', error, stack);
       throw const CloudStorageException(DriveFailure.storage);
     }
     _log.info('Application configuration completed');
@@ -125,12 +125,12 @@ class YandexDriveService {
       session.expiry = Timer(Duration(seconds: response.expiresIn), () => _expire(session));
       _schedule(session);
       return session.state;
-    } catch (error) {
+    } catch (error, stack) {
       if (!_isCurrentPending(session)) return session.state;
       final code = failureCode(error);
       session.state = session.state.copyWith(status: DriveAuthorizationStatus.failed, error: code);
       session.stopTimers();
-      _log.warning('Authorization failed reason=${code.name}');
+      _log.warning('Authorization failed reason=${code.name}', error, stack);
       return session.state;
     }
   }
@@ -229,11 +229,11 @@ class YandexDriveService {
       );
       session.stopTimers();
       _log.info('Authorization completed accounts=${_credentials.length}');
-    } catch (error) {
+    } catch (error, stack) {
       if (!_isCurrentPending(session)) return;
       final code = failureCode(error);
       if ({DriveFailure.network, DriveFailure.rateLimited, DriveFailure.serviceUnavailable}.contains(code)) {
-        if (session.state.error != code) _log.warning('Authorization waiting reason=${code.name}');
+        if (session.state.error != code) _log.warning('Authorization waiting reason=${code.name}', error, stack);
         session.state = session.state.copyWith(error: code);
         _schedule(session);
       } else {
@@ -244,7 +244,7 @@ class YandexDriveService {
           verificationUrl: null,
         );
         session.stopTimers();
-        _log.warning('Authorization failed reason=${code.name}');
+        _log.warning('Authorization failed reason=${code.name}', error, stack);
       }
     }
   }
@@ -383,11 +383,13 @@ class YandexDriveService {
       _storeCredential(updated);
       _log.info('Token refresh completed');
       return updated;
-    } catch (error) {
+    } catch (error, stack) {
       final code = _closed || !isConnected(accountId) ? DriveFailure.cancelled : failureCode(error);
       _log.log(
         code == DriveFailure.cancelled ? Level.INFO : Level.WARNING,
         'Token refresh ${code == DriveFailure.cancelled ? 'discarded' : 'failed'} reason=${code.name}',
+        error,
+        stack,
       );
       throw CloudStorageException(code);
     }

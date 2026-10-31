@@ -29,17 +29,14 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     Logger.root.level = config.log.levelOTA;
 
     injector.registerLazySingleton<OTAService>(() {
-      return OTAService(
-        config: injector(),
-        frontendService: _remoteFrontendService,
-      );
+      return OTAService(config: injector(), frontendService: _remoteFrontendService);
     });
 
     _service = injector.get<OTAService>();
     await _remoteFrontendService.service.processing(_service, serializers);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
-    _log.info("Spawned isolate finished with error.");
+    _log.info("Spawned isolate finished with error.", e, s);
     // exit(1);
     Isolate.exit();
   }

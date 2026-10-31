@@ -203,11 +203,13 @@ class GalleryCatalogService {
       } finally {
         await input.close();
       }
-    } on FileSystemException catch (error) {
+    } on FileSystemException catch (error, stack) {
       if (error.osError?.errorCode != 2) {
         _log.warning(
           'Gallery invalidation state read failed '
           'type=${error.runtimeType} osCode=${error.osError?.errorCode}',
+          error,
+          stack,
         );
         rethrow;
       }
@@ -317,10 +319,12 @@ class GalleryCatalogService {
       await temporary.writeAsString(epoch, flush: true);
       await temporary.rename(path.join(stateDirectory.path, 'catalog.epoch'));
       _log.fine('Gallery invalidation state persisted');
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       _log.warning(
         'Gallery invalidation state write failed type=${error.runtimeType} '
         'osCode=${error is FileSystemException ? error.osError?.errorCode : null} ',
+        error,
+        stack,
       );
       rethrow;
     } finally {

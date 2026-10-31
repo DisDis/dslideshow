@@ -17,6 +17,28 @@ String _frame(String text) {
 }
 
 void main() {
+  for (final interactive in [false, true]) {
+    test('logger preserves full error and multiline stack with interactive=$interactive', () async {
+      final out = StringBuffer(), err = StringBuffer();
+      final console = BuildConsole(output: out, errors: err, color: interactive, interactive: interactive, columns: 24);
+      await console.startJob('tests:one', compact: true);
+      await console.writeChunk('tests:one', '00:00 +1: active\r');
+      final error = StateError('original URL https://frame/private?code=secret\nsecond error line');
+      final stack = List.generate(
+        100,
+        (index) => '#$index originalSource (package:example/source.dart:$index:7)',
+      ).join('\n');
+      await console.writeLog(
+        LogRecord(Level.SEVERE, 'action=test result=failed', 'build', error, StackTrace.fromString(stack)),
+      );
+      await console.writeChunk('tests:one', '00:00 +2: later\r');
+      await console.finishJob('tests:one');
+      await console.close();
+      expect(_plain(err.toString()), 'SEVERE build action=test result=failed\n$error\n$stack\n');
+      expect(_plain(out.toString()), contains('later'));
+    });
+  }
+
   test('plain output isolates partial lines, CRLF and streams without ANSI', () async {
     final out = StringBuffer(), err = StringBuffer();
     final console = BuildConsole(output: out, errors: err, color: false, interactive: true);

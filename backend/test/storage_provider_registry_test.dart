@@ -226,7 +226,13 @@ void main() {
       expect(records.where((record) => record.message.contains('event=driveCommandFailed')), hasLength(1));
       expect(records.where((record) => record.message.contains('event=initializationStarted')), isEmpty);
       expect(records.map((record) => record.message).join('\n'), isNot(contains('private-client-secret')));
-      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(records.where((record) => record.error != null), isNotEmpty);
+      expect(
+        records
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
       expect(records.length, lessThan(16));
     } finally {
       await subscription.cancel();
@@ -234,7 +240,7 @@ void main() {
     }
   });
 
-  test('factory and cloud command failures keep secret-bearing exceptions out of results and logs', () async {
+  test('factory and cloud command failures preserve diagnostics and return domain errors', () async {
     final previousDebugOutput = GetIt.noDebugOutput;
     addTearDown(() => expect(GetIt.noDebugOutput, previousDebugOutput));
     final records = <LogRecord>[];
@@ -267,14 +273,14 @@ void main() {
       expect(records.where((record) => record.message.contains('event=driveCommandFailed')), hasLength(2));
       expect(
         records.map((record) => '${record.message} ${record.error ?? ''} ${record.stackTrace ?? ''}').join('\n'),
-        isNot(contains('private-')),
+        contains('private-'),
       );
     } finally {
       await subscription.cancel();
     }
   });
 
-  test('initialization failures propagate but their diagnostics omit exception contents', () async {
+  test('initialization failures propagate with their original diagnostics', () async {
     final records = <LogRecord>[];
     final subscription = Logger.root.onRecord.listen(records.add);
     final failure = StateError('private-initialization-url');
@@ -286,10 +292,7 @@ void main() {
     try {
       await expectLater(registry.init(), throwsA(same(failure)));
       expect(records.any((record) => record.message.contains('event=initializationFailed')), isTrue);
-      expect(
-        records.map((record) => '${record.message} ${record.error ?? ''}').join('\n'),
-        isNot(contains('private-')),
-      );
+      expect(records.map((record) => '${record.message} ${record.error ?? ''}').join('\n'), contains('private-'));
     } finally {
       await registry.release();
       await subscription.cancel();
@@ -297,7 +300,7 @@ void main() {
     expect(storage.releases, 1);
   });
 
-  test('shutdown continues after a release failure and reports bounded safe counts', () async {
+  test('shutdown continues after a release failure and reports counts and original error', () async {
     final records = <LogRecord>[];
     final subscription = Logger.root.onRecord.listen(records.add);
     final failure = StateError('private-release-url');
@@ -320,10 +323,7 @@ void main() {
         records.any((record) => record.message == 'event=releaseCompleted providers=2 released=1 failed=1'),
         isTrue,
       );
-      expect(
-        records.map((record) => '${record.message} ${record.error ?? ''}').join('\n'),
-        isNot(contains('private-')),
-      );
+      expect(records.map((record) => '${record.message} ${record.error ?? ''}').join('\n'), contains('private-'));
     } finally {
       await subscription.cancel();
     }

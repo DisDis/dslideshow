@@ -116,7 +116,13 @@ void main() {
       expect(events.first.message, 'event=browserOpenStarted');
       expect(events.last.message, 'event=browserOpenFinished opened=$opened');
       expect(events.last.level, opened ? Level.FINE : Level.WARNING);
-      expect(events.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(events.where((record) => record.error != null), isNotEmpty);
+      expect(
+        events
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
       final l = AppLocalizations.of(tester.element(find.byType(AlertDialog)));
       expect(find.text(l.yandex_browser_failed), opened ? findsNothing : findsOneWidget);
       expect(events.map((record) => record.message).join('\n'), isNot(contains(creationUrl)));
@@ -308,7 +314,13 @@ void main() {
     expect(messages, contains('event=outcomeUnknown action=disconnectAccount'));
     expect(messages, isNot(contains('private.example')));
     expect(messages, isNot(contains('access_token')));
-    expect(records.every((record) => record.error == null), isTrue);
+    expect(records.where((record) => record.error != null), isNotEmpty);
+    expect(
+      records
+          .where((record) => record.error != null)
+          .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+      isTrue,
+    );
   });
 
   test('structured backend rejection is not treated as successful application setup', () async {

@@ -62,13 +62,15 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
       }
       _log.info('event=catalogLoadCompleted generation=$generation items=${result.items.length}');
       emit(LoadedGalleryState(items: result.items));
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || emit.isDone || generation != _generation) {
-        _log.fine(() => 'event=catalogLoadCancelled generation=$generation closing=$_closing');
+        _log.fine(() => 'event=catalogLoadCancelled generation=$generation closing=$_closing', error, stack);
         return;
       }
       _log.warning(
         'event=catalogLoadFailed generation=$generation status=${error is GalleryImageHttpException ? error.statusCode : 'none'} type=${error.runtimeType} retainedItems=${previous?.items.length ?? 0}',
+        error,
+        stack,
       );
       if (previous != null) {
         emit(LoadedGalleryState(items: previous.items, refreshFailed: true));

@@ -165,7 +165,9 @@ void main() {
       isTrue,
     );
     expect(records.any((record) => record.message.startsWith('systemInfo completed')), isTrue);
-    expect(records.every((record) => record.error == null && !record.message.contains('secret-code')), isTrue);
+    final failed = records.singleWhere((record) => record.error != null);
+    expect(failed.error.toString(), contains('secret-code'));
+    expect(failed.stackTrace.toString(), contains('remote_service.dart'));
   });
 
   frontendTest('disposal cancels timer and pending local waits, consuming late external failures', (tester, h) async {
@@ -297,7 +299,7 @@ void main() {
     expect(h.backend.requests.whereType<UpdateFrontendStateCommand>().single.isMenu, isTrue);
   });
 
-  frontendTest('frame RPC returns the source request ID on a backend rejection and keeps logs safe', (tester, h) async {
+  frontendTest('frame RPC returns the source request ID and logs the original backend rejection', (tester, h) async {
     final records = <LogRecord>[];
     final level = Logger.root.level;
     Logger.root.level = Level.ALL;
@@ -329,8 +331,8 @@ void main() {
       ),
       isTrue,
     );
-    expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
-    expect(records.map((record) => record.message).join('\n'), isNot(contains(privateFailure)));
+    expect(failed.error.toString(), contains(privateFailure));
+    expect(failed.stackTrace, isNotNull);
   });
 
   frontendTest('OTA and SystemInfo read facades route to their respective remotes', (tester, h) async {

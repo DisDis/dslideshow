@@ -32,9 +32,9 @@ class AndroidFrameDiscoverySession implements FrameDiscoverySession {
     _log.info('Discovery starting');
     _subscription = channel.receiveBroadcastStream().listen(
       _onMessage,
-      onError: (Object error) {
+      onError: (Object error, StackTrace stack) {
         final code = error is PlatformException ? error.code : error.runtimeType;
-        _log.warning('Discovery failed code=$code');
+        _log.warning('Discovery failed code=$code', error, stack);
         if (!_started.isCompleted) {
           _started.completeError(error);
         } else {

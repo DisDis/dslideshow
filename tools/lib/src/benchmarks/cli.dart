@@ -78,9 +78,11 @@ Future<int> runBenchmark(List<String> arguments) async {
           : 'failed'} code=$code durationMs=${clock.elapsedMilliseconds}',
     );
     return code;
-  } on Object catch (error) {
+  } on Object catch (error, stack) {
     _benchmarkLog.warning(
       'run=$runId command=$command action=finish result=failed reason=${error.runtimeType} durationMs=${clock.elapsedMilliseconds}',
+      error,
+      stack,
     );
     rethrow;
   }

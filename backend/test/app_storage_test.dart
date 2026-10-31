@@ -67,10 +67,10 @@ void main() {
         expect(jsonDecode(file.readAsStringSync()), {'recovered': true});
         final failures = logs.where((log) => log.loggerName == 'AppStorage' && log.level >= Level.WARNING);
         expect(failures, isNotEmpty);
-        for (final log in logs) {
-          expect('${log.message} ${log.error} ${log.stackTrace}', isNot(contains('SECRET_CONTENT')));
-          expect(log.error, isNull);
-        }
+        final failure = failures.single;
+        expect(failure.error, isA<FormatException>());
+        expect(failure.stackTrace.toString(), contains('app_storage.dart'));
+        if (invalid.contains('SECRET_CONTENT')) expect(failure.error.toString(), contains('SECRET_CONTENT'));
       });
     });
   }

@@ -78,7 +78,7 @@ void serviceMain1(Map<String, dynamic> handshakeMessage) async {
     await _remoteMainService.service.processing(RemoteService(), serializers);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
-    _log.info("Spawned isolate finished with error.");
+    _log.info("Spawned isolate finished with error.", e, s);
     // exit(1);
     Isolate.exit();
   }

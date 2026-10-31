@@ -874,7 +874,13 @@ void main() {
         await closing;
       }
       expect(records.any((record) => record.message == 'OTA frontend notification failed type=StateError'), isTrue);
-      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(records.where((record) => record.error != null), isNotEmpty);
+      expect(
+        records
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
       expect(records.map((record) => record.message).join(), isNot(contains('private')));
     }),
   );

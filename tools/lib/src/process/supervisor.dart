@@ -93,10 +93,12 @@ class ProcessSupervisor {
         final process = await launch;
         job = _RunningJob(process, _processIdentity(process.pid)?.start, <String>{});
         _jobs.add(job);
-      } on ProcessException catch (error) {
+      } on ProcessException catch (error, stack) {
         _log.severe(
           'run=$runId elapsedMs=$elapsedMilliseconds job=$label action=finish result=failed reason=start '
           'osCode=${error.errorCode}',
+          error,
+          stack,
         );
         throw ProcessJobFailure(label, 1, reason: 'start');
       } finally {

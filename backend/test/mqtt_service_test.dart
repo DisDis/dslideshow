@@ -183,11 +183,13 @@ void main() {
   );
 
   test(
-    'connection failure logs safe types without private endpoint details',
+    'connection failure logs the original error and stack',
     () => captureLogs((records) async {
       create();
       await client.connecting.future;
-      client.connection.completeError(StateError('private connection URL'));
+      final error = StateError('private connection URL');
+      final stack = StackTrace.fromString('#0 mqtt-connect-source\n#1 mqtt-connect-caller');
+      client.connection.completeError(error, stack);
       await service.ready;
       expect(service.isConnected, isFalse);
       expect(client.disconnectCalls, 1);
@@ -195,8 +197,10 @@ void main() {
       final failure = records.singleWhere((r) => r.message.startsWith('event=connectFailed '));
       expect(failure.level, Level.WARNING);
       expect(failure.message, contains('type=StateError'));
-      expect(failure.error, isNull);
-      expect(failure.message, isNot(contains('private connection URL')));
+      expect(failure.error, isA<StateError>());
+      expect(failure.stackTrace, isNotNull);
+      expect(failure.error, same(error));
+      expect(failure.stackTrace, same(stack));
     }),
   );
 
@@ -263,7 +267,13 @@ void main() {
           startsWith('event=statePublishFailed type=StateError'),
         ]),
       );
-      expect(records.every((r) => r.error == null), isTrue);
+      expect(records.where((r) => r.error != null), isNotEmpty);
+      expect(
+        records
+            .where((r) => r.error != null)
+            .every((r) => identical(r.error, client.publishError) && r.stackTrace != null),
+        isTrue,
+      );
       expect(records.map((r) => r.message).join(), isNot(contains('private publish payload')));
       client.publishError = null;
       final changed = service.onPause.first;
@@ -291,7 +301,8 @@ void main() {
       expect(failure.level, Level.WARNING);
       expect(failure.message, contains('type=StateError'));
       expect(failure.message, isNot(contains('private cancellation URL')));
-      expect(failure.error, isNull);
+      expect(failure.error, isA<StateError>());
+      expect(failure.stackTrace, isNotNull);
     }),
   );
 

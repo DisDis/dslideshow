@@ -38,13 +38,13 @@ void main(List<String> args) async {
     var service = injector.get<WebService>();
     new Timer(const Duration(seconds: 1), () {
       unawaited(
-        service.setEnabled(true).catchError((Object error) {
-          _log.warning('Web control failed type=${error.runtimeType}');
+        service.setEnabled(true).catchError((Object error, StackTrace stack) {
+          _log.warning('Web control failed type=${error.runtimeType}', error, stack);
         }),
       );
     });
-  } catch (error) {
-    _log.severe('Web startup failed type=${error.runtimeType}');
+  } catch (error, stack) {
+    _log.severe('Web startup failed type=${error.runtimeType}', error, stack);
     exit(1);
   }
   ProcessSignal.sigint.watch().listen((ProcessSignal signal) {

@@ -149,10 +149,10 @@ class AvahiFrameDiscoverySession implements FrameDiscoverySession {
       );
       _emitService(service);
       _log.fine('action=resolve result=completed');
-    } catch (error) {
+    } catch (error, stack) {
       if (!_closed) {
         final code = error is DBusMethodResponseException ? error.errorName : error.runtimeType;
-        _log.warning('action=resolve result=failed type=${error.runtimeType} code=$code');
+        _log.warning('action=resolve result=failed type=${error.runtimeType} code=$code', error, stack);
         _updates.add(const FrameDiscoveryUpdate.resolveFailed());
       }
     }

@@ -59,12 +59,10 @@ class Service {
             failed = result is RpcErrorResult;
             resultOPort.send(serializers.serialize(result));
           }
-        } catch (e) {
+        } catch (e, stack) {
           failed = true;
-          // Transport and decoding errors may embed credentials or signed URLs.
-          // The wire error/throwing contract stays unchanged; diagnostic output
-          // contains the safe exception category rather than its payload.
-          _log.severe('executeCommand type=${e.runtimeType}');
+          // Preserve the original failure locally before the RPC boundary.
+          _log.severe('executeCommand type=${e.runtimeType}', e, stack);
           rethrow;
         } finally {
           if (started != null) metrics!.handlerFinished(started, error: failed);

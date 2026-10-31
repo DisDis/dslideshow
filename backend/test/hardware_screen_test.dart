@@ -283,7 +283,12 @@ void main() {
         time.flushMicrotasks();
         final failures = records.where((record) => record.message.startsWith('Storage status delivery failed '));
         expect(failures, hasLength(2));
-        expect(failures.every((record) => record.level == Level.WARNING && record.error == null), isTrue);
+        expect(
+          failures.every(
+            (record) => record.level == Level.WARNING && record.error != null && record.stackTrace != null,
+          ),
+          isTrue,
+        );
         expect(records.map((record) => record.message).join(), isNot(contains('private')));
         f.dispose(time);
       });

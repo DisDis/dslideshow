@@ -194,8 +194,8 @@ class GooglePhotoService {
       _scUpdateCredentials.add(credentials);
       //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       client.close();
-    } catch (err) {
-      _log.severe('Unable to create Google photo service type=${err.runtimeType}');
+    } catch (err, stack) {
+      _log.severe('Unable to create Google photo service type=${err.runtimeType}', err, stack);
     }
     return result;
   }

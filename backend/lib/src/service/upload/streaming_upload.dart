@@ -89,17 +89,11 @@ class UploadProgressThrottle {
   int? _lastBytes;
   int _lastMicroseconds = 0;
 
-  UploadProgressThrottle(
-    this.callback, {
-    this.interval = const Duration(milliseconds: 250),
-  });
+  UploadProgressThrottle(this.callback, {this.interval = const Duration(milliseconds: 250)});
 
   void update(int bytes, int? total, {bool force = false}) {
     final now = _watch.elapsedMicroseconds;
-    if (!force &&
-        (_lastBytes == bytes ||
-            (_lastBytes != null &&
-                now - _lastMicroseconds < interval.inMicroseconds))) {
+    if (!force && (_lastBytes == bytes || (_lastBytes != null && now - _lastMicroseconds < interval.inMicroseconds))) {
       return;
     }
     _lastBytes = bytes;
@@ -139,14 +133,12 @@ class _ManagedWriter {
 
   _ManagedWriter(this.writer);
 
-  Future<void> write(List<int> bytes) =>
-      _pending = _pending.then((_) => writer.write(bytes));
+  Future<void> write(List<int> bytes) => _pending = _pending.then((_) => writer.write(bytes));
 
   Future<void> flush() => _pending = _pending.then((_) => writer.flush());
 
-  Future<void> close() => _closing ??= _pending
-      .then<void>((_) {}, onError: (Object _, StackTrace __) {})
-      .then((_) => writer.close());
+  Future<void> close() =>
+      _closing ??= _pending.then<void>((_) {}, onError: (Object _, StackTrace __) {}).then((_) => writer.close());
 }
 
 /// Reservations serialize matching destinations within this backend isolate.
@@ -178,13 +170,7 @@ class StagedUploadFile {
   bool _cleaned = false;
   Future<void>? _cleanup;
 
-  StagedUploadFile._(
-    this.filename,
-    this.destination,
-    this.temporary,
-    this._reservations,
-    this._reservation,
-  );
+  StagedUploadFile._(this.filename, this.destination, this.temporary, this._reservations, this._reservation);
 
   bool get published => _published;
 
@@ -199,7 +185,8 @@ class StagedUploadFile {
       final file = await temporary.rename(destination);
       _published = true;
       return file;
-    } catch (error) {
+    } catch (error, stack) {
+      _log.warning('Upload publication failed', error, stack);
       throw uploadFailureFor(error);
     }
   }
@@ -242,8 +229,7 @@ class StagedUploadBatch {
   final List<StagedUploadFile> files;
   final int receivedBytes;
 
-  StagedUploadBatch._(List<StagedUploadFile> files, this.receivedBytes)
-    : files = List.unmodifiable(files);
+  StagedUploadBatch._(List<StagedUploadFile> files, this.receivedBytes) : files = List.unmodifiable(files);
 
   Future<void> cleanup() async {
     for (final file in files) {
@@ -260,8 +246,7 @@ class _UploadScope {
   final UploadCancellationToken? _cancellation;
   void Function()? _onCancellation;
 
-  _UploadScope(this.limits, UploadCancellationToken? cancellation)
-    : _cancellation = cancellation {
+  _UploadScope(this.limits, UploadCancellationToken? cancellation) : _cancellation = cancellation {
     _deadline = Timer(limits.totalTimeout, () {
       _abort(const UploadFailure(408, 'Upload timed out'));
     });
@@ -334,12 +319,8 @@ class _RawUploadReader {
   List<int> _buffer = const [];
   int _offset = 0;
 
-  _RawUploadReader(
-    Stream<List<int>> input,
-    this.scope,
-    this.contentLength,
-    UploadProgress? onProgress,
-  ) : _input = StreamIterator(input),
+  _RawUploadReader(Stream<List<int>> input, this.scope, this.contentLength, UploadProgress? onProgress)
+    : _input = StreamIterator(input),
       progress = onProgress == null ? null : UploadProgressThrottle(onProgress);
 
   Future<List<int>?> chunk() async {
@@ -363,13 +344,9 @@ class _RawUploadReader {
 
   Future<bool> _moveNext() async {
     try {
-      return await scope.wait(
-        _input.moveNext().timeout(scope.limits.idleTimeout),
-      );
+      return await scope.wait(_input.moveNext().timeout(scope.limits.idleTimeout));
     } catch (error) {
-      if (error is UploadFailure ||
-          error is TimeoutException ||
-          error is FileSystemException) {
+      if (error is UploadFailure || error is TimeoutException || error is FileSystemException) {
         rethrow;
       }
       throw const UploadFailure(400, 'Upload stream failed');
@@ -404,9 +381,7 @@ class _RawUploadReader {
       if (bytes.length > maxBytes) {
         throw const UploadFailure(413, 'Multipart headers exceed size limit');
       }
-      if (bytes.length >= 2 &&
-          bytes[bytes.length - 2] == 13 &&
-          bytes.last == 10) {
+      if (bytes.length >= 2 && bytes[bytes.length - 2] == 13 && bytes.last == 10) {
         return bytes;
       }
     }
@@ -460,8 +435,7 @@ class StreamingUploadReceiver {
   }) : _writerFactory = writerFactory ?? _openWriter,
        _reservations = reservations ?? UploadTargetReservations();
 
-  static Future<UploadFileWriter> _openWriter(File file) async =>
-      _DiskWriter(await file.open(mode: FileMode.write));
+  static Future<UploadFileWriter> _openWriter(File file) async => _DiskWriter(await file.open(mode: FileMode.write));
 
   Future<StagedUploadBatch> receiveMultipart(
     Request request, {
@@ -495,9 +469,7 @@ class StreamingUploadReceiver {
       reader = _RawUploadReader(request.read(), scope, length, onProgress);
       // MIME permits a preamble, and transport padding after a boundary.
       while (true) {
-        final opening = _withoutPadding(
-          utf8.decode(await reader.line(limits.maxHeaderBytes)),
-        );
+        final opening = _withoutPadding(utf8.decode(await reader.line(limits.maxHeaderBytes)));
         if (opening == '--$boundary') break;
         if (opening == '--$boundary--') {
           throw const UploadFailure(400, 'No uploaded files');
@@ -536,9 +508,7 @@ class StreamingUploadReceiver {
           if (beforeFile != null) {
             await scope.wait(Future<void>.sync(() => beforeFile(filename)));
           }
-          final destination = await scope.wait(
-            Future<String>.sync(() => destinationFor(filename)),
-          );
+          final destination = await scope.wait(Future<String>.sync(() => destinationFor(filename)));
           final file = await _stage(filename, destination, files, scope);
           await for (final bytes in body) {
             await scope.wait(file._writer!.write(bytes));
@@ -551,18 +521,11 @@ class StreamingUploadReceiver {
           final value = BytesBuilder(copy: false);
           await for (final bytes in body) {
             if (value.length + bytes.length > limits.maxFieldBytes) {
-              throw const UploadFailure(
-                413,
-                'Multipart field exceeds size limit',
-              );
+              throw const UploadFailure(413, 'Multipart field exceeds size limit');
             }
             value.add(bytes);
           }
-          await scope.wait(
-            Future<void>.sync(
-              () => onField(name, utf8.decode(value.takeBytes())),
-            ),
-          );
+          await scope.wait(Future<void>.sync(() => onField(name, utf8.decode(value.takeBytes()))));
         }
         final suffix = await reader.line(limits.maxHeaderBytes, allowEof: true);
         final ending = _withoutPadding(utf8.decode(suffix));
@@ -585,23 +548,18 @@ class StreamingUploadReceiver {
         _log.warning('Could not receive multipart upload', error, stack);
       }
       for (final file in files) {
-        file._cleanup ??= file._clean(
-          waitForClose: !scope.isAborted,
-          scope: scope,
-        );
+        file._cleanup ??= file._clean(waitForClose: !scope.isAborted, scope: scope);
         await file._cleanup;
       }
-      if (rejectionPolicy == UploadRejectionPolicy.drain &&
-          reader != null &&
-          !scope.isAborted) {
+      if (rejectionPolicy == UploadRejectionPolicy.drain && reader != null && !scope.isAborted) {
         try {
           // Do not parse or save rejected input. Draining retains the same
           // byte/deadline/cancellation limits and emits no upload progress.
           await reader.discardRemaining();
-        } catch (drainError) {
+        } catch (drainError, stack) {
           // An oversized, disconnected or stalled sender cannot be drained
           // safely. Cancel below, retaining the original application failure.
-          _log.fine('Could not finish rejected upload', drainError);
+          _log.fine('Could not finish rejected upload', drainError, stack);
         }
       }
       throw uploadFailureFor(error);
@@ -638,10 +596,7 @@ class StreamingUploadReceiver {
         _log.warning('Could not receive upload stream', error, stack);
       }
       for (final file in files) {
-        file._cleanup ??= file._clean(
-          waitForClose: !scope.isAborted,
-          scope: scope,
-        );
+        file._cleanup ??= file._clean(waitForClose: !scope.isAborted, scope: scope);
         await file._cleanup;
       }
       throw uploadFailureFor(error);
@@ -666,18 +621,9 @@ class StreamingUploadReceiver {
     scope.check();
     final reservation = _reservations._reserve(destination);
     final parent = File(destination).parent;
-    final nonce = List.generate(
-      4,
-      (_) => _random.nextInt(0x100000000).toRadixString(16).padLeft(8, '0'),
-    ).join();
+    final nonce = List.generate(4, (_) => _random.nextInt(0x100000000).toRadixString(16).padLeft(8, '0')).join();
     final temporary = File(path.join(parent.path, '.upload-$nonce.part'));
-    final staged = StagedUploadFile._(
-      filename,
-      destination,
-      temporary,
-      _reservations,
-      reservation,
-    );
+    final staged = StagedUploadFile._(filename, destination, temporary, _reservations, reservation);
     files.add(staged);
     await scope.wait(parent.create(recursive: true));
     await scope.wait(
@@ -691,10 +637,7 @@ class StreamingUploadReceiver {
       (writer) {
         staged._writer = _ManagedWriter(writer);
         if (staged._cleaned) {
-          staged._writer!
-              .close()
-              .catchError((Object _) {})
-              .then((_) => _removeLateTemporary(temporary));
+          staged._writer!.close().catchError((Object _) {}).then((_) => _removeLateTemporary(temporary));
         }
       },
       onError: (Object error, StackTrace stack) async {
@@ -711,11 +654,7 @@ class StreamingUploadReceiver {
       await file.delete();
     } on FileSystemException catch (error, stack) {
       if (error.osError?.errorCode != 2) {
-        StagedUploadFile._log.warning(
-          'Could not remove temporary upload',
-          error,
-          stack,
-        );
+        StagedUploadFile._log.warning('Could not remove temporary upload', error, stack);
       }
     }
   }
@@ -756,10 +695,7 @@ class StreamingUploadReceiver {
 
   /// Retains only a boundary-sized tail between source chunks. A matching
   /// prefix followed by another byte is ordinary file content, not a boundary.
-  Stream<List<int>> _partBody(
-    _RawUploadReader reader,
-    List<int> delimiter,
-  ) async* {
+  Stream<List<int>> _partBody(_RawUploadReader reader, List<int> delimiter) async* {
     List<int> pending = const [];
     while (true) {
       final next = await reader.chunk();
@@ -792,9 +728,7 @@ class StreamingUploadReceiver {
         break;
       }
       if (found >= 0) {
-        reader.prepend(
-          Uint8List.sublistView(combined, found + delimiter.length),
-        );
+        reader.prepend(Uint8List.sublistView(combined, found + delimiter.length));
         if (found > 0) yield Uint8List.sublistView(combined, 0, found);
         return;
       }
@@ -817,18 +751,12 @@ class StreamingUploadReceiver {
     }
   }
 
-  _BoundaryCandidate _boundaryCandidate(
-    List<int> data,
-    int offset,
-    bool atEof,
-  ) {
+  _BoundaryCandidate _boundaryCandidate(List<int> data, int offset, bool atEof) {
     final start = offset;
     var closing = false;
     if (offset < data.length && data[offset] == 45) {
       if (offset + 1 == data.length) {
-        return atEof
-            ? _BoundaryCandidate.invalid
-            : _BoundaryCandidate.incomplete;
+        return atEof ? _BoundaryCandidate.invalid : _BoundaryCandidate.incomplete;
       }
       if (data[offset + 1] != 45) return _BoundaryCandidate.invalid;
       closing = true;
@@ -850,12 +778,9 @@ class StreamingUploadReceiver {
     if (offset + 1 == data.length) {
       return atEof ? _BoundaryCandidate.invalid : _BoundaryCandidate.incomplete;
     }
-    return data[offset + 1] == 10
-        ? _BoundaryCandidate.valid
-        : _BoundaryCandidate.invalid;
+    return data[offset + 1] == 10 ? _BoundaryCandidate.valid : _BoundaryCandidate.invalid;
   }
 
-  static String _withoutPadding(String line) => line
-      .replaceFirst(_lineEndingPattern, '')
-      .replaceFirst(_trailingWhitespacePattern, '');
+  static String _withoutPadding(String line) =>
+      line.replaceFirst(_lineEndingPattern, '').replaceFirst(_trailingWhitespacePattern, '');
 }

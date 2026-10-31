@@ -104,12 +104,12 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
           _log.info('selection ${folder == null ? 'cancelled' : 'completed'} kind=folder');
           if (folder != null) add(UploadQueueEvent.addFolder(folder));
       }
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || emit.isDone) {
-        _log.info('selection cancelled kind=${event.kind.name}');
+        _log.info('selection cancelled kind=${event.kind.name}', error, stack);
         return;
       }
-      _log.warning('selection failed kind=${event.kind.name} type=${error.runtimeType}');
+      _log.warning('selection failed kind=${event.kind.name} type=${error.runtimeType}', error, stack);
       if (!_closing && !emit.isDone) {
         emit(
           state.copyWith(
@@ -208,11 +208,11 @@ class UploadQueueBloc extends Bloc<UploadQueueEvent, UploadQueueState> {
         }
       }
       if (count == 0) issue = UploadSelectionIssue.emptyFolder;
-    } catch (error) {
+    } catch (error, stack) {
       if (!scan.cancelled) {
         issue = UploadSelectionIssue.folderReadFailed;
         final code = error is PlatformException ? error.code : error.runtimeType;
-        _log.warning('folder source failed code=$code');
+        _log.warning('folder source failed code=$code', error, stack);
       }
     } finally {
       try {

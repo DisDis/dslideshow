@@ -142,10 +142,10 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
       final effect = _nextEffect(nextSlide);
       _log.fine('event=loadCompleted');
       emit(state.copyWith(nextSlide: nextSlide, effect: effect, phase: SlideshowPhase.precaching));
-    } catch (error) {
+    } catch (error, stack) {
       if (emit.isDone || _closing) return;
       _displayTimer?.cancel();
-      _log.warning('event=loadFailed type=${error.runtimeType}');
+      _log.warning('event=loadFailed type=${error.runtimeType}', error, stack);
       // Retain the visible slide and its session after a source error.
       emit(state.copyWith(nextSlide: null, phase: SlideshowPhase.error));
     }

@@ -101,6 +101,8 @@ class GalleryUndoBloc extends Bloc<GalleryUndoEvent, GalleryUndoState> {
     } catch (error, stack) {
       _log.warning(
         'event=restoreFailed action=${hidden ? GalleryMutation.unhide.name : GalleryMutation.restore.name} code=${error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name} type=${error.runtimeType}',
+        error,
+        stack,
       );
       emit(
         state.copyWith(

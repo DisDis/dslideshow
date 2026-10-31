@@ -108,20 +108,26 @@ class GalleryManagementRepository {
             'event=requestCompleted request=$requestId endpoint=${endpoint.name} status=${response.statusCode} bytes=$receivedBytes',
       );
       return decoded;
-    } catch (error) {
+    } catch (error, stack) {
       if (timedOut) {
         _log.warning(
           'event=requestTimedOut request=$requestId endpoint=${endpoint.name} code=timeout bytes=$receivedBytes',
+          error,
+          stack,
         );
       } else if (_closed || abort.isCompleted) {
         _log.fine(
           () =>
               'event=requestCancelled request=$requestId endpoint=${endpoint.name} reason=${_closed ? 'closed' : 'consumer'} bytes=$receivedBytes',
+          error,
+          stack,
         );
       } else {
         final code = error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name;
         _log.warning(
           'event=requestFailed request=$requestId endpoint=${endpoint.name} status=${status ?? 'none'} code=$code type=${error.runtimeType} bytes=$receivedBytes',
+          error,
+          stack,
         );
       }
       rethrow;

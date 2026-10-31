@@ -104,7 +104,13 @@ void main() {
     expect(messages, contains('Search failed found=0 confirmed=0'));
     expect(messages, isNot(contains('scan=')));
     expect(messages, isNot(contains('private-')));
-    expect(records.every((record) => record.error == null), isTrue);
+    expect(records.where((record) => record.error != null), isNotEmpty);
+    expect(
+      records
+          .where((record) => record.error != null)
+          .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+      isTrue,
+    );
     await tester.runAsync(bloc.close);
     await tester.runAsync(subscription.cancel);
     Logger.root.level = previous;

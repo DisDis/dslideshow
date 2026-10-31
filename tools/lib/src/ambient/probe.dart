@@ -261,8 +261,9 @@ class AmbientHttp {
             );
       } on ProbeError {
         rethrow;
-      } on Exception catch (error) {
+      } on Exception catch (error, stack) {
         if (_closed.isCompleted) throw const ProbeInterrupted();
+        _log.warning('Ambient HTTP request failed', error, stack);
         throw ProbeError('Сетевая ошибка: ${clean(error)}');
       }
       final location = response.headers['location'];
@@ -328,7 +329,8 @@ class AmbientHttp {
     dynamic value;
     try {
       value = jsonDecode(utf8.decode(bytes));
-    } on FormatException {
+    } on FormatException catch (error, stack) {
+      _log.warning('Ambient response decoding failed', error, stack);
       throw const ProbeError('Сервер вернул некорректный JSON');
     }
     if (value is! Map<String, dynamic>) throw const ProbeError('Ожидался JSON-объект');

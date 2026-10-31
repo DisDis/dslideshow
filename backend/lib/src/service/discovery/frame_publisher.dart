@@ -148,7 +148,7 @@ class AvahiFramePublisher implements FramePublisher {
           if (failure != null) throw failure;
           _log.info('Advertisement published port=$port');
           return;
-        } catch (error) {
+        } catch (error, stack) {
           if (error is! _NameCollision &&
               !(error is DBusMethodResponseException && error.errorName == '$avahiBusName.CollisionError')) {
             rethrow;
@@ -158,7 +158,7 @@ class AvahiFramePublisher implements FramePublisher {
             DBusString(name),
           ], replySignature: DBusSignature('s'));
           name = alternative.returnValues.single.asString();
-          _log.fine('Advertisement name collision retry=${attempt + 1}');
+          _log.fine('Advertisement name collision retry=${attempt + 1}', error, stack);
         } finally {
           // Complete the observer as well if AddService/Commit failed early.
           if (!established.isCompleted) established.complete();
@@ -166,8 +166,8 @@ class AvahiFramePublisher implements FramePublisher {
         }
       }
       throw StateError('Avahi service name unavailable');
-    } catch (error) {
-      _log.warning('Advertisement publish failed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Advertisement publish failed type=${error.runtimeType}', error, stack);
       await unpublish();
       rethrow;
     }

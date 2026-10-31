@@ -128,9 +128,9 @@ Future<void> main(List<String> arguments) async {
     interactive: terminal && parsed.flag('progress'),
     columns: columns,
   );
-  Future<void> reportFailure(String message) async {
+  Future<void> reportFailure(String message, Object error, StackTrace stack) async {
     try {
-      await console.writeLog(LogRecord(Level.SEVERE, message, 'build'));
+      await console.writeLog(LogRecord(Level.SEVERE, message, 'build', error, stack));
     } on Object {
       // close() reports queued console failures after process cleanup.
     }
@@ -190,12 +190,12 @@ Future<void> main(List<String> arguments) async {
     // Grinder's CLI runTasks() calls exit(1) when a task throws. Its scheduler
     // propagates errors, allowing this owner to finish teardown and return 130/143.
     await scheduler.start(requested.map((task) => task.cliName));
-  } on ProcessJobFailure catch (error) {
+  } on ProcessJobFailure catch (error, stack) {
     exitCode = supervisor.cancellationCode ?? error.code;
-    await reportFailure(error.toString());
-  } on Object catch (error) {
+    await reportFailure('Build task failed', error, stack);
+  } on Object catch (error, stack) {
     exitCode = supervisor.cancellationCode ?? 1;
-    await reportFailure('Build failed: ${error.runtimeType}');
+    await reportFailure('Build failed', error, stack);
   } finally {
     try {
       if (pipeline != null) {
@@ -203,9 +203,9 @@ Future<void> main(List<String> arguments) async {
       } else {
         await supervisor.close();
       }
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       if (exitCode == 0) exitCode = 1;
-      await reportFailure('Build cleanup failed: ${error.runtimeType}');
+      await reportFailure('Build cleanup failed', error, stack);
     } finally {
       for (final subscription in signals) {
         await subscription.cancel();
@@ -227,10 +227,10 @@ Future<void> main(List<String> arguments) async {
         await console.close();
         await stdout.flush();
         await stderr.flush();
-      } on Object catch (error) {
+      } on Object catch (error, stack) {
         if (exitCode == 0) exitCode = 1;
         try {
-          stderr.writeln('Build console failed: ${error.runtimeType}');
+          stderr.writeln('Build console failed\n$error\n$stack');
           await stderr.flush();
         } on Object {
           // A detached stderr must not override process failure or signal codes.

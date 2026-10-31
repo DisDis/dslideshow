@@ -170,7 +170,8 @@ void main() {
           contains('media=id-${sha256.convert(utf8.encode(entry.mediaId)).toString().substring(0, 12)}'),
         );
         expect(diagnostic.message, contains('type=ThumbnailFailure'));
-        expect(diagnostic.error, isNull);
+        expect(diagnostic.error, isA<ThumbnailFailure>());
+        expect(diagnostic.stackTrace, isNotNull);
         expect(records.any((record) => record.message.contains('/cache/${service.code}/')), isFalse);
       }),
     );

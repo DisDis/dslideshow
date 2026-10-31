@@ -52,7 +52,7 @@ class WiFiService {
         'exitCode=0',
       );
       return result;
-    } catch (error) {
+    } catch (error, stack) {
       final failure = error is _WiFiCommandFailure
           ? error
           : _WiFiCommandFailure(
@@ -72,6 +72,8 @@ class WiFiService {
         'event=failed action=${action.name} '
         'reason=${failure.reason.name} type=${error.runtimeType}'
         '${failure.code == null ? '' : ' code=${failure.code}'}',
+        error,
+        stack,
       );
       throw failure;
     }
@@ -175,8 +177,8 @@ class WiFiService {
         networks.add(
           WiFiNetworkInfo(BSSID: bssid, SSID: ssid, signal: signal, channel: channel, security: security, rate: rate),
         );
-      } catch (error) {
-        _log.warning('Wi-Fi scan row rejected row=$i type=${error.runtimeType}');
+      } catch (error, stack) {
+        _log.warning('Wi-Fi scan row rejected row=$i type=${error.runtimeType}', error, stack);
       }
     }
 
@@ -253,8 +255,8 @@ class WiFiService {
         device = line.substring(indices[0] /*, indices[1]*/).trim();
 
         result.add(WiFiConnectionInfo(name: name, UUID: uuid, type: type, device: device));
-      } catch (error) {
-        _log.warning('Wi-Fi connection row rejected row=$i type=${error.runtimeType}');
+      } catch (error, stack) {
+        _log.warning('Wi-Fi connection row rejected row=$i type=${error.runtimeType}', error, stack);
       }
     }
     return result;

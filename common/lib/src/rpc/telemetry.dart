@@ -40,8 +40,8 @@ class RpcTelemetry {
   Future<RpcTelemetrySnapshot> _collectPeer(Future<RpcTelemetrySnapshot> Function() read) async {
     try {
       return await read();
-    } catch (error) {
-      _log.fine('Peer telemetry unavailable type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.fine('Peer telemetry unavailable type=${error.runtimeType}', error, stack);
       return const RpcTelemetrySnapshot();
     }
   }

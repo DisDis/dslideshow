@@ -178,7 +178,13 @@ void main() {
       expect(failures.single.message, contains('code=org.freedesktop.DBus.Error.Failed'));
       expect(failures.single.message, isNot(contains('elapsedMs=')));
       expect(logs.any((record) => record.message.contains('private-resolve-payload')), isFalse);
-      expect(logs.every((record) => record.error == null), isTrue);
+      expect(logs.where((record) => record.error != null), isNotEmpty);
+      expect(
+        logs
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
     }),
   );
 

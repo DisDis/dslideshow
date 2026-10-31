@@ -224,7 +224,7 @@ class GalleryFileOperations {
               GalleryMutation.purge => await _purge(item),
               GalleryMutation.hide => await _move(item, GalleryMediaSection.hidden, request.action),
             };
-          } on Object catch (error) {
+          } on Object catch (error, stack) {
             rejection = _rejection(error);
             if (rejection != _GalleryPathRejection.none) {
               reasons.update(rejection, (count) => count + 1, ifAbsent: () => 1);
@@ -238,6 +238,8 @@ class GalleryFileOperations {
             _log.fine(
               'Gallery mutation item failed action=${request.action.name} section=${item.section.name} '
               'code=${itemResult.error!.name} type=${error.runtimeType} reason=${rejection.name}',
+              error,
+              stack,
             );
           }
           results.add(itemResult);
@@ -250,8 +252,8 @@ class GalleryFileOperations {
         if (request.action != GalleryMutation.purge) {
           try {
             await _refresh();
-          } on Object catch (error) {
-            _auxiliaryFailure(_GalleryAuxiliaryPhase.catalogRefreshFailed, request.action, error);
+          } on Object catch (error, stack) {
+            _auxiliaryFailure(_GalleryAuxiliaryPhase.catalogRefreshFailed, request.action, error, stack);
           }
         }
         return GalleryOperationResult(operationId: request.operationId, items: results);
@@ -275,7 +277,7 @@ class GalleryFileOperations {
         'reasons=${reasons.entries.map((e) => '${e.key.name}:${e.value}').join(',')}',
       );
       return result;
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       final code = _errorCode(error);
       final expectedStop =
           code == GalleryErrorCode.cancelled || (closedAtStart && code == GalleryErrorCode.unavailable);
@@ -284,6 +286,8 @@ class GalleryFileOperations {
         'Gallery mutation ${expectedStop ? 'cancelled' : 'failed'} '
         'action=${request.action.name} requested=${request.items.length} '
         'code=${code.name} type=${error.runtimeType} reason=${_rejection(error).name} ',
+        error,
+        stack,
       );
       rethrow;
     }
@@ -407,10 +411,10 @@ class GalleryFileOperations {
         try {
           destination = mirrorEntry(targetSection, relative, await target.stat());
           _putEntry(destination);
-        } on Object catch (error) {
+        } on Object catch (error, stack) {
           // The move committed; a catalog scan can discover its new identity.
           // Do not claim failure or build an Undo reference from the old stat.
-          _auxiliaryFailure(_GalleryAuxiliaryPhase.mirrorIndexUpdateFailed, action, error);
+          _auxiliaryFailure(_GalleryAuxiliaryPhase.mirrorIndexUpdateFailed, action, error, stack);
         }
       }
       return GalleryOperationItemResult(
@@ -436,11 +440,13 @@ class GalleryFileOperations {
     );
   }
 
-  static void _auxiliaryFailure(_GalleryAuxiliaryPhase phase, GalleryMutation action, Object error) {
+  static void _auxiliaryFailure(_GalleryAuxiliaryPhase phase, GalleryMutation action, Object error, StackTrace stack) {
     _log.warning(
       'Gallery mutation auxiliary update failed '
       'action=${action.name} phase=${phase.name} code=${_errorCode(error).name} '
       'type=${error.runtimeType}',
+      error,
+      stack,
     );
   }
 

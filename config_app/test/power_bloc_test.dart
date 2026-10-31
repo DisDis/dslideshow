@@ -32,27 +32,24 @@ void main() {
   });
 
   void expectSafeLogs(String loggerName) {
-    final matching = records
-        .where((record) => record.loggerName == loggerName)
-        .toList();
+    final matching = records.where((record) => record.loggerName == loggerName).toList();
     expect(matching, isNotEmpty);
     final messages = matching.map((record) => record.message).join('\n');
     expect(messages, isNot(contains(_configSecret)));
     expect(messages, isNot(contains(_errorSecret)));
-    expect(matching.every((record) => record.error == null), isTrue);
-    expect(matching.every((record) => record.stackTrace == null), isTrue);
+    expect(
+      matching
+          .where((record) => record.error != null)
+          .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+      isTrue,
+    );
   }
 
   test('loads configuration without logging its secret fields', () async {
     final client = _RealtimeService(handleSend: _successfulConfig);
-    final bloc = PowerBloc(
-      initialState: const UninitializedPowerState(),
-      client: client,
-    );
+    final bloc = PowerBloc(initialState: const UninitializedPowerState(), client: client);
     addTearDown(bloc.close);
-    final loaded = bloc.stream.firstWhere(
-      (state) => state is InitializedPowerState,
-    );
+    final loaded = bloc.stream.firstWhere((state) => state is InitializedPowerState);
 
     bloc.add(const LoadPowerEvent());
 
@@ -62,133 +59,92 @@ void main() {
     expectSafeLogs('PowerBloc');
   });
 
-  test(
-    'a delayed timeout exits loading with an error and allows retry',
-    () async {
-      final pending = Completer<WebSocketResult>();
-      var requests = 0;
-      final client = _RealtimeService(
-        handleSend: (command) {
-          ++requests;
-          return requests == 1 ? pending.future : _successfulConfig(command);
-        },
-      );
-      final bloc = PowerBloc(
-        initialState: const UninitializedPowerState(),
-        client: client,
-      );
-      addTearDown(bloc.close);
-      final failed = bloc.stream.firstWhere(
-        (state) => state is ErrorPowerState,
-      );
-
-      bloc.add(const LoadPowerEvent());
-      await pumpEventQueue();
-      expect(bloc.state, isA<UninitializedPowerState>());
-      expect(client.commands, hasLength(1));
-
-      pending.completeError(TimeoutException(_errorSecret));
-      expect(await failed, isA<ErrorPowerState>());
-      expectSafeLogs('PowerBloc');
-
-      final retried = <PowerState>[];
-      final retrySubscription = bloc.stream.listen(retried.add);
-      addTearDown(retrySubscription.cancel);
-      final loaded = bloc.stream.firstWhere(
-        (state) => state is InitializedPowerState,
-      );
-
-      bloc.add(const LoadPowerEvent());
-
-      expect(await loaded, isA<InitializedPowerState>());
-      expect(retried, [
-        isA<UninitializedPowerState>(),
-        isA<InitializedPowerState>(),
-      ]);
-      expect(client.commands, hasLength(2));
-    },
-  );
-
-  test(
-    'malformed configuration exits loading without logging its contents',
-    () async {
-      final client = _RealtimeService(
-        handleSend: (command) async =>
-            WSConfigDownloadResult(id: command.id, content: '{$_configSecret'),
-      );
-      final bloc = PowerBloc(
-        initialState: const UninitializedPowerState(),
-        client: client,
-      );
-      addTearDown(bloc.close);
-      final failed = bloc.stream.firstWhere(
-        (state) => state is ErrorPowerState,
-      );
-
-      bloc.add(const LoadPowerEvent());
-
-      expect(await failed, isA<ErrorPowerState>());
-      expectSafeLogs('PowerBloc');
-    },
-  );
-
-  for (final event in [
-    const RestartAppPowerEvent(),
-    const PowerOffPowerEvent(),
-  ]) {
-    test(
-      '${event.runtimeType} converts a send failure into an error',
-      () async {
-        final client = _RealtimeService(
-          handleSendOneWay: (_) => throw StateError(_errorSecret),
-        );
-        final bloc = PowerBloc(
-          initialState: const UninitializedPowerState(),
-          client: client,
-        );
-        addTearDown(bloc.close);
-        final failed = bloc.stream.firstWhere(
-          (state) => state is ErrorPowerState,
-        );
-
-        bloc.add(event);
-
-        expect(await failed, isA<ErrorPowerState>());
-        expect(client.oneWayCommands, hasLength(1));
-        final command = client.oneWayCommands.single as WSSendRpcCommand;
-        expect(
-          serializers.deserialize(command.commandData),
-          event is RestartAppPowerEvent
-              ? isA<RestartAppCommand>()
-              : isA<PowerOffCommand>(),
-        );
-        expectSafeLogs('PowerBloc');
+  test('a delayed timeout exits loading with an error and allows retry', () async {
+    final pending = Completer<WebSocketResult>();
+    var requests = 0;
+    final client = _RealtimeService(
+      handleSend: (command) {
+        ++requests;
+        return requests == 1 ? pending.future : _successfulConfig(command);
       },
     );
+    final bloc = PowerBloc(initialState: const UninitializedPowerState(), client: client);
+    addTearDown(bloc.close);
+    final failed = bloc.stream.firstWhere((state) => state is ErrorPowerState);
+
+    bloc.add(const LoadPowerEvent());
+    await pumpEventQueue();
+    expect(bloc.state, isA<UninitializedPowerState>());
+    expect(client.commands, hasLength(1));
+
+    pending.completeError(TimeoutException(_errorSecret));
+    expect(await failed, isA<ErrorPowerState>());
+    expectSafeLogs('PowerBloc');
+
+    final retried = <PowerState>[];
+    final retrySubscription = bloc.stream.listen(retried.add);
+    addTearDown(retrySubscription.cancel);
+    final loaded = bloc.stream.firstWhere((state) => state is InitializedPowerState);
+
+    bloc.add(const LoadPowerEvent());
+
+    expect(await loaded, isA<InitializedPowerState>());
+    expect(retried, [isA<UninitializedPowerState>(), isA<InitializedPowerState>()]);
+    expect(client.commands, hasLength(2));
+  });
+
+  test('malformed configuration exits loading without logging its contents', () async {
+    final client = _RealtimeService(
+      handleSend: (command) async => WSConfigDownloadResult(id: command.id, content: '{$_configSecret'),
+    );
+    final bloc = PowerBloc(initialState: const UninitializedPowerState(), client: client);
+    addTearDown(bloc.close);
+    final failed = bloc.stream.firstWhere((state) => state is ErrorPowerState);
+
+    bloc.add(const LoadPowerEvent());
+
+    expect(await failed, isA<ErrorPowerState>());
+    expectSafeLogs('PowerBloc');
+  });
+
+  for (final event in [const RestartAppPowerEvent(), const PowerOffPowerEvent()]) {
+    test('${event.runtimeType} converts a send failure into an error', () async {
+      final client = _RealtimeService(handleSendOneWay: (_) => throw StateError(_errorSecret));
+      final bloc = PowerBloc(initialState: const UninitializedPowerState(), client: client);
+      addTearDown(bloc.close);
+      final failed = bloc.stream.firstWhere((state) => state is ErrorPowerState);
+
+      bloc.add(event);
+
+      expect(await failed, isA<ErrorPowerState>());
+      expect(client.oneWayCommands, hasLength(1));
+      final command = client.oneWayCommands.single as WSSendRpcCommand;
+      expect(
+        serializers.deserialize(command.commandData),
+        event is RestartAppPowerEvent ? isA<RestartAppCommand>() : isA<PowerOffCommand>(),
+      );
+      expectSafeLogs('PowerBloc');
+    });
   }
 
-  test(
-    'PhotoframeRepository download does not log secret configuration',
-    () async {
-      final client = _RealtimeService(handleSend: _successfulConfig);
-      final repository = PhotoframeRepository(client);
-      addTearDown(repository.dispose);
+  test('PhotoframeRepository download does not log secret configuration', () async {
+    final client = _RealtimeService(handleSend: _successfulConfig);
+    final repository = PhotoframeRepository(client);
+    addTearDown(repository.dispose);
 
-      final config = await repository.getConfig();
+    final config = await repository.getConfig();
 
-      expect(config.webServer.permanentCode, _configSecret);
-      expectSafeLogs('PhotoframeRepository');
-    },
-  );
+    expect(config.webServer.permanentCode, _configSecret);
+    expectSafeLogs('PhotoframeRepository');
+  });
 }
 
-Future<WebSocketResult> _successfulConfig(WebSocketCommand command) async =>
-    WSConfigDownloadResult(
-      id: command.id,
-      content: jsonEncode({
-        'web': {'permanentCode': _configSecret},
-      }),
-    );
+Future<WebSocketResult> _successfulConfig(WebSocketCommand command) async => WSConfigDownloadResult(
+  id: command.id,
+  content: jsonEncode({
+    'web': {'permanentCode': _configSecret},
+  }),
+);
 
 class _RealtimeService implements RealtimeService {
   _RealtimeService({this.handleSend, this.handleSendOneWay});

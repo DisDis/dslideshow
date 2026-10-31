@@ -26,8 +26,12 @@ class FrontendRpcService implements RpcService {
       final control = command as SetFrameControlCommand;
       await frameController.setControl(control.control, control.enabled);
       return EmptyResult.respond(command);
-    } catch (error) {
-      _log.warning('command failed requestId=${command.id} type=${command.type} errorType=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning(
+        'command failed requestId=${command.id} type=${command.type} errorType=${error.runtimeType}',
+        error,
+        stack,
+      );
       return ErrorResult(id: command.id, error: '$error');
     } finally {
       _log.fine('command result requestId=${command.id} type=${command.type}');

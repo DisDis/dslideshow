@@ -57,8 +57,8 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
     late final WebSocketChannel transport;
     try {
       transport = _channelFactory(uri);
-    } catch (error) {
-      _log.warning('WebSocket creation failed (${error.runtimeType})');
+    } catch (error, stack) {
+      _log.warning('WebSocket creation failed (${error.runtimeType})', error, stack);
       throw StateError('WebSocket connection failed');
     }
     final connection = _Connection(transport);
@@ -77,22 +77,15 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
         },
         onError: (Object error, StackTrace stack) {
           if (!_isCurrent(connection)) return;
-          _log.warning('WebSocket transport failed (${error.runtimeType})');
-          _disconnect(
-            connection,
-            error: StateError('WebSocket connection failed'),
-          );
+          _log.warning('WebSocket transport failed (${error.runtimeType})', error, stack);
+          _disconnect(connection, error: StateError('WebSocket connection failed'));
         },
         onDone: () => _disconnect(connection),
       );
       await connection.ready.future;
       final result = await _send(
         connection,
-        WSAuthCommand(
-          userName: 'admin',
-          id: WebSocketCommand.generateId(),
-          code: code,
-        ),
+        WSAuthCommand(userName: 'admin', id: WebSocketCommand.generateId(), code: code),
       );
       _ensureCurrent(connection);
       _isAuth = true;
@@ -108,13 +101,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
     if (!_isCurrent(connection)) return;
     connection.handshakeTimer = Timer(connectionTimeout, () {
       if (!_isCurrent(connection)) return;
-      _disconnect(
-        connection,
-        error: TimeoutException(
-          'WebSocket connection timed out',
-          connectionTimeout,
-        ),
-      );
+      _disconnect(connection, error: TimeoutException('WebSocket connection timed out', connectionTimeout));
     });
     try {
       await connection.channel.ready;
@@ -122,9 +109,9 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
       connection.handshakeTimer?.cancel();
       connection.isReady = true;
       connection.ready.complete();
-    } catch (error) {
+    } catch (error, stack) {
       if (!_isCurrent(connection)) return;
-      _log.warning('WebSocket connection failed (${error.runtimeType})');
+      _log.warning('WebSocket connection failed (${error.runtimeType})', error, stack);
       _disconnect(connection, error: StateError('WebSocket connection failed'));
     }
   }
@@ -135,11 +122,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
     if (connection != null) _disconnect(connection);
   }
 
-  void _disconnect(
-    _Connection connection, {
-    bool notify = true,
-    Object? error,
-  }) {
+  void _disconnect(_Connection connection, {bool notify = true, Object? error}) {
     if (connection.closed) return;
     connection.closed = true;
     connection.handshakeTimer?.cancel();
@@ -150,40 +133,24 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
       _authCode = '';
     }
     if (!connection.ready.isCompleted) {
-      connection.ready.completeError(
-        error ?? StateError('WebSocket disconnected'),
-      );
+      connection.ready.completeError(error ?? StateError('WebSocket disconnected'));
     }
     final requests = connection.pending.entries.toList();
     connection.pending.clear();
     for (final entry in requests) {
       entry.value.timer?.cancel();
-      entry.value.result.completeError(
-        WSErrorResult.byId('disconnect', entry.key),
-      );
+      entry.value.result.completeError(WSErrorResult.byId('disconnect', entry.key));
     }
-    _trackCleanup(
-      _cleanup(
-        () => connection.subscription?.cancel(),
-        'subscription cancellation',
-      ),
-    );
-    _trackCleanup(
-      _cleanup(
-        () => connection.channel.sink.close(status.normalClosure),
-        'close',
-      ),
-    );
+    _trackCleanup(_cleanup(() => connection.subscription?.cancel(), 'subscription cancellation'));
+    _trackCleanup(_cleanup(() => connection.channel.sink.close(status.normalClosure), 'close'));
     if (isCurrent && notify && !_disposed) _onDisconnect.add(null);
     _log.info('WebSocket disconnected');
   }
 
   Future<void> _cleanup(FutureOr<void> Function() action, String operation) =>
-      Future<void>.sync(action)
-          .timeout(connectionTimeout)
-          .catchError((Object error) {
-            _log.warning('WebSocket $operation failed (${error.runtimeType})');
-          });
+      Future<void>.sync(action).timeout(connectionTimeout).catchError((Object error, StackTrace stack) {
+        _log.warning('WebSocket $operation failed (${error.runtimeType})', error, stack);
+      });
 
   void _trackCleanup(Future<void> operation) {
     _cleanupOperations.add(operation);
@@ -191,10 +158,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
   }
 
   @override
-  Future<WebSocketResult> send(
-    WebSocketCommand cmd, {
-    Duration? timeout,
-  }) async {
+  Future<WebSocketResult> send(WebSocketCommand cmd, {Duration? timeout}) async {
     _ensureActive();
     if (timeout != null && timeout <= Duration.zero) {
       throw ArgumentError.value(timeout, 'timeout', 'Must be positive');
@@ -204,11 +168,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
     return _send(connection, cmd, timeout: timeout);
   }
 
-  Future<WebSocketResult> _send(
-    _Connection connection,
-    WebSocketCommand cmd, {
-    Duration? timeout,
-  }) async {
+  Future<WebSocketResult> _send(_Connection connection, WebSocketCommand cmd, {Duration? timeout}) async {
     await connection.ready.future;
     _ensureCurrent(connection);
     if (connection.pending.containsKey(cmd.id)) {
@@ -221,9 +181,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
       if (connection.pending.remove(cmd.id) != request) return;
       _requestTimeouts++;
       _log.warning('RPC timed out id=${cmd.id}');
-      request.result.completeError(
-        TimeoutException('RPC request timed out', deadline),
-      );
+      request.result.completeError(TimeoutException('RPC request timed out', deadline));
     });
     try {
       _write(connection, cmd);
@@ -231,9 +189,7 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
       final pending = connection.pending.remove(cmd.id);
       if (pending != null) {
         pending.timer?.cancel();
-        pending.result.completeError(
-          StateError('RPC request could not be sent'),
-        );
+        pending.result.completeError(StateError('RPC request could not be sent'));
       }
       _disconnect(connection);
     }
@@ -273,17 +229,15 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
       final message = json.encode(serializers.serialize(result));
       connection.channel.sink.add(message);
       _log.fine('RPC sent ${result.runtimeType} id=${result.id}');
-    } catch (error) {
-      _log.warning('RPC send failed (${error.runtimeType})');
+    } catch (error, stack) {
+      _log.warning('RPC send failed (${error.runtimeType})', error, stack);
       throw StateError('RPC request could not be sent');
     }
   }
 
   void _parseMessage(_Connection connection, dynamic message) {
     try {
-      final result = serializers.deserialize(
-        json.decode(message.toString()),
-      ) as WebSocketResult;
+      final result = serializers.deserialize(json.decode(message.toString())) as WebSocketResult;
       _log.fine('RPC received ${result.runtimeType} id=${result.id}');
       if (result is WebSocketCommand) {
         _write(connection, switch (result) {
@@ -300,15 +254,14 @@ class ClientServiceImpl implements RealtimeService, RealtimeDiagnostics {
           request.result.complete(result);
         }
       }
-    } catch (error) {
+    } catch (error, stack) {
       // Parser exceptions can contain the entire payload, including secrets.
-      _log.warning('RPC message rejected (${error.runtimeType})');
+      _log.warning('RPC message rejected (${error.runtimeType})', error, stack);
       _disconnect(connection);
     }
   }
 
-  bool _isCurrent(_Connection connection) =>
-      !_disposed && !connection.closed && identical(_connection, connection);
+  bool _isCurrent(_Connection connection) => !_disposed && !connection.closed && identical(_connection, connection);
 
   void _ensureCurrent(_Connection connection) {
     _ensureActive();

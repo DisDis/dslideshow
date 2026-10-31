@@ -72,9 +72,11 @@ Future<int> runNativePipeline(List<String> args) async {
       'operation=$operation action=${action.wire} result=${status == 0 ? 'passed' : 'incomplete'} exitCode=$status durationMs=${timer.elapsedMilliseconds}',
     );
     return status;
-  } on Object catch (error) {
+  } on Object catch (error, stack) {
     _log.warning(
       'operation=$operation action=${action.wire} result=failed errorType=${error.runtimeType} durationMs=${timer.elapsedMilliseconds}',
+      error,
+      stack,
     );
     stderr.writeln(
       'native ${action.wire}: ${error is ArgumentError || error is FormatException || error is StateError ? error : error.runtimeType}',

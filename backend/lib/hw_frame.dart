@@ -138,7 +138,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     ]);
   } catch (e, s) {
     _log.severe('Fatal error: $e, $s', e, s);
-    _log.info("Spawned isolate finished with error.");
+    _log.info("Spawned isolate finished with error.", e, s);
   } finally {
     await service?.dispose();
   }

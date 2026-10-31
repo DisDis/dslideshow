@@ -229,7 +229,13 @@ void main() {
       final messages = records.map((record) => record.message).join('\n');
       expect(messages, isNot(contains('private-')));
       expect(messages, isNot(contains('https://')));
-      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      expect(records.where((record) => record.error != null), isNotEmpty);
+      expect(
+        records
+            .where((record) => record.error != null)
+            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
+        isTrue,
+      );
       expect(records.every((record) => record.loggerName == 'YandexDriveApi' && record.level == Level.FINE), isTrue);
     }
 
@@ -291,7 +297,7 @@ void main() {
       expectSafe();
     });
 
-    test('a transport exception without an HTTP response omits the secret URL', () async {
+    test('a transport exception preserves original diagnostics before domain mapping', () async {
       final api = YandexDriveApi(
         clientFactory: () => MockClient((request) async {
           if (request.url.path.endsWith('/resources/download')) {

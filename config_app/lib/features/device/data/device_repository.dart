@@ -2,6 +2,7 @@ import 'package:config_app/features/realtime/domain/services/realtime_service.da
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:logging/logging.dart';
 
 enum DeviceFailureKind { load, command, disconnected, invalidResponse }
 
@@ -13,44 +14,33 @@ class DeviceFailure implements Exception {
 }
 
 class DeviceRepository {
+  static final _log = Logger('DeviceRepository');
   final RealtimeService client;
 
   DeviceRepository(this.client);
 
   Stream get onDisconnect => client.onDisconnect;
 
-  int? get webSocketTimeouts => client is RealtimeDiagnostics
-      ? (client as RealtimeDiagnostics).requestTimeouts
-      : null;
+  int? get webSocketTimeouts => client is RealtimeDiagnostics ? (client as RealtimeDiagnostics).requestTimeouts : null;
 
   Future<RpcTelemetrySnapshot> getRpcTelemetry() async {
-    final result = await _request<GetRpcTelemetryResult>(
-      GetRpcTelemetryCommand(id: RpcCommand.generateId()),
-    );
+    final result = await _request<GetRpcTelemetryResult>(GetRpcTelemetryCommand(id: RpcCommand.generateId()));
     return result.snapshot;
   }
 
   Future<FrameState> getState() async {
-    final result = await _request<GetFrameStateResult>(
-      GetFrameStateCommand(id: RpcCommand.generateId()),
-    );
+    final result = await _request<GetFrameStateResult>(GetFrameStateCommand(id: RpcCommand.generateId()));
     return result.state;
   }
 
   Future<SystemInfo> getSystemInfo() async {
-    final result = await _request<GetSystemInfoCommandResult>(
-      GetSystemInfoCommand(id: RpcCommand.generateId()),
-    );
+    final result = await _request<GetSystemInfoCommandResult>(GetSystemInfoCommand(id: RpcCommand.generateId()));
     return result.systemInfo;
   }
 
   Future<FrameState> setControl(FrameControl control, bool enabled) async {
     final result = await _request<GetFrameStateResult>(
-      SetFrameControlCommand(
-        id: RpcCommand.generateId(),
-        control: control,
-        enabled: enabled,
-      ),
+      SetFrameControlCommand(id: RpcCommand.generateId(), control: control, enabled: enabled),
       failureKind: DeviceFailureKind.command,
     );
     return result.state;
@@ -64,7 +54,8 @@ class DeviceRepository {
     final WebSocketResult response;
     try {
       response = await client.send(envelope);
-    } catch (_) {
+    } catch (error, stack) {
+      _log.warning('Device request failed command=${command.type}', error, stack);
       throw DeviceFailure(failureKind);
     }
     if (response.id != envelope.id) {
@@ -79,7 +70,8 @@ class DeviceRepository {
     final Object? result;
     try {
       result = serializers.deserialize(response.resultData);
-    } catch (_) {
+    } catch (error, stack) {
+      _log.warning('Device response decoding failed command=${command.type}', error, stack);
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     if (result is! RpcResult || result.id != command.id) {

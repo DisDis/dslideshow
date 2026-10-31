@@ -494,9 +494,9 @@ Future<void> _openYandexPage(BuildContext context, Uri uri) async {
   try {
     opened = await launchUrl(uri, mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
     _yandexLinkLog.log(opened ? Level.FINE : Level.WARNING, 'event=browserOpenFinished opened=$opened');
-  } catch (error) {
+  } catch (error, stack) {
     opened = false;
-    _yandexLinkLog.warning('event=browserOpenFailed type=${error.runtimeType}');
+    _yandexLinkLog.warning('event=browserOpenFailed type=${error.runtimeType}', error, stack);
   }
   if (!opened && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.localizations.yandex_browser_failed)));

@@ -245,8 +245,8 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
             }
           }
           _log.fine(() => 'event=statusLoadCompleted generation=$generation');
-        } catch (error) {
-          _failure('statusLoad', error);
+        } catch (error, stack) {
+          _failure('statusLoad', error, stack);
           if (_live(emit, generation)) {
             emit(state.copyWith(loading: false, failed: true, requestError: _requestError(error)));
           }
@@ -300,8 +300,8 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
             }
             _log.info('event=jobStartCompleted jobId=${GalleryLog.id(job.jobId)} status=${job.status.name}');
           }
-        } catch (error) {
-          _failure('jobStart', error);
+        } catch (error, stack) {
+          _failure('jobStart', error, stack);
           if (_live(emit, generation)) {
             emit(state.copyWith(failed: true, requestError: _requestError(error)));
           }
@@ -323,8 +323,8 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
             }
           }
           _log.info('event=jobStopCompleted jobId=${GalleryLog.id(jobId)} status=${job.status.name}');
-        } catch (error) {
-          _failure('jobStop', error, jobId: jobId);
+        } catch (error, stack) {
+          _failure('jobStop', error, stack, jobId: jobId);
           if (_live(emit, generation)) {
             emit(state.copyWith(failed: true, requestError: _requestError(error)));
           }
@@ -462,8 +462,8 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
           if (!_closing && !emit.isDone) {
             await _openGroup(emit, state.groupIndex);
           }
-        } catch (error) {
-          _failure('mutation', error, jobId: jobId);
+        } catch (error, stack) {
+          _failure('mutation', error, stack, jobId: jobId);
           if (!_closing && !emit.isDone) {
             _notice(emit, GalleryDuplicatesNotice.actionFailed);
             try {
@@ -533,11 +533,11 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
           invalidated: invalidated,
         ),
       );
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || emit.isDone || generation != _groupGeneration || state.job?.jobId != job.jobId) {
         return;
       }
-      _log.warning('event=groupLoadFailed code=${_requestError(error).name} type=${error.runtimeType}');
+      _log.warning('event=groupLoadFailed code=${_requestError(error).name} type=${error.runtimeType}', error, stack);
       emit(state.copyWith(groupLoading: false, failed: true, requestError: _requestError(error)));
     }
   }
@@ -586,12 +586,12 @@ class GalleryDuplicatesBloc extends Bloc<GalleryDuplicatesEvent, GalleryDuplicat
     await Future.any<void>([Future<void>.sync(onRefresh), _cancel.future]);
   }
 
-  void _failure(String event, Object error, {String jobId = ''}) {
+  void _failure(String event, Object error, StackTrace stack, {String jobId = ''}) {
     final code = error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
     final cancelled = _closing || code == GalleryErrorCode.cancelled;
     final message =
         'event=$event${cancelled ? 'Cancelled' : 'Failed'} jobId=${GalleryLog.id(jobId)} code=${code.name} type=${error.runtimeType}';
-    cancelled ? _log.fine(message) : _log.warning(message);
+    cancelled ? _log.fine(message, error, stack) : _log.warning(message, error, stack);
   }
 
   static GalleryErrorCode _requestError(Object error) =>

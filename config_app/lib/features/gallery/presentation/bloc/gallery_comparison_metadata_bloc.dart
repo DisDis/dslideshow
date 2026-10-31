@@ -64,9 +64,9 @@ class GalleryComparisonMetadataBloc extends Bloc<GalleryComparisonMetadataEvent,
         _log.fine(() => 'event=metadataCompleted generation=$generation');
         emit(state.copyWith(metadata: data, loading: false, failed: false, error: null));
       }
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || emit.isDone || generation != _generation) {
-        _log.fine(() => 'event=metadataCancelled generation=$generation');
+        _log.fine(() => 'event=metadataCancelled generation=$generation', error, stack);
         return;
       }
       final code = error is GalleryManagementException
@@ -74,7 +74,11 @@ class GalleryComparisonMetadataBloc extends Bloc<GalleryComparisonMetadataEvent,
           : error is FormatException || error is TypeError
           ? GalleryErrorCode.processingFailed
           : GalleryErrorCode.unknown;
-      _log.warning('event=metadataFailed generation=$generation code=${code.name} type=${error.runtimeType}');
+      _log.warning(
+        'event=metadataFailed generation=$generation code=${code.name} type=${error.runtimeType}',
+        error,
+        stack,
+      );
       emit(
         state.copyWith(
           loading: false,

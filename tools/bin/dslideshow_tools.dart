@@ -7,6 +7,7 @@ import 'package:dslideshow_tools/src/benchmarks/cli.dart';
 import 'package:dslideshow_tools/src/benchmarks/native_pipeline/cli.dart';
 import 'package:dslideshow_tools/src/build/android.dart';
 import 'package:dslideshow_tools/src/coverage/cli.dart';
+import 'package:dslideshow_tools/src/process/console.dart';
 import 'package:dslideshow_tools/src/testing/cli.dart';
 import 'package:logging/logging.dart';
 
@@ -39,9 +40,8 @@ Future<void> main(List<String> arguments) async {
     return;
   }
   Logger.root.level = Level.INFO;
-  final logs = Logger.root.onRecord.listen(
-    (record) => stderr.writeln('${record.level.name} ${record.loggerName} ${record.message}'),
-  );
+  final console = BuildConsole(output: stdout, errors: stderr, color: false, interactive: false);
+  final logs = Logger.root.onRecord.listen((record) => unawaited(console.writeLog(record)));
   try {
     final rest = arguments.skip(1).toList();
     exitCode = await switch (command) {
@@ -52,23 +52,27 @@ Future<void> main(List<String> arguments) async {
       _Command.tests => runTests(rest),
       _Command.android => runAndroidBuild(rest),
     };
-  } on UsageException catch (error) {
+  } on UsageException catch (error, stack) {
+    Logger('tools').warning('Invalid command usage', error, stack);
     stderr.writeln(error.message);
     stderr.writeln(error.usage);
     exitCode = 64;
-  } on FormatException {
+  } on FormatException catch (error, stack) {
+    Logger('tools').warning('Invalid input format', error, stack);
     stderr.writeln('Invalid input format');
     if (command == _Command.tests) stderr.writeln(_testsUsage);
     exitCode = 64;
-  } on ArgumentError {
+  } on ArgumentError catch (error, stack) {
+    Logger('tools').warning('Invalid arguments', error, stack);
     stderr.writeln('Invalid arguments; use the selected command help');
     if (command == _Command.tests) stderr.writeln(_testsUsage);
     exitCode = 64;
-  } on Object catch (error) {
-    stderr.writeln('Tool failed: ${error.runtimeType}');
+  } on Object catch (error, stack) {
+    Logger('tools').severe('Tool failed', error, stack);
     exitCode = 1;
   } finally {
     await logs.cancel();
+    await console.close();
     await stdout.flush();
     await stderr.flush();
   }

@@ -37,9 +37,9 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     injector.registerSingleton<WebServer>(_webServer);
     _remoteBackendService.connect(HandshakeMessage.fromMap(handshakeMessage));
     await _remoteBackendService.service.processing(_webServer, serializers);
-  } catch (error) {
-    _log.severe('Web startup failed type=${error.runtimeType}');
-    _log.info("Spawned isolate finished with error.");
+  } catch (error, stack) {
+    _log.severe('Web startup failed type=${error.runtimeType}', error, stack);
+    _log.info("Spawned isolate finished with error.", error, stack);
   } finally {
     await webService?.close();
   }

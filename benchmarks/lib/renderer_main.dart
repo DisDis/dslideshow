@@ -109,8 +109,7 @@ class RendererFrontend implements FrontendService {
   }
 
   @override
-  Future<RpcResult> changeScreenLock(bool value) async =>
-      const EmptyResult(id: 1);
+  Future<RpcResult> changeScreenLock(bool value) async => const EmptyResult(id: 1);
   @override
   Future<RpcResult> screenTurn(bool value) async {
     screens.add(value);
@@ -132,9 +131,7 @@ Future<void> main() async {
   if (Platform.environment['DSLIDESHOW_EMBEDDED'] == 'true') {
     FlutterpiVideoPlayer.registerWith();
   }
-  final output = Directory(
-    Platform.environment['BENCHMARK_OUTPUT'] ?? 'reports/renderer-$pid',
-  );
+  final output = Directory(Platform.environment['BENCHMARK_OUTPUT'] ?? 'reports/renderer-$pid');
   await output.create(recursive: true);
   final harness = RendererHarness(output);
   Logger.root.level = Level.INFO;
@@ -144,11 +141,13 @@ Future<void> main() async {
       'logger': record.loggerName,
       'level': record.level.name,
       'message': record.message,
+      if (record.error != null) 'error': record.error.toString(),
+      if (record.stackTrace != null) 'stack': record.stackTrace.toString(),
     });
     if (record.level >= Level.WARNING) {
       harness.error(
         '${record.loggerName}: ${record.message}: ${record.error ?? ''}',
-        record.stackTrace ?? StackTrace.current,
+        record.stackTrace ?? StackTrace.empty,
       );
     }
   });
@@ -192,8 +191,7 @@ class RendererHarness {
   bool sinksReady = false;
   bool telemetryReady = false;
   bool finished = false;
-  final telemetrySamples =
-      StreamController<Map<String, Object?>>.broadcast();
+  final telemetrySamples = StreamController<Map<String, Object?>>.broadcast();
   final timingBatches = StreamController<void>.broadcast();
   int? frameWindowStartUs;
   int? frameWindowEndUs;
@@ -202,11 +200,7 @@ class RendererHarness {
   RendererHarness(this.output);
 
   void event(Map<String, Object?> row) {
-    final line = jsonEncode({
-      'elapsed_us': clock.elapsedMicroseconds,
-      'stage': stage,
-      ...row,
-    });
+    final line = jsonEncode({'elapsed_us': clock.elapsedMicroseconds, 'stage': stage, ...row});
     if (sinksReady) events.writeln(line);
     // This line survives native crashes even before report completion.
     stdout.writeln('RENDERER_EVENT $line');
@@ -258,9 +252,7 @@ class RendererHarness {
       'release': kReleaseMode,
       'capture_run': captures,
       'renderer': Platform.environment['BENCHMARK_RENDERER'],
-      'build': jsonDecode(
-        await rootBundle.loadString('assets/build-info.json'),
-      ),
+      'build': jsonDecode(await rootBundle.loadString('assets/build-info.json')),
       'hardware': await telemetry.initialize(),
       'expected_size': [2560, 1600],
       'transition_ms': 1000,
@@ -268,9 +260,7 @@ class RendererHarness {
       'warmup_transitions': 1,
       'video_to_video': false,
     });
-    catalog = await MediaCatalog.load(
-      cache: Directory('${output.parent.path}/.renderer-media-cache'),
-    );
+    catalog = await MediaCatalog.load(cache: Directory('${output.parent.path}/.renderer-media-cache'));
     metadata['media'] = catalog.entries;
     camera = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     final jpeg = await catalog.file('photo_a.jpg').readAsBytes();
@@ -320,12 +310,10 @@ class RendererHarness {
   }
 
   Future<void> drainTimings() async {
-    bool hasFinalFrame() => frames.isNotEmpty &&
-        (lastTimingTimestampUs ?? -1) >= frameWindowEndUs!;
+    bool hasFinalFrame() => frames.isNotEmpty && (lastTimingTimestampUs ?? -1) >= frameWindowEndUs!;
     if (hasFinalFrame()) return;
     try {
-      await timingBatches.stream.firstWhere((_) => hasFinalFrame())
-          .timeout(const Duration(seconds: 2));
+      await timingBatches.stream.firstWhere((_) => hasFinalFrame()).timeout(const Duration(seconds: 2));
     } on TimeoutException {
       throw StateError(
         'Painted FrameTiming marker missing: end=$frameWindowEndUs, '
@@ -339,8 +327,7 @@ class RendererHarness {
     Map<String, Object?>? previous;
     final completion = Completer<void>();
     final subscription = telemetrySamples.stream.listen((sample) {
-      if (sample['open_fds'] == previous?['open_fds'] &&
-          sample['threads'] == previous?['threads']) {
+      if (sample['open_fds'] == previous?['open_fds'] && sample['threads'] == previous?['threads']) {
         stable++;
       } else {
         stable = 0;
@@ -376,9 +363,7 @@ class RendererHarness {
       await events.close();
       await telemetryLog.close();
     }
-    stdout.writeln(
-      'RENDERER_FINISHED errors=$errorCount reports=${output.path}',
-    );
+    stdout.writeln('RENDERER_FINISHED errors=$errorCount reports=${output.path}');
   }
 }
 
@@ -429,9 +414,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
     try {
       await completion.future.timeout(
         const Duration(seconds: 60),
-        onTimeout: () => throw TimeoutException(
-          '$description; stage=${h.stage}; state=${bloc?.state}',
-        ),
+        onTimeout: () => throw TimeoutException('$description; stage=${h.stage}; state=${bloc?.state}'),
       );
     } finally {
       phaseWaiters.remove(changed);
@@ -456,8 +439,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
         transitionCount++;
         preparationMs = duration;
       }
-      if (state.phase == SlideshowPhase.display &&
-          previousPhase == SlideshowPhase.transition) {
+      if (state.phase == SlideshowPhase.display && previousPhase == SlideshowPhase.transition) {
         transitionMs = duration;
       }
       h.event({
@@ -515,10 +497,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
                 'refreshIntervalMs': 250,
                 'requestTimeoutMs': 10000,
                 'cameras': [
-                  {
-                    'id': 'local',
-                    'url': 'http://127.0.0.1:${h.camera!.port}/snapshot.jpg',
-                  },
+                  {'id': 'local', 'url': 'http://127.0.0.1:${h.camera!.port}/snapshot.jpg'},
                 ],
               },
             },
@@ -526,20 +505,9 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       },
     });
     frontend = RendererFrontend(h.catalog, scenario.files, h.event);
-    status = SlideshowStatusBloc(
-      frontendService: frontend!,
-      config: config.slideshow,
-    );
-    hints = ButtonsHintBloc(
-      frontendService: frontend!,
-      statusBloc: status!,
-      appConfig: config,
-    );
-    bloc = SlideshowBloc(
-      frontendService: frontend!,
-      config: config.slideshow,
-      statusBloc: status!,
-    );
+    status = SlideshowStatusBloc(frontendService: frontend!, config: config.slideshow);
+    hints = ButtonsHintBloc(frontendService: frontend!, statusBloc: status!, appConfig: config);
+    bloc = SlideshowBloc(frontendService: frontend!, config: config.slideshow, statusBloc: status!);
     injector.registerSingleton<AppConfig>(config);
     injector.registerSingleton<FrontendService>(frontend!);
     subscription = bloc!.stream.listen(stateChanged);
@@ -554,10 +522,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
         child: const SlideShowPage(),
       );
     });
-    await until(
-      () => bloc!.state.phase == SlideshowPhase.display,
-      'first display',
-    );
+    await until(() => bloc!.state.phase == SlideshowPhase.display, 'first display');
     await WidgetsBinding.instance.endOfFrame;
   }
 
@@ -580,14 +545,12 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
   Future<void> capture(String name) async {
     if (!h.captures) return;
     await WidgetsBinding.instance.endOfFrame;
-    final boundary =
-        captureKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final boundary = captureKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     final image = await boundary.toImage(pixelRatio: 1);
     try {
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      await File('${h.output.path}/$name.png').writeAsBytes(
-        bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-      );
+      await File('${h.output.path}/$name.png')
+          .writeAsBytes(bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
     } finally {
       image.dispose();
     }
@@ -602,10 +565,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       await Future<void>.delayed(const Duration(milliseconds: 450));
       await capture('${h.stage}-transition');
     }
-    await until(
-      () => bloc!.state.phase == SlideshowPhase.display,
-      'next display',
-    );
+    await until(() => bloc!.state.phase == SlideshowPhase.display, 'next display');
   }
 
   Future<void> controls() async {
@@ -630,23 +590,15 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       check(position == pausedPosition, 'native video advanced while paused');
     }
     check(identical(current, bloc!.state.currentSlide), 'pause changed slide');
-    check(
-      motion == widgets<PhotoMotionFrame>().firstOrNull?.progress,
-      'PhotoMotion advanced while paused',
-    );
+    check(motion == widgets<PhotoMotionFrame>().firstOrNull?.progress, 'PhotoMotion advanced while paused');
     if (camera != null) {
       check(camera.active, 'pause disabled cameras');
-      await frameUntil(
-        () => h.cameraRequestCount > cameraRequests,
-        'camera refresh while paused',
-      );
+      await frameUntil(() => h.cameraRequestCount > cameraRequests, 'camera refresh while paused');
     }
     if (clock != null) {
       check(clock.active, 'pause disabled clock');
       final second = clock.now().second;
-      await listenableUntil(
-        clock, () => clock.now().second != second, 'clock tick while paused',
-      );
+      await listenableUntil(clock, () => clock.now().second != second, 'clock tick while paused');
     }
     await noticeSettled();
     await status!.executeActionAndWait(SlideshowAction.toggleScreen, true);
@@ -669,10 +621,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
     await WidgetsBinding.instance.endOfFrame;
     if (camera != null) {
       check(camera.active, 'wake left cameras inactive');
-      await frameUntil(
-        () => h.cameraRequestCount > sleepingRequests,
-        'camera refresh after wake',
-      );
+      await frameUntil(() => h.cameraRequestCount > sleepingRequests, 'camera refresh after wake');
     }
     if (clock != null) check(clock.active, 'wake left clock inactive');
     await status!.executeActionAndWait(SlideshowAction.pause, false);
@@ -704,6 +653,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       }
       element.visitChildren(findAnimation);
     }
+
     void findNotice(Element element) {
       if (element.widget is StateNotify) {
         element.visitChildren(findAnimation);
@@ -711,10 +661,12 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
         element.visitChildren(findNotice);
       }
     }
+
     captureKey.currentContext!.visitChildElements(findNotice);
     check(animation != null, 'StateNotify animation is not observable');
     await listenableUntil(
-      animation!, () => animation!.status == AnimationStatus.dismissed,
+      animation!,
+      () => animation!.status == AnimationStatus.dismissed,
       'state notification animation completion',
     );
   }
@@ -725,26 +677,21 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       if (element.widget case final T widget) result.add(widget);
       element.visitChildren(visit);
     }
+
     captureKey.currentContext!.visitChildElements(visit);
     return result;
   }
 
-  Future<void> listenableUntil(
-    Listenable listenable,
-    bool Function() predicate,
-    String description,
-  ) async {
+  Future<void> listenableUntil(Listenable listenable, bool Function() predicate, String description) async {
     if (predicate()) return;
     final completion = Completer<void>();
     void changed() {
       if (predicate() && !completion.isCompleted) completion.complete();
     }
+
     listenable.addListener(changed);
     try {
-      await completion.future.timeout(
-        const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException(description),
-      );
+      await completion.future.timeout(const Duration(seconds: 5), onTimeout: () => throw TimeoutException(description));
     } finally {
       listenable.removeListener(changed);
     }
@@ -765,10 +712,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       () => (widgets<PhotoMotionFrame>().firstOrNull?.progress ?? 0) >= .2,
       'outgoing camera did not reach nonzero motion progress',
     );
-    h.event({
-      'operation': 'outgoing_motion_pose',
-      'progress': widgets<PhotoMotionFrame>().first.progress,
-    });
+    h.event({'operation': 'outgoing_motion_pose', 'progress': widgets<PhotoMotionFrame>().first.progress});
   }
 
   Future<void> specials() async {
@@ -780,9 +724,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
     h.cameraHold = true;
     bloc!.add(const SlideshowLoadNextEvent()); // media -> preparing camera
     await until(
-      () =>
-          bloc!.state.nextSlide is SpecialSlide &&
-          bloc!.state.phase == SlideshowPhase.precaching,
+      () => bloc!.state.nextSlide is SpecialSlide && bloc!.state.phase == SlideshowPhase.precaching,
       'camera preparation',
     );
     await untilCameraRequest();
@@ -791,14 +733,8 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
     await until(() => bloc!.state.isScreenLocked, 'sleep preparing camera');
     await h.releaseHeldCameras();
     await status!.executeActionAndWait(SlideshowAction.toggleScreen, false);
-    await until(
-      () => bloc!.state.phase == SlideshowPhase.display,
-      'camera retry',
-    );
-    check(
-      slideName(bloc!.state.currentSlide) == 'cameras',
-      'camera retry skipped',
-    );
+    await until(() => bloc!.state.phase == SlideshowPhase.display, 'camera retry');
+    check(slideName(bloc!.state.currentSlide) == 'cameras', 'camera retry skipped');
     check(h.cameraRequestCount > requests, 'camera was not requested again');
     await controls();
     await capture('special-cameras');
@@ -821,9 +757,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
       final requested = Platform.environment['RENDERER_SCENARIOS'];
       final selected = requested == null
           ? RendererScenario.values
-          : requested
-                .split(',')
-                .map((name) => RendererScenario.values.byName(name));
+          : requested.split(',').map((name) => RendererScenario.values.byName(name));
       h.metadata['scenarios'] = selected.map((value) => value.name).toList();
       h.metadata['display'] = {
         'physical_width': view.physicalSize.width,
@@ -845,17 +779,12 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
           });
         } else {
           await next();
-          final repetitions = scenario == RendererScenario.accordionLive
-              ? 6
-              : 3;
+          final repetitions = scenario == RendererScenario.accordionLive ? 6 : 3;
           for (var repeat = 0; repeat < repetitions; repeat++) {
             h.stage = '${scenario.name}-$repeat';
             await motionReady();
             h.frames.clear();
-            h.frameWindowStartUs = SchedulerBinding
-                .instance
-                .currentSystemFrameTimeStamp
-                .inMicroseconds;
+            h.frameWindowStartUs = SchedulerBinding.instance.currentSystemFrameTimeStamp.inMicroseconds;
             h.frameWindowEndUs = null;
             h.lastTimingTimestampUs = null;
             h.measuring = true;
@@ -863,10 +792,7 @@ class _RendererBenchmarkAppState extends State<RendererBenchmarkApp> {
             final outgoing = slideName(bloc!.state.currentSlide);
             await next();
             final finished = h.clock.elapsedMicroseconds;
-            h.frameWindowEndUs = SchedulerBinding
-                .instance
-                .currentSystemFrameTimeStamp
-                .inMicroseconds;
+            h.frameWindowEndUs = SchedulerBinding.instance.currentSystemFrameTimeStamp.inMicroseconds;
             // Submit two tiny painted markers after the closed window. A
             // scheduler timestamp need not correspond to a submitted frame.
             // Wait for a later marker's batch, retaining only the closed window.

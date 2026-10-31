@@ -31,10 +31,7 @@ import '../sessions/slide_session_factory.dart';
 class SlideShowPage extends StatelessWidget {
   final SlideSessionFactory sessionFactory;
 
-  const SlideShowPage({
-    super.key,
-    this.sessionFactory = const SlideSessionFactory(),
-  });
+  const SlideShowPage({super.key, this.sessionFactory = const SlideSessionFactory()});
 
   @override
   Widget build(BuildContext context) {
@@ -72,16 +69,11 @@ class _SlideshowOverlays extends StatelessWidget {
       builder: (context, state) {
         return Stack(
           children: <Widget>[
-            Positioned(
-              left: hintLeft,
-              top: hintTop,
-              child: const ButtonsHintWidget(),
-            ),
+            Positioned(left: hintLeft, top: hintTop, child: const ButtonsHintWidget()),
             StateNotify(isPaused: state.isPaused),
             if (state.isInfo) const SystemInfoWidget(),
             if (state.isMenu) const MainMenuWidget(),
-            if (!isLinuxEmbedded && state.isDebug)
-              DebugWidget(frontendService, appConfig),
+            if (!isLinuxEmbedded && state.isDebug) DebugWidget(frontendService, appConfig),
           ],
         );
       },
@@ -100,8 +92,7 @@ class _SlideshowRenderer extends StatefulWidget {
   _SlideshowRendererState createState() => _SlideshowRendererState();
 }
 
-class _SlideshowRendererState extends State<_SlideshowRenderer>
-    with TickerProviderStateMixin {
+class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideshowRendererState');
 
   late FixedAnimationController _effectController;
@@ -126,9 +117,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     slideshow.add(const SlideshowInitEvent());
 
     _effectController = FixedAnimationController(
-      duration: Duration(
-        milliseconds: _appConfig.slideshow.effects.defaultDurationMs,
-      ),
+      duration: Duration(milliseconds: _appConfig.slideshow.effects.defaultDurationMs),
       vsync: this,
       animationBehavior: AnimationBehavior.preserve,
     );
@@ -138,9 +127,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         _promoteNext();
 
         // Сообщаем блоку, что переход завершен
-        context.read<SlideshowBloc>().add(
-          const SlideshowTransitionCompleteEvent(),
-        );
+        context.read<SlideshowBloc>().add(const SlideshowTransitionCompleteEvent());
       }
     });
 
@@ -183,9 +170,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
           _nextEffect = null;
         }
         _updateActivity(state);
-        final animate =
-            !state.isScreenLocked &&
-            (!state.isPaused || state.currentSlide == null);
+        final animate = !state.isScreenLocked && (!state.isPaused || state.currentSlide == null);
         // 1. Логика затемнения экрана (Screen Lock)
         if (state.fadeOut) {
           _fadeController.forward();
@@ -249,16 +234,12 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
     final playing = !state.isPaused && !state.isScreenLocked;
     final screenOn = !state.isScreenLocked;
     _current?.setActivity(
-      role: transitioning
-          ? SlideSessionRole.outgoing
-          : SlideSessionRole.current,
+      role: transitioning ? SlideSessionRole.outgoing : SlideSessionRole.current,
       playing: playing,
       screenOn: screenOn,
     );
     _next?.setActivity(
-      role: transitioning
-          ? SlideSessionRole.incoming
-          : SlideSessionRole.pending,
+      role: transitioning ? SlideSessionRole.incoming : SlideSessionRole.pending,
       playing: playing,
       screenOn: screenOn,
     );
@@ -284,16 +265,9 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
   }
 
   bool _acceptsPreparation(int generation, SlideSession session) =>
-      mounted &&
-      generation == _loadGeneration &&
-      identical(_next, session) &&
-      !session.disposed;
+      mounted && generation == _loadGeneration && identical(_next, session) && !session.disposed;
 
-  Future<void> _prepareNext(
-    SlideshowSlide slide,
-    Size size,
-    MediaSliderItemEffect effect,
-  ) async {
+  Future<void> _prepareNext(SlideshowSlide slide, Size size, MediaSliderItemEffect effect) async {
     final generation = ++_loadGeneration;
     final slideshow = context.read<SlideshowBloc>();
     SlideSession? session;
@@ -333,11 +307,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         _log.warning('Special screen unavailable: ${slide.config.id}', e, st);
         slideshow.add(SlideshowSpecialUnavailableEvent(slide.config.id));
       } else {
-        _log.warning(
-          'Error loading slide: ${(slide as MediaSlide).item.uri}',
-          e,
-          st,
-        );
+        _log.warning('Error loading slide: ${(slide as MediaSlide).item.uri}', e, st);
         setState(() {
           _next = PlaceholderSlideSession();
           _nextEffect = effect;
@@ -349,12 +319,8 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
   void _startTransition(SlideshowState state, Size size) {
     // Capture both views and their sampling geometry before either owner moves.
-    final outgoing =
-        _current?.createEffectInput(size) ??
-        EffectSlideInput(view: slideShowLoaderWidget);
-    final incoming =
-        _next?.createEffectInput(size) ??
-        EffectSlideInput(view: slideShowLoaderWidget);
+    final outgoing = _current?.createEffectInput(size) ?? EffectSlideInput(view: slideShowLoaderWidget);
+    final incoming = _next?.createEffectInput(size) ?? EffectSlideInput(view: slideShowLoaderWidget);
     // Получаем эффект из стейта
     var currentEffect = _nextEffect ?? state.effect.createEffect();
     _nextEffect = null;
@@ -362,9 +328,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
         ? _appConfig.slideshow.effects.defaultDurationMs
         : state.effect.options.durationMs;
     if (!currentEffect.supportsInputs(outgoing, incoming)) {
-      _log.warning(
-        '${currentEffect.runtimeType} does not support prepared inputs; using Fade.',
-      );
+      _log.warning('${currentEffect.runtimeType} does not support prepared inputs; using Fade.');
       currentEffect = FadeEffect();
       durationMs = _appConfig.slideshow.effects.defaultDurationMs;
     }
@@ -388,12 +352,11 @@ class _SlideshowRendererState extends State<_SlideshowRenderer>
 
     // Запускаем анимацию
     try {
-      if (!state.isScreenLocked &&
-          (!state.isPaused || state.currentSlide == null)) {
+      if (!state.isScreenLocked && (!state.isPaused || state.currentSlide == null)) {
         _effectController.forward(from: 0);
       }
-    } catch (e) {
-      _log.info('Animation skip', e);
+    } catch (e, stack) {
+      _log.info('Animation skip', e, stack);
     }
   }
 

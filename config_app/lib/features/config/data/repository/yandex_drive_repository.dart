@@ -3,6 +3,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart' as storage_config show StorageType;
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:logging/logging.dart';
 
 enum YandexPanelFailureKind { load, rejected, outcomeUnknown, authorization }
 
@@ -13,6 +14,7 @@ class YandexPanelFailure implements Exception {
 }
 
 class YandexDriveRepository {
+  static final _log = Logger('YandexDriveRepository');
   YandexDriveRepository(this.client);
   final RealtimeService client;
 
@@ -45,14 +47,16 @@ class YandexDriveRepository {
     final WebSocketResult response;
     try {
       response = await client.send(envelope, timeout: const Duration(seconds: 20));
-    } catch (_) {
+    } catch (error, stack) {
+      _log.warning('Drive request failed action=${action.name}', error, stack);
       throw unknown;
     }
     if (response.id != envelope.id || response is! WSRpcResult) throw unknown;
     final Object? result;
     try {
       result = serializers.deserialize(response.resultData);
-    } catch (_) {
+    } catch (error, stack) {
+      _log.warning('Drive response decoding failed action=${action.name}', error, stack);
       throw unknown;
     }
     if (result is RpcErrorResult) throw const YandexPanelFailure(YandexPanelFailureKind.rejected);

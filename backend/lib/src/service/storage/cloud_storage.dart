@@ -91,8 +91,8 @@ abstract class CloudStorage extends DiskStorage {
           }
           md5Input?.close();
           shaInput?.close();
-        } catch (_) {
-          // Receiver diagnostics must never receive a signed transport URL.
+        } catch (error, stack) {
+          _log.warning('Cloud media transfer failed', error, stack);
           throw const UploadFailure(502, 'Cloud media transfer failed');
         }
       }
@@ -116,7 +116,7 @@ abstract class CloudStorage extends DiskStorage {
       await staged.publish();
       _log.fine('Media publication completed');
       return true;
-    } catch (error) {
+    } catch (error, stack) {
       final failure = error is CloudStorageException
           ? error.code
           : error is FormatException || error is ArgumentError
@@ -128,7 +128,7 @@ abstract class CloudStorage extends DiskStorage {
               _ => DriveFailure.storage,
             }
           : DriveFailure.storage;
-      _log.fine('Media publication failed reason=${failure.name}');
+      _log.fine('Media publication failed reason=${failure.name}', error, stack);
       throw CloudStorageException(failure);
     } finally {
       await staged?.cleanup();

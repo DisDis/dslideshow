@@ -24,11 +24,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   Stream<AuthenticationStatus> get status => _controller.stream;
 
   @override
-  Future<void> logIn({
-    required Uri connectUrl,
-    required String username,
-    required String password,
-  }) async {
+  Future<void> logIn({required Uri connectUrl, required String username, required String password}) async {
     if (_disposed) {
       throw StateError('Authentication repository is disposed');
     }
@@ -50,13 +46,12 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
         _setStatus(AuthenticationStatus.authenticated);
         _log.fine('Authentication succeeded');
       }
-    } catch (_) {
+    } catch (error, stack) {
       if (!_isCurrent(generation)) {
         return;
       }
       _setStatus(AuthenticationStatus.unauthenticated);
-      // Transport exceptions may contain the URL or authentication payload.
-      _log.warning('Authentication failed');
+      _log.warning('Authentication failed', error, stack);
       rethrow;
     }
   }

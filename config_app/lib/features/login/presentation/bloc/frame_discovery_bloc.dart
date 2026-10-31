@@ -77,8 +77,8 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
     FrameDiscoverySession session;
     try {
       session = provider.createSession();
-    } catch (error) {
-      _log.warning('Search unavailable type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Search unavailable type=${error.runtimeType}', error, stack);
       emit(state.copyWith(status: FrameDiscoveryStatus.unavailable));
       return;
     }
@@ -87,9 +87,9 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
       (update) {
         if (identical(_session, session)) add(FrameDiscoveryEvent.update(session, update));
       },
-      onError: (Object error) {
+      onError: (Object error, StackTrace stack) {
         if (identical(_session, session)) {
-          _log.warning('Search transport failed type=${error.runtimeType}');
+          _log.warning('Search transport failed type=${error.runtimeType}', error, stack);
           add(FrameDiscoveryEvent.failed(session));
         }
       },
@@ -99,9 +99,9 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
       if (identical(_session, session)) {
         _timer = Timer(searchDuration, () => add(FrameDiscoveryEvent.finish(session)));
       }
-    } catch (error) {
+    } catch (error, stack) {
       if (!identical(_session, session)) return;
-      _log.warning('Search unavailable type=${error.runtimeType}');
+      _log.warning('Search unavailable type=${error.runtimeType}', error, stack);
       await _release();
       if (!emit.isDone) emit(state.copyWith(status: FrameDiscoveryStatus.unavailable));
     }
@@ -117,8 +117,8 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
     Future<void> closeSession() async {
       try {
         await session?.close();
-      } catch (error) {
-        _log.warning('Search cleanup failed type=${error.runtimeType}');
+      } catch (error, stack) {
+        _log.warning('Search cleanup failed type=${error.runtimeType}', error, stack);
       }
     }
 
@@ -126,8 +126,8 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
     final closing = closeSession();
     try {
       await subscription?.cancel();
-    } catch (error) {
-      _log.warning('Search unsubscribe failed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('Search unsubscribe failed type=${error.runtimeType}', error, stack);
     }
     await closing;
   }

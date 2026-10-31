@@ -40,8 +40,8 @@ class StorageProviderRegistry {
     try {
       await selected.init();
       _log.info('event=initializationCompleted provider=${selectedType.name}');
-    } catch (error) {
-      _log.warning('event=initializationFailed provider=${selectedType.name} type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=initializationFailed provider=${selectedType.name} type=${error.runtimeType}', error, stack);
       rethrow;
     }
   }
@@ -62,8 +62,8 @@ class StorageProviderRegistry {
       final result = await storage.executeDriveCommand(command);
       _log.fine('event=driveCommandCompleted provider=${type.name}');
       return result;
-    } catch (error) {
-      _log.warning('event=driveCommandFailed provider=${type.name} type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=driveCommandFailed provider=${type.name} type=${error.runtimeType}', error, stack);
       return ErrorResult(id: command.id, error: 'Drive provider command failed');
     }
   }
@@ -88,7 +88,11 @@ class StorageProviderRegistry {
       } catch (error, stack) {
         firstError ??= error;
         firstStack ??= stack;
-        _log.warning('event=providerReleaseFailed provider=${entry.value.name} type=${error.runtimeType}');
+        _log.warning(
+          'event=providerReleaseFailed provider=${entry.value.name} type=${error.runtimeType}',
+          error,
+          stack,
+        );
       }
     }
     final failed = instances.length - released;

@@ -140,10 +140,12 @@ class FfmpegThumbnailWorker implements ThumbnailWorker {
             'bytes=${bytes.length}',
       );
       return ThumbnailWorkerResult(bytes: bytes, digest: digest);
-    } on ThumbnailFailure catch (error) {
+    } on ThumbnailFailure catch (error, stack) {
       _log.log(
         error.kind == ThumbnailFailureKind.cancelled ? Level.FINE : Level.WARNING,
         () => 'Render failed ${job.context} reason=${error.kind.name} ',
+        error,
+        stack,
       );
       rethrow;
     } on Object catch (error, stack) {

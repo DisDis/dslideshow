@@ -328,12 +328,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
           trashFailed: false,
         ),
       );
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || error is _ManagementClosed) {
-        _log.fine(() => 'event=trashLoadCancelled generation=$generation');
+        _log.fine(() => 'event=trashLoadCancelled generation=$generation', error, stack);
       } else {
         final code = error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name;
-        _log.warning('event=trashLoadFailed generation=$generation code=$code type=${error.runtimeType}');
+        _log.warning('event=trashLoadFailed generation=$generation code=$code type=${error.runtimeType}', error, stack);
       }
       if (!_closing && !emit.isDone && generation == _trashGeneration) {
         emit(state.copyWith(trashLoading: false, trashFailed: true));
@@ -367,12 +367,12 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         ),
       );
       _log.info('event=hiddenLoadCompleted entries=${catalog.entries.length}');
-    } catch (error) {
+    } catch (error, stack) {
       if (_closing || error is _ManagementClosed) {
-        _log.fine('event=hiddenLoadCancelled');
+        _log.fine('event=hiddenLoadCancelled', error, stack);
       } else {
         final code = error is GalleryManagementException ? error.code.name : GalleryErrorCode.unknown.name;
-        _log.warning('event=hiddenLoadFailed code=$code type=${error.runtimeType}');
+        _log.warning('event=hiddenLoadFailed code=$code type=${error.runtimeType}', error, stack);
       }
       if (!_closing && !emit.isDone && generation == _trashGeneration) {
         emit(state.copyWith(hiddenLoading: false, hiddenFailed: true));
@@ -488,12 +488,14 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         GalleryManagementOperationPlan(action: action, snapshot: state.snapshot, items: refs, requests: requests),
         emit,
       );
-    } catch (error) {
+    } catch (error, stack) {
       if (!_closing && !emit.isDone) {
         final code = error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
         _log.warning(
           'event=mutationRejected action=${action.name} items=${refs.length} '
           'code=${code.name} type=${error.runtimeType}',
+          error,
+          stack,
         );
         emit(state.copyWith(notice: GalleryManagementNotice.failed, noticeSerial: state.noticeSerial + 1, error: code));
       }
@@ -592,7 +594,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
       await _refreshAfterMutation(emit);
     } on _ManagementClosed {
       _log.fine('event=mutationCancelled action=${plan.action.name}');
-    } catch (error) {
+    } catch (error, stack) {
       final code = error is GalleryManagementException ? error.code : GalleryErrorCode.unknown;
       final cancelled = _closing || code == GalleryErrorCode.cancelled;
       final message =
@@ -600,7 +602,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
           'action=${plan.action.name} code=${code.name} '
           'processed=${results.length} total=${plan.items.length} '
           'type=${error.runtimeType}';
-      cancelled ? _log.fine(message) : _log.warning(message);
+      cancelled ? _log.fine(message, error, stack) : _log.warning(message, error, stack);
       if (!_closing && !emit.isDone) {
         emit(state.copyWith(error: code, operationPlan: null, pendingOperation: null));
         // No server receipt is retained. Stop the unsubmitted tail and rebuild

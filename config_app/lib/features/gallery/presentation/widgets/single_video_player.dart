@@ -45,16 +45,13 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
   @override
   void didUpdateWidget(covariant SingleVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.uri != widget.uri ||
-        oldWidget.controllerFactory != widget.controllerFactory) {
+    if (oldWidget.uri != widget.uri || oldWidget.controllerFactory != widget.controllerFactory) {
       _start();
     }
   }
 
   bool _current(VideoPlayerController controller, int generation) =>
-      mounted &&
-      generation == _generation &&
-      identical(_controller, controller);
+      mounted && generation == _generation && identical(_controller, controller);
 
   void _start() {
     final generation = ++_generation;
@@ -67,31 +64,26 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
     }
     _phase = _VideoPhase.loading;
     try {
-      final controller =
-          widget.controllerFactory?.call(widget.uri) ??
-          VideoPlayerController.networkUrl(widget.uri);
+      final controller = widget.controllerFactory?.call(widget.uri) ?? VideoPlayerController.networkUrl(widget.uri);
       _controller = controller;
       _controllerListener = () {
         if (!_current(controller, generation)) return;
         if (controller.value.hasError) {
-          _fail(controller, generation);
+          _fail(controller, generation, controller.value.errorDescription);
         } else if (_phase == _VideoPhase.ready) {
           setState(() {});
         }
       };
       controller.addListener(_controllerListener!);
       unawaited(_initialize(controller, generation));
-    } catch (_) {
+    } catch (error, stack) {
       _release();
       _phase = _VideoPhase.failed;
-      _log.warning('Video controller creation failed.');
+      _log.warning('Video controller creation failed.', error, stack);
     }
   }
 
-  Future<void> _initialize(
-    VideoPlayerController controller,
-    int generation,
-  ) async {
+  Future<void> _initialize(VideoPlayerController controller, int generation) async {
     try {
       await controller.initialize().timeout(widget.initializationTimeout);
       if (!_current(controller, generation)) return;
@@ -100,16 +92,16 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
       await controller.play();
       if (!_current(controller, generation)) return;
       setState(() => _phase = _VideoPhase.ready);
-    } catch (_) {
-      _fail(controller, generation);
+    } catch (error, stack) {
+      _fail(controller, generation, error, stack);
     }
   }
 
-  void _fail(VideoPlayerController controller, int generation) {
+  void _fail(VideoPlayerController controller, int generation, [Object? error, StackTrace? stack]) {
     if (!_current(controller, generation)) return;
     ++_generation;
     _release();
-    _log.warning('Video playback failed.');
+    _log.warning('Video playback failed.', error, stack);
     setState(() {
       _phase = _VideoPhase.failed;
       _busy = false;
@@ -132,8 +124,8 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
     await Future<void>.value();
     try {
       await controller.dispose();
-    } catch (_) {
-      _log.warning('Video controller cleanup failed.');
+    } catch (error, stack) {
+      _log.warning('Video controller cleanup failed.', error, stack);
     }
   }
 
@@ -164,8 +156,8 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
         await controller.play();
       }
       if (_current(controller, generation)) setState(() => _busy = false);
-    } catch (_) {
-      _fail(controller, generation);
+    } catch (error, stack) {
+      _fail(controller, generation, error, stack);
     }
   }
 
@@ -185,8 +177,8 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
           _seekPosition = null;
         });
       }
-    } catch (_) {
-      _fail(controller, generation);
+    } catch (error, stack) {
+      _fail(controller, generation, error, stack);
     }
   }
 
@@ -206,15 +198,9 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.error_outline,
-              color: Theme.of(context).colorScheme.error,
-            ),
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
             Text(context.localizations.video_load_failed),
-            TextButton(
-              onPressed: _retry,
-              child: Text(context.localizations.retry_button),
-            ),
+            TextButton(onPressed: _retry, child: Text(context.localizations.retry_button)),
           ],
         ),
       );
@@ -227,30 +213,21 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
     final duration = controller.value.duration;
     final durationMs = duration.inMilliseconds.toDouble();
     final maxPosition = durationMs > 0 ? durationMs : 1.0;
-    final positionMs =
-        (_seekPosition ?? controller.value.position.inMilliseconds.toDouble())
-            .clamp(0.0, maxPosition);
+    final positionMs = (_seekPosition ?? controller.value.position.inMilliseconds.toDouble()).clamp(0.0, maxPosition);
 
     return AspectRatio(
       aspectRatio: controller.value.aspectRatio,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: widget.onContentTap,
-            child: VideoPlayer(controller),
-          ),
+          GestureDetector(behavior: HitTestBehavior.opaque, onTap: widget.onContentTap, child: VideoPlayer(controller)),
 
           if (!playing)
             Center(
               child: IconButton(
                 iconSize: 64,
                 tooltip: context.localizations.preview_resume,
-                icon: Icon(
-                  Icons.play_circle_fill,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                icon: Icon(Icons.play_circle_fill, color: Theme.of(context).colorScheme.primary),
                 onPressed: _busy ? null : _togglePlay,
               ),
             ),
@@ -260,21 +237,14 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
             right: 0,
             bottom: 0,
             child: ColoredBox(
-              color: Theme.of(context).colorScheme.surface
-                  .withValues(alpha: .9),
+              color: Theme.of(context).colorScheme.surface.withValues(alpha: .9),
               child: Row(
                 children: [
                   IconButton(
                     key: const ValueKey('single-video-toggle'),
                     onPressed: _busy ? null : _togglePlay,
-                    tooltip: playing
-                        ? context.localizations.preview_pause
-                        : context.localizations.preview_resume,
-                    icon: Icon(
-                      playing
-                          ? Icons.pause_circle_filled
-                          : Icons.play_circle_fill,
-                    ),
+                    tooltip: playing ? context.localizations.preview_pause : context.localizations.preview_resume,
+                    icon: Icon(playing ? Icons.pause_circle_filled : Icons.play_circle_fill),
                   ),
                   Expanded(
                     child: Semantics(
@@ -284,11 +254,8 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
                         min: 0,
                         max: maxPosition,
                         value: positionMs,
-                        semanticFormatterCallback: (value) =>
-                            _time(Duration(milliseconds: value.round())),
-                        onChanged: _busy || durationMs <= 0
-                            ? null
-                            : (value) => setState(() => _seekPosition = value),
+                        semanticFormatterCallback: (value) => _time(Duration(milliseconds: value.round())),
+                        onChanged: _busy || durationMs <= 0 ? null : (value) => setState(() => _seekPosition = value),
                         onChangeEnd: _busy || durationMs <= 0 ? null : _seekTo,
                       ),
                     ),

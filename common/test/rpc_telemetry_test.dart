@@ -198,14 +198,18 @@ void main() {
     var recovering = false;
     telemetry.addPeer(() => recovering ? Future.value(RpcTelemetrySnapshot(nodes: [_node(2)])) : pending.future);
     final reading = telemetry.collect();
-    pending.completeError(StateError('private peer RPC failure'));
+    final error = StateError('private peer RPC failure');
+    final stack = StackTrace.fromString('#0 peer-source\n#1 peer-caller');
+    pending.completeError(error, stack);
     expect((await reading).nodes, hasLength(1));
     recovering = true;
     final recovered = await telemetry.collect();
     expect(recovered.nodes.last.node, RpcNode.frontend);
     expect(recovered.nodes.last.stale, isFalse);
     expect(records.any((record) => record.message == 'Peer telemetry unavailable type=StateError'), isTrue);
-    expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+    final failure = records.singleWhere((record) => record.error != null);
+    expect(failure.error, same(error));
+    expect(failure.stackTrace, same(stack));
     expect(records.map((record) => record.message).join(), isNot(contains('private')));
   });
 }

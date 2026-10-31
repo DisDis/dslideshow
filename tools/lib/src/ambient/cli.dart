@@ -139,13 +139,15 @@ Future<int> runAmbient(
         status = cancellationCode;
         (probe.report['errors'] as List).add({'error': 'Interrupted by user'});
         _log.info('component=ambient operation=$operation action=run result=cancelled');
-      } on Exception catch (error) {
+      } on Exception catch (error, stack) {
         final message = probe.http.clean(error);
         status = ProbeExit.failed.code;
         (probe.report['errors'] as List).add({'error': message});
         err.writeln('Ошибка на этапе ${probe.stage.wireName}: $message');
         _log.warning(
           'component=ambient operation=$operation action=run result=failed stage=${probe.stage.wireName} type=${error.runtimeType}',
+          error,
+          stack,
         );
       }
       probe.report.addAll({'exit_code': status, 'last_stage': probe.stage.wireName});
@@ -158,9 +160,13 @@ Future<int> runAmbient(
     });
   } on ProbeInterrupted {
     return cancellationCode;
-  } on Exception catch (error) {
+  } on Exception catch (error, stack) {
     err.writeln('Ошибка: ${probe.http.clean(error)}');
-    _log.warning('component=ambient operation=$operation action=run result=failed type=${error.runtimeType}');
+    _log.warning(
+      'component=ambient operation=$operation action=run result=failed type=${error.runtimeType}',
+      error,
+      stack,
+    );
     return ProbeExit.failed.code;
   } finally {
     for (final subscription in subscriptions) {

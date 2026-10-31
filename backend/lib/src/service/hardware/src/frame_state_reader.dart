@@ -58,8 +58,8 @@ class FrameStateReader {
     try {
       final result = await _frontendService.send(GetFrameFrontendStateCommand(id: RpcCommand.generateId()));
       return result is GetFrameFrontendStateResult ? result.state : null;
-    } catch (error) {
-      _log.fine('Frontend state unavailable type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.fine('Frontend state unavailable type=${error.runtimeType}', error, stack);
       return null;
     }
   }

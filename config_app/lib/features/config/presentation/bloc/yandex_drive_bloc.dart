@@ -129,12 +129,14 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
       );
       _log.info('event=completed action=${action.name} accounts=${result.state.connections.length}');
       _scheduleRuntime();
-    } catch (error) {
+    } catch (error, stack) {
       if (isClosed) return;
       final failure = error is YandexPanelFailure ? error.kind : YandexPanelFailureKind.load;
       emit(state.copyWith(busy: false, failure: failure));
       _log.warning(
         'event=${failure == YandexPanelFailureKind.outcomeUnknown ? 'outcomeUnknown' : 'failed'} action=${action.name} type=${error.runtimeType}',
+        error,
+        stack,
       );
     }
   }
@@ -174,10 +176,10 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
         _log.info('event=authorizationChanged status=${state.authorization?.status.name}');
       }
       _scheduleAuthorization();
-    } catch (error) {
+    } catch (error, stack) {
       if (isClosed || !state.authorizationOpen || state.authorization?.sessionId != sessionId) return;
       emit(state.copyWith(failure: error is YandexPanelFailure ? error.kind : YandexPanelFailureKind.load));
-      _log.warning('event=authorizationReadFailed type=${error.runtimeType}');
+      _log.warning('event=authorizationReadFailed type=${error.runtimeType}', error, stack);
     }
   }
 
@@ -199,10 +201,10 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
       if (isClosed || state.busy || state.failure != null || !identical(state.remote, observedRemote)) return;
       emit(state.copyWith(remote: result.state));
       _scheduleRuntime();
-    } catch (error) {
+    } catch (error, stack) {
       if (isClosed || state.busy || state.failure != null || !identical(state.remote, observedRemote)) return;
       emit(state.copyWith(failure: error is YandexPanelFailure ? error.kind : YandexPanelFailureKind.load));
-      _log.warning('event=runtimeReadFailed type=${error.runtimeType}');
+      _log.warning('event=runtimeReadFailed type=${error.runtimeType}', error, stack);
     }
   }
 
@@ -223,8 +225,8 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
           .request(DriveAction.cancelAuthorization, sessionId: sessionId)
           .then<void>(
             (_) {},
-            onError: (Object error) {
-              _log.warning('event=authorizationCancelOutcomeUnknown type=${error.runtimeType}');
+            onError: (Object error, StackTrace stack) {
+              _log.warning('event=authorizationCancelOutcomeUnknown type=${error.runtimeType}', error, stack);
             },
           ),
     );
@@ -310,12 +312,12 @@ class YandexFolderCubit extends Cubit<YandexFolderState> {
       if (page == null) throw const YandexPanelFailure(YandexPanelFailureKind.load);
       emit(state.copyWith(page: page, previousOffsets: previousOffsets, busy: false));
       _log.fine('event=pageLoaded folders=${page.folders.length} hasNext=${page.nextOffset != null}');
-    } catch (error) {
+    } catch (error, stack) {
       if (isClosed) return;
       emit(
         state.copyWith(busy: false, failure: error is YandexPanelFailure ? error.kind : YandexPanelFailureKind.load),
       );
-      _log.warning('event=pageFailed type=${error.runtimeType}');
+      _log.warning('event=pageFailed type=${error.runtimeType}', error, stack);
     }
   }
 }
@@ -353,8 +355,8 @@ class YandexApplicationCubit extends Cubit<YandexApplicationState> {
       if (!isClosed) emit(state.copyWith(busy: false));
       _log.info('event=completed action=configureApplication');
       return result;
-    } catch (error) {
-      _log.warning('event=failed action=configureApplication type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=failed action=configureApplication type=${error.runtimeType}', error, stack);
       if (!isClosed) {
         emit(
           state.copyWith(busy: false, failure: error is YandexPanelFailure ? error.kind : YandexPanelFailureKind.load),

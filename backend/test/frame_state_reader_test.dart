@@ -134,7 +134,8 @@ void main() {
     'async frontend failure returns backend state and a later read recovers',
     () => captureLogs((records) async {
       final fixture = _Fixture();
-      fixture.remote.failure = StateError('private frontend URL');
+      final error = StateError('private frontend URL');
+      fixture.remote.failure = error;
       final failed = await fixture.reader.read();
       expect(failed.frontend, isNull);
       expect(failed.isScreenOn, isTrue);
@@ -144,7 +145,9 @@ void main() {
       expect(recovered.frontend, same(fixture.remote.state));
       expect(fixture.remote.commands, hasLength(2));
       expect(records.any((record) => record.message == 'Frontend state unavailable type=StateError'), isTrue);
-      expect(records.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      final diagnostic = records.singleWhere((record) => record.error != null);
+      expect(diagnostic.error, same(error));
+      expect(diagnostic.stackTrace.toString(), contains('frame_state_reader_test.dart'));
       expect(records.map((record) => record.message).join(), isNot(contains('private')));
     }),
   );

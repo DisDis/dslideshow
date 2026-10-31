@@ -234,11 +234,11 @@ Future<int> collectCoverage(ArgResults args, {ProcessSupervisor? processSupervis
       writeCoverageJson(File(p.join(run.path, 'manifest.json')), manifest);
     }
     manifest['status'] = 'finished';
-  } catch (error) {
+  } catch (error, stack) {
     failed = true;
     manifest['status'] = supervisor.cancellationCode == null ? 'failed' : 'interrupted';
     manifest['error_type'] = error.runtimeType.toString();
-    _log.warning('Coverage ${manifest['status']} type=${error.runtimeType}');
+    _log.warning('Coverage ${manifest['status']} type=${error.runtimeType}', error, stack);
   } finally {
     for (final signal in signals) {
       await signal.cancel();
@@ -317,10 +317,12 @@ Future<int> runCoverage(List<String> arguments, {StringSink? output, StringSink?
   } on ArgumentError catch (error) {
     err.writeln('${error.message}\n${parser.usage}');
     return 64;
-  } on FileSystemException catch (error) {
+  } on FileSystemException catch (error, stack) {
+    _log.warning('Coverage filesystem operation failed', error, stack);
     err.writeln('Coverage filesystem error: ${error.message}');
     return 1;
-  } on StateError catch (error) {
+  } on StateError catch (error, stack) {
+    _log.warning('Coverage failed', error, stack);
     err.writeln('Coverage: ${error.message}');
     return 1;
   }

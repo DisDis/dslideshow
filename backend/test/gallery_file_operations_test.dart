@@ -760,8 +760,7 @@ void main() {
       expect(cancelled.message, contains('action=trash'));
       expect(diagnostics.every((record) => !record.message.contains('operationId=')), isTrue);
       for (final record in diagnostics) {
-        expect(record.error, isNull);
-        expect(record.stackTrace, isNull);
+        if (record.error != null) expect(record.stackTrace, isNotNull);
         for (final secret in [
           'PRIVATE_',
           'AUTH_SECRET',

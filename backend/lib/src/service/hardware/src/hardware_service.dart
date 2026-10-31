@@ -92,10 +92,12 @@ class HardwareService implements RpcService {
       if (result is RpcErrorResult) throw RpcErrorResultException(result);
       if (result is! EmptyResult) throw StateError('Unexpected storage status response');
       _log.fine('Storage status delivered status=${status.name}');
-    } catch (error) {
+    } catch (error, stack) {
       _log.log(
         _disposed ? Level.FINE : Level.WARNING,
         'Storage status delivery ${_disposed ? 'cancelled' : 'failed'} status=${status.name} type=${error.runtimeType}',
+        error,
+        stack,
       );
     }
   }
@@ -108,10 +110,12 @@ class HardwareService implements RpcService {
       if (result is RpcErrorResult) throw RpcErrorResultException(result);
       if (result is! EmptyResult) throw StateError('Unexpected screen notification response');
       _log.fine('Screen notification delivered enabled=$enabled');
-    } catch (error) {
+    } catch (error, stack) {
       _log.log(
         _disposed ? Level.FINE : Level.WARNING,
         'Screen notification ${_disposed ? 'cancelled' : 'failed'} enabled=$enabled type=${error.runtimeType}',
+        error,
+        stack,
       );
     }
   }
@@ -238,10 +242,12 @@ class HardwareService implements RpcService {
       final state = await _frameStateReader.read();
       _ensureActive();
       return GetFrameStateResult(id: command.id, state: state);
-    } catch (error) {
+    } catch (error, stack) {
       _log.log(
         _disposed ? Level.FINE : Level.WARNING,
         'Frame state request ${_disposed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+        error,
+        stack,
       );
       return _generateErrorResult(error, command);
     }
@@ -260,10 +266,12 @@ class HardwareService implements RpcService {
       final state = await _frameStateReader.read();
       _ensureActive();
       return GetFrameStateResult(id: command.id, state: state);
-    } catch (error) {
+    } catch (error, stack) {
       _log.log(
         _disposed ? Level.FINE : Level.WARNING,
         'Frame control ${_disposed ? 'cancelled' : 'failed'} type=${error.runtimeType}',
+        error,
+        stack,
       );
       return _generateErrorResult(error, command);
     }
@@ -373,11 +381,13 @@ class HardwareService implements RpcService {
       _ensureActive();
       _log.info('event=wifiCompleted rpcId=${command.id} action=${command.type}');
       return result;
-    } catch (error) {
+    } catch (error, stack) {
       _log.log(
         _disposed ? Level.INFO : Level.WARNING,
         'event=${_disposed ? 'wifiCancelled' : 'wifiFailed'} rpcId=${command.id} '
         'action=${command.type} type=${error.runtimeType}',
+        error,
+        stack,
       );
       return _generateErrorResult(error, command);
     }

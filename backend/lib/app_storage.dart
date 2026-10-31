@@ -24,10 +24,12 @@ class AppStorage {
     final String configStr;
     try {
       configStr = _storageFile.existsSync() ? _storageFile.readAsStringSync() : '{}';
-    } catch (error) {
+    } catch (error, stack) {
       _log.warning(
         'load failed '
         'type=${error.runtimeType}',
+        error,
+        stack,
       );
       rethrow;
     }
@@ -37,11 +39,13 @@ class AppStorage {
         throw const FormatException('Expected a JSON object');
       }
       _storage = decoded;
-    } catch (error) {
+    } catch (error, stack) {
       // FormatException can include the document itself. Keep diagnostics safe.
       _log.warning(
         'load failed '
         'type=${error.runtimeType} recovery=empty',
+        error,
+        stack,
       );
       _storage = <String, dynamic>{};
     }
@@ -60,10 +64,12 @@ class AppStorage {
     try {
       final contents = json.encode(_storage);
       _storageFile.writeAsStringSync(contents);
-    } catch (error) {
+    } catch (error, stack) {
       _log.warning(
         'save failed '
         'type=${error.runtimeType}',
+        error,
+        stack,
       );
       rethrow;
     }
@@ -81,7 +87,7 @@ class AppStorage {
         try {
           save();
         } catch (_) {
-          // save() already logged a safe failure and retained every value.
+          // save() already logged the failure and retained every value.
           // Background work has no caller; a later edit or explicit save can retry.
         }
       });

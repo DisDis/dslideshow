@@ -67,10 +67,12 @@ class GalleryPngRotation {
     try {
       await job.run(source, staged, rotation, cancellation);
       _log.fine('PNG rotation completed direction=${rotation.name} ');
-    } on GalleryCatalogFailure catch (error) {
+    } on GalleryCatalogFailure catch (error, stack) {
       _log.log(
         error.code == GalleryErrorCode.cancelled ? Level.FINE : Level.WARNING,
         'PNG rotation stopped direction=${rotation.name} code=${error.code.name} ',
+        error,
+        stack,
       );
       rethrow;
     } on Object {

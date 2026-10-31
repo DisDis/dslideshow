@@ -507,8 +507,8 @@ Future<void> writeTestProfile(
     }
   } on IncompleteTestProfile {
     rethrow;
-  } on Object catch (error) {
-    _profileLog.warning('action=report result=failed reason=${error.runtimeType}');
+  } on Object catch (error, stack) {
+    _profileLog.warning('action=report result=failed reason=${error.runtimeType}', error, stack);
     rethrow;
   }
 }

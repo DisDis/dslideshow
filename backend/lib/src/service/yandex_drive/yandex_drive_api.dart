@@ -71,7 +71,8 @@ class YandexDriveApi {
         throw const FormatException();
       }
       return result;
-    } catch (_) {
+    } catch (error, stack) {
+      _log.fine('Drive response decoding failed', error, stack);
       throw const CloudStorageException(DriveFailure.invalidResponse);
     }
   }
@@ -86,7 +87,8 @@ class YandexDriveApi {
     );
     try {
       return YandexDriveTokenResponse.fromJson(json);
-    } catch (_) {
+    } catch (error, stack) {
+      _log.fine('Drive response decoding failed', error, stack);
       throw const CloudStorageException(DriveFailure.invalidResponse);
     }
   }
@@ -102,7 +104,8 @@ class YandexDriveApi {
       final user = YandexDriveDiskInfo.fromJson(json).user;
       if (!YandexDrivePaths.validAccountId(user.uid)) throw const FormatException();
       return user;
-    } catch (_) {
+    } catch (error, stack) {
+      _log.fine('Drive response decoding failed', error, stack);
       throw const CloudStorageException(DriveFailure.invalidResponse);
     }
   }
@@ -142,7 +145,8 @@ class YandexDriveApi {
         }
       }
       return resource;
-    } catch (_) {
+    } catch (error, stack) {
+      _log.fine('Drive response decoding failed', error, stack);
       throw const CloudStorageException(DriveFailure.invalidResponse);
     }
   }
@@ -161,7 +165,8 @@ class YandexDriveApi {
     Uri href;
     try {
       href = YandexDriveDownloadLink.fromJson(json).href;
-    } catch (_) {
+    } catch (error, stack) {
+      _log.fine('Drive response decoding failed', error, stack);
       throw const CloudStorageException(DriveFailure.invalidResponse);
     }
     // The short-lived download URL is provided by Yandex. Never send the OAuth
@@ -194,13 +199,15 @@ class YandexDriveApi {
         _clients.remove(client);
         _log.fine('Response accepted operation=${operation.name} method=GET status=$status redirect=$redirect');
         return YandexDriveDownload(response, client);
-      } catch (error) {
+      } catch (error, stack) {
         client.close();
         _clients.remove(client);
         final failure = _safe(error);
         _log.fine(
           'Request failed operation=${operation.name} method=GET status=${status ?? 'none'} '
           'redirect=$redirect reason=${failure.code.name} type=${error.runtimeType}',
+          error,
+          stack,
         );
         throw failure;
       }
@@ -255,7 +262,7 @@ class YandexDriveApi {
         }
         _log.fine('Request completed operation=${operation.name} method=$method status=$status attempt=${attempt + 1}');
         return decoded;
-      } catch (error) {
+      } catch (error, stack) {
         final failure = _safe(error);
         final retry =
             method == 'GET' &&
@@ -265,6 +272,8 @@ class YandexDriveApi {
           'Request ${retry ? 'retrying' : 'failed'} operation=${operation.name} method=$method '
           'status=${status ?? 'none'} attempt=${attempt + 1} '
           'reason=${failure.code.name} type=${error.runtimeType}',
+          error,
+          stack,
         );
         if (!retry) rethrowSafe(failure);
         await _delay(retryAfter ?? Duration(milliseconds: 500 * (1 << attempt)));

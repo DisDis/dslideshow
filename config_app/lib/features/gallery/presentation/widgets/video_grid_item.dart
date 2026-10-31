@@ -43,9 +43,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
   Future<void> _visibilityOperation = Future<void>.value();
 
   bool _isCurrent(VideoPlayerController controller, int generation) =>
-      mounted &&
-      generation == _generation &&
-      identical(controller, _controller);
+      mounted && generation == _generation && identical(controller, _controller);
 
   void _releaseController() {
     final controller = _controller;
@@ -60,17 +58,15 @@ class _VideoGridItemState extends State<VideoGridItem> {
     await Future<void>.value();
     try {
       await controller.dispose();
-    } catch (_) {
-      // Plugin errors can include a signed media URL or credentials.
-      _log.warning('Video controller cleanup failed.');
+    } catch (error, stack) {
+      _log.warning('Video controller cleanup failed.', error, stack);
     }
   }
 
   @override
   void didUpdateWidget(VideoGridItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url ||
-        oldWidget.controllerFactory != widget.controllerFactory) {
+    if (oldWidget.url != widget.url || oldWidget.controllerFactory != widget.controllerFactory) {
       _generation++;
       _releaseController();
       _isInitialized = false;
@@ -94,20 +90,10 @@ class _VideoGridItemState extends State<VideoGridItem> {
     }
   }
 
-  Future<void> _setRoutePlayback(
-    VideoPlayerController controller,
-    bool play,
-    int generation,
-  ) async {
+  Future<void> _setRoutePlayback(VideoPlayerController controller, bool play, int generation) async {
     final visibilityGeneration = ++_visibilityGeneration;
     final previous = _visibilityOperation;
-    final operation = _applyRoutePlayback(
-      previous,
-      controller,
-      play,
-      generation,
-      visibilityGeneration,
-    );
+    final operation = _applyRoutePlayback(previous, controller, play, generation, visibilityGeneration);
     _visibilityOperation = operation;
     await operation;
   }
@@ -121,8 +107,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
   ) async {
     try {
       await previous;
-      if (!_isCurrent(controller, generation) ||
-          visibilityGeneration != _visibilityGeneration) {
+      if (!_isCurrent(controller, generation) || visibilityGeneration != _visibilityGeneration) {
         return;
       }
       if (play) {
@@ -130,12 +115,11 @@ class _VideoGridItemState extends State<VideoGridItem> {
       } else {
         await controller.pause();
       }
-      if (_isCurrent(controller, generation) &&
-          visibilityGeneration == _visibilityGeneration) {
+      if (_isCurrent(controller, generation) && visibilityGeneration == _visibilityGeneration) {
         setState(() => _isPlaying = controller.value.isPlaying);
       }
-    } catch (_) {
-      _fail(generation);
+    } catch (error, stack) {
+      _fail(generation, error, stack);
     }
   }
 
@@ -150,17 +134,17 @@ class _VideoGridItemState extends State<VideoGridItem> {
     final controller = _controller;
     if (!mounted || controller == null) return;
     if (controller.value.hasError) {
-      _fail(_generation);
+      _fail(_generation, controller.value.errorDescription);
     } else if (_isInitialized && _isPlaying != controller.value.isPlaying) {
       setState(() => _isPlaying = controller.value.isPlaying);
     }
   }
 
-  void _fail(int generation) {
+  void _fail(int generation, [Object? error, StackTrace? stack]) {
     if (!mounted || generation != _generation) return;
     _generation++;
     _releaseController();
-    _log.warning('Video playback failed.');
+    _log.warning('Video playback failed.', error, stack);
     setState(() {
       _isInitialized = false;
       _isPlaying = false;
@@ -170,11 +154,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
   }
 
   Future<void> _initializeVideo() async {
-    if (!widget.active ||
-        !supportsConfigAppVideo ||
-        _controller != null ||
-        _busy ||
-        _hasError) {
+    if (!widget.active || !supportsConfigAppVideo || _controller != null || _busy || _hasError) {
       return;
     }
     final generation = ++_generation;
@@ -211,8 +191,8 @@ class _VideoGridItemState extends State<VideoGridItem> {
         _isPlaying = controller.value.isPlaying;
         _busy = false;
       });
-    } catch (_) {
-      _fail(generation);
+    } catch (error, stack) {
+      _fail(generation, error, stack);
     }
   }
 
@@ -234,8 +214,8 @@ class _VideoGridItemState extends State<VideoGridItem> {
         _isPlaying = controller.value.isPlaying;
         _busy = false;
       });
-    } catch (_) {
-      _fail(generation);
+    } catch (error, stack) {
+      _fail(generation, error, stack);
     }
   }
 
@@ -255,24 +235,17 @@ class _VideoGridItemState extends State<VideoGridItem> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  color: theme.colorScheme.onErrorContainer,
-                ),
+                Icon(Icons.error_outline, color: theme.colorScheme.onErrorContainer),
                 Text(
                   widget.title,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onErrorContainer,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onErrorContainer),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   context.localizations.video_load_failed,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onErrorContainer,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onErrorContainer),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -308,11 +281,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
               child: IconButton(
                 onPressed: _busy ? null : _playPause,
                 tooltip: context.localizations.preview_resume,
-                icon: Icon(
-                  Icons.play_circle_fill,
-                  size: 50,
-                  color: theme.colorScheme.primary,
-                ),
+                icon: Icon(Icons.play_circle_fill, size: 50, color: theme.colorScheme.primary),
               ),
             ),
         ],
@@ -322,22 +291,14 @@ class _VideoGridItemState extends State<VideoGridItem> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Positioned.fill(
-          child:
-              widget.poster ??
-              ColoredBox(color: theme.colorScheme.surfaceContainerHighest),
-        ),
+        Positioned.fill(child: widget.poster ?? ColoredBox(color: theme.colorScheme.surfaceContainerHighest)),
         if (_busy)
           const CircularProgressIndicator()
         else
           IconButton(
             onPressed: _initializeVideo,
             tooltip: context.localizations.video_load,
-            icon: Icon(
-              Icons.play_circle_outline,
-              size: 40,
-              color: theme.colorScheme.primary,
-            ),
+            icon: Icon(Icons.play_circle_outline, size: 40, color: theme.colorScheme.primary),
           ),
         Positioned(
           left: 8,
@@ -358,9 +319,7 @@ class _VideoGridItemState extends State<VideoGridItem> {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 ),
             ],
           ),

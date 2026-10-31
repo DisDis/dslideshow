@@ -67,7 +67,8 @@ class GalleryMetadataReader {
       final value = await work();
       _check();
       return value;
-    } on FileSystemException catch (error) {
+    } on FileSystemException catch (error, stack) {
+      _log.fine('Metadata file access failed', error, stack);
       throw GalleryCatalogFailure(switch (error.osError?.errorCode) {
         2 => GalleryErrorCode.notFound,
         13 => GalleryErrorCode.forbidden,

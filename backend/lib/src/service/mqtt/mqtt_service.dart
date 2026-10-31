@@ -78,9 +78,9 @@ class MqttService {
     /// never send malformed messages.
     try {
       await _client.connect(_config.user, _config.pass);
-    } catch (error) {
+    } catch (error, stack) {
       if (!_closed) {
-        _log.warning('event=connectFailed type=${error.runtimeType}');
+        _log.warning('event=connectFailed type=${error.runtimeType}', error, stack);
       }
       _client.disconnect();
       return;
@@ -96,7 +96,8 @@ class MqttService {
       _log.info('event=connected');
       _updates = _client.updates?.listen(
         _onUpdate,
-        onError: (Object error) => _log.warning('event=updatesFailed type=${error.runtimeType}'),
+        onError: (Object error, StackTrace stack) =>
+            _log.warning('event=updatesFailed type=${error.runtimeType}', error, stack),
       );
       _applicationChanges = applicationStateService.onChangedState.listen(_onApplicationChangeState);
     } else {
@@ -139,9 +140,9 @@ class MqttService {
         );
         controller.add(value == 'ON');
         accepted++;
-      } catch (error) {
+      } catch (error, stack) {
         rejected++;
-        _log.warning('event=commandFailed action=${action.name} type=${error.runtimeType}');
+        _log.warning('event=commandFailed action=${action.name} type=${error.runtimeType}', error, stack);
       }
     }
     _log.info('event=commands received=${msgs.length} accepted=$accepted rejected=$rejected ignored=$ignored');
@@ -215,8 +216,8 @@ class MqttService {
       _publishAllConfig();
 
       _onApplicationChangeState(applicationStateService.state);
-    } catch (error) {
-      _log.warning('event=connectedSetupFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=connectedSetupFailed type=${error.runtimeType}', error, stack);
     }
   }
 
@@ -234,8 +235,8 @@ class MqttService {
     try {
       _publishAllConfig();
       _onApplicationChangeState(applicationStateService.state);
-    } catch (error) {
-      _log.warning('event=reconnectSetupFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=reconnectSetupFailed type=${error.runtimeType}', error, stack);
     }
   }
 
@@ -269,8 +270,8 @@ class MqttService {
         (MqttClientPayloadBuilder()..addUTF8String(state.storageStatus.name)).payload!,
       );
       _log.fine('event=statePublished storageStatus=${state.storageStatus.name}');
-    } catch (error) {
-      _log.warning('event=statePublishFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=statePublishFailed type=${error.runtimeType}', error, stack);
     }
   }
 
@@ -291,8 +292,8 @@ class MqttService {
     } finally {
       try {
         _client.disconnect();
-      } catch (error) {
-        _log.warning('event=disconnectFailed type=${error.runtimeType}');
+      } catch (error, stack) {
+        _log.warning('event=disconnectFailed type=${error.runtimeType}', error, stack);
       } finally {
         await Future.wait<void>([_scPause.close(), _scScreen.close(), _scMenu.close()]);
         _log.info('event=closed');
@@ -303,8 +304,8 @@ class MqttService {
   Future<void> _cancel(StreamSubscription<dynamic> subscription) async {
     try {
       await subscription.cancel();
-    } catch (error) {
-      _log.warning('event=cancelFailed type=${error.runtimeType}');
+    } catch (error, stack) {
+      _log.warning('event=cancelFailed type=${error.runtimeType}', error, stack);
     }
   }
 }

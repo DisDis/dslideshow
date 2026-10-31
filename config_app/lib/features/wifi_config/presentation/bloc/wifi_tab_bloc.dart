@@ -76,9 +76,9 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
       if (_isCurrent(generation, emit)) {
         _log.info('event=completed action=${action.name}');
       }
-    } catch (error) {
+    } catch (error, stack) {
       if (error is _WifiWaitCancelled || !_isCurrent(generation, emit)) {
-        _log.info('event=cancelled action=${action.name}');
+        _log.info('event=cancelled action=${action.name}', error, stack);
         return;
       }
       final kind = _acknowledgedGeneration == generation
@@ -96,6 +96,8 @@ class WifiTabBloc extends Bloc<WifiTabEvent, WifiTabState> {
         'action=${kind == WifiFailureKind.refresh ? _WifiAction.load.name : action.name} '
         '${kind == WifiFailureKind.refresh ? 'sourceAction=${action.name} ' : ''}'
         'type=${error.runtimeType}',
+        error,
+        stack,
       );
       // Only a confirmed backend rejection has a diagnostic message. Unknown
       // transport outcomes and refresh failures use localized view hints.

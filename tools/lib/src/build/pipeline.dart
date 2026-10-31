@@ -83,10 +83,12 @@ class BuildPipeline {
     if (scope == _TestScope.release) {
       try {
         releaseTools = requiredReleaseToolSuites(root);
-      } on FileSystemException catch (error) {
+      } on FileSystemException catch (error, stack) {
         _log.severe(
           'run=${supervisor.runId} action=tests scope=${scope.name} result=failed group=${group?.cliName ?? 'full'} '
           'reason=required-suite path=${error.path} elapsedMs=${supervisor.elapsedMilliseconds}',
+          error,
+          stack,
         );
         rethrow;
       }
@@ -144,7 +146,7 @@ class BuildPipeline {
           expectedSuites: selectedSuites,
         );
         _checkCancelled('test-profile');
-      } on Object catch (error) {
+      } on Object catch (error, stack) {
         final code = supervisor.cancellationCode;
         final cancelled = code == 130 || code == 143;
         final finishedAt = supervisor.elapsedMilliseconds;
@@ -153,6 +155,8 @@ class BuildPipeline {
           'run=${supervisor.runId} action=test-profile scope=${scope.name} result=${cancelled ? 'cancelled' : 'failed'} '
           'reason=${error.runtimeType} directory=${directory.absolute.path} '
           'durationMs=${finishedAt - profileStartedAt} elapsedMs=$finishedAt',
+          error,
+          stack,
         );
         rethrow;
       }
@@ -393,20 +397,24 @@ class BuildPipeline {
       final artifact = await _phase(phase, package);
       published = artifact;
       return artifact;
-    } on Object catch (error) {
+    } on Object catch (error, stack) {
       final code = supervisor.cancellationCode;
       final cancelled = code == 130 || code == 143;
       _log.log(
         cancelled ? Level.INFO : Level.SEVERE,
         'run=${supervisor.runId} action=release phase=${phase.name} result=${cancelled ? 'cancelled' : 'failed'} '
         'reason=${error.runtimeType} releaseDurationMs=${clock.elapsedMilliseconds} elapsedMs=${supervisor.elapsedMilliseconds}',
+        error,
+        stack,
       );
       try {
         await supervisor.cancel();
-      } on Object catch (cleanupError) {
+      } on Object catch (cleanupError, stack) {
         _log.severe(
           'run=${supervisor.runId} action=release-cleanup phase=cancel result=failed '
           'reason=${cleanupError.runtimeType} elapsedMs=${supervisor.elapsedMilliseconds}',
+          cleanupError,
+          stack,
         );
       }
       rethrow;
@@ -424,7 +432,7 @@ class BuildPipeline {
         }
         // No await may separate this last cancellation check from success.
         if (published != null) _checkCancelled('release');
-      } on Object catch (cleanupError) {
+      } on Object catch (cleanupError, stack) {
         if (published != null) {
           if (published.existsSync()) published.deleteSync();
           rethrow;
@@ -433,6 +441,8 @@ class BuildPipeline {
         _log.severe(
           'run=${supervisor.runId} action=release-cleanup phase=close result=failed '
           'reason=${cleanupError.runtimeType} elapsedMs=${supervisor.elapsedMilliseconds}',
+          cleanupError,
+          stack,
         );
       }
     }
