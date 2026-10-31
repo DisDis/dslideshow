@@ -1669,6 +1669,17 @@
   "using_yandex_drive": "Используется Яндекс Диск",
   "yandex_application_setup": "OAuth-приложение",
   "yandex_application_hint": "Настройте OAuth-приложение Яндекса один раз. Данные доступа хранятся на рамке.",
+  "yandex_oauth_create_step": "1. Создайте в Яндекс OAuth приложение для авторизации пользователей. Укажите название сервиса, например DSlideshow, и контактную почту.",
+  "yandex_oauth_create_application": "Создать приложение в Яндекс OAuth",
+  "yandex_oauth_platform_step": "2. Выберите «Веб-сервисы». Если требуется Redirect URI, укажите этот адрес:",
+  "yandex_oauth_permissions_step": "3. В разделе «Доступ к данным» найдите REST API Яндекс Диска и отметьте эти права:",
+  "yandex_oauth_credentials_step": "4. Откройте свойства созданного приложения и скопируйте Client ID и Client secret в поля ниже. Сохраните их, затем подключите каждый семейный аккаунт кнопкой «Подключить Яндекс».",
+  "yandex_authorization_invalid_client": "Яндекс отклонил данные приложения. Проверьте Client ID и Client secret в настройках OAuth-приложения.",
+  "yandex_authorization_invalid_scope": "Яндекс отклонил запрошенные права. Разрешите приложению cloud_api:disk.read и cloud_api:disk.info, затем повторите подключение.",
+  "yandex_authorization_client_unavailable": "Яндекс не разрешил приложению подключать аккаунты. Проверьте его статус в Яндекс OAuth: приложение может ожидать проверки или быть заблокировано.",
+  "yandex_authorization_network": "Не удалось связаться с Яндексом. Проверьте подключение рамки к интернету и повторите попытку.",
+  "yandex_authorization_invalid_request": "Яндекс отклонил формат запроса авторизации. Код отказа можно посмотреть в логе backend.",
+  "yandex_authorization_invalid_response": "Рамка не смогла обработать ответ Яндекса. Повторите попытку; если ошибка сохраняется, проверьте лог backend.",
   "yandex_configure_application": "Настроить приложение",
   "yandex_secret_saved": "Секрет приложения сохранён. Оставьте поле пустым, чтобы сохранить его.",
   "yandex_accounts": "Подключённые аккаунты",
@@ -1692,6 +1703,19 @@
   "yandex_resume": "Продолжить синхронизацию",
   "yandex_runtime_inactive": "Сохраните настройки и перезапустите рамку, чтобы включить это хранилище.",
   "yandex_runtime_running": "Выполняется синхронизация",
+  "yandex_sync_discovering": "Читаем выбранные папки…",
+  "yandex_sync_progress": "Обработано {processed} из примерно {total} элементов ({percent}%)",
+  "@yandex_sync_progress": {
+    "placeholders": {
+      "processed": { "type": "int" },
+      "total": { "type": "int" },
+      "percent": { "type": "int" }
+    }
+  },
+  "yandex_sync_processed": "Обработано элементов: {processed}; всего — неизвестно",
+  "@yandex_sync_processed": {
+    "placeholders": { "processed": { "type": "int" } }
+  },
   "yandex_runtime_idle": "Ожидание следующей синхронизации",
   "yandex_runtime_paused": "Синхронизация приостановлена",
   "yandex_runtime_title": "Текущая синхронизация",

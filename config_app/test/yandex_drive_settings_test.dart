@@ -10,6 +10,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
@@ -49,14 +50,89 @@ DriveResult _result(
   DriveFailure? error,
 }) => DriveResult(id: command.id, state: state, authorization: authorization, folderPage: page, error: error);
 
-Widget _app(Widget child) => MaterialApp(
+Widget _app(Widget child, {double textScale = 1}) => MaterialApp(
   locale: const Locale('en'),
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+    child: child!,
+  ),
   home: Scaffold(body: child),
 );
 
 void main() {
+  for (final opened in [true, false]) {
+    testWidgets('OAuth setup explains registration and opens its creation URL; opened=$opened', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final launched = <String>[];
+      const channel = MethodChannel('plugins.flutter.io/url_launcher');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'launch') {
+          launched.add((call.arguments as Map)['url'] as String);
+          return opened;
+        }
+        return true;
+      });
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+      final logs = <LogRecord>[];
+      final previousLevel = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      final subscription = Logger.root.onRecord.listen(logs.add);
+      addTearDown(() async {
+        await subscription.cancel();
+        Logger.root.level = previousLevel;
+      });
+      final client = _Realtime((command) => _result(command, state: const DriveState(clientId: 'public-client')));
+      await tester.pumpWidget(
+        _app(
+          SingleChildScrollView(
+            child: YandexDriveSettings(
+              config: const YandexDriveStorageConfig(),
+              repository: YandexDriveRepository(client),
+              onChanged: (_) {},
+            ),
+          ),
+          textScale: 1.5,
+        ),
+      );
+      await tester.pump();
+      await tester.ensureVisible(find.text('Configure application'));
+      await tester.tap(find.text('Configure application'));
+      await tester.pumpAndSettle();
+      const creationUrl = 'https://oauth.yandex.ru/client/new/id/';
+      expect(find.text(creationUrl), findsOneWidget);
+      expect(find.text('https://oauth.yandex.ru/verification_code'), findsOneWidget);
+      expect(find.text('cloud_api:disk.read\ncloud_api:disk.info'), findsOneWidget);
+      expect(find.textContaining('Client ID and Client secret'), findsOneWidget);
+      final link = find.text('Create an application in Yandex OAuth');
+      await tester.ensureVisible(link);
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+      expect(launched, [creationUrl]);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      final events = logs.where((record) => record.loggerName == 'YandexOAuthLink').toList();
+      expect(events.first.message, 'event=browserOpenStarted');
+      expect(events.last.message, 'event=browserOpenFinished opened=$opened');
+      expect(events.last.level, opened ? Level.FINE : Level.WARNING);
+      expect(events.every((record) => record.error == null && record.stackTrace == null), isTrue);
+      final l = AppLocalizations.of(tester.element(find.byType(AlertDialog)));
+      expect(find.text(l.yandex_browser_failed), opened ? findsNothing : findsOneWidget);
+      expect(events.map((record) => record.message).join('\n'), isNot(contains(creationUrl)));
+      final secret = find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextField)).last;
+      await tester.ensureVisible(secret);
+      await tester.enterText(secret, 'new-private-secret');
+      await tester.pump();
+      expect((tester.widget<TextField>(secret)).obscureText, isTrue);
+      expect(logs.map((record) => record.message).join('\n'), isNot(contains('new-private-secret')));
+      expect(client.commands.every((command) => command.action == DriveAction.state), isTrue);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   test('repository correlates both response IDs and addresses the requested OAuth session to Yandex', () async {
     for (final mismatchedEnvelope in [true, false]) {
       final client = _Realtime((command) => _result(command.copyWith(id: command.id + (mismatchedEnvelope ? 0 : 1))))
@@ -245,6 +321,83 @@ void main() {
     expect(cubit.state.toString(), isNot(contains('private-secret')));
   });
 
+  testWidgets('sync progress starts unknown and can decrease as more directory totals are discovered', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(320, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    var runtime = const DriveRuntime(active: true, running: true);
+    final client = _Realtime((command) => _result(command, state: DriveState(runtime: runtime)));
+    await tester.pumpWidget(
+      _app(
+        SingleChildScrollView(
+          child: YandexDriveSettings(
+            config: const YandexDriveStorageConfig(),
+            repository: YandexDriveRepository(client),
+            onChanged: (_) {},
+          ),
+        ),
+        textScale: 1.5,
+      ),
+    );
+    await tester.pump();
+    expect(find.text('Reading the selected folders…'), findsOneWidget);
+    expect(tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value, isNull);
+    final cubit = tester.element(find.byType(LinearProgressIndicator)).read<YandexSettingsCubit>();
+    runtime = runtime.copyWith(totalItems: 3, processedItems: 2);
+    await cubit.load();
+    await tester.pump();
+    expect(find.text('Processed 2 of approximately 3 items (66%)'), findsOneWidget);
+    expect(tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value, closeTo(2 / 3, 0.0001));
+    runtime = runtime.copyWith(totalItems: 6);
+    await cubit.load();
+    await tester.pump();
+    expect(find.text('Processed 2 of approximately 6 items (33%)'), findsOneWidget);
+    expect(tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value, closeTo(1 / 3, 0.0001));
+    runtime = runtime.copyWith(running: false, processedItems: 6);
+    await cubit.load();
+    await tester.pump();
+    expect(find.text('Processed 6 of approximately 6 items (100%)'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('runtime polling waits ten seconds, does not overlap and stops after completion', (tester) async {
+    final pending = Completer<DriveResult>();
+    var reads = 0;
+    final client = _Realtime((command) {
+      reads++;
+      if (reads == 2) return pending.future;
+      return _result(
+        command,
+        state: DriveState(runtime: DriveRuntime(active: true, running: reads < 3)),
+      );
+    });
+    final cubit = YandexSettingsCubit(
+      repository: YandexDriveRepository(client),
+      config: const YandexDriveStorageConfig(),
+      onChanged: (_) {},
+    );
+    await cubit.load();
+    await tester.pump(const Duration(seconds: 9));
+    expect(reads, 1);
+    await tester.pump(const Duration(seconds: 1));
+    expect(reads, 2);
+    await tester.pump(const Duration(seconds: 30));
+    expect(reads, 2);
+    pending.complete(
+      _result(client.commands.last, state: const DriveState(runtime: DriveRuntime(active: true, running: true))),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 9));
+    expect(reads, 2);
+    await tester.pump(const Duration(seconds: 1));
+    expect(reads, 3);
+    expect(cubit.state.remote!.runtime.running, isFalse);
+    await tester.pump(const Duration(seconds: 30));
+    expect(reads, 3);
+    await cubit.close();
+  });
+
   testWidgets('late runtime poll does not restore an account disconnected by a newer action', (tester) async {
     final poll = Completer<DriveResult>();
     var stateReads = 0;
@@ -263,7 +416,7 @@ void main() {
     await cubit.load();
     expect(cubit.state.failure, isNull);
     expect(cubit.state.remote?.runtime.running, isTrue);
-    await tester.pump(const Duration(seconds: 3));
+    await tester.pump(const Duration(seconds: 10));
     expect(stateReads, 2);
     await cubit.disconnect('family');
     expect(cubit.state.remote!.connections, isEmpty);
@@ -317,7 +470,7 @@ void main() {
                     ? DriveAuthorizationStatus.cancelled
                     : DriveAuthorizationStatus.pending,
                 userCode: 'sample-code',
-                verificationUrl: Uri.parse('https://oauth.yandex.ru/device'),
+                verificationUrl: Uri.parse('https://ya.ru/device'),
               ),
       ),
     );
@@ -338,6 +491,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('sample-code'), findsOneWidget);
     expect(find.byType(QrImageView), findsOneWidget);
+    expect(find.text('https://ya.ru/device'), findsOneWidget);
     expect(find.text('Open Yandex'), findsOneWidget);
     await tester.tap(find.text('Cancel').last);
     await tester.pumpAndSettle();
@@ -347,6 +501,48 @@ void main() {
       DriveAction.cancelAuthorization,
     ]);
     await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('authorization failures explain invalid credentials, scopes and a blocked application before QR', (
+    tester,
+  ) async {
+    for (final failure in [DriveFailure.invalidClient, DriveFailure.invalidScope, DriveFailure.clientUnavailable]) {
+      final client = _Realtime(
+        (command) => _result(
+          command,
+          authorization: command.action == DriveAction.startAuthorization
+              ? DriveAuthorization(sessionId: 'failed', status: DriveAuthorizationStatus.failed, error: failure)
+              : null,
+        ),
+      );
+      await tester.pumpWidget(
+        _app(
+          SingleChildScrollView(
+            child: YandexDriveSettings(
+              config: const YandexDriveStorageConfig(),
+              repository: YandexDriveRepository(client),
+              onChanged: (_) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.ensureVisible(find.text('Connect Yandex'));
+      await tester.tap(find.text('Connect Yandex'));
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(tester.element(find.byType(AlertDialog)));
+      final message = switch (failure) {
+        DriveFailure.invalidClient => l.yandex_authorization_invalid_client,
+        DriveFailure.invalidScope => l.yandex_authorization_invalid_scope,
+        _ => l.yandex_authorization_client_unavailable,
+      };
+      expect(find.text(message), findsOneWidget);
+      expect(find.text(l.yandex_authorization_failed), findsNothing);
+      expect(find.byType(QrImageView), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    }
   });
 
   testWidgets('Yandex storage starts with a 60 minute draft period', (tester) async {

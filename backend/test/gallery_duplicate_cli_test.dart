@@ -196,7 +196,11 @@ void main() {
       // actionable hidden member rather than aliasing the visible source.
       final hiddenDirectory = await Directory('${state.path}/hidden').create();
       final hiddenFile = await File('${hiddenDirectory.path}/$originalName').writeAsBytes(originalBytes);
-      final hiddenEntry = GalleryFileOperations.hiddenEntry(originalName, await hiddenFile.stat());
+      final hiddenEntry = GalleryFileOperations.mirrorEntry(
+        GalleryMediaSection.hidden,
+        originalName,
+        await hiddenFile.stat(),
+      );
       await service.start(
         const GalleryDuplicateStartRequest(operationId: 'visible-and-hidden', modes: GalleryDuplicateMode.values),
       );

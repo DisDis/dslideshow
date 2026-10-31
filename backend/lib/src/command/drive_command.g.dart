@@ -89,6 +89,9 @@ Map<String, dynamic> _$DriveResultToJson(_DriveResult instance) =>
 const _$DriveFailureEnumMap = {
   DriveFailure.unknown: 'unknown',
   DriveFailure.notConfigured: 'notConfigured',
+  DriveFailure.invalidClient: 'invalidClient',
+  DriveFailure.invalidScope: 'invalidScope',
+  DriveFailure.clientUnavailable: 'clientUnavailable',
   DriveFailure.authorizationRequired: 'authorizationRequired',
   DriveFailure.authorizationDenied: 'authorizationDenied',
   DriveFailure.authorizationExpired: 'authorizationExpired',
@@ -206,6 +209,8 @@ _DriveRuntime _$DriveRuntimeFromJson(Map<String, dynamic> json) =>
       lastSync: json['lastSync'] == null
           ? null
           : DateTime.parse(json['lastSync'] as String),
+      totalItems: (json['totalItems'] as num?)?.toInt(),
+      processedItems: (json['processedItems'] as num?)?.toInt() ?? 0,
       downloaded: (json['downloaded'] as num?)?.toInt() ?? 0,
       skipped: (json['skipped'] as num?)?.toInt() ?? 0,
       failed: (json['failed'] as num?)?.toInt() ?? 0,
@@ -222,6 +227,8 @@ Map<String, dynamic> _$DriveRuntimeToJson(_DriveRuntime instance) =>
       'running': instance.running,
       'paused': instance.paused,
       'lastSync': instance.lastSync?.toIso8601String(),
+      'totalItems': instance.totalItems,
+      'processedItems': instance.processedItems,
       'downloaded': instance.downloaded,
       'skipped': instance.skipped,
       'failed': instance.failed,

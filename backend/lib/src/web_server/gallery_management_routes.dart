@@ -63,7 +63,7 @@ class GalleryManagementRoutes {
     tools = GalleryMediaTools(catalog: catalog, runner: _runner, operations: operations);
     duplicates = GalleryDuplicateService(
       catalog: catalog,
-      hiddenDirectory: operations.hiddenDirectory,
+      hiddenDirectory: operations.directory(GalleryMediaSection.hidden),
       runner: _runner,
       executable: duplicateExecutable,
     );

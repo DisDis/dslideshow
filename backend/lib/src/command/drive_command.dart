@@ -26,6 +26,9 @@ enum DriveAuthorizationStatus { pending, connected, cancelled, expired, failed }
 enum DriveFailure {
   unknown,
   notConfigured,
+  invalidClient,
+  invalidScope,
+  clientUnavailable,
   authorizationRequired,
   authorizationDenied,
   authorizationExpired,
@@ -132,15 +135,27 @@ abstract class DriveFolderPage with _$DriveFolderPage {
 
 @freezed
 abstract class DriveRuntime with _$DriveRuntime {
+  const DriveRuntime._();
+
   const factory DriveRuntime({
     @Default(false) bool active,
     @Default(false) bool running,
     @Default(false) bool paused,
     DateTime? lastSync,
+    int? totalItems,
+    @Default(0) int processedItems,
     @Default(0) int downloaded,
     @Default(0) int skipped,
     @Default(0) int failed,
     @JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? error,
   }) = _DriveRuntime;
   factory DriveRuntime.fromJson(Map<String, dynamic> json) => _$DriveRuntimeFromJson(json);
+
+  /// An evolving estimate: directory totals are added as the traversal enters them.
+  double? get progress {
+    final total = totalItems;
+    if (total == null || total < 0) return null;
+    if (total == 0) return running ? null : 1;
+    return (processedItems / total).clamp(0.0, 1.0);
+  }
 }

@@ -180,7 +180,15 @@ class YandexDriveStorage extends CloudStorage {
 
   Future<void> _performSync() async {
     final started = _now().toUtc();
-    _runtime = _runtime.copyWith(running: true, downloaded: 0, skipped: 0, failed: 0, error: null);
+    _runtime = _runtime.copyWith(
+      running: true,
+      totalItems: null,
+      processedItems: 0,
+      downloaded: 0,
+      skipped: 0,
+      failed: 0,
+      error: null,
+    );
     _started.add(started);
     var stopped = false;
     _log.info('Synchronization started accounts=${config.accounts.where((account) => account.enabled).length}');
@@ -228,6 +236,7 @@ class YandexDriveStorage extends CloudStorage {
         _runtime.failed > 0 ? Level.WARNING : Level.INFO,
         'Synchronization ${stopped || _closed ? 'stopped' : 'completed'} '
         'downloaded=${_runtime.downloaded} skipped=${_runtime.skipped} failed=${_runtime.failed} '
+        'processed=${_runtime.processedItems} total=${_runtime.totalItems ?? 'unknown'} '
         'reason=${_runtime.error?.name ?? 'none'}',
       );
     }
@@ -263,9 +272,14 @@ class YandexDriveStorage extends CloudStorage {
         throw const CloudStorageException(DriveFailure.invalidRequest);
       }
       final children = resource.children!;
+      if (offset == 0) {
+        _runtime = _runtime.copyWith(totalItems: (_runtime.totalItems ?? 0) + children.total);
+        _log.fine('Progress estimate expanded processed=${_runtime.processedItems} total=${_runtime.totalItems}');
+      }
       for (final item in children.items) {
         if (!_canContinue(accountId)) return false;
         if (item.type == YandexDriveResourceType.dir) {
+          _recordProcessedItem();
           if (!await _walk(accountId, item.path, depth + 1)) return false;
         } else if (item.type == YandexDriveResourceType.file &&
             FileSettings.isSupportFile(path.posix.extension(item.path))) {
@@ -307,9 +321,11 @@ class YandexDriveStorage extends CloudStorage {
             _runtime = _runtime.copyWith(failed: _runtime.failed + 1, error: YandexDriveService.failureCode(error));
             _log.fine('Media import failed reason=${YandexDriveService.failureCode(error).name}');
           }
+          _recordProcessedItem();
           if (!_canContinue(accountId)) return false;
         } else {
           _runtime = _runtime.copyWith(skipped: _runtime.skipped + 1);
+          _recordProcessedItem();
         }
       }
       final consumed = offset + children.items.length;
@@ -318,6 +334,8 @@ class YandexDriveStorage extends CloudStorage {
       offset = consumed;
     }
   }
+
+  void _recordProcessedItem() => _runtime = _runtime.copyWith(processedItems: _runtime.processedItems + 1);
 
   @override
   Future<void> release() async {

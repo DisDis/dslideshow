@@ -28,6 +28,7 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
     : super(YandexSettingsState(config: config));
 
   static final _log = Logger('YandexSettingsCubit');
+  static const _runtimePollInterval = Duration(seconds: 10);
   final YandexDriveRepository repository;
   final void Function(YandexDriveStorageConfig) onChanged;
   Timer? _authorizationTimer;
@@ -183,7 +184,7 @@ class YandexSettingsCubit extends Cubit<YandexSettingsState> {
   void _scheduleRuntime() {
     _runtimeTimer?.cancel();
     if (isClosed || state.remote?.runtime.running != true) return;
-    _runtimeTimer = Timer(const Duration(seconds: 3), _readRuntime);
+    _runtimeTimer = Timer(_runtimePollInterval, _readRuntime);
   }
 
   Future<void> _readRuntime() async {

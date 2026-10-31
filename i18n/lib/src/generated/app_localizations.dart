@@ -6170,6 +6170,72 @@ abstract class AppLocalizations {
   /// **'Configure your Yandex OAuth application once. Credentials stay on the frame.'**
   String get yandex_application_hint;
 
+  /// No description provided for @yandex_oauth_create_step.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Create an application for user authorization in Yandex OAuth. Enter a service name, such as DSlideshow, and a contact email.'**
+  String get yandex_oauth_create_step;
+
+  /// No description provided for @yandex_oauth_create_application.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an application in Yandex OAuth'**
+  String get yandex_oauth_create_application;
+
+  /// No description provided for @yandex_oauth_platform_step.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Select Web services. If a Redirect URI is required, enter this address:'**
+  String get yandex_oauth_platform_step;
+
+  /// No description provided for @yandex_oauth_permissions_step.
+  ///
+  /// In en, this message translates to:
+  /// **'3. In Data access, find Yandex Disk REST API and select these permissions:'**
+  String get yandex_oauth_permissions_step;
+
+  /// No description provided for @yandex_oauth_credentials_step.
+  ///
+  /// In en, this message translates to:
+  /// **'4. Open the created application\'s properties and copy Client ID and Client secret into the fields below. Save them, then use Connect Yandex to authorize each family account.'**
+  String get yandex_oauth_credentials_step;
+
+  /// No description provided for @yandex_authorization_invalid_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex rejected the application credentials. Check Client ID and Client secret in the OAuth application settings.'**
+  String get yandex_authorization_invalid_client;
+
+  /// No description provided for @yandex_authorization_invalid_scope.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex rejected the requested permissions. Enable cloud_api:disk.read and cloud_api:disk.info for the application, then try again.'**
+  String get yandex_authorization_invalid_scope;
+
+  /// No description provided for @yandex_authorization_client_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex has not allowed this application to authorize accounts. Check its status in Yandex OAuth: it may be awaiting approval or blocked.'**
+  String get yandex_authorization_client_unavailable;
+
+  /// No description provided for @yandex_authorization_network.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach Yandex. Check the frame\'s internet connection and try again.'**
+  String get yandex_authorization_network;
+
+  /// No description provided for @yandex_authorization_invalid_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex rejected the authorization request format. Check the backend log for the failure code.'**
+  String get yandex_authorization_invalid_request;
+
+  /// No description provided for @yandex_authorization_invalid_response.
+  ///
+  /// In en, this message translates to:
+  /// **'The frame could not process Yandex\'s response. Try again; if it persists, check the backend log.'**
+  String get yandex_authorization_invalid_response;
+
   /// No description provided for @yandex_configure_application.
   ///
   /// In en, this message translates to:
@@ -6307,6 +6373,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Synchronization is running'**
   String get yandex_runtime_running;
+
+  /// No description provided for @yandex_sync_discovering.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the selected folders…'**
+  String get yandex_sync_discovering;
+
+  /// No description provided for @yandex_sync_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Processed {processed} of approximately {total} items ({percent}%)'**
+  String yandex_sync_progress(int processed, int total, int percent);
+
+  /// No description provided for @yandex_sync_processed.
+  ///
+  /// In en, this message translates to:
+  /// **'Processed items: {processed}; total unknown'**
+  String yandex_sync_processed(int processed);
 
   /// No description provided for @yandex_runtime_idle.
   ///

@@ -31,6 +31,17 @@ class _Target implements RpcService {
 }
 
 void main() {
+  test('runtime JSON preserves evolving item totals, including unknown and empty estimates', () {
+    const value = DriveRuntime(active: true, running: true, totalItems: 12, processedItems: 3, failed: 1);
+    expect(DriveRuntime.fromJson(value.toJson()), value);
+    expect(value.progress, 0.25);
+    expect(value.copyWith(totalItems: 24).progress, 0.125);
+    expect(value.copyWith(totalItems: null).progress, isNull);
+    expect(const DriveRuntime(running: true, totalItems: 0).progress, isNull);
+    expect(const DriveRuntime(totalItems: 0).progress, 1);
+    expect(DriveRuntime.fromJson({}).totalItems, isNull);
+  });
+
   test('drive protocol requires a known provider and preserves unknown actions for validation', () {
     const state = {'id': 8, 'provider': 'YandexDriveStorage', 'action': 'state'};
     final command = DriveCommand.fromJson(state);

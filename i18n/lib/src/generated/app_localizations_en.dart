@@ -3177,6 +3177,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yandex_application_hint => 'Configure your Yandex OAuth application once. Credentials stay on the frame.';
 
   @override
+  String get yandex_oauth_create_step =>
+      '1. Create an application for user authorization in Yandex OAuth. Enter a service name, such as DSlideshow, and a contact email.';
+
+  @override
+  String get yandex_oauth_create_application => 'Create an application in Yandex OAuth';
+
+  @override
+  String get yandex_oauth_platform_step => '2. Select Web services. If a Redirect URI is required, enter this address:';
+
+  @override
+  String get yandex_oauth_permissions_step =>
+      '3. In Data access, find Yandex Disk REST API and select these permissions:';
+
+  @override
+  String get yandex_oauth_credentials_step =>
+      '4. Open the created application\'s properties and copy Client ID and Client secret into the fields below. Save them, then use Connect Yandex to authorize each family account.';
+
+  @override
+  String get yandex_authorization_invalid_client =>
+      'Yandex rejected the application credentials. Check Client ID and Client secret in the OAuth application settings.';
+
+  @override
+  String get yandex_authorization_invalid_scope =>
+      'Yandex rejected the requested permissions. Enable cloud_api:disk.read and cloud_api:disk.info for the application, then try again.';
+
+  @override
+  String get yandex_authorization_client_unavailable =>
+      'Yandex has not allowed this application to authorize accounts. Check its status in Yandex OAuth: it may be awaiting approval or blocked.';
+
+  @override
+  String get yandex_authorization_network =>
+      'Could not reach Yandex. Check the frame\'s internet connection and try again.';
+
+  @override
+  String get yandex_authorization_invalid_request =>
+      'Yandex rejected the authorization request format. Check the backend log for the failure code.';
+
+  @override
+  String get yandex_authorization_invalid_response =>
+      'The frame could not process Yandex\'s response. Try again; if it persists, check the backend log.';
+
+  @override
   String get yandex_configure_application => 'Configure application';
 
   @override
@@ -3244,6 +3286,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yandex_runtime_running => 'Synchronization is running';
+
+  @override
+  String get yandex_sync_discovering => 'Reading the selected folders…';
+
+  @override
+  String yandex_sync_progress(int processed, int total, int percent) {
+    return 'Processed $processed of approximately $total items ($percent%)';
+  }
+
+  @override
+  String yandex_sync_processed(int processed) {
+    return 'Processed items: $processed; total unknown';
+  }
 
   @override
   String get yandex_runtime_idle => 'Waiting for the next synchronization';

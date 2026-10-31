@@ -1669,6 +1669,17 @@
   "using_yandex_drive": "Using Yandex Disk",
   "yandex_application_setup": "OAuth application",
   "yandex_application_hint": "Configure your Yandex OAuth application once. Credentials stay on the frame.",
+  "yandex_oauth_create_step": "1. Create an application for user authorization in Yandex OAuth. Enter a service name, such as DSlideshow, and a contact email.",
+  "yandex_oauth_create_application": "Create an application in Yandex OAuth",
+  "yandex_oauth_platform_step": "2. Select Web services. If a Redirect URI is required, enter this address:",
+  "yandex_oauth_permissions_step": "3. In Data access, find Yandex Disk REST API and select these permissions:",
+  "yandex_oauth_credentials_step": "4. Open the created application's properties and copy Client ID and Client secret into the fields below. Save them, then use Connect Yandex to authorize each family account.",
+  "yandex_authorization_invalid_client": "Yandex rejected the application credentials. Check Client ID and Client secret in the OAuth application settings.",
+  "yandex_authorization_invalid_scope": "Yandex rejected the requested permissions. Enable cloud_api:disk.read and cloud_api:disk.info for the application, then try again.",
+  "yandex_authorization_client_unavailable": "Yandex has not allowed this application to authorize accounts. Check its status in Yandex OAuth: it may be awaiting approval or blocked.",
+  "yandex_authorization_network": "Could not reach Yandex. Check the frame's internet connection and try again.",
+  "yandex_authorization_invalid_request": "Yandex rejected the authorization request format. Check the backend log for the failure code.",
+  "yandex_authorization_invalid_response": "The frame could not process Yandex's response. Try again; if it persists, check the backend log.",
   "yandex_configure_application": "Configure application",
   "yandex_secret_saved": "A client secret is saved. Leave blank to keep it.",
   "yandex_accounts": "Connected accounts",
@@ -1692,6 +1703,19 @@
   "yandex_resume": "Resume synchronization",
   "yandex_runtime_inactive": "Save the settings and restart the frame to activate this storage.",
   "yandex_runtime_running": "Synchronization is running",
+  "yandex_sync_discovering": "Reading the selected folders…",
+  "yandex_sync_progress": "Processed {processed} of approximately {total} items ({percent}%)",
+  "@yandex_sync_progress": {
+    "placeholders": {
+      "processed": { "type": "int" },
+      "total": { "type": "int" },
+      "percent": { "type": "int" }
+    }
+  },
+  "yandex_sync_processed": "Processed items: {processed}; total unknown",
+  "@yandex_sync_processed": {
+    "placeholders": { "processed": { "type": "int" } }
+  },
   "yandex_runtime_idle": "Waiting for the next synchronization",
   "yandex_runtime_paused": "Synchronization is paused",
   "yandex_runtime_title": "Current synchronization",

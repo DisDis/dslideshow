@@ -162,7 +162,7 @@ void main() {
       connections,
       appStorage,
       folder: NoWatchDirectory(originals),
-      hidden: operations.hiddenDirectory,
+      hidden: operations.directory(GalleryMediaSection.hidden),
     );
     await result.init();
     return result;
@@ -176,6 +176,9 @@ void main() {
     final current = await create();
     await current.sync();
     expect(current.runtime.downloaded, 3);
+    expect(current.runtime.totalItems, 4);
+    expect(current.runtime.processedItems, 4);
+    expect(current.runtime.progress, 1);
     expect(api.resourceCalls.where((value) => value == 'disk:/Camera/2026').length, 1);
     expect(await File(path.join(originals.path, 'yandex.drive.123/Camera/2026/b.mp4')).readAsBytes(), [4, 5, 6]);
     expect(await File(path.join(originals.path, 'yandex.drive.456/Trip/a.jpg')).readAsBytes(), [1, 2, 3]);
@@ -184,13 +187,113 @@ void main() {
     expect(api.downloads.length, 3);
     expect(current.runtime.skipped, 3);
     expect(current.runtime.failed, 0);
+    expect(current.runtime.totalItems, 4);
+    expect(current.runtime.processedItems, 4);
+  });
+
+  test('folder totals expand the estimate once per folder without a counting pass or duplicate page totals', () async {
+    api.files
+      ..clear()
+      ..addAll({
+        'disk:/Camera/a.jpg': [1],
+        'disk:/Camera/Nested/b.jpg': [2],
+        'disk:/Camera/Nested/c.jpg': [3],
+        'disk:/Camera/Nested/d.jpg': [4],
+      });
+    final existing = File(path.join(originals.path, 'yandex.drive.123/Camera/a.jpg'));
+    await existing.parent.create(recursive: true);
+    await existing.writeAsBytes([1]);
+    final rootEntered = Completer<void>();
+    final rootPage = Completer<YandexDriveResource>();
+    final nestedEntered = Completer<void>();
+    final nestedPage = Completer<YandexDriveResource>();
+    YandexDriveResource file(String remote) =>
+        YandexDriveResource(path: remote, type: YandexDriveResourceType.file, size: 1);
+    api.resourceResponse = (token, remote, offset) async {
+      if (remote == 'disk:/Camera' && offset == 0) {
+        rootEntered.complete();
+        return rootPage.future;
+      }
+      if (remote == 'disk:/Camera/Nested') {
+        nestedEntered.complete();
+        return nestedPage.future;
+      }
+      expect((remote, offset), ('disk:/Camera', 2));
+      return YandexDriveResource(
+        path: remote,
+        type: YandexDriveResourceType.dir,
+        children: YandexDriveResourceList(items: [file('disk:/Camera/a.jpg')], total: 3, offset: 2),
+      );
+    };
+    final bodyStarted = Completer<void>();
+    final body = StreamController<List<int>>(onListen: bodyStarted.complete);
+    api.downloadBody = () => body.stream;
+    final current = await create(
+      accounts: [
+        const YandexDriveAccountConfig(accountId: '123', paths: ['disk:/Camera', 'disk:/Camera/Nested']),
+      ],
+    );
+    final syncing = current.sync();
+    await rootEntered.future;
+    expect(current.runtime.totalItems, isNull);
+    expect(current.runtime.progress, isNull);
+    rootPage.complete(
+      YandexDriveResource(
+        path: 'disk:/Camera',
+        type: YandexDriveResourceType.dir,
+        children: YandexDriveResourceList(
+          items: [
+            file('disk:/Camera/readme.txt'),
+            const YandexDriveResource(path: 'disk:/Camera/Nested', type: YandexDriveResourceType.dir),
+          ],
+          total: 3,
+        ),
+      ),
+    );
+    await nestedEntered.future;
+    expect(current.runtime.totalItems, 3);
+    expect(current.runtime.processedItems, 2, reason: 'The skipped text file and the directory are processed items');
+    expect(current.runtime.progress, closeTo(2 / 3, 0.0001));
+    nestedPage.complete(
+      YandexDriveResource(
+        path: 'disk:/Camera/Nested',
+        type: YandexDriveResourceType.dir,
+        children: YandexDriveResourceList(
+          items: [
+            file('disk:/Camera/Nested/b.jpg'),
+            file('disk:/Camera/Nested/c.jpg'),
+            file('disk:/Camera/Nested/d.jpg'),
+          ],
+          total: 3,
+        ),
+      ),
+    );
+    await bodyStarted.future;
+    expect(current.runtime.totalItems, 6);
+    expect(current.runtime.processedItems, 2);
+    expect(current.runtime.progress, closeTo(1 / 3, 0.0001));
+    api.downloadBody = null;
+    body.add([2]);
+    await body.close();
+    await syncing;
+    expect(current.runtime.totalItems, 6);
+    expect(current.runtime.processedItems, 6);
+    expect(current.runtime.progress, 1);
+    expect(current.runtime.downloaded, 3);
+    expect(current.runtime.skipped, 2);
+    expect(current.runtime.failed, 0);
+    expect(api.resourceRequests, [('disk:/Camera', 0), ('disk:/Camera/Nested', 0), ('disk:/Camera', 2)]);
   });
 
   test('first pass skips existing library and hidden files before requesting any downloads', () async {
     final existing = {
       File(path.join(originals.path, 'yandex.drive.123/Camera/a.jpg')): [9, 8, 7],
-      File(path.join(operations.hiddenDirectory.path, 'yandex.drive.123/Camera/2026/b.mp4')): [6, 5, 4],
-      File(path.join(operations.hiddenDirectory.path, 'yandex.drive.456/Trip/a.jpg')): [3, 2, 1],
+      File(path.join(operations.directory(GalleryMediaSection.hidden).path, 'yandex.drive.123/Camera/2026/b.mp4')): [
+        6,
+        5,
+        4,
+      ],
+      File(path.join(operations.directory(GalleryMediaSection.hidden).path, 'yandex.drive.456/Trip/a.jpg')): [3, 2, 1],
     };
     for (final entry in existing.entries) {
       await entry.key.parent.create(recursive: true);
@@ -258,6 +361,9 @@ void main() {
     await current.sync();
     expect(current.runtime.downloaded, 0);
     expect(current.runtime.failed, 3);
+    expect(current.runtime.processedItems, 4);
+    expect(current.runtime.totalItems, 4);
+    expect(current.runtime.progress, 1);
     expect(current.runtime.error, DriveFailure.checksum);
     expect(await originals.list(recursive: true).where((entry) => entry is File).toList(), isEmpty);
   });

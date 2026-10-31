@@ -787,21 +787,31 @@ void main() {
       final gate = Completer<void>();
       final preceding = operations.withMediaLock(() => gate.future);
       final pending = operations.mutate(request('draining-error', GalleryMutation.trash, [ref(source)]));
-      final failed = expectLater(pending, throwsA(isA<FileSystemException>()));
       final closing = operations.close();
       gate.complete();
       await preceding;
-      await failed;
+      final failed = (await pending).items.single;
+      expect(failed.state, GalleryItemOperationState.failed);
+      expect(failed.error, GalleryErrorCode.unavailable);
       await closing;
       final diagnostic = records.singleWhere(
         (record) =>
-            record.loggerName == 'GalleryFileOperations' && record.message.startsWith('Gallery mutation failed'),
+            record.loggerName == 'GalleryFileOperations' && record.message.startsWith('Gallery mutation completed'),
       );
       expect(diagnostic.level, Level.WARNING);
-      expect(diagnostic.message, contains('code=unavailable type=FileSystemException'));
+      expect(diagnostic.message, contains('succeeded=0 failed=1 codes=unavailable:1'));
       expect(diagnostic.message, isNot(contains('PRIVATE_')));
       expect(diagnostic.error, isNull);
       expect(diagnostic.stackTrace, isNull);
+      expect(
+        records.any(
+          (record) =>
+              record.level == Level.FINE &&
+              record.message.startsWith('Gallery mutation item failed') &&
+              record.message.contains('type=FileSystemException'),
+        ),
+        isTrue,
+      );
       expect(await File(path.join(originals.path, source.path)).readAsString(), 'retained');
     }),
   );

@@ -200,7 +200,7 @@ class YandexDriveService {
         _schedule(session);
         return;
       }
-      if (response.error != null) throw CloudStorageException(_tokenFailure(response.error!));
+      if (response.error != null) throw CloudStorageException(YandexDriveApi.oauthFailure(response.error!));
       final token = _accessToken(response);
       final user = await api.identity(token);
       if (!_isCurrentPending(session)) return;
@@ -260,15 +260,6 @@ class YandexDriveService {
     if (token == null || token.isEmpty) throw const CloudStorageException(DriveFailure.invalidResponse);
     return token;
   }
-
-  static DriveFailure _tokenFailure(String value) => switch (value) {
-    'access_denied' => DriveFailure.authorizationDenied,
-    'expired_token' => DriveFailure.authorizationExpired,
-    'invalid_grant' => DriveFailure.authorizationRequired,
-    'invalid_client' || 'unauthorized_client' => DriveFailure.notConfigured,
-    'temporarily_unavailable' => DriveFailure.serviceUnavailable,
-    _ => DriveFailure.invalidResponse,
-  };
 
   void _storeCredential(YandexDriveCredential value) {
     final old = _credentials[value.accountId];
@@ -383,7 +374,7 @@ class YandexDriveService {
         _log.info('Token refresh completed reason=credentialsReplaced');
         return current;
       }
-      if (response.error != null) throw CloudStorageException(_tokenFailure(response.error!));
+      if (response.error != null) throw CloudStorageException(YandexDriveApi.oauthFailure(response.error!));
       final updated = original.copyWith(
         accessToken: _accessToken(response),
         refreshToken: response.refreshToken ?? original.refreshToken,

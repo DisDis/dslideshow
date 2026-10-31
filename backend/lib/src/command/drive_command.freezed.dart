@@ -2056,7 +2056,7 @@ as int?,
 /// @nodoc
 mixin _$DriveRuntime {
 
- bool get active; bool get running; bool get paused; DateTime? get lastSync; int get downloaded; int get skipped; int get failed;@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? get error;
+ bool get active; bool get running; bool get paused; DateTime? get lastSync; int? get totalItems; int get processedItems; int get downloaded; int get skipped; int get failed;@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? get error;
 /// Create a copy of DriveRuntime
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2070,20 +2070,20 @@ $DriveRuntimeCopyWith<DriveRuntime> get copyWith => _$DriveRuntimeCopyWithImpl<D
 @override
 bool operator ==(Object other) {
   final _this = this as DriveRuntime;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DriveRuntime&&(identical(other.active, _this.active) || other.active == _this.active)&&(identical(other.running, _this.running) || other.running == _this.running)&&(identical(other.paused, _this.paused) || other.paused == _this.paused)&&(identical(other.lastSync, _this.lastSync) || other.lastSync == _this.lastSync)&&(identical(other.downloaded, _this.downloaded) || other.downloaded == _this.downloaded)&&(identical(other.skipped, _this.skipped) || other.skipped == _this.skipped)&&(identical(other.failed, _this.failed) || other.failed == _this.failed)&&(identical(other.error, _this.error) || other.error == _this.error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DriveRuntime&&(identical(other.active, _this.active) || other.active == _this.active)&&(identical(other.running, _this.running) || other.running == _this.running)&&(identical(other.paused, _this.paused) || other.paused == _this.paused)&&(identical(other.lastSync, _this.lastSync) || other.lastSync == _this.lastSync)&&(identical(other.totalItems, _this.totalItems) || other.totalItems == _this.totalItems)&&(identical(other.processedItems, _this.processedItems) || other.processedItems == _this.processedItems)&&(identical(other.downloaded, _this.downloaded) || other.downloaded == _this.downloaded)&&(identical(other.skipped, _this.skipped) || other.skipped == _this.skipped)&&(identical(other.failed, _this.failed) || other.failed == _this.failed)&&(identical(other.error, _this.error) || other.error == _this.error));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as DriveRuntime;
-  return Object.hash(runtimeType,_this.active,_this.running,_this.paused,_this.lastSync,_this.downloaded,_this.skipped,_this.failed,_this.error);
+  return Object.hash(runtimeType,_this.active,_this.running,_this.paused,_this.lastSync,_this.totalItems,_this.processedItems,_this.downloaded,_this.skipped,_this.failed,_this.error);
 }
 
 @override
 String toString() {
   final _this = this as DriveRuntime;
-  return 'DriveRuntime(active: ${_this.active}, running: ${_this.running}, paused: ${_this.paused}, lastSync: ${_this.lastSync}, downloaded: ${_this.downloaded}, skipped: ${_this.skipped}, failed: ${_this.failed}, error: ${_this.error})';
+  return 'DriveRuntime(active: ${_this.active}, running: ${_this.running}, paused: ${_this.paused}, lastSync: ${_this.lastSync}, totalItems: ${_this.totalItems}, processedItems: ${_this.processedItems}, downloaded: ${_this.downloaded}, skipped: ${_this.skipped}, failed: ${_this.failed}, error: ${_this.error})';
 }
 
 
@@ -2094,7 +2094,7 @@ abstract mixin class $DriveRuntimeCopyWith<$Res>  {
   factory $DriveRuntimeCopyWith(DriveRuntime value, $Res Function(DriveRuntime) _then) = _$DriveRuntimeCopyWithImpl;
 @useResult
 $Res call({
- bool active, bool running, bool paused, DateTime? lastSync, int downloaded, int skipped, int failed,@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? error
+ bool active, bool running, bool paused, DateTime? lastSync, int? totalItems, int processedItems, int downloaded, int skipped, int failed,@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? error
 });
 
 
@@ -2111,13 +2111,15 @@ class _$DriveRuntimeCopyWithImpl<$Res>
 
 /// Create a copy of DriveRuntime
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? active = null,Object? running = null,Object? paused = null,Object? lastSync = freezed,Object? downloaded = null,Object? skipped = null,Object? failed = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? active = null,Object? running = null,Object? paused = null,Object? lastSync = freezed,Object? totalItems = freezed,Object? processedItems = null,Object? downloaded = null,Object? skipped = null,Object? failed = null,Object? error = freezed,}) {
   return _then(DriveRuntime(
 active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
 as bool,running: null == running ? _self.running : running // ignore: cast_nullable_to_non_nullable
 as bool,paused: null == paused ? _self.paused : paused // ignore: cast_nullable_to_non_nullable
 as bool,lastSync: freezed == lastSync ? _self.lastSync : lastSync // ignore: cast_nullable_to_non_nullable
-as DateTime?,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
+as DateTime?,totalItems: freezed == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
+as int?,processedItems: null == processedItems ? _self.processedItems : processedItems // ignore: cast_nullable_to_non_nullable
+as int,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
 as int,skipped: null == skipped ? _self.skipped : skipped // ignore: cast_nullable_to_non_nullable
 as int,failed: null == failed ? _self.failed : failed // ignore: cast_nullable_to_non_nullable
 as int,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -2206,10 +2208,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int? totalItems,  int processedItems,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DriveRuntime() when $default != null:
-return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
+return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.totalItems,_that.processedItems,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
   return orElse();
 
 }
@@ -2227,10 +2229,10 @@ return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.dow
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int? totalItems,  int processedItems,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)  $default,) {final _that = this;
 switch (_that) {
 case _DriveRuntime():
-return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
+return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.totalItems,_that.processedItems,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2247,10 +2249,10 @@ return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.dow
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool active,  bool running,  bool paused,  DateTime? lastSync,  int? totalItems,  int processedItems,  int downloaded,  int skipped,  int failed, @JsonKey(unknownEnumValue: DriveFailure.unknown)  DriveFailure? error)?  $default,) {final _that = this;
 switch (_that) {
 case _DriveRuntime() when $default != null:
-return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
+return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.totalItems,_that.processedItems,_that.downloaded,_that.skipped,_that.failed,_that.error);case _:
   return null;
 
 }
@@ -2261,14 +2263,16 @@ return $default(_that.active,_that.running,_that.paused,_that.lastSync,_that.dow
 /// @nodoc
 @JsonSerializable()
 
-class _DriveRuntime implements DriveRuntime {
-  const _DriveRuntime({this.active = false, this.running = false, this.paused = false, this.lastSync, this.downloaded = 0, this.skipped = 0, this.failed = 0, @JsonKey(unknownEnumValue: DriveFailure.unknown) this.error});
+class _DriveRuntime extends DriveRuntime {
+  const _DriveRuntime({this.active = false, this.running = false, this.paused = false, this.lastSync, this.totalItems, this.processedItems = 0, this.downloaded = 0, this.skipped = 0, this.failed = 0, @JsonKey(unknownEnumValue: DriveFailure.unknown) this.error}): super._();
   factory _DriveRuntime.fromJson(Map<String, dynamic> json) => _$DriveRuntimeFromJson(json);
 
 @override@JsonKey() final  bool active;
 @override@JsonKey() final  bool running;
 @override@JsonKey() final  bool paused;
 @override final  DateTime? lastSync;
+@override final  int? totalItems;
+@override@JsonKey() final  int processedItems;
 @override@JsonKey() final  int downloaded;
 @override@JsonKey() final  int skipped;
 @override@JsonKey() final  int failed;
@@ -2287,18 +2291,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DriveRuntime&&(identical(other.active, active) || other.active == active)&&(identical(other.running, running) || other.running == running)&&(identical(other.paused, paused) || other.paused == paused)&&(identical(other.lastSync, lastSync) || other.lastSync == lastSync)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded)&&(identical(other.skipped, skipped) || other.skipped == skipped)&&(identical(other.failed, failed) || other.failed == failed)&&(identical(other.error, error) || other.error == error));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DriveRuntime&&(identical(other.active, active) || other.active == active)&&(identical(other.running, running) || other.running == running)&&(identical(other.paused, paused) || other.paused == paused)&&(identical(other.lastSync, lastSync) || other.lastSync == lastSync)&&(identical(other.totalItems, totalItems) || other.totalItems == totalItems)&&(identical(other.processedItems, processedItems) || other.processedItems == processedItems)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded)&&(identical(other.skipped, skipped) || other.skipped == skipped)&&(identical(other.failed, failed) || other.failed == failed)&&(identical(other.error, error) || other.error == error));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,active,running,paused,lastSync,downloaded,skipped,failed,error);
+    return Object.hash(runtimeType,active,running,paused,lastSync,totalItems,processedItems,downloaded,skipped,failed,error);
 }
 
 @override
 String toString() {
-    return 'DriveRuntime(active: $active, running: $running, paused: $paused, lastSync: $lastSync, downloaded: $downloaded, skipped: $skipped, failed: $failed, error: $error)';
+    return 'DriveRuntime(active: $active, running: $running, paused: $paused, lastSync: $lastSync, totalItems: $totalItems, processedItems: $processedItems, downloaded: $downloaded, skipped: $skipped, failed: $failed, error: $error)';
 }
 
 
@@ -2309,7 +2313,7 @@ abstract mixin class _$DriveRuntimeCopyWith<$Res> implements $DriveRuntimeCopyWi
   factory _$DriveRuntimeCopyWith(_DriveRuntime value, $Res Function(_DriveRuntime) _then) = __$DriveRuntimeCopyWithImpl;
 @override @useResult
 $Res call({
- bool active, bool running, bool paused, DateTime? lastSync, int downloaded, int skipped, int failed,@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? error
+ bool active, bool running, bool paused, DateTime? lastSync, int? totalItems, int processedItems, int downloaded, int skipped, int failed,@JsonKey(unknownEnumValue: DriveFailure.unknown) DriveFailure? error
 });
 
 
@@ -2326,13 +2330,15 @@ class __$DriveRuntimeCopyWithImpl<$Res>
 
 /// Create a copy of DriveRuntime
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? active = null,Object? running = null,Object? paused = null,Object? lastSync = freezed,Object? downloaded = null,Object? skipped = null,Object? failed = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? active = null,Object? running = null,Object? paused = null,Object? lastSync = freezed,Object? totalItems = freezed,Object? processedItems = null,Object? downloaded = null,Object? skipped = null,Object? failed = null,Object? error = freezed,}) {
   return _then(_DriveRuntime(
 active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
 as bool,running: null == running ? _self.running : running // ignore: cast_nullable_to_non_nullable
 as bool,paused: null == paused ? _self.paused : paused // ignore: cast_nullable_to_non_nullable
 as bool,lastSync: freezed == lastSync ? _self.lastSync : lastSync // ignore: cast_nullable_to_non_nullable
-as DateTime?,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
+as DateTime?,totalItems: freezed == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
+as int?,processedItems: null == processedItems ? _self.processedItems : processedItems // ignore: cast_nullable_to_non_nullable
+as int,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
 as int,skipped: null == skipped ? _self.skipped : skipped // ignore: cast_nullable_to_non_nullable
 as int,failed: null == failed ? _self.failed : failed // ignore: cast_nullable_to_non_nullable
 as int,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable

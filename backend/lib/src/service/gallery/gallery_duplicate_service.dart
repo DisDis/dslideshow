@@ -702,7 +702,7 @@ class GalleryDuplicateService {
             if (error.osError?.errorCode != 2 && error.osError?.errorCode != 20) unreadable++;
             continue;
           }
-          final entry = GalleryFileOperations.hiddenEntry(relative, await entity.stat());
+          final entry = GalleryFileOperations.mirrorEntry(GalleryMediaSection.hidden, relative, await entity.stat());
           snapshot[resolved] = GalleryDuplicateMember(
             mediaId: entry.mediaId,
             sourceRevision: entry.sourceRevision,
@@ -783,7 +783,7 @@ class GalleryDuplicateService {
             !path.isWithin(currentRoot, resolved) ||
             await FileSystemEntity.type(file.path, followLinks: false) != FileSystemEntityType.file)
           return false;
-        final current = GalleryFileOperations.hiddenEntry(member.path, await file.stat());
+        final current = GalleryFileOperations.mirrorEntry(GalleryMediaSection.hidden, member.path, await file.stat());
         return current.mediaId == member.mediaId && current.sourceRevision == member.sourceRevision;
       }
       final source = await catalog.resolve(member.mediaId, revision: member.sourceRevision);

@@ -3206,6 +3206,49 @@ class AppLocalizationsRu extends AppLocalizations {
       'Настройте OAuth-приложение Яндекса один раз. Данные доступа хранятся на рамке.';
 
   @override
+  String get yandex_oauth_create_step =>
+      '1. Создайте в Яндекс OAuth приложение для авторизации пользователей. Укажите название сервиса, например DSlideshow, и контактную почту.';
+
+  @override
+  String get yandex_oauth_create_application => 'Создать приложение в Яндекс OAuth';
+
+  @override
+  String get yandex_oauth_platform_step =>
+      '2. Выберите «Веб-сервисы». Если требуется Redirect URI, укажите этот адрес:';
+
+  @override
+  String get yandex_oauth_permissions_step =>
+      '3. В разделе «Доступ к данным» найдите REST API Яндекс Диска и отметьте эти права:';
+
+  @override
+  String get yandex_oauth_credentials_step =>
+      '4. Откройте свойства созданного приложения и скопируйте Client ID и Client secret в поля ниже. Сохраните их, затем подключите каждый семейный аккаунт кнопкой «Подключить Яндекс».';
+
+  @override
+  String get yandex_authorization_invalid_client =>
+      'Яндекс отклонил данные приложения. Проверьте Client ID и Client secret в настройках OAuth-приложения.';
+
+  @override
+  String get yandex_authorization_invalid_scope =>
+      'Яндекс отклонил запрошенные права. Разрешите приложению cloud_api:disk.read и cloud_api:disk.info, затем повторите подключение.';
+
+  @override
+  String get yandex_authorization_client_unavailable =>
+      'Яндекс не разрешил приложению подключать аккаунты. Проверьте его статус в Яндекс OAuth: приложение может ожидать проверки или быть заблокировано.';
+
+  @override
+  String get yandex_authorization_network =>
+      'Не удалось связаться с Яндексом. Проверьте подключение рамки к интернету и повторите попытку.';
+
+  @override
+  String get yandex_authorization_invalid_request =>
+      'Яндекс отклонил формат запроса авторизации. Код отказа можно посмотреть в логе backend.';
+
+  @override
+  String get yandex_authorization_invalid_response =>
+      'Рамка не смогла обработать ответ Яндекса. Повторите попытку; если ошибка сохраняется, проверьте лог backend.';
+
+  @override
   String get yandex_configure_application => 'Настроить приложение';
 
   @override
@@ -3273,6 +3316,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get yandex_runtime_running => 'Выполняется синхронизация';
+
+  @override
+  String get yandex_sync_discovering => 'Читаем выбранные папки…';
+
+  @override
+  String yandex_sync_progress(int processed, int total, int percent) {
+    return 'Обработано $processed из примерно $total элементов ($percent%)';
+  }
+
+  @override
+  String yandex_sync_processed(int processed) {
+    return 'Обработано элементов: $processed; всего — неизвестно';
+  }
 
   @override
   String get yandex_runtime_idle => 'Ожидание следующей синхронизации';

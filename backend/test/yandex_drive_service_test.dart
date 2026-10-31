@@ -214,6 +214,26 @@ void main() {
     await directory.delete(recursive: true);
   });
 
+  test('a Yandex ya.ru response reaches the pending session with QR address and user code', () async {
+    final api = YandexDriveApi(
+      clientFactory: () => MockClient((request) async {
+        expect(request.url.path, '/device/code');
+        return _json({..._device(), 'verification_url': 'https://ya.ru/device'});
+      }),
+    );
+    final service = YandexDriveService(storage, api: api);
+    try {
+      service.configureApplication('application-id', 'private-client-secret');
+      final authorization = await service.startAuthorization();
+      expect(authorization.status, DriveAuthorizationStatus.pending);
+      expect(authorization.verificationUrl, Uri.parse('https://ya.ru/device'));
+      expect(authorization.userCode, 'family-code');
+      expect(authorization.error, isNull);
+    } finally {
+      await service.close();
+    }
+  });
+
   test('config defaults to one hour and keeps only non-secret account choices', () {
     final config = YandexDriveStorageConfig.fromJson({});
     expect(config.syncPeriod, const Duration(hours: 1));

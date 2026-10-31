@@ -8,6 +8,7 @@ import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -265,6 +266,8 @@ class _RuntimeCard extends StatelessWidget {
                 ? l.yandex_runtime_inactive
                 : runtime.paused
                 ? l.yandex_runtime_paused
+                : runtime.running && runtime.totalItems == null
+                ? l.yandex_sync_discovering
                 : runtime.running
                 ? l.yandex_runtime_running
                 : l.yandex_runtime_idle,
@@ -274,6 +277,15 @@ class _RuntimeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.yandex_sync_counts(runtime.downloaded, runtime.skipped, runtime.failed)),
+                    Text(
+                      runtime.totalItems != null && runtime.progress != null
+                          ? l.yandex_sync_progress(
+                              runtime.processedItems,
+                              runtime.totalItems!,
+                              (runtime.progress! * 100).floor(),
+                            )
+                          : l.yandex_sync_processed(runtime.processedItems),
+                    ),
                     if (lastSync != null)
                       Text(
                         l.yandex_last_sync(
@@ -284,7 +296,7 @@ class _RuntimeCard extends StatelessWidget {
                 )
               : null,
         ),
-        if (runtime.running) const LinearProgressIndicator(),
+        if (runtime.running) LinearProgressIndicator(value: runtime.progress),
         if (runtime.error != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -321,6 +333,8 @@ class _RuntimeCard extends StatelessWidget {
 
 class _ApplicationDialog extends StatelessWidget {
   const _ApplicationDialog({required this.secretConfigured});
+  static final _registrationUri = Uri.https('oauth.yandex.ru', '/client/new/id/');
+  static final _redirectUri = Uri.https('oauth.yandex.ru', '/verification_code');
   final bool secretConfigured;
 
   @override
@@ -335,8 +349,26 @@ class _ApplicationDialog extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l.yandex_application_hint),
+                const SizedBox(height: 16),
+                Text(l.yandex_oauth_create_step),
+                TextButton.icon(
+                  onPressed: () => _openYandexPage(context, _registrationUri),
+                  icon: const Icon(Icons.open_in_new),
+                  label: Text(l.yandex_oauth_create_application),
+                ),
+                SelectableText(_registrationUri.toString()),
+                const SizedBox(height: 12),
+                Text(l.yandex_oauth_platform_step),
+                SelectableText(_redirectUri.toString()),
+                const SizedBox(height: 12),
+                Text(l.yandex_oauth_permissions_step),
+                const SelectableText('cloud_api:disk.read\ncloud_api:disk.info'),
+                const SizedBox(height: 12),
+                Text(l.yandex_oauth_credentials_step),
+                const SizedBox(height: 12),
                 SettingsTextField(label: l.client_id_label, initialValue: state.clientId, onChanged: cubit.setClientId),
                 SettingsTextField(
                   label: l.client_secret_label,
@@ -409,7 +441,7 @@ class _AuthorizationDialog extends StatelessWidget {
                         label: Text(l.yandex_copy_code),
                       ),
                       FilledButton.icon(
-                        onPressed: () => _open(context, uri),
+                        onPressed: () => _openYandexPage(context, uri),
                         icon: const Icon(Icons.open_in_new),
                         label: Text(l.yandex_open_authorization),
                       ),
@@ -452,17 +484,22 @@ class _AuthorizationDialog extends StatelessWidget {
       );
     },
   );
+}
 
-  Future<void> _open(BuildContext context, Uri uri) async {
-    bool opened;
-    try {
-      opened = await launchUrl(uri, mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
-    } catch (_) {
-      opened = false;
-    }
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.localizations.yandex_browser_failed)));
-    }
+final _yandexLinkLog = Logger('YandexOAuthLink');
+
+Future<void> _openYandexPage(BuildContext context, Uri uri) async {
+  _yandexLinkLog.fine('event=browserOpenStarted');
+  bool opened;
+  try {
+    opened = await launchUrl(uri, mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
+    _yandexLinkLog.log(opened ? Level.FINE : Level.WARNING, 'event=browserOpenFinished opened=$opened');
+  } catch (error) {
+    opened = false;
+    _yandexLinkLog.warning('event=browserOpenFailed type=${error.runtimeType}');
+  }
+  if (!opened && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.localizations.yandex_browser_failed)));
   }
 }
 
@@ -474,7 +511,15 @@ String _authorizationLabel(AppLocalizations l, DriveAuthorization authorization)
         DriveAuthorizationStatus.connected => l.yandex_authorization_connected,
         DriveAuthorizationStatus.cancelled => l.yandex_authorization_cancelled,
         DriveAuthorizationStatus.expired => l.yandex_authorization_expired,
-        DriveAuthorizationStatus.failed => l.yandex_authorization_failed,
+        DriveAuthorizationStatus.failed => switch (authorization.error) {
+          DriveFailure.invalidClient => l.yandex_authorization_invalid_client,
+          DriveFailure.invalidScope => l.yandex_authorization_invalid_scope,
+          DriveFailure.clientUnavailable => l.yandex_authorization_client_unavailable,
+          DriveFailure.network => l.yandex_authorization_network,
+          DriveFailure.invalidRequest => l.yandex_authorization_invalid_request,
+          DriveFailure.invalidResponse => l.yandex_authorization_invalid_response,
+          _ => l.yandex_authorization_failed,
+        },
       };
 
 class YandexFolderDialog extends StatelessWidget {

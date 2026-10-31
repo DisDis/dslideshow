@@ -10,6 +10,8 @@
 .history
 .svn/
 
+config.json
+
 # IntelliJ related
 *.iml
 *.ipr

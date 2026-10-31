@@ -55,6 +55,43 @@ void main() {
         .singleWhere((item) => item.path == entry.path);
   }
 
+  for (final section in [GalleryMediaSection.hidden, GalleryMediaSection.trash]) {
+    test('${section.name} moves, cold reads and restore do not initialize another mirrored section', () async {
+      final other = section == GalleryMediaSection.hidden ? GalleryMediaSection.trash : GalleryMediaSection.hidden;
+      final blocked = await File(path.join(root.path, 'blocked-${other.name}')).writeAsString('not a directory');
+      final unavailableDirectory = Directory(path.join(blocked.path, other.name));
+      GalleryFileOperations create() => GalleryFileOperations(
+        catalog: catalog,
+        hiddenDirectory: other == GalleryMediaSection.hidden ? unavailableDirectory : null,
+        trashDirectory: other == GalleryMediaSection.trash ? unavailableDirectory : null,
+      );
+      await operations.close();
+      operations = create();
+      final original = await write('account/Camera/${section.name}.jpg', 'saved bytes');
+      final moved = await mutate(section == GalleryMediaSection.hidden ? GalleryMutation.hide : GalleryMutation.trash, [
+        original.ref,
+      ]);
+      expect(moved.items.single.state, GalleryItemOperationState.succeeded);
+      expect(moved.items.single.destination!.section, section);
+      final entry = (await operations.mediaCatalog(section)).entries.single;
+      expect(entry.path, original.path);
+      await operations.close();
+      operations = create();
+      final source = await operations.resolveMedia(entry.ref);
+      expect(await source.file.readAsString(), 'saved bytes');
+      expect(source.entry, entry);
+      final restored = await mutate(
+        section == GalleryMediaSection.hidden ? GalleryMutation.unhide : GalleryMutation.restore,
+        [entry.ref],
+      );
+      expect(restored.items.single.state, GalleryItemOperationState.succeeded);
+      expect(restored.items.single.restoredPath, original.path);
+      expect(await File(path.join(originals.path, original.path)).readAsString(), 'saved bytes');
+      expect((await operations.mediaCatalog(section)).entries, isEmpty);
+      await expectLater(operations.mediaCatalog(other), throwsA(isA<FileSystemException>()));
+    });
+  }
+
   test('hide mirrors account paths, survives restart and unhide restores original bytes', () async {
     const relative = 'yandex.drive.42/Фотокамера/2026/фото.jpg';
     final entry = await write(relative);
@@ -100,8 +137,8 @@ void main() {
 
   test('hide conflicts and stale unhide preserve both filesystem versions', () async {
     final entry = await write('photo.jpg');
-    await operations.hiddenDirectory.create(recursive: true);
-    final occupying = await File(path.join(operations.hiddenDirectory.path, entry.path))
+    await operations.directory(GalleryMediaSection.hidden).create(recursive: true);
+    final occupying = await File(path.join(operations.directory(GalleryMediaSection.hidden).path, entry.path))
         .writeAsString('hidden version');
     final conflict = await mutate(GalleryMutation.hide, [originalRef(entry)]);
     expect(conflict.items.single.error, GalleryErrorCode.conflict);
