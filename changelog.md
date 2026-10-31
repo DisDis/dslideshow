@@ -1,8 +1,16 @@
 # Unreleased
 
+# 19.0.0+1 — 2026-10-31
+
 * Show active storage status in frame telemetry and controls. Distinguish
   unavailable sources from operation errors, preserve errors after partial cloud
   synchronization failures and show a persistent red error icon on the frame.
+
+* Improve duplicate-photo recommendations using capture dates, modification dates,
+  resolution and comparable JPEG compression estimates. Show dates to the second,
+  highlight each comparison metric independently and mark recommendations as
+  provisional until all group metadata is known. Preserve manual selections and
+  load metadata only for opened cards.
 
 # 18.0.0+1 — 2026-10-31
 
