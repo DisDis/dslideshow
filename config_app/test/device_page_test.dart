@@ -219,6 +219,41 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(
+      tester
+          .widgetList<ListTile>(find.byType(ListTile))
+          .where((tile) => tile.key is ValueKey<AppDestination>)
+          .map((tile) => (tile.title! as Text).data),
+      [
+        'Главная',
+        'Галерея',
+        'Загрузить медиа',
+        'Настройки',
+        'Обновление прошивки',
+        'Управление фоторамкой',
+        'Wi-Fi',
+        'Телеметрия',
+        'Питание и перезапуск',
+      ],
+    );
+    final cards = tester.widgetList<Card>(find.byType(Card)).toList();
+    expect(cards, hasLength(8));
+    final labels = [
+      'Галерея',
+      'Загрузить медиа',
+      'Настройки',
+      'Обновление прошивки',
+      'Управление фоторамкой',
+      'Wi-Fi',
+      'Телеметрия',
+      'Питание и перезапуск',
+    ];
+    for (var index = 0; index < cards.length; index++) {
+      final title = tester.widget<Text>(
+        find.descendant(of: find.byWidget(cards[index]), matching: find.byType(Text)).first,
+      );
+      expect(title.data, labels[index]);
+    }
     await tester.tap(find.byKey(const ValueKey(AppDestination.telemetry)));
     await tester.pumpAndSettle();
     expect(router.routeInformationProvider.value.uri.path, '/telemetry');

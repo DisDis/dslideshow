@@ -6,8 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Map<String, dynamic> _messages(String locale) =>
-    jsonDecode(File('app_$locale.arb').readAsStringSync())
-        as Map<String, dynamic>;
+    jsonDecode(File('app_$locale.arb').readAsStringSync()) as Map<String, dynamic>;
 
 void main() {
   test('Russian translations cover every English message', () {
@@ -34,67 +33,54 @@ void main() {
       if (placeholders == null) continue;
       final message = russian[entry.key.substring(1)] as String;
       for (final placeholder in placeholders.keys) {
-        expect(
-          message,
-          matches('\\{${RegExp.escape(placeholder)}(?:\\}|\\s*,)'),
-          reason: entry.key,
-        );
+        expect(message, matches('\\{${RegExp.escape(placeholder)}(?:\\}|\\s*,)'), reason: entry.key);
       }
     }
   });
 
-  test(
-    'generated delegates load both languages and interpolate messages',
-    () async {
-      expect(AppLocalizations.supportedLocales, const [
-        Locale('en'),
-        Locale('ru'),
-      ]);
-      final english = await AppLocalizations.delegate.load(const Locale('en'));
-      final russian = await AppLocalizations.delegate.load(const Locale('ru'));
+  test('generated delegates load both languages and interpolate messages', () async {
+    expect(AppLocalizations.supportedLocales, const [Locale('en'), Locale('ru')]);
+    final english = await AppLocalizations.delegate.load(const Locale('en'));
+    final russian = await AppLocalizations.delegate.load(const Locale('ru'));
 
-      expect(english.gallery_duplicate_members(1, 10, 12), 'Files 1–10 of 12');
-      expect(russian.gallery_duplicate_members(1, 10, 12), 'Файлы 1–10 из 12');
-      expect(english.gallery_search_groups(1), '1 group');
-      expect(russian.gallery_search_groups(2), '2 группы');
-      expect(russian.gallery_search_groups(12), '12 групп');
-      expect(russian.gallery_group_files(21), '21 файл');
-      expect(english.config_save_button, 'Save');
-      expect(russian.config_save_button, 'Сохранить');
-      expect(english.config_app_title, 'DSlideshow Config');
-      expect(russian.config_app_title, 'DSlideshow Config');
-      expect(english.otaReceiving, 'Receiving firmware');
-      expect(russian.otaReceiving, 'Получение прошивки');
-      expect(russian.otaInstalled, 'Прошивка установлена');
-      expect(russian.otaRestartTitle, 'Перезапуск приложения');
-      expect(russian.otaStepReceive, '1. Получение');
-      expect(russian.otaStepInstall, '2. Установка');
-      expect(russian.otaStepRestart, '3. Перезапуск');
-      expect(english.configPageTitle, 'Set up your photo frame');
-      expect(russian.configPageTitle, 'Настройка фоторамки');
-      expect(russian.configPageRetry, 'Повторить');
-      expect(russian.not_found_with_id('photo-123'), 'Не найдено: «photo-123»');
-      expect(
-        russian.transition_display_times(250, 5000),
-        'Переход: 250 мс\nПоказ: 5000 мс',
-      );
-      expect(
-        russian.device_connection_info('wlan0', 'Wi-Fi'),
-        'Устройство: wlan0 • Wi-Fi',
-      );
-      expect(russian.items_selected(0), 'Ничего не выбрано');
-      expect(russian.items_selected(1), 'Выбран 1 элемент');
-      expect(russian.items_selected(2), 'Выбрано 2 элемента');
-      expect(russian.items_selected(5), 'Выбрано 5 элементов');
-      expect(russian.items_selected(21), 'Выбран 21 элемент');
-      expect(
-        AppLocalizations.delegate.isSupported(const Locale('ru', 'RU')),
-        isTrue,
-      );
-      expect(
-        AppLocalizations.delegate.isSupported(const Locale('de')),
-        isFalse,
-      );
-    },
-  );
+    expect(english.gallery_duplicate_members(1, 10, 12), 'Files 1–10 of 12');
+    expect(russian.gallery_duplicate_members(1, 10, 12), 'Файлы 1–10 из 12');
+    expect(english.gallery_search_groups(1), '1 group');
+    expect(russian.gallery_search_groups(2), '2 группы');
+    expect(russian.gallery_search_groups(12), '12 групп');
+    expect(russian.gallery_group_files(21), '21 файл');
+    expect(english.config_save_button, 'Save');
+    expect(russian.gallery_hide, 'Скрыть');
+    expect(russian.system_control_menu_item, 'Питание и перезапуск');
+    expect(russian.upload_media_menu_item, 'Загрузить медиа');
+    for (final count in [0, 1, 12]) {
+      expect(russian.gallery_selected(count), 'Выбрано: $count');
+      expect(english.gallery_selected(count), 'Selected: $count');
+    }
+    expect(russian.gallery_hide_confirm_body(12), 'Скрыть из показа выбранные элементы: 12?');
+    expect(russian.gallery_unhide_confirm_body(12), 'Вернуть в показ выбранные элементы: 12?');
+    expect(russian.config_save_button, 'Сохранить');
+    expect(english.config_app_title, 'DSlideshow Config');
+    expect(russian.config_app_title, 'DSlideshow Config');
+    expect(english.otaReceiving, 'Receiving firmware');
+    expect(russian.otaReceiving, 'Получение прошивки');
+    expect(russian.otaInstalled, 'Прошивка установлена');
+    expect(russian.otaRestartTitle, 'Перезапуск приложения');
+    expect(russian.otaStepReceive, '1. Получение');
+    expect(russian.otaStepInstall, '2. Установка');
+    expect(russian.otaStepRestart, '3. Перезапуск');
+    expect(english.configPageTitle, 'Set up your photo frame');
+    expect(russian.configPageTitle, 'Настройка фоторамки');
+    expect(russian.configPageRetry, 'Повторить');
+    expect(russian.not_found_with_id('photo-123'), 'Не найдено: «photo-123»');
+    expect(russian.transition_display_times(250, 5000), 'Переход: 250 мс\nПоказ: 5000 мс');
+    expect(russian.device_connection_info('wlan0', 'Wi-Fi'), 'Устройство: wlan0 • Wi-Fi');
+    expect(russian.items_selected(0), 'Ничего не выбрано');
+    expect(russian.items_selected(1), 'Выбран 1 элемент');
+    expect(russian.items_selected(2), 'Выбрано 2 элемента');
+    expect(russian.items_selected(5), 'Выбрано 5 элементов');
+    expect(russian.items_selected(21), 'Выбран 21 элемент');
+    expect(AppLocalizations.delegate.isSupported(const Locale('ru', 'RU')), isTrue);
+    expect(AppLocalizations.delegate.isSupported(const Locale('de')), isFalse);
+  });
 }

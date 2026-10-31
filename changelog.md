@@ -1,5 +1,11 @@
 # Unreleased
 
+* Improve Linux frame discovery when mDNS replies are incomplete: resolve endpoints
+  without waiting for unused TXT records and retry one explicit Avahi timeout
+  within a 12-second search window. Include the service and network interface
+  in discovery diagnostics, ignore failures from withdrawn advertisements and
+  preserve known frames when address resolution is still pending at the deadline.
+
 # 19.0.0+1 — 2026-10-31
 
 * Show active storage status in frame telemetry and controls. Distinguish

@@ -18,6 +18,7 @@ mixin _$FrameDiscoveryState {
   List<DiscoveredFrame> get frames;
   bool get limited;
   int get unresolved;
+  int get pending;
 
   /// Create a copy of FrameDiscoveryState
   /// with the given fields replaced by the non-null parameter values.
@@ -41,7 +42,9 @@ mixin _$FrameDiscoveryState {
             (identical(other.limited, _this.limited) ||
                 other.limited == _this.limited) &&
             (identical(other.unresolved, _this.unresolved) ||
-                other.unresolved == _this.unresolved));
+                other.unresolved == _this.unresolved) &&
+            (identical(other.pending, _this.pending) ||
+                other.pending == _this.pending));
   }
 
   @override
@@ -53,13 +56,14 @@ mixin _$FrameDiscoveryState {
       const DeepCollectionEquality().hash(_this.frames),
       _this.limited,
       _this.unresolved,
+      _this.pending,
     );
   }
 
   @override
   String toString() {
     final _this = this as FrameDiscoveryState;
-    return 'FrameDiscoveryState(status: ${_this.status}, frames: ${_this.frames}, limited: ${_this.limited}, unresolved: ${_this.unresolved})';
+    return 'FrameDiscoveryState(status: ${_this.status}, frames: ${_this.frames}, limited: ${_this.limited}, unresolved: ${_this.unresolved}, pending: ${_this.pending})';
   }
 }
 
@@ -75,6 +79,7 @@ abstract mixin class $FrameDiscoveryStateCopyWith<$Res> {
     List<DiscoveredFrame> frames,
     bool limited,
     int unresolved,
+    int pending,
   });
 }
 
@@ -95,6 +100,7 @@ class _$FrameDiscoveryStateCopyWithImpl<$Res>
     Object? frames = null,
     Object? limited = null,
     Object? unresolved = null,
+    Object? pending = null,
   }) {
     return _then(
       FrameDiscoveryState(
@@ -113,6 +119,10 @@ class _$FrameDiscoveryStateCopyWithImpl<$Res>
         unresolved: null == unresolved
             ? _self.unresolved
             : unresolved // ignore: cast_nullable_to_non_nullable
+                  as int,
+        pending: null == pending
+            ? _self.pending
+            : pending // ignore: cast_nullable_to_non_nullable
                   as int,
       ),
     );
@@ -217,6 +227,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
       List<DiscoveredFrame> frames,
       bool limited,
       int unresolved,
+      int pending,
     )?
     $default, {
     required TResult orElse(),
@@ -229,6 +240,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
           _that.frames,
           _that.limited,
           _that.unresolved,
+          _that.pending,
         );
       case _:
         return orElse();
@@ -255,6 +267,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
       List<DiscoveredFrame> frames,
       bool limited,
       int unresolved,
+      int pending,
     )
     $default,
   ) {
@@ -266,6 +279,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
           _that.frames,
           _that.limited,
           _that.unresolved,
+          _that.pending,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -291,6 +305,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
       List<DiscoveredFrame> frames,
       bool limited,
       int unresolved,
+      int pending,
     )?
     $default,
   ) {
@@ -302,6 +317,7 @@ extension FrameDiscoveryStatePatterns on FrameDiscoveryState {
           _that.frames,
           _that.limited,
           _that.unresolved,
+          _that.pending,
         );
       case _:
         return null;
@@ -317,6 +333,7 @@ class _FrameDiscoveryState implements FrameDiscoveryState {
     List<DiscoveredFrame> frames = const [],
     this.limited = false,
     this.unresolved = 0,
+    this.pending = 0,
   }) : _frames = frames;
 
   @override
@@ -337,6 +354,9 @@ class _FrameDiscoveryState implements FrameDiscoveryState {
   @override
   @JsonKey()
   final int unresolved;
+  @override
+  @JsonKey()
+  final int pending;
 
   /// Create a copy of FrameDiscoveryState
   /// with the given fields replaced by the non-null parameter values.
@@ -358,7 +378,8 @@ class _FrameDiscoveryState implements FrameDiscoveryState {
             const DeepCollectionEquality().equals(other.frames, _frames) &&
             (identical(other.limited, limited) || other.limited == limited) &&
             (identical(other.unresolved, unresolved) ||
-                other.unresolved == unresolved));
+                other.unresolved == unresolved) &&
+            (identical(other.pending, pending) || other.pending == pending));
   }
 
   @override
@@ -369,12 +390,13 @@ class _FrameDiscoveryState implements FrameDiscoveryState {
       const DeepCollectionEquality().hash(_frames),
       limited,
       unresolved,
+      pending,
     );
   }
 
   @override
   String toString() {
-    return 'FrameDiscoveryState(status: $status, frames: $frames, limited: $limited, unresolved: $unresolved)';
+    return 'FrameDiscoveryState(status: $status, frames: $frames, limited: $limited, unresolved: $unresolved, pending: $pending)';
   }
 }
 
@@ -392,6 +414,7 @@ abstract mixin class _$FrameDiscoveryStateCopyWith<$Res>
     List<DiscoveredFrame> frames,
     bool limited,
     int unresolved,
+    int pending,
   });
 }
 
@@ -412,6 +435,7 @@ class __$FrameDiscoveryStateCopyWithImpl<$Res>
     Object? frames = null,
     Object? limited = null,
     Object? unresolved = null,
+    Object? pending = null,
   }) {
     return _then(
       _FrameDiscoveryState(
@@ -430,6 +454,10 @@ class __$FrameDiscoveryStateCopyWithImpl<$Res>
         unresolved: null == unresolved
             ? _self.unresolved
             : unresolved // ignore: cast_nullable_to_non_nullable
+                  as int,
+        pending: null == pending
+            ? _self.pending
+            : pending // ignore: cast_nullable_to_non_nullable
                   as int,
       ),
     );

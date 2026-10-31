@@ -269,7 +269,7 @@ abstract class AppLocalizations {
   /// System control menu item text
   ///
   /// In en, this message translates to:
-  /// **'System Control'**
+  /// **'Power and restart'**
   String get system_control_menu_item;
 
   /// Exit menu item text
@@ -2057,7 +2057,7 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_selected.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, one{{count} selected} other{{count} selected}}'**
+  /// **'Selected: {count}'**
   String gallery_selected(int count);
 
   /// No description provided for @clear_selection.
@@ -6203,7 +6203,7 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_hide.
   ///
   /// In en, this message translates to:
-  /// **'Hide from slideshow'**
+  /// **'Hide'**
   String get gallery_hide;
 
   /// No description provided for @gallery_unhide.
@@ -6233,8 +6233,20 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_hide_confirm_body.
   ///
   /// In en, this message translates to:
-  /// **'Hide {count} files from the slideshow? They remain on the frame and can be restored from Hidden.'**
+  /// **'Hide selected items from the slideshow: {count}?'**
   String gallery_hide_confirm_body(int count);
+
+  /// No description provided for @gallery_unhide_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Return selected files to slideshow?'**
+  String get gallery_unhide_title;
+
+  /// No description provided for @gallery_unhide_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Return selected items to the slideshow: {count}?'**
+  String gallery_unhide_confirm_body(int count);
 
   /// No description provided for @gallery_hidden_hint.
   ///

@@ -18,6 +18,8 @@ class FakeAvahi extends DBusObject {
   int freedBrowsers = 0;
   int collisions = 0;
   bool failResolve = false;
+  int resolveTimeouts = 0;
+  bool hasTxtRecord = true;
   Completer<void>? resolveGate;
   int activeResolves = 0;
   int maxActiveResolves = 0;
@@ -76,6 +78,10 @@ class FakeAvahi extends DBusObject {
         onResolveStarted?.call();
         await resolveGate?.future;
         activeResolves--;
+        if (resolveTimeouts > 0 || (!hasTxtRecord && call.values[6].asUint32() & 4 == 0)) {
+          if (resolveTimeouts > 0) resolveTimeouts--;
+          return DBusMethodErrorResponse('org.freedesktop.Avahi.TimeoutError', [const DBusString('Timeout reached')]);
+        }
         if (failResolve) return DBusMethodErrorResponse.failed('private-resolve-payload');
         return DBusMethodSuccessResponse([
           call.values[0],

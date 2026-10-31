@@ -314,7 +314,7 @@ class GalleryViewerBloc extends Bloc<GalleryViewerEvent, GalleryViewerState> {
     if (_closing || state.busy || state.confirmation != null || !state.canMutate(event.action)) {
       return;
     }
-    if (event.action == GalleryMutation.purge || event.action == GalleryMutation.trash) {
+    if (event.action != GalleryMutation.restore) {
       final confirmation = GalleryMutationConfirmation(
         token: ++_confirmationId,
         action: event.action,

@@ -21,6 +21,8 @@ class AvahiFrameDiscoverySession implements FrameDiscoverySession {
   AvahiFrameDiscoverySession({required DBusClient bus}) : _bus = bus;
 
   static final _log = Logger('AvahiDiscovery');
+  // AVAHI_LOOKUP_NO_TXT: discovery only consumes the SRV endpoint and IPv4 address.
+  static const _lookupNoTxt = 4;
   final DBusClient _bus;
   final _updates = StreamController<FrameDiscoveryUpdate>();
   final _subscriptions = <StreamSubscription<DBusSignal>>[];
@@ -79,6 +81,7 @@ class AvahiFrameDiscoverySession implements FrameDiscoverySession {
               _pending.removeWhere((pending) => pending == service);
               _resolved.remove(service);
               _emitService(service);
+              _resolvePending();
             } else if (_services.length >= 256 && !_services.contains(service)) {
               _updates.add(const FrameDiscoveryUpdate.limited());
             } else if (_services.add(service)) {
@@ -86,8 +89,8 @@ class AvahiFrameDiscoverySession implements FrameDiscoverySession {
               _resolvePending();
             }
           },
-          onError: (Object error) {
-            if (!_closed) _updates.addError(error);
+          onError: (Object error, StackTrace stack) {
+            if (!_closed) _updates.addError(error, stack);
           },
         ),
       );
@@ -119,41 +122,66 @@ class AvahiFrameDiscoverySession implements FrameDiscoverySession {
         }),
       );
     }
+    if (!_closed) _updates.add(FrameDiscoveryUpdate.pending(_pending.length + _resolving));
   }
 
   Future<void> _resolve(_Service service) async {
-    try {
-      final result = await _call(_server, '$avahiBusName.Server', 'ResolveService', [
-        DBusInt32(service.interface),
-        DBusInt32(service.protocol),
-        DBusString(service.name),
-        DBusString(service.type),
-        DBusString(service.domain),
-        const DBusInt32(0),
-        const DBusUint32(0),
-      ], replySignature: DBusSignature('iissssisqaayu'));
-      if (_closed || !_services.contains(service)) return;
-      final values = result.returnValues;
-      final address = values[7].asString();
-      final port = values[8].asUint16();
-      if (InternetAddress.tryParse(address)?.type != InternetAddressType.IPv4 || port == 0) {
-        _log.warning('action=resolve result=failed reason=invalid-endpoint');
+    final context = 'service=${_key(service)} interface=${service.interface} protocol=${service.protocol}';
+    for (var attempt = 0; attempt < 2; attempt++) {
+      _log.fine('action=resolve result=started $context');
+      try {
+        final result = await _call(_server, '$avahiBusName.Server', 'ResolveService', [
+          DBusInt32(service.interface),
+          DBusInt32(service.protocol),
+          DBusString(service.name),
+          DBusString(service.type),
+          DBusString(service.domain),
+          const DBusInt32(0),
+          const DBusUint32(_lookupNoTxt),
+        ], replySignature: DBusSignature('iissssisqaayu'));
+        if (_closed || !_services.contains(service)) {
+          _log.fine('action=resolve result=cancelled $context');
+          return;
+        }
+        final values = result.returnValues;
+        final address = values[7].asString();
+        final port = values[8].asUint16();
+        if (InternetAddress.tryParse(address)?.type != InternetAddressType.IPv4 || port == 0) {
+          _log.warning('action=resolve result=failed reason=invalid-endpoint $context address=$address port=$port');
+          _updates.add(const FrameDiscoveryUpdate.resolveFailed());
+          return;
+        }
+        _resolved[service] = DiscoveredFrame(
+          serviceKey: _key(service),
+          hostname: values[5].asString().isEmpty ? service.name : values[5].asString(),
+          address: address,
+          port: port,
+        );
+        _emitService(service);
+        if (attempt > 0) {
+          _log.info('action=resolve result=recovered $context address=$address port=$port');
+        } else {
+          _log.fine('action=resolve result=completed $context address=$address port=$port');
+        }
+        return;
+      } catch (error, stack) {
+        if (_closed || !_services.contains(service)) {
+          _log.fine('action=resolve result=cancelled $context');
+          return;
+        }
+        // Avahi frees its resolver before replying with TimeoutError. Retry only
+        // this explicit mDNS failure, within the search window owned by the Bloc.
+        final retry =
+            attempt == 0 && error is DBusMethodResponseException && error.errorName == '$avahiBusName.TimeoutError';
+        final code = error is DBusMethodResponseException ? error.errorName : error.runtimeType;
+        _log.warning(
+          'action=resolve result=${retry ? 'retrying' : 'failed'} $context type=${error.runtimeType} code=$code',
+          error,
+          stack,
+        );
+        if (retry) continue;
         _updates.add(const FrameDiscoveryUpdate.resolveFailed());
         return;
-      }
-      _resolved[service] = DiscoveredFrame(
-        serviceKey: _key(service),
-        hostname: values[5].asString().isEmpty ? service.name : values[5].asString(),
-        address: address,
-        port: port,
-      );
-      _emitService(service);
-      _log.fine('action=resolve result=completed');
-    } catch (error, stack) {
-      if (!_closed) {
-        final code = error is DBusMethodResponseException ? error.errorName : error.runtimeType;
-        _log.warning('action=resolve result=failed type=${error.runtimeType} code=$code', error, stack);
-        _updates.add(const FrameDiscoveryUpdate.resolveFailed());
       }
     }
   }

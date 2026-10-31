@@ -61,7 +61,7 @@ void main() {
     final barBounds = tester.getRect(bar);
     final tileBounds = tester.getRect(firstTile);
     expect(find.text('Move to trash'), findsOneWidget);
-    expect(find.text('0 selected'), findsOneWidget);
+    expect(find.text('Selected: 0'), findsOneWidget);
     expect(tester.widget<TextButton>(trash).onPressed, isNull);
     expect(tester.widget<IconButton>(clear).onPressed, isNull);
     expect(find.text('Test camera'), findsNothing);
@@ -77,7 +77,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.close));
     await tester.pump();
     expect(find.text('Move to trash'), findsOneWidget);
-    expect(find.text('0 selected'), findsOneWidget);
+    expect(find.text('Selected: 0'), findsOneWidget);
     expect(tester.widget<TextButton>(trash).onPressed, isNull);
     expect(tester.widget<IconButton>(clear).onPressed, isNull);
     expect(tester.getRect(bar), barBounds);

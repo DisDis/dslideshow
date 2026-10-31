@@ -68,17 +68,36 @@ Future<bool> confirmGalleryMutation(BuildContext context, GalleryMutationConfirm
       confirmation.sizeBytes!,
       names: confirmation.names,
     ),
-    GalleryMutation.hide => _confirmGalleryFiles(
-      context,
-      title: l.gallery_hide_title,
-      body: Text(l.gallery_hide_confirm_body(confirmation.items.length)),
-      confirmLabel: l.gallery_hide,
-      count: confirmation.items.length,
-      names: confirmation.names,
-      remainingText: l.gallery_more_files_trash,
-    ),
-    GalleryMutation.restore || GalleryMutation.unhide => Future.value(true),
+    GalleryMutation.hide || GalleryMutation.unhide => _confirmGalleryVisibility(context, confirmation),
+    GalleryMutation.restore => Future.value(true),
   };
+}
+
+Future<bool> _confirmGalleryVisibility(BuildContext context, GalleryMutationConfirmation confirmation) async {
+  final l = context.localizations;
+  final hide = confirmation.action == GalleryMutation.hide;
+  return await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(hide ? l.gallery_hide_title : l.gallery_unhide_title),
+          content: Text(
+            hide
+                ? l.gallery_hide_confirm_body(confirmation.items.length)
+                : l.gallery_unhide_confirm_body(confirmation.items.length),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(hide ? l.gallery_hide : l.gallery_unhide),
+            ),
+          ],
+        ),
+      ) ??
+      false;
 }
 
 Future<bool> _confirmGalleryFiles(

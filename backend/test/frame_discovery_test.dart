@@ -130,7 +130,7 @@ void main() {
       avahi.responsePort = invalid.$1;
       avahi.responseAddress = invalid.$2;
       final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
-      final next = session.updates.first;
+      final next = _endpoints(session).first;
       await session.start();
       await avahi.announce('Frame A');
       expect(await next, const FrameDiscoveryUpdate.resolveFailed());
@@ -141,7 +141,7 @@ void main() {
   test('discovery resolves IPv4 and custom port, merges interfaces and removes only the last address', () async {
     final bus = TrackingBus(avahi.address);
     final session = AvahiFrameDiscoverySession(bus: bus);
-    final updates = StreamIterator(session.updates);
+    final updates = StreamIterator(_endpoints(session));
     await session.start();
     await avahi.announce('Frame A');
     expect(await updates.moveNext(), isTrue);
@@ -164,27 +164,151 @@ void main() {
   });
 
   test(
-    'failed resolve is reported without leaking its payload',
+    'non-timeout resolve failure is reported once with its original error and stack',
     () => captureLogs((logs) async {
       avahi.failResolve = true;
       final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
-      final next = session.updates.first;
+      final next = _endpoints(session).first;
       await session.start();
       await avahi.announce('Frame A');
       expect(await next, const FrameDiscoveryUpdate.resolveFailed());
+      expect(avahi.resolutions, ['Frame A']);
       await session.close();
       final failures = logs.where((record) => record.loggerName == 'AvahiDiscovery' && record.level == Level.WARNING);
       expect(failures, hasLength(1));
       expect(failures.single.message, contains('code=org.freedesktop.DBus.Error.Failed'));
       expect(failures.single.message, isNot(contains('elapsedMs=')));
-      expect(logs.any((record) => record.message.contains('private-resolve-payload')), isFalse);
-      expect(logs.where((record) => record.error != null), isNotEmpty);
-      expect(
-        logs
-            .where((record) => record.error != null)
-            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
-        isTrue,
-      );
+      expect(failures.single.error.toString(), contains('private-resolve-payload'));
+      expect(failures.single.stackTrace.toString(), contains('DBusClient._callMethod'));
+    }),
+  );
+
+  test('discovery does not require an unused TXT record to resolve the endpoint', () async {
+    avahi.hasTxtRecord = false;
+    final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
+    final updates = StreamIterator(_endpoints(session));
+    addTearDown(() async {
+      await updates.cancel();
+      await session.close();
+    });
+    await session.start();
+    await avahi.announce('Frame A');
+    await updates.moveNext();
+    expect((updates.current as FrameResolved).frame.connectUri.toString(), 'ws://192.0.2.9:9091/ws');
+    expect(avahi.resolutions, ['Frame A']);
+  });
+
+  test(
+    'Avahi timeout retries once and publishes only the recovered endpoint',
+    () => captureLogs((logs) async {
+      avahi.resolveTimeouts = 1;
+      final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
+      final updates = StreamIterator(session.updates);
+      addTearDown(() async {
+        await updates.cancel();
+        await session.close();
+      });
+      await session.start();
+      await avahi.announce('Frame A');
+      await updates.moveNext();
+      expect(updates.current, const FrameDiscoveryUpdate.pending(1));
+      await updates.moveNext();
+      expect((updates.current as FrameResolved).frame.connectUri.toString(), 'ws://192.0.2.9:9091/ws');
+      await updates.moveNext();
+      expect(updates.current, const FrameDiscoveryUpdate.pending(0));
+      expect(avahi.resolutions, ['Frame A', 'Frame A']);
+      final retry = logs.singleWhere((record) => record.message.contains('result=retrying'));
+      expect(retry.message, contains('service=Frame A._dslideshow._tcp.local'));
+      expect(retry.message, contains('interface=1 protocol=0'));
+      expect(retry.error, isA<DBusMethodResponseException>());
+      expect(retry.error.toString(), contains('org.freedesktop.Avahi.TimeoutError: Timeout reached'));
+      expect(retry.stackTrace.toString(), contains('DBusClient._callMethod'));
+      expect(logs.any((record) => record.message.contains('result=recovered')), isTrue);
+      expect(logs.any((record) => record.message.contains('result=failed')), isFalse);
+    }),
+  );
+
+  test(
+    'persistent Avahi timeout reports one failed endpoint after at most two calls',
+    () => captureLogs((logs) async {
+      avahi.resolveTimeouts = 2;
+      final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
+      final updates = StreamIterator(_endpoints(session));
+      addTearDown(() async {
+        await updates.cancel();
+        await session.close();
+      });
+      await session.start();
+      await avahi.announce('Frame A');
+      await updates.moveNext();
+      expect(updates.current, const FrameDiscoveryUpdate.resolveFailed());
+      expect(avahi.resolutions, ['Frame A', 'Frame A']);
+      final failures = logs.where((record) => record.level == Level.WARNING).toList();
+      expect(failures, hasLength(2));
+      expect(failures.first.message, contains('result=retrying'));
+      expect(failures.last.message, contains('result=failed'));
+      for (final failure in failures) {
+        expect(failure.error.toString(), contains('Timeout reached'));
+        expect(failure.stackTrace.toString(), contains('DBusClient._callMethod'));
+      }
+    }),
+  );
+
+  test('removing a service during resolve prevents a timeout retry and stale failure', () async {
+    avahi.resolveTimeouts = 1;
+    avahi.resolveGate = Completer<void>();
+    final started = Completer<void>();
+    avahi.onResolveStarted = () {
+      if (!started.isCompleted) started.complete();
+    };
+    final session = AvahiFrameDiscoverySession(bus: DBusClient(avahi.address));
+    final updates = StreamIterator(_endpoints(session));
+    addTearDown(() async {
+      await updates.cancel();
+      await session.close();
+    });
+    await session.start();
+    await avahi.announce('Frame A');
+    await started.future;
+    await avahi.announce('Frame A', remove: true);
+    await updates.moveNext();
+    expect(updates.current, const FrameDiscoveryUpdate.lost('Frame A._dslideshow._tcp.local'));
+    avahi.resolveGate!.complete();
+    await avahi.announce('Frame B');
+    await updates.moveNext();
+    expect((updates.current as FrameResolved).frame.serviceKey, 'Frame B._dslideshow._tcp.local');
+    expect(avahi.resolutions, ['Frame A', 'Frame B']);
+  });
+
+  test(
+    'closing during the timeout retry cancels it without another failure or connection leak',
+    () => captureLogs((logs) async {
+      avahi.resolveTimeouts = 1;
+      final retryStarted = Completer<void>();
+      final retryGate = Completer<void>();
+      avahi.onResolveStarted = () {
+        if (avahi.resolutions.length == 2) {
+          avahi.resolveGate = retryGate;
+          retryStarted.complete();
+        }
+      };
+      final bus = TrackingBus(avahi.address);
+      final session = AvahiFrameDiscoverySession(bus: bus);
+      final updates = <FrameDiscoveryUpdate>[];
+      final subscription = _endpoints(session).listen(updates.add);
+      await session.start();
+      await avahi.announce('Frame A');
+      await retryStarted.future;
+      await subscription.cancel();
+      await session.close();
+      retryGate.complete();
+      expect(avahi.resolutions, ['Frame A', 'Frame A']);
+      expect(updates, isEmpty);
+      expect(bus.closes, 1);
+      expect(avahi.freedBrowsers, 1);
+      expect(logs.where((record) => record.level == Level.WARNING), hasLength(1));
+      expect(logs.any((record) => record.message.contains('result=cancelled')), isTrue);
+      expect(logs.any((record) => record.message.contains('result=failed')), isFalse);
     }),
   );
 
@@ -213,6 +337,9 @@ void main() {
     avahi.resolveGate!.complete();
   });
 }
+
+Stream<FrameDiscoveryUpdate> _endpoints(FrameDiscoverySession session) =>
+    session.updates.where((update) => update is! FrameDiscoveryPending);
 
 class _DeferredRemoteObject extends DBusRemoteObject {
   _DeferredRemoteObject(DBusClient client) : super(client, name: 'org.freedesktop.Avahi', path: DBusObjectPath('/'));

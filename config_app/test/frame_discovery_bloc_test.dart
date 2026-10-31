@@ -77,6 +77,83 @@ void main() {
     await tester.runAsync(bloc.close);
   });
 
+  testWidgets('pending resolution at the deadline retains frames and recovery permits a clean snapshot', (
+    tester,
+  ) async {
+    final provider = ControlledFrameProvider();
+    final records = <LogRecord>[];
+    final previousLevel = Logger.root.level;
+    Logger.root.level = Level.ALL;
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(() async {
+      await subscription.cancel();
+      Logger.root.level = previousLevel;
+    });
+    final bloc = FrameDiscoveryBloc(provider: provider);
+    bloc.add(const FrameDiscoveryEvent.search());
+    await tester.pump();
+    provider.sessions.single.controller.add(const FrameDiscoveryUpdate.resolved(firstFrame));
+    await tester.pump();
+    await tester.pump(FrameDiscoveryBloc.defaultSearchDuration);
+
+    bloc.add(const FrameDiscoveryEvent.search());
+    await tester.pump();
+    final incomplete = provider.sessions.last;
+    incomplete.controller.add(const FrameDiscoveryUpdate.pending(1));
+    await tester.pump(const Duration(seconds: 5));
+    expect(bloc.state.status, FrameDiscoveryStatus.searching);
+    expect(bloc.state.unresolved, 0);
+    await tester.pump(FrameDiscoveryBloc.defaultSearchDuration - const Duration(seconds: 5));
+    expect(bloc.state.status, FrameDiscoveryStatus.completed);
+    expect(bloc.state.frames, [firstFrame]);
+    expect(bloc.state.unresolved, 1);
+    expect(bloc.state.pending, 0);
+    expect(incomplete.closes, 1);
+    expect(records.any((record) => record.message.contains('unresolved=1 pending=1')), isTrue);
+
+    bloc.add(const FrameDiscoveryEvent.search());
+    await tester.pump();
+    final recovered = provider.sessions.last;
+    recovered.controller.add(const FrameDiscoveryUpdate.pending(1));
+    recovered.controller.add(const FrameDiscoveryUpdate.resolved(secondFrame));
+    recovered.controller.add(const FrameDiscoveryUpdate.pending(0));
+    await tester.pump();
+    await tester.pump(FrameDiscoveryBloc.defaultSearchDuration);
+    expect(bloc.state.frames, [secondFrame]);
+    expect(bloc.state.unresolved, 0);
+    expect(recovered.closes, 1);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('default search allows a full Avahi retry to resolve after the old eight-second deadline', (
+    tester,
+  ) async {
+    final provider = ControlledFrameProvider();
+    final bloc = FrameDiscoveryBloc(provider: provider);
+    expect(FrameDiscoveryBloc.defaultSearchDuration, const Duration(seconds: 12));
+    bloc.add(const FrameDiscoveryEvent.search());
+    await tester.pump();
+    final session = provider.sessions.single;
+    session.controller.add(const FrameDiscoveryUpdate.pending(1));
+    await tester.pump(const Duration(seconds: 5));
+    // The first resolver timed out. Its retry is still pending at the old deadline.
+    await tester.pump(const Duration(seconds: 3));
+    expect(bloc.state.status, FrameDiscoveryStatus.searching);
+    expect(session.closes, 0);
+    await tester.pump(const Duration(seconds: 2));
+    session.controller.add(const FrameDiscoveryUpdate.resolved(firstFrame));
+    session.controller.add(const FrameDiscoveryUpdate.pending(0));
+    await tester.pump();
+    expect(bloc.state.frames, [firstFrame]);
+    expect(bloc.state.unresolved, 0);
+    await tester.pump(const Duration(seconds: 2));
+    expect(bloc.state.status, FrameDiscoveryStatus.completed);
+    expect(bloc.state.frames, [firstFrame]);
+    expect(bloc.state.unresolved, 0);
+    expect(session.closes, 1);
+    await tester.runAsync(bloc.close);
+  });
+
   testWidgets('startup failure and transport failure are distinct, retry releases resources and logs are safe', (
     tester,
   ) async {

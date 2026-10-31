@@ -138,7 +138,7 @@ void main() {
       await tester.tap(_choice('b.jpg'));
       await tester.pump();
       final footer = find.byKey(const ValueKey('gallery-duplicate-selection'));
-      expect(find.descendant(of: footer, matching: find.text('1 selected')), findsOneWidget);
+      expect(find.descendant(of: footer, matching: find.text('Selected: 1')), findsOneWidget);
       expect(find.descendant(of: footer, matching: find.text('Volume: 1.25 MB')), findsOneWidget);
       expect(tester.getRect(footer).bottom, lessThanOrEqualTo(tester.view.physicalSize.height));
       await tester.scrollUntilVisible(
@@ -176,7 +176,7 @@ void main() {
       expect(tester.widget<CheckboxListTile>(_choice('b.jpg')).value, isTrue);
       await tester.tap(find.text('Clear selection'));
       await tester.pump();
-      expect(find.text('0 selected'), findsOneWidget);
+      expect(find.text('Selected: 0'), findsOneWidget);
       expect(find.text('Volume: 0.00 MB'), findsOneWidget);
       expect(tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Move to trash')).onPressed, isNull);
       expect(groups, [0, 1, 0]);
@@ -235,7 +235,7 @@ void main() {
       await tester.pump();
       await _cancel(tester);
       expect(starts, isEmpty);
-      expect(find.text('1 selected'), findsOneWidget);
+      expect(find.text('Selected: 1'), findsOneWidget);
       for (final element in find.byType(GalleryImage).evaluate()) {
         expect((element as StatefulElement).state, same(imageStates[(element.widget as GalleryImage).request.key]));
       }
@@ -250,7 +250,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pump();
       expect(starts.single.modes.toSet(), GalleryDuplicateMode.values.toSet());
-      expect(find.text('1 selected'), findsOneWidget);
+      expect(find.text('Selected: 1'), findsOneWidget);
       await _openSearch(tester);
       expect(radio(GalleryDuplicateSearchChoice.both).selected, isTrue);
       await _cancel(tester);

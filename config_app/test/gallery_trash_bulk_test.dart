@@ -380,7 +380,7 @@ void main() {
     await tester.tap(all);
     await _pumpUntil(tester, () => bloc.state.selectedIds.length == 3);
     expect(tester.widget<TextButton>(all).onPressed, isNull);
-    expect(find.text('3 selected'), findsOneWidget);
+    expect(find.text('Selected: 3'), findsOneWidget);
     await tester.tap(find.byTooltip('Clear selection'));
     await _pumpUntil(tester, () => bloc.state.selectedIds.isEmpty);
     expect(posts, 0);

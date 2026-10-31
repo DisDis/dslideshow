@@ -42,10 +42,10 @@
   "reset_button": "Сбросить",
   "home_menu_item": "Главная",
   "gallery_menu_item": "Галерея",
-  "upload_media_menu_item": "Загрузка медиа",
+  "upload_media_menu_item": "Загрузить медиа",
   "configuration_menu_item": "Настройки",
   "wifi_menu_item": "Wi-Fi",
-  "system_control_menu_item": "Управление устройством",
+  "system_control_menu_item": "Питание и перезапуск",
   "exit_menu_item": "Выйти",
   "storage_settings_title": "Настройки хранилища",
   "unknown_storage_type_configuration": "Неизвестный тип хранилища",
@@ -734,7 +734,7 @@
   },
   "ota_uploading": "Загрузка прошивки…",
   "ota_upload_complete": "Прошивка загружена.",
-  "gallery_selected": "{count, plural, one{Выбран {count} файл} few{Выбрано {count} файла} many{Выбрано {count} файлов} other{Выбрано {count} файла}}",
+  "gallery_selected": "Выбрано: {count}",
   "@gallery_selected": {
     "placeholders": {
       "count": {
@@ -1668,13 +1668,22 @@
     }
   },
   "gallery_hidden": "Скрытые",
-  "gallery_hide": "Скрыть из показа",
+  "gallery_hide": "Скрыть",
   "gallery_unhide": "Вернуть в показ",
   "gallery_hidden_done": "Файлы скрыты из показа",
   "gallery_unhidden": "Файлы возвращены в показ",
   "gallery_hide_title": "Скрыть выбранные файлы?",
-  "gallery_hide_confirm_body": "Скрыть {count} файлов из показа? Они останутся на рамке, их можно вернуть из раздела «Скрытые».",
+  "gallery_hide_confirm_body": "Скрыть из показа выбранные элементы: {count}?",
   "@gallery_hide_confirm_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_unhide_title": "Вернуть выбранные файлы в показ?",
+  "gallery_unhide_confirm_body": "Вернуть в показ выбранные элементы: {count}?",
+  "@gallery_unhide_confirm_body": {
     "placeholders": {
       "count": {
         "type": "int"

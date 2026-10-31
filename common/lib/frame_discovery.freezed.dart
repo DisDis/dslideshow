@@ -24,7 +24,10 @@ mixin _$DiscoveredFrame {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $DiscoveredFrameCopyWith<DiscoveredFrame> get copyWith =>
-      _$DiscoveredFrameCopyWithImpl<DiscoveredFrame>(this as DiscoveredFrame, _$identity);
+      _$DiscoveredFrameCopyWithImpl<DiscoveredFrame>(
+        this as DiscoveredFrame,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -32,16 +35,25 @@ mixin _$DiscoveredFrame {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is DiscoveredFrame &&
-            (identical(other.serviceKey, _this.serviceKey) || other.serviceKey == _this.serviceKey) &&
-            (identical(other.hostname, _this.hostname) || other.hostname == _this.hostname) &&
-            (identical(other.address, _this.address) || other.address == _this.address) &&
+            (identical(other.serviceKey, _this.serviceKey) ||
+                other.serviceKey == _this.serviceKey) &&
+            (identical(other.hostname, _this.hostname) ||
+                other.hostname == _this.hostname) &&
+            (identical(other.address, _this.address) ||
+                other.address == _this.address) &&
             (identical(other.port, _this.port) || other.port == _this.port));
   }
 
   @override
   int get hashCode {
     final _this = this as DiscoveredFrame;
-    return Object.hash(runtimeType, _this.serviceKey, _this.hostname, _this.address, _this.port);
+    return Object.hash(
+      runtimeType,
+      _this.serviceKey,
+      _this.hostname,
+      _this.address,
+      _this.port,
+    );
   }
 
   @override
@@ -53,14 +65,17 @@ mixin _$DiscoveredFrame {
 
 /// @nodoc
 abstract mixin class $DiscoveredFrameCopyWith<$Res> {
-  factory $DiscoveredFrameCopyWith(DiscoveredFrame value, $Res Function(DiscoveredFrame) _then) =
-      _$DiscoveredFrameCopyWithImpl;
+  factory $DiscoveredFrameCopyWith(
+    DiscoveredFrame value,
+    $Res Function(DiscoveredFrame) _then,
+  ) = _$DiscoveredFrameCopyWithImpl;
   @useResult
   $Res call({String serviceKey, String hostname, String address, int port});
 }
 
 /// @nodoc
-class _$DiscoveredFrameCopyWithImpl<$Res> implements $DiscoveredFrameCopyWith<$Res> {
+class _$DiscoveredFrameCopyWithImpl<$Res>
+    implements $DiscoveredFrameCopyWith<$Res> {
   _$DiscoveredFrameCopyWithImpl(this._self, this._then);
 
   final DiscoveredFrame _self;
@@ -70,7 +85,12 @@ class _$DiscoveredFrameCopyWithImpl<$Res> implements $DiscoveredFrameCopyWith<$R
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? serviceKey = null, Object? hostname = null, Object? address = null, Object? port = null}) {
+  $Res call({
+    Object? serviceKey = null,
+    Object? hostname = null,
+    Object? address = null,
+    Object? port = null,
+  }) {
     return _then(
       DiscoveredFrame(
         serviceKey: null == serviceKey
@@ -136,7 +156,9 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
   /// ```
 
   @optionalTypeArgs
-  TResult map<TResult extends Object?>(TResult Function(_DiscoveredFrame value) $default) {
+  TResult map<TResult extends Object?>(
+    TResult Function(_DiscoveredFrame value) $default,
+  ) {
     final _that = this;
     switch (_that) {
       case _DiscoveredFrame():
@@ -159,7 +181,9 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
   /// ```
 
   @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(TResult? Function(_DiscoveredFrame value)? $default) {
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_DiscoveredFrame value)? $default,
+  ) {
     final _that = this;
     switch (_that) {
       case _DiscoveredFrame() when $default != null:
@@ -183,13 +207,24 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String serviceKey, String hostname, String address, int port)? $default, {
+    TResult Function(
+      String serviceKey,
+      String hostname,
+      String address,
+      int port,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DiscoveredFrame() when $default != null:
-        return $default(_that.serviceKey, _that.hostname, _that.address, _that.port);
+        return $default(
+          _that.serviceKey,
+          _that.hostname,
+          _that.address,
+          _that.port,
+        );
       case _:
         return orElse();
     }
@@ -210,12 +245,23 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String serviceKey, String hostname, String address, int port) $default,
+    TResult Function(
+      String serviceKey,
+      String hostname,
+      String address,
+      int port,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DiscoveredFrame():
-        return $default(_that.serviceKey, _that.hostname, _that.address, _that.port);
+        return $default(
+          _that.serviceKey,
+          _that.hostname,
+          _that.address,
+          _that.port,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -235,12 +281,23 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String serviceKey, String hostname, String address, int port)? $default,
+    TResult? Function(
+      String serviceKey,
+      String hostname,
+      String address,
+      int port,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DiscoveredFrame() when $default != null:
-        return $default(_that.serviceKey, _that.hostname, _that.address, _that.port);
+        return $default(
+          _that.serviceKey,
+          _that.hostname,
+          _that.address,
+          _that.port,
+        );
       case _:
         return null;
     }
@@ -250,8 +307,12 @@ extension DiscoveredFramePatterns on DiscoveredFrame {
 /// @nodoc
 
 class _DiscoveredFrame extends DiscoveredFrame {
-  const _DiscoveredFrame({required this.serviceKey, required this.hostname, required this.address, required this.port})
-    : super._();
+  const _DiscoveredFrame({
+    required this.serviceKey,
+    required this.hostname,
+    required this.address,
+    required this.port,
+  }) : super._();
 
   @override
   final String serviceKey;
@@ -275,8 +336,10 @@ class _DiscoveredFrame extends DiscoveredFrame {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _DiscoveredFrame &&
-            (identical(other.serviceKey, serviceKey) || other.serviceKey == serviceKey) &&
-            (identical(other.hostname, hostname) || other.hostname == hostname) &&
+            (identical(other.serviceKey, serviceKey) ||
+                other.serviceKey == serviceKey) &&
+            (identical(other.hostname, hostname) ||
+                other.hostname == hostname) &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.port, port) || other.port == port));
   }
@@ -293,16 +356,20 @@ class _DiscoveredFrame extends DiscoveredFrame {
 }
 
 /// @nodoc
-abstract mixin class _$DiscoveredFrameCopyWith<$Res> implements $DiscoveredFrameCopyWith<$Res> {
-  factory _$DiscoveredFrameCopyWith(_DiscoveredFrame value, $Res Function(_DiscoveredFrame) _then) =
-      __$DiscoveredFrameCopyWithImpl;
+abstract mixin class _$DiscoveredFrameCopyWith<$Res>
+    implements $DiscoveredFrameCopyWith<$Res> {
+  factory _$DiscoveredFrameCopyWith(
+    _DiscoveredFrame value,
+    $Res Function(_DiscoveredFrame) _then,
+  ) = __$DiscoveredFrameCopyWithImpl;
   @override
   @useResult
   $Res call({String serviceKey, String hostname, String address, int port});
 }
 
 /// @nodoc
-class __$DiscoveredFrameCopyWithImpl<$Res> implements _$DiscoveredFrameCopyWith<$Res> {
+class __$DiscoveredFrameCopyWithImpl<$Res>
+    implements _$DiscoveredFrameCopyWith<$Res> {
   __$DiscoveredFrameCopyWithImpl(this._self, this._then);
 
   final _DiscoveredFrame _self;
@@ -312,7 +379,12 @@ class __$DiscoveredFrameCopyWithImpl<$Res> implements _$DiscoveredFrameCopyWith<
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? serviceKey = null, Object? hostname = null, Object? address = null, Object? port = null}) {
+  $Res call({
+    Object? serviceKey = null,
+    Object? hostname = null,
+    Object? address = null,
+    Object? port = null,
+  }) {
     return _then(
       _DiscoveredFrame(
         serviceKey: null == serviceKey
@@ -340,7 +412,8 @@ class __$DiscoveredFrameCopyWithImpl<$Res> implements _$DiscoveredFrameCopyWith<
 mixin _$FrameDiscoveryUpdate {
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is FrameDiscoveryUpdate);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is FrameDiscoveryUpdate);
   }
 
   @override
@@ -354,7 +427,10 @@ mixin _$FrameDiscoveryUpdate {
 
 /// @nodoc
 class $FrameDiscoveryUpdateCopyWith<$Res> {
-  $FrameDiscoveryUpdateCopyWith(FrameDiscoveryUpdate _, $Res Function(FrameDiscoveryUpdate) __);
+  $FrameDiscoveryUpdateCopyWith(
+    FrameDiscoveryUpdate _,
+    $Res Function(FrameDiscoveryUpdate) __,
+  );
 }
 
 /// Adds pattern-matching-related methods to [FrameDiscoveryUpdate].
@@ -377,6 +453,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     TResult Function(FrameLost value)? lost,
     TResult Function(FrameDiscoveryLimited value)? limited,
     TResult Function(FrameResolveFailed value)? resolveFailed,
+    TResult Function(FrameDiscoveryPending value)? pending,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -389,6 +466,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited(_that);
       case FrameResolveFailed() when resolveFailed != null:
         return resolveFailed(_that);
+      case FrameDiscoveryPending() when pending != null:
+        return pending(_that);
       case _:
         return orElse();
     }
@@ -413,6 +492,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     required TResult Function(FrameLost value) lost,
     required TResult Function(FrameDiscoveryLimited value) limited,
     required TResult Function(FrameResolveFailed value) resolveFailed,
+    required TResult Function(FrameDiscoveryPending value) pending,
   }) {
     final _that = this;
     switch (_that) {
@@ -424,6 +504,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited(_that);
       case FrameResolveFailed():
         return resolveFailed(_that);
+      case FrameDiscoveryPending():
+        return pending(_that);
     }
   }
 
@@ -445,6 +527,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     TResult? Function(FrameLost value)? lost,
     TResult? Function(FrameDiscoveryLimited value)? limited,
     TResult? Function(FrameResolveFailed value)? resolveFailed,
+    TResult? Function(FrameDiscoveryPending value)? pending,
   }) {
     final _that = this;
     switch (_that) {
@@ -456,6 +539,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited(_that);
       case FrameResolveFailed() when resolveFailed != null:
         return resolveFailed(_that);
+      case FrameDiscoveryPending() when pending != null:
+        return pending(_that);
       case _:
         return null;
     }
@@ -479,6 +564,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     TResult Function(String serviceKey)? lost,
     TResult Function()? limited,
     TResult Function()? resolveFailed,
+    TResult Function(int count)? pending,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -491,6 +577,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited();
       case FrameResolveFailed() when resolveFailed != null:
         return resolveFailed();
+      case FrameDiscoveryPending() when pending != null:
+        return pending(_that.count);
       case _:
         return orElse();
     }
@@ -515,6 +603,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     required TResult Function(String serviceKey) lost,
     required TResult Function() limited,
     required TResult Function() resolveFailed,
+    required TResult Function(int count) pending,
   }) {
     final _that = this;
     switch (_that) {
@@ -526,6 +615,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited();
       case FrameResolveFailed():
         return resolveFailed();
+      case FrameDiscoveryPending():
+        return pending(_that.count);
     }
   }
 
@@ -547,6 +638,7 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
     TResult? Function(String serviceKey)? lost,
     TResult? Function()? limited,
     TResult? Function()? resolveFailed,
+    TResult? Function(int count)? pending,
   }) {
     final _that = this;
     switch (_that) {
@@ -558,6 +650,8 @@ extension FrameDiscoveryUpdatePatterns on FrameDiscoveryUpdate {
         return limited();
       case FrameResolveFailed() when resolveFailed != null:
         return resolveFailed();
+      case FrameDiscoveryPending() when pending != null:
+        return pending(_that.count);
       case _:
         return null;
     }
@@ -575,7 +669,8 @@ class FrameResolved implements FrameDiscoveryUpdate {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $FrameResolvedCopyWith<FrameResolved> get copyWith => _$FrameResolvedCopyWithImpl<FrameResolved>(this, _$identity);
+  $FrameResolvedCopyWith<FrameResolved> get copyWith =>
+      _$FrameResolvedCopyWithImpl<FrameResolved>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
@@ -597,8 +692,12 @@ class FrameResolved implements FrameDiscoveryUpdate {
 }
 
 /// @nodoc
-abstract mixin class $FrameResolvedCopyWith<$Res> implements $FrameDiscoveryUpdateCopyWith<$Res> {
-  factory $FrameResolvedCopyWith(FrameResolved value, $Res Function(FrameResolved) _then) = _$FrameResolvedCopyWithImpl;
+abstract mixin class $FrameResolvedCopyWith<$Res>
+    implements $FrameDiscoveryUpdateCopyWith<$Res> {
+  factory $FrameResolvedCopyWith(
+    FrameResolved value,
+    $Res Function(FrameResolved) _then,
+  ) = _$FrameResolvedCopyWithImpl;
   @useResult
   $Res call({DiscoveredFrame frame});
 
@@ -606,7 +705,8 @@ abstract mixin class $FrameResolvedCopyWith<$Res> implements $FrameDiscoveryUpda
 }
 
 /// @nodoc
-class _$FrameResolvedCopyWithImpl<$Res> implements $FrameResolvedCopyWith<$Res> {
+class _$FrameResolvedCopyWithImpl<$Res>
+    implements $FrameResolvedCopyWith<$Res> {
   _$FrameResolvedCopyWithImpl(this._self, this._then);
 
   final FrameResolved _self;
@@ -648,14 +748,16 @@ class FrameLost implements FrameDiscoveryUpdate {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $FrameLostCopyWith<FrameLost> get copyWith => _$FrameLostCopyWithImpl<FrameLost>(this, _$identity);
+  $FrameLostCopyWith<FrameLost> get copyWith =>
+      _$FrameLostCopyWithImpl<FrameLost>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is FrameLost &&
-            (identical(other.serviceKey, serviceKey) || other.serviceKey == serviceKey));
+            (identical(other.serviceKey, serviceKey) ||
+                other.serviceKey == serviceKey));
   }
 
   @override
@@ -670,8 +772,10 @@ class FrameLost implements FrameDiscoveryUpdate {
 }
 
 /// @nodoc
-abstract mixin class $FrameLostCopyWith<$Res> implements $FrameDiscoveryUpdateCopyWith<$Res> {
-  factory $FrameLostCopyWith(FrameLost value, $Res Function(FrameLost) _then) = _$FrameLostCopyWithImpl;
+abstract mixin class $FrameLostCopyWith<$Res>
+    implements $FrameDiscoveryUpdateCopyWith<$Res> {
+  factory $FrameLostCopyWith(FrameLost value, $Res Function(FrameLost) _then) =
+      _$FrameLostCopyWithImpl;
   @useResult
   $Res call({String serviceKey});
 }
@@ -705,7 +809,8 @@ class FrameDiscoveryLimited implements FrameDiscoveryUpdate {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is FrameDiscoveryLimited);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is FrameDiscoveryLimited);
   }
 
   @override
@@ -724,7 +829,8 @@ class FrameResolveFailed implements FrameDiscoveryUpdate {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is FrameResolveFailed);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is FrameResolveFailed);
   }
 
   @override
@@ -733,5 +839,75 @@ class FrameResolveFailed implements FrameDiscoveryUpdate {
   @override
   String toString() {
     return 'FrameDiscoveryUpdate.resolveFailed()';
+  }
+}
+
+/// @nodoc
+
+class FrameDiscoveryPending implements FrameDiscoveryUpdate {
+  const FrameDiscoveryPending(this.count);
+
+  final int count;
+
+  /// Create a copy of FrameDiscoveryUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $FrameDiscoveryPendingCopyWith<FrameDiscoveryPending> get copyWith =>
+      _$FrameDiscoveryPendingCopyWithImpl<FrameDiscoveryPending>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FrameDiscoveryPending &&
+            (identical(other.count, count) || other.count == count));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, count);
+  }
+
+  @override
+  String toString() {
+    return 'FrameDiscoveryUpdate.pending(count: $count)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $FrameDiscoveryPendingCopyWith<$Res>
+    implements $FrameDiscoveryUpdateCopyWith<$Res> {
+  factory $FrameDiscoveryPendingCopyWith(
+    FrameDiscoveryPending value,
+    $Res Function(FrameDiscoveryPending) _then,
+  ) = _$FrameDiscoveryPendingCopyWithImpl;
+  @useResult
+  $Res call({int count});
+}
+
+/// @nodoc
+class _$FrameDiscoveryPendingCopyWithImpl<$Res>
+    implements $FrameDiscoveryPendingCopyWith<$Res> {
+  _$FrameDiscoveryPendingCopyWithImpl(this._self, this._then);
+
+  final FrameDiscoveryPending _self;
+  final $Res Function(FrameDiscoveryPending) _then;
+
+  /// Create a copy of FrameDiscoveryUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? count = null}) {
+    return _then(
+      FrameDiscoveryPending(
+        null == count
+            ? _self.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }

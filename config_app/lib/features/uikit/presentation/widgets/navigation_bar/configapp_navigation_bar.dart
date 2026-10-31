@@ -11,13 +11,13 @@ import 'package:go_router/go_router.dart';
 
 enum AppDestination {
   home('/home', Icons.home_outlined),
-  telemetry('/telemetry', Icons.monitor_heart_outlined),
-  control('/device_control', Icons.settings_remote_outlined),
   gallery('/gallery', Icons.photo_library_outlined),
   upload('/upload', Icons.upload_file_outlined),
   config('/config', Icons.tune),
   ota('/ota', Icons.system_update_outlined),
+  control('/device_control', Icons.settings_remote_outlined),
   wifi('/wifi_config', Icons.wifi),
+  telemetry('/telemetry', Icons.monitor_heart_outlined),
   power('/power', Icons.power_settings_new);
 
   const AppDestination(this.path, this.icon);

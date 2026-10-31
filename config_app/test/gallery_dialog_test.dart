@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:config_app/features/gallery/presentation/bloc/gallery_duplicates_bloc.dart';
+import 'package:config_app/features/gallery/presentation/bloc/gallery_mutation_confirmation.dart';
 import 'package:config_app/features/gallery/presentation/pages/gallery_duplicates_page.dart';
 import 'package:config_app/src/gallery/gallery_image_widget.dart';
 import 'package:config_app/features/gallery/presentation/widgets/gallery_confirmation_file.dart';
@@ -18,6 +19,73 @@ import 'gallery_image_loader_test.dart' show ControlledClient;
 import 'support/gallery_management_harness.dart';
 
 void main() {
+  for (final action in [GalleryMutation.hide, GalleryMutation.unhide]) {
+    testWidgets('$action confirmation shows only the selected count on a narrow screen', (tester) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      bool? result;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () async {
+                  result = await confirmGalleryMutation(
+                    context,
+                    GalleryMutationConfirmation(
+                      token: 1,
+                      action: action,
+                      items: [
+                        for (var index = 0; index < 12; index++)
+                          GalleryMediaRef(
+                            mediaId: '$index',
+                            sourceRevision: '1',
+                            section: action == GalleryMutation.hide
+                                ? GalleryMediaSection.published
+                                : GalleryMediaSection.hidden,
+                          ),
+                      ],
+                      names: const ['photo.jpg'],
+                    ),
+                  );
+                },
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(result, isNull);
+      expect(
+        find.text(
+          action == GalleryMutation.hide
+              ? 'Hide selected items from the slideshow: 12?'
+              : 'Return selected items to the slideshow: 12?',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('photo.jpg'), findsNothing);
+      expect(find.byType(GalleryConfirmationFile), findsNothing);
+      await tester.tap(
+        find.widgetWithText(FilledButton, action == GalleryMutation.hide ? 'Hide' : 'Return to slideshow'),
+      );
+      await tester.pumpAndSettle();
+      expect(result, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets('delete confirmation wraps full filenames in distinct blocks on EN 320px with enlarged text', (
     tester,
   ) async {
@@ -181,7 +249,7 @@ void main() {
       final dialog = find.byType(AlertDialog);
       expect(operations, isEmpty);
       expect(dialog, findsOneWidget);
-      expect(find.descendant(of: dialog, matching: find.text('11 selected')), findsOneWidget);
+      expect(find.descendant(of: dialog, matching: find.text('Selected: 11')), findsOneWidget);
       expect(find.descendant(of: dialog, matching: find.text('Additional files to move to Trash: 1.')), findsOneWidget);
       expect(find.descendant(of: dialog, matching: find.text('2.jpg')), findsOneWidget);
       expect(find.descendant(of: dialog, matching: find.text('11.jpg')), findsOneWidget);

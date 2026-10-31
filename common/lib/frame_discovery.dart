@@ -24,6 +24,7 @@ sealed class FrameDiscoveryUpdate with _$FrameDiscoveryUpdate {
   const factory FrameDiscoveryUpdate.lost(String serviceKey) = FrameLost;
   const factory FrameDiscoveryUpdate.limited() = FrameDiscoveryLimited;
   const factory FrameDiscoveryUpdate.resolveFailed() = FrameResolveFailed;
+  const factory FrameDiscoveryUpdate.pending(int count) = FrameDiscoveryPending;
 }
 
 abstract interface class FrameDiscoverySession {

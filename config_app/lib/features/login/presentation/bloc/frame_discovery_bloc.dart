@@ -17,6 +17,7 @@ abstract class FrameDiscoveryState with _$FrameDiscoveryState {
     @Default([]) List<DiscoveredFrame> frames,
     @Default(false) bool limited,
     @Default(0) int unresolved,
+    @Default(0) int pending,
   }) = _FrameDiscoveryState;
 }
 
@@ -30,7 +31,7 @@ sealed class FrameDiscoveryEvent with _$FrameDiscoveryEvent {
 }
 
 class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> with WidgetsBindingObserver {
-  static const defaultSearchDuration = Duration(seconds: 8);
+  static const defaultSearchDuration = Duration(seconds: 12);
 
   FrameDiscoveryBloc({required this.provider, this.searchDuration = defaultSearchDuration})
     : super(const FrameDiscoveryState()) {
@@ -56,6 +57,8 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
           emit(state.copyWith(limited: true));
         case FrameResolveFailed():
           emit(state.copyWith(unresolved: state.unresolved + 1));
+        case FrameDiscoveryPending(:final count):
+          emit(state.copyWith(pending: count));
       }
     });
     WidgetsBinding.instance.addObserver(this);
@@ -72,7 +75,7 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
   Future<void> _search(FrameSearchRequested event, Emitter<FrameDiscoveryState> emit) async {
     if (state.status == FrameDiscoveryStatus.searching) return;
     _frames.clear();
-    emit(state.copyWith(status: FrameDiscoveryStatus.searching, limited: false, unresolved: 0));
+    emit(state.copyWith(status: FrameDiscoveryStatus.searching, limited: false, unresolved: 0, pending: 0));
     _log.info('Search started retained=${state.frames.length}');
     FrameDiscoverySession session;
     try {
@@ -135,7 +138,8 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
   Future<void> _finish(Emitter<FrameDiscoveryState> emit, {bool cancelled = false, bool failed = false}) async {
     if (_session == null) return;
     await _release();
-    final retain = cancelled || failed || state.limited || state.unresolved > 0;
+    final unresolved = state.unresolved + state.pending;
+    final retain = cancelled || failed || state.limited || unresolved > 0;
     final frames = retain ? state.frames : _frames.values.toList();
     _log.info(
       'Search ${cancelled
@@ -143,11 +147,16 @@ class FrameDiscoveryBloc extends Bloc<FrameDiscoveryEvent, FrameDiscoveryState> 
           : failed
           ? 'failed'
           : 'completed'} found=${frames.length} confirmed=${_frames.length} '
-      'unresolved=${state.unresolved} limited=${state.limited}',
+      'unresolved=$unresolved pending=${state.pending} limited=${state.limited}',
     );
     if (!emit.isDone) {
       emit(
-        state.copyWith(status: failed ? FrameDiscoveryStatus.failure : FrameDiscoveryStatus.completed, frames: frames),
+        state.copyWith(
+          status: failed ? FrameDiscoveryStatus.failure : FrameDiscoveryStatus.completed,
+          frames: frames,
+          unresolved: unresolved,
+          pending: 0,
+        ),
       );
     }
   }

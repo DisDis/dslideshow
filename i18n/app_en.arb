@@ -45,7 +45,7 @@
   "upload_media_menu_item": "Upload media",
   "configuration_menu_item": "Configuration",
   "wifi_menu_item": "Wifi",
-  "system_control_menu_item": "System Control",
+  "system_control_menu_item": "Power and restart",
   "exit_menu_item": "Exit",
   "storage_settings_title": "Storage Settings",
   "unknown_storage_type_configuration": "Unknown storage type configuration",
@@ -734,7 +734,7 @@
   },
   "ota_uploading": "Uploading firmware…",
   "ota_upload_complete": "Firmware upload completed successfully.",
-  "gallery_selected": "{count, plural, one{{count} selected} other{{count} selected}}",
+  "gallery_selected": "Selected: {count}",
   "@gallery_selected": {
     "placeholders": {
       "count": {
@@ -1668,13 +1668,22 @@
     }
   },
   "gallery_hidden": "Hidden",
-  "gallery_hide": "Hide from slideshow",
+  "gallery_hide": "Hide",
   "gallery_unhide": "Return to slideshow",
   "gallery_hidden_done": "Files hidden from the slideshow",
   "gallery_unhidden": "Files returned to the slideshow",
   "gallery_hide_title": "Hide selected files?",
-  "gallery_hide_confirm_body": "Hide {count} files from the slideshow? They remain on the frame and can be restored from Hidden.",
+  "gallery_hide_confirm_body": "Hide selected items from the slideshow: {count}?",
   "@gallery_hide_confirm_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gallery_unhide_title": "Return selected files to slideshow?",
+  "gallery_unhide_confirm_body": "Return selected items to the slideshow: {count}?",
+  "@gallery_unhide_confirm_body": {
     "placeholders": {
       "count": {
         "type": "int"

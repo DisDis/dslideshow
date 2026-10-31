@@ -242,7 +242,7 @@ class GalleryManagementBloc extends Bloc<GalleryManagementEvent, GalleryManageme
         }
       case GalleryManagementMutationRequested(:final action):
         if (state.confirmation != null) return;
-        if (action == GalleryMutation.restore || action == GalleryMutation.unhide) {
+        if (action == GalleryMutation.restore) {
           await _mutate(action, emit);
         } else {
           _requestConfirmation(action, emit);

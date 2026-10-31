@@ -118,7 +118,7 @@ void main() {
     await tester.tap(find.text('Trash'));
     await tester.pump();
     await tester.pump();
-    expect(find.text('0 selected'), findsOneWidget);
+    expect(find.text('Selected: 0'), findsOneWidget);
     for (final icon in [Icons.restore_from_trash, Icons.delete_forever, Icons.close]) {
       expect(tester.widget<IconButton>(find.widgetWithIcon(IconButton, icon)).onPressed, isNull);
     }

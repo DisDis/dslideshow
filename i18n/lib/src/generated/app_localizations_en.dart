@@ -101,7 +101,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wifi_menu_item => 'Wifi';
 
   @override
-  String get system_control_menu_item => 'System Control';
+  String get system_control_menu_item => 'Power and restart';
 
   @override
   String get exit_menu_item => 'Exit';
@@ -1029,8 +1029,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String gallery_selected(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count selected', one: '$count selected');
-    return '$_temp0';
+    return 'Selected: $count';
   }
 
   @override
@@ -3200,7 +3199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_hidden => 'Hidden';
 
   @override
-  String get gallery_hide => 'Hide from slideshow';
+  String get gallery_hide => 'Hide';
 
   @override
   String get gallery_unhide => 'Return to slideshow';
@@ -3216,7 +3215,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String gallery_hide_confirm_body(int count) {
-    return 'Hide $count files from the slideshow? They remain on the frame and can be restored from Hidden.';
+    return 'Hide selected items from the slideshow: $count?';
+  }
+
+  @override
+  String get gallery_unhide_title => 'Return selected files to slideshow?';
+
+  @override
+  String gallery_unhide_confirm_body(int count) {
+    return 'Return selected items to the slideshow: $count?';
   }
 
   @override

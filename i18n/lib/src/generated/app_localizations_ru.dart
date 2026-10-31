@@ -92,7 +92,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_menu_item => 'Галерея';
 
   @override
-  String get upload_media_menu_item => 'Загрузка медиа';
+  String get upload_media_menu_item => 'Загрузить медиа';
 
   @override
   String get configuration_menu_item => 'Настройки';
@@ -101,7 +101,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wifi_menu_item => 'Wi-Fi';
 
   @override
-  String get system_control_menu_item => 'Управление устройством';
+  String get system_control_menu_item => 'Питание и перезапуск';
 
   @override
   String get exit_menu_item => 'Выйти';
@@ -1036,15 +1036,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String gallery_selected(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Выбрано $count файла',
-      many: 'Выбрано $count файлов',
-      few: 'Выбрано $count файла',
-      one: 'Выбран $count файл',
-    );
-    return '$_temp0';
+    return 'Выбрано: $count';
   }
 
   @override
@@ -3230,7 +3222,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_hidden => 'Скрытые';
 
   @override
-  String get gallery_hide => 'Скрыть из показа';
+  String get gallery_hide => 'Скрыть';
 
   @override
   String get gallery_unhide => 'Вернуть в показ';
@@ -3246,7 +3238,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String gallery_hide_confirm_body(int count) {
-    return 'Скрыть $count файлов из показа? Они останутся на рамке, их можно вернуть из раздела «Скрытые».';
+    return 'Скрыть из показа выбранные элементы: $count?';
+  }
+
+  @override
+  String get gallery_unhide_title => 'Вернуть выбранные файлы в показ?';
+
+  @override
+  String gallery_unhide_confirm_body(int count) {
+    return 'Вернуть в показ выбранные элементы: $count?';
   }
 
   @override

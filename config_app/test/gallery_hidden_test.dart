@@ -41,6 +41,111 @@ final _entry = GalleryEntry(
 http.Response _response(Map<String, dynamic> data) => http.Response(jsonEncode(data), 200);
 
 void main() {
+  for (final hidden in [false, true]) {
+    testWidgets('viewer ${hidden ? 'unhide' : 'hide'} waits for confirmation and logs cancellation', (tester) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final operations = <GalleryOperationRequest>[];
+      final records = <LogRecord>[];
+      final previousLevel = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      final subscription = Logger.root.onRecord.listen(records.add);
+      final entry = _entry.copyWith(section: hidden ? GalleryMediaSection.hidden : GalleryMediaSection.published);
+      final catalog = _HiddenCatalog([]);
+      final session = managedSession(
+        catalog,
+        MockClient((request) async {
+          final operation = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
+          operations.add(operation);
+          return _response(
+            GalleryOperationResult(
+              operationId: operation.operationId,
+              items: [
+                GalleryOperationItemResult(
+                  mediaId: entry.mediaId,
+                  section: entry.section,
+                  state: GalleryItemOperationState.succeeded,
+                ),
+              ],
+            ).toJson(),
+          );
+        }),
+        ControlledClient(),
+      );
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+        await tester.runAsync(session.close);
+        await subscription.cancel();
+        Logger.root.level = previousLevel;
+      });
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)),
+            child: child!,
+          ),
+          home: SingleItemViewerPage(
+            item: session.management.mediaItem(entry, 'test'),
+            session: session,
+            entry: entry,
+            capabilities: const {GalleryCapability.mutations, GalleryCapability.hidden},
+          ),
+        ),
+      );
+      await tester.pump();
+      final label = hidden ? 'Return to slideshow' : 'Hide';
+      final action = hidden ? GalleryMutation.unhide : GalleryMutation.hide;
+      await tester.tap(find.byTooltip(label));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(operations, isEmpty);
+      expect(
+        find.text(hidden ? 'Return selected items to the slideshow: 1?' : 'Hide selected items from the slideshow: 1?'),
+        findsOneWidget,
+      );
+      expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(entry.name)), findsNothing);
+      await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(operations, isEmpty);
+      await tester.tap(find.byTooltip(label));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      // Dismissing the modal must have the same effect as Cancel.
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(operations, isEmpty);
+      await tester.tap(find.byTooltip(label));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.tap(find.widgetWithText(FilledButton, label));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(operations.single.action, action);
+      expect(operations.single.items.single.section, entry.section);
+      for (final event in ['confirmationRequested', 'confirmationCancelled', 'confirmationAccepted']) {
+        expect(
+          records.any(
+            (record) =>
+                record.message.contains('event=$event ') &&
+                record.message.contains('action=${action.name}') &&
+                record.message.contains('items=1'),
+          ),
+          isTrue,
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   test('closing a hidden catalog request cancels the transport and logs cancellation without a failure', () async {
     final records = <LogRecord>[];
     final previousLevel = Logger.root.level;
@@ -137,6 +242,7 @@ void main() {
       (state) => !state.busy && state.notice == GalleryManagementNotice.unhidden,
     );
     management.add(const GalleryManagementEvent.mutationRequested(GalleryMutation.unhide));
+    await confirmManagementMutation(management, GalleryMutation.unhide);
     await unhidden;
     expect(requests.single.action, GalleryMutation.unhide);
     expect(requests.single.items.single.section, GalleryMediaSection.hidden);
@@ -458,6 +564,20 @@ void main() {
     await tester.longPress(find.byType(ImageGridItem));
     await tester.pump();
     await tester.tap(find.text('Return to slideshow'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(mutation, isNull);
+    expect(find.text('Return selected items to the slideshow: 1?'), findsOneWidget);
+    expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(_entry.name)), findsNothing);
+    await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(mutation, isNull);
+    expect(find.text('Selected: 1'), findsOneWidget);
+    await tester.tap(find.text('Return to slideshow'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.tap(find.widgetWithText(FilledButton, 'Return to slideshow'));
     await tester.pump();
     await tester.pump();
     expect(mutation?.action, GalleryMutation.unhide);
