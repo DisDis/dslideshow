@@ -36,7 +36,7 @@ class _RealtimeService implements RealtimeService {
 }
 
 void main() {
-  test('rescan reports a delayed RPC failure without logging its contents', () async {
+  test('rescan reports a delayed RPC failure with its original diagnostics', () async {
     final result = Completer<WebSocketResult>();
     final client = _RealtimeService((_) => result.future);
     final bloc = WifiTabBloc(

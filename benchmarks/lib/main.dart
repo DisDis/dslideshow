@@ -39,19 +39,13 @@ Future<void> runBenchmark({
     String currentStage() => activeRunner?.stage ?? 'preflight';
     void error(Object error, StackTrace stack) {
       runtimeErrors++;
-      store!.error(
-        error,
-        stack,
-        caseId: activeRunner?.activeCaseId,
-        stage: currentStage(),
-        kind: 'runtime',
-      );
+      store!.error(error, stack, caseId: activeRunner?.activeCaseId, stage: currentStage(), kind: 'runtime');
       stderr.writeln('BENCHMARK_ERROR $error\n$stack');
     }
 
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
-      error(details.exception, details.stack ?? StackTrace.current);
+      error(details.exception, details.stack ?? StackTrace.empty);
     };
     PlatformDispatcher.instance.onError = (exception, stack) {
       error(exception, stack);
@@ -60,19 +54,13 @@ Future<void> runBenchmark({
     final telemetry = LinuxTelemetry(
       onSample: store.telemetry,
       stage: currentStage,
-      onError: (exception, stack) => store!.error(
-        exception,
-        stack,
-        caseId: activeRunner?.activeCaseId,
-        stage: currentStage(),
-        kind: 'telemetry',
-      ),
+      onError: (exception, stack) =>
+          store!.error(exception, stack, caseId: activeRunner?.activeCaseId, stage: currentStage(), kind: 'telemetry'),
     );
     store.metadata.addAll({
       'started_utc': DateTime.now().toUtc().toIso8601String(),
       'config': config.toJson(),
-      'requested_renderer':
-          Platform.environment['BENCHMARK_RENDERER'] ?? 'unspecified',
+      'requested_renderer': Platform.environment['BENCHMARK_RENDERER'] ?? 'unspecified',
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
@@ -81,9 +69,7 @@ Future<void> runBenchmark({
       'dart': Platform.version,
       'pid': pid,
       'executable': Platform.resolvedExecutable,
-      'build': jsonDecode(
-        await rootBundle.loadString('assets/build-info.json'),
-      ),
+      'build': jsonDecode(await rootBundle.loadString('assets/build-info.json')),
       'hardware': await telemetry.initialize(),
       'experiment': ?experimentMetadata,
     });
@@ -104,17 +90,14 @@ Future<void> runBenchmark({
     store.metadata['media'] = catalog.entries;
     // Photos are inspected as encoded originals; no cacheWidth/targetWidth is used.
     for (final entry in catalog.entries.where((e) => e['kind'] == 'image')) {
-      if ((entry['width']! as int) < config.expectedWidth ||
-          (entry['height']! as int) < config.expectedHeight) {
+      if ((entry['width']! as int) < config.expectedWidth || (entry['height']! as int) < config.expectedHeight) {
         store.warnings.add('Исходник ${entry['name']} меньше целевого экрана.');
       }
     }
     final skipFile = Platform.environment['BENCHMARK_SKIP_FILE'];
     final skipCaseIds = skipFile == null
         ? <String>{}
-        : (jsonDecode(await File(skipFile).readAsString()) as List)
-              .cast<String>()
-              .toSet();
+        : (jsonDecode(await File(skipFile).readAsString()) as List).cast<String>().toSet();
     final runner = BenchmarkRunner(
       config,
       store,
@@ -151,20 +134,14 @@ Future<void> runBenchmark({
               } catch (exception, stack) {
                 error(exception, stack);
                 await telemetry.stop();
-                await store!.checkpoint(
-                  'fatal_error',
-                  telemetry,
-                  finalReport: true,
-                );
+                await store!.checkpoint('fatal_error', telemetry, finalReport: true);
               } finally {
                 for (final subscription in subscriptions) {
                   await subscription.cancel();
                 }
                 await store!.close();
               }
-              stdout.writeln(
-                'BENCHMARK_FINISHED code=$code reports=${output.absolute.path}',
-              );
+              stdout.writeln('BENCHMARK_FINISHED code=$code reports=${output.absolute.path}');
               if (config.exitWhenDone) exit(code);
             },
           ),
@@ -174,11 +151,7 @@ Future<void> runBenchmark({
   } catch (error, stack) {
     await output.create(recursive: true);
     await File('${output.path}/bootstrap-error.json').writeAsString(
-      jsonEncode({
-        'error': '$error',
-        'stack': '$stack',
-        'utc': DateTime.now().toUtc().toIso8601String(),
-      }),
+      jsonEncode({'error': '$error', 'stack': '$stack', 'utc': DateTime.now().toUtc().toIso8601String()}),
       flush: true,
     );
     stderr.writeln('BENCHMARK_FATAL $error\n$stack');

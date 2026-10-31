@@ -203,7 +203,7 @@ void main() {
     expect(client.hasDisconnectListener, isFalse);
   });
 
-  test('current login errors reach the caller without secrets in logs', () async {
+  test('current login errors reach the caller and retain their original diagnostics', () async {
     final records = <LogRecord>[];
     final previousLevel = Logger.root.level;
     Logger.root.level = Level.ALL;

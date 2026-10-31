@@ -857,7 +857,10 @@ void main() {
           ota.checkLatestRelease();
           time.flushMicrotasks();
           expect(remote.commands.whereType<OTAReadyCommand>(), hasLength(1));
-          remote.blockedReady!.completeError(StateError('private frontend endpoint'));
+          remote.blockedReady!.completeError(
+            StateError('private frontend endpoint'),
+            StackTrace.fromString('ota-ready-source'),
+          );
           time.flushMicrotasks();
           expect(finished, isTrue);
           expect(ota.info.status, OTAStatus.issue);

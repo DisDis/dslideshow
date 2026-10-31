@@ -153,7 +153,7 @@ Future<void> main() async {
   });
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    harness.error(details.exception, details.stack ?? StackTrace.current);
+    harness.error(details.exception, details.stack ?? StackTrace.empty);
   };
   ui.PlatformDispatcher.instance.onError = (error, stack) {
     harness.error(error, stack);

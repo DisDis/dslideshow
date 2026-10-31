@@ -230,7 +230,7 @@ Future<void> main(List<String> arguments) async {
       } on Object catch (error, stack) {
         if (exitCode == 0) exitCode = 1;
         try {
-          stderr.writeln('Build console failed\n$error\n$stack');
+          stderr.writeln('Build console failed:\n$error\n$stack');
           await stderr.flush();
         } on Object {
           // A detached stderr must not override process failure or signal codes.

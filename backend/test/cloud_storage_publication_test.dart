@@ -152,7 +152,7 @@ void main() {
     }
   });
 
-  test('transport failures are redacted and clean partial staging without publication', () async {
+  test('transport failures keep original diagnostics and clean staging without publication', () async {
     Stream<List<int>> body() async* {
       yield [1, 2];
       throw const HttpException('https://signed.example/photo?token=private-network-token');
@@ -165,8 +165,11 @@ void main() {
       expect(records.any((record) => record.message.contains('failed reason=network')), isTrue);
       expect(
         records.map((record) => '${record.message} ${record.error ?? ''} ${record.stackTrace ?? ''}').join('\n'),
-        isNot(contains('private-network-token')),
+        contains('private-network-token'),
       );
+      final source = records.singleWhere((record) => record.message == 'Cloud media transfer failed');
+      expect(source.error, isA<HttpException>());
+      expect(source.stackTrace.toString(), contains('cloud_storage_publication_test.dart'));
       expect(records.where((record) => record.loggerName == 'CloudStorage' && record.level >= Level.INFO), isEmpty);
     });
   });

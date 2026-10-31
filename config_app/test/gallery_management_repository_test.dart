@@ -160,7 +160,8 @@ void main() {
     expect(cancellation.level, Level.FINE);
     expect(cancellation.message, contains('reason=consumer'));
     expect(transport.active, 0);
-    expect(timeout.error, isA<TimeoutException>());
+    expect(timeout.error, isA<http.RequestAbortedException>());
+    expect(timeout.error.toString(), contains('PRIVATE-AUTH'));
     expect(timeout.stackTrace, isNotNull);
     expect(cancellation.error, isA<http.RequestAbortedException>());
     expect(cancellation.stackTrace, isNotNull);

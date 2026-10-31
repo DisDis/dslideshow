@@ -77,7 +77,7 @@ void main() {
       expect(records.any((record) => record.message.contains('action=load result=started')), isTrue);
       expect(records.any((record) => record.message.contains('compatibility=${compatibility.name}')), isTrue);
       expect(records.any((record) => record.message.contains('private-')), isFalse);
-      
+
       expect(
         records
             .where((record) => record.error != null)

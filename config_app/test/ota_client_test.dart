@@ -129,10 +129,7 @@ void main() {
     expect(cleanupLog.level, Level.WARNING);
     expect(cleanupLog.stackTrace, isNotNull);
     expect(cleanupLog.message, isNot(contains('operationId=')));
-    expect(
-      records.map((record) => '${record.message} ${record.error}').join(),
-      isNot(contains('synthetic-source-secret')),
-    );
+    expect(records.map((record) => '${record.message} ${record.error}').join(), contains('synthetic-source-secret'));
   });
 
   test('init validates real response schema and logs original transport errors', () async {
@@ -175,7 +172,7 @@ void main() {
     addTearDown(failing.close);
     await expectLater(failing.start(cancellation: Completer<void>().future), throwsA(isA<OtaClientException>()));
     final text = records.map((record) => '${record.message} ${record.error}').join();
-    expect(text, isNot(contains('synthetic-url-secret')));
+    expect(text, contains('synthetic-url-secret'));
     expect(text, isNot(contains('synthetic-body-secret')));
     expect(
       records.any((record) => record.message.startsWith('event=requestFailed ') && record.level == Level.WARNING),

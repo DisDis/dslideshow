@@ -36,6 +36,7 @@ class YandexDriveApi {
   static const pageSize = 100;
   static final _log = Logger('YandexDriveApi');
   static const _maxJsonBytes = 2 * 1024 * 1024;
+  static const _maxErrorBodyBytes = 4 * 1024;
   static const _scope = 'cloud_api:disk.read cloud_api:disk.info';
   static const _verificationHosts = {'oauth.yandex.ru', 'oauth.yandex.com', 'ya.ru'};
   final http.Client Function() _clientFactory;
@@ -180,6 +181,7 @@ class YandexDriveApi {
       final client = _clientFactory();
       _clients.add(client);
       int? status;
+      var responseBody = '';
       try {
         _log.fine('Request started operation=${operation.name} method=GET redirect=$redirect');
         final request = http.Request('GET', href)..followRedirects = false;
@@ -194,7 +196,10 @@ class YandexDriveApi {
           _clients.remove(client);
           continue;
         }
-        if (response.statusCode != 200) throw CloudStorageException(_status(response.statusCode));
+        if (response.statusCode != 200) {
+          responseBody = await _readErrorBody(response, operation: operation, method: 'GET');
+          throw CloudStorageException(_status(response.statusCode));
+        }
         // Downloads own their client until the caller closes the body.
         _clients.remove(client);
         _log.fine('Response accepted operation=${operation.name} method=GET status=$status redirect=$redirect');
@@ -205,7 +210,7 @@ class YandexDriveApi {
         final failure = _safe(error);
         _log.fine(
           'Request failed operation=${operation.name} method=GET status=${status ?? 'none'} '
-          'redirect=$redirect reason=${failure.code.name} type=${error.runtimeType}',
+          'redirect=$redirect reason=${failure.code.name} type=${error.runtimeType}$responseBody',
           error,
           stack,
         );
@@ -232,6 +237,8 @@ class YandexDriveApi {
       _clients.add(client);
       Duration? retryAfter;
       int? status;
+      var responseBody = '';
+      final bytes = <int>[];
       try {
         _log.fine('Request started operation=${operation.name} method=$method attempt=${attempt + 1}');
         final request = http.Request(method, uri)
@@ -243,27 +250,32 @@ class YandexDriveApi {
         status = response.statusCode;
         final retrySeconds = int.tryParse(response.headers['retry-after'] ?? '');
         if (retrySeconds != null && retrySeconds >= 0) retryAfter = Duration(seconds: retrySeconds.clamp(0, 60));
-        if (response.statusCode == 429 || response.statusCode >= 500) {
+        if (response.statusCode != 200 && (!oauthErrors || response.statusCode == 429 || response.statusCode >= 500)) {
+          responseBody = await _readErrorBody(response, operation: operation, method: method);
           throw CloudStorageException(_status(response.statusCode));
         }
-        final bytes = <int>[];
         await () async {
           await for (final chunk in response.stream.timeout(timeout)) {
-            if (bytes.length + chunk.length > _maxJsonBytes)
-              throw const CloudStorageException(DriveFailure.invalidResponse);
-            bytes.addAll(chunk);
+            bytes.addAll(chunk.take(_maxJsonBytes + 1 - bytes.length));
+            if (bytes.length > _maxJsonBytes) throw const CloudStorageException(DriveFailure.invalidResponse);
           }
         }().timeout(timeout);
-        if (response.statusCode != 200 && !oauthErrors) throw CloudStorageException(_status(response.statusCode));
+        if (response.statusCode != 200) responseBody = _formatErrorBody(bytes);
         final decoded = jsonDecode(utf8.decode(bytes));
         if (decoded is! Map<String, dynamic>) throw const CloudStorageException(DriveFailure.invalidResponse);
         if (response.statusCode != 200 && (!oauthErrors || decoded['error'] is! String)) {
           throw CloudStorageException(_status(response.statusCode));
         }
-        _log.fine('Request completed operation=${operation.name} method=$method status=$status attempt=${attempt + 1}');
+        _log.fine(
+          'Request ${response.statusCode == 200 ? 'completed' : 'rejected'} '
+          'operation=${operation.name} method=$method status=$status attempt=${attempt + 1}$responseBody',
+        );
         return decoded;
       } catch (error, stack) {
         final failure = _safe(error);
+        if (responseBody.isEmpty && status != null && status != 200 && _log.isLoggable(Level.FINE)) {
+          responseBody = '${_formatErrorBody(bytes)}\n[response body incomplete]';
+        }
         final retry =
             method == 'GET' &&
             attempt < 2 &&
@@ -271,7 +283,7 @@ class YandexDriveApi {
         _log.fine(
           'Request ${retry ? 'retrying' : 'failed'} operation=${operation.name} method=$method '
           'status=${status ?? 'none'} attempt=${attempt + 1} '
-          'reason=${failure.code.name} type=${error.runtimeType}',
+          'reason=${failure.code.name} type=${error.runtimeType}$responseBody',
           error,
           stack,
         );
@@ -282,6 +294,43 @@ class YandexDriveApi {
         _clients.remove(client);
       }
     }
+  }
+
+  Future<String> _readErrorBody(
+    http.StreamedResponse response, {
+    required _YandexDriveOperation operation,
+    required String method,
+  }) async {
+    if (!_log.isLoggable(Level.FINE)) return '';
+    final bytes = <int>[];
+    final iterator = StreamIterator(response.stream);
+    var incomplete = false;
+    final context = 'operation=${operation.name} method=$method status=${response.statusCode}';
+    try {
+      await () async {
+        while (await iterator.moveNext()) {
+          bytes.addAll(iterator.current.take(_maxErrorBodyBytes + 1 - bytes.length));
+          if (bytes.length > _maxErrorBodyBytes) break;
+        }
+      }().timeout(timeout);
+    } catch (error, stack) {
+      incomplete = true;
+      _log.fine('HTTP error response body read failed $context', error, stack);
+    } finally {
+      try {
+        await iterator.cancel();
+      } catch (error, stack) {
+        _log.fine('HTTP error response body cleanup failed $context', error, stack);
+      }
+    }
+    return '${_formatErrorBody(bytes)}${incomplete ? '\n[response body incomplete]' : ''}';
+  }
+
+  String _formatErrorBody(List<int> bytes) {
+    if (!_log.isLoggable(Level.FINE)) return '';
+    final body = utf8.decode(bytes.take(_maxErrorBodyBytes).toList(), allowMalformed: true);
+    return '\nresponseBody=${body.isEmpty ? '<empty>' : body}'
+        '${bytes.length > _maxErrorBodyBytes ? '\n[response body truncated after $_maxErrorBodyBytes bytes]' : ''}';
   }
 
   Never rethrowSafe(CloudStorageException failure) => throw failure;

@@ -41,7 +41,10 @@ Future<void> main(List<String> arguments) async {
   }
   Logger.root.level = Level.INFO;
   final console = BuildConsole(output: stdout, errors: stderr, color: false, interactive: false);
-  final logs = Logger.root.onRecord.listen((record) => unawaited(console.writeLog(record)));
+  final logs = Logger.root.onRecord.listen((record) {
+    // close() reports queued sink failures after the command has cleaned up.
+    unawaited(console.writeLog(record).catchError((Object _) {}));
+  });
   try {
     final rest = arguments.skip(1).toList();
     exitCode = await switch (command) {

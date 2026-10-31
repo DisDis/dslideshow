@@ -84,7 +84,7 @@ void main() {
     expect(result.stderr, contains('Usage: dslideshow_tools tests'));
     expect(result.stderr, contains('never-supported'));
     expect(result.stderr, contains('#0'));
-    expect(result.stderr, contains('Invalid arguments'));
+    expect(result.stderr, contains('WARNING tools Invalid input format'));
   }, timeout: const Timeout(Duration(seconds: 30)));
   test('report rebuild preserves selected scope, partial status and raw reporter bytes', () async {
     final directory = Directory.systemTemp.createTempSync('test-profile-cli-');

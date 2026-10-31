@@ -214,7 +214,7 @@ void main() {
       final warning = records.singleWhere((record) => record.message.startsWith('Gallery invalidation state invalid'));
       expect(warning.level, Level.WARNING);
       expect(warning.message, isNot(contains(root.path)));
-      expect(warning.error, isA<FileSystemException>());
+      expect(warning.error, isNull);
       expect((await File('${metadata.path}/catalog.epoch').readAsBytes()).length, 32);
     }),
   );

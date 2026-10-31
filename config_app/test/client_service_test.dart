@@ -437,7 +437,7 @@ void main() {
     });
   }
 
-  testWidgets('logs omit auth, config, result and malformed message contents', (tester) async {
+  testWidgets('logs keep command summaries concise and preserve malformed input errors', (tester) async {
     final records = <LogRecord>[];
     final originalLevel = Logger.root.level;
     Logger.root.level = Level.ALL;
@@ -479,13 +479,14 @@ void main() {
     final malformed = records.singleWhere((record) => record.error is FormatException);
     expect(malformed.error.toString(), contains('unique-malformed-secret'));
     expect(malformed.stackTrace, isNotNull);
+    final invalid = records.singleWhere((record) => record.error.toString().contains('unique-invalid-type-secret'));
+    expect(invalid.stackTrace, isNotNull);
     expect(records, isNotEmpty);
     for (final secret in [
       'unique-auth-secret',
       'unique-upload-secret',
       'unique-download-secret',
       'unique-response-secret',
-      'unique-invalid-type-secret',
     ]) {
       expect(renderedLogs, isNot(contains(secret)), reason: secret);
     }

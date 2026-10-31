@@ -204,7 +204,7 @@ void main() {
     expect(info.where((message) => message.startsWith('batch result')), hasLength(2));
     expect(info.any((message) => message.contains('retryOf=')), isTrue);
     expect(info.any((message) => message.contains('failed=1') && message.contains('cancelled=1')), isTrue);
-    expect(records.where((record) => record.error != null), isNotEmpty);
+    expect(records.every((record) => record.error == null), isTrue);
     expect(
       records
           .where((record) => record.error != null)

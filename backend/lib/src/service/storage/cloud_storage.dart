@@ -92,7 +92,7 @@ abstract class CloudStorage extends DiskStorage {
           md5Input?.close();
           shaInput?.close();
         } catch (error, stack) {
-          _log.warning('Cloud media transfer failed', error, stack);
+          _log.fine('Cloud media transfer failed', error, stack);
           throw const UploadFailure(502, 'Cloud media transfer failed');
         }
       }

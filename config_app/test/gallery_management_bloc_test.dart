@@ -257,7 +257,7 @@ void main() {
     expect(management.state.selectedIds, {managedPhoto('a').selectionIdentity});
   });
 
-  test('real mutation logs correlate partial results and retries without leaking private media or errors', () async {
+  test('real mutation logs correlate partial results and retries with source diagnostics', () async {
     const auth = 'AUTH-SECRET-4321';
     const privatePath = 'private-photo.jpg';
     const rawExif = 'GPS-EXIF-SECRET';

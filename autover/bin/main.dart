@@ -10,9 +10,8 @@ void initLog([String? isolateMarker]) {
     final message = StringBuffer();
     message.write('[$isolateMarker] ${rec.time} ${rec.level.name}:${rec.loggerName}: ${rec.message}');
     if (rec.error != null) {
-      message.write('\n${rec.error}');
+      message.write(' ${rec.error}');
     }
-    if (rec.stackTrace != null) message.write('\n${rec.stackTrace}');
     print(message);
   });
 }

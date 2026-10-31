@@ -116,13 +116,7 @@ void main() {
       expect(events.first.message, 'event=browserOpenStarted');
       expect(events.last.message, 'event=browserOpenFinished opened=$opened');
       expect(events.last.level, opened ? Level.FINE : Level.WARNING);
-      expect(events.where((record) => record.error != null), isNotEmpty);
-      expect(
-        events
-            .where((record) => record.error != null)
-            .every((record) => record.stackTrace != null && record.stackTrace.toString().isNotEmpty),
-        isTrue,
-      );
+      expect(events.every((record) => record.error == null && record.stackTrace == null), isTrue);
       final l = AppLocalizations.of(tester.element(find.byType(AlertDialog)));
       expect(find.text(l.yandex_browser_failed), opened ? findsNothing : findsOneWidget);
       expect(events.map((record) => record.message).join('\n'), isNot(contains(creationUrl)));
@@ -292,7 +286,7 @@ void main() {
     expect(client.commands.map((command) => command.offset), [0, 100, 100]);
   });
 
-  test('unknown mutation results are not retried and logs exclude secret response text', () async {
+  test('unknown mutation results are not retried and preserve source diagnostics', () async {
     final client = _Realtime((_) => throw StateError('https://private.example/?access_token=secret'));
     final cubit = YandexSettingsCubit(
       repository: YandexDriveRepository(client),
@@ -314,6 +308,9 @@ void main() {
     expect(messages, contains('event=outcomeUnknown action=disconnectAccount'));
     expect(messages, isNot(contains('private.example')));
     expect(messages, isNot(contains('access_token')));
+    final source = records.singleWhere((record) => record.loggerName == 'YandexDriveRepository');
+    expect(source.error.toString(), contains('https://private.example/?access_token=secret'));
+    expect(source.stackTrace.toString(), contains('yandex_drive_settings_test.dart'));
     expect(records.where((record) => record.error != null), isNotEmpty);
     expect(
       records

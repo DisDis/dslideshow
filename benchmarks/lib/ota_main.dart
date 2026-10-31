@@ -27,18 +27,7 @@ import 'package:xterm/xterm.dart';
 import 'src/metrics.dart';
 import 'src/telemetry.dart';
 
-enum OtaScenario {
-  ready,
-  uploading,
-  installing,
-  stream,
-  burst,
-  history,
-  resume,
-  failure,
-  success,
-  cleanup,
-}
+enum OtaScenario { ready, uploading, installing, stream, burst, history, resume, failure, success, cleanup }
 
 /// Only the external RPC dependency is replaced. No installer is present.
 class OtaHarnessFrontend implements FrontendService {
@@ -66,22 +55,12 @@ class OtaHarnessFrontend implements FrontendService {
   Future<OTAInfo> getOTAInfo() async => otaInfo(OTAStatus.ready);
   @override
   Future<SystemInfo> getSystemInfo() async => SystemInfo.fromJson({
-    'cpuInfo': {
-      'cores': 4,
-      'hardware': 'benchmark',
-      'model': 'benchmark',
-      'revision': 'fixture',
-    },
+    'cpuInfo': {'cores': 4, 'hardware': 'benchmark', 'model': 'benchmark', 'revision': 'fixture'},
     'networkInfo': {
       'lastUpdate': 0,
       'hasInternet': true,
       'interfaces': [
-        {
-          'name': 'wlan0',
-          'status': 'running',
-          'ip4': '192.168.50.143',
-          'ip6': '',
-        },
+        {'name': 'wlan0', 'status': 'running', 'ip4': '192.168.50.143', 'ip6': ''},
       ],
     },
     'osInfo': {'name': 'benchmark', 'osType': 'linux'},
@@ -103,13 +82,7 @@ class OtaHarnessFrontend implements FrontendService {
   });
 
   Future<void> close() async {
-    await Future.wait([
-      info.close(),
-      output.close(),
-      ready.close(),
-      buttons.close(),
-      actions.close(),
-    ]);
+    await Future.wait([info.close(), output.close(), ready.close(), buttons.close(), actions.close()]);
   }
 
   @override
@@ -120,9 +93,7 @@ OTAInfo otaInfo(OTAStatus status, {double percent = 100}) => OTAInfo(
   uploadingPercent: percent,
   status: status,
   code: '835719',
-  errorText: status == OTAStatus.issue
-      ? 'Package verification failed. The existing firmware is unchanged.'
-      : '',
+  errorText: status == OTAStatus.issue ? 'Package verification failed. The existing firmware is unchanged.' : '',
   exitCode: status == OTAStatus.issue ? 1 : 0,
 );
 
@@ -133,13 +104,11 @@ String otaLogLines(int start, int count) => List.generate(count, (i) {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final h = OtaHarness(
-    Directory(Platform.environment['BENCHMARK_OUTPUT'] ?? 'reports/ota-$pid'),
-  );
+  final h = OtaHarness(Directory(Platform.environment['BENCHMARK_OUTPUT'] ?? 'reports/ota-$pid'));
   await h.initialize();
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    h.error(details.exception, details.stack ?? StackTrace.current);
+    h.error(details.exception, details.stack ?? StackTrace.empty);
   };
   ui.PlatformDispatcher.instance.onError = (error, stack) {
     h.error(error, stack);
@@ -176,10 +145,7 @@ class OtaHarness {
     await output.create(recursive: true);
     events = File('${output.path}/events.jsonl').openWrite();
     samples = File('${output.path}/telemetry.jsonl').openWrite();
-    status = SlideshowStatusBloc(
-      frontendService: frontend,
-      config: SlideShowConfig.fromJson({}),
-    );
+    status = SlideshowStatusBloc(frontendService: frontend, config: SlideShowConfig.fromJson({}));
     injector.registerSingleton<FrontendService>(frontend);
     injector.registerSingleton<RouteBloc>(route);
     telemetry = LinuxTelemetry(
@@ -198,9 +164,7 @@ class OtaHarness {
         'renderer': 'opengl',
         'size': [2560, 1600],
         'locale': 'en',
-        'build': jsonDecode(
-          await rootBundle.loadString('assets/build-info.json'),
-        ),
+        'build': jsonDecode(await rootBundle.loadString('assets/build-info.json')),
         'hardware': hardware,
         'real_installation': false,
       }),
@@ -222,9 +186,7 @@ class OtaHarness {
     for (final frame in values) {
       final timestamp = frame.timestampInMicroseconds(ui.FramePhase.vsyncStart);
       lastFrame = timestamp;
-      if (frameStart != null &&
-          timestamp > frameStart! &&
-          (frameEnd == null || timestamp <= frameEnd!)) {
+      if (frameStart != null && timestamp > frameStart! && (frameEnd == null || timestamp <= frameEnd!)) {
         frames.add(
           FrameSample(
             timestamp,
@@ -247,11 +209,9 @@ class OtaHarness {
     }
   }
 
-  Iterable<Element> elements() =>
-      descendants(rootKey.currentContext! as Element);
+  Iterable<Element> elements() => descendants(rootKey.currentContext! as Element);
 
-  Element get terminalElement =>
-      elements().singleWhere((element) => element.widget is TerminalView);
+  Element get terminalElement => elements().singleWhere((element) => element.widget is TerminalView);
 
   TerminalView get terminal => terminalElement.widget as TerminalView;
   ScrollableState get scrollable =>
@@ -279,22 +239,17 @@ class OtaHarness {
 
   Future<void> capture() async {
     if (!captures) return;
-    final boundary =
-        rootKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final boundary = rootKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     final image = await boundary.toImage(pixelRatio: 1);
     try {
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
-      await File('${output.path}/${stage.name}.png')
-          .writeAsBytes(data!.buffer.asUint8List());
+      await File('${output.path}/${stage.name}.png').writeAsBytes(data!.buffer.asUint8List());
     } finally {
       image.dispose();
     }
   }
 
-  Future<void> phase(
-    OtaScenario next,
-    Future<void> Function() operation,
-  ) async {
+  Future<void> phase(OtaScenario next, Future<void> Function() operation) async {
     stage = next;
     event({'operation': 'start'});
     await operation();
@@ -302,12 +257,7 @@ class OtaHarness {
     await telemetry.sample();
     await capture();
     if (elements().any((e) => e.widget is TerminalView)) {
-      final rect =
-          (elements()
-                      .firstWhere((e) => e.widget is TerminalView)
-                      .findRenderObject()
-                  as RenderBox)
-              .size;
+      final rect = (elements().firstWhere((e) => e.widget is TerminalView).findRenderObject() as RenderBox).size;
       event({
         'terminal_width': rect.width,
         'terminal_height': rect.height,
@@ -323,9 +273,7 @@ class OtaHarness {
       await phase(
         OtaScenario.ready,
         () => until(
-          () => elements().any(
-            (e) => e.widget is Text && (e.widget as Text).data == '835719',
-          ),
+          () => elements().any((e) => e.widget is Text && (e.widget as Text).data == '835719'),
           'ready access code',
         ),
       );
@@ -335,17 +283,11 @@ class OtaHarness {
       });
       await phase(OtaScenario.installing, () async {
         frontend.info.add(otaInfo(OTAStatus.instaling));
-        await until(
-          () => elements().any((e) => e.widget is TerminalView),
-          'install terminal',
-        );
+        await until(() => elements().any((e) => e.widget is TerminalView), 'install terminal');
       });
       await phase(OtaScenario.stream, () async {
         frames.clear();
-        frameStart = SchedulerBinding
-            .instance
-            .currentSystemFrameTimeStamp
-            .inMicroseconds;
+        frameStart = SchedulerBinding.instance.currentSystemFrameTimeStamp.inMicroseconds;
         frameEnd = null;
         final clock = Stopwatch()..start();
         final completion = Completer<void>();
@@ -363,10 +305,7 @@ class OtaHarness {
           timer.cancel();
         }
         await paint();
-        frameEnd = SchedulerBinding
-            .instance
-            .currentSystemFrameTimeStamp
-            .inMicroseconds;
+        frameEnd = SchedulerBinding.instance.currentSystemFrameTimeStamp.inMicroseconds;
         await paint();
         marker.value++;
         await paint();
@@ -380,10 +319,7 @@ class OtaHarness {
         rows.add({
           'scenario': stage.name,
           'wall_ms': clock.elapsedMilliseconds,
-          ...frameMetrics(
-            frames,
-            ui.PlatformDispatcher.instance.views.first.display.refreshRate,
-          ),
+          ...frameMetrics(frames, ui.PlatformDispatcher.instance.views.first.display.refreshRate),
           'frame_samples': frames.map((f) => f.toJson()).toList(),
         });
         frameStart = null;
@@ -394,23 +330,11 @@ class OtaHarness {
       });
       await phase(OtaScenario.history, () async {
         final position = scrollable.position;
-        final target = (position.maxScrollExtent - 400).clamp(
-          0.0,
-          position.maxScrollExtent,
-        );
+        final target = (position.maxScrollExtent - 400).clamp(0.0, position.maxScrollExtent);
         position.drag(DragStartDetails(), () {})
-          ..update(
-            DragUpdateDetails(
-              globalPosition: Offset.zero,
-              delta: const Offset(0, 400),
-              primaryDelta: 400,
-            ),
-          )
+          ..update(DragUpdateDetails(globalPosition: Offset.zero, delta: const Offset(0, 400), primaryDelta: 400))
           ..end(DragEndDetails(primaryVelocity: 0));
-        await until(
-          () => !position.isScrollingNotifier.value,
-          'history gesture',
-        );
+        await until(() => !position.isScrollingNotifier.value, 'history gesture');
         final before = position.pixels;
         if (position.extentAfter < 100) {
           throw StateError('History gesture did not leave the terminal tail');
@@ -424,9 +348,7 @@ class OtaHarness {
           'history_preserved': (before - position.pixels).abs() < 1,
         });
         if ((before - position.pixels).abs() >= 1) {
-          throw StateError(
-            'New output displaced the terminal history viewport',
-          );
+          throw StateError('New output displaced the terminal history viewport');
         }
       });
       await phase(OtaScenario.resume, () async {
@@ -440,16 +362,10 @@ class OtaHarness {
         } else {
           scrollable.position.jumpTo(scrollable.position.maxScrollExtent);
         }
-        await until(
-          () => !scrollable.position.isScrollingNotifier.value,
-          'resume settle',
-        );
+        await until(() => !scrollable.position.isScrollingNotifier.value, 'resume settle');
         frontend.output.add(otaLogLines(550, 25));
         await paint();
-        event({
-          'at_latest': scrollable.position.extentAfter < 1,
-          'resume_button_present': buttons.isNotEmpty,
-        });
+        event({'at_latest': scrollable.position.extentAfter < 1, 'resume_button_present': buttons.isNotEmpty});
         if (scrollable.position.extentAfter >= 1) {
           throw StateError('Terminal did not follow new output after resume');
         }
@@ -476,12 +392,8 @@ class OtaHarness {
     await telemetry.stop();
     SchedulerBinding.instance.removeTimingsCallback(timings);
     await File('${output.path}/ota-report.json').writeAsString(
-      const JsonEncoder.withIndent('  ').convert({
-        'successful': errors.isEmpty,
-        'errors': errors,
-        'runs': rows,
-        'capture_run': captures,
-      }),
+      const JsonEncoder.withIndent('  ')
+          .convert({'successful': errors.isEmpty, 'errors': errors, 'runs': rows, 'capture_run': captures}),
     );
     await events.close();
     await samples.close();
@@ -499,9 +411,7 @@ class OtaHarnessApp extends StatelessWidget {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      colorScheme: const ColorScheme.dark(surface: Colors.black),
-    ),
+    theme: ThemeData(colorScheme: const ColorScheme.dark(surface: Colors.black)),
     home: RepaintBoundary(
       key: harness.rootKey,
       child: Stack(
@@ -509,9 +419,8 @@ class OtaHarnessApp extends StatelessWidget {
         children: [
           ValueListenableBuilder<bool>(
             valueListenable: harness.mounted,
-            builder: (_, visible, _) => visible
-                ? BlocProvider.value(value: harness.status, child: OTAPage())
-                : const SizedBox.expand(),
+            builder: (_, visible, _) =>
+                visible ? BlocProvider.value(value: harness.status, child: OTAPage()) : const SizedBox.expand(),
           ),
           Positioned(
             right: 0,
@@ -519,9 +428,7 @@ class OtaHarnessApp extends StatelessWidget {
             child: ValueListenableBuilder<int>(
               valueListenable: harness.marker,
               builder: (_, marker, _) => ColoredBox(
-                color: marker.isEven
-                    ? const Color(0xff000000)
-                    : const Color(0xff010101),
+                color: marker.isEven ? const Color(0xff000000) : const Color(0xff010101),
                 child: const SizedBox(width: 1, height: 1),
               ),
             ),

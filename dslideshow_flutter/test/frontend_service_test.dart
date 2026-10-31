@@ -165,9 +165,9 @@ void main() {
       isTrue,
     );
     expect(records.any((record) => record.message.startsWith('systemInfo completed')), isTrue);
-    final failed = records.singleWhere((record) => record.error != null);
+    final failed = records.singleWhere((record) => record.message.startsWith('systemInfo failed'));
     expect(failed.error.toString(), contains('secret-code'));
-    expect(failed.stackTrace.toString(), contains('remote_service.dart'));
+    expect(failed.stackTrace.toString(), contains('FrontendService._send'));
   });
 
   frontendTest('disposal cancels timer and pending local waits, consuming late external failures', (tester, h) async {
