@@ -127,6 +127,66 @@ void main() {
     }
   });
 
+  test('DQT recognizes standard JPEG qualities from an independent encoder without changing originals', () async {
+    for (final quality in [1, 25, 50, 92, 100]) {
+      final encoded = image.encodeJpg(image.Image(width: 23, height: 17), quality: quality);
+      final source = await fixture('quality-$quality.jpg', encoded);
+      final metadata = await reader.read(source);
+      expect(metadata.jpeg!.quality, quality);
+      expect(metadata.jpeg!.qualityMethod, GalleryJpegQualityMethod.standardQuantization);
+      expect(metadata.jpeg!.precisionBits, 8);
+      expect(metadata.jpeg!.samplingFactors, hasLength(3));
+      expect(await File(source.absolutePath).readAsBytes(), encoded);
+    }
+  });
+
+  test('custom DQT remains unknown; malformed tables fail and release file descriptors', () async {
+    final encoded = image.encodeJpg(image.Image(width: 23, height: 17), quality: 75);
+    final table = _find(encoded, [0xff, 0xdb]);
+    expect(table, greaterThan(0));
+    final custom = List<int>.of(encoded)..[table + 5] = 2;
+    final metadata = await reader.read(await fixture('custom.jpg', custom));
+    expect(metadata.jpeg, isNotNull);
+    expect(metadata.jpeg!.quality, isNull);
+    expect(metadata.jpeg!.qualityMethod, GalleryJpegQualityMethod.unknown);
+    expect([metadata.width, metadata.height], [23, 17]);
+    for (final (offset, value) in [(table + 4, 0xf0), (table + 5, 0), (table + 3, 3)]) {
+      final bad = List<int>.of(encoded)..[offset] = value;
+      await expectLater(
+        reader.read(await fixture('bad-$offset-$value.jpg', bad)),
+        _failure(GalleryErrorCode.processingFailed),
+      );
+    }
+    expect(await _openSources(root), isEmpty);
+  });
+
+  test('16-bit DQT and non-default table IDs are matched using frame selectors', () async {
+    final encoded = image.encodeJpg(image.Image(width: 23, height: 17), quality: 92);
+    final table = _find(encoded, [0xff, 0xdb]);
+    final length = (encoded[table + 2] << 8) | encoded[table + 3];
+    final payload = encoded.sublist(table + 4, table + 2 + length);
+    // Convert the first table from 8-bit to 16-bit and rename it from 0 to 2.
+    final replacement = [
+      0xff,
+      0xdb,
+      0,
+      131,
+      0x12,
+      for (final v in payload.skip(1).take(64)) ...[0, v],
+      ...payload.skip(65),
+    ];
+    final updatedLength = replacement.length - 2;
+    replacement[2] = updatedLength >> 8;
+    replacement[3] = updatedLength & 255;
+    final bytes = [...encoded.take(table), ...replacement, ...encoded.skip(table + 2 + length)];
+    final frame = _find(bytes, [0xff, 0xc0]);
+    expect(frame, greaterThan(0));
+    bytes[frame + 1] = 0xc1;
+    bytes[frame + 12] = 2;
+    final metadata = await reader.read(await fixture('extended.jpg', bytes));
+    expect(metadata.jpeg!.quality, 92);
+  });
+
   test('PNG eXIf after pixels and ICC have bounded Dart reads, 16-bit alpha and staged identity', () async {
     final profile = _icc();
     final pixels = image.Image(width: 13, height: 7, format: image.Format.uint16, numChannels: 4)

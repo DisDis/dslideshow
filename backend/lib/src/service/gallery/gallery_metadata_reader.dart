@@ -16,6 +16,7 @@ import 'package:logging/logging.dart';
 
 import 'gallery_catalog_service.dart';
 import 'gallery_tool_runner.dart';
+import 'jpeg_quantization.dart';
 
 enum _ImageContainer { jpeg, png, webp, gif, tiff, heic, avif, unknown }
 
@@ -169,6 +170,7 @@ typedef _Container = ({
   bool? alpha,
   Uint8List? exifBytes,
   Uint8List? profile,
+  GalleryJpegMetadata? jpeg,
 });
 
 // Top-level launchers prevent Dart closure-context sharing from capturing the
@@ -286,6 +288,7 @@ GalleryMetadata _readStill(GallerySource source, String filePath, int limit, int
       colorProfile: profile == null ? null : _profileDescription(profile),
       bitDepth: container.depth ?? values.integer('BitsPerSample'),
       hasAlpha: container.alpha,
+      jpeg: container.jpeg,
     );
   } on GalleryCatalogFailure {
     rethrow;
@@ -427,7 +430,17 @@ _Container _base(
   bool? alpha,
   Uint8List? exifBytes,
   Uint8List? profile,
-}) => (kind: kind, width: width, height: height, depth: depth, alpha: alpha, exifBytes: exifBytes, profile: profile);
+  GalleryJpegMetadata? jpeg,
+}) => (
+  kind: kind,
+  width: width,
+  height: height,
+  depth: depth,
+  alpha: alpha,
+  exifBytes: exifBytes,
+  profile: profile,
+  jpeg: jpeg,
+);
 
 _Container _jpeg(_MetadataFile f) {
   f.setPositionSync(2);
@@ -435,6 +448,9 @@ _Container _jpeg(_MetadataFile f) {
   Uint8List? tags;
   final profile = <int, List<int>>{};
   int? profileCount;
+  final quantization = JpegQuantization();
+  final selectors = <int>[], sampling = <int>[];
+  int? frameMarker;
   for (var chunk = 0; chunk < 100000; chunk++) {
     if (f.readByteSync() != 0xff) _failed();
     var marker = f.readByteSync();
@@ -453,6 +469,7 @@ _Container _jpeg(_MetadataFile f) {
         if (bytes.length > f.limit) _limit();
         icc = bytes.takeBytes();
       }
+      final quality = quantization.quality(precision: depth ?? 0, frameMarker: frameMarker ?? 0, selectors: selectors);
       return _base(
         _ImageContainer.jpeg,
         width: width,
@@ -461,6 +478,14 @@ _Container _jpeg(_MetadataFile f) {
         alpha: false,
         exifBytes: tags,
         profile: icc,
+        jpeg: GalleryJpegMetadata(
+          quality: quality,
+          qualityMethod: quality == null
+              ? GalleryJpegQualityMethod.unknown
+              : GalleryJpegQualityMethod.standardQuantization,
+          precisionBits: depth,
+          samplingFactors: sampling,
+        ),
       );
     }
     if (marker <= 0 || marker == 0xd8 || marker >= 0xd0 && marker <= 0xd7) _failed();
@@ -472,6 +497,21 @@ _Container _jpeg(_MetadataFile f) {
       depth = info[0];
       height = _u16(info, 1);
       width = _u16(info, 3);
+      frameMarker = marker;
+      if (size < 8) _failed();
+      final count = info[5];
+      if (count == 0 || size != 8 + count * 3) _failed();
+      selectors.clear();
+      sampling.clear();
+      final components = f.exact(count * 3);
+      for (var i = 0; i < count; i++) {
+        final factor = components[i * 3 + 1];
+        if (factor >> 4 == 0 || factor >> 4 > 4 || factor & 15 == 0 || factor & 15 > 4) _failed();
+        sampling.add(factor);
+        selectors.add(components[i * 3 + 2]);
+      }
+    } else if (marker == 0xdb) {
+      quantization.add(f.exact(size - 2));
     } else if (marker == 0xe1 && size >= 8) {
       final prefix = f.exact(6);
       if (_starts(prefix, [69, 120, 105, 102, 0, 0])) tags = Uint8List.fromList(f.exact(size - 8));

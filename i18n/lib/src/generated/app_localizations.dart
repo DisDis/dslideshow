@@ -5711,20 +5711,92 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_recommend_earliest_taken.
   ///
   /// In en, this message translates to:
-  /// **'Reason: earliest known date among exact copies. This file uses its date taken; files without a date taken use their modification date.'**
+  /// **'Reason: earliest known date taken. Files with a date taken take priority over files without one.'**
   String get gallery_recommend_earliest_taken;
 
   /// No description provided for @gallery_recommend_earliest_modified.
   ///
   /// In en, this message translates to:
-  /// **'Reason: earliest known date among exact copies. This file has no date taken, so its modification date is used.'**
+  /// **'Reason: earliest known modification date; no date taken is available in the group.'**
   String get gallery_recommend_earliest_modified;
 
   /// No description provided for @gallery_recommend_first_tied.
   ///
   /// In en, this message translates to:
-  /// **'Reason: first among files with the highest resolution'**
+  /// **'Reason: group order breaks the tie after comparing dates, resolution and comparable JPEG parameters.'**
   String get gallery_recommend_first_tied;
+
+  /// No description provided for @gallery_recommend_has_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: a known date taken takes priority over files without one.'**
+  String get gallery_recommend_has_taken;
+
+  /// No description provided for @gallery_recommend_jpeg_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: higher comparable JPEG quality after comparing dates and resolution.'**
+  String get gallery_recommend_jpeg_quality;
+
+  /// No description provided for @gallery_recommend_jpeg_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: larger JPEG after comparing dates, resolution and matching encoding parameters. Size is not proof of image quality.'**
+  String get gallery_recommend_jpeg_size;
+
+  /// No description provided for @gallery_recommend_provisional.
+  ///
+  /// In en, this message translates to:
+  /// **'Provisional'**
+  String get gallery_recommend_provisional;
+
+  /// No description provided for @gallery_metric_best.
+  ///
+  /// In en, this message translates to:
+  /// **'Best known value; ties use group order'**
+  String get gallery_metric_best;
+
+  /// No description provided for @gallery_metric_intermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate value or tied best value'**
+  String get gallery_metric_intermediate;
+
+  /// No description provided for @gallery_metric_worst.
+  ///
+  /// In en, this message translates to:
+  /// **'Worst known value'**
+  String get gallery_metric_worst;
+
+  /// No description provided for @gallery_metric_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'No comparison: unavailable, inactive, or fewer than two known values'**
+  String get gallery_metric_unknown;
+
+  /// No description provided for @gallery_jpeg_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'JPEG quality estimate'**
+  String get gallery_jpeg_quality;
+
+  /// No description provided for @gallery_jpeg_quality_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'IJG-equivalent estimate from standard quantization tables, not a measure of sharpness or original detail. Custom tables may be unrecognized.'**
+  String get gallery_jpeg_quality_hint;
+
+  /// No description provided for @gallery_jpeg_quality_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not determined'**
+  String get gallery_jpeg_quality_unknown;
+
+  /// No description provided for @gallery_jpeg_quality_value.
+  ///
+  /// In en, this message translates to:
+  /// **'≈{quality}/100'**
+  String gallery_jpeg_quality_value(int quality);
 
   /// No description provided for @gallery_recommend_known_resolution.
   ///
@@ -5735,7 +5807,7 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_recommend_first_unknown.
   ///
   /// In en, this message translates to:
-  /// **'Resolution unavailable; the first file is suggested.'**
+  /// **'Comparable data is unavailable or tied; the first file is suggested.'**
   String get gallery_recommend_first_unknown;
 
   /// No description provided for @gallery_resolution_minimum.
@@ -5771,25 +5843,25 @@ abstract class AppLocalizations {
   /// No description provided for @gallery_recommend_resolution.
   ///
   /// In en, this message translates to:
-  /// **'Reason: highest resolution in the group'**
+  /// **'Reason: highest resolution among files tied on higher-priority date criteria'**
   String get gallery_recommend_resolution;
 
   /// No description provided for @gallery_resolution_recommendation_hint.
   ///
   /// In en, this message translates to:
-  /// **'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.'**
+  /// **'Priority: a known date taken, then the earliest date; modification dates are used only when all dates taken are missing. Next: resolution, comparable JPEG quality and JPEG size with matching parameters. Group order breaks ties. Each indicator has its own green best value; trash selection stays manual.'**
   String get gallery_resolution_recommendation_hint;
 
   /// No description provided for @gallery_comparison_partial.
   ///
   /// In en, this message translates to:
-  /// **'Some resolutions are unknown; the recommendation is provisional and may change.'**
+  /// **'Some file details have not loaded; the recommendation and indicator colours are provisional and may change.'**
   String get gallery_comparison_partial;
 
   /// No description provided for @gallery_equivalent_copies.
   ///
   /// In en, this message translates to:
-  /// **'Exact copies: the earliest known date is recommended, using the date taken or, if unavailable, the modification date. Ties and missing dates use the group order. The recommendation may change as details load.'**
+  /// **'Exact copies use the same date-first recommendation rules as similar photos.'**
   String get gallery_equivalent_copies;
 
   /// No description provided for @configPageTitle.

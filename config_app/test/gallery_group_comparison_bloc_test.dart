@@ -2,22 +2,21 @@ import 'package:config_app/features/gallery/presentation/bloc/gallery_group_comp
 import 'package:config_app/src/gallery/gallery_date_time.dart';
 import 'package:dslideshow_common/gallery.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:logging/logging.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:logging/logging.dart';
 
 import 'support/gallery_management_harness.dart';
 
-GalleryDuplicateMember _member(String id, int? width, int? height, {int bytes = 100}) => GalleryDuplicateMember(
+GalleryDuplicateMember _member(String id, int? width, int? height) => GalleryDuplicateMember(
   section: GalleryMediaSection.published,
   mediaId: id,
   sourceRevision: '1',
   name: '$id.jpg',
   path: 'private/$id.jpg',
-  sizeBytes: bytes,
+  sizeBytes: 100,
   width: width,
   height: height,
 );
-
 GalleryGroupComparisonBloc _bloc(List<GalleryDuplicateMember> members, {bool exact = false}) =>
     GalleryGroupComparisonBloc(
       group: GalleryDuplicateGroup(
@@ -26,19 +25,21 @@ GalleryGroupComparisonBloc _bloc(List<GalleryDuplicateMember> members, {bool exa
         items: members,
       ),
     );
-
-Future<void> _update(
-  GalleryGroupComparisonBloc bloc,
-  GalleryMetadata metadata,
-  bool Function(GalleryGroupComparisonState) ready,
-) async {
-  final done = bloc.stream.firstWhere(ready).timeout(const Duration(seconds: 2));
+Future<void> _send(GalleryGroupComparisonBloc bloc, GalleryMetadata metadata) async {
   bloc.add(metadata);
-  await done;
+  // Comparison handlers are synchronous; unchanged assessments need not emit.
+  await Future<void>(() {});
 }
 
+GalleryJpegMetadata _jpeg(int? quality, {List<int> sampling = const [0x22, 0x11, 0x11]}) => GalleryJpegMetadata(
+  quality: quality,
+  qualityMethod: quality == null ? GalleryJpegQualityMethod.unknown : GalleryJpegQualityMethod.standardQuantization,
+  precisionBits: 8,
+  samplingFactors: sampling,
+);
+
 void main() {
-  test('gallery dates parse EXIF and ISO offsets and reject missing or invalid timestamps', () {
+  test('dates parse EXIF and ISO offsets and reject invalid values', () {
     expect(GalleryDateTime.parseDateTaken('2026:10:31 15:04:05'), DateTime(2026, 10, 31, 15, 4, 5));
     expect(GalleryDateTime.parseDateTaken('2026:10:31 15:04:05+03:00'), DateTime.utc(2026, 10, 31, 12, 4, 5));
     expect(
@@ -58,237 +59,173 @@ void main() {
       expect(GalleryDateTime.parseDateTaken(value), isNull, reason: value);
     }
   });
-
-  test('gallery dates use the current language, include seconds and omit subseconds', () async {
+  test('dates use locale format through seconds without subseconds', () async {
     await initializeDateFormatting();
     final date = DateTime(2026, 10, 31, 15, 4, 5, 123, 456);
     expect(GalleryDateTime.format(date, 'en'), '10/31/2026 15:04:05');
     expect(GalleryDateTime.format(date, 'ru'), '31.10.2026 15:04:05');
     expect(GalleryDateTime.format(null, 'en'), '—');
   });
-
-  test('whole-group winner uses known resolutions and is corrected when missing dimensions arrive', () async {
+  test('resolution colours have one best, all distinct minima red, and tied maxima yellow', () async {
     final bloc = _bloc([
-      _member('minimum', 1000, 1000),
-      _member('middle', 2000, 1000),
-      _member('old-maximum', 1500, 2000),
+      _member('min', 1000, 1000),
+      _member('mid', 2000, 1000),
+      _member('best', 4000, 1000),
+      _member('tie', 2000, 2000),
       _member('unknown', null, null),
     ]);
     addTearDown(bloc.close);
-    final oldMaximum = GalleryImageResolution.read(1500, 2000)!;
-    expect(bloc.state.knownCount, 3);
-    expect(bloc.state.rank('minimum', GalleryImageResolution.read(1000, 1000)), GalleryResolutionRank.minimum);
-    expect(bloc.state.rank('middle', GalleryImageResolution.read(2000, 1000)), GalleryResolutionRank.other);
-    expect(bloc.state.rank('old-maximum', oldMaximum), GalleryResolutionRank.recommended);
-    expect(bloc.state.recommended('old-maximum'), isTrue);
-    expect(bloc.state.reason, GalleryRecommendationReason.highestKnownResolution);
-    expect(bloc.state.rank('unknown', null), GalleryResolutionRank.unknown);
-    await _update(bloc, photoMetadata('unknown').copyWith(width: 2000, height: 2000), (s) => s.complete);
-    expect(bloc.state.rank('old-maximum', oldMaximum), GalleryResolutionRank.other);
-    expect(bloc.state.recommended('unknown'), isTrue);
-    await _update(bloc, photoMetadata('unknown').copyWith(width: 500, height: 1000), (s) => s.minPixels == 500000);
-    expect(bloc.state.maxPixels, 3000000);
-    expect(bloc.state.recommended('old-maximum'), isTrue);
+    expect(bloc.state.rank('min', GalleryImageResolution.read(1000, 1000)), GalleryMetricRank.worst);
+    expect(bloc.state.rank('mid', GalleryImageResolution.read(2000, 1000)), GalleryMetricRank.intermediate);
+    expect(bloc.state.rank('best', GalleryImageResolution.read(4000, 1000)), GalleryMetricRank.best);
+    expect(bloc.state.rank('tie', GalleryImageResolution.read(2000, 2000)), GalleryMetricRank.intermediate);
+    expect(bloc.state.rank('unknown', null), GalleryMetricRank.unknown);
+    await _send(bloc, photoMetadata('unknown').copyWith(width: 5000, height: 1000));
+    expect(bloc.state.recommendedMediaId, 'unknown');
+    expect(bloc.state.rank('best', GalleryImageResolution.read(4000, 1000)), GalleryMetricRank.intermediate);
+    await _send(bloc, photoMetadata('unknown').copyWith(width: 500, height: 1000));
+    expect(bloc.state.minPixels, 500000);
+    expect(bloc.state.recommendedMediaId, 'best');
   });
-
-  test('equal pixel counts choose the first highest; all other equals are yellow and bytes never break ties', () async {
-    final bloc = _bloc([
-      _member('portrait', 3000, 4000, bytes: 1000),
-      _member('landscape', 4000, 3000, bytes: 2000),
-      _member('small', 1000, 1000, bytes: 3000),
-    ]);
-    addTearDown(bloc.close);
-    final large = GalleryImageResolution.read(3000, 4000)!;
-    expect(bloc.state.maximumCount, 2);
-    expect(bloc.state.reason, GalleryRecommendationReason.firstTied);
-    expect(bloc.state.rank('portrait', large), GalleryResolutionRank.recommended);
-    expect(bloc.state.rank('landscape', large), GalleryResolutionRank.other);
-    expect(bloc.state.recommended('portrait'), isTrue);
-    expect(bloc.state.recommended('landscape'), isFalse);
-    expect(bloc.state.smallestFile(1000), isTrue);
-    expect(bloc.state.smallestFile(3000), isFalse);
-    await _update(bloc, photoMetadata('small').copyWith(width: 4000, height: 3000), (s) => s.maximumCount == 3);
-    expect(bloc.state.rank('portrait', large), GalleryResolutionRank.recommended);
-    expect(bloc.state.rank('landscape', large), GalleryResolutionRank.other);
-    expect(bloc.state.rank('small', large), GalleryResolutionRank.other);
-    expect(bloc.state.recommendedMediaId, 'portrait');
+  test('all-equal values keep one green without red; a single known value stays neutral', () async {
+    final equal = _bloc([_member('a', 1000, 1000), _member('b', 1000, 1000)], exact: true);
+    addTearDown(equal.close);
+    expect(equal.state.rank('a', GalleryImageResolution.read(1000, 1000)), GalleryMetricRank.best);
+    expect(equal.state.rank('b', GalleryImageResolution.read(1000, 1000)), GalleryMetricRank.intermediate);
+    final single = _bloc([_member('a', 1000, 1000), _member('b', 0, 1000)]);
+    addTearDown(single.close);
+    expect(single.state.rank('a', GalleryImageResolution.read(1000, 1000)), GalleryMetricRank.unknown);
+    await _send(single, photoMetadata('a').copyWith(width: null, height: null));
+    expect(single.state.maxPixels, 1000000, reason: 'CLI dimensions remain a fallback');
   });
-
-  test(
-    'zero or incomplete dimensions are unknown; valid CLI dimensions survive an unreadable metadata fallback',
-    () async {
-      final bloc = _bloc([_member('a', 0, 100), _member('b', 1000, 500)]);
-      expect(bloc.state.knownCount, 1);
-      expect(bloc.state.rank('b', GalleryImageResolution.read(1000, 500)), GalleryResolutionRank.recommended);
-      bloc.add(photoMetadata('b').copyWith(width: null, height: null));
+  test('capture dates outrank older mtimes and larger images in exact and similar groups', () async {
+    for (final exact in [true, false]) {
+      final bloc = _bloc([
+        _member('large', 6000, 4000),
+        _member('old', 1000, 1000),
+        _member('older', 500, 500),
+      ], exact: exact);
+      await _send(bloc, photoMetadata('large').copyWith(fileModified: DateTime.utc(2000)));
+      await _send(bloc, photoMetadata('old').copyWith(width: 1000, height: 1000, dateTaken: '2020-01-01T00:00:00Z'));
+      expect(bloc.state.recommendedMediaId, 'old');
+      expect(bloc.state.reason, GalleryRecommendationReason.hasDateTaken);
+      expect(bloc.state.rank('large', GalleryImageResolution.read(6000, 4000)), GalleryMetricRank.best);
+      expect(
+        bloc.state.dateRank('large', GalleryComparisonDateSource.fileModified, DateTime.utc(2000)),
+        GalleryMetricRank.unknown,
+      );
+      await _send(bloc, photoMetadata('older').copyWith(width: 500, height: 500, dateTaken: '2019:01:01 00:00:00Z'));
+      expect(bloc.state.recommendedMediaId, 'older');
+      expect(bloc.state.reason, GalleryRecommendationReason.earliestDateTaken);
+      expect(bloc.state.provisional, isFalse);
+      expect(
+        bloc.state.dateRank('older', GalleryComparisonDateSource.dateTaken, DateTime.utc(2019)),
+        GalleryMetricRank.best,
+      );
+      expect(
+        bloc.state.dateRank('old', GalleryComparisonDateSource.dateTaken, DateTime.utc(2020)),
+        GalleryMetricRank.worst,
+      );
       await bloc.close();
-      expect(bloc.state.knownCount, 1);
-      expect(bloc.state.maxPixels, 500000);
-      expect(GalleryImageResolution.read(0, 100), isNull);
-      expect(GalleryImageResolution.read(100, -2), isNull);
-      expect(GalleryImageResolution.read(100, null), isNull);
+    }
+  });
+  test('mtime fallback uses earliest values, offsets, equal seconds and source order', () async {
+    final bloc = _bloc([_member('a', 2000, 1000), _member('b', 1000, 1000), _member('c', 1000, 1000)]);
+    addTearDown(bloc.close);
+    await _send(
+      bloc,
+      photoMetadata('b').copyWith(width: 1000, height: 1000, fileModified: DateTime.utc(2020, 1, 1, 0, 0, 0, 1)),
+    );
+    await _send(
+      bloc,
+      photoMetadata('a').copyWith(width: 2000, height: 1000, fileModified: DateTime.utc(2020, 1, 1, 0, 0, 0, 999)),
+    );
+    expect(bloc.state.recommendedMediaId, 'a', reason: 'Subseconds are not a hidden tie-breaker');
+    await _send(bloc, photoMetadata('c').copyWith(width: 1000, height: 1000, fileModified: DateTime.utc(2021)));
+    expect(
+      bloc.state.dateRank('a', GalleryComparisonDateSource.fileModified, DateTime.utc(2020)),
+      GalleryMetricRank.best,
+    );
+    expect(
+      bloc.state.dateRank('b', GalleryComparisonDateSource.fileModified, DateTime.utc(2020)),
+      GalleryMetricRank.intermediate,
+    );
+    expect(
+      bloc.state.dateRank('c', GalleryComparisonDateSource.fileModified, DateTime.utc(2021)),
+      GalleryMetricRank.worst,
+    );
+    await _send(bloc, photoMetadata('b').copyWith(width: 1000, height: 1000, dateTaken: '2026:10:31 15:04:05+03:00'));
+    await _send(bloc, photoMetadata('a').copyWith(width: 2000, height: 1000, dateTaken: '2026-10-31T12:04:05Z'));
+    expect(bloc.state.recommendedMediaId, 'a');
+    expect(bloc.state.recommendedDate!.value, DateTime.utc(2026, 10, 31, 12, 4, 5));
+  });
+  test('JPEG quality and size break ties while each indicator keeps its own green value', () async {
+    final bloc = _bloc([_member('a', 2000, 1000), _member('b', 2000, 1000), _member('c', 2000, 1000)]);
+    addTearDown(bloc.close);
+    for (final (id, q, size) in [('a', 90, 5000), ('b', 95, 2000), ('c', 95, 3000)]) {
+      await _send(bloc, photoMetadata(id).copyWith(width: 2000, height: 1000, jpeg: _jpeg(q), sizeBytes: size));
+    }
+    expect(bloc.state.recommendedMediaId, 'c');
+    expect(bloc.state.reason, GalleryRecommendationReason.largestJpegFile);
+    expect(bloc.state.jpegQuality.rank('b', 95), GalleryMetricRank.best);
+    expect(bloc.state.jpegQuality.rank('c', 95), GalleryMetricRank.intermediate);
+    expect(bloc.state.jpegQuality.rank('a', 90), GalleryMetricRank.worst);
+    expect(bloc.state.jpegSize.rank('a', 5000), GalleryMetricRank.best);
+    expect(bloc.state.jpegSize.rank('b', 2000), GalleryMetricRank.worst);
+    await _send(bloc, photoMetadata('a').copyWith(width: 2000, height: 1000, jpeg: _jpeg(99), sizeBytes: 1000));
+    expect(bloc.state.recommendedMediaId, 'a');
+    expect(bloc.state.reason, GalleryRecommendationReason.highestJpegQuality);
+  });
+  test(
+    'unknown JPEG quality is skipped, never zero; differing dimensions and sampling prevent size tie-breaking',
+    () async {
+      final bloc = _bloc([_member('a', 2000, 1000), _member('b', 2000, 1000)]);
+      addTearDown(bloc.close);
+      await _send(bloc, photoMetadata('a').copyWith(width: 2000, height: 1000, jpeg: _jpeg(null), sizeBytes: 100));
+      await _send(bloc, photoMetadata('b').copyWith(width: 2000, height: 1000, jpeg: _jpeg(99), sizeBytes: 10000));
+      expect(bloc.state.recommendedMediaId, 'a');
+      expect(bloc.state.jpegQuality.rank('b', 99), GalleryMetricRank.unknown);
+      await _send(bloc, photoMetadata('a').copyWith(width: 1000, height: 2000, jpeg: _jpeg(99), sizeBytes: 100));
+      expect(bloc.state.recommendedMediaId, 'a', reason: 'Equal pixel count does not make dimensions identical');
+      await _send(
+        bloc,
+        photoMetadata('a')
+            .copyWith(width: 2000, height: 1000, jpeg: _jpeg(99, sampling: [0x11, 0x11, 0x11]), sizeBytes: 100),
+      );
+      expect(bloc.state.recommendedMediaId, 'a', reason: 'Different sampling does not prove size means higher quality');
+      await _send(bloc, photoMetadata('a').copyWith(width: 2000, height: 1000, jpeg: null, sizeBytes: 100));
+      expect(bloc.state.recommendedMediaId, 'a');
+      expect(bloc.state.jpegSize.rank('a', null), GalleryMetricRank.unknown);
     },
   );
-
-  test('exact copies without known dates recommend the first instance; other resolutions are yellow', () async {
-    final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000)], exact: true);
-    expect(bloc.state.exact, isTrue);
-    expect(bloc.state.rank('a', GalleryImageResolution.read(6000, 4000)), GalleryResolutionRank.recommended);
-    expect(bloc.state.recommended('a'), isTrue);
-    expect(bloc.state.rank('b', GalleryImageResolution.read(6000, 4000)), GalleryResolutionRank.other);
-    expect(bloc.state.reason, GalleryRecommendationReason.firstExactCopy);
-    expect(bloc.state.smallestFile(100), isFalse);
-    await bloc.close();
-  });
-
-  test('exact copies use the earliest capture date or modification fallback even when dimensions stay equal', () async {
-    final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000), _member('c', 6000, 4000)], exact: true);
-    addTearDown(bloc.close);
-    await _update(
-      bloc,
-      photoMetadata('b').copyWith(fileModified: DateTime.utc(2020, 1, 1)),
-      (s) => s.recommendedMediaId == 'b',
-    );
-    expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
-    expect(bloc.state.recommendsDate('b', GalleryComparisonDateSource.fileModified), isTrue);
-    expect(bloc.state.recommendsDate('b', GalleryComparisonDateSource.dateTaken), isFalse);
-    await _update(
-      bloc,
-      photoMetadata('a').copyWith(dateTaken: '2021:01:01 00:00:00Z', fileModified: DateTime.utc(2010, 1, 1)),
-      (s) => s.knownDateCount == 2,
-    );
-    expect(bloc.state.recommendedMediaId, 'b', reason: 'A known capture date takes priority over that file\'s mtime.');
-    await _update(
-      bloc,
-      photoMetadata('c').copyWith(dateTaken: '2019-01-01T00:00:00Z'),
-      (s) => s.recommendedMediaId == 'c',
-    );
-    expect(bloc.state.reason, GalleryRecommendationReason.earliestDateTaken);
-    expect(bloc.state.recommendsDate('c', GalleryComparisonDateSource.dateTaken), isTrue);
-    await _update(
-      bloc,
-      photoMetadata('b').copyWith(dateTaken: '2018:01:01 00:00:00Z', fileModified: DateTime.utc(2020, 1, 1)),
-      (s) => s.recommendedMediaId == 'b',
-    );
-    await _update(
-      bloc,
-      photoMetadata('c').copyWith(dateTaken: 'invalid', fileModified: DateTime.utc(2017, 1, 1)),
-      (s) => s.recommendedMediaId == 'c',
-    );
-    expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
-    await _update(bloc, photoMetadata('c'), (s) => s.knownDateCount == 2);
-    expect(bloc.state.recommendedMediaId, 'b', reason: 'Removing a timestamp must remove its old index entry.');
-    bloc.add(photoMetadata('a', revision: 'stale').copyWith(dateTaken: '2000-01-01T00:00:00Z'));
-    bloc.add(photoMetadata('a').copyWith(section: GalleryMediaSection.hidden, dateTaken: '2000-01-01T00:00:00Z'));
-    await _update(
-      bloc,
-      photoMetadata('c').copyWith(fileModified: DateTime.utc(2025, 1, 1)),
-      (s) => s.knownDateCount == 3,
-    );
-    expect(bloc.state.recommendedMediaId, 'b');
-    expect(bloc.state.knownDateCount, 3);
-  });
-
   test(
-    'equal comparison dates use group order across offsets and arrival order, including modification fallback',
+    'removing dates restores indexes and stale versions or sections cannot affect ranking; logs explain choices',
     () async {
-      final records = <LogRecord>[];
-      final oldLevel = Logger.root.level;
+      final records = <LogRecord>[], oldLevel = Logger.root.level;
       Logger.root.level = Level.ALL;
-      final subscription = Logger.root.onRecord.listen(records.add);
+      final sub = Logger.root.onRecord.listen(records.add);
       addTearDown(() async {
-        await subscription.cancel();
+        await sub.cancel();
         Logger.root.level = oldLevel;
       });
-      final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000)], exact: true);
+      final bloc = _bloc([_member('a', 6000, 4000), _member('b', 6000, 4000)]);
       addTearDown(bloc.close);
-      await _update(
-        bloc,
-        photoMetadata('b').copyWith(dateTaken: '2026:10:31 15:04:05+03:00'),
-        (s) => s.recommendedMediaId == 'b',
-      );
-      await _update(
-        bloc,
-        photoMetadata('a').copyWith(fileModified: DateTime.utc(2026, 10, 31, 12, 4, 5)),
-        (s) => s.recommendedMediaId == 'a',
-      );
-      expect(bloc.state.knownDateCount, 2);
-      expect(bloc.state.recommendedDate!.value, DateTime.utc(2026, 10, 31, 12, 4, 5));
-      expect(bloc.state.reason, GalleryRecommendationReason.earliestFileModified);
-      await _update(
-        bloc,
-        photoMetadata('a').copyWith(dateTaken: '2026-10-31T12:04:05Z'),
-        (s) => s.reason == GalleryRecommendationReason.earliestDateTaken,
-      );
+      await _send(bloc, photoMetadata('b').copyWith(dateTaken: '2020-01-01T00:00:00Z'));
+      expect(bloc.state.recommendedMediaId, 'b');
+      await _send(bloc, photoMetadata('b').copyWith(dateTaken: 'invalid'));
+      expect(bloc.state.recommendedMediaId, 'a');
+      expect(bloc.state.knownDateCount, 0);
+      bloc.add(photoMetadata('a', revision: 'stale-secret').copyWith(dateTaken: '1900-01-01T00:00:00Z'));
+      bloc.add(photoMetadata('a').copyWith(section: GalleryMediaSection.hidden, dateTaken: '1900-01-01T00:00:00Z'));
+      await _send(bloc, photoMetadata('b').copyWith(fileModified: DateTime.utc(2021)));
+      expect(bloc.state.recommendedMediaId, 'b');
       final logs = records.where((r) => r.loggerName == 'GalleryGroupComparisonBloc').toList();
-      expect(
-        logs.any((r) => r.message.contains('knownDates=2') && r.message.contains('reason=earliestFileModified')),
-        isTrue,
-      );
-      expect(logs.any((r) => r.message.contains('reason=earliestDateTaken')), isTrue);
+      expect(logs.any((r) => r.message.contains('comparisonOpened')), isTrue);
+      expect(logs.any((r) => r.message.contains('comparisonMetadataIgnored')), isTrue);
+      expect(logs.any((r) => r.message.contains('reason=hasDateTaken')), isTrue);
+      expect(logs.any((r) => r.message.contains('knownJpegQuality=0') && r.message.contains('knownDates=1')), isTrue);
       expect(logs.every((r) => r.level < Level.INFO), isTrue);
+      expect(logs.map((r) => r.message).join(), isNot(contains('secret')));
     },
   );
-
-  test('similar files keep resolution and group-order ranking regardless of their dates', () async {
-    final bloc = _bloc([_member('a', 2000, 1000), _member('b', 2000, 1000)]);
-    bloc.add(photoMetadata('b').copyWith(width: 2000, height: 1000, dateTaken: '2000-01-01T00:00:00Z'));
-    await bloc.close();
-    expect(bloc.state.recommendedMediaId, 'a');
-    expect(bloc.state.recommendedDate, isNull);
-    expect(bloc.state.knownDateCount, 0);
-    expect(bloc.state.reason, GalleryRecommendationReason.firstTied);
-  });
-
-  test(
-    'unknown dimensions still yield one candidate; tied replies select by group order rather than arrival order',
-    () async {
-      final bloc = _bloc([_member('first', null, null), _member('second', null, null)]);
-      addTearDown(bloc.close);
-      expect(bloc.state.recommendedMediaId, 'first');
-      expect(bloc.state.reason, GalleryRecommendationReason.firstUnknown);
-      await _update(
-        bloc,
-        photoMetadata('second').copyWith(width: 2000, height: 1000),
-        (s) => s.recommendedMediaId == 'second',
-      );
-      expect(bloc.state.reason, GalleryRecommendationReason.highestKnownResolution);
-      await _update(
-        bloc,
-        photoMetadata('first').copyWith(width: 1000, height: 2000),
-        (s) => s.recommendedMediaId == 'first',
-      );
-      expect(bloc.state.reason, GalleryRecommendationReason.firstTied);
-      expect(bloc.state.maximumCount, 2);
-    },
-  );
-
-  test('stale replies cannot change the assessment; lifecycle logs omit paths and remain below INFO', () async {
-    final records = <LogRecord>[];
-    final oldLevel = Logger.root.level;
-    Logger.root.level = Level.ALL;
-    final subscription = Logger.root.onRecord.listen(records.add);
-    addTearDown(() async {
-      await subscription.cancel();
-      Logger.root.level = oldLevel;
-    });
-    final bloc = _bloc([_member('a', null, null), _member('b', 1000, 1000)]);
-    bloc.add(photoMetadata('a', revision: 'stale-secret').copyWith(width: 9999));
-    bloc.add(photoMetadata('unknown-secret'));
-    await _update(bloc, photoMetadata('a').copyWith(width: 2000, height: 1000), (s) => s.complete);
-    expect(bloc.state.maxPixels, 2000000);
-    await bloc.close();
-    final logs = records.where((r) => r.loggerName == 'GalleryGroupComparisonBloc').toList();
-    expect(logs.any((r) => r.message.contains('comparisonOpened')), isTrue);
-    expect(logs.any((r) => r.message.contains('comparisonMetadataIgnored')), isTrue);
-    expect(logs.any((r) => r.message.contains('comparisonUpdated')), isTrue);
-    expect(
-      logs.any((r) => r.message.contains('candidateIndex=0') && r.message.contains('reason=highestResolution')),
-      isTrue,
-    );
-    expect(logs.any((r) => r.message.contains('comparisonClosed')), isTrue);
-    expect(logs.every((r) => r.level < Level.INFO), isTrue);
-    expect(logs.map((r) => r.message).join(), isNot(contains('private')));
-    expect(logs.map((r) => r.message).join(), isNot(contains('secret')));
-  });
 }

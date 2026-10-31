@@ -694,7 +694,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('comparison requests brief metadata for the displayed list and labels date source', (tester) async {
+  testWidgets('comparison requests brief metadata for the displayed list and always formats both dates', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1200, 1200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -761,11 +763,16 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(pending.keys.toSet(), {'a', 'b', 'c'});
+    expect(find.text('Date taken: —'), findsNWidgets(3));
+    expect(find.text('File modified: —'), findsNWidgets(3));
     pending['a']!.complete(
       http.Response(jsonEncode(photoMetadata('a').copyWith(dateTaken: '2026:07:18 09:42:00').toJson()), 200),
     );
     pending['b']!.complete(
-      http.Response(jsonEncode(photoMetadata('b').copyWith(fileModified: DateTime.utc(2026, 7, 18)).toJson()), 200),
+      http.Response(
+        jsonEncode(photoMetadata('b').copyWith(fileModified: DateTime(2001, 7, 18, 11, 23, 45, 678).toUtc()).toJson()),
+        200,
+      ),
     );
     await tester.pump();
     await tester.pump();
@@ -775,8 +782,16 @@ void main() {
     expect(find.text('6000 × 4000'), findsNWidgets(3));
     expect(find.text('< 0.01 MB'), findsNWidgets(3));
     expect(find.byTooltip('Exact size: 1024 bytes'), findsNWidgets(3));
-    expect(find.text('Date taken: 2026:07:18 09:42:00'), findsOneWidget);
-    expect(find.textContaining('File modified:'), findsOneWidget);
+    expect(find.text('Date taken: 7/18/2026 09:42:00'), findsOneWidget);
+    expect(find.text('Date taken: —'), findsNWidgets(2));
+    expect(find.text('File modified: 7/18/2001 11:23:45'), findsOneWidget);
+    expect(find.text('File modified: —'), findsNWidgets(2));
+    final datedCard = find.ancestor(of: find.text('a.jpg'), matching: find.byType(Card));
+    expect(
+      find.descendant(of: datedCard, matching: find.text('Recommended to keep')),
+      findsOneWidget,
+      reason: 'A capture date takes priority over an older modification date.',
+    );
     expect(pending, hasLength(3), reason: 'Only the currently displayed list requests file details');
     expect(find.text('Test camera'), findsNothing, reason: 'Full EXIF belongs to the single-media viewer');
     await finish(tester, session);

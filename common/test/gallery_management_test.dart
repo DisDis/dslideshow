@@ -7,6 +7,33 @@ import 'package:test/test.dart';
 Map<String, dynamic> _wire(String text) => jsonDecode(text) as Map<String, dynamic>;
 
 void main() {
+  test('optional JPEG metadata round-trips, preserves immutable sampling and tolerates missing or future methods', () {
+    final metadata = GalleryMetadata(
+      section: GalleryMediaSection.published,
+      mediaId: 'photo',
+      sourceRevision: '1',
+      name: 'photo.jpg',
+      path: 'photo.jpg',
+      kind: GalleryEntryKind.image,
+      sizeBytes: 100,
+      jpeg: const GalleryJpegMetadata(
+        quality: 92,
+        qualityMethod: GalleryJpegQualityMethod.standardQuantization,
+        precisionBits: 8,
+        samplingFactors: [0x22, 0x11, 0x11],
+      ),
+    );
+    final json = _wire(jsonEncode(metadata.toJson()));
+    expect(GalleryMetadata.fromJson(json), metadata);
+    expect(metadata.jpeg!.comparableQuality, 92);
+    expect(() => metadata.jpeg!.samplingFactors.clear(), throwsUnsupportedError);
+    expect(GalleryMetadata.fromJson({...json}..remove('jpeg')).jpeg, isNull);
+    final unknown = GalleryJpegMetadata.fromJson({'quality': 92, 'qualityMethod': 'future'});
+    expect(unknown.qualityMethod, GalleryJpegQualityMethod.unknown);
+    expect(unknown.comparableQuality, isNull);
+    expect(metadata.jpeg!.copyWith(quality: 101).comparableQuality, isNull);
+    expect(metadata.jpeg!.copyWith(precisionBits: 12).comparableQuality, isNull);
+  });
   test('media references, operations and duplicate members preserve explicit sections', () {
     for (final section in GalleryMediaSection.values) {
       final ref = GalleryMediaRef(mediaId: 'photo', sourceRevision: 'v1', section: section);

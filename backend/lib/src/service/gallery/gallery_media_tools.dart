@@ -123,12 +123,13 @@ class GalleryMediaTools {
     });
     _metadataReads[key] = read;
     read.then<void>(
-      (_) {
+      (details) {
         _metadataReads.remove(key);
         _log.fine(
           () =>
               'Metadata finished media=${_logId(id)} '
-              ' cached=${_cache.length}',
+              ' cached=${_cache.length} jpegQuality=${details.jpeg?.quality ?? 'unknown'} '
+              'jpegQualityMethod=${details.jpeg?.qualityMethod.name ?? 'notJpeg'}',
         );
       },
       onError: (Object error, StackTrace stack) {

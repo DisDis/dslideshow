@@ -5,39 +5,40 @@ import 'package:dslideshow_common/gallery.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
-import '../../../../src/gallery/gallery_log.dart';
 import '../../../../src/gallery/gallery_date_time.dart';
+import '../../../../src/gallery/gallery_log.dart';
 
 part 'gallery_group_comparison_bloc.freezed.dart';
+part 'gallery_comparison_index.dart';
 
-enum GalleryResolutionRank { unknown, recommended, minimum, other }
+enum GalleryMetricRank { unknown, best, intermediate, worst }
 
-enum GalleryRecommendationReason {
-  highestResolution,
-  firstTied,
-  firstExactCopy,
-  highestKnownResolution,
-  firstUnknown,
-  earliestDateTaken,
-  earliestFileModified,
-}
+enum GalleryMetricDirection { higher, lower }
+
+enum GalleryComparisonMetric { resolution, jpegQuality, jpegSize, dateTaken, fileModified }
 
 enum GalleryComparisonDateSource { dateTaken, fileModified }
+
+enum GalleryRecommendationReason {
+  hasDateTaken,
+  earliestDateTaken,
+  earliestFileModified,
+  highestResolution,
+  highestJpegQuality,
+  largestJpegFile,
+  firstTied,
+  firstUnknown,
+}
 
 @freezed
 abstract class GalleryComparisonDate with _$GalleryComparisonDate {
   const factory GalleryComparisonDate({required DateTime value, required GalleryComparisonDateSource source}) =
       _GalleryComparisonDate;
 
-  static GalleryComparisonDate? read(GalleryMetadata metadata) {
-    final taken = GalleryDateTime.parseDateTaken(metadata.dateTaken);
-    final value = taken ?? metadata.fileModified;
-    return value == null
-        ? null
-        : GalleryComparisonDate(
-            value: value.toUtc(),
-            source: taken == null ? GalleryComparisonDateSource.fileModified : GalleryComparisonDateSource.dateTaken,
-          );
+  static DateTime? throughSeconds(DateTime? value) {
+    if (value == null) return null;
+    final utc = value.toUtc();
+    return DateTime.utc(utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second);
   }
 }
 
@@ -45,13 +46,73 @@ abstract class GalleryComparisonDate with _$GalleryComparisonDate {
 abstract class GalleryImageResolution with _$GalleryImageResolution {
   const GalleryImageResolution._();
   const factory GalleryImageResolution({required int width, required int height}) = _GalleryImageResolution;
-
   int get pixels => width * height;
-
   static GalleryImageResolution? read(int? width, int? height) =>
       width != null && height != null && width > 0 && height > 0
       ? GalleryImageResolution(width: width, height: height)
       : null;
+}
+
+@freezed
+abstract class GalleryMetricAssessment with _$GalleryMetricAssessment {
+  const GalleryMetricAssessment._();
+  const factory GalleryMetricAssessment({
+    @Default(0) int knownCount,
+    int? minValue,
+    int? maxValue,
+    String? bestMediaId,
+    @Default(0) int bestCount,
+    @Default(GalleryMetricDirection.higher) GalleryMetricDirection direction,
+  }) = _GalleryMetricAssessment;
+
+  GalleryMetricRank rank(String mediaId, int? value) {
+    if (value == null || knownCount < 2) return GalleryMetricRank.unknown;
+    if (mediaId == bestMediaId) return GalleryMetricRank.best;
+    final worst = direction == GalleryMetricDirection.higher ? minValue : maxValue;
+    if (minValue != maxValue && value == worst) return GalleryMetricRank.worst;
+    return GalleryMetricRank.intermediate;
+  }
+}
+
+@freezed
+abstract class GalleryComparisonCandidate with _$GalleryComparisonCandidate {
+  const GalleryComparisonCandidate._();
+  const factory GalleryComparisonCandidate({
+    required String mediaId,
+    required int sizeBytes,
+    GalleryImageResolution? resolution,
+    DateTime? dateTaken,
+    DateTime? fileModified,
+    GalleryJpegMetadata? jpeg,
+    @Default(false) bool metadataLoaded,
+  }) = _GalleryComparisonCandidate;
+
+  GalleryComparisonDate? get date {
+    final value = dateTaken ?? fileModified;
+    return value == null
+        ? null
+        : GalleryComparisonDate(
+            value: value,
+            source: dateTaken == null
+                ? GalleryComparisonDateSource.fileModified
+                : GalleryComparisonDateSource.dateTaken,
+          );
+  }
+
+  int? get quality => jpeg?.comparableQuality;
+
+  (GalleryImageResolution, GalleryJpegMetadata)? get jpegFrame =>
+      quality != null && resolution != null && jpeg?.precisionBits != null && jpeg!.samplingFactors.isNotEmpty
+      ? (resolution!, jpeg!)
+      : null;
+
+  int? value(GalleryComparisonMetric metric) => switch (metric) {
+    GalleryComparisonMetric.resolution => resolution?.pixels,
+    GalleryComparisonMetric.jpegQuality => quality,
+    GalleryComparisonMetric.jpegSize => jpeg == null ? null : sizeBytes,
+    GalleryComparisonMetric.dateTaken => dateTaken?.millisecondsSinceEpoch,
+    GalleryComparisonMetric.fileModified => fileModified?.millisecondsSinceEpoch,
+  };
 }
 
 @freezed
@@ -60,188 +121,70 @@ abstract class GalleryGroupComparisonState with _$GalleryGroupComparisonState {
   const factory GalleryGroupComparisonState({
     required bool exact,
     required int totalCount,
-    required int knownCount,
-    required int? minPixels,
-    required int? maxPixels,
-    required int maximumCount,
-    required int minSizeBytes,
-    required int maxSizeBytes,
-    required String? recommendedMediaId,
+    @Default(0) int metadataCount,
     @Default(0) int knownDateCount,
+    @Default(GalleryMetricAssessment()) GalleryMetricAssessment resolution,
+    @Default(GalleryMetricAssessment()) GalleryMetricAssessment jpegQuality,
+    @Default(GalleryMetricAssessment()) GalleryMetricAssessment jpegSize,
+    @Default(GalleryMetricAssessment(direction: GalleryMetricDirection.lower)) GalleryMetricAssessment dateTaken,
+    @Default(GalleryMetricAssessment(direction: GalleryMetricDirection.lower)) GalleryMetricAssessment fileModified,
+    String? recommendedMediaId,
     GalleryComparisonDate? recommendedDate,
+    @Default(GalleryRecommendationReason.firstUnknown) GalleryRecommendationReason reason,
   }) = _GalleryGroupComparisonState;
 
-  bool get complete => knownCount == totalCount;
+  bool get provisional => metadataCount < totalCount;
+  bool get complete => resolution.knownCount == totalCount;
+  int get knownCount => resolution.knownCount;
+  int? get minPixels => resolution.minValue;
+  int? get maxPixels => resolution.maxValue;
+  int get maximumCount => resolution.bestCount;
+  bool recommended(String id) => id == recommendedMediaId;
 
-  GalleryResolutionRank rank(String mediaId, GalleryImageResolution? resolution) {
-    if (recommended(mediaId)) return GalleryResolutionRank.recommended;
-    if (exact) return GalleryResolutionRank.other;
-    if (resolution == null) return GalleryResolutionRank.unknown;
-    if (minPixels != maxPixels && resolution.pixels == minPixels) {
-      return GalleryResolutionRank.minimum;
+  GalleryMetricRank rank(String id, GalleryImageResolution? value) => resolution.rank(id, value?.pixels);
+  GalleryMetricRank dateRank(String id, GalleryComparisonDateSource source, DateTime? value) {
+    if (source == GalleryComparisonDateSource.fileModified && dateTaken.knownCount > 0) {
+      return GalleryMetricRank.unknown;
     }
-    return GalleryResolutionRank.other;
+    final assessment = source == GalleryComparisonDateSource.dateTaken ? dateTaken : fileModified;
+    return assessment.rank(id, GalleryComparisonDate.throughSeconds(value)?.millisecondsSinceEpoch);
   }
-
-  bool recommended(String mediaId) => recommendedMediaId == mediaId;
-
-  bool recommendsDate(String mediaId, GalleryComparisonDateSource source) =>
-      recommended(mediaId) && recommendedDate?.source == source;
-
-  GalleryRecommendationReason get reason {
-    if (recommendedDate case final date?) {
-      return switch (date.source) {
-        GalleryComparisonDateSource.dateTaken => GalleryRecommendationReason.earliestDateTaken,
-        GalleryComparisonDateSource.fileModified => GalleryRecommendationReason.earliestFileModified,
-      };
-    }
-    if (exact) return GalleryRecommendationReason.firstExactCopy;
-    if (knownCount == 0) return GalleryRecommendationReason.firstUnknown;
-    if (!complete) return GalleryRecommendationReason.highestKnownResolution;
-    if (maximumCount > 1) return GalleryRecommendationReason.firstTied;
-    return GalleryRecommendationReason.highestResolution;
-  }
-
-  bool smallestFile(int sizeBytes) => minSizeBytes < maxSizeBytes && sizeBytes == minSizeBytes;
 }
 
-/// Holds only the current group. Mounted metadata owners supply corrections;
-/// this Bloc never fetches files or details for unmounted cards.
+/// Owns indexed assessments for the current group; metadata arrives only from mounted cards.
 class GalleryGroupComparisonBloc extends Bloc<GalleryMetadata, GalleryGroupComparisonState> {
   static final _log = Logger('GalleryGroupComparisonBloc');
   final GalleryDuplicateGroup group;
-  final Map<String, GalleryDuplicateMember> _members;
-  final Map<String, int> _positions;
-  final Map<String, GalleryImageResolution?> _resolutions = {};
-  final SplayTreeMap<int, SplayTreeSet<int>> _pixelMembers = SplayTreeMap();
-  final Map<String, GalleryComparisonDate> _dates = {};
-  final SplayTreeMap<DateTime, SplayTreeSet<int>> _dateMembers = SplayTreeMap();
-  int _knownCount = 0;
+  final _ComparisonTracker _tracker;
 
-  GalleryGroupComparisonBloc({required this.group})
-    : _members = {for (final member in group.items) member.mediaId: member},
-      _positions = {for (var i = 0; i < group.items.length; i++) group.items[i].mediaId: i},
-      super(_initial(group)) {
-    for (final member in group.items) {
-      final resolution = GalleryImageResolution.read(member.width, member.height);
-      _resolutions[member.mediaId] = resolution;
-      if (resolution != null) {
-        _addPixels(resolution.pixels, _positions[member.mediaId]!);
-      }
-    }
-    _log.fine(
-      () =>
-          'event=comparisonOpened group=${GalleryLog.id(group.groupId)} members=${state.totalCount} known=${state.knownCount} knownDates=${state.knownDateCount} exact=${state.exact} candidateIndex=${_positions[state.recommendedMediaId] ?? -1} reason=${state.reason.name}',
-    );
+  factory GalleryGroupComparisonBloc({required GalleryDuplicateGroup group}) =>
+      GalleryGroupComparisonBloc._(group, _ComparisonTracker(group));
+
+  GalleryGroupComparisonBloc._(this.group, this._tracker) : super(_tracker.state()) {
+    _logState('comparisonOpened', state);
     on<GalleryMetadata>((metadata, emit) {
-      final member = _members[metadata.mediaId];
+      final member = _tracker.members[metadata.mediaId];
       if (member == null || member.sourceRevision != metadata.sourceRevision || member.section != metadata.section) {
         _log.fine('event=comparisonMetadataIgnored reason=sourceChanged');
         return;
       }
-      final resolution =
-          GalleryImageResolution.read(metadata.width, metadata.height) ??
-          GalleryImageResolution.read(member.width, member.height);
-      final previous = _resolutions[member.mediaId];
-      final date = state.exact ? GalleryComparisonDate.read(metadata) : null;
-      final previousDate = _dates[member.mediaId];
-      if (resolution == previous && date == previousDate) return;
-      final position = _positions[member.mediaId]!;
-      if (resolution != previous) {
-        if (previous != null) {
-          final positions = _pixelMembers[previous.pixels]!..remove(position);
-          if (positions.isEmpty) _pixelMembers.remove(previous.pixels);
-          _knownCount--;
-        }
-        _resolutions[member.mediaId] = resolution;
-        if (resolution != null) _addPixels(resolution.pixels, position);
-      }
-      if (date != previousDate) {
-        if (previousDate != null) {
-          final positions = _dateMembers[previousDate.value]!..remove(position);
-          if (positions.isEmpty) _dateMembers.remove(previousDate.value);
-          _dates.remove(member.mediaId);
-        }
-        if (date != null) {
-          _dates[member.mediaId] = date;
-          (_dateMembers[date.value] ??= SplayTreeSet<int>()).add(position);
-        }
-      }
-      final max = _pixelMembers.lastKey();
-      final firstDate = _dateMembers.firstKey();
-      final bestPosition = state.exact
-          ? firstDate == null
-                ? 0
-                : _dateMembers[firstDate]!.first
-          : max == null
-          ? 0
-          : _pixelMembers[max]!.first;
-      final bestId = group.items[bestPosition].mediaId;
-      final next = state.copyWith(
-        knownCount: _knownCount,
-        minPixels: _pixelMembers.firstKey(),
-        maxPixels: max,
-        maximumCount: _pixelMembers[max]?.length ?? 0,
-        recommendedMediaId: bestId,
-        knownDateCount: _dates.length,
-        recommendedDate: state.exact ? _dates[bestId] : null,
-      );
-      _log.fine(
-        () =>
-            'event=comparisonUpdated group=${GalleryLog.id(group.groupId)} known=${next.knownCount} total=${next.totalCount} complete=${next.complete} maximumTies=${next.maximumCount} knownDates=${next.knownDateCount} candidateIndex=${_positions[next.recommendedMediaId] ?? -1} reason=${next.reason.name}',
-      );
+      if (!_tracker.update(metadata)) return;
+      final next = _tracker.state();
+      _logState('comparisonUpdated', next);
       emit(next);
     });
   }
 
-  void _addPixels(int pixels, int position) {
-    (_pixelMembers[pixels] ??= SplayTreeSet<int>()).add(position);
-    _knownCount++;
-  }
-
-  static GalleryGroupComparisonState _initial(GalleryDuplicateGroup group) {
-    final counts = SplayTreeMap<int, int>();
-    var known = 0;
-    var minSize = group.items.firstOrNull?.sizeBytes ?? 0;
-    var maxSize = minSize;
-    var bestPosition = 0;
-    int? largest;
-    for (var i = 0; i < group.items.length; i++) {
-      final member = group.items[i];
-      final resolution = GalleryImageResolution.read(member.width, member.height);
-      if (resolution != null) {
-        if (largest == null || resolution.pixels > largest) {
-          largest = resolution.pixels;
-          bestPosition = i;
-        }
-        counts[resolution.pixels] = (counts[resolution.pixels] ?? 0) + 1;
-        known++;
-      }
-      if (member.sizeBytes < minSize) minSize = member.sizeBytes;
-      if (member.sizeBytes > maxSize) maxSize = member.sizeBytes;
-    }
-    final max = counts.lastKey();
-    return GalleryGroupComparisonState(
-      exact: group.mode == GalleryDuplicateMode.exact,
-      totalCount: group.items.length,
-      knownCount: known,
-      minPixels: counts.firstKey(),
-      maxPixels: max,
-      maximumCount: counts[max] ?? 0,
-      minSizeBytes: minSize,
-      maxSizeBytes: maxSize,
-      recommendedMediaId: group.items.isEmpty
-          ? null
-          : group.items[group.mode == GalleryDuplicateMode.exact ? 0 : bestPosition].mediaId,
-    );
-  }
+  void _logState(String event, GalleryGroupComparisonState value) => _log.fine(
+    () =>
+        'event=$event group=${GalleryLog.id(group.groupId)} members=${value.totalCount} known=${value.knownCount} '
+        'metadata=${value.metadataCount} knownDates=${value.knownDateCount} knownJpegQuality=${value.jpegQuality.knownCount} '
+        'provisional=${value.provisional} candidateIndex=${_tracker.positions[value.recommendedMediaId] ?? -1} reason=${value.reason.name}',
+  );
 
   @override
   Future<void> close() {
-    _log.fine(
-      () =>
-          'event=comparisonClosed group=${GalleryLog.id(group.groupId)} known=$_knownCount knownDates=${_dates.length}',
-    );
+    _logState('comparisonClosed', state);
     return super.close();
   }
 }

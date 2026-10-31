@@ -236,12 +236,10 @@ class _DuplicatesView extends StatelessWidget {
                             group.mode == GalleryDuplicateMode.exact ? l.gallery_exact_hint : l.gallery_similar_hint,
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            comparison.exact ? l.gallery_equivalent_copies : l.gallery_resolution_recommendation_hint,
-                          ),
+                          Text(l.gallery_resolution_recommendation_hint),
                           const SizedBox(height: 8),
                           Text(l.gallery_duplicate_select_hint),
-                          if (!comparison.complete && !comparison.exact) Text(l.gallery_comparison_partial),
+                          if (comparison.provisional) Text(l.gallery_comparison_partial),
                         ],
                       ),
                       if (group.items.length > 10) _DuplicateMemberPages(state: state),
@@ -803,7 +801,7 @@ class _CandidateCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: GalleryRecommendationBadge(reason: comparison.reason),
+                child: GalleryRecommendationBadge(reason: comparison.reason, provisional: comparison.provisional),
               ),
             ),
           Padding(

@@ -147,6 +147,8 @@ void main() {
         scrollable: find.byType(Scrollable).first,
         maxScrolls: 10,
       );
+      await Scrollable.ensureVisible(tester.element(find.text('Next group')), alignment: .5);
+      await tester.pump();
       await tester.tap(find.text('Next group'));
       await tester.pump();
       await tester.pump();

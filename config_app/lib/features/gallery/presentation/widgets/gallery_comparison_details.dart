@@ -49,33 +49,40 @@ class GalleryComparisonDetails extends StatelessWidget {
           final resolution =
               GalleryImageResolution.read(data?.width, data?.height) ??
               GalleryImageResolution.read(member.width, member.height);
-          final rank = comparison?.rank(member.mediaId, resolution) ?? GalleryResolutionRank.unknown;
+          final rank = comparison?.rank(member.mediaId, resolution) ?? GalleryMetricRank.unknown;
           final dark = theme.brightness == Brightness.dark;
-          final color = switch (rank) {
-            GalleryResolutionRank.recommended => galleryRecommendationColor(context),
-            GalleryResolutionRank.minimum => theme.colorScheme.error,
-            GalleryResolutionRank.other => dark ? Colors.amber.shade300 : const Color(0xff795800),
-            _ => theme.colorScheme.onSurface,
+          Color color(GalleryMetricRank rank) => switch (rank) {
+            GalleryMetricRank.best => galleryRecommendationColor(context),
+            GalleryMetricRank.worst => theme.colorScheme.error,
+            GalleryMetricRank.intermediate => dark ? Colors.amber.shade300 : const Color(0xff795800),
+            GalleryMetricRank.unknown => theme.colorScheme.onSurface,
           };
-          final reason = comparison == null ? null : galleryRecommendationReasonText(context, comparison!.reason);
-          final rankLabel = switch (rank) {
-            GalleryResolutionRank.recommended => '${l.gallery_recommend_keep}. $reason',
-            GalleryResolutionRank.minimum => l.gallery_resolution_minimum,
-            GalleryResolutionRank.other =>
-              comparison?.exact == true || (resolution != null && resolution.pixels == comparison?.maxPixels)
-                  ? l.gallery_resolution_same
-                  : l.gallery_resolution_intermediate,
-            GalleryResolutionRank.unknown => l.gallery_resolution_unknown,
+          String rankText(GalleryMetricRank rank) => switch (rank) {
+            GalleryMetricRank.best => l.gallery_metric_best,
+            GalleryMetricRank.worst => l.gallery_metric_worst,
+            GalleryMetricRank.intermediate => l.gallery_metric_intermediate,
+            GalleryMetricRank.unknown => l.gallery_metric_unknown,
           };
           final bytes = data?.sizeBytes ?? member.sizeBytes;
           final taken = GalleryDateTime.parseDateTaken(data?.dateTaken);
-          TextStyle? dateStyle(GalleryComparisonDateSource source) =>
-              comparison?.recommendsDate(member.mediaId, source) == true
-              ? theme.textTheme.bodyMedium?.copyWith(
-                  color: galleryRecommendationColor(context),
-                  fontWeight: FontWeight.w600,
-                )
-              : null;
+          final quality = data?.jpeg?.comparableQuality;
+          final qualityRank = comparison?.jpegQuality.rank(member.mediaId, quality) ?? GalleryMetricRank.unknown;
+          final sizeRank =
+              comparison?.jpegSize.rank(member.mediaId, data?.jpeg == null ? null : bytes) ?? GalleryMetricRank.unknown;
+          Widget date(GalleryComparisonDateSource source, String label, DateTime? value) {
+            final rank = comparison?.dateRank(member.mediaId, source, value) ?? GalleryMetricRank.unknown;
+            return Tooltip(
+              message: rankText(rank),
+              child: Text(
+                '$label: ${GalleryDateTime.format(value, l.localeName)}',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: color(rank),
+                  fontWeight: rank == GalleryMetricRank.best ? FontWeight.w600 : null,
+                ),
+              ),
+            );
+          }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -86,32 +93,41 @@ class GalleryComparisonDetails extends StatelessWidget {
                   _ComparisonMetric(
                     label: l.gallery_resolution,
                     child: Tooltip(
-                      message: rankLabel,
+                      message: rankText(rank),
                       child: Text(
                         '${resolution?.width ?? '—'} × ${resolution?.height ?? '—'}',
-                        style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleMedium?.copyWith(color: color(rank), fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
                   _ComparisonMetric(
                     label: l.gallery_file_size,
                     child: DefaultTextStyle.merge(
-                      style: theme.textTheme.titleMedium,
-                      child: GalleryFileSize(bytes: bytes),
+                      style: theme.textTheme.titleMedium?.copyWith(color: color(sizeRank)),
+                      child: Semantics(
+                        label: rankText(sizeRank),
+                        child: GalleryFileSize(bytes: bytes),
+                      ),
                     ),
                   ),
+                  if (data?.jpeg != null)
+                    _ComparisonMetric(
+                      label: l.gallery_jpeg_quality,
+                      child: Tooltip(
+                        message: '${rankText(qualityRank)}. ${l.gallery_jpeg_quality_hint}',
+                        child: Text(
+                          quality == null ? l.gallery_jpeg_quality_unknown : l.gallery_jpeg_quality_value(quality),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: color(qualityRank),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-              if (comparison?.smallestFile(bytes) ?? false)
-                Text(l.gallery_file_smallest, style: theme.textTheme.bodySmall),
-              Text(
-                '${l.gallery_date_taken}: ${GalleryDateTime.format(taken, l.localeName)}',
-                style: dateStyle(GalleryComparisonDateSource.dateTaken),
-              ),
-              Text(
-                '${l.gallery_file_modified}: ${GalleryDateTime.format(data?.fileModified, l.localeName)}',
-                style: dateStyle(GalleryComparisonDateSource.fileModified),
-              ),
+              date(GalleryComparisonDateSource.dateTaken, l.gallery_date_taken, taken),
+              date(GalleryComparisonDateSource.fileModified, l.gallery_file_modified, data?.fileModified),
               if (state.loading)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),

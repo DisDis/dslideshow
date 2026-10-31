@@ -191,7 +191,7 @@ void main() {
       await tester.pump();
       expect(find.text('Recommended to keep'), findsOneWidget);
       expect(find.text('Same resolution'), findsNothing);
-      expect(find.byTooltip('Same resolution'), findsOneWidget);
+      expect(find.byTooltip('Intermediate value or tied best value'), findsOneWidget);
       for (var i = 0; i < 2; i++) {
         final details = find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'p$i');
         final resolution = find.descendant(of: details, matching: find.text('2000 × 1000'));
@@ -308,10 +308,9 @@ void main() {
       expect(reads, isNotEmpty);
       expect(reads.toSet().difference({for (var i = 0; i < 10; i++) 'p$i'}), isEmpty);
       expect(find.text('Recommended to keep'), findsNothing);
-      expect(find.byTooltip('Minimum resolution'), findsOneWidget);
-      expect(find.byTooltip('Below maximum'), findsWidgets);
+      expect(find.byTooltip('Worst known value'), findsOneWidget);
+      expect(find.byTooltip('Intermediate value or tied best value'), findsWidgets);
       expect(find.text('Same resolution'), findsNothing);
-      expect(find.text('Takes less space; not a quality rating'), findsOneWidget);
       final bloc = tester.element(find.byType(CheckboxListTile).first).read<GalleryDuplicatesBloc>();
       expect(bloc.state.decisions, isEmpty);
       final resolution = tester.widget<Text>(find.text('1000 × 1000'));
@@ -331,7 +330,10 @@ void main() {
         maxScrolls: 25,
       );
       expect(find.text('Recommended to keep'), findsOneWidget);
-      expect(find.byTooltip('Reason: highest resolution in the group'), findsOneWidget);
+      expect(
+        find.byTooltip('Reason: highest resolution among files tied on higher-priority date criteria'),
+        findsOneWidget,
+      );
       expect(find.text('Maximum resolution'), findsNothing);
       expect(tester.widget<Text>(find.text('3000 × 1000')).style!.color, Colors.green.shade800);
       expect(bloc.state.decisions, isEmpty);
@@ -401,6 +403,7 @@ void main() {
     );
     final expand = find.descendant(of: bestPath, matching: find.text('Full path'));
     await tester.ensureVisible(expand);
+    await Scrollable.ensureVisible(tester.element(expand), alignment: .5);
     await tester.pump();
     await tester.tap(expand);
     await tester.pump();
@@ -429,6 +432,17 @@ void main() {
             height: id == 'c' ? 625 : 4000,
             dateTaken: id == 'a' ? '2026:10:31 15:04:05' : null,
             fileModified: DateTime(2026, 10, 31, id == 'b' ? 14 : 16, 7, 8, 123),
+            sizeBytes: id == 'a'
+                ? 1000000
+                : id == 'b'
+                ? 2000000
+                : 3000000,
+            jpeg: GalleryJpegMetadata(
+              quality: id == 'a' ? 90 : 95,
+              qualityMethod: GalleryJpegQualityMethod.standardQuantization,
+              precisionBits: 8,
+              samplingFactors: const [0x22, 0x11, 0x11],
+            ),
           );
           return http.Response(jsonEncode(data.toJson()), 200);
         }
@@ -443,12 +457,29 @@ void main() {
     expect(find.text('6000 × 4000'), findsNWidgets(2));
     expect(find.text('8000 × 6000'), findsNothing);
     expect(find.text('1250 × 625'), findsOneWidget);
+    expect(find.text('JPEG quality estimate'), findsNWidgets(3));
+    expect(tester.widget<Text>(find.text('≈90/100')).style!.color, createLightTheme().colorScheme.error);
+    final secondDetails = find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'b');
+    final tiedDetails = find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'c');
+    expect(
+      tester.widget<Text>(find.descendant(of: secondDetails, matching: find.text('≈95/100'))).style!.color,
+      Colors.green.shade800,
+    );
+    expect(
+      tester.widget<Text>(find.descendant(of: tiedDetails, matching: find.text('≈95/100'))).style!.color,
+      const Color(0xff795800),
+    );
+    expect(DefaultTextStyle.of(tester.element(find.text('3.00 MB'))).style.color, Colors.green.shade800);
+    expect(DefaultTextStyle.of(tester.element(find.text('1.00 MB'))).style.color, createLightTheme().colorScheme.error);
     expect(find.text('Date taken: 10/31/2026 15:04:05'), findsOneWidget);
     expect(find.text('Date taken: —'), findsNWidgets(2));
     expect(find.text('File modified: 10/31/2026 16:07:08'), findsNWidgets(2));
-    expect(tester.widget<Text>(find.text('File modified: 10/31/2026 14:07:08')).style!.color, Colors.green.shade800);
+    expect(
+      tester.widget<Text>(find.text('File modified: 10/31/2026 14:07:08')).style!.color,
+      createLightTheme().colorScheme.onSurface,
+    );
     final fallbackCard = find.ancestor(
-      of: find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'b'),
+      of: find.byWidgetPredicate((w) => w is GalleryComparisonDetails && w.member.mediaId == 'a'),
       matching: find.byType(Card),
     );
     expect(find.descendant(of: fallbackCard, matching: find.byType(GalleryRecommendationBadge)), findsOneWidget);

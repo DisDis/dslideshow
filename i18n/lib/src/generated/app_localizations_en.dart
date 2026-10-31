@@ -2934,20 +2934,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_recommend_earliest_taken =>
-      'Reason: earliest known date among exact copies. This file uses its date taken; files without a date taken use their modification date.';
+      'Reason: earliest known date taken. Files with a date taken take priority over files without one.';
 
   @override
   String get gallery_recommend_earliest_modified =>
-      'Reason: earliest known date among exact copies. This file has no date taken, so its modification date is used.';
+      'Reason: earliest known modification date; no date taken is available in the group.';
 
   @override
-  String get gallery_recommend_first_tied => 'Reason: first among files with the highest resolution';
+  String get gallery_recommend_first_tied =>
+      'Reason: group order breaks the tie after comparing dates, resolution and comparable JPEG parameters.';
+
+  @override
+  String get gallery_recommend_has_taken => 'Reason: a known date taken takes priority over files without one.';
+
+  @override
+  String get gallery_recommend_jpeg_quality =>
+      'Reason: higher comparable JPEG quality after comparing dates and resolution.';
+
+  @override
+  String get gallery_recommend_jpeg_size =>
+      'Reason: larger JPEG after comparing dates, resolution and matching encoding parameters. Size is not proof of image quality.';
+
+  @override
+  String get gallery_recommend_provisional => 'Provisional';
+
+  @override
+  String get gallery_metric_best => 'Best known value; ties use group order';
+
+  @override
+  String get gallery_metric_intermediate => 'Intermediate value or tied best value';
+
+  @override
+  String get gallery_metric_worst => 'Worst known value';
+
+  @override
+  String get gallery_metric_unknown => 'No comparison: unavailable, inactive, or fewer than two known values';
+
+  @override
+  String get gallery_jpeg_quality => 'JPEG quality estimate';
+
+  @override
+  String get gallery_jpeg_quality_hint =>
+      'IJG-equivalent estimate from standard quantization tables, not a measure of sharpness or original detail. Custom tables may be unrecognized.';
+
+  @override
+  String get gallery_jpeg_quality_unknown => 'Not determined';
+
+  @override
+  String gallery_jpeg_quality_value(int quality) {
+    return '≈$quality/100';
+  }
 
   @override
   String get gallery_recommend_known_resolution => 'Provisional: highest known resolution';
 
   @override
-  String get gallery_recommend_first_unknown => 'Resolution unavailable; the first file is suggested.';
+  String get gallery_recommend_first_unknown => 'Comparable data is unavailable or tied; the first file is suggested.';
 
   @override
   String get gallery_resolution_minimum => 'Minimum resolution';
@@ -2965,19 +3007,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gallery_recommend_keep => 'Recommended to keep';
 
   @override
-  String get gallery_recommend_resolution => 'Reason: highest resolution in the group';
+  String get gallery_recommend_resolution =>
+      'Reason: highest resolution among files tied on higher-priority date criteria';
 
   @override
   String get gallery_resolution_recommendation_hint =>
-      'Recommended: highest resolution; ties use the first file. Image quality is not evaluated. Trash selection stays manual.';
+      'Priority: a known date taken, then the earliest date; modification dates are used only when all dates taken are missing. Next: resolution, comparable JPEG quality and JPEG size with matching parameters. Group order breaks ties. Each indicator has its own green best value; trash selection stays manual.';
 
   @override
   String get gallery_comparison_partial =>
-      'Some resolutions are unknown; the recommendation is provisional and may change.';
+      'Some file details have not loaded; the recommendation and indicator colours are provisional and may change.';
 
   @override
   String get gallery_equivalent_copies =>
-      'Exact copies: the earliest known date is recommended, using the date taken or, if unavailable, the modification date. Ties and missing dates use the group order. The recommendation may change as details load.';
+      'Exact copies use the same date-first recommendation rules as similar photos.';
 
   @override
   String get configPageTitle => 'Set up your photo frame';

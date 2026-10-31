@@ -2962,20 +2962,64 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get gallery_recommend_earliest_taken =>
-      'Причина: самая ранняя известная дата среди точных копий. У этого файла взята дата съёмки; у файлов без неё используется дата изменения.';
+      'Причина: самая ранняя известная дата съёмки. Файлы с датой съёмки предпочтительнее файлов без неё.';
 
   @override
   String get gallery_recommend_earliest_modified =>
-      'Причина: самая ранняя известная дата среди точных копий. У этого файла нет даты съёмки, поэтому взята дата изменения.';
+      'Причина: самая ранняя известная дата изменения; даты съёмки неизвестны у всей группы.';
 
   @override
-  String get gallery_recommend_first_tied => 'Причина: первый среди файлов с максимальным разрешением';
+  String get gallery_recommend_first_tied =>
+      'Причина: порядок группы при равенстве дат, разрешения и сопоставимых параметров JPEG.';
+
+  @override
+  String get gallery_recommend_has_taken => 'Причина: известная дата съёмки предпочтительнее её отсутствия.';
+
+  @override
+  String get gallery_recommend_jpeg_quality =>
+      'Причина: более высокая сопоставимая оценка JPEG после сравнения дат и разрешения.';
+
+  @override
+  String get gallery_recommend_jpeg_size =>
+      'Причина: больший JPEG при равных датах, разрешении и одинаковых параметрах сжатия. Размер не доказывает качество изображения.';
+
+  @override
+  String get gallery_recommend_provisional => 'Предварительно';
+
+  @override
+  String get gallery_metric_best => 'Лучшее известное значение; равенство разрешается порядком группы';
+
+  @override
+  String get gallery_metric_intermediate => 'Промежуточное значение или равное лучшему';
+
+  @override
+  String get gallery_metric_worst => 'Худшее известное значение';
+
+  @override
+  String get gallery_metric_unknown =>
+      'Без сравнения: значение неизвестно, не используется или известных значений меньше двух';
+
+  @override
+  String get gallery_jpeg_quality => 'Оценка качества JPEG';
+
+  @override
+  String get gallery_jpeg_quality_hint =>
+      'Оценка по стандартным таблицам квантования в шкале IJG; не измеряет резкость и исходную детализацию. Нестандартные таблицы могут не распознаваться.';
+
+  @override
+  String get gallery_jpeg_quality_unknown => 'Не определено';
+
+  @override
+  String gallery_jpeg_quality_value(int quality) {
+    return '≈$quality/100';
+  }
 
   @override
   String get gallery_recommend_known_resolution => 'Предварительно: максимальное из известных разрешений';
 
   @override
-  String get gallery_recommend_first_unknown => 'Разрешение неизвестно; предложен первый файл в списке.';
+  String get gallery_recommend_first_unknown =>
+      'Сопоставимые данные неизвестны или равны; предложен первый файл в списке.';
 
   @override
   String get gallery_resolution_minimum => 'Минимальное разрешение';
@@ -2993,19 +3037,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gallery_recommend_keep => 'Рекомендуется сохранить';
 
   @override
-  String get gallery_recommend_resolution => 'Причина: максимальное разрешение в группе';
+  String get gallery_recommend_resolution =>
+      'Причина: максимальное разрешение среди файлов с равными более важными критериями дат';
 
   @override
   String get gallery_resolution_recommendation_hint =>
-      'Рекомендуется максимальное разрешение; при равенстве — первый файл. Качество по пикселям не оценивается. Выбор в корзину остаётся ручным.';
+      'Приоритет: наличие даты съёмки, затем самая ранняя дата; даты изменения используются только при отсутствии дат съёмки у всей группы. Далее — разрешение, сопоставимая оценка JPEG и размер JPEG при одинаковых параметрах. При равенстве — порядок группы. У каждого показателя своё лучшее зелёное значение; выбор в корзину остаётся ручным.';
 
   @override
   String get gallery_comparison_partial =>
-      'Часть разрешений неизвестна; рекомендация предварительная и может измениться.';
+      'Часть сведений о файлах ещё не загружена; рекомендация и цвета показателей предварительные и могут измениться.';
 
   @override
   String get gallery_equivalent_copies =>
-      'Точные копии: рекомендуется самая ранняя известная дата съёмки, а при её отсутствии — дата изменения. При равенстве или отсутствии дат используется порядок группы. Рекомендация может уточниться при загрузке сведений.';
+      'Для точных копий действуют те же правила рекомендации с приоритетом дат, что и для похожих фото.';
 
   @override
   String get configPageTitle => 'Настройка фоторамки';

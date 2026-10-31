@@ -119,27 +119,47 @@ void main() {
     tools = GalleryMediaTools(catalog: catalog, operations: operations, runner: runner);
   }
 
-  test('metadata cache shares an injected read by revision', () async {
-    final source = await entry('one.jpg', [1, 2, 3]);
-    var calls = 0;
-    final reader = CallbackGalleryMetadataReader((source, {input}) async {
-      calls++;
-      return _details(source);
-    });
-    addTearDown(reader.close);
-    await tools.close();
-    tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
-    final first = await tools.metadata(
-      GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
-    );
-    final cached = await tools.metadata(
-      GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
-    );
-    expect(cached, same(first));
-    expect(calls, 1);
-    await tools.close();
-    expect(reader.closeCount, 0, reason: 'The caller owns the injected reader');
-  });
+  test(
+    'metadata cache shares an injected read by revision and logs JPEG quality below INFO',
+    () => captureLogs((records) async {
+      final source = await entry('one.jpg', [1, 2, 3]);
+      var calls = 0;
+      final reader = CallbackGalleryMetadataReader((source, {input}) async {
+        calls++;
+        return _details(source).copyWith(
+          jpeg: const GalleryJpegMetadata(
+            quality: 92,
+            qualityMethod: GalleryJpegQualityMethod.standardQuantization,
+            precisionBits: 8,
+            samplingFactors: [0x22, 0x11, 0x11],
+          ),
+        );
+      });
+      addTearDown(reader.close);
+      await tools.close();
+      tools = GalleryMediaTools(catalog: catalog, metadataReader: reader, operations: operations);
+      final first = await tools.metadata(
+        GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+      );
+      final cached = await tools.metadata(
+        GalleryMediaRef(section: source.section, mediaId: source.mediaId, sourceRevision: source.sourceRevision),
+      );
+      expect(cached, same(first));
+      expect(calls, 1);
+      expect(
+        records.any(
+          (r) =>
+              r.loggerName == 'GalleryMediaTools' &&
+              r.level == Level.FINE &&
+              r.message.contains('jpegQuality=92') &&
+              r.message.contains('jpegQualityMethod=standardQuantization'),
+        ),
+        isTrue,
+      );
+      await tools.close();
+      expect(reader.closeCount, 0, reason: 'The caller owns the injected reader');
+    }),
+  );
 
   test('late metadata cannot be cached for a replaced source', () async {
     final source = await entry('one.jpg', [1, 2, 3]);

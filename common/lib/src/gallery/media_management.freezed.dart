@@ -13,6 +13,454 @@ part of 'media_management.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$GalleryJpegMetadata {
+  int? get quality;
+  @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+  GalleryJpegQualityMethod get qualityMethod;
+  int? get precisionBits;
+  List<int> get samplingFactors;
+
+  /// Create a copy of GalleryJpegMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $GalleryJpegMetadataCopyWith<GalleryJpegMetadata> get copyWith =>
+      _$GalleryJpegMetadataCopyWithImpl<GalleryJpegMetadata>(
+        this as GalleryJpegMetadata,
+        _$identity,
+      );
+
+  /// Serializes this GalleryJpegMetadata to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    final _this = this as GalleryJpegMetadata;
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GalleryJpegMetadata &&
+            (identical(other.quality, _this.quality) ||
+                other.quality == _this.quality) &&
+            (identical(other.qualityMethod, _this.qualityMethod) ||
+                other.qualityMethod == _this.qualityMethod) &&
+            (identical(other.precisionBits, _this.precisionBits) ||
+                other.precisionBits == _this.precisionBits) &&
+            const DeepCollectionEquality().equals(
+              other.samplingFactors,
+              _this.samplingFactors,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode {
+    final _this = this as GalleryJpegMetadata;
+    return Object.hash(
+      runtimeType,
+      _this.quality,
+      _this.qualityMethod,
+      _this.precisionBits,
+      const DeepCollectionEquality().hash(_this.samplingFactors),
+    );
+  }
+
+  @override
+  String toString() {
+    final _this = this as GalleryJpegMetadata;
+    return 'GalleryJpegMetadata(quality: ${_this.quality}, qualityMethod: ${_this.qualityMethod}, precisionBits: ${_this.precisionBits}, samplingFactors: ${_this.samplingFactors})';
+  }
+}
+
+/// @nodoc
+abstract mixin class $GalleryJpegMetadataCopyWith<$Res> {
+  factory $GalleryJpegMetadataCopyWith(
+    GalleryJpegMetadata value,
+    $Res Function(GalleryJpegMetadata) _then,
+  ) = _$GalleryJpegMetadataCopyWithImpl;
+  @useResult
+  $Res call({
+    int? quality,
+    @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+    GalleryJpegQualityMethod qualityMethod,
+    int? precisionBits,
+    List<int> samplingFactors,
+  });
+}
+
+/// @nodoc
+class _$GalleryJpegMetadataCopyWithImpl<$Res>
+    implements $GalleryJpegMetadataCopyWith<$Res> {
+  _$GalleryJpegMetadataCopyWithImpl(this._self, this._then);
+
+  final GalleryJpegMetadata _self;
+  final $Res Function(GalleryJpegMetadata) _then;
+
+  /// Create a copy of GalleryJpegMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? quality = freezed,
+    Object? qualityMethod = null,
+    Object? precisionBits = freezed,
+    Object? samplingFactors = null,
+  }) {
+    return _then(
+      GalleryJpegMetadata(
+        quality: freezed == quality
+            ? _self.quality
+            : quality // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        qualityMethod: null == qualityMethod
+            ? _self.qualityMethod
+            : qualityMethod // ignore: cast_nullable_to_non_nullable
+                  as GalleryJpegQualityMethod,
+        precisionBits: freezed == precisionBits
+            ? _self.precisionBits
+            : precisionBits // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        samplingFactors: null == samplingFactors
+            ? _self.samplingFactors
+            : samplingFactors // ignore: cast_nullable_to_non_nullable
+                  as List<int>,
+      ),
+    );
+  }
+}
+
+/// Adds pattern-matching-related methods to [GalleryJpegMetadata].
+extension GalleryJpegMetadataPatterns on GalleryJpegMetadata {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_GalleryJpegMetadata value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_GalleryJpegMetadata value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_GalleryJpegMetadata value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+      int? quality,
+      @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+      GalleryJpegQualityMethod qualityMethod,
+      int? precisionBits,
+      List<int> samplingFactors,
+    )?
+    $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata() when $default != null:
+        return $default(
+          _that.quality,
+          _that.qualityMethod,
+          _that.precisionBits,
+          _that.samplingFactors,
+        );
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+      int? quality,
+      @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+      GalleryJpegQualityMethod qualityMethod,
+      int? precisionBits,
+      List<int> samplingFactors,
+    )
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata():
+        return $default(
+          _that.quality,
+          _that.qualityMethod,
+          _that.precisionBits,
+          _that.samplingFactors,
+        );
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+      int? quality,
+      @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+      GalleryJpegQualityMethod qualityMethod,
+      int? precisionBits,
+      List<int> samplingFactors,
+    )?
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GalleryJpegMetadata() when $default != null:
+        return $default(
+          _that.quality,
+          _that.qualityMethod,
+          _that.precisionBits,
+          _that.samplingFactors,
+        );
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _GalleryJpegMetadata extends GalleryJpegMetadata {
+  const _GalleryJpegMetadata({
+    this.quality,
+    @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+    this.qualityMethod = GalleryJpegQualityMethod.unknown,
+    this.precisionBits,
+    List<int> samplingFactors = const [],
+  }) : _samplingFactors = samplingFactors,
+       super._();
+  factory _GalleryJpegMetadata.fromJson(Map<String, dynamic> json) =>
+      _$GalleryJpegMetadataFromJson(json);
+
+  @override
+  final int? quality;
+  @override
+  @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+  final GalleryJpegQualityMethod qualityMethod;
+  @override
+  final int? precisionBits;
+  final List<int> _samplingFactors;
+  @override
+  @JsonKey()
+  List<int> get samplingFactors {
+    if (_samplingFactors is EqualUnmodifiableListView) return _samplingFactors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_samplingFactors);
+  }
+
+  /// Create a copy of GalleryJpegMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$GalleryJpegMetadataCopyWith<_GalleryJpegMetadata> get copyWith =>
+      __$GalleryJpegMetadataCopyWithImpl<_GalleryJpegMetadata>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$GalleryJpegMetadataToJson(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _GalleryJpegMetadata &&
+            (identical(other.quality, quality) || other.quality == quality) &&
+            (identical(other.qualityMethod, qualityMethod) ||
+                other.qualityMethod == qualityMethod) &&
+            (identical(other.precisionBits, precisionBits) ||
+                other.precisionBits == precisionBits) &&
+            const DeepCollectionEquality().equals(
+              other.samplingFactors,
+              _samplingFactors,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      quality,
+      qualityMethod,
+      precisionBits,
+      const DeepCollectionEquality().hash(_samplingFactors),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'GalleryJpegMetadata(quality: $quality, qualityMethod: $qualityMethod, precisionBits: $precisionBits, samplingFactors: $samplingFactors)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$GalleryJpegMetadataCopyWith<$Res>
+    implements $GalleryJpegMetadataCopyWith<$Res> {
+  factory _$GalleryJpegMetadataCopyWith(
+    _GalleryJpegMetadata value,
+    $Res Function(_GalleryJpegMetadata) _then,
+  ) = __$GalleryJpegMetadataCopyWithImpl;
+  @override
+  @useResult
+  $Res call({
+    int? quality,
+    @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+    GalleryJpegQualityMethod qualityMethod,
+    int? precisionBits,
+    List<int> samplingFactors,
+  });
+}
+
+/// @nodoc
+class __$GalleryJpegMetadataCopyWithImpl<$Res>
+    implements _$GalleryJpegMetadataCopyWith<$Res> {
+  __$GalleryJpegMetadataCopyWithImpl(this._self, this._then);
+
+  final _GalleryJpegMetadata _self;
+  final $Res Function(_GalleryJpegMetadata) _then;
+
+  /// Create a copy of GalleryJpegMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? quality = freezed,
+    Object? qualityMethod = null,
+    Object? precisionBits = freezed,
+    Object? samplingFactors = null,
+  }) {
+    return _then(
+      _GalleryJpegMetadata(
+        quality: freezed == quality
+            ? _self.quality
+            : quality // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        qualityMethod: null == qualityMethod
+            ? _self.qualityMethod
+            : qualityMethod // ignore: cast_nullable_to_non_nullable
+                  as GalleryJpegQualityMethod,
+        precisionBits: freezed == precisionBits
+            ? _self.precisionBits
+            : precisionBits // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        samplingFactors: null == samplingFactors
+            ? _self._samplingFactors
+            : samplingFactors // ignore: cast_nullable_to_non_nullable
+                  as List<int>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
 mixin _$GalleryOperationRequest {
   String get operationId;
   GalleryMutation get action;
@@ -1783,6 +2231,7 @@ mixin _$GalleryMetadata {
   String? get colorProfile;
   int? get bitDepth;
   bool? get hasAlpha;
+  GalleryJpegMetadata? get jpeg;
 
   /// Create a copy of GalleryMetadata
   /// with the given fields replaced by the non-null parameter values.
@@ -1849,7 +2298,8 @@ mixin _$GalleryMetadata {
             (identical(other.bitDepth, _this.bitDepth) ||
                 other.bitDepth == _this.bitDepth) &&
             (identical(other.hasAlpha, _this.hasAlpha) ||
-                other.hasAlpha == _this.hasAlpha));
+                other.hasAlpha == _this.hasAlpha) &&
+            (identical(other.jpeg, _this.jpeg) || other.jpeg == _this.jpeg));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1884,13 +2334,14 @@ mixin _$GalleryMetadata {
       _this.colorProfile,
       _this.bitDepth,
       _this.hasAlpha,
+      _this.jpeg,
     ]);
   }
 
   @override
   String toString() {
     final _this = this as GalleryMetadata;
-    return 'GalleryMetadata(mediaId: ${_this.mediaId}, sourceRevision: ${_this.sourceRevision}, name: ${_this.name}, path: ${_this.path}, kind: ${_this.kind}, sizeBytes: ${_this.sizeBytes}, section: ${_this.section}, width: ${_this.width}, height: ${_this.height}, dateTaken: ${_this.dateTaken}, fileModified: ${_this.fileModified}, format: ${_this.format}, camera: ${_this.camera}, lens: ${_this.lens}, iso: ${_this.iso}, exposure: ${_this.exposure}, aperture: ${_this.aperture}, focalLength: ${_this.focalLength}, orientation: ${_this.orientation}, latitude: ${_this.latitude}, longitude: ${_this.longitude}, durationSeconds: ${_this.durationSeconds}, codec: ${_this.codec}, colorProfile: ${_this.colorProfile}, bitDepth: ${_this.bitDepth}, hasAlpha: ${_this.hasAlpha})';
+    return 'GalleryMetadata(mediaId: ${_this.mediaId}, sourceRevision: ${_this.sourceRevision}, name: ${_this.name}, path: ${_this.path}, kind: ${_this.kind}, sizeBytes: ${_this.sizeBytes}, section: ${_this.section}, width: ${_this.width}, height: ${_this.height}, dateTaken: ${_this.dateTaken}, fileModified: ${_this.fileModified}, format: ${_this.format}, camera: ${_this.camera}, lens: ${_this.lens}, iso: ${_this.iso}, exposure: ${_this.exposure}, aperture: ${_this.aperture}, focalLength: ${_this.focalLength}, orientation: ${_this.orientation}, latitude: ${_this.latitude}, longitude: ${_this.longitude}, durationSeconds: ${_this.durationSeconds}, codec: ${_this.codec}, colorProfile: ${_this.colorProfile}, bitDepth: ${_this.bitDepth}, hasAlpha: ${_this.hasAlpha}, jpeg: ${_this.jpeg})';
   }
 }
 
@@ -1929,7 +2380,10 @@ abstract mixin class $GalleryMetadataCopyWith<$Res> {
     String? colorProfile,
     int? bitDepth,
     bool? hasAlpha,
+    GalleryJpegMetadata? jpeg,
   });
+
+  $GalleryJpegMetadataCopyWith<$Res>? get jpeg;
 }
 
 /// @nodoc
@@ -1971,6 +2425,7 @@ class _$GalleryMetadataCopyWithImpl<$Res>
     Object? colorProfile = freezed,
     Object? bitDepth = freezed,
     Object? hasAlpha = freezed,
+    Object? jpeg = freezed,
   }) {
     return _then(
       GalleryMetadata(
@@ -2078,8 +2533,26 @@ class _$GalleryMetadataCopyWithImpl<$Res>
             ? _self.hasAlpha
             : hasAlpha // ignore: cast_nullable_to_non_nullable
                   as bool?,
+        jpeg: freezed == jpeg
+            ? _self.jpeg
+            : jpeg // ignore: cast_nullable_to_non_nullable
+                  as GalleryJpegMetadata?,
       ),
     );
+  }
+
+  /// Create a copy of GalleryMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryJpegMetadataCopyWith<$Res>? get jpeg {
+    if (_self.jpeg == null) {
+      return null;
+    }
+
+    return $GalleryJpegMetadataCopyWith<$Res>(_self.jpeg!, (value) {
+      return _then(_self.copyWith(jpeg: value));
+    });
   }
 }
 
@@ -2205,6 +2678,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
       String? colorProfile,
       int? bitDepth,
       bool? hasAlpha,
+      GalleryJpegMetadata? jpeg,
     )?
     $default, {
     required TResult orElse(),
@@ -2239,6 +2713,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
           _that.colorProfile,
           _that.bitDepth,
           _that.hasAlpha,
+          _that.jpeg,
         );
       case _:
         return orElse();
@@ -2289,6 +2764,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
       String? colorProfile,
       int? bitDepth,
       bool? hasAlpha,
+      GalleryJpegMetadata? jpeg,
     )
     $default,
   ) {
@@ -2322,6 +2798,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
           _that.colorProfile,
           _that.bitDepth,
           _that.hasAlpha,
+          _that.jpeg,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -2371,6 +2848,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
       String? colorProfile,
       int? bitDepth,
       bool? hasAlpha,
+      GalleryJpegMetadata? jpeg,
     )?
     $default,
   ) {
@@ -2404,6 +2882,7 @@ extension GalleryMetadataPatterns on GalleryMetadata {
           _that.colorProfile,
           _that.bitDepth,
           _that.hasAlpha,
+          _that.jpeg,
         );
       case _:
         return null;
@@ -2412,7 +2891,8 @@ extension GalleryMetadataPatterns on GalleryMetadata {
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _GalleryMetadata implements GalleryMetadata {
   const _GalleryMetadata({
     required this.mediaId,
@@ -2441,6 +2921,7 @@ class _GalleryMetadata implements GalleryMetadata {
     this.colorProfile,
     this.bitDepth,
     this.hasAlpha,
+    this.jpeg,
   });
   factory _GalleryMetadata.fromJson(Map<String, dynamic> json) =>
       _$GalleryMetadataFromJson(json);
@@ -2499,6 +2980,8 @@ class _GalleryMetadata implements GalleryMetadata {
   final int? bitDepth;
   @override
   final bool? hasAlpha;
+  @override
+  final GalleryJpegMetadata? jpeg;
 
   /// Create a copy of GalleryMetadata
   /// with the given fields replaced by the non-null parameter values.
@@ -2557,7 +3040,8 @@ class _GalleryMetadata implements GalleryMetadata {
             (identical(other.bitDepth, bitDepth) ||
                 other.bitDepth == bitDepth) &&
             (identical(other.hasAlpha, hasAlpha) ||
-                other.hasAlpha == hasAlpha));
+                other.hasAlpha == hasAlpha) &&
+            (identical(other.jpeg, jpeg) || other.jpeg == jpeg));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2591,12 +3075,13 @@ class _GalleryMetadata implements GalleryMetadata {
       colorProfile,
       bitDepth,
       hasAlpha,
+      jpeg,
     ]);
   }
 
   @override
   String toString() {
-    return 'GalleryMetadata(mediaId: $mediaId, sourceRevision: $sourceRevision, name: $name, path: $path, kind: $kind, sizeBytes: $sizeBytes, section: $section, width: $width, height: $height, dateTaken: $dateTaken, fileModified: $fileModified, format: $format, camera: $camera, lens: $lens, iso: $iso, exposure: $exposure, aperture: $aperture, focalLength: $focalLength, orientation: $orientation, latitude: $latitude, longitude: $longitude, durationSeconds: $durationSeconds, codec: $codec, colorProfile: $colorProfile, bitDepth: $bitDepth, hasAlpha: $hasAlpha)';
+    return 'GalleryMetadata(mediaId: $mediaId, sourceRevision: $sourceRevision, name: $name, path: $path, kind: $kind, sizeBytes: $sizeBytes, section: $section, width: $width, height: $height, dateTaken: $dateTaken, fileModified: $fileModified, format: $format, camera: $camera, lens: $lens, iso: $iso, exposure: $exposure, aperture: $aperture, focalLength: $focalLength, orientation: $orientation, latitude: $latitude, longitude: $longitude, durationSeconds: $durationSeconds, codec: $codec, colorProfile: $colorProfile, bitDepth: $bitDepth, hasAlpha: $hasAlpha, jpeg: $jpeg)';
   }
 }
 
@@ -2637,7 +3122,11 @@ abstract mixin class _$GalleryMetadataCopyWith<$Res>
     String? colorProfile,
     int? bitDepth,
     bool? hasAlpha,
+    GalleryJpegMetadata? jpeg,
   });
+
+  @override
+  $GalleryJpegMetadataCopyWith<$Res>? get jpeg;
 }
 
 /// @nodoc
@@ -2679,6 +3168,7 @@ class __$GalleryMetadataCopyWithImpl<$Res>
     Object? colorProfile = freezed,
     Object? bitDepth = freezed,
     Object? hasAlpha = freezed,
+    Object? jpeg = freezed,
   }) {
     return _then(
       _GalleryMetadata(
@@ -2786,8 +3276,26 @@ class __$GalleryMetadataCopyWithImpl<$Res>
             ? _self.hasAlpha
             : hasAlpha // ignore: cast_nullable_to_non_nullable
                   as bool?,
+        jpeg: freezed == jpeg
+            ? _self.jpeg
+            : jpeg // ignore: cast_nullable_to_non_nullable
+                  as GalleryJpegMetadata?,
       ),
     );
+  }
+
+  /// Create a copy of GalleryMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GalleryJpegMetadataCopyWith<$Res>? get jpeg {
+    if (_self.jpeg == null) {
+      return null;
+    }
+
+    return $GalleryJpegMetadataCopyWith<$Res>(_self.jpeg!, (value) {
+      return _then(_self.copyWith(jpeg: value));
+    });
   }
 }
 

@@ -9,19 +9,21 @@ Color galleryRecommendationColor(BuildContext context) =>
 String galleryRecommendationReasonText(BuildContext context, GalleryRecommendationReason reason) {
   final l = context.localizations;
   return switch (reason) {
-    GalleryRecommendationReason.firstExactCopy => l.gallery_recommend_first_copy,
+    GalleryRecommendationReason.hasDateTaken => l.gallery_recommend_has_taken,
     GalleryRecommendationReason.firstTied => l.gallery_recommend_first_tied,
-    GalleryRecommendationReason.highestKnownResolution => l.gallery_recommend_known_resolution,
     GalleryRecommendationReason.firstUnknown => l.gallery_recommend_first_unknown,
     GalleryRecommendationReason.highestResolution => l.gallery_recommend_resolution,
     GalleryRecommendationReason.earliestDateTaken => l.gallery_recommend_earliest_taken,
     GalleryRecommendationReason.earliestFileModified => l.gallery_recommend_earliest_modified,
+    GalleryRecommendationReason.highestJpegQuality => l.gallery_recommend_jpeg_quality,
+    GalleryRecommendationReason.largestJpegFile => l.gallery_recommend_jpeg_size,
   };
 }
 
 class GalleryRecommendationBadge extends StatelessWidget {
-  const GalleryRecommendationBadge({super.key, required this.reason});
+  const GalleryRecommendationBadge({super.key, required this.reason, this.provisional = false});
   final GalleryRecommendationReason reason;
+  final bool provisional;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +40,20 @@ class GalleryRecommendationBadge extends StatelessWidget {
             Icon(Icons.star_rounded, size: 20, color: color),
             const SizedBox(width: 8),
             Flexible(
-              child: Text(
-                context.localizations.gallery_recommend_keep,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(color: color),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.localizations.gallery_recommend_keep,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(color: color),
+                  ),
+                  if (provisional)
+                    Text(
+                      context.localizations.gallery_recommend_provisional,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
+                    ),
+                ],
               ),
             ),
           ],

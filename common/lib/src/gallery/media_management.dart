@@ -19,6 +19,32 @@ enum GalleryDuplicateStatus { idle, running, stopping, completed, cancelled, fai
 
 enum GalleryDuplicateStage { unknown, snapshot, versionProbe, scanning, validation, persistence }
 
+enum GalleryJpegQualityMethod { unknown, standardQuantization }
+
+@freezed
+abstract class GalleryJpegMetadata with _$GalleryJpegMetadata {
+  const GalleryJpegMetadata._();
+  const factory GalleryJpegMetadata({
+    int? quality,
+    @JsonKey(unknownEnumValue: GalleryJpegQualityMethod.unknown)
+    @Default(GalleryJpegQualityMethod.unknown)
+    GalleryJpegQualityMethod qualityMethod,
+    int? precisionBits,
+    @Default([]) List<int> samplingFactors,
+  }) = _GalleryJpegMetadata;
+
+  factory GalleryJpegMetadata.fromJson(Map<String, dynamic> json) => _$GalleryJpegMetadataFromJson(json);
+
+  int? get comparableQuality =>
+      qualityMethod == GalleryJpegQualityMethod.standardQuantization &&
+          precisionBits == 8 &&
+          quality != null &&
+          quality! >= 1 &&
+          quality! <= 100
+      ? quality
+      : null;
+}
+
 enum GalleryDuplicateFailureReason {
   unknown,
   toolUnavailable,
@@ -82,6 +108,7 @@ abstract class GalleryRotateRequest with _$GalleryRotateRequest {
 
 @freezed
 abstract class GalleryMetadata with _$GalleryMetadata {
+  @JsonSerializable(explicitToJson: true)
   const factory GalleryMetadata({
     required String mediaId,
     required String sourceRevision,
@@ -109,6 +136,7 @@ abstract class GalleryMetadata with _$GalleryMetadata {
     String? colorProfile,
     int? bitDepth,
     bool? hasAlpha,
+    GalleryJpegMetadata? jpeg,
   }) = _GalleryMetadata;
 
   factory GalleryMetadata.fromJson(Map<String, dynamic> json) => _$GalleryMetadataFromJson(json);

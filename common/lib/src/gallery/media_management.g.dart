@@ -6,6 +6,38 @@ part of 'media_management.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_GalleryJpegMetadata _$GalleryJpegMetadataFromJson(Map<String, dynamic> json) =>
+    _GalleryJpegMetadata(
+      quality: (json['quality'] as num?)?.toInt(),
+      qualityMethod:
+          $enumDecodeNullable(
+            _$GalleryJpegQualityMethodEnumMap,
+            json['qualityMethod'],
+            unknownValue: GalleryJpegQualityMethod.unknown,
+          ) ??
+          GalleryJpegQualityMethod.unknown,
+      precisionBits: (json['precisionBits'] as num?)?.toInt(),
+      samplingFactors:
+          (json['samplingFactors'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$GalleryJpegMetadataToJson(
+  _GalleryJpegMetadata instance,
+) => <String, dynamic>{
+  'quality': instance.quality,
+  'qualityMethod': _$GalleryJpegQualityMethodEnumMap[instance.qualityMethod]!,
+  'precisionBits': instance.precisionBits,
+  'samplingFactors': instance.samplingFactors,
+};
+
+const _$GalleryJpegQualityMethodEnumMap = {
+  GalleryJpegQualityMethod.unknown: 'unknown',
+  GalleryJpegQualityMethod.standardQuantization: 'standardQuantization',
+};
+
 _GalleryOperationRequest _$GalleryOperationRequestFromJson(
   Map<String, dynamic> json,
 ) => _GalleryOperationRequest(
@@ -183,6 +215,9 @@ _GalleryMetadata _$GalleryMetadataFromJson(Map<String, dynamic> json) {
     colorProfile: json['colorProfile'] as String?,
     bitDepth: (json['bitDepth'] as num?)?.toInt(),
     hasAlpha: json['hasAlpha'] as bool?,
+    jpeg: json['jpeg'] == null
+        ? null
+        : GalleryJpegMetadata.fromJson(json['jpeg'] as Map<String, dynamic>),
   );
 }
 
@@ -214,6 +249,7 @@ Map<String, dynamic> _$GalleryMetadataToJson(_GalleryMetadata instance) =>
       'colorProfile': instance.colorProfile,
       'bitDepth': instance.bitDepth,
       'hasAlpha': instance.hasAlpha,
+      'jpeg': instance.jpeg?.toJson(),
     };
 
 const _$GalleryEntryKindEnumMap = {
