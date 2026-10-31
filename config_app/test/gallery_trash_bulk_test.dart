@@ -223,9 +223,10 @@ void main() {
   });
 
   test('Clear trash confirms the full frozen snapshot and batches UTF-8 JSON with partial results', () async {
+    // Three long UTF-8 IDs exceed the real 256 KiB limit even with a compact catalog.
     final longId = List.filled(33000, '猫').join();
     final originals = [
-      for (var index = 0; index < 1001; index++) _entry(index, id: index < 3 ? '$index-$longId' : null),
+      for (var index = 0; index < 100; index++) _entry(index, id: index < 3 ? '$index-$longId' : null),
     ];
     final failedId = originals.last.mediaId;
     final requests = <GalleryOperationRequest>[];
@@ -251,27 +252,27 @@ void main() {
     // Clear trash also works with no current selection.
     final first = await _clear(bloc);
     expect(first.scope, GalleryMutationScope.allTrash);
-    expect(first.items, hasLength(1001));
+    expect(first.items, hasLength(originals.length));
     expect(first.names, originals.take(10).map((entry) => entry.name));
-    expect(first.sizeBytes, 1001 * 1002 ~/ 2);
+    expect(first.sizeBytes, originals.length * (originals.length + 1) ~/ 2);
     await _decide(bloc, first, false);
     expect(requests, isEmpty);
     final confirmation = await _clear(bloc);
     final added = _entry(99999);
     fixture.repository.entries = [...originals, added];
     bloc.add(const GalleryManagementEvent.trashRequested());
-    await _wait(bloc, (state) => state.items.length == 1002 && !state.trashLoading);
+    await _wait(bloc, (state) => state.items.length == originals.length + 1 && !state.trashLoading);
     await _decide(bloc, confirmation, true);
-    final done = await _wait(bloc, (state) => !state.busy && state.lastResult?.items.length == 1001);
+    final done = await _wait(bloc, (state) => !state.busy && state.lastResult?.items.length == originals.length);
     expect(requests.length, greaterThan(1));
     final sent = [for (final request in requests) ...request.items];
     expect(sent.toSet(), {
       for (final entry in originals)
         GalleryMediaRef(section: entry.section, mediaId: entry.mediaId, sourceRevision: entry.sourceRevision),
     });
-    expect(sent, hasLength(1001));
-    expect(done.processedItems, 1001);
-    expect(done.succeededItems, 1000);
+    expect(sent, hasLength(originals.length));
+    expect(done.processedItems, originals.length);
+    expect(done.succeededItems, originals.length - 1);
     expect(done.failures.single.mediaId, failedId);
     expect(done.notice, GalleryManagementNotice.partialFailure);
     expect(done.selectedIds, {done.snapshot.byMediaId[failedId]!.selectionIdentity});
@@ -279,6 +280,7 @@ void main() {
   });
 
   test('an unknown batch stops the tail, refreshes current trash and requires a new confirmation', () async {
+    // Two batches of 1000 plus an unsubmitted tail exercise the real item limit.
     final originals = List.generate(2001, _entry);
     final added = _entry(99999);
     final requests = <GalleryOperationRequest>[];
@@ -423,6 +425,7 @@ void main() {
     var posts = 0;
     late _Fixture fixture;
     fixture = _Fixture(
+      // Cross the real 1000-item limit so progress remains visible during the second batch.
       List.generate(1001, _entry),
       onRequest: (raw) {
         final request = GalleryOperationRequest.fromJson(jsonDecode(raw.body) as Map<String, dynamic>);

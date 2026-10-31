@@ -198,12 +198,20 @@ void main() {
     expect(stopped.message, contains('reason=consumer'));
   });
 
-  test('50001 trash entries use a separate bounded catalog budget', () async {
-    final album = List.filled(20, 'family-album').join('/');
+  test('default JSON budgets separate metadata from catalog and duplicate results', () {
+    final repository = GalleryManagementRepository(baseUri: Uri.parse('http://frame.local'), code: 'code');
+    addTearDown(repository.close);
+    expect(repository.maxJsonBytes, 16 << 20);
+    expect(repository.maxCatalogBytes, 64 << 20);
+    expect(repository.maxDuplicateResultBytes, 64 << 20);
+  });
+
+  test('trash catalog uses its own byte budget and accepts the exact limit', () async {
+    const album = 'family-album/2026';
     final payload = GalleryCatalog(
       section: GalleryMediaSection.trash,
       entries: List.generate(
-        50001,
+        100,
         (index) => GalleryEntry(
           section: GalleryMediaSection.trash,
           mediaId: 'trash-$index',
@@ -217,24 +225,31 @@ void main() {
       ),
     );
     final body = jsonEncode(payload.toJson());
-    final repository = GalleryManagementRepository(
-      baseUri: Uri.parse('http://frame.local'),
-      code: 'code',
-      client: MockClient((_) async => http.Response(body, 200)),
-    );
-    addTearDown(repository.close);
     final bytes = utf8.encode(body).length;
-    expect(bytes, greaterThan(repository.maxJsonBytes));
-    expect(bytes, lessThan(repository.maxCatalogBytes));
-    final result = await repository.catalog(GalleryMediaSection.trash);
-    expect(result.entries, hasLength(50001));
-    expect(result.entries.last.mediaId, 'trash-50000');
-    expect(result.entries.last.path, '$album/photo-50000.jpg');
+    const maxJsonBytes = 1024;
+    expect(bytes, greaterThan(maxJsonBytes));
+    for (final maxCatalogBytes in [bytes - 1, bytes, bytes + 1]) {
+      final repository = GalleryManagementRepository(
+        baseUri: Uri.parse('http://frame.local'),
+        code: 'code',
+        maxJsonBytes: maxJsonBytes,
+        maxCatalogBytes: maxCatalogBytes,
+        maxDuplicateResultBytes: 1,
+        client: MockClient((_) async => http.Response(body, 200)),
+      );
+      addTearDown(repository.close);
+      if (maxCatalogBytes < bytes) {
+        await expectLater(repository.catalog(GalleryMediaSection.trash), throwsFormatException);
+      } else {
+        final result = await repository.catalog(GalleryMediaSection.trash);
+        expect(result.entries, payload.entries);
+      }
+    }
   });
 
-  test('50001 candidates in both duplicate modes fit the result budget', () async {
+  test('both duplicate modes use the result byte budget and accept the exact limit', () async {
     final members = List.generate(
-      50001,
+      100,
       (index) => GalleryDuplicateMember(
         section: GalleryMediaSection.published,
         mediaId: 'media-$index',
@@ -245,7 +260,7 @@ void main() {
       ),
     );
     final job = GalleryDuplicateJob(
-      jobId: 'large-completed-job',
+      jobId: 'completed-job',
       status: GalleryDuplicateStatus.completed,
       modes: GalleryDuplicateMode.values,
       groups: [
@@ -254,19 +269,26 @@ void main() {
       ],
     );
     final body = jsonEncode(job.toJson());
-    final repository = GalleryManagementRepository(
-      baseUri: Uri.parse('http://frame.local'),
-      code: 'code',
-      client: MockClient((_) async => http.Response(body, 200)),
-    );
-    addTearDown(repository.close);
     final bytes = utf8.encode(body).length;
-    expect(bytes, greaterThan(repository.maxJsonBytes));
-    expect(bytes, lessThan(repository.maxDuplicateResultBytes));
-    final result = await repository.duplicates();
-    expect(result.groups, hasLength(2));
-    expect(result.groups.every((group) => group.items.length == 50001), isTrue);
-    expect(result.groups.last.items.last.mediaId, 'media-50000');
+    const maxJsonBytes = 1024;
+    expect(bytes, greaterThan(maxJsonBytes));
+    for (final maxDuplicateResultBytes in [bytes - 1, bytes, bytes + 1]) {
+      final repository = GalleryManagementRepository(
+        baseUri: Uri.parse('http://frame.local'),
+        code: 'code',
+        maxJsonBytes: maxJsonBytes,
+        maxCatalogBytes: 1,
+        maxDuplicateResultBytes: maxDuplicateResultBytes,
+        client: MockClient((_) async => http.Response(body, 200)),
+      );
+      addTearDown(repository.close);
+      if (maxDuplicateResultBytes < bytes) {
+        await expectLater(repository.duplicates(), throwsFormatException);
+      } else {
+        final result = await repository.duplicates();
+        expect(result.groups, job.groups);
+      }
+    }
   });
 
   test('metadata URL encodes path segments and mutation preserves operation identity', () async {

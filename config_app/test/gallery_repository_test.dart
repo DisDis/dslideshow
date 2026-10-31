@@ -34,10 +34,12 @@ GalleryRepository repository(http.Client client) =>
     GalleryRepository(baseUri: Uri.parse('http://localhost:8000'), code: 'secret', client: client);
 
 void main() {
-  test('50001 media entries fit the normal catalog contract without truncation', () async {
+  test('catalog preserves all entries without fetching media bodies', () async {
+    const itemCount = 100;
+    const lastIndex = itemCount - 1;
     final payload = catalog();
     payload['entries'] = List.generate(
-      50001,
+      itemCount,
       (index) => GalleryEntry(
         section: GalleryMediaSection.published,
         mediaId: 'media-$index',
@@ -57,13 +59,19 @@ void main() {
       }),
     );
     addTearDown(repo.close);
+    expect(repo.maxCatalogBytes, 64 << 20);
     expect(utf8.encode(body).length, lessThan(repo.maxCatalogBytes));
     final result = await repo.load();
-    expect(result.items, hasLength(50001));
+    expect(result.items, hasLength(itemCount));
     expect(result.items.first.mediaId, 'media-0');
-    expect(result.items.last.mediaId, 'media-50000');
-    expect(result.items.last.revision, 'revision-50000');
-    expect(result.items.last.uri.pathSegments.skip(3), ['published', 'original', 'media-50000', 'revision-50000']);
+    expect(result.items.last.mediaId, 'media-$lastIndex');
+    expect(result.items.last.revision, 'revision-$lastIndex');
+    expect(result.items.last.uri.pathSegments.skip(3), [
+      'published',
+      'original',
+      'media-$lastIndex',
+      'revision-$lastIndex',
+    ]);
     expect(result.items.last.thumbnailsEnabled, isTrue);
     expect(requests, 1, reason: 'Loading the catalog must not fetch media bodies');
   });

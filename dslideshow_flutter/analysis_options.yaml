@@ -12,6 +12,7 @@ analyzer:
     - tool/**.dart
     - build/**
     - linux/**
+    - web/**
   errors:
     always_declare_return_types: error
     assignment_to_const: error

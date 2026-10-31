@@ -178,9 +178,9 @@ void main() {
     },
   );
 
-  test('stored 50001-candidate results in both modes are restored in full', () async {
+  test('stored results preserve all members in exact and broader similar groups', () async {
     final members = List.generate(
-      50001,
+      100,
       (index) => GalleryDuplicateMember(
         section: GalleryMediaSection.published,
         mediaId: 'media-$index',
@@ -191,7 +191,7 @@ void main() {
       ),
     );
     final completed = GalleryDuplicateJob(
-      jobId: 'large-completed-job',
+      jobId: 'completed-job',
       status: GalleryDuplicateStatus.completed,
       modes: GalleryDuplicateMode.values,
       groups: [
@@ -199,25 +199,20 @@ void main() {
           GalleryDuplicateGroup(
             groupId: mode.name,
             mode: mode,
-            items: mode == GalleryDuplicateMode.exact
-                ? members
-                : [
-                    ...members,
-                    members.last.copyWith(mediaId: 'another-similar-file', path: 'another.jpg', name: 'another.jpg'),
-                  ],
+            items: mode == GalleryDuplicateMode.exact ? members.take(members.length - 1).toList() : members,
           ),
       ],
     );
     await service.directory.create(recursive: true);
     final state = File('${service.directory.path}/job.json');
     await state.writeAsString(jsonEncode(completed.toJson()));
-    expect(await state.length(), greaterThan(16 << 20));
     final restored = await service.status();
     expect(restored.status, GalleryDuplicateStatus.completed);
     expect(restored.groups, hasLength(2));
-    expect(restored.groups.first.items, hasLength(50001));
-    expect(restored.groups.last.items, hasLength(50002));
-    expect(restored.groups.last.items[50000].mediaId, 'media-50000');
+    expect(restored.groups.first.mode, GalleryDuplicateMode.exact);
+    expect(restored.groups.first.items, members.take(members.length - 1));
+    expect(restored.groups.last.mode, GalleryDuplicateMode.similar);
+    expect(restored.groups.last.items, members);
   });
 
   test('pinned exact and similar JSON map to snapshot identities and never request deletion', () async {

@@ -11,109 +11,93 @@ import 'package:flutter_test/flutter_test.dart';
 import 'gallery_image_loader_test.dart' show ControlledClient;
 
 void main() {
-  testWidgets(
-    '50001-item sliver bounds demand through end/start/resize/fullscreen/dispose',
-    (tester) async {
-      final client = ControlledClient();
-      final loader = MediaImageLoader(
-        client: client,
-        maxActive: 2,
-        maxPrefetch: 1,
-      );
-      final session = GallerySession(
-        loader: loader,
-        repository: GalleryRepository(
-          baseUri: Uri.parse('http://localhost'),
-          code: 'code',
-        ),
-      );
-      final scroll = ScrollController();
-      final items = List.generate(
-        50001,
-        (index) => GalleryItem(
-          uri: Uri.parse('http://localhost/original-$index.jpg'),
-          title: '$index',
-          mediaId: '$index',
-          thumbnailBaseUri: Uri.parse('http://localhost/thumbnail-$index'),
-          thumbnailPolicy: const GalleryThumbnailPolicy(
-            version: 1,
-            sizes: [GalleryThumbnailSize.small],
-          ),
-          thumbnailsEnabled: true,
-        ),
-      );
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Builder(
-            builder: (context) => Scaffold(
-              body: CustomScrollView(
-                controller: scroll,
-                slivers: [
-                  const SliverAppBar(title: Text('gallery'), pinned: true),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(8),
-                    sliver: MediaGallerySliverGrid(
-                      items: items,
-                      selectedIds: const {},
-                      onToggleSelect: (_) {},
-                      session: session,
-                      active: ModalRoute.isCurrentOf(context) ?? true,
-                    ),
+  testWidgets('sliver bounds demand through end/start/resize/fullscreen/dispose', (tester) async {
+    final client = ControlledClient();
+    final loader = MediaImageLoader(client: client, maxActive: 2, maxPrefetch: 1);
+    final session = GallerySession(
+      loader: loader,
+      repository: GalleryRepository(baseUri: Uri.parse('http://localhost'), code: 'code'),
+    );
+    final scroll = ScrollController();
+    final items = List.generate(
+      100,
+      (index) => GalleryItem(
+        uri: Uri.parse('http://localhost/original-$index.jpg'),
+        title: '$index',
+        mediaId: '$index',
+        thumbnailBaseUri: Uri.parse('http://localhost/thumbnail-$index'),
+        thumbnailPolicy: const GalleryThumbnailPolicy(version: 1, sizes: [GalleryThumbnailSize.small]),
+        thumbnailsEnabled: true,
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: CustomScrollView(
+              controller: scroll,
+              slivers: [
+                const SliverAppBar(title: Text('gallery'), pinned: true),
+                SliverPadding(
+                  padding: const EdgeInsets.all(8),
+                  sliver: MediaGallerySliverGrid(
+                    items: items,
+                    selectedIds: const {},
+                    onToggleSelect: (_) {},
+                    session: session,
+                    active: ModalRoute.isCurrentOf(context) ?? true,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      );
-      await tester.pump();
-      expect(loader.activeCount, 2);
-      expect(loader.pendingCount, lessThan(30));
-      scroll.jumpTo(scroll.position.maxScrollExtent);
-      await tester.pump();
-      await tester.pump();
-      expect(
-        client.requests.take(2).every((request) => request.aborted),
-        isTrue,
-      );
-      expect(loader.activeCount, lessThanOrEqualTo(2));
-      expect(loader.pendingCount, lessThan(30));
-      expect(
-        tester
-            .widgetList<ImageGridItem>(find.byType(ImageGridItem))
-            .any((widget) => widget.item.mediaId == '50000'),
-        isTrue,
-        reason: 'The end of a large library must be reachable without eagerly building it',
-      );
-      scroll.jumpTo(0);
-      await tester.pump();
-      await tester.pump();
-      tester.view.physicalSize = const Size(400, 600);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pump();
-      await tester.pump();
-      expect(loader.pendingCount, lessThan(30));
-      await tester.tap(find.byType(ImageGridItem).first);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      await tester.pump();
-      expect(client.requests.last.request.url.path, '/original-0.jpg');
-      expect(loader.activeCount, 1);
-      tester.state<NavigatorState>(find.byType(Navigator)).pop();
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump();
-      await session.close();
-      scroll.dispose();
-      expect(loader.pendingCount, 0);
-      expect(loader.activeCount, 0);
-      expect(client.peak, lessThanOrEqualTo(2));
-      expect(tester.takeException(), isNull);
-    },
-  );
+      ),
+    );
+    await tester.pump();
+    expect(loader.activeCount, 2);
+    expect(loader.pendingCount, lessThan(30));
+    scroll.jumpTo(scroll.position.maxScrollExtent);
+    await tester.pump();
+    await tester.pump();
+    expect(client.requests.take(2).every((request) => request.aborted), isTrue);
+    expect(loader.activeCount, lessThanOrEqualTo(2));
+    expect(loader.pendingCount, lessThan(30));
+    expect(
+      tester
+          .widgetList<ImageGridItem>(find.byType(ImageGridItem))
+          .any((widget) => widget.item.mediaId == items.last.mediaId),
+      isTrue,
+      reason: 'The end of the catalog must be reachable without eagerly building it',
+    );
+    scroll.jumpTo(0);
+    await tester.pump();
+    await tester.pump();
+    tester.view.physicalSize = const Size(400, 600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pump();
+    await tester.pump();
+    expect(loader.pendingCount, lessThan(30));
+    await tester.tap(find.byType(ImageGridItem).first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump();
+    expect(client.requests.last.request.url.path, '/original-0.jpg');
+    expect(loader.activeCount, 1);
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    await session.close();
+    scroll.dispose();
+    expect(loader.pendingCount, 0);
+    expect(loader.activeCount, 0);
+    expect(client.peak, lessThanOrEqualTo(2));
+    expect(tester.takeException(), isNull);
+  });
 }

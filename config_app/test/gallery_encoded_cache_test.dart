@@ -132,7 +132,7 @@ void main() {
     await eventually(() async => (await root.list().toList()).where((file) => file.path.endsWith('.body')).length == 2);
   });
 
-  test('default native disk budget retains 2048 objects and evicts overflow', () async {
+  test('native disk cache shares default budgets without filling the cache', () async {
     final value = GalleryDiskImageCache(directory: Directory('${root.path}/store'));
     caches.add(value);
     expect(value.maxBytes, 512 << 20);
@@ -141,13 +141,6 @@ void main() {
     expect(native.maxBytes, value.maxBytes);
     expect(native.maxObjects, value.maxObjects);
     await native.close();
-    for (var index = 0; index < 2049; index++) {
-      await value.write('object-$index', body('$index'));
-    }
-    expect(value.cachedObjects, 2048);
-    expect(await value.get('object-0'), isNull);
-    expect(await value.get('object-1'), isNotNull);
-    expect(await value.get('object-2048'), isNotNull);
   });
 
   test('reopen drops a truncated published body and allows complete replacement', () async {

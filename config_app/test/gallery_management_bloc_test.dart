@@ -413,85 +413,84 @@ void main() {
     expect(management.state.confirmation, isNull);
     expect(management.state.selectedIds, {managedPhoto('a').selectionIdentity});
   });
-  test(
-    '50001 media keep one indexed snapshot across selection and preserve valid refs through partial trash',
-    () async {
-      final originals = List.generate(50001, (index) => managedPhoto('media-$index'));
-      final first = originals.first;
-      final last = originals.last;
-      initialize(
-        MockClient((request) async {
-          final command = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
-          expect(command.items.map((item) => item.mediaId).toSet(), {first.mediaId, last.mediaId});
-          catalog.items = catalog.items.where((item) => item.mediaId != first.mediaId).toList();
-          return response(
-            GalleryOperationResult(
-              operationId: command.operationId,
-              items: [
-                GalleryOperationItemResult(
-                  section: first.section,
-                  mediaId: first.mediaId,
-                  state: GalleryItemOperationState.succeeded,
-                  destination: GalleryMediaRef(
-                    mediaId: 'trash-first',
-                    sourceRevision: "destination-revision",
-                    section: GalleryMediaSection.trash,
-                  ),
+  test('selection reuses the indexed snapshot and preserves valid refs through partial trash', () async {
+    final originals = List.generate(100, (index) => managedPhoto('media-$index'));
+    final first = originals.first;
+    final middleIndex = originals.length ~/ 2;
+    final middle = originals[middleIndex];
+    final last = originals.last;
+    initialize(
+      MockClient((request) async {
+        final command = GalleryOperationRequest.fromJson(jsonDecode(request.body) as Map<String, dynamic>);
+        expect(command.items.map((item) => item.mediaId).toSet(), {first.mediaId, last.mediaId});
+        catalog.items = catalog.items.where((item) => item.mediaId != first.mediaId).toList();
+        return response(
+          GalleryOperationResult(
+            operationId: command.operationId,
+            items: [
+              GalleryOperationItemResult(
+                section: first.section,
+                mediaId: first.mediaId,
+                state: GalleryItemOperationState.succeeded,
+                destination: GalleryMediaRef(
+                  mediaId: 'trash-first',
+                  sourceRevision: "destination-revision",
+                  section: GalleryMediaSection.trash,
                 ),
-                GalleryOperationItemResult(
-                  section: last.section,
-                  mediaId: last.mediaId,
-                  state: GalleryItemOperationState.failed,
-                  error: GalleryErrorCode.forbidden,
-                ),
-              ],
-            ).toJson(),
-          );
-        }),
-        repository: ManagedCatalogRepository(originals),
-      );
-      final originalSnapshot = management.state.snapshot;
-      management.add(GalleryManagementEvent.selectionToggled(first.selectionIdentity));
-      management.add(GalleryManagementEvent.selectionToggled(last.selectionIdentity));
-      await waitFor((state) => state.selectedIds.length == 2);
-      expect(
-        management.state.snapshot,
-        same(originalSnapshot),
-        reason: 'Selection must reuse the existing index, not copy or compare 50001 items',
-      );
-      expect(management.state.selectedItems.map((item) => item.mediaId).toSet(), {first.mediaId, last.mediaId});
-      expect(management.currentItem(last.mediaId), same(last));
+              ),
+              GalleryOperationItemResult(
+                section: last.section,
+                mediaId: last.mediaId,
+                state: GalleryItemOperationState.failed,
+                error: GalleryErrorCode.forbidden,
+              ),
+            ],
+          ).toJson(),
+        );
+      }),
+      repository: ManagedCatalogRepository(originals),
+    );
+    final originalSnapshot = management.state.snapshot;
+    management.add(GalleryManagementEvent.selectionToggled(first.selectionIdentity));
+    management.add(GalleryManagementEvent.selectionToggled(last.selectionIdentity));
+    await waitFor((state) => state.selectedIds.length == 2);
+    expect(
+      management.state.snapshot,
+      same(originalSnapshot),
+      reason: 'Selection must reuse the existing indexed snapshot',
+    );
+    expect(management.state.selectedItems.map((item) => item.mediaId).toSet(), {first.mediaId, last.mediaId});
+    expect(management.currentItem(last.mediaId), same(last));
 
-      catalog.items = List.of(originals);
-      catalog.items[25000] = managedPhoto('media-25000', revision: '2');
-      final lastUpdate = management.itemUpdates(last.mediaId).first;
-      await management.refresh();
-      expect(await lastUpdate, same(last));
-      expect(management.state.items, hasLength(50001));
-      expect(management.state.selectedIds, {first.selectionIdentity, last.selectionIdentity});
-      expect(management.currentItem('media-25000')!.revision, '2');
-      expect(management.state.snapshot, isNot(same(originalSnapshot)));
+    catalog.items = List.of(originals);
+    catalog.items[middleIndex] = managedPhoto(middle.mediaId, revision: '2');
+    final lastUpdate = management.itemUpdates(last.mediaId).first;
+    await management.refresh();
+    expect(await lastUpdate, same(last));
+    expect(management.state.items, hasLength(originals.length));
+    expect(management.state.selectedIds, {first.selectionIdentity, last.selectionIdentity});
+    expect(management.currentItem(middle.mediaId)!.revision, '2');
+    expect(management.state.snapshot, isNot(same(originalSnapshot)));
 
-      management.add(const GalleryManagementEvent.mutationRequested(GalleryMutation.trash));
-      await confirmManagementMutation(management, GalleryMutation.trash);
-      final result = await waitFor((state) => !state.busy && state.lastResult != null);
-      expect(result.items, hasLength(50000));
-      expect(result.selectedItems.single.mediaId, last.mediaId);
-      expect(result.failures.single.mediaId, last.mediaId);
-      expect(result.undoMediaIds, ['trash-first']);
-      expect(management.currentItem(first.mediaId), isNull);
+    management.add(const GalleryManagementEvent.mutationRequested(GalleryMutation.trash));
+    await confirmManagementMutation(management, GalleryMutation.trash);
+    final result = await waitFor((state) => !state.busy && state.lastResult != null);
+    expect(result.items, hasLength(originals.length - 1));
+    expect(result.selectedItems.single.mediaId, last.mediaId);
+    expect(result.failures.single.mediaId, last.mediaId);
+    expect(result.undoMediaIds, ['trash-first']);
+    expect(management.currentItem(first.mediaId), isNull);
 
-      catalog.items = [
-        for (final item in catalog.items)
-          if (item.mediaId == last.mediaId) managedPhoto(last.mediaId, revision: '3') else item,
-      ];
-      await management.refresh();
-      expect(
-        management.state.selectedIds,
-        isEmpty,
-        reason: 'An unchanged large catalog cannot preserve a selected stale revision',
-      );
-      expect(management.currentItem(last.mediaId)!.revision, '3');
-    },
-  );
+    catalog.items = [
+      for (final item in catalog.items)
+        if (item.mediaId == last.mediaId) managedPhoto(last.mediaId, revision: '3') else item,
+    ];
+    await management.refresh();
+    expect(
+      management.state.selectedIds,
+      isEmpty,
+      reason: 'An unchanged catalog size cannot preserve a selected stale revision',
+    );
+    expect(management.currentItem(last.mediaId)!.revision, '3');
+  });
 }

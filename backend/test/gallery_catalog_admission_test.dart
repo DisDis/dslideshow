@@ -16,10 +16,7 @@ class _BlockedDirectory extends NoWatchDirectory {
   _BlockedDirectory(super.directory);
 
   @override
-  Stream<FileSystemEntity> list({
-    bool recursive = false,
-    bool followLinks = true,
-  }) async* {
+  Stream<FileSystemEntity> list({bool recursive = false, bool followLinks = true}) async* {
     traversals++;
     if (!scanStarted.isCompleted) scanStarted.complete();
     await scanGate.future;
@@ -28,9 +25,8 @@ class _BlockedDirectory extends NoWatchDirectory {
   }
 }
 
-Matcher errorCode(GalleryErrorCode code) => throwsA(
-  isA<GalleryCatalogFailure>().having((value) => value.code, 'code', code),
-);
+Matcher errorCode(GalleryErrorCode code) =>
+    throwsA(isA<GalleryCatalogFailure>().having((value) => value.code, 'code', code));
 
 void main() {
   late Directory root;
@@ -53,82 +49,58 @@ void main() {
     await root.delete(recursive: true);
   });
 
-  test(
-    'running plus queued catalog work is bounded before scan finishes',
-    () async {
-      final first = catalog.catalog();
-      await originals.scanStarted.future;
-      final second = catalog.catalog();
-      await expectLater(catalog.catalog(), errorCode(GalleryErrorCode.busy));
-      final rejected = List.generate(
-        1000,
-        (_) => expectLater(
-          catalog.resolve('unresolved'),
-          errorCode(GalleryErrorCode.busy),
-        ),
-      );
-      await Future.wait(rejected);
-      // No rejected request is deferred behind the unopened scan gate.
-      expect(originals.scanGate.isCompleted, isFalse);
-      expect(originals.traversals, 1);
-      originals.scanGate.complete();
-      final firstSnapshot = await first;
-      final secondSnapshot = await second;
-      expect(firstSnapshot.entries.single.path, 'one.jpg');
-      expect(secondSnapshot.catalogRevision, firstSnapshot.catalogRevision);
-      expect(originals.traversals, 1);
-      // Admission is reusable after the running/queued pair has completed.
-      final source = await catalog.resolve(
-        firstSnapshot.entries.single.mediaId,
-      );
-      expect(source.entry.mediaId, firstSnapshot.entries.single.mediaId);
-    },
-  );
+  test('running plus queued catalog work is bounded before scan finishes', () async {
+    final first = catalog.catalog();
+    await originals.scanStarted.future;
+    final second = catalog.catalog();
+    await expectLater(catalog.catalog(), errorCode(GalleryErrorCode.busy));
+    final rejected = List.generate(
+      100,
+      (_) => expectLater(catalog.resolve('unresolved'), errorCode(GalleryErrorCode.busy)),
+    );
+    await Future.wait(rejected);
+    // No rejected request is deferred behind the unopened scan gate.
+    expect(originals.scanGate.isCompleted, isFalse);
+    expect(originals.traversals, 1);
+    originals.scanGate.complete();
+    final firstSnapshot = await first;
+    final secondSnapshot = await second;
+    expect(firstSnapshot.entries.single.path, 'one.jpg');
+    expect(secondSnapshot.catalogRevision, firstSnapshot.catalogRevision);
+    expect(originals.traversals, 1);
+    // Admission is reusable after the running/queued pair has completed.
+    final source = await catalog.resolve(firstSnapshot.entries.single.mediaId);
+    expect(source.entry.mediaId, firstSnapshot.entries.single.mediaId);
+  });
 
-  test(
-    'markDirty discovers completed nested changes without watcher events',
-    () async {
-      await Directory('${originals.path}/album').create();
-      await File('${originals.path}/album/existing.jpg')
-          .writeAsBytes([1, 2, 3]);
-      originals.scanGate.complete();
-      final before = await catalog.catalog();
-      final old = before.entries.firstWhere(
-        (entry) => entry.path == 'album/existing.jpg',
-      );
-      final publisher = GalleryMediaPublisher(originals: originals.delegate);
-      await publisher.publish(Stream.value([4, 5, 6]), 'album/existing.jpg');
-      await publisher.publish(Stream.value([7, 8, 9]), 'album/new.jpg');
-      catalog.markDirty();
-      final after = await catalog.catalog();
-      final replaced = after.entries.firstWhere(
-        (entry) => entry.path == old.path,
-      );
-      expect(after.catalogRevision, isNot(before.catalogRevision));
-      expect(replaced.mediaId, old.mediaId);
-      expect(replaced.sourceRevision, isNot(old.sourceRevision));
-      expect(
-        after.entries.map((entry) => entry.path),
-        contains('album/new.jpg'),
-      );
-      expect(
-        after.entries
-            .firstWhere((entry) => entry.path == 'one.jpg')
-            .sourceRevision,
-        before.entries
-            .firstWhere((entry) => entry.path == 'one.jpg')
-            .sourceRevision,
-        reason: 'A dirty hint must not invalidate unchanged thumbnails',
-      );
-    },
-  );
+  test('markDirty discovers completed nested changes without watcher events', () async {
+    await Directory('${originals.path}/album').create();
+    await File('${originals.path}/album/existing.jpg').writeAsBytes([1, 2, 3]);
+    originals.scanGate.complete();
+    final before = await catalog.catalog();
+    final old = before.entries.firstWhere((entry) => entry.path == 'album/existing.jpg');
+    final publisher = GalleryMediaPublisher(originals: originals.delegate);
+    await publisher.publish(Stream.value([4, 5, 6]), 'album/existing.jpg');
+    await publisher.publish(Stream.value([7, 8, 9]), 'album/new.jpg');
+    catalog.markDirty();
+    final after = await catalog.catalog();
+    final replaced = after.entries.firstWhere((entry) => entry.path == old.path);
+    expect(after.catalogRevision, isNot(before.catalogRevision));
+    expect(replaced.mediaId, old.mediaId);
+    expect(replaced.sourceRevision, isNot(old.sourceRevision));
+    expect(after.entries.map((entry) => entry.path), contains('album/new.jpg'));
+    expect(
+      after.entries.firstWhere((entry) => entry.path == 'one.jpg').sourceRevision,
+      before.entries.firstWhere((entry) => entry.path == 'one.jpg').sourceRevision,
+      reason: 'A dirty hint must not invalidate unchanged thumbnails',
+    );
+  });
 
   test('markDirty during a scan is retained for the next snapshot', () async {
     originals.scanGate.complete();
     originals.afterTraversal = () async {
       originals.afterTraversal = null;
-      await File('${originals.path}/late.jpg')
-          .writeAsString('complete new media');
+      await File('${originals.path}/late.jpg').writeAsString('complete new media');
       catalog.markDirty();
     };
     final during = await catalog.catalog();
@@ -147,43 +119,29 @@ void main() {
     );
     originals.scanGate.complete();
     final before = (await catalog.catalog()).entries.single;
-    final staged = await File('${root.path}/complete.tmp')
-        .writeAsString('external replacement without a notification');
+    final staged = await File('${root.path}/complete.tmp').writeAsString('external replacement without a notification');
     await staged.rename('${originals.path}/one.jpg');
     final after = (await catalog.catalog()).entries.single;
     expect(after.mediaId, before.mediaId);
     expect(after.sourceRevision, isNot(before.sourceRevision));
     expect(
-      await File((await catalog.resolve(after.mediaId)).absolutePath)
-          .readAsString(),
+      await File((await catalog.resolve(after.mediaId)).absolutePath).readAsString(),
       'external replacement without a notification',
     );
   });
 
-  test(
-    'close rejects admitted queued work without running another scan',
-    () async {
-      final first = catalog.catalog();
-      final firstError = expectLater(
-        first,
-        errorCode(GalleryErrorCode.unavailable),
-      );
-      await originals.scanStarted.future;
-      final queued = catalog.catalog();
-      final queuedError = expectLater(
-        queued,
-        errorCode(GalleryErrorCode.unavailable),
-      );
-      final closing = catalog.close();
-      originals.scanGate.complete();
-      await firstError;
-      await queuedError;
-      await closing;
-      expect(originals.traversals, 1);
-      await expectLater(
-        catalog.catalog(),
-        errorCode(GalleryErrorCode.unavailable),
-      );
-    },
-  );
+  test('close rejects admitted queued work without running another scan', () async {
+    final first = catalog.catalog();
+    final firstError = expectLater(first, errorCode(GalleryErrorCode.unavailable));
+    await originals.scanStarted.future;
+    final queued = catalog.catalog();
+    final queuedError = expectLater(queued, errorCode(GalleryErrorCode.unavailable));
+    final closing = catalog.close();
+    originals.scanGate.complete();
+    await firstError;
+    await queuedError;
+    await closing;
+    expect(originals.traversals, 1);
+    await expectLater(catalog.catalog(), errorCode(GalleryErrorCode.unavailable));
+  });
 }

@@ -89,18 +89,24 @@ void main() {
     expect(await retained.readAsBytes(), bytes);
   });
 
-  test('default disk cache retains 2048 derivatives and evicts overflow', () async {
+  test('disk cache defaults retain the configured budget without filling it', () {
+    final service = create();
+    expect(service.policy.maxCacheBytes, 512 * 1024 * 1024);
+    expect(service.policy.maxCacheObjects, 2048);
+  });
+
+  test('disk cache initialization evicts derivatives beyond the object budget', () async {
+    const maxObjects = 3;
     await cache.create();
     final bytes = [1, 2, 3, 4];
     final digest = md5.convert(bytes).toString();
-    for (var index = 0; index < 2049; index++) {
+    for (var index = 0; index <= maxObjects; index++) {
       final key = index.toRadixString(16).padLeft(64, '0');
       await File('${cache.path}/$key-$digest.jpg').writeAsBytes(bytes);
     }
-    final service = create();
-    expect(service.policy.maxCacheBytes, 512 * 1024 * 1024);
+    final service = create(policy: const ThumbnailPolicy(maxCacheObjects: maxObjects));
     await service.initialize();
-    expect(await cache.list().length, 2048);
+    expect(await cache.list().length, maxObjects);
     expect(worker.requests, isEmpty);
   });
 

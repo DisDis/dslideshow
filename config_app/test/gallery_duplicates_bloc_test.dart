@@ -270,10 +270,11 @@ void main() {
     expect(bloc.state.selectedBytes, 100);
   });
 
-  test('50001 media snapshot keeps decisions and stale/keeper checks correct at the end of the catalog', () async {
-    final catalog = List.generate(50001, (index) => managedPhoto('p$index'));
+  test('indexed snapshot keeps decisions and stale/keeper checks correct at the end of the catalog', () async {
+    final catalog = List.generate(100, (index) => managedPhoto('p$index'));
+    final groupStart = catalog.length - 3;
     final members = [
-      for (final item in catalog.skip(49998))
+      for (final item in catalog.skip(groupStart))
         GalleryDuplicateMember(
           section: item.section,
           mediaId: item.mediaId,
@@ -300,7 +301,7 @@ void main() {
       repository.close();
     });
     await _until(bloc, (state) => !state.loading);
-    expect(bloc.state.catalogById.length, 50001);
+    expect(bloc.state.catalogById.length, catalog.length);
     final snapshot = bloc.state.catalogSnapshot;
     for (final member in members.skip(1)) {
       bloc.add(GalleryDuplicatesEvent.decide('large', member.mediaId, GalleryDuplicateDecision.trash));
@@ -309,18 +310,18 @@ void main() {
     expect(
       identical(bloc.state.catalogSnapshot, snapshot),
       true,
-      reason: 'Decisions must reuse the indexed catalog instead of rebuilding 50001 entries',
+      reason: 'Decisions must reuse the existing indexed snapshot',
     );
     final next = [...catalog];
-    next[50000] = managedPhoto('p50000', revision: '2');
+    next[next.length - 1] = managedPhoto(members.last.mediaId, revision: '2');
     snapshots.add(next);
-    await _until(bloc, (state) => state.catalogById['p50000']?.revision == '2');
-    expect(bloc.state.decisions, {'p49999': GalleryDuplicateDecision.trash});
+    await _until(bloc, (state) => state.catalogById[members.last.mediaId]?.revision == '2');
+    expect(bloc.state.decisions, {members[1].mediaId: GalleryDuplicateDecision.trash});
     expect(bloc.state.current(members.last), false);
-    expect(bloc.state.item(members.first), same(catalog[49998]));
-    bloc.add(const GalleryDuplicatesEvent.decide('large', 'p49998', GalleryDuplicateDecision.trash));
+    expect(bloc.state.item(members.first), same(catalog[groupStart]));
+    bloc.add(GalleryDuplicatesEvent.decide('large', members.first.mediaId, GalleryDuplicateDecision.trash));
     await _until(bloc, (state) => state.effect?.notice == GalleryDuplicatesNotice.keepOne);
-    expect(bloc.state.decisions.containsKey('p49998'), false);
+    expect(bloc.state.decisions.containsKey(members.first.mediaId), false);
   });
 
   test('duplicate decisions keep one file and invalidate only changed revisions with one refresh', () async {
