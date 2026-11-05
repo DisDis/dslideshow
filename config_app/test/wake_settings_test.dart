@@ -1,4 +1,5 @@
 import 'package:config_app/features/config/domain/config_draft.dart';
+import 'package:config_app/features/config/domain/night_mode_settings_validation.dart';
 import 'package:config_app/features/config/presentation/bloc/wake_settings_cubit.dart';
 import 'package:config_app/features/config/presentation/pages/wake_settings_page.dart';
 import 'package:dslideshow_backend/command.dart';
@@ -27,6 +28,10 @@ Future<void> enter(WidgetTester tester, WakeField field, String value) async {
   await tester.enterText(finder, value);
   await tester.pump();
 }
+
+TextField input(WidgetTester tester, WakeField field) => tester.widget<TextField>(
+  find.descendant(of: find.byKey(ValueKey('wake-${field.name}')), matching: find.byType(TextField)),
+);
 
 void main() {
   testWidgets('all wake settings edit the shared draft and round-trip through config JSON', (tester) async {
@@ -97,6 +102,7 @@ void main() {
     await enter(tester, WakeField.start, '24:00');
     expect(config.nightMode.startMinute, 1380);
     expect(checks.single(), isTrue);
+    expect(input(tester, WakeField.start).decoration?.errorText, 'Enter a time in HH:mm format (00:00–23:59).');
     await enter(tester, WakeField.start, '22:00');
     expect(checks.single(), isFalse);
     await enter(tester, WakeField.end, '22:00');
@@ -108,12 +114,70 @@ void main() {
       await enter(tester, WakeField.darkBelow, text);
       expect(config.nightMode.ambientLight.darkBelowLux, 5);
       expect(checks.single(), isTrue);
+      expect(input(tester, WakeField.darkBelow).decoration?.errorText, 'Enter a whole number.');
     }
     await enter(tester, WakeField.darkBelow, '3');
     expect(config.nightMode.ambientLight.darkBelowLux, 3);
     expect(checks.single(), isFalse);
     await tester.pumpWidget(const SizedBox.shrink());
     expect(checks, isEmpty);
+  });
+
+  testWidgets('MQTT topic fields accept Cyrillic and spaces as text', (tester) async {
+    const lightTopic = 'zigbee2mqtt/Кухня датчик движения';
+    const availabilityTopic = '$lightTopic/availability';
+    final config = AppConfig.fromJson({})
+      ..nightMode = const NightModeConfig(
+        enabled: true,
+        mode: NightMode.scheduleOrDarkness,
+        ambientLight: AmbientLightConfig(enabled: true, topic: 'zigbee2mqtt/bedroom'),
+      );
+    final checks = <ValueGetter<bool>>{};
+    await tester.pumpWidget(
+      app(
+        WakeSettingsPage(
+          config: config,
+          registerDraft: (check) {
+            checks.add(check);
+            return () => checks.remove(check);
+          },
+        ),
+      ),
+    );
+    for (final (field, value) in [(WakeField.topic, lightTopic), (WakeField.availabilityTopic, availabilityTopic)]) {
+      await enter(tester, field, value);
+      expect(input(tester, field).keyboardType, TextInputType.text);
+      expect(checks.single(), isFalse);
+      expect(find.byKey(const ValueKey('wake-invalid')), findsNothing);
+    }
+    final restored = AppConfig.fromJson(config.toStorageJson()).nightMode.ambientLight;
+    expect(restored.topic, lightTopic);
+    expect(restored.availabilityTopic, availabilityTopic);
+    await tester.pumpWidget(const SizedBox.shrink());
+    expect(checks, isEmpty);
+  });
+
+  testWidgets('identical MQTT topics show only the availability error and allow an empty topic', (tester) async {
+    const topic = 'zigbee2mqtt/Кухня датчик движения';
+    final config = AppConfig.fromJson({})
+      ..nightMode = const NightModeConfig(enabled: true, ambientLight: AmbientLightConfig(enabled: true, topic: topic));
+    await tester.pumpWidget(app(WakeSettingsPage(config: config)));
+    await enter(tester, WakeField.availabilityTopic, topic);
+    expect(input(tester, WakeField.availabilityTopic).keyboardType, TextInputType.text);
+    expect(
+      input(tester, WakeField.availabilityTopic).decoration?.errorText,
+      'The availability topic must differ from the illuminance topic. '
+      'Leave it empty if online/offline messages are not published.',
+    );
+    expect(
+      find.byWidgetPredicate((widget) => widget is TextField && widget.decoration?.errorText != null),
+      findsOneWidget,
+    );
+    expect(find.text('Correct the highlighted fields.'), findsOneWidget);
+    expect(config.nightMode.ambientLight.availabilityTopic, isEmpty);
+    await enter(tester, WakeField.availabilityTopic, '');
+    expect(input(tester, WakeField.availabilityTopic).decoration?.errorText, isNull);
+    expect(find.byKey(const ValueKey('wake-invalid')), findsNothing);
   });
 
   testWidgets('editor displays active frame clock and policy independently of unsaved edits', (tester) async {
@@ -161,16 +225,17 @@ void main() {
     expect(cubit.state.invalid, isFalse);
     final valid = config.nightMode;
 
-    for (final (field, invalid, corrected) in [
-      (WakeField.topic, 'bedroom/#', 'bedroom'),
-      (WakeField.valueField, '', 'illuminance'),
-      (WakeField.availabilityTopic, 'bedroom', ''),
-      (WakeField.darkBelow, '-1', '5'),
-      (WakeField.lightAbove, '5', '10'),
-      (WakeField.maxAge, '0', '1800'),
+    for (final (field, invalid, corrected, error) in [
+      (WakeField.topic, 'bedroom/#', 'bedroom', WakeInputError.exactTopic),
+      (WakeField.valueField, '', 'illuminance', WakeInputError.required),
+      (WakeField.availabilityTopic, 'bedroom', '', WakeInputError.differentTopics),
+      (WakeField.darkBelow, '-1', '5', WakeInputError.nonnegativeInteger),
+      (WakeField.lightAbove, '5', '10', WakeInputError.lightThreshold),
+      (WakeField.maxAge, '0', '1800', WakeInputError.positiveInteger),
     ]) {
       cubit.change(field, invalid);
       expect(cubit.state.invalid, isTrue, reason: field.name);
+      expect(cubit.state.errors, {field: error}, reason: field.name);
       expect(config.nightMode, valid, reason: field.name);
       cubit.change(field, corrected);
       expect(cubit.state.invalid, isFalse, reason: field.name);

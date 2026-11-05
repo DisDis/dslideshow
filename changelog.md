@@ -1,5 +1,9 @@
 # Unreleased
 
+* Show night-mode validation errors beside the affected fields instead of listing
+  every possible requirement. Explain identical illuminance/availability MQTT topics
+  without suggesting that text topics require numeric input.
+
 * Add configurable night mode with schedule only, schedule OR darkness and
   schedule AND darkness. Keep the physical screen button and explicit ON working,
   apply the normal absence timer after manual wake, and wake on confirmed presence

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$WakeSettingsState {
   NightModeConfig get config;
   Map<WakeField, String> get inputs;
-  bool get invalid;
+  Map<WakeField, WakeInputError> get errors;
   FrameState? get device;
 
   /// Create a copy of WakeSettingsState
@@ -24,7 +24,10 @@ mixin _$WakeSettingsState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $WakeSettingsStateCopyWith<WakeSettingsState> get copyWith =>
-      _$WakeSettingsStateCopyWithImpl<WakeSettingsState>(this as WakeSettingsState, _$identity);
+      _$WakeSettingsStateCopyWithImpl<WakeSettingsState>(
+        this as WakeSettingsState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -32,10 +35,12 @@ mixin _$WakeSettingsState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is WakeSettingsState &&
-            (identical(other.config, _this.config) || other.config == _this.config) &&
+            (identical(other.config, _this.config) ||
+                other.config == _this.config) &&
             const DeepCollectionEquality().equals(other.inputs, _this.inputs) &&
-            (identical(other.invalid, _this.invalid) || other.invalid == _this.invalid) &&
-            (identical(other.device, _this.device) || other.device == _this.device));
+            const DeepCollectionEquality().equals(other.errors, _this.errors) &&
+            (identical(other.device, _this.device) ||
+                other.device == _this.device));
   }
 
   @override
@@ -45,7 +50,7 @@ mixin _$WakeSettingsState {
       runtimeType,
       _this.config,
       const DeepCollectionEquality().hash(_this.inputs),
-      _this.invalid,
+      const DeepCollectionEquality().hash(_this.errors),
       _this.device,
     );
   }
@@ -53,23 +58,31 @@ mixin _$WakeSettingsState {
   @override
   String toString() {
     final _this = this as WakeSettingsState;
-    return 'WakeSettingsState(config: ${_this.config}, inputs: ${_this.inputs}, invalid: ${_this.invalid}, device: ${_this.device})';
+    return 'WakeSettingsState(config: ${_this.config}, inputs: ${_this.inputs}, errors: ${_this.errors}, device: ${_this.device})';
   }
 }
 
 /// @nodoc
 abstract mixin class $WakeSettingsStateCopyWith<$Res> {
-  factory $WakeSettingsStateCopyWith(WakeSettingsState value, $Res Function(WakeSettingsState) _then) =
-      _$WakeSettingsStateCopyWithImpl;
+  factory $WakeSettingsStateCopyWith(
+    WakeSettingsState value,
+    $Res Function(WakeSettingsState) _then,
+  ) = _$WakeSettingsStateCopyWithImpl;
   @useResult
-  $Res call({NightModeConfig config, Map<WakeField, String> inputs, bool invalid, FrameState? device});
+  $Res call({
+    NightModeConfig config,
+    Map<WakeField, String> inputs,
+    Map<WakeField, WakeInputError> errors,
+    FrameState? device,
+  });
 
   $NightModeConfigCopyWith<$Res> get config;
   $FrameStateCopyWith<$Res>? get device;
 }
 
 /// @nodoc
-class _$WakeSettingsStateCopyWithImpl<$Res> implements $WakeSettingsStateCopyWith<$Res> {
+class _$WakeSettingsStateCopyWithImpl<$Res>
+    implements $WakeSettingsStateCopyWith<$Res> {
   _$WakeSettingsStateCopyWithImpl(this._self, this._then);
 
   final WakeSettingsState _self;
@@ -79,7 +92,12 @@ class _$WakeSettingsStateCopyWithImpl<$Res> implements $WakeSettingsStateCopyWit
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? config = null, Object? inputs = null, Object? invalid = null, Object? device = freezed}) {
+  $Res call({
+    Object? config = null,
+    Object? inputs = null,
+    Object? errors = null,
+    Object? device = freezed,
+  }) {
     return _then(
       WakeSettingsState(
         config: null == config
@@ -90,10 +108,10 @@ class _$WakeSettingsStateCopyWithImpl<$Res> implements $WakeSettingsStateCopyWit
             ? _self.inputs
             : inputs // ignore: cast_nullable_to_non_nullable
                   as Map<WakeField, String>,
-        invalid: null == invalid
-            ? _self.invalid
-            : invalid // ignore: cast_nullable_to_non_nullable
-                  as bool,
+        errors: null == errors
+            ? _self.errors
+            : errors // ignore: cast_nullable_to_non_nullable
+                  as Map<WakeField, WakeInputError>,
         device: freezed == device
             ? _self.device
             : device // ignore: cast_nullable_to_non_nullable
@@ -169,7 +187,9 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
   /// ```
 
   @optionalTypeArgs
-  TResult map<TResult extends Object?>(TResult Function(_WakeSettingsState value) $default) {
+  TResult map<TResult extends Object?>(
+    TResult Function(_WakeSettingsState value) $default,
+  ) {
     final _that = this;
     switch (_that) {
       case _WakeSettingsState():
@@ -190,7 +210,9 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
   /// ```
 
   @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(TResult? Function(_WakeSettingsState value)? $default) {
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_WakeSettingsState value)? $default,
+  ) {
     final _that = this;
     switch (_that) {
       case _WakeSettingsState() when $default != null:
@@ -214,14 +236,19 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(NightModeConfig config, Map<WakeField, String> inputs, bool invalid, FrameState? device)?
+    TResult Function(
+      NightModeConfig config,
+      Map<WakeField, String> inputs,
+      Map<WakeField, WakeInputError> errors,
+      FrameState? device,
+    )?
     $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _WakeSettingsState() when $default != null:
-        return $default(_that.config, _that.inputs, _that.invalid, _that.device);
+        return $default(_that.config, _that.inputs, _that.errors, _that.device);
       case _:
         return orElse();
     }
@@ -242,12 +269,18 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(NightModeConfig config, Map<WakeField, String> inputs, bool invalid, FrameState? device) $default,
+    TResult Function(
+      NightModeConfig config,
+      Map<WakeField, String> inputs,
+      Map<WakeField, WakeInputError> errors,
+      FrameState? device,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _WakeSettingsState():
-        return $default(_that.config, _that.inputs, _that.invalid, _that.device);
+        return $default(_that.config, _that.inputs, _that.errors, _that.device);
     }
   }
 
@@ -265,13 +298,18 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(NightModeConfig config, Map<WakeField, String> inputs, bool invalid, FrameState? device)?
+    TResult? Function(
+      NightModeConfig config,
+      Map<WakeField, String> inputs,
+      Map<WakeField, WakeInputError> errors,
+      FrameState? device,
+    )?
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _WakeSettingsState() when $default != null:
-        return $default(_that.config, _that.inputs, _that.invalid, _that.device);
+        return $default(_that.config, _that.inputs, _that.errors, _that.device);
       case _:
         return null;
     }
@@ -280,13 +318,15 @@ extension WakeSettingsStatePatterns on WakeSettingsState {
 
 /// @nodoc
 
-class _WakeSettingsState implements WakeSettingsState {
+class _WakeSettingsState extends WakeSettingsState {
   const _WakeSettingsState({
     required this.config,
     required Map<WakeField, String> inputs,
-    this.invalid = false,
+    Map<WakeField, WakeInputError> errors = const {},
     this.device,
-  }) : _inputs = inputs;
+  }) : _inputs = inputs,
+       _errors = errors,
+       super._();
 
   @override
   final NightModeConfig config;
@@ -298,9 +338,15 @@ class _WakeSettingsState implements WakeSettingsState {
     return EqualUnmodifiableMapView(_inputs);
   }
 
+  final Map<WakeField, WakeInputError> _errors;
   @override
   @JsonKey()
-  final bool invalid;
+  Map<WakeField, WakeInputError> get errors {
+    if (_errors is EqualUnmodifiableMapView) return _errors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_errors);
+  }
+
   @override
   final FrameState? device;
 
@@ -319,28 +365,42 @@ class _WakeSettingsState implements WakeSettingsState {
             other is _WakeSettingsState &&
             (identical(other.config, config) || other.config == config) &&
             const DeepCollectionEquality().equals(other.inputs, _inputs) &&
-            (identical(other.invalid, invalid) || other.invalid == invalid) &&
+            const DeepCollectionEquality().equals(other.errors, _errors) &&
             (identical(other.device, device) || other.device == device));
   }
 
   @override
   int get hashCode {
-    return Object.hash(runtimeType, config, const DeepCollectionEquality().hash(_inputs), invalid, device);
+    return Object.hash(
+      runtimeType,
+      config,
+      const DeepCollectionEquality().hash(_inputs),
+      const DeepCollectionEquality().hash(_errors),
+      device,
+    );
   }
 
   @override
   String toString() {
-    return 'WakeSettingsState(config: $config, inputs: $inputs, invalid: $invalid, device: $device)';
+    return 'WakeSettingsState(config: $config, inputs: $inputs, errors: $errors, device: $device)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$WakeSettingsStateCopyWith<$Res> implements $WakeSettingsStateCopyWith<$Res> {
-  factory _$WakeSettingsStateCopyWith(_WakeSettingsState value, $Res Function(_WakeSettingsState) _then) =
-      __$WakeSettingsStateCopyWithImpl;
+abstract mixin class _$WakeSettingsStateCopyWith<$Res>
+    implements $WakeSettingsStateCopyWith<$Res> {
+  factory _$WakeSettingsStateCopyWith(
+    _WakeSettingsState value,
+    $Res Function(_WakeSettingsState) _then,
+  ) = __$WakeSettingsStateCopyWithImpl;
   @override
   @useResult
-  $Res call({NightModeConfig config, Map<WakeField, String> inputs, bool invalid, FrameState? device});
+  $Res call({
+    NightModeConfig config,
+    Map<WakeField, String> inputs,
+    Map<WakeField, WakeInputError> errors,
+    FrameState? device,
+  });
 
   @override
   $NightModeConfigCopyWith<$Res> get config;
@@ -349,7 +409,8 @@ abstract mixin class _$WakeSettingsStateCopyWith<$Res> implements $WakeSettingsS
 }
 
 /// @nodoc
-class __$WakeSettingsStateCopyWithImpl<$Res> implements _$WakeSettingsStateCopyWith<$Res> {
+class __$WakeSettingsStateCopyWithImpl<$Res>
+    implements _$WakeSettingsStateCopyWith<$Res> {
   __$WakeSettingsStateCopyWithImpl(this._self, this._then);
 
   final _WakeSettingsState _self;
@@ -359,7 +420,12 @@ class __$WakeSettingsStateCopyWithImpl<$Res> implements _$WakeSettingsStateCopyW
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? config = null, Object? inputs = null, Object? invalid = null, Object? device = freezed}) {
+  $Res call({
+    Object? config = null,
+    Object? inputs = null,
+    Object? errors = null,
+    Object? device = freezed,
+  }) {
     return _then(
       _WakeSettingsState(
         config: null == config
@@ -370,10 +436,10 @@ class __$WakeSettingsStateCopyWithImpl<$Res> implements _$WakeSettingsStateCopyW
             ? _self._inputs
             : inputs // ignore: cast_nullable_to_non_nullable
                   as Map<WakeField, String>,
-        invalid: null == invalid
-            ? _self.invalid
-            : invalid // ignore: cast_nullable_to_non_nullable
-                  as bool,
+        errors: null == errors
+            ? _self._errors
+            : errors // ignore: cast_nullable_to_non_nullable
+                  as Map<WakeField, WakeInputError>,
         device: freezed == device
             ? _self.device
             : device // ignore: cast_nullable_to_non_nullable

@@ -3559,8 +3559,35 @@ class AppLocalizationsRu extends AppLocalizations {
       'Для расписания MQTT необязателен. Для освещённости включите существующее MQTT-подключение. Неизвестное или устаревшее показание запрещает автопробуждение там, где решение зависит от света. Возраст отсчитывается от получения сообщения, включая сохранённые брокером сообщения (retained) при подключении. По умолчанию срок — 1800 секунд (30 минут). Доступность принимает online/offline либо JSON с полем state. Порог света должен превышать порог темноты.';
 
   @override
-  String get night_invalid_settings =>
-      'Проверьте время ЧЧ:ММ (начало и конец различаются), неотрицательную задержку сна, точные MQTT topics, обязательные topic и поле освещённости, целочисленные пороги (0 ≤ темнота < свет) и положительный возраст показания.';
+  String get night_invalid_settings => 'Исправьте отмеченные поля.';
+
+  @override
+  String get night_error_integer => 'Введите целое число.';
+
+  @override
+  String get night_error_nonnegative => 'Введите целое число не меньше нуля.';
+
+  @override
+  String get night_error_time => 'Введите время в формате ЧЧ:ММ (00:00–23:59).';
+
+  @override
+  String get night_error_same_time => 'Начало и конец ночного интервала должны различаться.';
+
+  @override
+  String get night_error_required => 'Заполните это поле.';
+
+  @override
+  String get night_error_topic => 'Укажите точный MQTT topic без символов #, + и нулевого символа.';
+
+  @override
+  String get night_error_availability_topic =>
+      'Topic доступности должен отличаться от topic освещённости. Если сообщения online/offline не публикуются, оставьте поле пустым.';
+
+  @override
+  String get night_error_light_threshold => 'Порог света должен быть больше порога темноты.';
+
+  @override
+  String get night_error_max_age => 'Введите целое число больше нуля.';
 
   @override
   String get night_device_time => 'Локальное время рамки';

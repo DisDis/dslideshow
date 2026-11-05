@@ -356,6 +356,12 @@ dart run tools/bin/dslideshow_tools.dart coverage merge .local/coverage-full .lo
 
 ## Проверки ночного режима
 
+В каталоге тестов `backend/test/night_mode_test.dart` относится к `hardware`,
+`dslideshow_flutter/test/night_screen_visibility_test.dart` — к `slideshow-media`,
+а `config_app/test/wake_settings_test.dart` — к `settings`.
+Перед выпуском проверяйте полноту каталога вместе с тестами затронутых пакетов:
+`(cd tools && dart test test/testing/groups_test.dart)`.
+
 `backend/test/night_mode_test.dart` проверяет три режима, неизвестную освещённость,
 полночь/границы и коррекцию часов, гистерезис/устаревание, ручной ON с уже отсутствующим
 человеком, утро при непрерывном присутствии и отдельный запрет автопробуждения.
@@ -399,6 +405,8 @@ AND порядок `[темнота, ON]` заканчивается включ�
 В `config_app/test/wake_settings_test.dart` проверяются общий черновик всех полей,
 целочисленные пороги, отклонение дробного ввода и регистрация незавершённого ввода,
 сохранение последнего допустимого MQTT-набора при ошибках редактирования,
+кириллица/пробелы в обоих текстовых MQTT topics и конкретная ошибка совпадения
+topics только у поля доступности без посторонних требований к числам,
 действующие часы/настройки отдельно
 от черновика. В `dslideshow_flutter/test/night_screen_visibility_test.dart` — ранний
 OFF до создания потребителей, начальный сон renderer и пиксели чёрной накладки

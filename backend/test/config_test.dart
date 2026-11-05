@@ -8,11 +8,7 @@ void main() {
     test('missing, null and unsupported frame languages use English', () {
       expect(AppConfig.fromJson({}).language, FrameLanguage.en);
       for (final value in [null, 'de', '', 42, <String, Object?>{}]) {
-        expect(
-          AppConfig.fromJson({'language': value}).language,
-          FrameLanguage.en,
-          reason: 'language=$value',
-        );
+        expect(AppConfig.fromJson({'language': value}).language, FrameLanguage.en, reason: 'language=$value');
       }
     });
 
@@ -26,10 +22,7 @@ void main() {
         expect(config.language, language);
         expect(config.toJson()['language'], jsonValue);
         expect(AppConfig.fromJson(config.toJson()).language, language);
-        expect(
-          config.toStorageJson()['language'],
-          language == FrameLanguage.en ? isNull : jsonValue,
-        );
+        expect(config.toStorageJson()['language'], language == FrameLanguage.en ? isNull : jsonValue);
       }
     });
 
@@ -53,22 +46,29 @@ void main() {
     });
 
     test('parse button', () {
-      final testData = {
-        "action": "SlideshowAction.toggleScreen",
-        "minPressingMs": 3000,
-      };
+      final testData = {"action": "SlideshowAction.toggleScreen", "minPressingMs": 3000};
 
       final _config = SlideShowButtonConfig.fromJson(testData);
       expect(_config.action, SlideshowAction.toggleScreen);
       expect(_config.minPressingMs, 3000);
     });
 
-    test('parse default buttons', () {
-      final testData = <String, Map>{};
-
-      final _config = SlideShowConfig.fromJson(testData);
-      expect(_config.buttons.button0.action, SlideshowAction.showInfo);
-      expect(_config.buttons.button0.minPressingMs, 500);
+    test('parse default button actions and press durations', () {
+      final buttons = SlideShowConfig.fromJson({}).buttons;
+      expect(
+        [
+          (buttons.button0.action, buttons.button0.minPressingMs),
+          (buttons.button1.action, buttons.button1.minPressingMs),
+          (buttons.button2.action, buttons.button2.minPressingMs),
+          (buttons.button3.action, buttons.button3.minPressingMs),
+        ],
+        [
+          (SlideshowAction.showInfo, 300),
+          (SlideshowAction.toggleScreen, 300),
+          (SlideshowAction.showMenu, 300),
+          (SlideshowAction.pause, 200),
+        ],
+      );
     });
 
     group('SlideShowConfig', () {

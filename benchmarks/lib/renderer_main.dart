@@ -109,8 +109,6 @@ class RendererFrontend implements FrontendService {
   }
 
   @override
-  Future<RpcResult> changeScreenLock(bool value) async => const EmptyResult(id: 1);
-  @override
   Future<RpcResult> screenTurn(bool value) async {
     screens.add(value);
     return const EmptyResult(id: 1);

@@ -3533,8 +3533,35 @@ class AppLocalizationsEn extends AppLocalizations {
       'MQTT is optional for the schedule. Enable the existing MQTT connection to use illuminance. Unknown or stale light blocks automatic wake wherever the decision depends on light. Reading age starts at message reception, including retained messages received after connecting. The default lifetime is 1800 seconds (30 minutes). Availability accepts online/offline or JSON with a state field. The light threshold must exceed the dark threshold.';
 
   @override
-  String get night_invalid_settings =>
-      'Check HH:mm times (start and end must differ), nonnegative absence delay, exact MQTT topics, required light topic/field, integer lux thresholds (0 ≤ dark < light) and positive reading age.';
+  String get night_invalid_settings => 'Correct the highlighted fields.';
+
+  @override
+  String get night_error_integer => 'Enter a whole number.';
+
+  @override
+  String get night_error_nonnegative => 'Enter a whole number greater than or equal to zero.';
+
+  @override
+  String get night_error_time => 'Enter a time in HH:mm format (00:00–23:59).';
+
+  @override
+  String get night_error_same_time => 'The night interval must start and end at different times.';
+
+  @override
+  String get night_error_required => 'Fill in this field.';
+
+  @override
+  String get night_error_topic => 'Enter an exact MQTT topic without #, + or null characters.';
+
+  @override
+  String get night_error_availability_topic =>
+      'The availability topic must differ from the illuminance topic. Leave it empty if online/offline messages are not published.';
+
+  @override
+  String get night_error_light_threshold => 'The light threshold must exceed the dark threshold.';
+
+  @override
+  String get night_error_max_age => 'Enter a whole number greater than zero.';
 
   @override
   String get night_device_time => 'Frame local time';

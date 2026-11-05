@@ -374,6 +374,9 @@ EOF; это не отменяет соседние coverage suites при обы
 API и OAuth Яндекса — к `network`, а его экран настройки — к `settings`.
 Публикация медиа, скрытая галерея и Android-источники загрузки входят в `gallery`,
 Android-поиск рамки — в `network`, безопасность Drive RPC — в `tooling-protocol`.
+Ночной режим и управление пробуждением backend входят в `hardware`,
+отображение включения/гашения рамки — в `slideshow-media`,
+а форма настроек пробуждения config_app — в `settings`.
 
 Из корня репозитория:
 

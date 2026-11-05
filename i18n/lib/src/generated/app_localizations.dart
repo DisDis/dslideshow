@@ -6803,8 +6803,62 @@ abstract class AppLocalizations {
   /// No description provided for @night_invalid_settings.
   ///
   /// In en, this message translates to:
-  /// **'Check HH:mm times (start and end must differ), nonnegative absence delay, exact MQTT topics, required light topic/field, integer lux thresholds (0 ≤ dark < light) and positive reading age.'**
+  /// **'Correct the highlighted fields.'**
   String get night_invalid_settings;
+
+  /// No description provided for @night_error_integer.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number.'**
+  String get night_error_integer;
+
+  /// No description provided for @night_error_nonnegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number greater than or equal to zero.'**
+  String get night_error_nonnegative;
+
+  /// No description provided for @night_error_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a time in HH:mm format (00:00–23:59).'**
+  String get night_error_time;
+
+  /// No description provided for @night_error_same_time.
+  ///
+  /// In en, this message translates to:
+  /// **'The night interval must start and end at different times.'**
+  String get night_error_same_time;
+
+  /// No description provided for @night_error_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in this field.'**
+  String get night_error_required;
+
+  /// No description provided for @night_error_topic.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an exact MQTT topic without #, + or null characters.'**
+  String get night_error_topic;
+
+  /// No description provided for @night_error_availability_topic.
+  ///
+  /// In en, this message translates to:
+  /// **'The availability topic must differ from the illuminance topic. Leave it empty if online/offline messages are not published.'**
+  String get night_error_availability_topic;
+
+  /// No description provided for @night_error_light_threshold.
+  ///
+  /// In en, this message translates to:
+  /// **'The light threshold must exceed the dark threshold.'**
+  String get night_error_light_threshold;
+
+  /// No description provided for @night_error_max_age.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number greater than zero.'**
+  String get night_error_max_age;
 
   /// No description provided for @night_device_time.
   ///

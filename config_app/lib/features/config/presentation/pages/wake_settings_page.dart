@@ -1,4 +1,5 @@
 import 'package:config_app/features/config/domain/unsaved_draft_registration.dart';
+import 'package:config_app/features/config/domain/night_mode_settings_validation.dart';
 import 'package:config_app/features/config/presentation/bloc/wake_settings_cubit.dart';
 import 'package:config_app/features/config/presentation/wigdgets/draft_editor_form.dart';
 import 'package:config_app/features/config/presentation/wigdgets/night_mode_details.dart';
@@ -34,7 +35,22 @@ class _WakeSettingsView extends StatelessWidget {
           key: ValueKey('wake-${field.name}'),
           initialValue: state.inputs[field],
           keyboardType: number ? TextInputType.number : TextInputType.text,
-          decoration: InputDecoration(labelText: label),
+          decoration: InputDecoration(
+            labelText: label,
+            errorText: switch (state.errors[field]) {
+              WakeInputError.integer => context.localizations.night_error_integer,
+              WakeInputError.nonnegativeInteger => context.localizations.night_error_nonnegative,
+              WakeInputError.time => context.localizations.night_error_time,
+              WakeInputError.differentTimes => context.localizations.night_error_same_time,
+              WakeInputError.required => context.localizations.night_error_required,
+              WakeInputError.exactTopic => context.localizations.night_error_topic,
+              WakeInputError.differentTopics => context.localizations.night_error_availability_topic,
+              WakeInputError.lightThreshold => context.localizations.night_error_light_threshold,
+              WakeInputError.positiveInteger => context.localizations.night_error_max_age,
+              null => null,
+            },
+            errorMaxLines: 3,
+          ),
           onChanged: (text) => context.read<WakeSettingsCubit>().change(field, text),
         ),
       );

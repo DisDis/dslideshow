@@ -7,16 +7,18 @@ import 'package:logging/logging.dart';
 
 part 'wake_settings_cubit.freezed.dart';
 
-enum WakeField { absence, start, end, topic, valueField, availabilityTopic, darkBelow, lightAbove, maxAge }
-
 @freezed
 sealed class WakeSettingsState with _$WakeSettingsState {
+  const WakeSettingsState._();
+
   const factory WakeSettingsState({
     required NightModeConfig config,
     required Map<WakeField, String> inputs,
-    @Default(false) bool invalid,
+    @Default({}) Map<WakeField, WakeInputError> errors,
     FrameState? device,
   }) = _WakeSettingsState;
+
+  bool get invalid => errors.isNotEmpty;
 }
 
 class WakeSettingsCubit extends Cubit<WakeSettingsState> {
@@ -54,29 +56,49 @@ class WakeSettingsCubit extends Cubit<WakeSettingsState> {
 
   void _commit(WakeSettingsState candidate) {
     final raw = candidate.inputs;
-    try {
-      final absence = int.parse(raw[WakeField.absence]!);
-      if (absence < 0) throw const FormatException('Absence delay must be nonnegative');
-      final config = candidate.config.copyWith(
-        startMinute: NightModeConfig.parseTime(raw[WakeField.start]!),
-        endMinute: NightModeConfig.parseTime(raw[WakeField.end]!),
-        ambientLight: candidate.config.ambientLight.copyWith(
-          topic: raw[WakeField.topic]!.trim(),
-          valueField: raw[WakeField.valueField]!.trim(),
-          availabilityTopic: raw[WakeField.availabilityTopic]!.trim(),
-          darkBelowLux: int.parse(raw[WakeField.darkBelow]!),
-          lightAboveLux: int.parse(raw[WakeField.lightAbove]!),
-          maxAgeSec: int.parse(raw[WakeField.maxAge]!),
-        ),
-      );
-      config.validateForSave();
+    final errors = <WakeField, WakeInputError>{};
+    final numbers = <WakeField, int>{};
+    for (final field in [WakeField.absence, WakeField.darkBelow, WakeField.lightAbove, WakeField.maxAge]) {
+      final value = int.tryParse(raw[field]!);
+      if (value == null) {
+        errors[field] = WakeInputError.integer;
+      } else {
+        numbers[field] = value;
+      }
+    }
+    final times = <WakeField, int>{};
+    for (final field in [WakeField.start, WakeField.end]) {
+      try {
+        times[field] = NightModeConfig.parseTime(raw[field]!);
+      } on FormatException {
+        errors[field] = WakeInputError.time;
+      }
+    }
+    if (errors.isNotEmpty) {
+      emit(candidate.copyWith(errors: errors));
+      return;
+    }
+    final absence = numbers[WakeField.absence]!;
+    if (absence < 0) errors[WakeField.absence] = WakeInputError.nonnegativeInteger;
+    final config = candidate.config.copyWith(
+      startMinute: times[WakeField.start]!,
+      endMinute: times[WakeField.end]!,
+      ambientLight: candidate.config.ambientLight.copyWith(
+        topic: raw[WakeField.topic]!.trim(),
+        valueField: raw[WakeField.valueField]!.trim(),
+        availabilityTopic: raw[WakeField.availabilityTopic]!.trim(),
+        darkBelowLux: numbers[WakeField.darkBelow]!,
+        lightAboveLux: numbers[WakeField.lightAbove]!,
+        maxAgeSec: numbers[WakeField.maxAge]!,
+      ),
+    );
+    errors.addAll(config.validationErrors);
+    if (errors.isEmpty) {
       _draft.nightMode = config;
       _draft.hardware.screenPowerOnTimerSec = absence;
-      emit(candidate.copyWith(config: config, invalid: false));
-    } on FormatException {
-      // Raw invalid text belongs to the editor; shared settings stay valid.
-      emit(candidate.copyWith(invalid: true));
     }
+    // Raw invalid text belongs to the editor; shared settings stay valid.
+    emit(candidate.copyWith(config: errors.isEmpty ? config : candidate.config, errors: errors));
   }
 
   Future<void> _loadDevice(Future<FrameState> Function() read) async {
