@@ -71,9 +71,11 @@ release-lock, отказ ветвей и тестовый DEB) также иск
 ./deb_factory/run_analysis.sh
 ```
 
-Скрипт проверяет `common`, `rpc_serializers_generator`, `backend`, `autover`,
-`autover/example`, `i18n`, `system_metrics_widget`, `dslideshow_flutter`,
+Скрипт проверяет `common`, `rpc_serializers_generator`, `backend`,
+`i18n`, `system_metrics_widget`, `dslideshow_flutter`,
 `config_app`, `benchmarks` и `tools`, не меняя версии и lock-файлы.
+Служебный пакет `autover` и его example исключены из анализа по `AGENTS.md`;
+сам генератор продолжает использоваться для подготовки версии.
 `run_tests.sh` выполняет только тесты; при выпуске анализ и тесты независимы.
 Ошибки и предупреждения отменяют параллельные сборки
 и не допускают упаковку DEB; `info` отображаются и сами по себе сборку не

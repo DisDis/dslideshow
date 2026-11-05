@@ -47,7 +47,7 @@ class BuildPipeline {
   }
 
   static final _log = Logger('build');
-  static const dartPackages = ['common', 'rpc_serializers_generator', 'backend', 'autover', 'autover/example', 'tools'];
+  static const dartPackages = ['common', 'rpc_serializers_generator', 'backend', 'tools'];
   static const flutterPackages = ['i18n', 'system_metrics_widget', 'dslideshow_flutter', 'config_app', 'benchmarks'];
   final Directory root;
   final ProcessSupervisor supervisor;

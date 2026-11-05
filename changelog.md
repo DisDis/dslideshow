@@ -1,5 +1,11 @@
 # Unreleased
 
+# 20.0.0+2 — 2026-11-05
+
+* Confirm both hiding photos and returning them to the slideshow in the gallery
+  and viewer. Show the selected count without listing filenames; cancelling or
+  dismissing the dialog sends no command.
+
 * Redesign frame control as a unified remote with prominent state and embedded
   pause, menu and screen actions. Keep wake restrictions visible, reveal technical
   details on demand and adapt the card to narrow screens and larger text.
@@ -26,9 +32,7 @@
   Show the frame's local time without separate timezone name or UTC offset;
   the frame and its user are assumed to share a timezone. Omit the informative
   manual-wake flag and its panel caption from telemetry.
-  Validate night settings in config_app while editing and before Save;
-  keep backend configuration decoding separate from those checks. Use a plain
-  JsonSerializable AppConfig and JSON snapshots for mutable drafts.
+  Validate night settings in config_app while editing and before Save.
   Reset light hysteresis on expiry even when a new message precedes the next
   timer tick; discard pre-online readings on disconnect. Ignore sensor packets
   without illuminance without refreshing their age or logging a warning.

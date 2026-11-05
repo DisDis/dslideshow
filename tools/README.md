@@ -310,7 +310,9 @@ backend, i18n, системных виджетов, frontend и config_app. Из
 Benchmark bundle, Ambient API,
 coverage и остальные диагностические инструменты проверяются отдельной задачей
 `tools-tests`: она запускает весь пакет `tools`, включая перечисленные проверки.
-Анализаторы по-прежнему проверяют все пакеты. `tools-tests` не меняет версии;
+Анализаторы проверяют все сопровождаемые пакеты; служебный `autover` и его
+example исключены по `AGENTS.md`. Генератор версии при подготовке выпуска сохранён.
+`tools-tests` не меняет версии;
 её можно явно добавить к `tests` или `release`, если нужна полная проверка инструментов.
 Grinder выполняет задачи в указанном порядке: команда
 `(cd tools && dart run tool/grind.dart tools-tests release)` проверит весь `tools`
@@ -478,7 +480,7 @@ Unit-тесты проверяют рабочие расчёты, HTTP, state и
 аппаратная приёмка проводится отдельно по [правилам стенда](../doc/raspberry-pi-benchmarks.md).
 Состав переноса, независимые тестовые данные и локальные результаты сохранены в
 [записи 30.10.2026](../doc/history/grinder-migration-2026-10-30.md).
-Позднее [OpenGL smoke на RaPi5](../benchmarks/reports/grinder-dart-device-2026-10-30/report.md)
+Позднее [OpenGL smoke на RaPi5](https://github.com/DisDis/dslideshow/blob/fee779ffb2a0396f579f67640c30d5f41cb11c13/benchmarks/reports/grinder-dart-device-2026-10-30/report.md)
 проверил новый ARM64 CLI, штатный effect launcher и повторную агрегацию:
 147/147 сценариев, служба восстановлена. Это приёмка конкретного smoke;
 аппаратные OTA/renderer/tracefs в него не входят.

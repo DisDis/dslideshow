@@ -103,7 +103,7 @@ Directory _profileRepository() {
 }
 
 void main() {
-  test('analysis covers all packages and retains diagnostic policy and no-pub', () async {
+  test('analysis covers maintained packages, excludes autover and retains diagnostic policy and no-pub', () async {
     final recorder = _Recorder();
     final root = Directory('/fixture');
     await BuildPipeline(root: root, supervisor: recorder, dartExecutable: 'sdk-dart').analyze();
@@ -111,8 +111,6 @@ void main() {
       'common',
       'rpc_serializers_generator',
       'backend',
-      'autover',
-      'autover/example',
       'tools',
       'i18n',
       'system_metrics_widget',
@@ -209,8 +207,8 @@ void main() {
     addTearDown(pipeline.close);
     final work = pipeline.analyze();
     await firstBatch.future;
-    expect(messages.take(11).every((message) => message.contains('action=queued')), isTrue);
-    expect(messages.where((message) => message.contains('action=queued')), hasLength(11));
+    expect(messages.take(9).every((message) => message.contains('action=queued')), isTrue);
+    expect(messages.where((message) => message.contains('action=queued')), hasLength(9));
     expect(recorder.commands, hasLength(3));
     expect(peak, 3);
     recorder.elapsed = 350;
@@ -220,7 +218,7 @@ void main() {
     }
     await work;
     final starts = messages.where((message) => message.contains('action=dequeued')).toList();
-    expect(starts, hasLength(11));
+    expect(starts, hasLength(9));
     expect(starts.take(3).every((message) => message.contains('queueWaitMs=0 elapsedMs=100')), isTrue);
     expect(starts.skip(3).every((message) => message.contains('queueWaitMs=250 elapsedMs=350')), isTrue);
     expect(peak, 3);
