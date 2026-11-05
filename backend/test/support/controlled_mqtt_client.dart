@@ -20,7 +20,7 @@ class ControlledMqttClient extends MqttServerClient {
   final connecting = Completer<void>();
   final connection = Completer<MqttClientConnectionStatus?>();
   final subscriptions = <(String, MqttQos)>[];
-  final publications = <({String topic, MqttQos qos, String payload})>[];
+  final publications = <({String topic, MqttQos qos, String payload, bool retain})>[];
   int updateListeners = 0;
   int connectCalls = 0;
   int disconnectCalls = 0;
@@ -31,14 +31,10 @@ class ControlledMqttClient extends MqttServerClient {
   MqttClientConnectionStatus get connectionStatus => status;
 
   @override
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get updates =>
-      updateStream ?? messages.stream;
+  Stream<List<MqttReceivedMessage<MqttMessage>>> get updates => updateStream ?? messages.stream;
 
   @override
-  Future<MqttClientConnectionStatus?> connect([
-    String? username,
-    String? password,
-  ]) {
+  Future<MqttClientConnectionStatus?> connect([String? username, String? password]) {
     connectCalls++;
     if (!connecting.isCompleted) connecting.complete();
     return connection.future;
@@ -64,30 +60,20 @@ class ControlledMqttClient extends MqttServerClient {
   }
 
   @override
-  int publishMessage(
-    String topic,
-    MqttQos qualityOfService,
-    typed.Uint8Buffer data, {
-    bool retain = false,
-  }) {
+  int publishMessage(String topic, MqttQos qualityOfService, typed.Uint8Buffer data, {bool retain = false}) {
     final error = publishError;
     if (error != null) throw error;
-    publications.add((
-      topic: topic,
-      qos: qualityOfService,
-      payload: utf8.decode(data),
-    ));
+    publications.add((topic: topic, qos: qualityOfService, payload: utf8.decode(data), retain: retain));
     return publications.length;
   }
 
-  void receive(List<(String, String)> batch) {
+  void receive(List<(String, String)> batch, {bool retained = false}) {
     messages.add([
       for (final (topic, value) in batch)
         MqttReceivedMessage(
           topic,
-          MqttPublishMessage().publishData(
-            (MqttClientPayloadBuilder()..addUTF8String(value)).payload!,
-          ),
+          MqttPublishMessage().publishData((MqttClientPayloadBuilder()..addUTF8String(value)).payload!)
+            ..setRetain(state: retained),
         ),
     ]);
   }
@@ -105,12 +91,7 @@ class CancellationFailureStream<T> extends Stream<T> {
     void Function()? onDone,
     bool? cancelOnError,
   }) => _CancellationFailureSubscription(
-    source.listen(
-      onData,
-      onError: onError,
-      onDone: onDone,
-      cancelOnError: cancelOnError,
-    ),
+    source.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError),
   );
 }
 
@@ -131,11 +112,7 @@ class _CancellationFailureSubscription<T> implements StreamSubscription<T> {
 
 class ControlledMqttApplicationState implements ApplicationStateService {
   ControlledMqttApplicationState() {
-    changes = StreamController.broadcast(
-      sync: true,
-      onListen: () => listeners++,
-      onCancel: () => listeners--,
-    );
+    changes = StreamController.broadcast(sync: true, onListen: () => listeners++, onCancel: () => listeners--);
   }
 
   late final StreamController<ApplicationState> changes;
@@ -149,6 +126,29 @@ class ControlledMqttApplicationState implements ApplicationStateService {
 
   @override
   void update(ApplicationState value) {
+    state = value;
+    changes.add(value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class ControlledMqttScreen implements ScreenService {
+  ControlledMqttScreen() {
+    changes = StreamController.broadcast(sync: true, onListen: () => listeners++, onCancel: () => listeners--);
+  }
+
+  late final StreamController<ScreenState> changes;
+  int listeners = 0;
+
+  @override
+  ScreenState state = const ScreenState(isScreenOn: true, autoWakeEnabled: true, phase: ScreenPhase.on);
+
+  @override
+  Stream<ScreenState> get onStateChanged => changes.stream;
+
+  void update(ScreenState value) {
     state = value;
     changes.add(value);
   }

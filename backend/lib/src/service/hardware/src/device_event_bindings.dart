@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 
 import 'gpio_service.dart';
 import 'screen_service.dart';
+import 'night_mode_policy.dart';
 
 /// Owns device-event subscriptions within the existing backend isolate.
 ///
@@ -20,6 +21,7 @@ class DeviceEventBindings {
     required void Function(bool) onScreenPreparation,
     required void Function(SlideshowAction, bool) onAction,
     required Logger logger,
+    required NightModePolicy nightMode,
   }) {
     _subscriptions.add(
       gpioService.onButtonEvent.listen((event) {
@@ -31,13 +33,12 @@ class DeviceEventBindings {
     _subscriptions.add(
       gpioService.onMotion.listen((event) {
         logger.info('Motion = $event');
-        if (event) {
-          unawaited(screenService.screenOn());
-        } else {
-          screenService.scheduleScreenOff();
-        }
+        screenService.onPresence(event);
       }),
     );
+    nightMode.updateAvailability(mqttService.isAmbientLightAvailable);
+    _subscriptions.add(mqttService.onAmbientLight.listen(nightMode.updateLight));
+    _subscriptions.add(mqttService.onAmbientLightAvailability.listen(nightMode.updateAvailability));
     _subscriptions.add(
       mqttService.onPause.listen((event) {
         logger.info('MQTT: onPause, $event');
@@ -46,9 +47,14 @@ class DeviceEventBindings {
     );
     _subscriptions.add(
       mqttService.onScreen.listen((event) {
-        logger.info('MQTT: onScreenToggle, $event');
-        // Preserve the frontend toggleScreen action's inverted value.
-        onAction(SlideshowAction.toggleScreen, !event);
+        logger.info('MQTT: screen enabled=$event');
+        unawaited(event ? screenService.screenOn() : screenService.screenOff());
+      }),
+    );
+    _subscriptions.add(
+      mqttService.onAutoWake.listen((enabled) {
+        logger.info('MQTT: auto wake enabled=$enabled');
+        screenService.autoWakeEnabled = enabled;
       }),
     );
     _subscriptions.add(
@@ -60,11 +66,7 @@ class DeviceEventBindings {
   }
 
   final _subscriptions = <StreamSubscription<dynamic>>[];
-  Future<void>? _disposeFuture;
-
-  Future<void> dispose() => _disposeFuture ??= _dispose();
-
-  Future<void> _dispose() async {
+  Future<void> dispose() async {
     await Future.wait(_subscriptions.map((subscription) => subscription.cancel()));
   }
 }

@@ -15,6 +15,7 @@ import 'package:logging/logging.dart';
 import 'device_event_bindings.dart';
 import 'frame_state_reader.dart';
 import 'gpio_service.dart';
+import 'night_mode_policy.dart';
 
 class HardwareService implements RpcService {
   static final Logger _log = new Logger('HardwareService');
@@ -32,6 +33,7 @@ class HardwareService implements RpcService {
   final WiFiService _wifiService;
   final ApplicationStateService _applicationStateService;
   final FrameStateReader _frameStateReader;
+  final NightModePolicy _nightMode;
 
   HardwareService({
     required RemoteService frontendService,
@@ -45,6 +47,7 @@ class HardwareService implements RpcService {
     required PowerOffService powerOffService,
     required ApplicationStateService applicationStateService,
     required FrameStateReader frameStateReader,
+    required NightModePolicy nightMode,
   }) : _frontendService = frontendService,
        _storageProviders = storageProviders,
        _gpioService = gpioService,
@@ -55,7 +58,8 @@ class HardwareService implements RpcService {
        _wifiService = wifiService,
        _powerOffService = powerOffService,
        _applicationStateService = applicationStateService,
-       _frameStateReader = frameStateReader {
+       _frameStateReader = frameStateReader,
+       _nightMode = nightMode {
     _init();
   }
 
@@ -80,7 +84,11 @@ class HardwareService implements RpcService {
       onScreenPreparation: screenConfigure,
       onAction: _executeAction,
       logger: _log,
+      nightMode: _nightMode,
     );
+    // Deliver the current value as well as transitions: startup OFF may have
+    // happened before these subscriptions and before frontend routes existed.
+    if (_nightMode.config.enabled) unawaited(screenConfigure(_screenService.isVisible));
     _initFutures.add(_systemInfoService.init());
   }
 
@@ -127,6 +135,7 @@ class HardwareService implements RpcService {
     await storageStatusCancelled;
     await _applicationStateService.dispose();
     await _screenService.dispose();
+    await _nightMode.dispose();
     await _gpioService.release();
     await Future.wait([
       _storageProviders.release(),
@@ -165,8 +174,8 @@ class HardwareService implements RpcService {
         return _executeRestartAppCommand(command as RestartAppCommand);
       case ScreenTurnCommand.TYPE:
         return _executeScreenTurnCommand(command as ScreenTurnCommand);
-      case ScreenLockCommand.TYPE:
-        return _executeScreenLockCommand(command as ScreenLockCommand);
+      case ScreenToggleCommand.TYPE:
+        return _executeScreenToggleCommand(command as ScreenToggleCommand);
       case LEDControlCommand.TYPE:
         return _executeLEDControlCommand(command as LEDControlCommand);
       case GetSystemInfoCommand.TYPE:
@@ -299,17 +308,17 @@ class HardwareService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> _executeScreenLockCommand(ScreenLockCommand command) async {
-    _screenService.isScreenOffLock = command.isLock;
-    return EmptyResult.respond(command);
-  }
-
   Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
     if (command.enabled) {
       unawaited(_screenService.screenOn());
     } else {
       unawaited(_screenService.screenOff());
     }
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executeScreenToggleCommand(ScreenToggleCommand command) async {
+    unawaited(_screenService.toggleScreen());
     return EmptyResult.respond(command);
   }
 

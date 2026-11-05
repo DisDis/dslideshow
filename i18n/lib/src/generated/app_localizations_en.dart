@@ -1251,7 +1251,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Power status reflects the last successful device command, not a physical display measurement.';
 
   @override
-  String get device_screen_lock => 'Manual screen lock';
+  String get device_auto_wake => 'Screen auto wake';
 
   @override
   String get device_turn_on => 'Turn screen on';
@@ -3475,4 +3475,113 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yandex_authorization_denied => 'Access was declined in Yandex.';
+
+  @override
+  String get wake_settings_title => 'Wake and sleep';
+
+  @override
+  String get night_enabled => 'Night mode';
+
+  @override
+  String get night_mode_label => 'Automatic sleep condition';
+
+  @override
+  String get night_schedule_only => 'Schedule only';
+
+  @override
+  String get night_schedule_or_dark => 'Schedule OR darkness';
+
+  @override
+  String get night_schedule_and_dark => 'Schedule AND darkness';
+
+  @override
+  String get night_start => 'Start (HH:mm)';
+
+  @override
+  String get night_end => 'End (HH:mm)';
+
+  @override
+  String get night_absence_seconds => 'Sleep after absence (seconds)';
+
+  @override
+  String get night_use_light => 'Use external MQTT illuminance';
+
+  @override
+  String get night_light_topic => 'Illuminance MQTT topic';
+
+  @override
+  String get night_light_field => 'Illuminance JSON field';
+
+  @override
+  String get night_availability_topic => 'Availability MQTT topic (optional)';
+
+  @override
+  String get night_dark_threshold => 'Dark at or below (lx)';
+
+  @override
+  String get night_light_threshold => 'Light at or above (lx)';
+
+  @override
+  String get night_max_age => 'Maximum reading age (seconds)';
+
+  @override
+  String get night_behavior_help =>
+      'During automatic sleep, motion cannot wake the screen. An explicit ON enables screen auto wake and turns the screen on, including at night; the normal absence timer applies. When the night restriction ends, confirmed presence wakes the screen if auto wake is enabled. Times use the frame\'s local clock. Settings apply after saving and restarting.';
+
+  @override
+  String get night_mqtt_help =>
+      'MQTT is optional for the schedule. Enable the existing MQTT connection to use illuminance. Unknown or stale light blocks automatic wake wherever the decision depends on light. Reading age starts at message reception, including retained messages received after connecting. The default lifetime is 1800 seconds (30 minutes). Availability accepts online/offline or JSON with a state field. The light threshold must exceed the dark threshold.';
+
+  @override
+  String get night_invalid_settings =>
+      'Check HH:mm times (start and end must differ), nonnegative absence delay, exact MQTT topics, required light topic/field, integer lux thresholds (0 ≤ dark < light) and positive reading age.';
+
+  @override
+  String get night_device_time => 'Frame local time';
+
+  @override
+  String get night_active_settings => 'Active settings on the frame';
+
+  @override
+  String get night_next_boundary => 'Next schedule boundary';
+
+  @override
+  String get night_light_status => 'Light source';
+
+  @override
+  String get night_illuminance => 'Last illuminance';
+
+  @override
+  String get night_received_at => 'Light message received (UTC)';
+
+  @override
+  String get night_reason_schedule => 'Automatic wake blocked by schedule';
+
+  @override
+  String get night_reason_dark => 'Automatic wake blocked by darkness';
+
+  @override
+  String get night_reason_both => 'Automatic wake blocked by schedule and darkness';
+
+  @override
+  String get night_reason_unknown => 'Automatic wake blocked: illuminance is unknown';
+
+  @override
+  String get night_wake_allowed => 'Night mode allows automatic wake';
+
+  @override
+  String get night_light_unavailable => 'Unavailable';
+
+  @override
+  String get night_light_stale => 'Stale reading';
+
+  @override
+  String get night_light_dark => 'Dark';
+
+  @override
+  String get night_light_bright => 'Light';
+
+  @override
+  String get night_device_state_help =>
+      'Current frame time and active night settings are available in device telemetry. Saved edits apply after restarting.';
 }

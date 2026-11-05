@@ -38,15 +38,11 @@ void main(List<String> args) async {
       return new GPIOServiceImpl(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(
-        screenService: injector(),
-        gpioService: injector(),
-        storage: injector<Storage>(),
-      );
+      return ApplicationStateService(screenService: injector(), gpioService: injector(), storage: injector<Storage>());
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return MqttService(_config.mqtt, applicationStateService: injector());
+      return MqttService(_config.mqtt, applicationStateService: injector(), screenService: injector());
     });
 
     var config = injector.get<AppConfig>();

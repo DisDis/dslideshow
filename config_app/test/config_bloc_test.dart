@@ -13,10 +13,7 @@ void main() {
 
   setUp(() {
     repository = ControlledPhotoframeRepository();
-    bloc = ConfigBloc(
-      initialState: const ConfigState.initial(),
-      client: repository,
-    );
+    bloc = ConfigBloc(initialState: const ConfigState.initial(), client: repository);
     states = [];
     final subscription = bloc.stream.listen(states.add);
     addTearDown(subscription.cancel);
@@ -43,39 +40,67 @@ void main() {
     expect((bloc.state as ConfigLoadedState).config, same(second));
   });
 
-  test(
-    'invalid effect settings are rejected before sending the draft',
-    () async {
-      final draft = _config(8081);
-      draft.slideshow.effects = EffectsConfig(
-        items: {
-          EffectType.mosaic: const EffectConfig(
-            enabled: true,
-            options: MosaicEffectOptions(gridSize: 99),
-          ),
-        },
-      );
+  test('invalid effect settings are rejected before sending the draft', () async {
+    final draft = _config(8081);
+    draft.slideshow.effects = EffectsConfig(
+      items: {EffectType.mosaic: const EffectConfig(enabled: true, options: MosaicEffectOptions(gridSize: 99))},
+    );
+    bloc.add(ConfigEvent.save(draft));
+    await pumpEventQueue();
+    expect(states, [isA<ConfigErrorState>()]);
+    expect(repository.saved, isEmpty);
+    expect(repository.saves, isEmpty);
+    expect((draft.slideshow.effects.get(EffectType.mosaic).options as MosaicEffectOptions).gridSize, 99);
+  });
+
+  for (final entry in <String, NightModeConfig>{
+    'negative start': const NightModeConfig(startMinute: -1),
+    'start after midnight': const NightModeConfig(startMinute: 1440),
+    'negative end': const NightModeConfig(endMinute: -1),
+    'end after midnight': const NightModeConfig(endMinute: 1440),
+    'equal times': const NightModeConfig(startMinute: 480),
+    'negative darkness threshold': const NightModeConfig(ambientLight: AmbientLightConfig(darkBelowLux: -1)),
+    'equal light thresholds': const NightModeConfig(ambientLight: AmbientLightConfig(lightAboveLux: 5)),
+    'inverted light thresholds': const NightModeConfig(ambientLight: AmbientLightConfig(darkBelowLux: 11)),
+    'zero reading age': const NightModeConfig(ambientLight: AmbientLightConfig(maxAgeSec: 0)),
+    'negative reading age': const NightModeConfig(ambientLight: AmbientLightConfig(maxAgeSec: -1)),
+    'missing light topic': const NightModeConfig(ambientLight: AmbientLightConfig(enabled: true)),
+    'blank light field': const NightModeConfig(
+      ambientLight: AmbientLightConfig(enabled: true, topic: 'bedroom', valueField: ' '),
+    ),
+    'light topic wildcard': const NightModeConfig(ambientLight: AmbientLightConfig(topic: 'bedroom/#')),
+    'availability topic wildcard': const NightModeConfig(
+      ambientLight: AmbientLightConfig(availabilityTopic: 'bedroom/+'),
+    ),
+    'null character in topic': const NightModeConfig(ambientLight: AmbientLightConfig(topic: 'bedroom\u0000')),
+    'identical topics': const NightModeConfig(
+      ambientLight: AmbientLightConfig(topic: 'bedroom', availabilityTopic: 'bedroom'),
+    ),
+  }.entries) {
+    test('rejects ${entry.key} before sending night settings and allows correction', () async {
+      final draft = _config(8081)..nightMode = entry.value;
       bloc.add(ConfigEvent.save(draft));
       await pumpEventQueue();
       expect(states, [isA<ConfigErrorState>()]);
       expect(repository.saved, isEmpty);
       expect(repository.saves, isEmpty);
-      expect(
-        (draft.slideshow.effects.get(EffectType.mosaic).options
-                as MosaicEffectOptions)
-            .gridSize,
-        99,
-      );
-    },
-  );
+      expect(draft.nightMode, same(entry.value));
+
+      draft.nightMode = const NightModeConfig();
+      bloc.add(ConfigEvent.save(draft));
+      await pumpEventQueue();
+      expect(bloc.state, isA<ConfigSavingState>());
+      repository.saves.single.complete(const WSResultOk(id: 1));
+      await pumpEventQueue();
+      expect(bloc.state, isA<ConfigLoadedState>());
+      expect(repository.saved.single.nightMode, draft.nightMode);
+    });
+  }
 
   test('acknowledges save before publishing its isolated snapshot', () async {
     final draft = _config(8081);
     draft.slideshow.effects = EffectsConfig(
-      items: {
-        EffectType.fade: EffectConfig.defaults(EffectType.fade)
-            .copyWith(enabled: true),
-      },
+      items: {EffectType.fade: EffectConfig.defaults(EffectType.fade).copyWith(enabled: true)},
     );
 
     bloc.add(ConfigEvent.save(draft));
@@ -85,10 +110,7 @@ void main() {
     final sent = repository.saved.single;
     expect(sent, isNot(same(draft)));
     expect(sent.webServer, isNot(same(draft.webServer)));
-    expect(
-      sent.slideshow.effects.items,
-      isNot(same(draft.slideshow.effects.items)),
-    );
+    expect(sent.slideshow.effects.items, isNot(same(draft.slideshow.effects.items)));
 
     draft.webServer.port = 9090;
     draft.slideshow.effects = draft.slideshow.effects.put(
@@ -98,11 +120,7 @@ void main() {
     repository.saves.single.complete(const WSResultOk(id: 1));
     await pumpEventQueue();
 
-    expect(states, [
-      isA<ConfigSavingState>(),
-      isA<ConfigSavedState>(),
-      isA<ConfigLoadedState>(),
-    ]);
+    expect(states, [isA<ConfigSavingState>(), isA<ConfigSavedState>(), isA<ConfigLoadedState>()]);
     final acknowledged = (bloc.state as ConfigLoadedState).config;
     expect(acknowledged, same(sent));
     expect(acknowledged.webServer.port, 8081);
@@ -110,38 +128,29 @@ void main() {
     expect(draft.webServer.port, 9090);
   });
 
-  test(
-    'save isolates nested camera settings while waiting for acknowledgement',
-    () async {
-      final draft = _config(8081);
-      draft.slideshow.specialScreens.add(
-        SpecialScreenConfig(
-          id: 'cameras',
-          type: SpecialScreenType.cameras,
-          options: CamerasScreenOptions(
-            cameras: [CameraConfig(id: 'front', url: 'https://cam/front')],
-          ),
+  test('save isolates nested camera settings while waiting for acknowledgement', () async {
+    final draft = _config(8081);
+    draft.slideshow.specialScreens.add(
+      SpecialScreenConfig(
+        id: 'cameras',
+        type: SpecialScreenType.cameras,
+        options: CamerasScreenOptions(
+          cameras: [CameraConfig(id: 'front', url: 'https://cam/front')],
         ),
-      );
-      final cameras =
-          (draft.slideshow.specialScreens.single.options
-                  as CamerasScreenOptions)
-              .cameras;
-      bloc.add(ConfigEvent.save(draft));
-      await pumpEventQueue();
-      cameras.single.url = 'https://cam/edited';
-      cameras.add(CameraConfig(id: 'back', url: 'https://cam/back'));
-      repository.saves.single.complete(const WSResultOk(id: 1));
-      await pumpEventQueue();
-      final acknowledged = (bloc.state as ConfigLoadedState).config;
-      final savedCameras =
-          (acknowledged.slideshow.specialScreens.single.options
-                  as CamerasScreenOptions)
-              .cameras;
-      expect(savedCameras.single.url, 'https://cam/front');
-      expect(cameras, hasLength(2));
-    },
-  );
+      ),
+    );
+    final cameras = (draft.slideshow.specialScreens.single.options as CamerasScreenOptions).cameras;
+    bloc.add(ConfigEvent.save(draft));
+    await pumpEventQueue();
+    cameras.single.url = 'https://cam/edited';
+    cameras.add(CameraConfig(id: 'back', url: 'https://cam/back'));
+    repository.saves.single.complete(const WSResultOk(id: 1));
+    await pumpEventQueue();
+    final acknowledged = (bloc.state as ConfigLoadedState).config;
+    final savedCameras = (acknowledged.slideshow.specialScreens.single.options as CamerasScreenOptions).cameras;
+    expect(savedCameras.single.url, 'https://cam/front');
+    expect(cameras, hasLength(2));
+  });
 
   test('ignores duplicate loads and saves while loading', () async {
     bloc.add(const ConfigEvent.load());
@@ -196,10 +205,7 @@ void main() {
     await pumpEventQueue();
 
     expect(bloc.state, isA<ConfigErrorState>());
-    expect(
-      (bloc.state as ConfigErrorState).message,
-      contains('download failed'),
-    );
+    expect((bloc.state as ConfigErrorState).message, contains('download failed'));
     bloc.add(const ConfigEvent.load());
     await pumpEventQueue();
     repository.loads.last.complete(_config(8082));
@@ -236,9 +242,7 @@ void main() {
     for (final fails in [false, true]) {
       test('closing during ${save ? 'save' : 'load'} ignores a late '
           '${fails ? 'error' : 'result'}', () async {
-        bloc.add(
-          save ? ConfigEvent.save(_config(8081)) : const ConfigEvent.load(),
-        );
+        bloc.add(save ? ConfigEvent.save(_config(8081)) : const ConfigEvent.load());
         await pumpEventQueue();
         expect(states, hasLength(1));
 

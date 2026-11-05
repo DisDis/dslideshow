@@ -25,6 +25,9 @@ import 'package:go_router/go_router.dart';
 import 'package:config_app/src/browser_exit_guard/browser_exit_guard.dart';
 
 import 'special_screens_page.dart';
+import 'wake_settings_page.dart';
+
+import 'package:config_app/features/device/data/device_repository.dart';
 
 enum ConfigDiscardAction { leave, reload, reset }
 
@@ -490,6 +493,26 @@ class ConfigScreenState extends State<ConfigScreen> {
         ),
 
         // --- Hardware Section (Пример быстрого редактирования на месте) ---
+        SettingsSection(
+          title: context.localizations.wake_settings_title,
+          icon: Icons.bedtime_outlined,
+          children: [
+            SettingsTileNavigation(
+              title: context.localizations.night_enabled,
+              subtitle: _editingConfig!.nightMode.enabled
+                  ? '${NightModeConfig.formatTime(_editingConfig!.nightMode.startMinute)}–${NightModeConfig.formatTime(_editingConfig!.nightMode.endMinute)}'
+                  : context.localizations.disabled_label,
+              icon: Icons.bedtime_outlined,
+              onTap: () => _edit(
+                WakeSettingsPage(
+                  config: _editingConfig!,
+                  registerDraft: _registerLocalDraft,
+                  readDevice: sl.isRegistered<DeviceRepository>() ? sl<DeviceRepository>().getState : null,
+                ),
+              ),
+            ),
+          ],
+        ),
         SettingsSection(
           title: context.localizations.hardware_title,
           icon: Icons.developer_board,

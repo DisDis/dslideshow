@@ -40,8 +40,8 @@ class FrontendHarness {
   late final FrontendRpcService rpc;
   Future<void>? _closeFuture;
 
-  FrontendHarness({Duration refreshInterval = const Duration(minutes: 1)}) {
-    frontend = FrontendService(AppConfig.fromJson({}), backend, ota, systemInfoInterval: refreshInterval);
+  FrontendHarness({Duration refreshInterval = const Duration(minutes: 1), AppConfig? config}) {
+    frontend = FrontendService(config ?? AppConfig.fromJson({}), backend, ota, systemInfoInterval: refreshInterval);
     status = SlideshowStatusBloc(frontendService: frontend, config: SlideShowConfig.fromJson({}));
     final controller = FrameFrontendController(
       statusBloc: status,

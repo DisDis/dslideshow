@@ -4,6 +4,8 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/storage_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../service/hardware/src/night_mode_policy.dart';
+
 part 'frame_commands.freezed.dart';
 part 'frame_commands.g.dart';
 
@@ -64,7 +66,7 @@ sealed class FrameState with _$FrameState {
     required DateTime sampledAt,
     @JsonKey(unknownEnumValue: FramePresence.unknown) @Default(FramePresence.unknown) FramePresence presence,
     DateTime? presenceObservedAt,
-    required bool isScreenLocked,
+    required bool autoWakeEnabled,
     // Last successfully commanded power, unknown after a hardware failure.
     required bool? isScreenOn,
     @JsonKey(unknownEnumValue: FrameScreenPhase.unknown)
@@ -72,6 +74,8 @@ sealed class FrameState with _$FrameState {
     FrameScreenPhase screenPhase,
     @JsonKey(unknownEnumValue: StorageStatusEnum.off) @Default(StorageStatusEnum.off) StorageStatusEnum storageStatus,
     required String backendVersion,
+    required NightModeState nightMode,
+    required DateTime deviceLocalTime,
     FrameFrontendState? frontend,
   }) = _FrameState;
 

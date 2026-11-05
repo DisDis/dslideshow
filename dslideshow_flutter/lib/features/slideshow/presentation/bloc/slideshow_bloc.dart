@@ -41,7 +41,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
   StreamSubscription? _onPauseSubscription;
 
   SlideshowBloc({required this.frontendService, required this.config, required this.statusBloc})
-    : super(const SlideshowState(effect: Effect.fadeEffect)) {
+    : super(SlideshowState(effect: Effect.fadeEffect, isScreenLocked: !frontendService.isScreenVisible)) {
     // 1. Инициализация
     on<SlideshowInitEvent>(_onInit);
 
@@ -91,6 +91,7 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
         add(SlideshowScreenStatePreparationEvent(enabled));
       }
     });
+    add(SlideshowScreenStatePreparationEvent(frontendService.isScreenVisible));
 
     _onPauseSubscription = statusBloc.onPause.listen((isPaused) {
       if (!_closing && !isClosed) {
@@ -232,17 +233,16 @@ class SlideshowBloc extends Bloc<SlideshowEvent, SlideshowState> {
 
   void _onScreenStatePreparation(SlideshowScreenStatePreparationEvent event, Emitter<SlideshowState> emit) {
     final locked = !event.enabled;
-    if (state.isScreenLocked == locked && state.fadeOut == locked) return;
+    if (state.isScreenLocked == locked) return;
     if (locked) {
       scheduler.setActive(false);
       _displayTimer?.cancel();
-      emit(state.copyWith(fadeOut: true, isScreenLocked: true));
+      emit(state.copyWith(isScreenLocked: true));
       return;
     }
 
-    // ON means either fade cancellation or a completed hardware wake. Never
-    // delay this reversal: an old delayed ON could override a newer OFF.
-    emit(state.copyWith(fadeOut: false, isScreenLocked: false));
+    // ON resumes playback after fade cancellation or a completed hardware wake.
+    emit(state.copyWith(isScreenLocked: false));
     scheduler.setActive(!state.isPaused);
     if (!state.isPaused || state.currentSlide == null) {
       if (state.phase == SlideshowPhase.ready) {

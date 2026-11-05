@@ -19,3 +19,5 @@ export 'package:dslideshow_backend/src/command/ota_commands.dart';
 export 'package:dslideshow_backend/src/command/wifi_commands.dart';
 export 'package:dslideshow_backend/src/command/frontend_commands.dart';
 export 'package:dslideshow_backend/src/command/frame_commands.dart';
+
+export 'src/service/hardware/src/night_mode_policy.dart' show NightModeState, AmbientLightStatus, AutomaticSleepReason;

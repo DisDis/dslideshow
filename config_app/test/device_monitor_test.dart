@@ -528,10 +528,12 @@ FrameState _frame({bool paused = false}) => FrameState(
   sampledAt: _sampledAt,
   presence: FramePresence.present,
   presenceObservedAt: _sampledAt,
-  isScreenLocked: false,
+  autoWakeEnabled: true,
   isScreenOn: true,
   screenPhase: FrameScreenPhase.on,
   backendVersion: 'backend-test',
+  nightMode: const NightModeState(),
+  deviceLocalTime: _sampledAt,
   frontend: FrameFrontendState(
     isPaused: paused,
     isMenu: false,

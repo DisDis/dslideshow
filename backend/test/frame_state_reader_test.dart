@@ -13,9 +13,11 @@ import 'helpers/capture_logs.dart';
 
 class _Screen implements ScreenService {
   @override
+  NightModeState get nightModeState => const NightModeState();
+  @override
   ScreenPhase phase = ScreenPhase.on;
   @override
-  bool isScreenOffLock = false;
+  bool autoWakeEnabled = true;
   @override
   bool? confirmedPower = true;
 
@@ -87,7 +89,7 @@ void main() {
     final response = fixture.reader.read();
     fixture.application.observedPresence = false;
     fixture.application.presenceObservedAt = DateTime.utc(2026, 10, 27, 10);
-    fixture.screen.isScreenOffLock = true;
+    fixture.screen.autoWakeEnabled = false;
     fixture.screen.confirmedPower = null;
     fixture.screen.phase = ScreenPhase.failed;
     fixture.application.state = const ApplicationState(storageStatus: StorageStatusEnum.error);
@@ -95,7 +97,7 @@ void main() {
     final state = await response;
     expect(state.presence, FramePresence.absent);
     expect(state.presenceObservedAt, fixture.application.presenceObservedAt);
-    expect(state.isScreenLocked, isTrue);
+    expect(state.autoWakeEnabled, isFalse);
     expect(state.isScreenOn, isNull);
     expect(state.screenPhase, FrameScreenPhase.failed);
     expect(state.storageStatus, StorageStatusEnum.error);

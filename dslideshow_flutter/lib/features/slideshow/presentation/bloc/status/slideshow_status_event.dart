@@ -2,7 +2,8 @@ part of 'slideshow_status_bloc.dart';
 
 @freezed
 sealed class SlideshowStatusEvent with _$SlideshowStatusEvent {
-  const factory SlideshowStatusEvent.toggleScreenLock(bool value) = SlideshowScreenLockEvent;
+  const factory SlideshowStatusEvent.screenTurn(bool value) = SlideshowScreenTurnEvent;
+  const factory SlideshowStatusEvent.toggleScreen() = SlideshowScreenToggleEvent;
   const factory SlideshowStatusEvent.pause(bool value) = SlideshowPauseEvent;
   const factory SlideshowStatusEvent.showMenu(bool value) = SlideshowMenuEvent;
   const factory SlideshowStatusEvent.showInfo(bool value) = SlideshowSystemInfoEvent;

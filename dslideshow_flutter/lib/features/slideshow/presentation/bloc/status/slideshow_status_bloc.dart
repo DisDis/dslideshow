@@ -24,8 +24,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
   final SlideShowConfig config;
   StreamSubscription? _onActionSubscription;
   StreamSubscription<StorageStatusEnum>? _storageStatusSubscription;
-  int _screenLockGeneration = 0;
-  SlideshowScreenLockEvent? _screenAction;
+  SlideshowStatusEvent? _screenAction;
   final _waits = CancellableWaits();
   final _actionCompletions = Map<SlideshowStatusEvent, Completer<void>>.identity();
 
@@ -65,30 +64,10 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
       }
       _completeAction(event);
     });
-    on<SlideshowScreenLockEvent>((event, emit) async {
-      if (_waits.isClosed) return;
-      final previous = _screenAction;
-      if (previous != null) {
-        _completeAction(previous, error: StateError('Screen control was superseded'));
-      }
-      _screenAction = event;
-      final generation = ++_screenLockGeneration;
-      emit(state.copyWith(isScreenLock: event.value));
-      try {
-        final lockResult = await _waits.wait(frontendService.changeScreenLock(event.value));
-        if (emit.isDone || generation != _screenLockGeneration) return;
-        _checkScreenResponse(lockResult);
-        final screenResult = await _waits.wait(frontendService.screenTurn(!event.value));
-        if (emit.isDone || generation != _screenLockGeneration) return;
-        _checkScreenResponse(screenResult);
-        // Both backend RPCs accepted the intent. Native fade/power continues
-        // independently and its actual phase is reported by the backend.
-        _completeAction(event);
-      } catch (error, stack) {
-        _log.warning('Unable to apply screen control type=${error.runtimeType}', error, stack);
-        _completeAction(event, error: error, stack: stack);
-      }
-    });
+    on<SlideshowScreenTurnEvent>(
+      (event, emit) => _applyScreenControl(event, emit, () => frontendService.screenTurn(event.value)),
+    );
+    on<SlideshowScreenToggleEvent>((event, emit) => _applyScreenControl(event, emit, frontendService.screenToggle));
     _onActionSubscription = frontendService.onAction.listen((actionP) => executeAction(actionP.action, actionP.param));
     _storageStatusSubscription = frontendService.onStorageStatusChanged.listen((status) {
       if (!_waits.isClosed) add(SlideshowChangeStorageStatusEvent(status));
@@ -125,7 +104,7 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     final SlideshowStatusEvent event = switch (action) {
       SlideshowAction.pause => SlideshowPauseEvent(value),
       SlideshowAction.showMenu => SlideshowMenuEvent(value),
-      SlideshowAction.toggleScreen => SlideshowScreenLockEvent(value),
+      SlideshowAction.toggleScreen => SlideshowScreenTurnEvent(value),
       _ => throw ArgumentError.value(action, 'action', 'Unsupported remote action'),
     };
     final completion = Completer<void>();
@@ -140,6 +119,30 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     if (result is RpcErrorResult) throw RpcErrorResultException(result);
     if (result is! EmptyResult) {
       throw StateError('Unexpected screen control response');
+    }
+  }
+
+  Future<void> _applyScreenControl(
+    SlideshowStatusEvent event,
+    Emitter<SlideshowStatusState> emit,
+    Future<RpcResult> Function() send,
+  ) async {
+    if (_waits.isClosed) return;
+    final previous = _screenAction;
+    if (previous != null) {
+      _completeAction(previous, error: StateError('Screen control was superseded'));
+    }
+    _screenAction = event;
+    try {
+      final screenResult = await _waits.wait(send());
+      if (emit.isDone) return;
+      _checkScreenResponse(screenResult);
+      // The backend accepted the intent. Native fade/power continues
+      // independently and its actual phase is reported by the backend.
+      _completeAction(event);
+    } catch (error, stack) {
+      _log.warning('Unable to apply screen control type=${error.runtimeType}', error, stack);
+      _completeAction(event, error: error, stack: stack);
     }
   }
 
@@ -179,13 +182,12 @@ class SlideshowStatusBloc extends Bloc<SlideshowStatusEvent, SlideshowStatusStat
     add(SlideshowPauseEvent(tmp));
   }
 
-  Future _toggleScreen([bool? value]) async {
-    add(SlideshowScreenLockEvent(value ?? !state.isScreenLock));
+  void _toggleScreen([bool? value]) {
+    add(value == null ? const SlideshowScreenToggleEvent() : SlideshowScreenTurnEvent(value));
   }
 
   @override
   Future<void> close() async {
-    _screenLockGeneration++;
     _waits.close();
     for (final completion in _actionCompletions.values) {
       completion.completeError(StateError('Slideshow status is closed'));

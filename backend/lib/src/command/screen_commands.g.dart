@@ -20,16 +20,12 @@ Map<String, dynamic> _$ScreenTurnCommandToJson(_ScreenTurnCommand instance) =>
       'type': instance.type,
     };
 
-_ScreenLockCommand _$ScreenLockCommandFromJson(Map<String, dynamic> json) =>
-    _ScreenLockCommand(
-      isLock: json['isLock'] as bool,
+_ScreenToggleCommand _$ScreenToggleCommandFromJson(Map<String, dynamic> json) =>
+    _ScreenToggleCommand(
       id: (json['id'] as num).toInt(),
-      type: json['type'] as String? ?? ScreenLockCommand.TYPE,
+      type: json['type'] as String? ?? ScreenToggleCommand.TYPE,
     );
 
-Map<String, dynamic> _$ScreenLockCommandToJson(_ScreenLockCommand instance) =>
-    <String, dynamic>{
-      'isLock': instance.isLock,
-      'id': instance.id,
-      'type': instance.type,
-    };
+Map<String, dynamic> _$ScreenToggleCommandToJson(
+  _ScreenToggleCommand instance,
+) => <String, dynamic>{'id': instance.id, 'type': instance.type};

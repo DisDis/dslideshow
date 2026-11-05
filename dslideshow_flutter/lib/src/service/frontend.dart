@@ -15,6 +15,8 @@ class FrontendService implements RpcService {
   final _waits = CancellableWaits();
   Timer? _systemInfoTimer;
   final _screenStateChangePreparation = StreamController<bool>.broadcast();
+  bool _isScreenVisible = true;
+  bool get isScreenVisible => _isScreenVisible;
   final _onSystemInfoUpdate = StreamController<SystemInfo>.broadcast();
   final _onButtonEvent = StreamController<ButtonEvent>.broadcast();
 
@@ -46,6 +48,8 @@ class FrontendService implements RpcService {
     this._otaService, {
     Duration systemInfoInterval = const Duration(minutes: 1),
   }) {
+    // The backend supplies its current decision before the first visible frame.
+    _isScreenVisible = !config.nightMode.enabled;
     if (systemInfoInterval <= Duration.zero) {
       throw ArgumentError.value(systemInfoInterval, 'systemInfoInterval', 'Must be positive');
     }
@@ -163,6 +167,7 @@ class FrontendService implements RpcService {
   }
 
   Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
+    _isScreenVisible = command.enabled;
     _screenStateChangePreparation.add(command.enabled);
     return EmptyResult.respond(command);
   }
@@ -224,19 +229,16 @@ class FrontendService implements RpcService {
     return EmptyResult.respond(command);
   }
 
-  Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async {
-    return _sendBackend(ScreenLockCommand(id: RpcCommand.generateId(), isLock: isScreenLockNewValue));
-  }
-
   Future emulatePushButton(ButtonType buttonType, [int durationMs = 1000]) async {
     return _sendBackend(
       EmulatePushButtonCommand(id: RpcCommand.generateId(), button: buttonType, durationMs: durationMs),
     );
   }
 
-  Future screenTurn(bool value) async {
-    return _sendBackend(ScreenTurnCommand(id: RpcCommand.generateId(), enabled: value));
-  }
+  Future<RpcResult> screenTurn(bool value) =>
+      _sendBackend(ScreenTurnCommand(id: RpcCommand.generateId(), enabled: value));
+
+  Future<RpcResult> screenToggle() => _sendBackend(ScreenToggleCommand(id: RpcCommand.generateId()));
 
   Future powerOff() async {
     return _sendBackend(PowerOffCommand(id: RpcCommand.generateId()));

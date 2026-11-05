@@ -8,6 +8,7 @@ import 'package:dslideshow_flutter/main.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:dslideshow_flutter/src/service/screen_visibility_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,30 +27,18 @@ Future<RouteBloc> mountFrameOtaApp(
   final frontend =
       otaFrontend ??
       (OtaTestFrontend()
-        ..infoResult.complete(
-          const OTAInfo(
-            status: OTAStatus.ready,
-            uploadingPercent: 0,
-            code: '83472',
-          ),
-        )
+        ..infoResult.complete(const OTAInfo(status: OTAStatus.ready, uploadingPercent: 0, code: '83472'))
         ..systemResult.complete(otaSystemInfo()));
   final routes = RouteBloc();
-  final status = SlideshowStatusBloc(
-    frontendService: frontend,
-    config: appConfig.slideshow,
-  );
+  final status = SlideshowStatusBloc(frontendService: frontend, config: appConfig.slideshow);
+  final visibility = ScreenVisibilityCubit(frontend);
   injector.pushNewScope(
     init: (scope) {
       scope.registerSingleton<AppConfig>(appConfig);
       scope.registerSingleton<FrontendService>(frontend);
       scope.registerSingleton<RouteBloc>(routes);
       scope.registerFactory<SlideshowBloc>(
-        () => SlideshowBloc(
-          frontendService: frontend,
-          config: appConfig.slideshow,
-          statusBloc: status,
-        ),
+        () => SlideshowBloc(frontendService: frontend, config: appConfig.slideshow, statusBloc: status),
       );
       scope.registerFactory<MainMenuBloc>(
         () => MainMenuBloc(
@@ -60,11 +49,7 @@ Future<RouteBloc> mountFrameOtaApp(
         ),
       );
       scope.registerFactory<ButtonsHintBloc>(
-        () => ButtonsHintBloc(
-          frontendService: frontend,
-          statusBloc: status,
-          appConfig: appConfig,
-        ),
+        () => ButtonsHintBloc(frontendService: frontend, statusBloc: status, appConfig: appConfig),
       );
     },
   );
@@ -74,6 +59,7 @@ Future<RouteBloc> mountFrameOtaApp(
   addTearDown(() async {
     await tester.pumpWidget(const SizedBox.shrink());
     await status.close();
+    await visibility.close();
     await routes.close();
     await frontend.close();
     await injector.popScope();
@@ -89,10 +75,9 @@ Future<RouteBloc> mountFrameOtaApp(
       providers: [
         BlocProvider<RouteBloc>.value(value: routes),
         BlocProvider<SlideshowStatusBloc>.value(value: status),
+        BlocProvider<ScreenVisibilityCubit>.value(value: visibility),
       ],
-      child: boundaryKey == null
-          ? app
-          : RepaintBoundary(key: boundaryKey, child: app),
+      child: boundaryKey == null ? app : RepaintBoundary(key: boundaryKey, child: app),
     ),
   );
   await tester.pump();

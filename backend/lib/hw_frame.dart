@@ -22,6 +22,8 @@ import 'package:dslideshow_common/log.dart';
 
 import 'src/service/hardware/src/gpio_service.dart';
 import 'src/service/hardware/src/frame_state_reader.dart';
+import 'src/service/hardware/src/night_mode_policy.dart';
+import 'src/service/hardware/src/screen_power.dart';
 import 'src/service/hardware/src/gpio_service_instance_stub.dart'
     if (dart.library.io) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_hw.dart'
     if (dart.library.js) 'package:dslideshow_backend/src/service/hardware/src/gpio_service_instance_web.dart';
@@ -81,9 +83,16 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
       final _config = injector.get<AppConfig>();
       return getGPIOService(_config.hardware);
     });
+    injector.registerSingleton<ScreenPower>(SystemScreenPower(config.hardware));
+    injector.registerSingleton<NightModePolicy>(NightModePolicy(config.nightMode));
     injector.registerLazySingleton<ScreenService>(() {
       final _config = injector.get<AppConfig>();
-      return ScreenService(_config.hardware, preparationOffTime: Duration(milliseconds: _config.slideshow.fadeTimeMs));
+      return ScreenService(
+        _config.hardware,
+        power: injector<ScreenPower>(),
+        nightMode: injector<NightModePolicy>(),
+        preparationOffTime: Duration(milliseconds: _config.slideshow.fadeTimeMs),
+      );
     });
     injector.registerLazySingleton<WiFiService>(() {
       final _config = injector.get<AppConfig>();
@@ -91,7 +100,12 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return MqttService(_config.mqtt, applicationStateService: injector());
+      return MqttService(
+        _config.mqtt,
+        applicationStateService: injector(),
+        screenService: injector<ScreenService>(),
+        ambientLight: _config.nightMode.ambientLight,
+      );
     });
     injector.registerLazySingleton<SystemInfoService>(() {
       final _config = injector.get<AppConfig>();
@@ -126,6 +140,7 @@ void serviceMain(Map<String, dynamic> handshakeMessage) async {
         powerOffService: injector(),
         applicationStateService: injector(),
         frameStateReader: injector(),
+        nightMode: injector<NightModePolicy>(),
       );
     });
     Logger.root.level = config.log.levelHwFrame;

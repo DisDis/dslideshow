@@ -12,7 +12,53 @@ import 'package:test/test.dart';
 import 'support/hardware_fixture.dart';
 import 'helpers/capture_logs.dart';
 
+import 'package:dslideshow_backend/src/service/hardware/src/night_mode_policy.dart';
+
 void main() {
+  test(
+    'two toggle RPCs alternate accepted wake intent before UI becomes visible',
+    () => captureLogs((records) async {
+      fakeAsync((time) {
+        final f = HardwareFixture();
+        f.hardware.executeCommand(const ScreenTurnCommand(id: 901, enabled: false));
+        time.elapse(const Duration(seconds: 2));
+        final results = <RpcResult>[];
+        f.hardware.executeCommand(const ScreenToggleCommand(id: 902)).then(results.add);
+        time.flushMicrotasks();
+        expect(f.screen.phase, ScreenPhase.wakingUp);
+        expect(f.screen.isVisible, isFalse);
+        f.hardware.executeCommand(const ScreenToggleCommand(id: 903)).then(results.add);
+        time.elapse(const Duration(seconds: 5));
+        expect(results.map((result) => result.id), [902, 903]);
+        expect(results.every((result) => result is EmptyResult), isTrue);
+        expect(f.screen.phase, ScreenPhase.off);
+        expect(f.power.calls, [false, true, false]);
+        expect(f.remote.screenCommands.map((command) => command.enabled), [false]);
+        expect(
+          records
+              .where((record) => record.message.startsWith('Screen toggle enabled='))
+              .map((record) => record.message),
+          ['Screen toggle enabled=true', 'Screen toggle enabled=false'],
+        );
+        f.dispose(time);
+      });
+    }),
+  );
+
+  test('night startup delivers current OFF even when transition preceded frontend subscriptions', () {
+    fakeAsync((time) {
+      final now = DateTime(2026, 11, 1, 23);
+      final policy = NightModePolicy(const NightModeConfig(enabled: true), now: () => now.add(time.elapsed));
+      final fixture = HardwareFixture.withNightMode(policy);
+      time.flushMicrotasks();
+      expect(fixture.remote.screenCommands.map((c) => c.enabled), [false]);
+      fixture.gpio.motion.add(true);
+      time.elapse(const Duration(seconds: 3));
+      expect(fixture.screen.phase, ScreenPhase.off);
+      expect(fixture.power.calls, [false]);
+      fixture.dispose(time);
+    });
+  });
   test('GPIO button fields reach the frontend through the bindings', () async {
     final fixture = HardwareFixture();
     addTearDown(() async {
@@ -27,7 +73,7 @@ void main() {
     expect(command.durationMs, 875);
   });
 
-  test('MQTT actions preserve values and the screen inversion', () async {
+  test('MQTT pause/menu preserve values and screen commands act directly on hardware', () async {
     final fixture = HardwareFixture();
     addTearDown(() async {
       await fixture.close();
@@ -47,13 +93,13 @@ void main() {
       }),
       [
         (SlideshowAction.pause, true),
-        (SlideshowAction.toggleScreen, false),
         (SlideshowAction.showMenu, true),
         (SlideshowAction.pause, false),
-        (SlideshowAction.toggleScreen, true),
         (SlideshowAction.showMenu, false),
       ],
     );
+    expect(fixture.screen.phase, ScreenPhase.fadingOut);
+    expect(fixture.screen.autoWakeEnabled, isTrue);
   });
 
   test('dispose detaches queued device events before releasing services', () async {
@@ -66,6 +112,7 @@ void main() {
     fixture.gpio.motion.add(false);
     fixture.mqtt.pause.add(true);
     fixture.mqtt.screen.add(true);
+    fixture.mqtt.autoWake.add(false);
     fixture.mqtt.menu.add(true);
     final closing = fixture.close();
     await closing;
@@ -74,9 +121,11 @@ void main() {
     expect(fixture.gpio.motion.hasListener, isFalse);
     expect(fixture.mqtt.pause.hasListener, isFalse);
     expect(fixture.mqtt.screen.hasListener, isFalse);
+    expect(fixture.mqtt.autoWake.hasListener, isFalse);
     expect(fixture.mqtt.menu.hasListener, isFalse);
     expect(fixture.mqtt.pause.isClosed, isTrue);
     expect(fixture.mqtt.screen.isClosed, isTrue);
+    expect(fixture.mqtt.autoWake.isClosed, isTrue);
     expect(fixture.mqtt.menu.isClosed, isTrue);
     expect(fixture.storage.released, isTrue);
     expect(fixture.systemInfo.released, isTrue);
@@ -124,22 +173,61 @@ void main() {
     });
   });
 
-  test('manual lock RPC wins over GPIO and direct ON until explicitly unlocked', () {
+  test('MQTT auto-wake OFF does not turn off an active screen and blocks a later GPIO wake', () {
     fakeAsync((time) {
       final f = HardwareFixture();
-      f.hardware.executeCommand(ScreenLockCommand(id: 1, isLock: true));
+      f.mqtt.autoWake.add(false);
+      time.flushMicrotasks();
+      expect(f.screen.autoWakeEnabled, isFalse);
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(f.power.calls, isEmpty);
+      f.mqtt.screen.add(false);
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.fadingOut);
       f.gpio.motion.add(true);
-      f.hardware.executeCommand(ScreenTurnCommand(id: 2, enabled: true));
-      time.elapse(const Duration(seconds: 2));
+      time.elapse(const Duration(seconds: 1));
+      expect(f.screen.phase, ScreenPhase.off);
+      time.elapse(const Duration(seconds: 4));
       expect(f.power.calls, [false]);
       expect(f.remote.screenCommands.map((c) => c.enabled), [false]);
-      f.hardware.executeCommand(ScreenLockCommand(id: 3, isLock: false));
-      f.hardware.executeCommand(ScreenTurnCommand(id: 4, enabled: true));
+      f.mqtt.autoWake.add(true);
       time.flushMicrotasks();
+      expect(f.screen.autoWakeEnabled, isTrue);
       expect(f.power.calls, [false, true]);
       expect(f.remote.screenCommands.map((c) => c.enabled), [false]);
       time.elapse(ScreenService.wakeUpDelay);
       expect(f.remote.screenCommands.map((c) => c.enabled), [false, true]);
+      f.dispose(time);
+    });
+  });
+
+  test('RPC and MQTT ON re-enable auto wake and turn on the screen during night restriction', () {
+    fakeAsync((time) {
+      final start = DateTime(2026, 11, 1, 23);
+      final policy = NightModePolicy(const NightModeConfig(enabled: true), now: () => start.add(time.elapsed));
+      final f = HardwareFixture.withNightMode(policy);
+      f.gpio.motion.add(true);
+      time.elapse(const Duration(seconds: 2));
+      expect(f.screen.phase, ScreenPhase.off);
+      expect(f.screen.nightModeState.automaticWakeBlocked, isTrue);
+
+      f.screen.autoWakeEnabled = false;
+      f.hardware.executeCommand(const ScreenTurnCommand(id: 71, enabled: true));
+      time.elapse(const Duration(seconds: 4));
+      expect(f.screen.autoWakeEnabled, isTrue);
+      expect(f.screen.phase, ScreenPhase.on);
+      f.hardware.executeCommand(const ScreenTurnCommand(id: 72, enabled: false));
+      time.elapse(const Duration(seconds: 2));
+      expect(f.screen.autoWakeEnabled, isTrue);
+      expect(f.screen.phase, ScreenPhase.off);
+
+      f.mqtt.autoWake.add(false);
+      time.flushMicrotasks();
+      f.mqtt.screen.add(true);
+      time.elapse(const Duration(seconds: 4));
+      expect(f.screen.autoWakeEnabled, isTrue);
+      expect(f.screen.phase, ScreenPhase.on);
+      expect(f.power.calls, [false, true, false, true]);
       f.dispose(time);
     });
   });

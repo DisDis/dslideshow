@@ -16,32 +16,21 @@ class SystemScreenPower implements ScreenPower {
   final Future<ProcessResult> Function(String script) _runScript;
   final Dpms? Function() _getDpms;
 
-  SystemScreenPower(
-    this.config, {
-    Future<ProcessResult> Function(String script)? runScript,
-    Dpms? Function()? getDpms,
-  }) : _runScript = runScript ?? _run,
-       _getDpms = getDpms ?? (() => Dpms.instance);
+  SystemScreenPower(this.config, {Future<ProcessResult> Function(String script)? runScript, Dpms? Function()? getDpms})
+    : _runScript = runScript ?? _run,
+      _getDpms = getDpms ?? (() => Dpms.instance);
 
-  static Future<ProcessResult> _run(String script) =>
-      Process.run(script, const [], runInShell: true);
+  static Future<ProcessResult> _run(String script) => Process.run(script, const [], runInShell: true);
 
   @override
   Future<void> setPower(bool enabled) async {
-    final script = enabled
-        ? config.screenPowerOnScript
-        : config.screenPowerOffScript;
+    final script = enabled ? config.screenPowerOnScript : config.screenPowerOffScript;
     Object? scriptError;
     StackTrace? scriptStack;
     try {
       final result = await _runScript(script);
       if (result.exitCode != 0) {
-        throw ProcessException(
-          script,
-          const [],
-          '${result.stderr}',
-          result.exitCode,
-        );
+        throw ProcessException(script, const [], '${result.stderr}', result.exitCode);
       }
     } catch (error, stack) {
       scriptError = error;
@@ -53,11 +42,7 @@ class SystemScreenPower implements ScreenPower {
       // tvservice may be unavailable on modern KMS systems. Still try DPMS;
       // a failing DPMS request must not be reported as a confirmed modeset.
       if (scriptError != null) {
-        _log.warning(
-          'Legacy screen script failed; trying DPMS',
-          scriptError,
-          scriptStack,
-        );
+        _log.warning('Legacy screen script failed; trying DPMS', scriptError, scriptStack);
       }
       dpms.setMode(enabled ? PowerMode.on : PowerMode.off);
     } else if (scriptError != null) {

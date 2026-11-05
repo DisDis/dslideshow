@@ -8,6 +8,7 @@ import 'package:config_app/injection_container.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/storage_status.dart';
 import 'package:flutter/material.dart';
+import 'package:config_app/features/config/presentation/wigdgets/night_mode_details.dart';
 import 'package:intl/intl.dart';
 
 enum DeviceSection { telemetry, controls }
@@ -209,7 +210,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
               : l.device_screen_off,
         ),
         _Detail(l.device_screen_phase, _phase(frame.screenPhase)),
-        _Detail(l.device_screen_lock, frame.isScreenLocked ? l.enabled_label : l.disabled_label),
+        _Detail(l.device_auto_wake, frame.autoWakeEnabled ? l.enabled_label : l.disabled_label),
+        NightModeDetails(frame: frame),
         Text(l.device_screen_power_help, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
@@ -220,7 +222,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     final frontend = frame.frontend;
     final available = _monitor.canControl && frontend != null;
     final slideshow = available && frontend.page == FramePage.slideshow;
-    final turnOn = frame.isScreenLocked || frame.isScreenOn != true;
+    final turnOn = frame.isScreenOn != true;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

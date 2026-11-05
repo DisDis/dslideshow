@@ -11,6 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TestFrontend implements FrontendService {
   @override
+  bool isScreenVisible = true;
+  @override
   StorageStatusEnum get storageStatus => StorageStatusEnum.off;
   @override
   Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
@@ -18,9 +20,6 @@ class TestFrontend implements FrontendService {
   final screens = StreamController<bool>.broadcast();
   final actions = StreamController<ActionWithParam>.broadcast();
   final screenTurns = <bool>[];
-  final lockChanges = <bool>[];
-  final locks = <Completer<RpcResult>>[];
-  bool holdLocks = false;
   Completer<void>? turn;
   Completer<MediaItem>? media;
   Future<Object?> Function()? onStorageNext;
@@ -48,17 +47,6 @@ class TestFrontend implements FrontendService {
     final read = onReadStorageCurrent;
     if (read != null) return read();
     return media == null ? MediaItem.empty : await media!.future;
-  }
-
-  @override
-  Future<RpcResult> changeScreenLock(bool value) async {
-    lockChanges.add(value);
-    if (holdLocks) {
-      final completion = Completer<RpcResult>();
-      locks.add(completion);
-      return completion.future;
-    }
-    return const EmptyResult(id: 1);
   }
 
   @override

@@ -4,7 +4,6 @@ part of 'slideshow_status_bloc.dart';
 sealed class SlideshowStatusState with _$SlideshowStatusState {
   const factory SlideshowStatusState({
     @Default(true) bool hasInternet,
-    @Default(false) bool isScreenLock,
     @Default(StorageStatusEnum.done) StorageStatusEnum storageStatus,
     @Default(false) bool isDebug,
     @Default(false) bool isMenu,

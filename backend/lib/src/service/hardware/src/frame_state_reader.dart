@@ -28,15 +28,16 @@ class FrameStateReader {
   Future<FrameState> read() async {
     final frontend = await _readFrontendState();
     final presence = _applicationStateService.observedPresence;
+    final now = DateTime.now();
     return FrameState(
-      sampledAt: DateTime.now().toUtc(),
+      sampledAt: now.toUtc(),
       presence: presence == null
           ? FramePresence.unknown
           : presence
           ? FramePresence.present
           : FramePresence.absent,
       presenceObservedAt: _applicationStateService.presenceObservedAt,
-      isScreenLocked: _screenService.isScreenOffLock,
+      autoWakeEnabled: _screenService.autoWakeEnabled,
       isScreenOn: _screenService.confirmedPower,
       screenPhase: switch (_screenService.phase) {
         ScreenPhase.on => FrameScreenPhase.on,
@@ -50,6 +51,8 @@ class FrameStateReader {
         ScreenPhase.disposed => FrameScreenPhase.unknown,
       },
       backendVersion: ApplicationInfo.backendVersion,
+      nightMode: _screenService.nightModeState,
+      deviceLocalTime: now,
       storageStatus: _applicationStateService.state.storageStatus,
       frontend: frontend,
     );

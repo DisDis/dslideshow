@@ -32,6 +32,7 @@ import 'package:dslideshow_flutter/src/route_bloc.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:dslideshow_flutter/src/service/frame_frontend_controller.dart';
 import 'package:dslideshow_flutter/src/service/frontend_rpc_service.dart';
+import 'package:dslideshow_flutter/src/service/screen_visibility_cubit.dart';
 
 import 'src/injector.dart';
 import 'src/frame_language.dart';
@@ -109,6 +110,10 @@ void main() async {
     injector.registerSingleton<SlideshowStatusBloc>(statusBloc, dispose: (bloc) => bloc.close());
     injector.registerSingleton<FrameFrontendController>(frameController);
     injector.registerSingleton<FrontendService>(frontendService, dispose: (service) => service.dispose());
+    injector.registerSingleton<ScreenVisibilityCubit>(
+      ScreenVisibilityCubit(frontendService),
+      dispose: (cubit) => cubit.close(),
+    );
     final frontendRpcService = FrontendRpcService(frontendService: frontendService, frameController: frameController);
     injector.registerSingleton<FrontendRpcService>(frontendRpcService);
     frontendService.onSystemInfoUpdate.listen(frameController.updateSystemInfo);
@@ -166,6 +171,7 @@ void _runFlutter(FrontendService frontendService) {
       providers: [
         BlocProvider<RouteBloc>.value(value: injector()),
         BlocProvider<SlideshowStatusBloc>.value(value: injector()),
+        BlocProvider<ScreenVisibilityCubit>.value(value: injector()),
       ],
       child: const MainApp(),
     ),
@@ -193,14 +199,17 @@ class MainApp extends StatelessWidget {
                   BlocProvider<MainMenuBloc>(lazy: false, create: (context) => injector<MainMenuBloc>()),
                   BlocProvider<ButtonsHintBloc>(create: (context) => injector<ButtonsHintBloc>()),
                 ],
-                child: const SlideShowPage(),
+                child: ScreenVisibility(
+                  fadeDuration: Duration(milliseconds: injector<AppConfig>().slideshow.fadeTimeMs),
+                  child: const SlideShowPage(),
+                ),
               );
             case RoutePage.config:
-              return const ConfigPage();
+              return const ScreenVisibility(child: ConfigPage());
             case RoutePage.ota:
-              return OTAPage();
+              return ScreenVisibility(child: OTAPage());
             case RoutePage.welcome:
-              return const WelcomePage();
+              return const ScreenVisibility(child: WelcomePage());
           }
         },
       ),

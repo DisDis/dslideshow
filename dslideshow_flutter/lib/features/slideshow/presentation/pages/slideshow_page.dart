@@ -10,7 +10,6 @@ import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slidesho
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/slideshow_state.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/bloc/status/slideshow_status_bloc.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/debug_widget.dart';
-import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fade_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/fixed_animation_controller.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/slideshow_loader_widget.dart';
 import 'package:dslideshow_flutter/features/slideshow/presentation/widgets/state_notify_widget.dart';
@@ -42,7 +41,7 @@ class SlideShowPage extends StatelessWidget {
           // Рендеринг слайдшоу (Stateful часть для анимаций)
           _SlideshowRenderer(sessionFactory: sessionFactory),
 
-          // Оверлеи (Инфо, Меню, Дебаг, Fade)
+          // Оверлеи (Инфо, Меню, Дебаг)
           const _SlideshowOverlays(),
 
           // Хедер
@@ -96,7 +95,6 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
   static final Logger _log = Logger('_SlideshowRendererState');
 
   late FixedAnimationController _effectController;
-  late AnimationController _fadeController; // Для Screen Lock
 
   SlideSession? _current;
   SlideSession? _next;
@@ -130,13 +128,6 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
         context.read<SlideshowBloc>().add(const SlideshowTransitionCompleteEvent());
       }
     });
-
-    _fadeController = AnimationController(
-      duration: Duration(milliseconds: _appConfig.slideshow.fadeTimeMs),
-      // A renderer created while asleep must wake from black, not opacity 0.
-      value: slideshow.state.fadeOut ? 1 : 0,
-      vsync: this,
-    );
   }
 
   @override
@@ -147,7 +138,6 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
     }
     _retired.clear();
     _effectController.dispose();
-    _fadeController.dispose();
     super.dispose();
   }
 
@@ -171,14 +161,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
         }
         _updateActivity(state);
         final animate = !state.isScreenLocked && (!state.isPaused || state.currentSlide == null);
-        // 1. Логика затемнения экрана (Screen Lock)
-        if (state.fadeOut) {
-          _fadeController.forward();
-        } else {
-          _fadeController.reverse();
-        }
-
-        // 2. Логика Precache (Загрузка изображения)
+        // Логика Precache (Загрузка изображения)
         if ((phaseChanged || (waking && state.nextSlide is SpecialSlide)) &&
             state.phase == SlideshowPhase.precaching &&
             state.nextSlide != null) {
@@ -188,7 +171,7 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
           }
         }
 
-        // 3. Логика запуска Транзакции
+        // Логика запуска Транзакции
         if (phaseChanged && state.phase == SlideshowPhase.transition) {
           _startTransition(state, size);
         } else if (state.phase == SlideshowPhase.transition) {
@@ -208,22 +191,10 @@ class _SlideshowRendererState extends State<_SlideshowRenderer> with TickerProvi
         return prev.phase != curr.phase;
       },
       builder: (context, state) {
-        return Stack(
-          children: [
-            // Основной контент
-            SizedBox(
-              width: size.width,
-              height: size.height,
-              // Если идет транзакция, показываем transitionWidget (где крутится анимация),
-              // иначе просто текущий виджет.
-              child: state.phase == SlideshowPhase.transition
-                  ? _transitionWidget
-                  : _current?.view ?? slideShowLoaderWidget,
-            ),
-
-            // Fade Widget (Черный экран поверх)
-            FadeWidget(animation: _fadeController),
-          ],
+        return SizedBox(
+          width: size.width,
+          height: size.height,
+          child: state.phase == SlideshowPhase.transition ? _transitionWidget : _current?.view ?? slideShowLoaderWidget,
         );
       },
     );

@@ -4,6 +4,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/frame_state_reader.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/night_mode_policy.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/version.dart';
 import 'package:fake_async/fake_async.dart';
@@ -63,7 +64,8 @@ class FrameFixture {
     final config = AppConfig.fromJson({
       'hardware': {'screenPowerOnTimerSec': 10},
     });
-    screen = ScreenService(config.hardware, power: power);
+    final nightMode = NightModePolicy(config.nightMode);
+    screen = ScreenService(config.hardware, power: power, nightMode: nightMode);
     final providers = createStorageProviderRegistry(
       selectedType: StorageType.DiskStorage,
       factories: {StorageType.DiskStorage: () => FakeStorage()},
@@ -80,6 +82,7 @@ class FrameFixture {
       wifiService: UnusedWiFi(),
       powerOffService: UnusedPowerOff(),
       applicationStateService: application,
+      nightMode: nightMode,
       frameStateReader: FrameStateReader(
         frontendService: remote,
         screenService: screen,
@@ -144,7 +147,7 @@ void main() {
     expect(state.backendVersion, ApplicationInfo.backendVersion);
     expect(state.frontend!.frontendVersion, 'running.frontend');
     expect(state.isScreenOn, isTrue);
-    expect(state.isScreenLocked, isFalse);
+    expect(state.autoWakeEnabled, isTrue);
     expect(state.screenPhase, FrameScreenPhase.on);
     for (final present in [false, true]) {
       f.gpio.motion.add(present);
@@ -156,14 +159,15 @@ void main() {
     }
   });
 
-  test('snapshot reports transitions, manual lock and failed power as unknown', () {
+  test('snapshot reports transitions, disabled auto wake and failed power as unknown', () {
     fakeAsync((time) {
       final f = FrameFixture();
       final snapshots = <FrameState>[];
-      f.screen.isScreenOffLock = true;
+      f.screen.autoWakeEnabled = false;
+      f.screen.screenOff();
       f.snapshot().then(snapshots.add);
       time.flushMicrotasks();
-      expect(snapshots.single.isScreenLocked, isTrue);
+      expect(snapshots.single.autoWakeEnabled, isFalse);
       expect(snapshots.single.isScreenOn, isTrue);
       expect(snapshots.single.screenPhase, FrameScreenPhase.fadingOut);
       f.power.fail = true;

@@ -23,7 +23,8 @@ import 'package:go_router/go_router.dart';
 FrameState _frame({
   bool paused = false,
   bool menu = false,
-  bool locked = false,
+  bool screenOn = true,
+  bool autoWakeEnabled = true,
   FramePage page = FramePage.slideshow,
   bool frontendAvailable = true,
   FramePresence presence = FramePresence.present,
@@ -32,10 +33,12 @@ FrameState _frame({
   sampledAt: DateTime.utc(2040, 1, 2, 3, 4, 5),
   presence: presence,
   presenceObservedAt: DateTime.utc(2040, 1, 2, 3),
-  isScreenLocked: locked,
-  isScreenOn: !locked,
-  screenPhase: locked ? FrameScreenPhase.off : FrameScreenPhase.on,
+  autoWakeEnabled: autoWakeEnabled,
+  isScreenOn: screenOn,
+  screenPhase: screenOn ? FrameScreenPhase.on : FrameScreenPhase.off,
   backendVersion: 'remote-backend-42',
+  nightMode: const NightModeState(),
+  deviceLocalTime: DateTime.utc(2040, 1, 2, 3, 4, 5),
   storageStatus: storageStatus,
   frontend: frontendAvailable
       ? FrameFrontendState(
@@ -133,7 +136,8 @@ class _Repository extends DeviceRepository {
     state = _frame(
       paused: control == FrameControl.pause ? enabled : state.frontend!.isPaused,
       menu: control == FrameControl.menu ? enabled : state.frontend!.isMenu,
-      locked: control == FrameControl.screen ? !enabled : state.isScreenLocked,
+      screenOn: control == FrameControl.screen ? enabled : state.isScreenOn == true,
+      autoWakeEnabled: control == FrameControl.screen && enabled ? true : state.autoWakeEnabled,
     );
     return state;
   }
@@ -312,10 +316,12 @@ void main() {
       FrameState(
         sampledAt: known.sampledAt,
         presence: known.presence,
-        isScreenLocked: false,
+        autoWakeEnabled: true,
         isScreenOn: null,
         screenPhase: FrameScreenPhase.failed,
         backendVersion: known.backendVersion,
+        nightMode: known.nightMode,
+        deviceLocalTime: known.deviceLocalTime,
         frontend: known.frontend,
       ),
     );
@@ -326,6 +332,24 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('device-screen')));
     await tester.pumpAndSettle();
     expect(repository.commands, [(FrameControl.screen, true)]);
+    await close(tester, repository);
+  });
+
+  testWidgets('disabled auto wake does not change the current screen action', (tester) async {
+    final repository = _Repository(_frame(autoWakeEnabled: false));
+    final monitor = DeviceMonitor(repository, telemetry: false);
+    await tester.pumpWidget(_app(monitor, DeviceSection.controls, locale: const Locale('en')));
+    await tester.pumpAndSettle();
+    expect(find.text('Turn screen off'), findsOneWidget);
+    expect(find.text('Screen auto wake'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('device-screen')));
+    await tester.pumpAndSettle();
+    expect(repository.commands, [(FrameControl.screen, false)]);
+    expect(monitor.frame!.autoWakeEnabled, isFalse);
+    await tester.tap(find.byKey(const ValueKey('device-screen')));
+    await tester.pumpAndSettle();
+    expect(repository.commands.last, (FrameControl.screen, true));
+    expect(monitor.frame!.autoWakeEnabled, isTrue);
     await close(tester, repository);
   });
 

@@ -5,6 +5,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/frame_state_reader.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/night_mode_policy.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage_type.dart' as media;
@@ -79,8 +80,15 @@ class FakeRemote implements RemoteService {
 }
 
 class FakeMqtt implements MqttService {
+  @override
+  bool get isAmbientLightAvailable => false;
+  @override
+  Stream<AmbientLightReading> get onAmbientLight => const Stream.empty();
+  @override
+  Stream<bool> get onAmbientLightAvailability => const Stream.empty();
   final pause = StreamController<bool>.broadcast();
   final screen = StreamController<bool>.broadcast();
+  final autoWake = StreamController<bool>.broadcast();
   final menu = StreamController<bool>.broadcast();
   Future<void>? _closing;
   @override
@@ -88,9 +96,12 @@ class FakeMqtt implements MqttService {
   @override
   Stream<bool> get onScreen => screen.stream;
   @override
+  Stream<bool> get onAutoWake => autoWake.stream;
+  @override
   Stream<bool> get onMenu => menu.stream;
   @override
-  Future<void> close() => _closing ??= Future.wait<void>([pause.close(), screen.close(), menu.close()]);
+  Future<void> close() =>
+      _closing ??= Future.wait<void>([pause.close(), screen.close(), autoWake.close(), menu.close()]);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -154,11 +165,17 @@ class HardwareFixture {
   Future<void>? _closing;
   final bool _usesDefaultStorage;
   HardwareFixture({WiFiService? wifi, StorageProviderRegistry? storageProviders})
-    : _usesDefaultStorage = storageProviders == null {
+    : this.withNightMode(NightModePolicy(const NightModeConfig()), wifi: wifi, storageProviders: storageProviders);
+
+  HardwareFixture.withNightMode(
+    NightModePolicy nightMode, {
+    WiFiService? wifi,
+    StorageProviderRegistry? storageProviders,
+  }) : _usesDefaultStorage = storageProviders == null {
     final config = AppConfig.fromJson({
       'hardware': {'screenPowerOnTimerSec': 1},
     });
-    screen = ScreenService(config.hardware, power: power);
+    screen = ScreenService(config.hardware, power: power, nightMode: nightMode);
     final providers =
         storageProviders ??
         createStorageProviderRegistry(
@@ -177,6 +194,7 @@ class HardwareFixture {
       wifiService: wifi ?? UnusedWiFi(),
       powerOffService: UnusedPowerOff(),
       applicationStateService: application,
+      nightMode: nightMode,
       frameStateReader: FrameStateReader(
         frontendService: remote,
         screenService: screen,
@@ -200,12 +218,14 @@ class HardwareFixture {
       expect(done, isTrue);
       expect(mqtt.pause.isClosed, isTrue);
       expect(mqtt.screen.isClosed, isTrue);
+      expect(mqtt.autoWake.isClosed, isTrue);
       expect(mqtt.menu.isClosed, isTrue);
       expect(gpio.released, isTrue);
       if (_usesDefaultStorage) expect(storage.released, isTrue);
       expect(systemInfo.released, isTrue);
       expect(gpio.motion.hasListener, isFalse);
       expect(mqtt.screen.hasListener, isFalse);
+      expect(mqtt.autoWake.hasListener, isFalse);
       expect(time.pendingTimers, isEmpty);
     });
   }

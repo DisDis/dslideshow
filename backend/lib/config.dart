@@ -13,6 +13,10 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'src/service/hardware/src/night_mode_config.dart';
+export 'src/service/hardware/src/night_mode_config.dart';
+
 import 'package:dslideshow_backend/src/service/slideshow/slideshow_config.dart';
 import 'package:dslideshow_backend/src/service/slideshow/welcome_config.dart';
 
@@ -52,6 +56,8 @@ class AppConfig {
   GalleryConfig gallery;
   @JsonKey(fromJson: _parseMQTT)
   MqttConfig mqtt;
+  @JsonKey(fromJson: _parseNightMode)
+  NightModeConfig nightMode;
   @JsonKey(fromJson: _parseStorages)
   StoragesConfig storages;
   @JsonKey(fromJson: _parseOTA)
@@ -70,6 +76,7 @@ class AppConfig {
     required this.webServer,
     this.gallery = const GalleryConfig(),
     required this.mqtt,
+    required this.nightMode,
     required this.storages,
     required this.wifi,
     required this.ota,
@@ -132,6 +139,9 @@ class AppConfig {
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return new HardwareConfig.fromJson(dataV);
   }
+
+  static NightModeConfig _parseNightMode(dynamic data) =>
+      NightModeConfig.fromJson(data is Map<String, dynamic> ? data : <String, dynamic>{});
 
   static LogConfig _parseLog(dynamic data) {
     _log.info("- parsing 'log'");

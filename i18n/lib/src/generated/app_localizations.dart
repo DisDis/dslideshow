@@ -2486,11 +2486,11 @@ abstract class AppLocalizations {
   /// **'Power status reflects the last successful device command, not a physical display measurement.'**
   String get device_screen_power_help;
 
-  /// No description provided for @device_screen_lock.
+  /// No description provided for @device_auto_wake.
   ///
   /// In en, this message translates to:
-  /// **'Manual screen lock'**
-  String get device_screen_lock;
+  /// **'Screen auto wake'**
+  String get device_auto_wake;
 
   /// No description provided for @device_turn_on.
   ///
@@ -6691,6 +6691,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Access was declined in Yandex.'**
   String get yandex_authorization_denied;
+
+  /// No description provided for @wake_settings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake and sleep'**
+  String get wake_settings_title;
+
+  /// No description provided for @night_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode'**
+  String get night_enabled;
+
+  /// No description provided for @night_mode_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic sleep condition'**
+  String get night_mode_label;
+
+  /// No description provided for @night_schedule_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule only'**
+  String get night_schedule_only;
+
+  /// No description provided for @night_schedule_or_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule OR darkness'**
+  String get night_schedule_or_dark;
+
+  /// No description provided for @night_schedule_and_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule AND darkness'**
+  String get night_schedule_and_dark;
+
+  /// No description provided for @night_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start (HH:mm)'**
+  String get night_start;
+
+  /// No description provided for @night_end.
+  ///
+  /// In en, this message translates to:
+  /// **'End (HH:mm)'**
+  String get night_end;
+
+  /// No description provided for @night_absence_seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep after absence (seconds)'**
+  String get night_absence_seconds;
+
+  /// No description provided for @night_use_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Use external MQTT illuminance'**
+  String get night_use_light;
+
+  /// No description provided for @night_light_topic.
+  ///
+  /// In en, this message translates to:
+  /// **'Illuminance MQTT topic'**
+  String get night_light_topic;
+
+  /// No description provided for @night_light_field.
+  ///
+  /// In en, this message translates to:
+  /// **'Illuminance JSON field'**
+  String get night_light_field;
+
+  /// No description provided for @night_availability_topic.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability MQTT topic (optional)'**
+  String get night_availability_topic;
+
+  /// No description provided for @night_dark_threshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark at or below (lx)'**
+  String get night_dark_threshold;
+
+  /// No description provided for @night_light_threshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Light at or above (lx)'**
+  String get night_light_threshold;
+
+  /// No description provided for @night_max_age.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum reading age (seconds)'**
+  String get night_max_age;
+
+  /// No description provided for @night_behavior_help.
+  ///
+  /// In en, this message translates to:
+  /// **'During automatic sleep, motion cannot wake the screen. An explicit ON enables screen auto wake and turns the screen on, including at night; the normal absence timer applies. When the night restriction ends, confirmed presence wakes the screen if auto wake is enabled. Times use the frame\'s local clock. Settings apply after saving and restarting.'**
+  String get night_behavior_help;
+
+  /// No description provided for @night_mqtt_help.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT is optional for the schedule. Enable the existing MQTT connection to use illuminance. Unknown or stale light blocks automatic wake wherever the decision depends on light. Reading age starts at message reception, including retained messages received after connecting. The default lifetime is 1800 seconds (30 minutes). Availability accepts online/offline or JSON with a state field. The light threshold must exceed the dark threshold.'**
+  String get night_mqtt_help;
+
+  /// No description provided for @night_invalid_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Check HH:mm times (start and end must differ), nonnegative absence delay, exact MQTT topics, required light topic/field, integer lux thresholds (0 ≤ dark < light) and positive reading age.'**
+  String get night_invalid_settings;
+
+  /// No description provided for @night_device_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame local time'**
+  String get night_device_time;
+
+  /// No description provided for @night_active_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Active settings on the frame'**
+  String get night_active_settings;
+
+  /// No description provided for @night_next_boundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Next schedule boundary'**
+  String get night_next_boundary;
+
+  /// No description provided for @night_light_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Light source'**
+  String get night_light_status;
+
+  /// No description provided for @night_illuminance.
+  ///
+  /// In en, this message translates to:
+  /// **'Last illuminance'**
+  String get night_illuminance;
+
+  /// No description provided for @night_received_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Light message received (UTC)'**
+  String get night_received_at;
+
+  /// No description provided for @night_reason_schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic wake blocked by schedule'**
+  String get night_reason_schedule;
+
+  /// No description provided for @night_reason_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic wake blocked by darkness'**
+  String get night_reason_dark;
+
+  /// No description provided for @night_reason_both.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic wake blocked by schedule and darkness'**
+  String get night_reason_both;
+
+  /// No description provided for @night_reason_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic wake blocked: illuminance is unknown'**
+  String get night_reason_unknown;
+
+  /// No description provided for @night_wake_allowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode allows automatic wake'**
+  String get night_wake_allowed;
+
+  /// No description provided for @night_light_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get night_light_unavailable;
+
+  /// No description provided for @night_light_stale.
+  ///
+  /// In en, this message translates to:
+  /// **'Stale reading'**
+  String get night_light_stale;
+
+  /// No description provided for @night_light_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get night_light_dark;
+
+  /// No description provided for @night_light_bright.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get night_light_bright;
+
+  /// No description provided for @night_device_state_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Current frame time and active night settings are available in device telemetry. Saved edits apply after restarting.'**
+  String get night_device_state_help;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -39,15 +39,11 @@ void main(List<String> args) async {
       return new GPIOServiceImpl(_config.hardware);
     });
     injector.registerLazySingleton<ApplicationStateService>(() {
-      return ApplicationStateService(
-        screenService: injector(),
-        gpioService: injector(),
-        storage: injector<Storage>(),
-      );
+      return ApplicationStateService(screenService: injector(), gpioService: injector(), storage: injector<Storage>());
     });
     injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
-      return new MqttService(_config.mqtt, applicationStateService: injector());
+      return new MqttService(_config.mqtt, applicationStateService: injector(), screenService: injector());
     });
     //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
     //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
@@ -98,14 +94,8 @@ void _testSystemInfo() async {
 
 void testGPhoto() async {
   final _gphotoStorage = injector.get<Storage>() as GPhotoStorage;
-  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum(
-    'TEST_slide',
-    100,
-    100,
-  );
+  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum('TEST_slide', 100, 100);
   mediaList.forEach((googleItem) {
-    _log.info(
-      '  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}',
-    );
+    _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
   });
 }

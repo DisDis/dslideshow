@@ -13,20 +13,15 @@ sealed class ScreenTurnCommand with _$ScreenTurnCommand implements RpcCommand {
     @Default(ScreenTurnCommand.TYPE) String type,
   }) = _ScreenTurnCommand;
 
-  factory ScreenTurnCommand.fromJson(Map<String, dynamic> json) =>
-      _$ScreenTurnCommandFromJson(json);
+  factory ScreenTurnCommand.fromJson(Map<String, dynamic> json) => _$ScreenTurnCommandFromJson(json);
 }
 
 @freezed
-sealed class ScreenLockCommand with _$ScreenLockCommand implements RpcCommand {
-  static const String TYPE = 'screen_lock';
+sealed class ScreenToggleCommand with _$ScreenToggleCommand implements RpcCommand {
+  static const String TYPE = 'screen_toggle';
 
-  const factory ScreenLockCommand({
-    required bool isLock,
-    required int id,
-    @Default(ScreenLockCommand.TYPE) String type,
-  }) = _ScreenLockCommand;
+  const factory ScreenToggleCommand({required int id, @Default(ScreenToggleCommand.TYPE) String type}) =
+      _ScreenToggleCommand;
 
-  factory ScreenLockCommand.fromJson(Map<String, dynamic> json) =>
-      _$ScreenLockCommandFromJson(json);
+  factory ScreenToggleCommand.fromJson(Map<String, dynamic> json) => _$ScreenToggleCommandFromJson(json);
 }

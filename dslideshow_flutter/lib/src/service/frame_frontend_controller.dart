@@ -56,7 +56,7 @@ class FrameFrontendController {
       FrameControl.menu => SlideshowAction.showMenu,
       FrameControl.screen => SlideshowAction.toggleScreen,
     };
-    await status.executeActionAndWait(action, control == FrameControl.screen ? !enabled : enabled);
+    await status.executeActionAndWait(action, enabled);
   }
 
   static FrameDisplayInfo? readDisplayInfo() {

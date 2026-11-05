@@ -43,6 +43,8 @@ class _$serializersRpcSerializers implements Serializers {
     if (object is DriveResult) return ["DriveResult", object.toJson()];
     if (object is ScreenTurnCommand)
       return ["ScreenTurnCommand", object.toJson()];
+    if (object is ScreenToggleCommand)
+      return ["ScreenToggleCommand", object.toJson()];
     if (object is PowerOffCommand) return ["PowerOffCommand", object.toJson()];
     if (object is UpdateFrontendStateCommand)
       return ["UpdateFrontendStateCommand", object.toJson()];
@@ -67,8 +69,6 @@ class _$serializersRpcSerializers implements Serializers {
       return ["EmulatePushButtonCommand", object.toJson()];
     if (object is ExecuteSSActionCommand)
       return ["ExecuteSSActionCommand", object.toJson()];
-    if (object is ScreenLockCommand)
-      return ["ScreenLockCommand", object.toJson()];
     if (object is WebServerControlCommand)
       return ["WebServerControlCommand", object.toJson()];
     if (object is WebServerControlCommandResult)
@@ -156,6 +156,8 @@ class _$serializersRpcSerializers implements Serializers {
         return DriveResult.fromJson(object);
       case "ScreenTurnCommand":
         return ScreenTurnCommand.fromJson(object);
+      case "ScreenToggleCommand":
+        return ScreenToggleCommand.fromJson(object);
       case "PowerOffCommand":
         return PowerOffCommand.fromJson(object);
       case "UpdateFrontendStateCommand":
@@ -188,8 +190,6 @@ class _$serializersRpcSerializers implements Serializers {
         return EmulatePushButtonCommand.fromJson(object);
       case "ExecuteSSActionCommand":
         return ExecuteSSActionCommand.fromJson(object);
-      case "ScreenLockCommand":
-        return ScreenLockCommand.fromJson(object);
       case "WebServerControlCommand":
         return WebServerControlCommand.fromJson(object);
       case "WebServerControlCommandResult":

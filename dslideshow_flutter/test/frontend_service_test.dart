@@ -324,12 +324,12 @@ void main() {
       const SetFrameControlCommand(id: 33, control: FrameControl.screen, enabled: false),
     );
     await tester.pump();
-    final lock = h.backend.requests.whereType<ScreenLockCommand>().single;
+    final turn = h.backend.requests.whereType<ScreenTurnCommand>().single;
     const privateFailure = 'https://private-code/private-path';
-    h.backend.respond(lock, ErrorResult(id: lock.id, error: privateFailure));
+    h.backend.respond(turn, ErrorResult(id: turn.id, error: privateFailure));
     await tester.pump();
     expect(await pending, isA<ErrorResult>().having((result) => result.id, 'request ID', 33));
-    expect(h.backend.requests.whereType<ScreenTurnCommand>(), isEmpty);
+    expect(h.backend.requests.whereType<ScreenTurnCommand>(), hasLength(1));
     final failed = records.singleWhere((record) => record.message.startsWith('command failed '));
     expect(failed.level, Level.WARNING);
     expect(failed.message, contains('requestId=33'));
@@ -361,17 +361,16 @@ void main() {
     expect(h.backend.requests.whereType<OTAGetInfoCommand>(), isEmpty);
   });
   frontendTest('outgoing control facades preserve their command fields and web-server result', (tester, h) async {
-    final lock = h.frontend.changeScreenLock(true);
-    final lockCommand = h.backend.requests.last as ScreenLockCommand;
-    expect(lockCommand.isLock, isTrue);
-    h.backend.respond(lockCommand, EmptyResult.respond(lockCommand));
-    await lock;
-
     final screen = h.frontend.screenTurn(false);
     final screenCommand = h.backend.requests.last as ScreenTurnCommand;
     expect(screenCommand.enabled, isFalse);
     h.backend.respond(screenCommand, EmptyResult.respond(screenCommand));
     await screen;
+
+    final toggle = h.frontend.screenToggle();
+    final toggleCommand = h.backend.requests.last as ScreenToggleCommand;
+    h.backend.respond(toggleCommand, EmptyResult.respond(toggleCommand));
+    await toggle;
 
     final led = h.frontend.swithLED(LEDType.power, true);
     final ledCommand = h.backend.requests.last as LEDControlCommand;

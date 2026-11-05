@@ -20,10 +20,12 @@ const _authenticated = AuthenticationState.authenticated(_user);
 FrameState _frame(String version) => FrameState(
   sampledAt: DateTime.utc(2026, 10, 30),
   presence: FramePresence.unknown,
-  isScreenLocked: false,
+  autoWakeEnabled: true,
   isScreenOn: true,
   screenPhase: FrameScreenPhase.on,
   backendVersion: version,
+  nightMode: const NightModeState(),
+  deviceLocalTime: DateTime.utc(2026, 10, 30),
 );
 
 class _Authentication extends Cubit<AuthenticationState> implements AuthenticationBloc {

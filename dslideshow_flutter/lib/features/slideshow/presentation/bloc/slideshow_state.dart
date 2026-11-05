@@ -24,6 +24,5 @@ sealed class SlideshowState with _$SlideshowState {
     @Default(SlideshowPhase.initial) SlideshowPhase phase,
     @Default(false) bool isScreenLocked,
     @Default(false) bool isPaused,
-    @Default(false) bool fadeOut, // Для логики затемнения экрана
   }) = _SlideshowState;
 }

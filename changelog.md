@@ -1,5 +1,41 @@
 # Unreleased
 
+* Add configurable night mode with schedule only, schedule OR darkness and
+  schedule AND darkness. Keep the physical screen button and explicit ON working,
+  apply the normal absence timer after manual wake, and wake on confirmed presence
+  when the restriction ends and automatic wake is allowed.
+* Add Wake and sleep settings, active night diagnostics and frame local time to
+  the configuration panel. Optionally receive MQTT illuminance with separate
+  light/dark thresholds, availability and configurable reading age; unknown light
+  prevents automatic wake wherever it affects the decision. Hide application
+  content during night startup, including welcome, settings and OTA routes.
+  Store illuminance and thresholds as integers, convert numeric JSON inputs
+  with `toInt()` and accept only whole-number thresholds in the panel.
+  Always count reading age from MQTT reception, including retained delivery;
+  default to 1800 seconds (30 minutes) and show reception time in telemetry.
+  Night-mode telemetry requires the current frame-state schema; snapshots
+  without the required night and device-clock fields are rejected.
+  Show the frame's local time without separate timezone name or UTC offset;
+  the frame and its user are assumed to share a timezone. Omit the informative
+  manual-wake flag and its panel caption from telemetry.
+  Validate night settings in config_app while editing and before Save;
+  keep backend configuration decoding separate from those checks. Use a plain
+  JsonSerializable AppConfig and JSON snapshots for mutable drafts.
+  Reset light hysteresis on expiry even when a new message precedes the next
+  timer tick; discard pre-online readings on disconnect. Ignore sensor packets
+  without illuminance without refreshing their age or logging a warning.
+* Separate MQTT screen power and automatic wake into switches «Экран» and
+  «Автопробуждение экрана». Disabling auto wake leaves the current display on;
+  any explicit screen ON enables it again, while screen OFF leaves it unchanged.
+  Reset wake permission to enabled on app restart. Publish retained actual screen
+  power and ScreenPhase, reject retained screen/wake commands, and replace the
+  former manual-lock telemetry with autoWakeEnabled.
+* Preserve MQTT arrival order across illuminance, availability and screen commands,
+  so offline cannot revive earlier readings and a later explicit ON survives darkness.
+  Resolve physical screen toggles in the backend against accepted intent, allowing
+  a second press to cancel wake before visibility changes. Fade slideshow content
+  and overlays once through the shared screen-visibility layer.
+
 * Improve Linux frame discovery when mDNS replies are incomplete: resolve endpoints
   without waiting for unused TXT records and retry one explicit Avahi timeout
   within a 12-second search window. Include the service and network interface

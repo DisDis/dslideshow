@@ -18,11 +18,10 @@ class RecordingFrontend implements FrontendService {
   Stream<StorageStatusEnum> get onStorageStatusChanged => const Stream.empty();
   final actions = StreamController<ActionWithParam>.broadcast();
   final updates = <({bool? paused, bool? menu})>[];
-  final locks = <bool>[];
   final screenTurns = <bool>[];
-  Completer<RpcResult>? lockResult;
+  int screenToggles = 0;
   Completer<RpcResult>? turnResult;
-  Object? lockFailure;
+  Completer<RpcResult>? toggleResult;
   Object? turnFailure;
   bool failUpdates = false;
 
@@ -36,17 +35,16 @@ class RecordingFrontend implements FrontendService {
   }
 
   @override
-  Future<RpcResult> changeScreenLock(bool value) async {
-    locks.add(value);
-    if (lockFailure != null) throw lockFailure!;
-    return await lockResult?.future ?? const EmptyResult(id: 1);
-  }
-
-  @override
   Future<RpcResult> screenTurn(bool value) async {
     screenTurns.add(value);
     if (turnFailure != null) throw turnFailure!;
     return await turnResult?.future ?? const EmptyResult(id: 2);
+  }
+
+  @override
+  Future<RpcResult> screenToggle() async {
+    screenToggles++;
+    return await toggleResult?.future ?? const EmptyResult(id: 3);
   }
 
   @override
@@ -165,128 +163,96 @@ void main() {
     expect(f.frontend.updates, isEmpty);
   });
 
-  test('screen controls acknowledge both backend RPCs without waiting for native work', () async {
+  test('screen controls acknowledge one backend RPC without waiting for native work', () async {
     final f = Fixture();
     addTearDown(f.close);
-    f.frontend.lockResult = Completer<RpcResult>();
     f.frontend.turnResult = Completer<RpcResult>();
     var accepted = false;
     final command = f.controller.setControl(FrameControl.screen, false)..then((_) => accepted = true);
-    await Future<void>.delayed(Duration.zero);
-    expect(f.status.state.isScreenLock, isTrue);
-    expect(f.frontend.locks, [true]);
-    expect(f.frontend.screenTurns, isEmpty);
-    expect(accepted, isFalse);
-    f.frontend.lockResult!.complete(const EmptyResult(id: 1));
     await Future<void>.delayed(Duration.zero);
     expect(f.frontend.screenTurns, [false]);
     expect(accepted, isFalse);
     f.frontend.turnResult!.complete(const EmptyResult(id: 2));
     await command;
     expect(accepted, isTrue);
-    f.frontend.lockResult = null;
     f.frontend.turnResult = null;
     await f.controller.setControl(FrameControl.screen, true);
-    expect(f.status.state.isScreenLock, isFalse);
-    expect(f.frontend.locks, [true, false]);
     expect(f.frontend.screenTurns, [false, true]);
-    // An explicit ON also wakes a sensor-slept screen with no manual lock.
+    // Repeated explicit ON remains an ON request.
     await f.controller.setControl(FrameControl.screen, true);
     expect(f.frontend.screenTurns, [false, true, true]);
   });
 
-  for (final lockFails in [true, false]) {
-    test('screen ${lockFails ? 'lock' : 'turn'} RPC failures reach the caller', () async {
-      final f = Fixture();
-      addTearDown(f.close);
-      final failure = StateError('Backend rejected screen intent');
-      if (lockFails) {
-        f.frontend.lockFailure = failure;
-      } else {
-        f.frontend.turnFailure = failure;
-      }
-      await expectLater(f.controller.setControl(FrameControl.screen, false), throwsA(same(failure)));
-      expect(f.frontend.screenTurns, lockFails ? isEmpty : [false]);
-    });
-
-    test('screen ${lockFails ? 'lock' : 'turn'} RPC error results reject control', () async {
-      final f = Fixture();
-      addTearDown(f.close);
-      final rejection = Completer<RpcResult>();
-      if (lockFails) {
-        f.frontend.lockResult = rejection;
-      } else {
-        f.frontend.turnResult = rejection;
-      }
-      final command = f.controller.setControl(FrameControl.screen, false);
-      final expectation = expectLater(command, throwsA(isA<RpcErrorResultException>()));
-      await Future<void>.delayed(Duration.zero);
-      rejection.complete(const ErrorResult(id: 1, error: 'Rejected'));
-      await expectation;
-    });
-
-    test('screen ${lockFails ? 'lock' : 'turn'} rejects unexpected acknowledgements', () async {
-      final f = Fixture();
-      addTearDown(f.close);
-      final unexpected = Completer<RpcResult>();
-      if (lockFails) {
-        f.frontend.lockResult = unexpected;
-      } else {
-        f.frontend.turnResult = unexpected;
-      }
-      final command = f.controller.setControl(FrameControl.screen, false);
-      final expectation = expectLater(command, throwsStateError);
-      await Future<void>.delayed(Duration.zero);
-      unexpected.complete(const EchoCommandResult(id: 1, resultText: 'Wrong response'));
-      await expectation;
-    });
-
-    test('closing during screen ${lockFails ? 'lock' : 'turn'} RPC rejects the waiter', () async {
-      final f = Fixture();
-      final pending = Completer<RpcResult>();
-      if (lockFails) {
-        f.frontend.lockResult = pending;
-      } else {
-        f.frontend.turnResult = pending;
-      }
-      final command = f.controller.setControl(FrameControl.screen, false);
-      final expectation = expectLater(command, throwsStateError);
-      await Future<void>.delayed(Duration.zero);
-      await f.status.close();
-      await expectation;
-      pending.completeError(StateError('Late backend failure'));
-      await Future<void>.delayed(Duration.zero);
-      await f.close();
-    });
-
-    test('ordinary screen ${lockFails ? 'lock' : 'turn'} failure is handled', () async {
-      final f = Fixture();
-      addTearDown(f.close);
-      if (lockFails) {
-        f.frontend.lockFailure = StateError('Lock rejected');
-      } else {
-        f.frontend.turnFailure = StateError('Turn rejected');
-      }
-      f.status.executeAction(SlideshowAction.toggleScreen, true);
-      await Future<void>.delayed(Duration.zero);
-      expect(f.frontend.locks, [true]);
-    });
-  }
-
-  test('superseded screen waiter ends before its late lock response', () async {
+  test('screen turn RPC failures reach the caller', () async {
     final f = Fixture();
     addTearDown(f.close);
-    final previousLock = Completer<RpcResult>();
-    f.frontend.lockResult = previousLock;
+    final failure = StateError('Backend rejected screen intent');
+    f.frontend.turnFailure = failure;
+    await expectLater(f.controller.setControl(FrameControl.screen, false), throwsA(same(failure)));
+    expect(f.frontend.screenTurns, [false]);
+  });
+
+  test('screen turn RPC error results reject control', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    final rejection = Completer<RpcResult>();
+    f.frontend.turnResult = rejection;
+    final command = f.controller.setControl(FrameControl.screen, false);
+    final expectation = expectLater(command, throwsA(isA<RpcErrorResultException>()));
+    await Future<void>.delayed(Duration.zero);
+    rejection.complete(const ErrorResult(id: 1, error: 'Rejected'));
+    await expectation;
+  });
+
+  test('screen turn rejects unexpected acknowledgements', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    final unexpected = Completer<RpcResult>();
+    f.frontend.turnResult = unexpected;
+    final command = f.controller.setControl(FrameControl.screen, false);
+    final expectation = expectLater(command, throwsStateError);
+    await Future<void>.delayed(Duration.zero);
+    unexpected.complete(const EchoCommandResult(id: 1, resultText: 'Wrong response'));
+    await expectation;
+  });
+
+  test('closing during screen turn RPC rejects the waiter', () async {
+    final f = Fixture();
+    final pending = Completer<RpcResult>();
+    f.frontend.turnResult = pending;
+    final command = f.controller.setControl(FrameControl.screen, false);
+    final expectation = expectLater(command, throwsStateError);
+    await Future<void>.delayed(Duration.zero);
+    await f.status.close();
+    await expectation;
+    pending.completeError(StateError('Late backend failure'));
+    await Future<void>.delayed(Duration.zero);
+    await f.close();
+  });
+
+  test('ordinary screen turn failure is handled', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    f.frontend.turnFailure = StateError('Turn rejected');
+    f.status.executeAction(SlideshowAction.toggleScreen, true);
+    await Future<void>.delayed(Duration.zero);
+    expect(f.frontend.screenTurns, [true]);
+  });
+
+  test('superseded screen waiter ends before its late turn response', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    final previousTurn = Completer<RpcResult>();
+    f.frontend.turnResult = previousTurn;
     final previous = f.controller.setControl(FrameControl.screen, false);
     final previousExpectation = expectLater(previous, throwsStateError);
     await Future<void>.delayed(Duration.zero);
-    f.frontend.lockResult = null;
+    f.frontend.turnResult = null;
     await f.controller.setControl(FrameControl.screen, true);
     await previousExpectation;
-    previousLock.complete(const EmptyResult(id: 1));
+    previousTurn.complete(const EmptyResult(id: 1));
     await Future<void>.delayed(Duration.zero);
-    expect(f.frontend.screenTurns, [true]);
+    expect(f.frontend.screenTurns, [false, true]);
   });
 
   test('superseded screen turn cannot hide a later failure or remain pending', () async {
@@ -305,6 +271,39 @@ void main() {
     expect(f.frontend.screenTurns, [false, true]);
   });
 
+  test('physical toggle supersedes an explicit waiter without replaying its late response', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    final previousTurn = Completer<RpcResult>();
+    f.frontend.turnResult = previousTurn;
+    final previous = f.controller.setControl(FrameControl.screen, true);
+    final previousExpectation = expectLater(previous, throwsStateError);
+    await Future<void>.delayed(Duration.zero);
+    f.status.executeAction(SlideshowAction.toggleScreen);
+    await previousExpectation;
+    await Future<void>.delayed(Duration.zero);
+    expect(f.frontend.screenTurns, [true]);
+    expect(f.frontend.screenToggles, 1);
+    previousTurn.complete(const EmptyResult(id: 1));
+    await Future<void>.delayed(Duration.zero);
+    expect(f.frontend.screenTurns, [true]);
+    expect(f.frontend.screenToggles, 1);
+  });
+
+  test('a late toggle acknowledgement does not replay a superseding explicit command', () async {
+    final f = Fixture();
+    addTearDown(f.close);
+    final previousToggle = Completer<RpcResult>();
+    f.frontend.toggleResult = previousToggle;
+    f.status.executeAction(SlideshowAction.toggleScreen);
+    await Future<void>.delayed(Duration.zero);
+    await f.controller.setControl(FrameControl.screen, false);
+    previousToggle.complete(const EmptyResult(id: 3));
+    await Future<void>.delayed(Duration.zero);
+    expect(f.frontend.screenToggles, 1);
+    expect(f.frontend.screenTurns, [false]);
+  });
+
   test('closing cancels queued acknowledgements and rejects later commands', () async {
     final f = Fixture();
     await f.showPage(RoutePage.slideshow);
@@ -320,14 +319,13 @@ void main() {
   testWidgets('screen control waits for backend RPC without a local deadline', (tester) async {
     final f = Fixture();
     addTearDown(() => tester.runAsync(f.close));
-    f.frontend.lockResult = Completer<RpcResult>();
+    f.frontend.turnResult = Completer<RpcResult>();
     var accepted = false;
     final command = f.controller.setControl(FrameControl.screen, false).then((_) => accepted = true);
     await tester.pump(const Duration(seconds: 30));
     expect(accepted, isFalse);
-    expect(f.frontend.locks, [true]);
-    expect(f.frontend.screenTurns, isEmpty);
-    f.frontend.lockResult!.complete(const EmptyResult(id: 1));
+    expect(f.frontend.screenTurns, [false]);
+    f.frontend.turnResult!.complete(const EmptyResult(id: 1));
     await tester.pump();
     await command;
     expect(f.frontend.screenTurns, [false]);

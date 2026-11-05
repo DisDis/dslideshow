@@ -1259,7 +1259,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Питание отражает последнюю успешную команду устройства, а не физическое измерение дисплея.';
 
   @override
-  String get device_screen_lock => 'Ручная блокировка экрана';
+  String get device_auto_wake => 'Автопробуждение экрана';
 
   @override
   String get device_turn_on => 'Включить экран';
@@ -3501,4 +3501,113 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get yandex_authorization_denied => 'Доступ отклонён в Яндексе.';
+
+  @override
+  String get wake_settings_title => 'Пробуждение и сон';
+
+  @override
+  String get night_enabled => 'Ночной режим';
+
+  @override
+  String get night_mode_label => 'Условие автоматического сна';
+
+  @override
+  String get night_schedule_only => 'Только расписание';
+
+  @override
+  String get night_schedule_or_dark => 'Расписание ИЛИ темнота';
+
+  @override
+  String get night_schedule_and_dark => 'Расписание И темнота';
+
+  @override
+  String get night_start => 'Начало (ЧЧ:ММ)';
+
+  @override
+  String get night_end => 'Окончание (ЧЧ:ММ)';
+
+  @override
+  String get night_absence_seconds => 'Сон после отсутствия (секунды)';
+
+  @override
+  String get night_use_light => 'Использовать освещённость из MQTT';
+
+  @override
+  String get night_light_topic => 'MQTT topic освещённости';
+
+  @override
+  String get night_light_field => 'Поле JSON с освещённостью';
+
+  @override
+  String get night_availability_topic => 'MQTT topic доступности (необязательно)';
+
+  @override
+  String get night_dark_threshold => 'Темно при значении не выше (лк)';
+
+  @override
+  String get night_light_threshold => 'Светло при значении не ниже (лк)';
+
+  @override
+  String get night_max_age => 'Максимальный возраст показания (секунды)';
+
+  @override
+  String get night_behavior_help =>
+      'Во время автоматического сна движение не включает экран. Явная команда включения разрешает автопробуждение и включает экран, в том числе ночью; действует обычный таймер отсутствия. После снятия ночного ограничения подтверждённое присутствие включает экран, если автопробуждение разрешено. Время считается по локальным часам рамки. Настройки применяются после сохранения и перезапуска.';
+
+  @override
+  String get night_mqtt_help =>
+      'Для расписания MQTT необязателен. Для освещённости включите существующее MQTT-подключение. Неизвестное или устаревшее показание запрещает автопробуждение там, где решение зависит от света. Возраст отсчитывается от получения сообщения, включая сохранённые брокером сообщения (retained) при подключении. По умолчанию срок — 1800 секунд (30 минут). Доступность принимает online/offline либо JSON с полем state. Порог света должен превышать порог темноты.';
+
+  @override
+  String get night_invalid_settings =>
+      'Проверьте время ЧЧ:ММ (начало и конец различаются), неотрицательную задержку сна, точные MQTT topics, обязательные topic и поле освещённости, целочисленные пороги (0 ≤ темнота < свет) и положительный возраст показания.';
+
+  @override
+  String get night_device_time => 'Локальное время рамки';
+
+  @override
+  String get night_active_settings => 'Действующие настройки рамки';
+
+  @override
+  String get night_next_boundary => 'Следующая граница расписания';
+
+  @override
+  String get night_light_status => 'Источник освещённости';
+
+  @override
+  String get night_illuminance => 'Последняя освещённость';
+
+  @override
+  String get night_received_at => 'Время получения освещённости (UTC)';
+
+  @override
+  String get night_reason_schedule => 'Автопробуждение запрещено расписанием';
+
+  @override
+  String get night_reason_dark => 'Автопробуждение запрещено темнотой';
+
+  @override
+  String get night_reason_both => 'Автопробуждение запрещено расписанием и темнотой';
+
+  @override
+  String get night_reason_unknown => 'Автопробуждение запрещено: освещённость неизвестна';
+
+  @override
+  String get night_wake_allowed => 'Ночной режим разрешает автопробуждение';
+
+  @override
+  String get night_light_unavailable => 'Недоступен';
+
+  @override
+  String get night_light_stale => 'Показание устарело';
+
+  @override
+  String get night_light_dark => 'Темно';
+
+  @override
+  String get night_light_bright => 'Светло';
+
+  @override
+  String get night_device_state_help =>
+      'Текущее время рамки и действующие ночные настройки доступны в телеметрии устройства. Сохранённые правки применяются после перезапуска.';
 }
