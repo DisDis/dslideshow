@@ -257,7 +257,7 @@ const _contracts = <String, Map<TestGroup, List<String>>>{
       'yandex_drive_settings',
       'wake_settings',
     ],
-    TestGroup.hardware: ['device_page', 'media_device_ui', 'device_monitor', 'power_bloc'],
+    TestGroup.hardware: ['device_page', 'media_device_ui', 'device_bloc', 'power_bloc'],
     TestGroup.toolingProtocol: ['rpc_rates', 'rpc_telemetry_widget'],
   },
 };

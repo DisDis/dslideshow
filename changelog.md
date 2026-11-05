@@ -1,5 +1,9 @@
 # Unreleased
 
+* Redesign frame control as a unified remote with prominent state and embedded
+  pause, menu and screen actions. Keep wake restrictions visible, reveal technical
+  details on demand and adapt the card to narrow screens and larger text.
+
 * Show night-mode validation errors beside the affected fields instead of listing
   every possible requirement. Explain identical illuminance/availability MQTT topics
   without suggesting that text topics require numeric input.

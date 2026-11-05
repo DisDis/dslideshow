@@ -1135,6 +1135,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get device_controls_title => 'Frame control';
 
   @override
+  String get device_status_title => 'Photo frame';
+
+  @override
+  String get device_summary_playing => 'Slideshow playing';
+
+  @override
+  String get device_summary_frontend_unavailable => 'Slideshow unavailable';
+
+  @override
+  String get device_summary_menu_open => 'Menu open';
+
+  @override
+  String get device_summary_screen_off => 'Screen is off';
+
+  @override
+  String get device_summary_screen_unknown => 'Screen power is unknown';
+
+  @override
+  String get device_state_details => 'State details';
+
+  @override
+  String get device_hide_details => 'Hide details';
+
+  @override
+  String get device_night_mode => 'Night mode';
+
+  @override
+  String get device_control_sending => 'Sending command';
+
+  @override
+  String get device_auto_wake_disabled_help => 'Automatic wake is disabled. You can turn the screen on manually.';
+
+  @override
   String get device_telemetry_subtitle => 'System readings and presence from the frame';
 
   @override

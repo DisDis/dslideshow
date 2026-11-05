@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:config_app/features/device/data/device_repository.dart';
-import 'package:config_app/features/device/presentation/device_monitor.dart';
+import 'package:config_app/features/device/presentation/device_bloc.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
 void main() {
@@ -19,6 +20,10 @@ void main() {
   });
 
   tearDown(() => client.close());
+
+  Future<void> close(WidgetTester tester, DeviceBloc bloc) async {
+    await tester.runAsync(bloc.close);
+  }
 
   Matcher failure(DeviceFailureKind kind) => isA<DeviceFailure>().having((error) => error.kind, 'kind', kind);
 
@@ -50,6 +55,89 @@ void main() {
     await expectLater(repository.setControl(FrameControl.pause, true), throwsA(failure(DeviceFailureKind.command)));
   });
 
+  test('request diagnostics retain original transport cause, stack and remote error text', () async {
+    final records = <LogRecord>[];
+    final previousLevel = Logger.root.level;
+    Logger.root.level = Level.ALL;
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(() async {
+      await subscription.cancel();
+      Logger.root.level = previousLevel;
+    });
+    final error = StateError('frame transport failed https://frame.example/private?code=test-secret\nsecond line');
+    final stack = StackTrace.fromString('#0 original-send\n#1 original-caller\n#2 final-source-frame');
+    client.handle = (_, _) => Future.error(error, stack);
+    await expectLater(repository.setControl(FrameControl.pause, true), throwsA(failure(DeviceFailureKind.command)));
+    final original = records.singleWhere((record) => record.error == error);
+    expect(original.message, contains('set_frame_control'));
+    expect(original.error.toString(), contains('test-secret\nsecond line'));
+    expect(original.stackTrace, same(stack));
+    client.handle = (envelope, command) async =>
+        WSRpcResult.byCommand(ErrorResult(id: command.id, error: 'backend original failure'), envelope);
+    await expectLater(repository.getState(), throwsA(failure(DeviceFailureKind.load)));
+    client.handle = (envelope, _) async => WSErrorResult.byCommand('websocket original failure', envelope);
+    await expectLater(repository.getState(), throwsA(failure(DeviceFailureKind.load)));
+    expect(records.any((record) => record.error == 'backend original failure'), isTrue);
+    expect(records.any((record) => record.error == 'websocket original failure'), isTrue);
+  });
+
+  testWidgets('commands log intent, confirmation and unknown result without replay', (tester) async {
+    final records = <LogRecord>[];
+    final previousLevel = Logger.root.level;
+    Logger.root.level = Level.ALL;
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(() async {
+      await subscription.cancel();
+      Logger.root.level = previousLevel;
+    });
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    await tester.pump();
+    await bloc.setControl(FrameControl.pause, true);
+    final error = TimeoutException('screen command result unknown');
+    final stack = StackTrace.fromString('#0 screen-transport-source\n#1 screen-transport-caller');
+    client.handle = (envelope, command) =>
+        command is SetFrameControlCommand ? Future.error(error, stack) : client.respond(envelope, command);
+    await bloc.setControl(FrameControl.screen, false);
+    expect(bloc.state.stale, isTrue);
+    expect(
+      records.any(
+        (record) => record.level == Level.INFO && record.message == 'Control started control=pause enabled=true',
+      ),
+      isTrue,
+    );
+    expect(records.any((record) => record.message == 'Control confirmed control=pause enabled=true'), isTrue);
+    expect(
+      records.any(
+        (record) => record.level == Level.WARNING && record.message.contains('Control not confirmed control=screen'),
+      ),
+      isTrue,
+    );
+    expect(records.singleWhere((record) => record.error == error).stackTrace, same(stack));
+    await tester.pump(const Duration(seconds: 1));
+    expect(bloc.state.stale, isFalse);
+    expect(client.actionCalls, 2);
+    await close(tester, bloc);
+  });
+
+  testWidgets('application lifecycle suspends and resumes the page-owned poller', (tester) async {
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    await tester.pump();
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    final calls = client.stateCalls;
+    await tester.pump(const Duration(seconds: 3));
+    expect(client.stateCalls, calls);
+    expect(bloc.state.canControl, isFalse);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(client.stateCalls, calls + 1);
+    expect(bloc.state.canControl, isTrue);
+    await close(tester, bloc);
+  });
+
   test('repository rejects malformed, mismatched and unexpected responses', () async {
     final invalidResponses = <Future<WebSocketResult> Function(WSSendRpcCommand, RpcCommand)>[
       (envelope, _) async => WSResultOk(id: envelope.id),
@@ -77,14 +165,14 @@ void main() {
       await logs.cancel();
       Logger.root.level = previousLevel;
     });
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
     expect(client.stateCalls, 1);
     expect(client.metricCalls, 1);
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), hasLength(1));
-    expect(monitor.canControl, isTrue);
-    expect(monitor.loading, isFalse);
-    expect(monitor.metricsSampledAt, _sampledAt);
+    expect(bloc.state.canControl, isTrue);
+    expect(bloc.state.loading, isFalse);
+    expect(bloc.state.metricsSampledAt, _sampledAt);
     await tester.pump(const Duration(seconds: 1));
     expect(client.stateCalls, 2);
     expect(client.metricCalls, 1);
@@ -96,13 +184,13 @@ void main() {
     await tester.pump(const Duration(seconds: 5));
     expect(client.metricCalls, 2);
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), hasLength(3));
-    monitor.dispose();
+    await close(tester, bloc);
     await tester.pump(const Duration(seconds: 20));
     expect(client.metricCalls, 2);
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), hasLength(3));
     expect(client.hasDisconnectListener, isFalse);
     expect(
-      records.where((record) => record.loggerName == 'DeviceMonitor' && record.message.startsWith('Polling started')),
+      records.where((record) => record.loggerName == 'DeviceBloc' && record.message.startsWith('Polling started')),
       hasLength(1),
     );
     expect(records.any((record) => record.message == 'Polling started telemetry=true rpcIntervalSeconds=5'), isTrue);
@@ -110,21 +198,21 @@ void main() {
   });
 
   testWidgets('control page never fetches system metrics', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
     await tester.pump(const Duration(seconds: 10));
-    await monitor.refresh();
+    await bloc.refresh();
     expect(client.metricCalls, 0);
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), isEmpty);
-    monitor.dispose();
+    await close(tester, bloc);
   });
 
   testWidgets('RPC polling coalesces, keeps stale data and stops while hidden', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    final original = monitor.rpc;
+    final original = bloc.state.rpc;
     expect(original, isNotNull);
-    expect(monitor.rpcStale, isFalse);
+    expect(bloc.state.rpcStale, isFalse);
     final pending = Completer<WebSocketResult>();
     client.handle = (envelope, command) {
       if (command is GetRpcTelemetryCommand) return pending.future;
@@ -134,37 +222,37 @@ void main() {
     final calls = client.commands.whereType<GetRpcTelemetryCommand>().length;
     await tester.pump(const Duration(seconds: 10));
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), hasLength(calls));
-    expect(monitor.frame, isNotNull);
-    expect(monitor.canControl, isTrue);
-    await monitor.setControl(FrameControl.menu, true);
+    expect(bloc.state.frame, isNotNull);
+    expect(bloc.state.canControl, isTrue);
+    await bloc.setControl(FrameControl.menu, true);
     expect(client.actionCalls, 1);
     expect(pending.isCompleted, isFalse);
     pending.completeError(TimeoutException('expected timeout'));
     await tester.pump();
-    expect(monitor.rpc, same(original));
-    expect(monitor.rpcStale, isTrue);
-    monitor.setActive(false);
+    expect(bloc.state.rpc, same(original));
+    expect(bloc.state.rpcStale, isTrue);
+    bloc.setActive(false);
     await tester.pump(const Duration(seconds: 20));
     expect(client.commands.whereType<GetRpcTelemetryCommand>(), hasLength(calls));
     client.handle = client.respond;
-    monitor.setActive(true);
+    bloc.setActive(true);
     await tester.pump();
-    expect(monitor.rpcStale, isFalse);
-    monitor.dispose();
+    expect(bloc.state.rpcStale, isFalse);
+    await close(tester, bloc);
   });
 
-  testWidgets('late RPC metrics cannot update a disposed page', (tester) async {
+  testWidgets('late RPC metrics cannot update a closed page', (tester) async {
     final pending = Completer<WebSocketResult>();
     client.handle = (envelope, command) {
       if (command is GetRpcTelemetryCommand) return pending.future;
       return client.respond(envelope, command);
     };
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    monitor.dispose();
+    await close(tester, bloc);
     pending.completeError(StateError('late RPC error'));
     await tester.pump();
-    expect(monitor.rpc, isNull);
+    expect(bloc.state.rpc, isNull);
     expect(tester.takeException(), isNull);
   });
 
@@ -180,24 +268,24 @@ void main() {
       }
       return client.respond(envelope, command);
     };
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    expect(monitor.loading, isFalse);
-    expect(monitor.stale, isFalse);
-    expect(monitor.metrics, isNull);
-    final firstFrame = monitor.frame;
+    expect(bloc.state.loading, isFalse);
+    expect(bloc.state.stale, isFalse);
+    expect(bloc.state.metrics, isNull);
+    final firstFrame = bloc.state.frame;
     for (var second = 0; second < 12; second++) {
       await tester.pump(const Duration(seconds: 1));
     }
     expect(client.stateCalls, 13);
-    expect(monitor.frame, isNot(same(firstFrame)));
+    expect(bloc.state.frame, isNot(same(firstFrame)));
     expect(client.metricCalls, 1);
-    expect(monitor.canControl, isTrue);
+    expect(bloc.state.canControl, isTrue);
     response.complete(WSRpcResult.byCommand(GetSystemInfoCommandResult(id: rpc.id, systemInfo: _metrics()), request));
     await tester.pump();
     expect(client.metricCalls, 1);
-    expect(monitor.metricsSampledAt, _sampledAt);
-    monitor.dispose();
+    expect(bloc.state.metricsSampledAt, _sampledAt);
+    await close(tester, bloc);
   });
 
   testWidgets('commands complete while a metrics request remains pending', (tester) async {
@@ -212,20 +300,20 @@ void main() {
       }
       return client.respond(envelope, command);
     };
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    final action = monitor.setControl(FrameControl.pause, true);
+    final action = bloc.setControl(FrameControl.pause, true);
     await tester.pump();
     expect(client.actionCalls, 1);
-    expect(monitor.pendingControl, isNull);
-    expect(monitor.frame!.frontend!.isPaused, isTrue);
-    expect(monitor.metrics, isNull);
+    expect(bloc.state.pendingControl, isNull);
+    expect(bloc.state.frame!.frontend!.isPaused, isTrue);
+    expect(bloc.state.metrics, isNull);
     await action;
     response.complete(WSRpcResult.byCommand(GetSystemInfoCommandResult(id: rpc.id, systemInfo: _metrics()), request));
     await tester.pump();
-    expect(monitor.frame!.frontend!.isPaused, isTrue);
+    expect(bloc.state.frame!.frontend!.isPaused, isTrue);
     expect(client.actionCalls, 1);
-    monitor.dispose();
+    await close(tester, bloc);
   });
 
   testWidgets('resume refreshes state independently and discards obsolete metrics response', (tester) async {
@@ -236,22 +324,22 @@ void main() {
       }
       return client.respond(envelope, command);
     };
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    monitor.setActive(false);
-    monitor.setActive(true);
+    bloc.setActive(false);
+    bloc.setActive(true);
     await tester.pump();
     expect(client.stateCalls, 2);
     expect(client.metricCalls, 1);
-    expect(monitor.metrics, isNull);
-    expect(monitor.canControl, isTrue);
+    expect(bloc.state.metrics, isNull);
+    expect(bloc.state.canControl, isTrue);
     response.completeError(StateError('obsolete metrics failure'));
     await tester.pump();
     expect(client.metricCalls, 2);
-    expect(monitor.metrics, isNotNull);
-    expect(monitor.metricsFailure, isNull);
-    expect(monitor.metricsStale, isFalse);
-    monitor.dispose();
+    expect(bloc.state.metrics, isNotNull);
+    expect(bloc.state.metricsFailure, isNull);
+    expect(bloc.state.metricsStale, isFalse);
+    await close(tester, bloc);
   });
 
   testWidgets('concurrent refreshes share one pending snapshot', (tester) async {
@@ -263,59 +351,59 @@ void main() {
       rpc = command;
       return response.future;
     };
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
-    final firstRefresh = monitor.refresh();
-    final secondRefresh = monitor.refresh();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    final firstRefresh = bloc.refresh();
+    final secondRefresh = bloc.refresh();
     expect(firstRefresh, same(secondRefresh));
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame()), request));
     await firstRefresh;
     await tester.pump();
     expect(client.stateCalls, 1);
-    monitor.dispose();
+    await close(tester, bloc);
   });
 
   testWidgets('keeps successful state and old metrics timestamp after metrics failure', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    final previousMetrics = monitor.metrics;
+    final previousMetrics = bloc.state.metrics;
     client.handle = (envelope, command) async {
       if (command is GetSystemInfoCommand) {
         return WSRpcResult.byCommand(ErrorResult(id: command.id, error: 'failed'), envelope);
       }
       return WSRpcResult.byCommand(GetFrameStateResult(id: command.id, state: _frame(paused: true)), envelope);
     };
-    await monitor.refresh();
-    expect(monitor.frame!.frontend!.isPaused, isTrue);
-    expect(monitor.stale, isFalse);
-    expect(monitor.canControl, isTrue);
-    expect(monitor.failure, isNull);
-    expect(monitor.metrics, same(previousMetrics));
-    expect(monitor.metricsSampledAt, _sampledAt);
-    expect(monitor.metricsStale, isTrue);
-    expect(monitor.metricsFailure!.kind, DeviceFailureKind.load);
-    monitor.dispose();
+    await bloc.refresh();
+    expect(bloc.state.frame!.frontend!.isPaused, isTrue);
+    expect(bloc.state.stale, isFalse);
+    expect(bloc.state.canControl, isTrue);
+    expect(bloc.state.failure, isNull);
+    expect(bloc.state.metrics, same(previousMetrics));
+    expect(bloc.state.metricsSampledAt, _sampledAt);
+    expect(bloc.state.metricsStale, isTrue);
+    expect(bloc.state.metricsFailure!.kind, DeviceFailureKind.load);
+    await close(tester, bloc);
   });
 
   testWidgets('state failure retains last values and disables commands until refresh', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
-    final previousFrame = monitor.frame;
+    final previousFrame = bloc.state.frame;
     client.handle = (_, _) => Future.error(TimeoutException('timed out'));
-    await monitor.refresh();
-    expect(monitor.frame, same(previousFrame));
-    expect(monitor.stale, isTrue);
-    expect(monitor.canControl, isFalse);
-    await monitor.setControl(FrameControl.pause, true);
+    await bloc.refresh();
+    expect(bloc.state.frame, same(previousFrame));
+    expect(bloc.state.stale, isTrue);
+    expect(bloc.state.canControl, isFalse);
+    await bloc.setControl(FrameControl.pause, true);
     expect(client.actionCalls, 0);
     client.handle = client.respond;
-    await monitor.refresh();
-    expect(monitor.stale, isFalse);
-    expect(monitor.failure, isNull);
-    monitor.dispose();
+    await bloc.refresh();
+    expect(bloc.state.stale, isFalse);
+    expect(bloc.state.failure, isNull);
+    await close(tester, bloc);
   });
 
   testWidgets('coalesces polling and waits for pending refresh before an action', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
     final poll = Completer<WebSocketResult>();
     late WSSendRpcCommand pollEnvelope;
@@ -329,23 +417,23 @@ void main() {
       return client.respond(envelope, command);
     };
     await tester.pump(const Duration(seconds: 1));
-    final action = monitor.setControl(FrameControl.pause, true);
-    expect(monitor.pendingControl, FrameControl.pause);
-    expect(monitor.busy, isTrue);
+    final action = bloc.setControl(FrameControl.pause, true);
+    expect(bloc.state.pendingControl, FrameControl.pause);
+    expect(bloc.state.commandInFlight, isTrue);
     await tester.pump(const Duration(seconds: 3));
     expect(client.stateCalls, 2);
     expect(client.actionCalls, 0);
     poll.complete(WSRpcResult.byCommand(GetFrameStateResult(id: pollCommand.id, state: _frame()), pollEnvelope));
     await action;
     expect(client.actionCalls, 1);
-    expect(monitor.frame!.frontend!.isPaused, isTrue);
-    expect(monitor.pendingControl, isNull);
-    expect(monitor.busy, isFalse);
-    monitor.dispose();
+    expect(bloc.state.frame!.frontend!.isPaused, isTrue);
+    expect(bloc.state.pendingControl, isNull);
+    expect(bloc.state.commandInFlight, isFalse);
+    await close(tester, bloc);
   });
 
   testWidgets('command failure clears pending state and does not replay actions', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
     client.handle = (envelope, command) {
       if (command is SetFrameControlCommand) {
@@ -353,21 +441,24 @@ void main() {
       }
       return client.respond(envelope, command);
     };
-    await monitor.setControl(FrameControl.pause, true);
-    expect(monitor.pendingControl, isNull);
-    expect(monitor.busy, isFalse);
-    expect(monitor.failure!.kind, DeviceFailureKind.command);
-    expect(monitor.stale, isTrue);
-    await monitor.setControl(FrameControl.pause, true);
+    await bloc.setControl(FrameControl.pause, true);
+    expect(bloc.state.pendingControl, isNull);
+    expect(bloc.state.commandInFlight, isFalse);
+    expect(bloc.state.failure!.kind, DeviceFailureKind.command);
+    expect(bloc.state.stale, isTrue);
+    await bloc.setControl(FrameControl.pause, true);
     expect(client.actionCalls, 1);
     await tester.pump(const Duration(seconds: 1));
-    expect(monitor.stale, isFalse);
+    expect(bloc.state.stale, isFalse);
     expect(client.actionCalls, 1);
-    monitor.dispose();
+    await close(tester, bloc);
   });
 
   testWidgets('suspension cancels an action waiting for a poll', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final records = <LogRecord>[];
+    final subscription = Logger.root.onRecord.listen(records.add);
+    addTearDown(subscription.cancel);
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
     final response = Completer<WebSocketResult>();
     late WSSendRpcCommand request;
@@ -378,23 +469,25 @@ void main() {
       return response.future;
     };
     await tester.pump(const Duration(seconds: 1));
-    final action = monitor.setControl(FrameControl.pause, true);
-    expect(monitor.busy, isTrue);
-    monitor.setActive(false);
+    final action = bloc.setControl(FrameControl.pause, true);
+    expect(bloc.state.commandInFlight, isTrue);
+    bloc.setActive(false);
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame()), request));
     await action;
-    expect(monitor.pendingControl, isNull);
+    expect(records.any((record) => record.message == 'Control cancelled before send control=pause'), isTrue);
+    expect(records.where((record) => record.level >= Level.WARNING), isEmpty);
+    expect(bloc.state.pendingControl, isNull);
     expect(client.actionCalls, 0);
     client.handle = client.respond;
-    monitor.setActive(true);
+    bloc.setActive(true);
     await tester.pump();
     expect(client.actionCalls, 0);
-    expect(monitor.canControl, isTrue);
-    monitor.dispose();
+    expect(bloc.state.canControl, isTrue);
+    await close(tester, bloc);
   });
 
   testWidgets('resume waits for an in-flight action without replaying it', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
     await tester.pump();
     final response = Completer<WebSocketResult>();
     late WSSendRpcCommand request;
@@ -404,23 +497,23 @@ void main() {
       rpc = command;
       return response.future;
     };
-    final action = monitor.setControl(FrameControl.pause, true);
+    final action = bloc.setControl(FrameControl.pause, true);
     await tester.pump();
     expect(client.actionCalls, 1);
-    monitor.setActive(false);
+    bloc.setActive(false);
     client.handle = client.respond;
-    monitor.setActive(true);
+    bloc.setActive(true);
     await tester.pump(const Duration(seconds: 3));
     expect(client.stateCalls, 1);
-    expect(monitor.canControl, isFalse);
+    expect(bloc.state.canControl, isFalse);
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame(paused: true)), request));
     await action;
     await tester.pump();
     expect(client.stateCalls, 2);
     expect(client.actionCalls, 1);
-    expect(monitor.frame!.frontend!.isPaused, isFalse);
-    expect(monitor.canControl, isTrue);
-    monitor.dispose();
+    expect(bloc.state.frame!.frontend!.isPaused, isFalse);
+    expect(bloc.state.canControl, isTrue);
+    await close(tester, bloc);
   });
 
   testWidgets('hidden page stops timers, ignores late response and refreshes on resume', (tester) async {
@@ -432,22 +525,22 @@ void main() {
       rpc = command;
       return response.future;
     };
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
-    expect(monitor.loading, isTrue);
-    monitor.setActive(false);
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    expect(bloc.state.loading, isTrue);
+    bloc.setActive(false);
     await tester.pump(const Duration(seconds: 10));
     expect(client.stateCalls, 1);
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame()), request));
     await tester.pump();
-    expect(monitor.frame, isNull);
-    expect(monitor.canControl, isFalse);
+    expect(bloc.state.frame, isNull);
+    expect(bloc.state.canControl, isFalse);
     client.handle = client.respond;
-    monitor.setActive(true);
+    bloc.setActive(true);
     await tester.pump();
     expect(client.stateCalls, 2);
-    expect(monitor.frame, isNotNull);
-    expect(monitor.canControl, isTrue);
-    monitor.dispose();
+    expect(bloc.state.frame, isNotNull);
+    expect(bloc.state.canControl, isTrue);
+    await close(tester, bloc);
   });
 
   testWidgets('resume waits for old refresh and discards its obsolete values', (tester) async {
@@ -459,23 +552,23 @@ void main() {
       rpc = command;
       return response.future;
     };
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
-    monitor.setActive(false);
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    bloc.setActive(false);
     client.handle = client.respond;
-    monitor.setActive(true);
+    bloc.setActive(true);
     expect(client.stateCalls, 1);
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame(paused: true)), request));
     await tester.pump();
     expect(client.stateCalls, 2);
-    expect(monitor.frame!.frontend!.isPaused, isFalse);
-    monitor.dispose();
+    expect(bloc.state.frame!.frontend!.isPaused, isFalse);
+    await close(tester, bloc);
   });
 
   testWidgets('disconnect retains values, ignores command result and stops all polling', (tester) async {
-    final monitor = DeviceMonitor(repository, telemetry: true)..start();
+    final bloc = DeviceBloc(repository, telemetry: true)..start();
     await tester.pump();
-    final oldFrame = monitor.frame;
-    final oldMetrics = monitor.metrics;
+    final oldFrame = bloc.state.frame;
+    final oldMetrics = bloc.state.metrics;
     final response = Completer<WebSocketResult>();
     late WSSendRpcCommand request;
     late RpcCommand rpc;
@@ -484,39 +577,39 @@ void main() {
       rpc = command;
       return response.future;
     };
-    final action = monitor.setControl(FrameControl.screen, false);
+    final action = bloc.setControl(FrameControl.screen, false);
     await tester.pump();
     client.disconnect();
     await tester.pump();
     response.complete(WSRpcResult.byCommand(GetFrameStateResult(id: rpc.id, state: _frame(paused: true)), request));
     await action;
-    expect(monitor.frame, same(oldFrame));
-    expect(monitor.metrics, same(oldMetrics));
-    expect(monitor.failure!.kind, DeviceFailureKind.disconnected);
-    expect(monitor.stale, isTrue);
-    expect(monitor.metricsStale, isTrue);
-    expect(monitor.pendingControl, isNull);
-    expect(monitor.canControl, isFalse);
+    expect(bloc.state.frame, same(oldFrame));
+    expect(bloc.state.metrics, same(oldMetrics));
+    expect(bloc.state.failure!.kind, DeviceFailureKind.disconnected);
+    expect(bloc.state.stale, isTrue);
+    expect(bloc.state.metricsStale, isTrue);
+    expect(bloc.state.pendingControl, isNull);
+    expect(bloc.state.canControl, isFalse);
     final calls = client.commands.length;
     await tester.pump(const Duration(seconds: 20));
-    await monitor.refresh();
-    await monitor.setControl(FrameControl.screen, true);
+    await bloc.refresh();
+    await bloc.setControl(FrameControl.screen, true);
     expect(client.commands, hasLength(calls));
-    monitor.dispose();
+    await close(tester, bloc);
   });
 
-  testWidgets('dispose ignores late failures without notifying or retaining subscriptions', (tester) async {
+  testWidgets('close ignores late failures without notifying or retaining subscriptions', (tester) async {
     final response = Completer<WebSocketResult>();
     client.handle = (_, _) => response.future;
-    final monitor = DeviceMonitor(repository, telemetry: false)..start();
-    var notifications = 0;
-    monitor.addListener(() => notifications++);
-    monitor.dispose();
-    monitor.dispose();
+    final bloc = DeviceBloc(repository, telemetry: false)..start();
+    final previous = bloc.state;
+    await close(tester, bloc);
     response.completeError(StateError('late failure'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 20));
-    expect(notifications, 0);
+    expect(bloc.state, previous);
+    expect(bloc.isClosed, isTrue);
+    expect(tester.takeException(), isNull);
     expect(client.hasDisconnectListener, isFalse);
     expect(client.stateCalls, 1);
   });

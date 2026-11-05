@@ -1143,6 +1143,39 @@ class AppLocalizationsRu extends AppLocalizations {
   String get device_controls_title => 'Управление фоторамкой';
 
   @override
+  String get device_status_title => 'Фоторамка';
+
+  @override
+  String get device_summary_playing => 'Идёт показ';
+
+  @override
+  String get device_summary_frontend_unavailable => 'Показ недоступен';
+
+  @override
+  String get device_summary_menu_open => 'Меню открыто';
+
+  @override
+  String get device_summary_screen_off => 'Экран выключен';
+
+  @override
+  String get device_summary_screen_unknown => 'Состояние питания экрана неизвестно';
+
+  @override
+  String get device_state_details => 'Подробности состояния';
+
+  @override
+  String get device_hide_details => 'Скрыть подробности';
+
+  @override
+  String get device_night_mode => 'Ночной режим';
+
+  @override
+  String get device_control_sending => 'Отправка команды';
+
+  @override
+  String get device_auto_wake_disabled_help => 'Автопробуждение отключено. Экран можно включить вручную.';
+
+  @override
   String get device_telemetry_subtitle => 'Показатели системы и присутствие с фоторамки';
 
   @override

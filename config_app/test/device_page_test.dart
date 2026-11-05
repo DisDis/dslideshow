@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:config_app/features/device/data/device_repository.dart';
 import 'package:config_app/features/device/config/router.dart';
 import 'package:config_app/features/app/presentation/pages/home_page.dart';
-import 'package:config_app/features/device/presentation/device_monitor.dart';
+import 'package:config_app/features/device/presentation/device_bloc.dart';
 import 'package:config_app/features/device/presentation/pages/device_page.dart';
 import 'package:config_app/features/realtime/domain/services/realtime_service.dart';
 import 'package:config_app/features/theme/presentation/theme.dart';
@@ -16,7 +16,9 @@ import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_common/storage_status.dart';
 import 'package:dslideshow_i18n/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -144,9 +146,9 @@ class _Repository extends DeviceRepository {
 }
 
 Widget _app(
-  DeviceMonitor monitor,
+  DeviceBloc bloc,
   DeviceSection section, {
-  Locale locale = const Locale('ru'),
+  Locale locale = const Locale('en'),
   bool dark = false,
   double scale = 1,
 }) => MaterialApp(
@@ -158,10 +160,20 @@ Widget _app(
     data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
     child: child!,
   ),
-  home: DevicePage(section: section, monitor: monitor),
+  home: BlocProvider(
+    create: (_) => bloc..start(),
+    child: DevicePage(section: section),
+  ),
 );
 
 void main() {
+  setUpAll(() async {
+    await (FontLoader('Roboto')
+          ..addFont(rootBundle.load('assets/fonts/Roboto-Regular.ttf'))
+          ..addFont(rootBundle.load('assets/fonts/Roboto-Bold.ttf')))
+        .load();
+    await (FontLoader('MaterialIcons')..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'))).load();
+  });
   Future<void> close(WidgetTester tester, _Repository repository) async {
     await tester.pumpWidget(const SizedBox.shrink());
     await repository.disconnect.close();
@@ -170,8 +182,8 @@ void main() {
   for (final section in DeviceSection.values) {
     testWidgets('storage status updates in $section even without frontend', (tester) async {
       final repository = _Repository(_frame(frontendAvailable: false));
-      final monitor = DeviceMonitor(repository, telemetry: section == DeviceSection.telemetry);
-      await tester.pumpWidget(_app(monitor, section, locale: const Locale('en')));
+      final bloc = DeviceBloc(repository, telemetry: section == DeviceSection.telemetry);
+      await tester.pumpWidget(_app(bloc, section, locale: const Locale('en')));
       await tester.pumpAndSettle();
       const labels = {
         StorageStatusEnum.off: 'Unavailable or not configured',
@@ -181,7 +193,7 @@ void main() {
       };
       for (final entry in labels.entries) {
         repository.state = _frame(frontendAvailable: false, storageStatus: entry.key);
-        await monitor.refresh();
+        await bloc.refresh();
         await tester.pumpAndSettle();
         final label = find.text(entry.value);
         await tester.ensureVisible(label);
@@ -200,6 +212,7 @@ void main() {
     await GetIt.instance.reset();
     final client = _ConnectedClient();
     GetIt.instance.registerSingleton<RealtimeService>(client);
+    GetIt.instance.registerSingleton<DeviceRepository>(DeviceRepository(client));
     GetIt.instance.registerSingleton<PermissionService>(PermissionService()..loadData([Permission.NONE.id]));
     final router = GoRouter(
       routes: [
@@ -216,7 +229,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp.router(
         routerConfig: router,
-        locale: const Locale('ru'),
+        locale: const Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: createLightTheme(),
@@ -229,28 +242,28 @@ void main() {
           .where((tile) => tile.key is ValueKey<AppDestination>)
           .map((tile) => (tile.title! as Text).data),
       [
-        'Главная',
-        'Галерея',
-        'Загрузить медиа',
-        'Настройки',
-        'Обновление прошивки',
-        'Управление фоторамкой',
-        'Wi-Fi',
-        'Телеметрия',
-        'Питание и перезапуск',
+        'Home',
+        'Gallery',
+        'Upload media',
+        'Configuration',
+        'OTA Update',
+        'Frame control',
+        'Wifi',
+        'Telemetry',
+        'Power and restart',
       ],
     );
     final cards = tester.widgetList<Card>(find.byType(Card)).toList();
     expect(cards, hasLength(8));
     final labels = [
-      'Галерея',
-      'Загрузить медиа',
-      'Настройки',
-      'Обновление прошивки',
-      'Управление фоторамкой',
-      'Wi-Fi',
-      'Телеметрия',
-      'Питание и перезапуск',
+      'Gallery',
+      'Upload media',
+      'Configuration',
+      'OTA Update',
+      'Frame control',
+      'Wifi',
+      'Telemetry',
+      'Power and restart',
     ];
     for (var index = 0; index < cards.length; index++) {
       final title = tester.widget<Text>(
@@ -261,6 +274,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey(AppDestination.telemetry)));
     await tester.pumpAndSettle();
     expect(router.routeInformationProvider.value.uri.path, '/telemetry');
+    expect(find.byKey(const ValueKey('device-pause')), findsNothing);
     expect(client.metricsReads, 1);
     expect(tester.widget<ListTile>(find.byKey(const ValueKey(AppDestination.telemetry))).selected, isTrue);
     await tester.tap(find.byKey(const ValueKey(AppDestination.control)));
@@ -275,9 +289,15 @@ void main() {
 
   testWidgets('three controls send absolute intents and update labels', (tester) async {
     final repository = _Repository(_frame());
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
     await tester.pumpAndSettle();
+    for (final key in ['device-pause', 'device-menu', 'device-screen']) {
+      expect(
+        find.descendant(of: find.byKey(const ValueKey('device-status-card')), matching: find.byKey(ValueKey(key))),
+        findsOneWidget,
+      );
+    }
     for (final key in ['device-pause', 'device-menu', 'device-screen']) {
       final button = find.byKey(ValueKey(key));
       await tester.ensureVisible(button);
@@ -285,17 +305,17 @@ void main() {
       await tester.pumpAndSettle();
     }
     expect(repository.commands, [(FrameControl.pause, true), (FrameControl.menu, true), (FrameControl.screen, false)]);
-    expect(find.text('Продолжить'), findsOneWidget);
-    expect(find.text('Закрыть меню'), findsOneWidget);
-    expect(find.text('Включить экран'), findsOneWidget);
+    expect(find.text('Resume'), findsOneWidget);
+    expect(find.text('Close menu'), findsOneWidget);
+    expect(find.text('Turn screen on'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await close(tester, repository);
   });
 
   testWidgets('in-flight command disables actions and errors preserve state', (tester) async {
     final repository = _Repository(_frame())..pending = Completer<FrameState>();
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const ValueKey('device-pause')));
     await tester.tap(find.byKey(const ValueKey('device-pause')));
@@ -303,10 +323,10 @@ void main() {
     final menu = tester.widget<FilledButton>(find.byKey(const ValueKey('device-menu')));
     expect(menu.onPressed, isNull);
     repository.pending!.completeError(const DeviceFailure(DeviceFailureKind.command));
-    await tester.pumpAndSettle();
-    expect(find.text('Не удалось подтвердить команду. Обновите состояние перед повтором.'), findsOneWidget);
-    expect(monitor.frame!.frontend!.isPaused, isFalse);
-    expect(monitor.canControl, isFalse);
+    await tester.pump();
+    expect(find.text('Could not confirm the command. Refresh the state before trying again.'), findsOneWidget);
+    expect(bloc.state.frame!.frontend!.isPaused, isFalse);
+    expect(bloc.state.canControl, isFalse);
     await close(tester, repository);
   });
 
@@ -325,10 +345,10 @@ void main() {
         frontend: known.frontend,
       ),
     );
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
     await tester.pumpAndSettle();
-    expect(find.text('Включить экран'), findsOneWidget);
+    expect(find.text('Turn screen on'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('device-screen')));
     await tester.pumpAndSettle();
     expect(repository.commands, [(FrameControl.screen, true)]);
@@ -337,27 +357,27 @@ void main() {
 
   testWidgets('disabled auto wake does not change the current screen action', (tester) async {
     final repository = _Repository(_frame(autoWakeEnabled: false));
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls, locale: const Locale('en')));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls, locale: const Locale('en')));
     await tester.pumpAndSettle();
     expect(find.text('Turn screen off'), findsOneWidget);
     expect(find.text('Screen auto wake'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('device-screen')));
     await tester.pumpAndSettle();
     expect(repository.commands, [(FrameControl.screen, false)]);
-    expect(monitor.frame!.autoWakeEnabled, isFalse);
+    expect(bloc.state.frame!.autoWakeEnabled, isFalse);
     await tester.tap(find.byKey(const ValueKey('device-screen')));
     await tester.pumpAndSettle();
     expect(repository.commands.last, (FrameControl.screen, true));
-    expect(monitor.frame!.autoWakeEnabled, isTrue);
+    expect(bloc.state.frame!.autoWakeEnabled, isTrue);
     await close(tester, repository);
   });
 
   for (final page in [FramePage.config, FramePage.ota, FramePage.unknown]) {
     testWidgets('pause and menu disabled on $page', (tester) async {
       final repository = _Repository(_frame(page: page));
-      final monitor = DeviceMonitor(repository, telemetry: false);
-      await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+      final bloc = DeviceBloc(repository, telemetry: false);
+      await tester.pumpWidget(_app(bloc, DeviceSection.controls));
       await tester.pumpAndSettle();
       expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-pause'))).onPressed, isNull);
       expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-menu'))).onPressed, isNull);
@@ -368,10 +388,14 @@ void main() {
 
   testWidgets('unavailable frontend disables all actions and presence can be unknown', (tester) async {
     final repository = _Repository(_frame(frontendAvailable: false, presence: FramePresence.unknown));
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
     await tester.pumpAndSettle();
-    expect(find.text('Неизвестно'), findsOneWidget);
+    final scrollable = find
+        .descendant(of: find.byKey(const ValueKey('device-content')), matching: find.byType(Scrollable))
+        .first;
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('device-presence')), 300, scrollable: scrollable);
+    expect(find.text('Unknown'), findsOneWidget);
     for (final key in ['device-pause', 'device-menu', 'device-screen']) {
       expect(tester.widget<FilledButton>(find.byKey(ValueKey(key))).onPressed, isNull);
     }
@@ -386,8 +410,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final repository = _Repository(_frame());
-      final monitor = DeviceMonitor(repository, telemetry: true);
-      await tester.pumpWidget(_app(monitor, DeviceSection.telemetry, locale: locale, dark: dark, scale: 1.5));
+      final bloc = DeviceBloc(repository, telemetry: true);
+      await tester.pumpWidget(_app(bloc, DeviceSection.telemetry, locale: locale, dark: dark, scale: 1.5));
       await tester.pumpAndSettle();
       expect(find.textContaining('2040'), findsWidgets);
       final scrollable = find
@@ -407,14 +431,113 @@ void main() {
 
   testWidgets('disconnect keeps last data and disables commands', (tester) async {
     final repository = _Repository(_frame());
-    final monitor = DeviceMonitor(repository, telemetry: false);
-    await tester.pumpWidget(_app(monitor, DeviceSection.controls));
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
     await tester.pumpAndSettle();
     repository.disconnect.add(null);
     await tester.pumpAndSettle();
-    expect(find.text('Последние полученные данные устарели.'), findsOneWidget);
-    expect(find.text('Человек рядом'), findsOneWidget);
+    expect(find.text('The last received data is out of date.'), findsOneWidget);
+    final scrollable = find
+        .descendant(of: find.byKey(const ValueKey('device-content')), matching: find.byType(Scrollable))
+        .first;
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('device-presence')), 300, scrollable: scrollable);
+    expect(find.text('Present'), findsOneWidget);
     expect(tester.widget<FilledButton>(find.byKey(const ValueKey('device-pause'))).onPressed, isNull);
     await close(tester, repository);
   });
+
+  testWidgets('summary distinguishes screen transitions from slideshow state', (tester) async {
+    final repository = _Repository(_frame());
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
+    await tester.pumpAndSettle();
+    final cases = <(FrameState, String)>[
+      (_frame(), 'Slideshow playing'),
+      (_frame(paused: true), 'Paused'),
+      (_frame(menu: true), 'Menu open'),
+      (_frame(screenOn: false), 'Screen is off'),
+      (_frame(page: FramePage.config), 'Configuration'),
+      (_frame(frontendAvailable: false), 'Slideshow unavailable'),
+      (_frame().copyWith(screenPhase: FrameScreenPhase.fadingOut), 'Fading out'),
+      (_frame(screenOn: false).copyWith(screenPhase: FrameScreenPhase.wakingUp), 'Waking up'),
+      (_frame().copyWith(isScreenOn: null, screenPhase: FrameScreenPhase.failed), 'Screen operation failed'),
+      (_frame().copyWith(isScreenOn: null, screenPhase: FrameScreenPhase.unknown), 'Screen power is unknown'),
+    ];
+    for (final (frame, label) in cases) {
+      repository.state = frame;
+      await bloc.refresh();
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(find.byKey(const ValueKey('device-status-summary'))).data, label);
+    }
+    await close(tester, repository);
+  });
+
+  testWidgets('night restriction stays visible and details survive polling', (tester) async {
+    final repository = _Repository(
+      _frame().copyWith(
+        nightMode: NightModeState(
+          enabled: true,
+          automaticWakeBlocked: true,
+          reason: AutomaticSleepReason.darkness,
+          lightStatus: AmbientLightStatus.stale,
+          illuminance: 7,
+          lightReceivedAt: DateTime.utc(2040, 1, 2, 2),
+          nextBoundary: DateTime.utc(2040, 1, 2, 7),
+        ),
+      ),
+    );
+    final bloc = DeviceBloc(repository, telemetry: false);
+    await tester.pumpWidget(_app(bloc, DeviceSection.controls));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Automatic wake blocked by darkness'), findsOneWidget);
+    expect(find.text('7 lx'), findsNothing);
+    final toggle = find.byKey(const ValueKey('device-details-toggle'));
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump();
+    expect(bloc.state.detailsExpanded, isTrue);
+    expect(find.text('7 lx'), findsOneWidget);
+    expect(find.text('Stale reading'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    expect(bloc.state.detailsExpanded, isTrue);
+    expect(find.text('7 lx'), findsOneWidget);
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump();
+    expect(bloc.state.detailsExpanded, isFalse);
+    expect(find.text('7 lx'), findsNothing);
+    await close(tester, repository);
+  });
+
+  for (final (size, dark, scale) in [(const Size(320, 900), true, 2.0), (const Size(1280, 960), false, 1.0)]) {
+    testWidgets('control card fits $size dark=$dark scale=$scale', (tester) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repository = _Repository(_frame());
+      final bloc = DeviceBloc(repository, telemetry: false);
+      await tester.pumpWidget(_app(bloc, DeviceSection.controls, dark: dark, scale: scale));
+      await tester.pumpAndSettle();
+      final cardRect = tester.getRect(find.byKey(const ValueKey('device-status-card')));
+      for (final key in ['device-pause', 'device-menu', 'device-screen']) {
+        final button = find.byKey(ValueKey(key));
+        await tester.ensureVisible(button);
+        await tester.pump();
+        final rect = tester.getRect(button);
+        expect(rect.left, greaterThanOrEqualTo(cardRect.left));
+        expect(rect.right, lessThanOrEqualTo(cardRect.right));
+        expect(rect.height, greaterThanOrEqualTo(48));
+      }
+      final toggle = find.byKey(const ValueKey('device-details-toggle'));
+      await tester.ensureVisible(toggle);
+      await tester.pump();
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(bloc.state.detailsExpanded, isTrue);
+      expect(find.text('Frame local time'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await close(tester, repository);
+    });
+  }
 }

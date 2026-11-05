@@ -59,12 +59,17 @@ class DeviceRepository {
       throw DeviceFailure(failureKind);
     }
     if (response.id != envelope.id) {
+      _log.warning(
+        'Device response has wrong WebSocket id command=${command.type} expected=${envelope.id} actual=${response.id}',
+      );
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     if (response is WebSocketErrorResult) {
+      _log.warning('Device request rejected by WebSocket command=${command.type}', response.error);
       throw DeviceFailure(failureKind);
     }
     if (response is! WSRpcResult) {
+      _log.warning('Unexpected device response command=${command.type} type=${response.runtimeType}');
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     final Object? result;
@@ -75,12 +80,16 @@ class DeviceRepository {
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     if (result is! RpcResult || result.id != command.id) {
+      _log.warning('Device response has invalid RPC result command=${command.type} expected=${command.id}');
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     if (result is RpcErrorResult) {
+      // The remote service owns its original stack; this response carries text only.
+      _log.warning('Device request rejected by backend command=${command.type}', result.error);
       throw DeviceFailure(failureKind);
     }
     if (result is! T) {
+      _log.warning('Unexpected device RPC result command=${command.type} type=${result.runtimeType}');
       throw const DeviceFailure(DeviceFailureKind.invalidResponse);
     }
     return result;

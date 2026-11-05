@@ -33,6 +33,8 @@ Future<void> initializeAllDependencies({
   sl.registerSingleton<FrameDiscoveryProvider>(createFrameDiscoveryProvider());
   final realtimeClient = ClientServiceImpl();
   sl.registerSingleton<RealtimeService>(realtimeClient, dispose: (_) => realtimeClient.dispose());
+  final deviceRepository = DeviceRepository(realtimeClient);
+  sl.registerSingleton<DeviceRepository>(deviceRepository);
   sl.registerSingleton<UserRepository>(UserRepositoryImpl());
   sl.registerSingleton<AuthenticationRepository>(AuthenticationRepositoryImpl(client: sl()));
   sl.registerSingleton<PhotoframeRepository>(PhotoframeRepository(sl()));
@@ -56,9 +58,7 @@ Future<void> initializeAllDependencies({
     userRepository: sl(),
   );
   sl.registerSingleton(authentication);
-  sl.registerSingleton(
-    BackendVersionBloc(authentication: authentication, repository: DeviceRepository(realtimeClient)),
-  );
+  sl.registerSingleton(BackendVersionBloc(authentication: authentication, repository: deviceRepository));
 
   /*final api = WaApiGen(interceptors: [], basePathOverride: apiUrl);
   sl.registerSingleton<Dio>(api.dio);

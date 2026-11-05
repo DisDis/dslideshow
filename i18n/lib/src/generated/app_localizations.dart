@@ -2258,6 +2258,72 @@ abstract class AppLocalizations {
   /// **'Frame control'**
   String get device_controls_title;
 
+  /// No description provided for @device_status_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo frame'**
+  String get device_status_title;
+
+  /// No description provided for @device_summary_playing.
+  ///
+  /// In en, this message translates to:
+  /// **'Slideshow playing'**
+  String get device_summary_playing;
+
+  /// No description provided for @device_summary_frontend_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Slideshow unavailable'**
+  String get device_summary_frontend_unavailable;
+
+  /// No description provided for @device_summary_menu_open.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu open'**
+  String get device_summary_menu_open;
+
+  /// No description provided for @device_summary_screen_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen is off'**
+  String get device_summary_screen_off;
+
+  /// No description provided for @device_summary_screen_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen power is unknown'**
+  String get device_summary_screen_unknown;
+
+  /// No description provided for @device_state_details.
+  ///
+  /// In en, this message translates to:
+  /// **'State details'**
+  String get device_state_details;
+
+  /// No description provided for @device_hide_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide details'**
+  String get device_hide_details;
+
+  /// No description provided for @device_night_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode'**
+  String get device_night_mode;
+
+  /// No description provided for @device_control_sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending command'**
+  String get device_control_sending;
+
+  /// No description provided for @device_auto_wake_disabled_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic wake is disabled. You can turn the screen on manually.'**
+  String get device_auto_wake_disabled_help;
+
   /// No description provided for @device_telemetry_subtitle.
   ///
   /// In en, this message translates to:
